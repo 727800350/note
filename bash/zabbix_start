@@ -1,0 +1,4 @@
+service mysqld start
+service httpd start
+service zabbix_server start
+service zabbix_agentd start
