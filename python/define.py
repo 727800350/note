@@ -17,7 +17,7 @@ for line in file:
 				else:
 ## 						print out item and number
 ## 						print>>out, strs[0],"\t",strs[1]
-						print out number and then item
+## 						print out number and then item
 						print>>out, strs[1],"\t",strs[0]
 print "over"
 out.close()
