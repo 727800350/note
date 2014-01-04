@@ -4,3 +4,5 @@
 [http]
 	proxy = 127.0.0.1:8087
 	sslVerify = false
+[core]
+	editor = vim
