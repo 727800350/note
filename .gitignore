@@ -6,4 +6,3 @@
 *.out
 *.out.bak
 *.synctex.gz
-latex/*/*.pdf
