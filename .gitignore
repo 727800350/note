@@ -1,0 +1,9 @@
+## tex
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.out.bak
+*.synctex.gz
+latex/*/*.pdf
