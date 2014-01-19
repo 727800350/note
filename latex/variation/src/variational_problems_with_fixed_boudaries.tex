@@ -1,0 +1,254 @@
+\section{Variational Problems with Fixed Boudaries}
+\begin{definition}
+  \textbf{n阶距离}:Soit deux foncitons $y(x)$ et $y_0(x)\in C^{n}[a,b]$,则这两个函数从0到n阶导数之差的绝对值中的最大值称为 $y(x)$ et $y_0(x)$在区间$[a,b]$上的n阶距离或n级距离
+  $d_n[y(x),y_0(x)]=max_{0 \leqslant i \leqslant n}max_{a \leqslant x \leqslant b}|y^{(i)}(x)-y_0^{(i)}(x)|$
+\end{definition}
+特别地,当$n=0$时,为0阶距离;当$n=1$时,为1阶距离
+
+\begin{definition}
+\textbf{n阶领域}:函数$y_0(x)$在区间$[a,b]$上的n阶领域,记为$N_n[\delta,y_0(x)]$,表示为\newline
+$N_n[\delta,y_0(x)]=\{y(x)|y(x)\in C^{n}[a,b],d_n[y(x),y_0(x)] < \delta \}$
+\end{definition}
+\begin{definition}
+\textbf{变分}:对于任意定值$x \in [x_0,x_1]$,可取函数$y(x)$ 与另一个可取函数 $y_0(x)$ 之差$y(x)-y_0(x)$ 称为函数$y(x)$在 $y_0(x)$ 处的变分或函数的变分,记作$\delta y$,$\delta$称作变分符号或变分算子,这时有\\
+$\delta y=y(x)-y_0(x)=\epsilon\eta(x)$ \newline
+式中$\epsilon$为朗格朗日引进的一个小参数,但是不是x的函数,而$\eta(x)$为x的任意函数
+\end{definition}
+由于可取函数都通过区间的固定端点,即他们在区间的端点的值相等,且由于端点是固定的,所以在端点处的变分为零. \newline
+
+可取函数$y(x)$ 是泛函$J[y(x)]$的宗量,故也可以这样定义变分:泛函的宗量$y(x)$与另一个宗量 $y_0(x)$ 之差$y(x)-y_0(x)$ 称为宗量$y(x)$在 $y_0(x)$ 处的变分.
+
+\begin{attention}
+函数的变分$\delta y$是x的函数.\newline
+注意函数变分与函数增量$\Delta y$的区别:\newline
+函数的变分是两个不同函数在x取一个定值时之差,函数发生了改变,自变量没有变;\newline
+而函数的增量是由于自变量x取一个增量而使同一个函数产生的增量,函数仍是原来的函数,而自变量发生了变化
+\end{attention}
+
+\textbf{全变分}:若可取函数$y(x)$变位$y_1(x)$的同时,自变量x也取得了无穷小增量$\Delta x$,函数的增量在舍去高阶增量后,可近似写成\newline
+$\Delta y=\delta y + y'(x)\Delta x$
+\newline
+全变分包括两部分,一部分是由于自变量变化所引起的$y'(x)\Delta x$;另一部分是由函数变化所引起的$\delta y $
+
+$\delta y'=y'(x)-y_0'(x)=[y(x)-y_0(x)]'=(\delta y)'$
+D'ou $\delta \frac{dy}{dx}=\frac{d}{dx}\delta y$
+\newline
+That is to say:函数导数的变分等于函数变分的倒数,换句话说,求变分与求导数这两种运算次序可以交换
+\newline
+上面的性质可以推广到高阶的情形
+同时,我们可以推出哈密顿算子,拉普拉斯算子都可以和变分符号交换顺序
+
+\subsection{最简泛函的变分与极值的必要条件}
+Soit $F(x,y(x),y'(x))$ une fonction connue de trois variables $x,y(x),y'(x)$ sur $[x_0,x_1]$, et F 二阶连续可微,其中$y(x),y'(x)$是x的未知函数,则泛函 \newline
+$$J[y(x)]=\int_{x_0}^{x_1}F(x,y(x),y'(x))dx$$
+称为最简单的积分型泛函,简称最简泛函,$J[y(x)]$ 是$y(x)$的泛函,由上面的式子知,$J[y(x)]$不仅是$y(x)$的函数,而且还是$x,y'(x)$, 但是只要求出了$y(x)$, $y'(x)$也就能够求出来了, 于是泛函只是写成$J[y(x)]$的形式
+\newline
+最简泛函的增量也称为泛函的全变分
+\begin{equation}
+\begin{split}
+  \Delta J=J[y_1(x)]-J[y(x)]=J[y(x)+\delta y]-J[y(x)]= \\
+\int_{x_0}^{x_1}F(x,y(x)+\delta y,y'(x)+\delta y')dx-\int_{x_0}^{x_1}F(x,y(x),y'(x))dx = \\
+\int_{x_0}^{x_1}[F(x,y(x)+\delta y,y'(x)+\delta y')-F(x,y(x),y'(x))]dx
+ \end{split}
+\end{equation}
+$F(x,y(x)+\delta y,y'(x)+\delta y')-F(x,y(x),y'(x))=\overline{F_y}\delta y + \overline{F_{y'}}\delta y'$ \newline
+$F(x,y(x)+\delta y,y'(x)+\delta y')-F(x,y(x),y'(x))$的线性部分是$F_y\delta y + F_{y'}\delta y'$ \\
+On note $F_y\delta y + F_{y'}\delta y'$ comme $L[y,\delta y]$ \\
+$L[y,\delta y]$ 是关于$\delta y$的现行泛函
+
+\begin{definition}
+若连续泛函$J[y(x)]$满足以下两个条件:\\
+1. $J[y_1(x)+y_2(x)]=J[y_1(x)]+J[y_2(x)]$ \\
+2. $J[cy(x)]=cJ[y(x)]$ avec c une constante\\
+alors,$J[y(x)]$称为关于$y(x)$的线性泛函
+\end{definition}
+
+对称双线性泛函,双线性泛函,二次泛函\\
+$$
+\delta J
+=\int_{x_0}^{x_1}[F_y(x,y,y')\delta y + F_{y'}(x,y,y')\delta y']dx
+=\int_{x_0}^{x_1}(F_y\delta y + F_{y'}\delta y')dx
+=\int_{x_0}^{x_1}(F_y\epsilon\eta + F_{y'}\epsilon\eta')dx
+=\epsilon \int_{x_0}^{x_1}(F_y\eta + F_{y'}\eta')dx
+$$
+泛函的变分$\delta J$是泛函增量$\Delta J$的线性主要部分,即线性主部
+
+变分记号$\delta$有下列基本运算性质\\
+1.$\delta (F_1+F_2)=\delta F_1+\delta F_2$ \\
+2.$\delta (F_1*F_2)=F_1\delta F_2+F_2\delta F_1$\\
+3.$\delta (F^{n})=nF^{n-1}\delta F$\\
+4.$\delta (\frac{F_1}{F_2})=\frac{F_2\delta F_1-F_1\delta F_2}{F_2^{2}}$\\
+5.$\delta (F^{(n)})=(\delta F)^{n}$\\
+6.$\delta \int_{x_0}^{x_1}F(x,y,y')dx=\int_{x_0}^{x_1}\delta F(x,y,y')dx$\\
+
+全变分$\Delta$有下列基本运算性质\\
+1.$\Delta (F_1+F_2)=\Delta F_1+\Delta F_2$ \\
+2.$\Delta (F_1*F_2)=F_1\Delta F_2+F_2\Delta F_1$\\
+3.$\Delta (F^{n})=nF^{n-1}\Delta F$\\
+4.$\Delta (\frac{F_1}{F_2})=\frac{F_2\Delta F_1-F_1\Delta F_2}{F_2^{2}}$\\
+5.$(\Delta F^{(n)})'=\Delta( F^{(n+1)})+F^{(n+1)}(\Delta x)'$ (微分与全变分的运算次序不能交换)\\
+6.$\Delta \int_{x_0}^{x_1}Fdx=\delta \int_{x_0}^{x_1}Fdx + (F\delta x)|_{x_0}^{x_1}=\int_{x_0}^{x_1}(\delta F + F\frac{d}{dx}\delta x)dx $  \\性质6表明,当$\frac{d}{dx}\delta x\neq 0$时,积分与全变分的运算也不能交换顺序 \\
+7.$d(\Delta x) = \Delta(dx)$
+对自变量而言，全变分和微分的运算次序具有交换性
+
+5.preuve: \\
+$(\Delta F^{(n)})'=[F^{(n+1)} \Delta x + \delta (F^{(n)})]'=F^{(n+2)}\Delta x + F^{(n+1)}(\Delta x)'+ \delta (F^{(n+1)})=\Delta (F^{(n+1)}) + F^{(n+1)}(\Delta x)'$
+
+6.preuve: \\
+$$\Delta \int_{0}^{x}Fdx=\delta \int_{0}^{x}Fdx + F \Delta x$$
+将上式中的积分上限x分别用$x_0,x_1$替换,可得到两个类似的关系式,然后将两个式子作差,可得到下面的关系式:
+$$\Delta \int_{x_0}^{x_1}Fdx=\delta \int_{x_0}^{x_1}Fdx + (F \Delta x)|_{x_0}^{x_1}$$
+and
+$$\delta \int_{x_0}^{x_1}Fdx=\int_{x_0}^{x_1}\delta Fdx=\int_{x_0}^{x_1}(\Delta F -F' \Delta x)dx $$
+$$(F \Delta x)|_{x_0}^{x_1}=\int_{x_0}^{x_1}d(F \Delta x)$$
+将上面的两个式子代入到上面的第三个式子中得到:
+$$\Delta \int_{0}^{x}Fdx=\int_{x_0}^{x_1}(\Delta F -F' \Delta x)dx +\int_{x_0}^{x_1}d(F \Delta x)=\int_{x_0}^{x_1}[\Delta F + F (\Delta x)']dx$$
+\subsection{最简泛函的欧拉方程}
+\begin{theorem}
+使最简泛函
+$$J[y(x)]=\int_{x_0}^{x_1}F(x,y(x),y'(x))dx$$
+取极值且满足固定边界条件
+$$
+y(x_0)=y_0,y(x_1)=y_1
+$$
+的极值曲线$y=y(x)$应满足\textbf{必要条件}(欧拉方程)
+$$
+F_y - \frac{d}{dx}F_{y'} =0
+$$
+的解,式中$F$是$x,y,y'$的已知函数并有二阶连续偏导数
+取得极值 $\Leftrightarrow \delta J = \int_{x_0}^{x_1}(F_y \delta y + F_{y'} \delta y')dx=0$
+\end{theorem}
+
+\subsection{依赖于多个一元函数的变分问题}
+\begin{theorem}
+使泛函$$J[y(x),z(x)]=\int_{x_0}^{x_1}F(x,y,y',z,z')dx$$取得极值且满足固定边界条件
+$$
+y(x_0)=y_0,y(x_1)=y_1,z(x_0)=z_0,z(x_1)=z_1
+$$
+的极值曲线$y=y(x),z=z(x)$必满足欧拉方程组
+$$
+\left\{
+  \begin{array}{ll}
+    F_y - \frac{d}{dx}F_{y'}=0 & \\
+    F_z - \frac{d}{dx}F_{z'}=0 &
+  \end{array}
+\right.
+$$
+\end{theorem}
+
+\begin{corollary}
+对于含有n个未知数$y_1(x),y_2(x) ,\ldots , y_n(x)$,使泛函
+$$J[y_1,y_2 ,\ldots , y_n]=\int_{x_0}^{x_1}F(x,y_1,y_2 ,\ldots , y_n,y_1',y_2' ,\ldots , y_n')dx$$
+取得极值并且满足边界条件
+$$y_i(x_0)=y_{i0},y_i(x_1)=y_{i1} ~(i=1,2,\dots,n)$$
+的极值曲线$y_i=y_i(x)~ (i=1,2,\dots,n)$比满足欧拉方程组
+$$F_{y_i} -  \frac{d}{dx}F_{y_i'}=0 ~(i=1,2,\dots,n)$$
+\end{corollary}
+
+\subsection{依赖于高阶导数的变分问题}
+\begin{theorem}
+使泛函
+$$J[y(x)]=\int_{x_0}^{x_1}F(x,y,y',y'')dx$$
+取极值且满足固定边界条件
+$$
+y(x_0)=y_0,y(x_1)=y_1,y'(x_0)=y_0',y'(x_1)=y_1'
+$$
+的极值曲线$y=y(x)$必满足微分方程
+$$F_y - \frac{d}{dx}F_y' + \frac{d^2}{dx^2}F_{y''} = 0 $$
+\end{theorem}
+
+\begin{corollary}
+使依赖于未知函数$y(x)$的n阶导数的泛函
+$$J[y]=\int_{x_0}^{x_1}F(x,y,y',y'', \ldots , y^{(n)})dx$$
+取极值且满足固定边界条件
+$$
+y^{(k)}(x_0)=y_0^{(k)}, y^{(k)}(x_1)=y_1^{(k)} ~ (k= 0,1,\ldots , n-1)
+$$
+的极值曲线$y=y(x)$必满足欧拉-泊松方程
+$$F_y - \frac{d}{dx}F_{y'} + \frac{d^2}{dx^2}F_{y''} - \dots + (-1)^{n}\frac{d^n}{dx^n}F_{y^{(n)}}=0  $$
+式中F具有n+1阶连续导数,y具有2n阶连续导数,这是一个2n阶微分方程,它的通解中含有2n个特定常数,可由2n个边界来确定
+\end{corollary}
+
+\begin{corollary}
+使依赖于两个未知函数$y(x)$的m阶导数,$z(x)$的n阶导数的泛函
+$$J[y(x),z(x)]=\int_{x_0}^{x_1}F(x,y,y',y'', \ldots , y^{(m)},z,z',z'', \ldots , z^{(n)})dx$$
+取极值且满足固定边界条件
+$$
+y^{(k)}(x_0)=y_0^{(k)}, y^{(k)}(x_1)=y_1^{(k)} ~ (k= 0,1,\ldots , m-1)
+$$
+$$
+z^{(k)}(x_0)=z_0^{(k)}, z^{(k)}(x_1)=z_1^{(k)} ~ (k= 0,1,\ldots , n-1)
+$$
+的极值曲线$y=y(x),z=z(x)$必满足欧拉-泊松方程
+$$
+\left\{
+  \begin{array}{ll}
+    F_y - \frac{d}{dx}F_{y'} + \frac{d^2}{dx^2}F_{y''} - \dots + (-1)^{n}\frac{d^n}{dx^n}F_{y^{(n)}}=0 &\\
+    F_z - \frac{d}{dx}F_{z'} + \frac{d^2}{dx^2}F_{z''} - \dots + (-1)^{n}\frac{d^n}{dx^n}F_{z^{(n)}}=0   &
+  \end{array}
+\right.
+$$
+式中F具有n+1阶连续导数,y,z具有2n阶连续导数
+\\
+当然我们还可以推论到更多个未知函数的情况
+\end{corollary}
+
+\subsection{依赖于多元函数的变分问题}
+\begin{theorem}
+设D是平面区域,$(x,y) \in D ,u(x,y) \in C^2(D)$,使泛函
+$$
+J[u(x,y)]=\int\int_{D}F(x,y,u_x,u_y)dxdy
+$$
+取极值且在区域D的边界线L上取已知的极值函数$u=u(x,y)$必须满足偏微分方程
+$$
+F_u -\frac{\partial}{\partial x}F_{u_x}-\frac{\partial}{\partial y}F_{u_y} = 0
+$$
+这个方程称为奥斯特罗格拉茨基方程,简称奥氏方程,有时也称之为欧拉方程
+\end{theorem}
+
+\begin{corollary}
+设D是平面区域,$(x,y) \in D ,u(x,y) \in C^4(D),F(x,y,u,u_x,u_y,u_{xx},u_{xy},u_{yy}) \in C^3$,则泛函
+$$
+J[u(x,y)]=\int\int_{D}F(x,y,u,u_x,u_y,u_{xx},u_{xy},u_{yy})dxdy
+$$
+的奥氏方程为
+$$
+F_u -\frac{\partial}{\partial x}F_{u_x}-\frac{\partial}{\partial y}F_{u_y}+ \frac{\partial^2}{\partial x^2}F_{u_{xx}} + \frac{\partial^2}{\partial x \partial y}F_{u_{xy}} + \frac{\partial^2}{\partial y^2}F_{u_{yy}} = 0
+$$
+\end{corollary}
+
+\begin{corollary}
+设D是平面区域,$(x,y) \in D, u(x,y) \in C^{2n}(D),F \in C^{n+1}(D)$,则泛函
+$$
+J[u(x,y)]=\int\int_{D}F(x,t,u,u_x,u_y,u_{xx},u_{yy}, \ldots , u_{\underbrace{xx \dots x}_{n}},u_{\underbrace{yy \dots y}_{n}})dxdy
+$$
+的奥氏方程为
+$$
+\begin{array}{c}
+   F_u -\frac{\partial}{\partial x}F_{u_x}-\frac{\partial}{\partial y}F_{u_y}+ \frac{\partial^2}{\partial x^2}F_{u_{xx}} + \frac{\partial^2}{\partial x \partial y}F_{u_{xy}} + \frac{\partial^2}{\partial y^2}F_{u_{yy}} + \dots +  \\
+ \\
+   (-1)^n (
+\frac{\partial^n }{\partial x^n}F_{u_{\underbrace{xx \dots x}_{n}}}+
+\frac{\partial^n }{\partial x^{n-1}\partial y}F_{u_{\underbrace{xx \dots y}_{n-1}}}+
+\dots+
+\frac{\partial^n }{\partial y^n}F_{u_{\underbrace{yy \dots y}_{n}}})
+= 0
+\end{array}
+$$
+\end{corollary}
+
+\begin{corollary}
+设D是平面区域,$(x,y) \in D ,u(x,y) \in C^2(D),v(x,y) \in C^2(D)$,使泛函
+$$
+J[u(x,y),v(x,y)]=\int\int_{D}F(x,y,,u,v,u_x,,v_x,u_y,v_y)dxdy
+$$
+的奥氏方程组为
+$$
+\left\{
+  \begin{array}{ll}
+   F_u -\frac{\partial}{\partial x}F_{u_x}-\frac{\partial}{\partial y}F_{u_y} = 0 \\
+   F_v -\frac{\partial}{\partial x}F_{v_x}-\frac{\partial}{\partial y}F_{v_y} = 0
+  \end{array}
+\right.
+$$
+\end{corollary}

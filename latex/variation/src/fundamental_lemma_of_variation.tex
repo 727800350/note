@@ -1,0 +1,37 @@
+\section{Fundamental lemma of variation}
+\begin{theorem}
+    Soit une fonction $f(x)$ est continue sur $[a,b]$,$ \forall \eta(x)$ sur $\in C^{n}[a,b]$,et $\exists m>0$,tel que $\eta^{k}(a)=\eta^{k}(b)=0 (\forall k \in [[0,n]])$ \newline
+    si$ \int_{a}^{b}f(x)\eta(x)=0$ est toujours vrai, \newline
+    alors, sur $[a,b],f(x)\equiv 0$ \newline
+    (证明时用反证法,且需要构造$\eta(x)$为特殊的形式)
+    $\exists \xi,f(\xi)>0 \Rightarrow \exists $une intervale $[a_0,b_0]$,tel que sur $[a_0,b_0],f(x)$ est positive \newline
+ on peut construire $\eta(x)$ comme cidessous:
+$\eta(x)=
+    \left\{
+      \begin{array}{ll}
+        [(x-a_0)(x-b_0)]^{2n+2} & x \in [a_0,b_0] \\
+        0 & sinon
+      \end{array}
+    \right.
+    $
+\end{theorem}
+
+
+\textbf{Quand m=n=0}
+\begin{theorem}
+    Soit une fonction $f(x)$ est continue sur $[a,b]$,$ \forall \eta(x)$ sur $\in C^{0}[a,b]$,et $\exists m>0$,tel que $\eta(a)=\eta(b)=0$ \newline
+    si$ \int_{a}^{b}f(x)\eta(x)=0$ est toujours vrai, \newline
+    alors, sur $[a,b],f(x)\equiv 0$
+\end{theorem}
+
+\begin{theorem}
+    Soit une fonction $f(x)$ est continue sur $[a,b]$,$ \forall \eta(x)$ sur $\in C^{1}[a,b]$,et $\eta(a)=\eta(b)=0$ \newline
+    si$ \int_{a}^{b}f(x)\eta'(x)=0$ est toujours vrai, \newline
+    alors, sur $[a,b],f(x)\equiv Constante$
+\end{theorem}
+
+\begin{theorem}
+    Soit une fonction $f(x,y)$ est continue sur $D$,$ \forall \eta(x,y)$ sur $\in C^{1}[a,b]$,et 在D的边界上, $\eta(x,y)=0$\newline
+    si$ \int_{a}^{b}f(x,y)\eta(x,y)=0$ est toujours vrai, \newline
+    alors, sur $D,f(x,y)\equiv 0$
+\end{theorem}

@@ -1,0 +1,639 @@
+\documentclass{article}
+\input{../public/package}   %导入需要用到的package
+\begin{document}
+\title{Introduction to Algorithms}
+\author{Eric}
+\input{../public/math}  %导入数学方面的定义
+\maketitle
+\tableofcontents
+\newpage
+\section{Tylor series}
+$$
+e^x
+= 1+x+\frac{ x^2}{2!}
++ \ldots +
+\frac{ x^n}{n!}
++0(x^n)
+=\sum_{k=0}^{+\infty}\frac{ x^k}{k!}
+\quad x \in \R
+$$
+
+$$
+\sin x=x-\frac{ x^3}{3!}+\frac{ x^5}{5!}+\ldots+ (-1)^n \frac{x^{2n+1}}{(2n+2)!}+
+0(x^{2n+1})
+=
+\sum_{n=0}^{+\infty} \frac{(-1)^n}{(2n+1)!} x^{2n+1}
+\quad x \in \R
+$$
+
+$$
+\cos x =
+1 - \frac{ x^2}{2!} + \frac{ x^4}{4!}
++ \ldots +
+(-1)^n \frac{ x^{2n}}{(2n)!} + 0(x^{2n+1})
+\sum_{n=0}^{+\infty} \frac{(-1)^n}{(2n)!} x^{2n}
+\quad x \in \R
+$$
+
+$$
+\sinh x=x + \frac{ x^3}{3!}+\frac{ x^5}{5!}+\ldots+ \frac{x^{2n+1}}{(2n+1)!}+
+0(x^{2n+2})
+=
+\sum_{n=0}^{+\infty} \frac{x^{2n+1}}{(2n+1)!}
+\quad x \in \R
+$$
+
+$$
+\cosh x =
+1 + \frac{ x^2}{2!} + \frac{ x^4}{4!}
++ \ldots +
+\frac{ x^{2n}}{(2n)!} + 0(x^{2n+1})
+$$
+
+$$
+(1+x)^\alpha = 1+\frac{ \alpha}{1!}x + \frac{ \alpha(\alpha-1)}{2!}x^2
++\ldots+
+\frac{ \alpha(\alpha-1)\ldots(\alpha-n+1)}{n!}x^n+
+0(x^n)
+$$
+
+$$
+\frac{ 1}{1+x}= 1 -x +x^2-x^3+\ldots +(-1)^n x^n +0(x^n)=\sum_{k=0}^{+\infty}(-1)^kx^k
+$$
+
+$$
+\frac{ 1}{1-x}= 1 +x +x^2-x^3+\ldots +x^n +0(x^n)=\sum_{k=0}^{+\infty}x^k
+$$
+
+$$
+\sqrt{1+x}= 1+\frac{ x}{2}-\frac{ 1}{2\cdot 4}x^2+ \frac{ 1\cdot3}{2\cdot4\cdot6}x^3
++\ldots+
+(-1)^{n-1} \frac{1\cdot3\ldots(2n-3)}{2\cdot4\ldots(2n)}x^n +0(x^n)
+$$
+
+$$
+\sqrt{1-x}= 1-\frac{ x}{2}-\frac{ 1}{2\cdot 4}x^2- \frac{ 1\cdot3}{2\cdot4\cdot6}x^3
+-\ldots-
+(-1)^{n-1} \frac{1\cdot3\ldots(2n-3)}{2\cdot4\ldots(2n)}x^n -0(x^n)
+$$
+
+$$
+\frac{ 1}{\sqrt{1+x}}
+= 1-\frac{ x}{2}+\frac{ 1\cdot3}{2\cdot 4}x^2
++\ldots+
+(-1)^{n-1} \frac{1\cdot3\ldots(2n-1)}{2\cdot4\ldots(2n)}x^n +0(x^n)
+$$
+
+$$
+\frac{ 1}{\sqrt{1-x}}
+= 1+\frac{ x}{2}+\frac{ 1\cdot3}{2\cdot 4}x^2
++\ldots+
+\frac{1\cdot3\ldots(2n-1)}{2\cdot4\ldots(2n)}x^n +0(x^n)
+$$
+
+$$
+\log (1+x)=
+x-\frac{ x^2}{2}+\frac{ x^3}{3}+\ldots+ (-1)^{n-1} \frac{ x^n}{n}+0(x^n)
+=\sum_{k=1}^{+\infty}\frac{(-1)^{n-1}x^n}{n}
+\quad x\in(-1,1]
+$$
+
+$$
+\arctan x=x-\frac{ x^3}{3}+\frac{ x^5}{5}+\ldots+ (-1)^n \frac{x^{2n+1}}{2n+1}+
+0(x^{2n+2})
+=
+\sum_{n=0}^{+\infty} \frac{(-1)^n}{2n+1} x^{2n+1}
+\quad x\in[-1,1]
+$$
+
+$$
+\arcth x=x+\frac{ x^3}{3}+\frac{ x^5}{5}+\ldots+ \frac{x^{2n+1}}{2n+1}+
+0(x^{2n+2})
+=
+\sum_{n=0}^{+\infty} \frac{1}{2n+1} x^{2n+1}
+\quad x\in[-1,1]
+$$
+
+\red{arcsin arcsh tan待验证}
+
+$$
+\arcsin x=
+x+ \frac{ 1}{2\cdot3}x^3+\frac{1\cdot3}{2\cdot4\cdot5}x^5
++\ldots+
+\frac{ 1\cdot3\cdot(2n-1)}{2\cdot4\cdot(2n)\cdot(2n+1)}x^{2n+1}+0(x^{2n+2})
+$$
+
+$$
+\arcsh x=
+x-\frac{ 1}{2\cdot3}x^3+\frac{1\cdot3}{2\cdot4\cdot5}x^5
++\ldots+
+\frac{ (-1)^n \cdot1\cdot3\cdot(2n-1)}{2\cdot4\cdot(2n)\cdot(2n+1)}x^{2n+1}+0(x^{2n+2})
+$$
+
+$$
+\tan x=
+x+\frac{ x^3}{3}+\frac{2}{15}x^5+\frac{ 11}{315}x^7+0(x^8)
+$$
+
+
+\section{常用的初等数学公式}
+\subsection{有限项数项级数}
+$$
+1^2 + 2^2 +3^2+\ldots+n^2=\frac{ n(n+1)(n+2)}{6}
+$$
+
+$$
+1^3 + 2^3 +3^3+\ldots+n^3=\frac{ n^2(n+1)^2}{4}
+$$
+
+$$
+1^2+3^2+5^2+\ldots+(2n-1)^2=\frac{n(4n^2-1)}{3}
+$$
+
+$$
+1^3 + 3^3 +5^3+\ldots+(2n-1)^3=n^2(2n^2-1)
+$$
+
+\subsection{双曲函数}
+$$
+\sh x=\frac{e^x - e^{-x}}{2}, \quad \ch x=\frac{e^x+e^{-x}}{2}, \quad \dth x = \frac{ \sh x}{\ch x}=\frac{e^x-e^{-x}}{e^x + e^{-x}}
+$$
+
+\subsection{三角}
+$$
+\sin ^2 \alpha + \cos^2 \alpha=1
+$$
+
+$$
+\frac{ \sin x}{\cos x}=\tan x, \quad
+\frac{ \cos x}{\sin x}=\cot x, \quad
+\csc x=\frac{1}{\sin x}, \quad
+\sec x=\frac{ 1}{\cos x}, \quad
+1+\tan^2 x=\sec^2 x,\quad
+1+\cot^2 x=\csc^2 x
+$$
+
+\subsubsection{万能公式}
+$$
+\tan \frac{x}{2}=t \Rightarrow
+\cos x =\frac{ 1-t^2}{1+t^2},\quad
+\sin x=\frac{2t}{1+t^2},\quad
+dx=\frac{2}{1+t^2}dx
+$$
+\subsubsection{和差公式}
+$$
+\sin(x\pm y)=\sin x \cos y \pm \cos x \sin y,\quad \cos(x \pm y)=\cos x \cos y \mp \sin x \sin y
+$$
+
+$$
+\tan(x \pm y)=\frac{\tan x \pm \tan y}{1 \mp \tan x \tan y}, \quad
+\cot (x\pm y)=\frac{\cot x \cot y \mp 1}{\cot y \pm \cot x}
+$$
+
+$$
+\sin x+\sin y=2\sin \frac{x+y}{2} \cos \frac{ x -y }{2}, \quad
+\sin x-\sin y=2\cos \frac{x+y}{2} \sin \frac{ x -y }{2}
+$$
+
+$$
+\cos x+\cos y=2\cos \frac{x+y}{2} \cos \frac{ x -y }{2}, \quad
+\cos x-\cos y=2\sin \frac{x+y}{2} \sin \frac{ x -y }{2}
+$$
+
+$$
+\cos x \cos y=\frac{ 1}{2}[\cos(x-y)+\cos(x+y)]
+$$
+
+$$
+\sin x \sin y=\frac{ 1}{2}[\cos(x-y)-\cos(x+y)]
+$$
+
+$$
+\sin x \cos y=\frac{ 1}{2}[\sin(x-y)+\sin(x+y)]
+$$
+
+\subsubsection{被角公式}
+$$
+\sin 2x=2\sin x \cos x,\quad \cos 2x=\cos^2 x-\sin ^2 x=1-2\sin^2 x=2\cos^2 x -1
+$$
+
+\subsubsection{任意三角形的基本关系}
+$$
+\frac{a}{\sin A}=
+\frac{b}{\sin B}=
+\frac{c}{\sin C}=
+2R(\mbox{正弦定理})
+$$
+
+$$
+a^2=b^2+c^2-2bc\cos A (\mbox{余弦定理})
+$$
+
+$$
+S= \frac{ 1}{2}ab\sin C=\sqrt{p(p-a)(p-b)(p-c)}~\mbox{where}~p=\frac{1}{2}(a+b+c)~ (\mbox{面积公式})
+$$
+
+\subsection{初等几何}
+\textbf{扇形:}
+弧长$l=\alpha \cdot R$, \quad
+面积$S=\dfrac{1}{2}l\cdot R=\dfrac{1}{2}\alpha R^2$
+
+\textbf{正圆锥}
+体积$V=\dfrac{1}{3}\pi r^3 h$ , \quad
+侧面积$S=\pi rl$, \quad
+全面积$A=\pi r(r+l)$
+
+\textbf{截圆锥}
+体积$V=\dfrac{\pi h}{3}(R^2+r^2+Rr)$, \quad
+侧面积$S=\pi l(R+r)$
+
+\subsection{中值定理}
+拉格朗日中值定理: $f(b)-f(a)=f'(\xi)(b-a)$
+
+柯西中值定理: $$\frac{f(b)-f(a)}{g(b)-g(a)}=\frac{f'(\xi) }{g'(\xi)}$$
+\subsection{曲率}
+弧微分公式: $ds=\sqrt{1+y'^2}dx$,其中$y'=\tan \alpha$
+
+平均曲率: $K=|\frac{\Delta\alpha}{\Delta s}|$ 其中$\Delta \alpha$:从$M$点到$M'$点,切线斜率的倾角变化量; $\Delta s$:$MM'$弧长
+
+M点的曲率: $K=lim_{\Delta s \to 0}|\frac{\Delta\alpha}{\Delta s}|=|\frac{d \alpha}{ds}|=\frac{|y''|}{\sqrt{(1+y'^2)^3}}$
+
+直线: $K=0$
+
+半径为$a$的圆: $K=\frac{1}{a}$
+
+\section{积分表}
+\subsection{导数公式}
+$$
+(\tan x)'=\sec ^2 x,\quad
+(\cot x)'=-\csc^2 x,\quad
+(a^x)'=a^x\ln a,\quad
+(\log_a x)'=\frac{1}{x \ln a}
+$$
+
+$$
+(\arcsin x)'=\frac{1}{\sqrt{1-x^2}}, \quad
+(\arccos x)'=-\frac{1}{\sqrt{1-x^2}}, \quad
+(\arctan x)'=\frac{1}{1+x^2}, \quad
+(\arccot x)'=-\frac{1}{1+x^2}
+$$
+
+$$
+d(\frac{1}{|x|})=-\frac{1}{x|x|}dx, \quad |x|=sgn(x)\cdot x
+$$
+
+\subsection{含有$ax+b$的积分}
+
+$$
+\int \frac{dx}{ax+b}=\frac{1}{a}\ln|ax+b|+C
+$$
+
+$$
+\int \frac{dx}{x(ax+b)}=-\frac{1}{b}\ln|\frac{ax+b}{x}|+C
+$$
+
+$$
+\int \frac{dx}{x^2(ax+b)}=-\frac{ 1}{bx}+\frac{ a}{b^2}\ln |\frac{ax+b}{x}|+C
+$$
+
+\subsection{含有$\sqrt{ax+b}$的积分}
+$$
+\int \sqrt{ax+b}dx=\frac{2}{3a}\sqrt{(ax+b)^3}+C
+$$
+
+$$
+\int x\sqrt{ax+b}dx=\frac{2}{15a^2}(3ax-2b)\sqrt{(ax+b)^3}+C
+$$
+
+$$
+\int \frac{x}{\sqrt{ax+b}}dx=\frac{2}{3a^2}(ax-2b)\sqrt{ax+b}+C
+$$
+
+\subsection{含有$x^2 \pm a^2$的积分}
+$$
+\int \frac{dx}{x^2+a^2}=\frac{1}{a}\arctan \frac{x}{a}+C
+$$
+$$
+\int \frac{dx}{x^2-a^2}=\frac{1}{2a}\ln |\frac{x-a}{x+a}|+C
+$$
+\subsection{含有$ax^2+b(a>0)$的积分}
+$$
+\int \frac{dx}{ax^2+b}=
+\left\{
+		\begin{array}{ll}
+			\frac{1}{\sqrt{ab}}\arctan \sqrt{\frac{a}{b}}x+C & (b>0) \\
+			\frac{1}{2\sqrt{-ab}}\ln|\frac{\sqrt{a}x-\sqrt{-b}}{\sqrt{a}x+\sqrt{-b}}+C & (b<0)
+		\end{array}
+		\right.
+$$
+
+$$
+\int \frac{x}{ax^2+b}dx=\frac{1}{2a}\ln |ax^2+b|+C
+$$
+
+$$
+\int \frac{dx}{x(ax^2+b)}=\frac{1}{2b}\ln \frac{x^2}{|ax^2+b|}+C
+$$
+
+\subsection{含有$ax^2+bx+c(a>0)$的积分}
+$$
+\int \frac{ dx}{ax^2+bx+c}=
+\left\{
+		\begin{array}{ll}
+		 \frac{2}{\sqrt{4ac-b^2}}\arctan \frac{2ax+b}{\sqrt{4ac-b^2}}+C & (b^2<4ac) \\
+		 \frac{1}{\sqrt{b^2-4ac}}\ln|\frac{2ax+b-\sqrt{b^2-4ac}}{2ax+b+\sqrt{b^2-4ac}}|+C & (b^2>4ac)
+		\end{array}
+		\right.
+$$
+
+$$
+\int \frac{x}{ax^2+bx+c}dx=\frac{1}{2a}\ln|ax^2+bx+c|-\frac{b}{2a}\int \frac{dx}{ax^2+bx+c}
+$$
+
+\subsection{含有$\sqrt{x^2+a^2}(a>0)$的积分}
+$$
+\int \frac{dx}{\sqrt{x^2+a^2}}=\arcsh \frac{x}{a}+C_1=\ln(x+\sqrt{x^2+a^2})+C,\quad \big( \ln(x+\sqrt{1+x^2})\big)'=\frac{1}{\sqrt{1+x^2}}
+$$
+
+$$
+\int \sqrt{x^2+a^2}dx=\frac{x}{2}\sqrt{x^2+a^2}+\frac{a^2}{2}\ln(x+\sqrt{x^2+a^2})+C
+$$
+
+\subsection{含有$\sqrt{x^2-a^2}(a<0)$的积分}
+$$
+\int \frac{dx}{\sqrt{x^2-a^2}}=\frac{x}{|x|}\arch \frac{|x|}{a}+C_1=
+\ln|x+\sqrt{x^2-a^2}|+C
+$$
+
+$$
+\int \frac{x}{\sqrt{x^2-a^2}}dx=\sqrt{x^2-a^2}+C
+$$
+
+$$
+\int \frac{dx}{x\sqrt{x^2-a^2}}=\frac{1}{a}\arccos \frac{a}{|x|}+C
+$$
+
+\subsection{含有$\sqrt{a^2-x^2}(a>0)$的积分}
+$$
+\int \frac{dx}{\sqrt{a^2-x^2}}=\arcsin \frac{x}{a}+C
+$$
+
+$$
+\int \frac{x}{\sqrt{a^2-x^2}}dx=-\sqrt{a^2 - x^2}+C
+$$
+
+$$
+\int \frac{dx}{x\sqrt{a^2-x^2}}=\frac{1}{a}\ln \frac{a-\sqrt{a^2 - x^2}}{|x|}+C
+$$
+
+\subsection{含有$\sqrt{\pm ax^2+bx+c}(a>0)$的积分}
+$$
+\int \frac{dx}{\sqrt{ax^2+bx+c}}=\frac{1}{\sqrt{a}}
+\ln|2ax+b+2\sqrt{a}\sqrt{ax^2+bx+c}+C|
+$$
+$$
+\int \sqrt{ax^2+bx+c}dx=\frac{2ax+b}{4a}\sqrt{ax^2+bx+c}+
+\frac{4ac-b^2}{8\sqrt{a^3}}
+\ln|2ax+b+2\sqrt{a}\sqrt{ax^2+bx+c}+C|
+$$
+\subsection{含有$\sqrt{\pm \frac{x-a}{x-b}}$或$\sqrt{(x-a)(x-b)}$的积分}
+$$
+\int \sqrt{\frac{x-a}{x-b}}dx=(x-b)\sqrt{\frac{x-a}{x-b}}+
+(b-a)\ln (\sqrt{|x-a|}+\sqrt{|x-b|})+C
+$$
+
+$$
+\int \sqrt{\frac{x-a}{b-x}}dx=(x-b)\sqrt{\frac{x-a}{b-x}}+
+(b-a)\arcsin \sqrt{\frac{x-a}{b-a}}+C
+$$
+
+$$
+\int \frac{dx}{\sqrt{(x-a)(b-x)}}=2\arcsin \sqrt{\frac{x-a}{b-a}}+C \quad(a<b)
+$$
+
+$$
+\int \sqrt{(x-a)(b-x)}=\frac{2x-a-b}{4}\sqrt{(x-a)(b-x)}
++ \frac{(b-a)^2}{4}\arcsin \sqrt{\frac{x-a}{b-a}}+C \quad(a<b)
+$$
+\subsection{含有三角函数的积分}
+$$
+\int \sin xdx=-\cos x +C
+$$
+
+$$
+\int \cos xdx =\sin x +C
+$$
+
+$$
+\int \tan xdx=-\ln|\cos x|+C
+$$
+
+$$
+\int \cot xdx=\ln|\sin x|+C
+$$
+
+$$
+\int \sec xdx=\ln|\tan(\frac{\pi}{4}+\frac{x}{2})|+C=\ln|\sec x+ \tan x|+C
+$$
+
+$$
+\int \csc xdx=\ln|\tan \frac{x}{2}|=\ln|\csc x-\cot x|+C
+$$
+
+
+$$
+\int \sin^n x dx=-\frac{1}{n}\sin^{n-1}x \cos x + \frac{n-1}{n}\int \sin^{n-2}x dx
+$$
+$$
+\int \cos^n x dx=\frac{1}{n}\cos^{n-1}x \sin x + \frac{n-1}{n}\int \cos^{n-2}x dx
+$$
+
+
+$$
+\int \frac{dx}{a+b\sin x}=\frac{2}{\sqrt{a^2-b^2}}\arctan \frac{a \tan \frac{x}{2}+b}{\sqrt{a^2-b^2}}+C \quad(a^2>b^2)
+$$
+
+$$
+\int \frac{dx}{a+b\cos x}=\frac{2}{a+b} \sqrt{\frac{a+b}{a-b}}\arctan(\sqrt{\frac{a-b}{a+b}}\tan \frac{x}{2})+C \quad (a^2>b^2)
+$$
+
+
+$$
+\int \frac{ dx}{a^2 \cos^2 x+b^2\sin^2 x}=\frac{ 1}{ab} \arctan(\frac{b}{a}\tan x)+C, \quad
+\frac{\frac{1}{\cos^2}dx}{a^2+b^2\tan^2 x}=\frac{d \tan x}{a^2 + b^2 \tan^2 x}
+$$
+
+\subsection{含有反三角函数的积分(其中($a>0$))}
+$$
+\int \arcsin \frac{x}{a}dx=x\arcsin \frac{x}{a}+\sqrt{a^2-x^2}+C
+$$
+
+$$
+\int x\arcsin \frac{x}{a}dx=(\frac{x^2}{2}-\frac{ a^2}{4})\arcsin \frac{x}{a}+ \frac{x}{4}\sqrt{a^2-x^2}+C
+$$
+
+$$
+\int \arccos \frac{x}{a}dx=x \arccos \frac{x}{a}-\sqrt{a^2-x^2}+C
+$$
+
+$$
+\int x\arccos \frac{x}{a}dx=(\frac{x^2}{2}-\frac{ a^2}{4})\arccos \frac{x}{a}- \frac{x}{4}\sqrt{a^2-x^2}+C
+$$
+
+$$
+\int \arctan \frac{x}{a}dx=x \arctan \frac{x}{a}-\frac{a}{2}\ln(a^2+x^2)+C
+$$
+
+$$
+\int x \arctan \frac{x}{a}dx=\frac{1}{2}(a^2+x^2)\arctan \frac{x}{a}- \frac{a}{2}x+C
+$$
+\subsection{含有指数函数的积分}
+$$
+\int a^xdx=\frac{1}{\ln a}a^x+C
+$$
+$$
+\int e^{ax}dx=\frac{ 1}{a}e^{ax}+C
+$$
+
+\subsection{含有对数函数的积分}
+$$
+\int \ln xdx=x\ln x-x +C
+$$
+
+$$
+\int (\ln x)^n dx=x(\ln x)^n -n \int (\ln x)^{n-1}dx
+$$
+\subsection{含有双曲函数的积分}
+$$
+\int \sh xdx=\ch x+C
+$$
+
+$$
+\int \ch xdx=\sh x+C
+$$
+
+$$
+\int \dth xdx=\ln \ch x+C
+$$
+\subsection{定积分}
+$$
+\int_{-\pi}^{\pi} \cos nx dx=
+\int_{-\pi}^{\pi} \sin nx dx=0
+$$
+$$
+\int_{-\pi}^{\pi} \cos mx\sin nx dx=0
+$$
+
+$$
+\int_{-\pi}^{\pi} \cos mx\cos nx dx=
+\left\{
+		\begin{array}{ll}
+		 0 & m \neq n \\
+		 \pi & m = n
+		\end{array}
+		\right.
+$$
+
+$$
+\int_{-\pi}^{\pi} \sin mx\sin nx dx=
+\left\{
+		\begin{array}{ll}
+		 0 & m \neq n \\
+		 \pi & m = n
+		\end{array}
+		\right.
+$$
+
+$$
+\int_{0}^{\pi} \sin mx\sin nx dx=
+\int_{0}^{\pi} \cos mx\cos nx dx=
+\left\{
+		\begin{array}{ll}
+		 0 & m \neq n \\
+		 \pi & m = n
+		\end{array}
+		\right.
+$$
+
+$$
+I_n=\int_{0}^{\pi/2} \sin^n xdx=\int_{0}^{\pi/2}\cos^n xdx=\frac{n-1}{n}I_{n-2},\quad
+I_1=1, I_0=\frac{ \pi}{2}
+$$
+
+\section{Transformations}
+\subsection{Dirac}
+Soit
+\begin{equation}
+		 \delta _{\varepsilon}(t)=
+\left\{
+		\begin{array}{ll}
+		0 & t<0 \\
+		\frac{ 1}{\varepsilon} & 0\leq t \leq \varepsilon \\
+		0 & t> \varepsilon
+		\end{array}
+		\right.
+\end{equation}
+\begin{definition}
+\begin{equation}
+\delta (t)=\lim_{\varepsilon \to 0}\delta _{\varepsilon}(t)=
+\left\{
+		\begin{array}{ll}
+		 0 & t\neq 0 \\
+		 \infty & t=0
+		\end{array}
+		\right.
+\end{equation}
+$$
+\int_{-\infty}^{+\infty}\delta (t)dt
+=\lim_{\varepsilon \to 0}\int_{-\infty}^{+\infty} \delta_{\varepsilon}(t)dt
+=\lim_{\varepsilon \to 0}\int_{0}^{\varepsilon}\frac{1}{\varepsilon}dt
+=1
+$$
+\end{definition}
+Propri\'et\'es:
+
+\subsection{Transformation de Fourrier}
+$$F(w)=\int_{-\infty}^{+\infty}f(t)e^{-iwt}dt$$
+称为$f(t)$的Fourrier变换,记为$F[f(t)]$
+$$\frac{ 1}{2\pi}\int_{-\infty}^{\infty}F(w)e^{iwt}dw$$称为$F(w)$的Fourrier逆变换,记为$F^{-1}[F(w)]$
+$$f(t) \longleftrightarrow F(w)$$一一对应,称为一组Fourrier变换对,其中$f(t)$称为原像函数,$F(w)$称为像函数.
+\begin{example}
+\begin{equation}
+f(t)=
+\left\{
+		\begin{array}{ll}
+			1 & |t| \leq 1 \\
+			0 & |t| > 1
+		\end{array}
+		\right.
+\end{equation}
+\begin{eqnarray}
+ F(w)=\int_{-\infty}^{+\infty} f(t)e^{-iwt}dt=\int_{-1}^{+1}e^{-iwt}=\frac{2\sin w}{w}
+\end{eqnarray}
+%% \includegraphics[width=\textwidth]{sinx_x}
+\end{example}
+
+\begin{example}
+\begin{equation}
+f(t)=
+\left\{
+		\begin{array}{ll}
+			0 & t \leq 1 \\
+			0 & |t| > 1
+		\end{array}
+		\right.
+\end{equation}
+\begin{eqnarray}
+ F(w)=\int_{-\infty}^{+\infty} f(t)e^{-iwt}dt=\int_{-1}^{+1}e^{-iwt}=\frac{2\sin w}{w}
+\end{eqnarray}
+\end{example}
+
+\section{Other}
+负数的对数
+$$e^{i\theta}=cos\theta+isin\theta$$
+当$\theta=\pi$时,得到：$e^{i\pi}=-1\Rightarrow ln(-1)=i\pi$。
+这样，我们可以计算任意负数的自然对数,例如：
+$$ln(-5)=ln[(-1)*5]=ln(-1)+ln5=i\pi+ln5$$
+(注,这里没有考虑$2k\pi$的周期)
+
+\end{document}
