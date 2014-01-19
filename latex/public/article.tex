@@ -1,0 +1,20 @@
+%+++++++++++++++++++++++++++++++++++article++++++++++++++++++++++++++++++++++++
+%customize the numbering of equation, to make it like section-subsection-equation style, for example,1-2-3
+\makeatletter\@addtoreset{equation}{subsection}\makeatother
+\renewcommand\theequation{%
+\thepart\arabic{section}%
+-\thepart\arabic{subsection}%
+-\thepart\arabic{equation}%
+}
+%theorem
+\newtheorem{definition}{D\'efintion} %整篇文章的全局编号
+\newtheorem*{thmwn}{Thm} %without numbers
+\newtheorem{theorem}{Th\'eor\`eme}[section]%从属于section编号
+\newtheorem{lemma}[theorem]{Lemme}%theorem统一编号
+\newtheorem{proposition}{Proposition}[section]%从属于section编号
+\newtheorem{corollary}{Corollary}[theorem]%从属于theorem编号
+\newtheorem{example}{Example}%整篇文章的全局编号
+\newtheorem*{attention}{Attention}
+\newtheorem*{note}{Note}
+\newtheorem{question}{Question}[section]
+

@@ -1,0 +1,51 @@
+\documentclass[openany]{book}
+\input{../../public/package}   %导入需要用到的package
+\input{../../public/book}   %导入需要用到的package
+
+\begin{document}
+\chapter{The New Quantum Universe}
+物理学家, 就像一个好侦探一样, 仔细分析各种证据, 遵循福尔摩斯说过的一句格言:"当你把不可能的事情都排出了以后, 剩下的选择,不管看起来多么不太可能, 一顶是对的."  \newline
+光子的本质是量子力学的
+
+\chapter{Quantique}
+\section{Equation de Schr\.ondinger}
+推广到三维情况下，方程为:
+$$
+\psi \left({\mathbf r}, t \right) = A \cos \left({\mathbf k} \cdot {\mathbf r} - \omega t + \varphi \right)
+$$
+其中：
+r是三维空间中的位置矢量；
+$\cdot$ 是矢量点积；
+k是波矢。
+这一方程描述了平面波。一维情况下，波矢的大小是角波数
+$$|{\mathbf k}| = 2\pi/\lambda$$
+波矢的方向是平面波行进的方向.
+
+波动方程是双曲形偏微分方程的最典型代表,其最简形式可表示为:关于位置$x$ 和时间$t$  的标量函数u(代表各点偏离平衡位置的距离)满足:
+$$
+{ \partial^2 u \over \partial t^2 } = c^2 \nabla^2u 
+$$
+这里c通常是一个固定常数，代表波的传播速率.
+在针对实际问题的波动方程中，一般都将波速表示成可随波的频率变化的量，这种处理对应真实物理世界中的色散现象。此时，$ c$  应该用波的相速度代替:$v_\mathrm{p} = \frac{\omega}{k}$
+
+上面的波动方程可以化成下面的形式
+$$
+\left(\nabla^2-\frac{1}{c^2}\frac{\partial^2}{\partial{t}^2}\right)u(\mathbf{r},t)=0.
+$$
+Separation of variables begins by assuming that the wave function $u(r, t)$ is in fact separable:
+$$u(\mathbf{r},t)=A (\mathbf{r}) T(t)$$
+Substituting this form into the wave equation, and then simplifying, we obtain the following equation:
+$${\nabla^2 A \over A } = {1 \over c^2 T } { d^2 T \over d t^2  }.$$
+Notice the expression on the left-hand side depends only on $ r$ , whereas the right-hand expression depends only on $ t$ . As a result, this equation is valid in the general case if and only if both sides of the equation are equal to a constant value. From this observation, we obtain two equations, one for $ A(r)$ , the other for $ T(t)$ :
+$${\nabla^2 A \over A } = -k^2$$
+and
+$$ {1 \over c^2 T } { d^2 T \over dt^2  } = -k^2$$
+Rearranging the first equation, we obtain the Helmholtz equation:
+$$\nabla^2 A + k^2 A  =  ( \nabla^2 + k^2)  A  =  0$$
+Likewise, after making the substitution
+$$ \omega  \stackrel{\mathrm{def}}{=}  kc $$
+the second equation becomes
+$$\frac{d^2{T}}{d{t}^2} + \omega^2T  =  \left( { d^2 \over dt^2 } + \omega^2 \right) T  =  0,$$
+where $k$ is the wave vector and $\omega$ is the angular frequency.
+
+\end{document}

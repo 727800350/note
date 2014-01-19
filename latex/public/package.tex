@@ -1,0 +1,152 @@
+\usepackage[english]{babel}
+\usepackage{ctex}
+\usepackage{amsmath, amsthm, amssymb}
+
+% custom head, foot and etc.
+\usepackage{fancyhdr}                                
+\usepackage{lastpage}                                           
+\usepackage{layout}                                             
+%\pagestyle{empty}                   %不设置页眉页脚            
+\footskip = 20pt                                                
+\pagestyle{fancy}                    % 设置页眉                 
+\lhead{Page \thepage\ of \pageref{LastPage}}                    
+%% \chead{页眉中间}                                                
+\rhead{\small\leftmark}                                                
+\cfoot{\thepage}                                                
+%% \rfoot{right foot}                                                       
+\lfoot{\href{mailto:wangchaogo1990@gmail.com}{FEEDBACK}}
+\renewcommand{\headrulewidth}{1pt}  %页眉线宽，设为0可以去页眉线
+\setlength{\skip\footins}{0.5cm}    %脚注与正文的距离           
+\renewcommand{\footnotesize}{}      %设置脚注字体大小           
+\renewcommand{\footrulewidth}{1pt}  %脚注线的宽度               
+%===============                                                
+%双线页眉的设置                                                 
+%\makeatletter %双线页眉                                        
+%\def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi%
+%\hrule\@height 1.0pt \@width\headwidth\vskip1pt%上面线为1pt粗  
+%\hrule\@height 0.5pt\@width\headwidth  %下面0.5pt粗            
+%\vskip-2\headrulewidth\vskip-1pt}      %两条线的距离1pt        
+%  \vspace{6mm}}     %双线与下面正文之间的垂直间距              
+%\makeatother                                                   
+%===============                                                
+%\pagestyle{fancy}                                              
+%\fancyhead{} %clear all fields                                 
+%\fancyhead[CE]{ \应\用 \数 \学 }                               
+%\fancyhead[CO]{{ huangzh: 数学}}                               
+%\fancyhead[RO]{\thepage} %奇数页眉的右边                       
+%\fancyhead[LE]{\thepage} %偶数页眉的左边                       
+%\fancyhead[RE]{\zihao{-5} 2005 c}                              
+%\fancyfoot[C]{}    
+
+%图形
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{tikz} %pdf figure
+\usetikzlibrary{positioning}
+\def\pgfsysdriver{pgfsys-dvipdfmx.def}
+\pgfsetxvec{\pgfpoint{10pt}{0}}
+\pgfsetyvec{\pgfpoint{0}{10pt}}
+\usepackage{ccaption}
+\usepackage{epstopdf} %convert eps to pdf
+\DeclareGraphicsExtensions{.eps,.mps,.pdf,.jpg,.png}
+\DeclareGraphicsRule{*}{eps}{*}{}
+\graphicspath{{figure/}}
+
+
+
+%尺寸
+\usepackage[top=2.54cm, bottom=2.54cm, left=3.18cm, right=3.18cm]{geometry} % ms word
+%\usepackage[top=0.2cm, bottom=0.2cm, left=0cm, right=0cm,paperwidth=9cm,paperheight=11.7cm]{geometry} % kindle
+
+%字体
+%% 主要字体为Times New Roman和宋体
+%% 模板某些标题需要华文行楷和32号字
+%\setmainfont{Times New Roman}
+%% 不需要设置CJKmainfont，ctex 宏包已经很好的处理了
+%% 不仅设置了粗体为黑体，斜体为楷体，还兼容了winfonts和adobefonts
+%% 直接设置反而会在只有adobefonts的情况下报错
+%\setCJKmainfont{宋体}
+%\setCJKfamilyfont{hwxingkai}{STXingkai}
+%\newcommand{\hwxingkai}{\CJKfamily{hwxingkai}}
+%\newcommand{\xiaochuhao}{\fontsize{32pt}{\baselineskip}\selectfont}
+
+
+\newcommand{\song}{\CJKfamily{song}} %宋体
+\newcommand{\fs}{\CJKfamily{fs}} %仿宋体
+\newcommand{\kai}{\CJKfamily{kai}} %楷体
+\newcommand{\hei}{\CJKfamily{hei}} %黑体
+\newcommand{\li}{\CJKfamily{li}} %隶书
+\newcommand{\you}{\CJKfamily{you}} %幼圆
+
+\newcommand{\yihao}{\fontsize{26pt}{36pt}\selectfont}           % 一号, 1.4 倍行距
+\newcommand{\erhao}{\fontsize{22pt}{28pt}\selectfont}          % 二号, 1.25倍行距
+\newcommand{\xiaoer}{\fontsize{18pt}{18pt}\selectfont}          % 小二, 单倍行距
+\newcommand{\sanhao}{\fontsize{16pt}{24pt}\selectfont}        % 三号, 1.5倍行距
+\newcommand{\xiaosan}{\fontsize{15pt}{22pt}\selectfont}        % 小三, 1.5倍行距
+\newcommand{\sihao}{\fontsize{14pt}{21pt}\selectfont}            % 四号, 1.5 倍行距
+\newcommand{\banxiaosi}{\fontsize{13pt}{19.5pt}\selectfont}    % 半小四, 1.5倍行距
+\newcommand{\xiaosi}{\fontsize{12pt}{18pt}\selectfont}            % 小四, 1.5倍行距
+\newcommand{\dawuhao}{\fontsize{11pt}{11pt}\selectfont}       % 大五号, 单倍行距
+\newcommand{\wuhao}{\fontsize{10.5pt}{15.75pt}\selectfont}    % 五号, 单倍行距
+
+
+%hyper reference
+%使用hyperref包,section,subsection,subsubsection命名中使用中文出现问题, 编译通不过
+\usepackage[colorlinks,linkcolor=blue,anchorcolor=red,citecolor=green]{hyperref}
+
+%表格
+\usepackage{booktabs}  %让表格中的横线不一样粗
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{longtable}
+
+%\usepackage{dirtree}  %目录结构图
+
+%颜色
+\usepackage{color}
+%\definecolor{name}{system}{definition}
+\definecolor{Gray}{gray}{0.9}
+\definecolor{LightCyan}{rgb}{0.88,1,1}
+\def\red#1{\textcolor[rgb]{1.00,0.00,0.00}{#1}}
+
+
+%Math
+%随机数
+%\usepackage[first=0,last=9]{lcg}
+%\newcommand{\ra}{\rand0.\arabic{rand}}
+
+\newcommand{\R}{\mathbb{R}}   %the real number set
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\newcommand{\si}{\textrm{ si }}
+\newcommand{\et}{\textrm{ et }}
+\newcommand{\ou}{\textrm{ ou }}
+\newcommand{\non}{\textrm{non }}
+\newcommand{\ssi}{si et seulement si }
+\newcommand{\infinity}{\infty}
+
+%定义运算符
+\DeclareMathOperator{\arccot}{arcot}
+\DeclareMathOperator{\arcth}{arcth}
+\DeclareMathOperator{\arcsh}{arcsh}
+\DeclareMathOperator{\arch}{arch}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\dth}{th} %\th 已经被定义了
+\DeclareMathOperator{\sh}{sh}
+\newcommand*\laplace{\mathop{}\!\mathbin\bigtriangleup}
+\newcommand*\dalambert{\mathop{}\!\mathbin\Box}
+\newcommand{\grad}[1]{\nabla #1}
+
+\usepackage{xspace}
+%produit scalaire
+\newcommand{\ps}[2]{\ensuremath{\langle #1 , #2\rangle}\xspace}
+
+%use \lasteq to reference the last equation
+\newcommand\lasteq{(\theequation)}
+\newcommand{\eqspace}{\hspace{0.5cm}}
+\newcommand{\norm}[1]{\left\Vert #1\right\Vert}
+

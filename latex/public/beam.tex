@@ -1,0 +1,26 @@
+    \usepackage{ctex}
+    \usepackage[french]{babel}
+    \usepackage{amsmath, amsthm, amssymb}
+    \usepackage{graphicx}
+    
+\usefonttheme{professionalfonts}
+\usetheme{Darmstadt}
+\usecolortheme{beaver}
+\useinnertheme{rectangles}
+\setbeamertemplate{itemize item}{$\infty$}
+\setbeamertemplate{itemize subitem}{$\bullet$}
+\setbeamertemplate{itemize subsubitem}{$\diamond$}
+\setbeamertemplate{enumerate item}{\insertenumlabel.}
+\setbeamertemplate{enumerate subitem}{\insertenumlabel.\insertsubenumlabel}
+\setbeamertemplate{enumerate subsubitem}{\insertenumlabel.\insertsubenumlabel.\insertsubsubenumlabel}
+\setbeamertemplate{enumerate mini template}{\insertenumlabel}
+\setbeamercolor{footcolor}{fg=black,bg=red!40} % 设置字体和背景颜色
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.126\paperwidth,ht=2.25ex,dp=1ex,right]{footcolor}%
+       \insertframenumber{} / \inserttotalframenumber\hspace*{5ex}
+    \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
