@@ -1,0 +1,119 @@
+\documentclass[openany]{book}
+\input{../../public/package}   %导入需要用到的package
+\input{../../public/book}   %导入需要用到的package
+\begin{document}
+\chapter{矢量和张量}
+\section{置换符号$\varepsilon $}
+行列式
+$$
+det(a_{ij})=\varepsilon_{rst}a_{r1}a_{s2}a_{t3}
+$$
+矢量差乘
+\begin{equation}
+\begin{split}
+u \times v &= \varepsilon_{rst}u_s v_t e_r \\
+			&= (u_2 v_3 - u_3 v_2)e_1 + (u_3 v_1 - u_1 v_3)e_2 + (u_1 v_2 - u_2 v_1)e_3
+\end{split}
+\end{equation}
+
+\subsection{$\varepsilon-\delta$ 恒等式}
+$$
+\varepsilon_{ijk}\varepsilon_{ist}=\delta_{js}\varepsilon_{kt}-\delta_{ks}\varepsilon_{jt}
+$$
+\section{坐标变换}
+两个具有同一坐标原点O的右手笛卡尔直角坐标系
+$x_1,x_2,x_3$ and $x'_1,x'_2,x'_3$
+用x表示P的点的矢径,其分量分别为
+$x_1,x_2,x_3$ and $x'_1,x'_2,x'_3$.
+设
+$e_1,e_2,e_3$ and $e'_1,e'_2,e'_3$
+分别表示他们的基向量
+$$
+x= x_1\cdot e_1+ x_2\cdot e_2+ x_3\cdot e_3=x_j\cdot e_j
+$$
+$$
+x=x_j \cdot e_j=x'_j \cdot e'_j
+$$
+用$e_i$同时点乘方程两边得到:
+$$
+x_j(e_j\cdot e_i)=x'_j(e'_j\cdot e_i)
+$$
+but we have
+$$
+x_j(e_j\cdot e_i)=x_j \delta_{ji} =x_i
+$$
+so $$x_i=(e'_j\cdot e_i)x'_j$$
+now we define
+$$(e'_j * e_i)\equiv \beta_{ji}$$
+so we have:$$x_i=\beta_{ji}x'_j ~(j=1,2,3)$$
+de la m\^eme facon, on a $$x'_i=\beta_{ij}x_j ~(i=1,2,3)$$
+
+\section{张量运算}
+$$\overrightarrow{ \overrightarrow{ a}}+\overrightarrow{ \overrightarrow{ b}}\Leftrightarrow a_{ij}+b_{ij}$$
+
+Le produit de tenseurs est un tenseur. La convention d'Einstein s'applique en notation indicielle.
+En notation vectorielle, \textbf{chaque indice muet est repr\'esent\'e par le symbole} $\bullet$.
+$$\lambda \overrightarrow{ \overrightarrow{ a}} \Leftrightarrow \lambda a_ij$$
+
+$$
+\overrightarrow{ c}=\overrightarrow{ \overrightarrow{ a}}\bullet \overrightarrow{ b} \Leftrightarrow a_{ij}b_j
+$$
+一个点,所以只有一个indice muet
+$$
+\overrightarrow{ \overrightarrow{ c}}=\overrightarrow{ a}\overrightarrow{ b}
+\Leftrightarrow c_{ij}=a_ib_j
+$$
+
+$$
+\overrightarrow{ \overrightarrow{ a}} \bullet\bullet \overrightarrow{ \overrightarrow{ b}}=a_{ij}b_{ij}~~
+\text{两个bullet是上下叠放的}
+$$
+两个点,所以只有两个indice muet
+
+\textbf{Contraction d'un tenseur} \newline
+Etant donn\'e un tenseur d'ordre 2 ou plus, on peut choisir deux de ses indices libres et appliquer
+une contraction. Les lettres associ\'ees aux deux indices sont chang\'ees pour les rendre identiques.
+Exemples:
+$$
+a_{ij} \rightarrow a_{ii}, a_{ijk}\rightarrow a_{ijj} ,a_ib_j\rightarrow a_ib_i
+$$
+cette op\'eration rend les indices concern\'es muets et r\'eduit l'ordre du tenseur de n \`a n - 2.
+dans le cas d'un tenseur d'ordre 2, il n'y a qu'une seule contraction possible, mais si l'ordre est sup\'erieur \`a 2, plusieurs choix des indices de contraction sont possibles.
+
+\section{张量变换}
+\begin{equation}
+\left\{
+		\begin{array}{ll}
+		\overline{t}_{ij}(\overline{x}_1,\overline{x}_2,\overline{x}_3)=t_{mn}(x_1,x_2,x_3)\beta_{im}\beta{jn}\\
+        t_{ij}(x_1,x_2,x_3)=\overline{t}_{mn}(\overline{x}_1,\overline{x}_2,\overline{x}_3)\beta_{mi}\beta{nj}
+		\end{array}
+		\right.
+\end{equation}
+
+\section{grandien, divergence etc}
+$\lambda$ est un scalaire:
+$$\overrightarrow{\text{grad}}\lambda=\frac{\partial \lambda }{\partial x_i}$$
+
+$\overrightarrow{a}$ est un vecteur:
+$$\overrightarrow{a}.\overrightarrow{\text{grad}}=a_i \cdot \frac{ \partial}{\partial x_i}$$
+
+$$
+(\overrightarrow{ a}\cdot \overrightarrow{ \text{grad}})\overrightarrow{ b}=a_j \cdot \frac{\partial b_i}{\partial x_j}\cdot e_i
+$$
+
+$$\text{div}\overrightarrow{a}=\frac{\partial a_i}{\partial x_i}$$
+$$\overrightarrow{\text{rot}}\overrightarrow{a}=\varepsilon_{ijk} \cdot \frac{\partial a_k}{\partial x_j} \cdot \overrightarrow{e}_i$$
+$$
+\bigtriangleup \lambda =\text{div}(\overrightarrow{\text{grad}}\lambda)=\frac{\partial ^2 \lambda }{\partial x_i\partial x_i}
+$$
+
+$$
+\bigtriangleup \overrightarrow{a} =\text{div}(\overrightarrow{\text{grad}}\lambda)=\frac{\partial ^2 a_i }{\partial x_j\partial x_j}
+$$
+
+$$
+\overrightarrow{b}=\text{div}\overrightarrow{ \overrightarrow{a}}\Leftrightarrow b_i=\frac{\partial a_{ij}}{\partial x_j}
+$$
+
+
+\end{document}
