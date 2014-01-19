@@ -50,7 +50,7 @@
 \usepackage{epstopdf} %convert eps to pdf
 \DeclareGraphicsExtensions{.eps,.mps,.pdf,.jpg,.png}
 \DeclareGraphicsRule{*}{eps}{*}{}
-\graphicspath{{figure/}}
+\graphicspath{{figure/}{../figure/}}
 
 
 
@@ -91,8 +91,8 @@
 
 
 %hyper reference
-%使用hyperref包,section,subsection,subsubsection命名中使用中文出现问题, 编译通不过
-\usepackage[colorlinks,linkcolor=blue,anchorcolor=red,citecolor=green]{hyperref}
+%使用hyperref包,section,subsection,subsubsection命名中使用中文出现问题, 编译通不过, 加了CJKbookmarks=true 之后可以使用中文
+\usepackage[colorlinks,linkcolor=blue,anchorcolor=red,citecolor=green,CJKbookmarks=true]{hyperref}
 
 %表格
 \usepackage{booktabs}  %让表格中的横线不一样粗
