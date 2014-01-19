@@ -1,0 +1,59 @@
+\documentclass{article}
+\input{../public/package}   %导入需要用到的package
+\input{../public/article}   %导入需要用到的package
+\begin{document}
+\title{Fermat}
+\author{Eric}
+\newpage
+Notes of a presentation.\par
+
+All prime facters of $n!+1$ is greater than $n$
+$$\Pi (x)=\{p\leq x,p \in Prime\} ~ x \rightarrow \infty$$
+$$\Pi(x) \sim \frac{x}{\text{ln} x}~ \text{as} ~x \rightarrow \infty$$
+
+Riemann $\zeta$
+\begin{equation}
+\xi(s) = \Gamma(s/2+1 )(s-1) \Pi^{-s/2} \zeta(s)
+\end{equation}
+
+
+\textbf{狄利克莱积分}\\
+\textbf{perron formula}\\
+
+\textbf{Selberg's identity}
+$$
+\sum_{p \leq x}\text{log} p + \sum_{pq \leq x}\frac{\text{log}p \times \text{log} q}{\text{log} x}=2x+O(\frac{x}{log x})
+$$
+Erd\H{o}s
+
+\begin{equation}
+ x^n + y^n =z^n
+ \label{Fermat}
+\end{equation}
+$1^{er}$ Case $$xyz \equiv 0(\text{mod} n)$$
+只用证明n为素数的情况
+
+\textbf{GL1,GL2}
+
+
+\textbf{elliptic curves}
+\begin{figure}
+  % Requires \usepackage{graphicx}
+  \includegraphics[width=0.5\textwidth]{./image/ECClines}\\
+  \caption{elliptic curves examples}\label{elliptic curves}
+\end{figure}
+整数落点
+
+\textbf{Modular form}
+模形式是数学上一个满足一些泛函方程与增长条件、在上半平面上的（复）解析函数。因此，模形式理论属于数论的范畴。模形式也出现在其他领域，例如代数拓扑和弦理论。
+\begin{equation}
+ f(\frac{ az+b}{cz+d})=(cz+d)^k f(z)
+\end{equation}
+
+$$a^n + b^n =z^n$$
+$$y^2=x(x-a)(x-b)$$ 不存在module form
+
+Andrew Wiles\\
+Sir Andrew John Wiles, KBE, FRS (born 11 April 1953)[1] is a British mathematician and a Royal Society Research Professor at Oxford University, specializing in number theory. He is most famous for proving Fermat's Last Theorem.
+
+\end{document}
