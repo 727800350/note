@@ -1,9 +1,10 @@
+% !Mode:: "TeX:UTF-8"
 \documentclass{article}
-\input{../public/package}   %µ¼ÈëĞèÒªÓÃµ½µÄpackage
+\input{../public/package}   %å¯¼å…¥éœ€è¦ç”¨åˆ°çš„package
 \begin{document}
 \title{Introduction to Algorithms}
 \author{Eric}
-\input{../public/math}  %µ¼ÈëÊıÑ§·½ÃæµÄ¶¨Òå
+\input{../public/math}  %å¯¼å…¥æ•°å­¦æ–¹é¢çš„å®šä¹‰
 \maketitle
 \tableofcontents
 \newpage
@@ -114,7 +115,7 @@ $$
 \quad x\in[-1,1]
 $$
 
-\red{arcsin arcsh tan´ıÑéÖ¤}
+\red{arcsin arcsh tanå¾…éªŒè¯}
 
 $$
 \arcsin x=
@@ -136,8 +137,8 @@ x+\frac{ x^3}{3}+\frac{2}{15}x^5+\frac{ 11}{315}x^7+0(x^8)
 $$
 
 
-\section{³£ÓÃµÄ³õµÈÊıÑ§¹«Ê½}
-\subsection{ÓĞÏŞÏîÊıÏî¼¶Êı}
+\section{å¸¸ç”¨çš„åˆç­‰æ•°å­¦å…¬å¼}
+\subsection{æœ‰é™é¡¹æ•°é¡¹çº§æ•°}
 $$
 1^2 + 2^2 +3^2+\ldots+n^2=\frac{ n(n+1)(n+2)}{6}
 $$
@@ -154,12 +155,12 @@ $$
 1^3 + 3^3 +5^3+\ldots+(2n-1)^3=n^2(2n^2-1)
 $$
 
-\subsection{Ë«Çúº¯Êı}
+\subsection{åŒæ›²å‡½æ•°}
 $$
 \sh x=\frac{e^x - e^{-x}}{2}, \quad \ch x=\frac{e^x+e^{-x}}{2}, \quad \dth x = \frac{ \sh x}{\ch x}=\frac{e^x-e^{-x}}{e^x + e^{-x}}
 $$
 
-\subsection{Èı½Ç}
+\subsection{ä¸‰è§’}
 $$
 \sin ^2 \alpha + \cos^2 \alpha=1
 $$
@@ -173,14 +174,14 @@ $$
 1+\cot^2 x=\csc^2 x
 $$
 
-\subsubsection{ÍòÄÜ¹«Ê½}
+\subsubsection{ä¸‡èƒ½å…¬å¼}
 $$
 \tan \frac{x}{2}=t \Rightarrow
 \cos x =\frac{ 1-t^2}{1+t^2},\quad
 \sin x=\frac{2t}{1+t^2},\quad
 dx=\frac{2}{1+t^2}dx
 $$
-\subsubsection{ºÍ²î¹«Ê½}
+\subsubsection{å’Œå·®å…¬å¼}
 $$
 \sin(x\pm y)=\sin x \cos y \pm \cos x \sin y,\quad \cos(x \pm y)=\cos x \cos y \mp \sin x \sin y
 $$
@@ -212,58 +213,58 @@ $$
 \sin x \cos y=\frac{ 1}{2}[\sin(x-y)+\sin(x+y)]
 $$
 
-\subsubsection{±»½Ç¹«Ê½}
+\subsubsection{è¢«è§’å…¬å¼}
 $$
 \sin 2x=2\sin x \cos x,\quad \cos 2x=\cos^2 x-\sin ^2 x=1-2\sin^2 x=2\cos^2 x -1
 $$
 
-\subsubsection{ÈÎÒâÈı½ÇĞÎµÄ»ù±¾¹ØÏµ}
+\subsubsection{ä»»æ„ä¸‰è§’å½¢çš„åŸºæœ¬å…³ç³»}
 $$
 \frac{a}{\sin A}=
 \frac{b}{\sin B}=
 \frac{c}{\sin C}=
-2R(\mbox{ÕıÏÒ¶¨Àí})
+2R(\mbox{æ­£å¼¦å®šç†})
 $$
 
 $$
-a^2=b^2+c^2-2bc\cos A (\mbox{ÓàÏÒ¶¨Àí})
+a^2=b^2+c^2-2bc\cos A (\mbox{ä½™å¼¦å®šç†})
 $$
 
 $$
-S= \frac{ 1}{2}ab\sin C=\sqrt{p(p-a)(p-b)(p-c)}~\mbox{where}~p=\frac{1}{2}(a+b+c)~ (\mbox{Ãæ»ı¹«Ê½})
+S= \frac{ 1}{2}ab\sin C=\sqrt{p(p-a)(p-b)(p-c)}~\mbox{where}~p=\frac{1}{2}(a+b+c)~ (\mbox{é¢ç§¯å…¬å¼})
 $$
 
-\subsection{³õµÈ¼¸ºÎ}
-\textbf{ÉÈĞÎ:}
-»¡³¤$l=\alpha \cdot R$, \quad
-Ãæ»ı$S=\dfrac{1}{2}l\cdot R=\dfrac{1}{2}\alpha R^2$
+\subsection{åˆç­‰å‡ ä½•}
+\textbf{æ‰‡å½¢:}
+å¼§é•¿$l=\alpha \cdot R$, \quad
+é¢ç§¯$S=\dfrac{1}{2}l\cdot R=\dfrac{1}{2}\alpha R^2$
 
-\textbf{ÕıÔ²×¶}
-Ìå»ı$V=\dfrac{1}{3}\pi r^3 h$ , \quad
-²àÃæ»ı$S=\pi rl$, \quad
-È«Ãæ»ı$A=\pi r(r+l)$
+\textbf{æ­£åœ†é”¥}
+ä½“ç§¯$V=\dfrac{1}{3}\pi r^3 h$ , \quad
+ä¾§é¢ç§¯$S=\pi rl$, \quad
+å…¨é¢ç§¯$A=\pi r(r+l)$
 
-\textbf{½ØÔ²×¶}
-Ìå»ı$V=\dfrac{\pi h}{3}(R^2+r^2+Rr)$, \quad
-²àÃæ»ı$S=\pi l(R+r)$
+\textbf{æˆªåœ†é”¥}
+ä½“ç§¯$V=\dfrac{\pi h}{3}(R^2+r^2+Rr)$, \quad
+ä¾§é¢ç§¯$S=\pi l(R+r)$
 
-\subsection{ÖĞÖµ¶¨Àí}
-À­¸ñÀÊÈÕÖĞÖµ¶¨Àí: $f(b)-f(a)=f'(\xi)(b-a)$
+\subsection{ä¸­å€¼å®šç†}
+æ‹‰æ ¼æœ—æ—¥ä¸­å€¼å®šç†: $f(b)-f(a)=f'(\xi)(b-a)$
 
-¿ÂÎ÷ÖĞÖµ¶¨Àí: $$\frac{f(b)-f(a)}{g(b)-g(a)}=\frac{f'(\xi) }{g'(\xi)}$$
-\subsection{ÇúÂÊ}
-»¡Î¢·Ö¹«Ê½: $ds=\sqrt{1+y'^2}dx$,ÆäÖĞ$y'=\tan \alpha$
+æŸ¯è¥¿ä¸­å€¼å®šç†: $$\frac{f(b)-f(a)}{g(b)-g(a)}=\frac{f'(\xi) }{g'(\xi)}$$
+\subsection{æ›²ç‡}
+å¼§å¾®åˆ†å…¬å¼: $ds=\sqrt{1+y'^2}dx$,å…¶ä¸­$y'=\tan \alpha$
 
-Æ½¾ùÇúÂÊ: $K=|\frac{\Delta\alpha}{\Delta s}|$ ÆäÖĞ$\Delta \alpha$:´Ó$M$µãµ½$M'$µã,ÇĞÏßĞ±ÂÊµÄÇã½Ç±ä»¯Á¿; $\Delta s$:$MM'$»¡³¤
+å¹³å‡æ›²ç‡: $K=|\frac{\Delta\alpha}{\Delta s}|$ å…¶ä¸­$\Delta \alpha$:ä»$M$ç‚¹åˆ°$M'$ç‚¹,åˆ‡çº¿æ–œç‡çš„å€¾è§’å˜åŒ–é‡; $\Delta s$:$MM'$å¼§é•¿
 
-MµãµÄÇúÂÊ: $K=lim_{\Delta s \to 0}|\frac{\Delta\alpha}{\Delta s}|=|\frac{d \alpha}{ds}|=\frac{|y''|}{\sqrt{(1+y'^2)^3}}$
+Mç‚¹çš„æ›²ç‡: $K=lim_{\Delta s \to 0}|\frac{\Delta\alpha}{\Delta s}|=|\frac{d \alpha}{ds}|=\frac{|y''|}{\sqrt{(1+y'^2)^3}}$
 
-Ö±Ïß: $K=0$
+ç›´çº¿: $K=0$
 
-°ë¾¶Îª$a$µÄÔ²: $K=\frac{1}{a}$
+åŠå¾„ä¸º$a$çš„åœ†: $K=\frac{1}{a}$
 
-\section{»ı·Ö±í}
-\subsection{µ¼Êı¹«Ê½}
+\section{ç§¯åˆ†è¡¨}
+\subsection{å¯¼æ•°å…¬å¼}
 $$
 (\tan x)'=\sec ^2 x,\quad
 (\cot x)'=-\csc^2 x,\quad
@@ -282,7 +283,7 @@ $$
 d(\frac{1}{|x|})=-\frac{1}{x|x|}dx, \quad |x|=sgn(x)\cdot x
 $$
 
-\subsection{º¬ÓĞ$ax+b$µÄ»ı·Ö}
+\subsection{å«æœ‰$ax+b$çš„ç§¯åˆ†}
 
 $$
 \int \frac{dx}{ax+b}=\frac{1}{a}\ln|ax+b|+C
@@ -296,7 +297,7 @@ $$
 \int \frac{dx}{x^2(ax+b)}=-\frac{ 1}{bx}+\frac{ a}{b^2}\ln |\frac{ax+b}{x}|+C
 $$
 
-\subsection{º¬ÓĞ$\sqrt{ax+b}$µÄ»ı·Ö}
+\subsection{å«æœ‰$\sqrt{ax+b}$çš„ç§¯åˆ†}
 $$
 \int \sqrt{ax+b}dx=\frac{2}{3a}\sqrt{(ax+b)^3}+C
 $$
@@ -309,14 +310,14 @@ $$
 \int \frac{x}{\sqrt{ax+b}}dx=\frac{2}{3a^2}(ax-2b)\sqrt{ax+b}+C
 $$
 
-\subsection{º¬ÓĞ$x^2 \pm a^2$µÄ»ı·Ö}
+\subsection{å«æœ‰$x^2 \pm a^2$çš„ç§¯åˆ†}
 $$
 \int \frac{dx}{x^2+a^2}=\frac{1}{a}\arctan \frac{x}{a}+C
 $$
 $$
 \int \frac{dx}{x^2-a^2}=\frac{1}{2a}\ln |\frac{x-a}{x+a}|+C
 $$
-\subsection{º¬ÓĞ$ax^2+b(a>0)$µÄ»ı·Ö}
+\subsection{å«æœ‰$ax^2+b(a>0)$çš„ç§¯åˆ†}
 $$
 \int \frac{dx}{ax^2+b}=
 \left\{
@@ -335,7 +336,7 @@ $$
 \int \frac{dx}{x(ax^2+b)}=\frac{1}{2b}\ln \frac{x^2}{|ax^2+b|}+C
 $$
 
-\subsection{º¬ÓĞ$ax^2+bx+c(a>0)$µÄ»ı·Ö}
+\subsection{å«æœ‰$ax^2+bx+c(a>0)$çš„ç§¯åˆ†}
 $$
 \int \frac{ dx}{ax^2+bx+c}=
 \left\{
@@ -350,7 +351,7 @@ $$
 \int \frac{x}{ax^2+bx+c}dx=\frac{1}{2a}\ln|ax^2+bx+c|-\frac{b}{2a}\int \frac{dx}{ax^2+bx+c}
 $$
 
-\subsection{º¬ÓĞ$\sqrt{x^2+a^2}(a>0)$µÄ»ı·Ö}
+\subsection{å«æœ‰$\sqrt{x^2+a^2}(a>0)$çš„ç§¯åˆ†}
 $$
 \int \frac{dx}{\sqrt{x^2+a^2}}=\arcsh \frac{x}{a}+C_1=\ln(x+\sqrt{x^2+a^2})+C,\quad \big( \ln(x+\sqrt{1+x^2})\big)'=\frac{1}{\sqrt{1+x^2}}
 $$
@@ -359,7 +360,7 @@ $$
 \int \sqrt{x^2+a^2}dx=\frac{x}{2}\sqrt{x^2+a^2}+\frac{a^2}{2}\ln(x+\sqrt{x^2+a^2})+C
 $$
 
-\subsection{º¬ÓĞ$\sqrt{x^2-a^2}(a<0)$µÄ»ı·Ö}
+\subsection{å«æœ‰$\sqrt{x^2-a^2}(a<0)$çš„ç§¯åˆ†}
 $$
 \int \frac{dx}{\sqrt{x^2-a^2}}=\frac{x}{|x|}\arch \frac{|x|}{a}+C_1=
 \ln|x+\sqrt{x^2-a^2}|+C
@@ -373,7 +374,7 @@ $$
 \int \frac{dx}{x\sqrt{x^2-a^2}}=\frac{1}{a}\arccos \frac{a}{|x|}+C
 $$
 
-\subsection{º¬ÓĞ$\sqrt{a^2-x^2}(a>0)$µÄ»ı·Ö}
+\subsection{å«æœ‰$\sqrt{a^2-x^2}(a>0)$çš„ç§¯åˆ†}
 $$
 \int \frac{dx}{\sqrt{a^2-x^2}}=\arcsin \frac{x}{a}+C
 $$
@@ -386,7 +387,7 @@ $$
 \int \frac{dx}{x\sqrt{a^2-x^2}}=\frac{1}{a}\ln \frac{a-\sqrt{a^2 - x^2}}{|x|}+C
 $$
 
-\subsection{º¬ÓĞ$\sqrt{\pm ax^2+bx+c}(a>0)$µÄ»ı·Ö}
+\subsection{å«æœ‰$\sqrt{\pm ax^2+bx+c}(a>0)$çš„ç§¯åˆ†}
 $$
 \int \frac{dx}{\sqrt{ax^2+bx+c}}=\frac{1}{\sqrt{a}}
 \ln|2ax+b+2\sqrt{a}\sqrt{ax^2+bx+c}+C|
@@ -396,7 +397,7 @@ $$
 \frac{4ac-b^2}{8\sqrt{a^3}}
 \ln|2ax+b+2\sqrt{a}\sqrt{ax^2+bx+c}+C|
 $$
-\subsection{º¬ÓĞ$\sqrt{\pm \frac{x-a}{x-b}}$»ò$\sqrt{(x-a)(x-b)}$µÄ»ı·Ö}
+\subsection{å«æœ‰$\sqrt{\pm \frac{x-a}{x-b}}$æˆ–$\sqrt{(x-a)(x-b)}$çš„ç§¯åˆ†}
 $$
 \int \sqrt{\frac{x-a}{x-b}}dx=(x-b)\sqrt{\frac{x-a}{x-b}}+
 (b-a)\ln (\sqrt{|x-a|}+\sqrt{|x-b|})+C
@@ -415,7 +416,7 @@ $$
 \int \sqrt{(x-a)(b-x)}=\frac{2x-a-b}{4}\sqrt{(x-a)(b-x)}
 + \frac{(b-a)^2}{4}\arcsin \sqrt{\frac{x-a}{b-a}}+C \quad(a<b)
 $$
-\subsection{º¬ÓĞÈı½Çº¯ÊıµÄ»ı·Ö}
+\subsection{å«æœ‰ä¸‰è§’å‡½æ•°çš„ç§¯åˆ†}
 $$
 \int \sin xdx=-\cos x +C
 $$
@@ -463,7 +464,7 @@ $$
 \frac{\frac{1}{\cos^2}dx}{a^2+b^2\tan^2 x}=\frac{d \tan x}{a^2 + b^2 \tan^2 x}
 $$
 
-\subsection{º¬ÓĞ·´Èı½Çº¯ÊıµÄ»ı·Ö(ÆäÖĞ($a>0$))}
+\subsection{å«æœ‰åä¸‰è§’å‡½æ•°çš„ç§¯åˆ†(å…¶ä¸­($a>0$))}
 $$
 \int \arcsin \frac{x}{a}dx=x\arcsin \frac{x}{a}+\sqrt{a^2-x^2}+C
 $$
@@ -487,7 +488,7 @@ $$
 $$
 \int x \arctan \frac{x}{a}dx=\frac{1}{2}(a^2+x^2)\arctan \frac{x}{a}- \frac{a}{2}x+C
 $$
-\subsection{º¬ÓĞÖ¸Êıº¯ÊıµÄ»ı·Ö}
+\subsection{å«æœ‰æŒ‡æ•°å‡½æ•°çš„ç§¯åˆ†}
 $$
 \int a^xdx=\frac{1}{\ln a}a^x+C
 $$
@@ -495,7 +496,7 @@ $$
 \int e^{ax}dx=\frac{ 1}{a}e^{ax}+C
 $$
 
-\subsection{º¬ÓĞ¶ÔÊıº¯ÊıµÄ»ı·Ö}
+\subsection{å«æœ‰å¯¹æ•°å‡½æ•°çš„ç§¯åˆ†}
 $$
 \int \ln xdx=x\ln x-x +C
 $$
@@ -503,7 +504,7 @@ $$
 $$
 \int (\ln x)^n dx=x(\ln x)^n -n \int (\ln x)^{n-1}dx
 $$
-\subsection{º¬ÓĞË«Çúº¯ÊıµÄ»ı·Ö}
+\subsection{å«æœ‰åŒæ›²å‡½æ•°çš„ç§¯åˆ†}
 $$
 \int \sh xdx=\ch x+C
 $$
@@ -515,7 +516,7 @@ $$
 $$
 \int \dth xdx=\ln \ch x+C
 $$
-\subsection{¶¨»ı·Ö}
+\subsection{å®šç§¯åˆ†}
 $$
 \int_{-\pi}^{\pi} \cos nx dx=
 \int_{-\pi}^{\pi} \sin nx dx=0
@@ -594,9 +595,9 @@ Propri\'et\'es:
 
 \subsection{Transformation de Fourrier}
 $$F(w)=\int_{-\infty}^{+\infty}f(t)e^{-iwt}dt$$
-³ÆÎª$f(t)$µÄFourrier±ä»»,¼ÇÎª$F[f(t)]$
-$$\frac{ 1}{2\pi}\int_{-\infty}^{\infty}F(w)e^{iwt}dw$$³ÆÎª$F(w)$µÄFourrierÄæ±ä»»,¼ÇÎª$F^{-1}[F(w)]$
-$$f(t) \longleftrightarrow F(w)$$Ò»Ò»¶ÔÓ¦,³ÆÎªÒ»×éFourrier±ä»»¶Ô,ÆäÖĞ$f(t)$³ÆÎªÔ­Ïñº¯Êı,$F(w)$³ÆÎªÏñº¯Êı.
+ç§°ä¸º$f(t)$çš„Fourrierå˜æ¢,è®°ä¸º$F[f(t)]$
+$$\frac{ 1}{2\pi}\int_{-\infty}^{\infty}F(w)e^{iwt}dw$$ç§°ä¸º$F(w)$çš„Fourrieré€†å˜æ¢,è®°ä¸º$F^{-1}[F(w)]$
+$$f(t) \longleftrightarrow F(w)$$ä¸€ä¸€å¯¹åº”,ç§°ä¸ºä¸€ç»„Fourrierå˜æ¢å¯¹,å…¶ä¸­$f(t)$ç§°ä¸ºåŸåƒå‡½æ•°,$F(w)$ç§°ä¸ºåƒå‡½æ•°.
 \begin{example}
 \begin{equation}
 f(t)=
@@ -629,11 +630,11 @@ f(t)=
 \end{example}
 
 \section{Other}
-¸ºÊıµÄ¶ÔÊı
+è´Ÿæ•°çš„å¯¹æ•°
 $$e^{i\theta}=cos\theta+isin\theta$$
-µ±$\theta=\pi$Ê±,µÃµ½£º$e^{i\pi}=-1\Rightarrow ln(-1)=i\pi$¡£
-ÕâÑù£¬ÎÒÃÇ¿ÉÒÔ¼ÆËãÈÎÒâ¸ºÊıµÄ×ÔÈ»¶ÔÊı,ÀıÈç£º
+å½“$\theta=\pi$æ—¶,å¾—åˆ°ï¼š$e^{i\pi}=-1\Rightarrow ln(-1)=i\pi$ã€‚
+è¿™æ ·ï¼Œæˆ‘ä»¬å¯ä»¥è®¡ç®—ä»»æ„è´Ÿæ•°çš„è‡ªç„¶å¯¹æ•°,ä¾‹å¦‚ï¼š
 $$ln(-5)=ln[(-1)*5]=ln(-1)+ln5=i\pi+ln5$$
-(×¢,ÕâÀïÃ»ÓĞ¿¼ÂÇ$2k\pi$µÄÖÜÆÚ)
+(æ³¨,è¿™é‡Œæ²¡æœ‰è€ƒè™‘$2k\pi$çš„å‘¨æœŸ)
 
 \end{document}

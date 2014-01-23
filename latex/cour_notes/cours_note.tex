@@ -1,6 +1,7 @@
+% !Mode:: "TeX:UTF-8"
 \documentclass[openany]{book}
-\input{../public/package}   %µ¼ÈëĞèÒªÓÃµ½µÄpackage
-\input{../public/book}   %µ¼ÈëĞèÒªÓÃµ½µÄpackage
+\input{../public/package}   %å¯¼å…¥éœ€è¦ç”¨åˆ°çš„package
+\input{../public/book}   %å¯¼å…¥éœ€è¦ç”¨åˆ°çš„package
 
 
 \begin{document}
@@ -21,7 +22,7 @@ Thank you!
 (The content in this book reference those textbooks$^\copyright$ and wikipedia$^\copyright$)
 \newpage
 \begin{center}
-\  %Ò»¸ö¿Õ¸ñ, Èç¹û²»¼ÓµÄ»°, ºóÃæµÄ\vfill ²»Æğ×÷ÓÃ
+\  %ä¸€ä¸ªç©ºæ ¼, å¦‚æœä¸åŠ çš„è¯, åé¢çš„\vfill ä¸èµ·ä½œç”¨
 \vfill
 \large{\`A MOI DANS LE FUTURE!}
 \vskip 1cm
@@ -50,7 +51,7 @@ En math\'ematiques, un espace hermitien est un espace vectoriel sur le corps com
 
 La g\'eom\'etrie d'un tel espace est analogue \`a celle d'un espace euclidien
 
-Une forme hermitienne est une application d\'efini\'e sur E¡ÁE \`a valeur dans $\mathbf{C}$ not\'ee $\langle .,.\rangle$, telle que :
+Une forme hermitienne est une application d\'efini\'e sur EÃ—E \`a valeur dans $\mathbf{C}$ not\'ee $\langle .,.\rangle$, telle que :
 \begin{itemize}
 		\item pour tout y fix\'e l'application $x \mapsto \langle x,y\rangle $est $\mathbf{C}$-lin\'eaire et
 		\item $\forall x,y \in E$,$\langle x,y\rangle=\overline{ \langle y,x\rangle}$.
@@ -73,7 +74,7 @@ un th\'eor\`eme qui repr\'esente les \'el\'ements du dual d'un espace de Hilbert
 Soient :
 \begin{itemize}
 		\item H un espace de Hilbert (r\'eel ou complexe) muni de son produit scalaire not\'e $<.,.>$
-		\item f ¡Ê H' une forme lin\'eaire continue sur H.
+		\item f âˆˆ H' une forme lin\'eaire continue sur H.
 \end{itemize}
 Alors il existe un unique $y$ dans $H$ tel que pour tout x de H on ait $f(x) = <y, x>$
 $$
@@ -84,7 +85,7 @@ Si a est une forme bilin\'eaire continue sur un espace de Hilbert r\'eel H (ou u
 $$
 \exists !\,A\in\mathcal{L}(H),\ \forall (u,v)\in H\times H,\ a(u,v)=\langle Au,v \rangle.
 $$
-Cela r\'esulte imm\'ediatement de l'isomorphisme canonique (isom\'etrique) entre l'espace norm\'e des formes bilin\'eaires continues sur H ¡Á H et celui des applications lin\'eaires continues de H dans son dual, et de l'isomorphisme ci-dessus entre ce dual et H lui-m\^eme.
+Cela r\'esulte imm\'ediatement de l'isomorphisme canonique (isom\'etrique) entre l'espace norm\'e des formes bilin\'eaires continues sur H Ã— H et celui des applications lin\'eaires continues de H dans son dual, et de l'isomorphisme ci-dessus entre ce dual et H lui-m\^eme.
 \bigskip
 
 \textbf{Th\'eor\`eme de Lax-Milgram}\newline
@@ -142,7 +143,7 @@ $$
 Certains auteurs pr\'ef\`erent utiliser l'appellation X-elliptique pour cette derni\`ere d\'efinition. Celle-ci intervient entre autres dans le th\'eor\`eme de Lax-Milgram et la th\'eorie des op\'erateurs elliptiques, accessoirement dans la m\'ethode des \'el\'ements finis.
 
 \underline{Lien entre les d\'efinitions}\newline
-Dans le cas o¨´ a est une forme bilin\'eaire, en posant $f(u)=a(u,u)$ on a \'equivalence entre la coercivit\'e de a et celle de $f$. En effet, $\scriptstyle\lim_{\| x\|\to\infty}f(x)=+\infty $implique qu'il existe $R>0 $tel que $\scriptstyle\|x\|\geqslant R\Rightarrow f(x)\geqslant 1$. Ainsi:
+Dans le cas oÃ¹ a est une forme bilin\'eaire, en posant $f(u)=a(u,u)$ on a \'equivalence entre la coercivit\'e de a et celle de $f$. En effet, $\scriptstyle\lim_{\| x\|\to\infty}f(x)=+\infty $implique qu'il existe $R>0 $tel que $\scriptstyle\|x\|\geqslant R\Rightarrow f(x)\geqslant 1$. Ainsi:
 $$
 \left(\frac{R}{\|u\|}\right)^2a(u,u)=a\left(\frac{R}{\|u\|}u,\frac{R}{\|u\|}u\right)=f\left(\frac{R}{\|u\|}u\right)\geqslant 1
 $$
@@ -150,7 +151,7 @@ et
 $$
 a(u,u)\geqslant\left(\frac{\|u\|}{R}\right)^2.
 $$
-Î¬»ù°Ù¿ÆÉÏÃ»ÓĞÖ±½Ó¸ø³öcoercivit\'eµÄ¶¨Òå, µ«ÊÇ°´ÕÕÎ¬»ù°Ù¿ÆµÄ½âÊÍ, ÎÒ¾õµÃcoercivit\'eµÄ¶¨ÒåÊÇ
+ç»´åŸºç™¾ç§‘ä¸Šæ²¡æœ‰ç›´æ¥ç»™å‡ºcoercivit\'eçš„å®šä¹‰, ä½†æ˜¯æŒ‰ç…§ç»´åŸºç™¾ç§‘çš„è§£é‡Š, æˆ‘è§‰å¾—coercivit\'eçš„å®šä¹‰æ˜¯
 $$
  \alpha=\left(\frac{1}{R}\right)^2
 $$
@@ -178,67 +179,67 @@ $$
 $$
 
 \subsection{Formule}
-\textbf{À­ÆÕÀ­Ë¹Ëã×Ó: Ìİ¶ÈµÄÉ¢¶È}
+\textbf{æ‹‰æ™®æ‹‰æ–¯ç®—å­: æ¢¯åº¦çš„æ•£åº¦}
 $$\laplace f = \mbox{div} (\vec{\mbox{grad}}f)$$
 
 Cart\'esien: $$\laplace f = \sum_{i=1}^n \frac{\partial^2 f }{\partial x_i^2} $$
 
-º¯ÊıµÄÀ­ÆÕÀ­Ë¹Ëã×ÓÒ²ÊÇ¸Ãº¯ÊıµÄºÚÈû¾ØÕóµÄ¼£ $\laplace f = tr(H(f))$
+å‡½æ•°çš„æ‹‰æ™®æ‹‰æ–¯ç®—å­ä¹Ÿæ˜¯è¯¥å‡½æ•°çš„é»‘å¡çŸ©é˜µçš„è¿¹ $\laplace f = tr(H(f))$
 
-¼«×ø±êÏÂµÄÀ­ÆÕÀ­Ë¹Ëã×Ó±íÊ¾·¨
+æåæ ‡ä¸‹çš„æ‹‰æ™®æ‹‰æ–¯ç®—å­è¡¨ç¤ºæ³•
 $$\laplace f = \frac{ 1}{\rho}\frac{\partial  }{\partial \rho}(\rho \frac{\partial  f}{\partial \rho}) + \frac{ 1}{\rho^2}\frac{\partial ^2 f}{\partial\theta^2} + \frac{\partial^2 f}{\partial z^2}$$
 
 \bigskip
 \textbf{Equation de poisson}
 $$\laplace \varphi = f$$
-si $f=0$, ÄÇÃ´²´ËÉ·½³Ì¾Í»á±ä³ÉÒ»¸öÆë´Î·½³Ì, ³ÆÎªÀ­ÆÕÀ­Ë¹·½³Ì
+si $f=0$, é‚£ä¹ˆæ³Šæ¾æ–¹ç¨‹å°±ä¼šå˜æˆä¸€ä¸ªé½æ¬¡æ–¹ç¨‹, ç§°ä¸ºæ‹‰æ™®æ‹‰æ–¯æ–¹ç¨‹
 
 \bigskip
-\textbf{¸ßË¹}
+\textbf{é«˜æ–¯}
 
-¸ßË¹¹«Ê½ÓÃÉ¢¶È±íÊ¾Îª£º
+é«˜æ–¯å…¬å¼ç”¨æ•£åº¦è¡¨ç¤ºä¸ºï¼š
 $$
 \iiint_{\Omega}\mathrm{div}\mathbf{A}dv=
 \int\!\!\!\!\int_{\Sigma}\!\!\!\!\!\!\!\!\!\!\!\!\!\!\;\;\;\bigcirc\,\,A_{n}dS
 =
 \int\!\!\!\!\int_{\Sigma}\!\!\!\!\!\!\!\!\!\!\!\!\!\!\;\;\;\bigcirc\,\,\mathbf{A}\cdot d\mathbf{S}
 $$
-ÆäÖĞ¦²ÊÇ¿Õ¼ä±ÕÇøÓò¦¸µÄ±ß½çÇúÃæ,¶ø
+å…¶ä¸­Î£æ˜¯ç©ºé—´é—­åŒºåŸŸÎ©çš„è¾¹ç•Œæ›²é¢,è€Œ
 $$
 A_n=\mathbf{A}\cdot\mathbf{n}=P\cos\alpha+Q\cos\beta+R\cos\gamma
 $$
 $$
 d\mathbf{S}=\mathbf{n}\cdot S
 $$
-$n$ÊÇÏòÁ¿$A$ÔÚÇúÃæ$\Sigma$µÄÍâ²à·¨ÏòÁ¿ÉÏµÄÍ¶Ó°¡£
+$n$æ˜¯å‘é‡$A$åœ¨æ›²é¢$\Sigma$çš„å¤–ä¾§æ³•å‘é‡ä¸Šçš„æŠ•å½±ã€‚
 
 \bigskip
 %\vskip 0.5cm
-\textbf{Ë¹ÍĞ¿ËË¹¹«Ê½}
+\textbf{æ–¯æ‰˜å…‹æ–¯å…¬å¼}
 
-$\mathbf{R}^3$ÉÏµÄË¹ÍĞ¿ËË¹¹«Ê½
-Éè$S$ÊÇ·ÖÆ¬¹â»¬µÄÓĞÏòÇúÃæ,$S$µÄ±ß½çÎªÓĞÏò±ÕÇúÏß$¦£$,¼´$\Gamma=\partial S$,ÇÒ$¦£$µÄÕıÏòÓë$S$µÄ²à·ûºÏÓÒÊÖ¹æÔò: º¯Êı$P(x,y,z),Q(x,y,z),R(x,y,z)$¶¼ÊÇ¶¨ÒåÔÚ"ÇúÃæ$S$Á¬Í¬Æä±ß½ç$¦£$"ÉÏÇÒ¶¼¾ßÓĞÒ»½×Á¬ĞøÆ«µ¼ÊıµÄº¯Êı,ÔòÓĞ
+$\mathbf{R}^3$ä¸Šçš„æ–¯æ‰˜å…‹æ–¯å…¬å¼
+è®¾$S$æ˜¯åˆ†ç‰‡å…‰æ»‘çš„æœ‰å‘æ›²é¢,$S$çš„è¾¹ç•Œä¸ºæœ‰å‘é—­æ›²çº¿$Î“$,å³$\Gamma=\partial S$,ä¸”$Î“$çš„æ­£å‘ä¸$S$çš„ä¾§ç¬¦åˆå³æ‰‹è§„åˆ™: å‡½æ•°$P(x,y,z),Q(x,y,z),R(x,y,z)$éƒ½æ˜¯å®šä¹‰åœ¨"æ›²é¢$S$è¿åŒå…¶è¾¹ç•Œ$Î“$"ä¸Šä¸”éƒ½å…·æœ‰ä¸€é˜¶è¿ç»­åå¯¼æ•°çš„å‡½æ•°,åˆ™æœ‰
 $$\iint\limits_{S}(\frac{\partial R}{\partial y}-\frac{\partial Q}{\partial z})dydz+(\frac{\partial P}{\partial z}-\frac{\partial R}{\partial x})dzdx+(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y})dxdy
 =\oint\limits_{\Gamma}Pdx+Qdy+Rdz$$
 
-Õâ¸ö¹«Ê½½Ğ×ö$\mathbf{R}^3$ÉÏµÄË¹ÍĞ¿ËË¹¹«Ê½»ò¿ª¶ûÎÄ£­Ë¹ÍĞ¿ËË¹¶¨Àí¡¢Ğı¶È¶¨Àí¡£ÕâºÍº¯ÊıµÄĞı¶ÈÓĞ¹Ø,ÓÃÌİ¶ÈËã·û¿ÉĞ´³É
+è¿™ä¸ªå…¬å¼å«åš$\mathbf{R}^3$ä¸Šçš„æ–¯æ‰˜å…‹æ–¯å…¬å¼æˆ–å¼€å°”æ–‡ï¼æ–¯æ‰˜å…‹æ–¯å®šç†ã€æ—‹åº¦å®šç†ã€‚è¿™å’Œå‡½æ•°çš„æ—‹åº¦æœ‰å…³,ç”¨æ¢¯åº¦ç®—ç¬¦å¯å†™æˆ
 $$
  \int_{S} \nabla \times \mathbf{F} \cdot d\mathbf{S} = \oint_{\partial S} \mathbf{F} \cdot d \mathbf{r}
 $$
 
-Í¨¹ıÒÔÏÂ¹«Ê½¿ÉÒÔÔÚ"¶Ô×ø±êµÄ"ÇúÏß»ı·Ö""ºÍ¶ÔÃæ»ıµÄ"Ãæ»ı»ı·Ö""Ö®¼äÏà»¥×ª»»£º
+é€šè¿‡ä»¥ä¸‹å…¬å¼å¯ä»¥åœ¨"å¯¹åæ ‡çš„"æ›²çº¿ç§¯åˆ†""å’Œå¯¹é¢ç§¯çš„"é¢ç§¯ç§¯åˆ†""ä¹‹é—´ç›¸äº’è½¬æ¢ï¼š
 $$
 \iint\limits_{\Sigma}\begin{vmatrix} \cos \alpha & \cos \beta & \cos \gamma \\ \frac{\partial}{\partial x} & \frac{\partial}{\partial y} & \frac{\partial}{\partial z} \\ P & Q & R \end{vmatrix}dS=\oint\limits_{\Gamma}Pdx+Qdy+Rdz
 $$
 
 \bigskip
-\textbf{¸ñÁÖ¹«Ê½}
-Éè±ÕÇøÓò$D$ÓÉ·Ö¶Î¹â»¬µÄÇúÏß$\partial D$($\partial D$ÊÇ$D$È¡ÕıÏòµÄ±ß½çÇúÏß)Î§³É,º¯Êı$P(x,y)$¼°$Q(x,y)$ÔÚ$D$ÉÏ¾ßÓĞÒ»½×Á¬ĞøÆ«µ¼Êı,ÔòÓĞ
+\textbf{æ ¼æ—å…¬å¼}
+è®¾é—­åŒºåŸŸ$D$ç”±åˆ†æ®µå…‰æ»‘çš„æ›²çº¿$\partial D$($\partial D$æ˜¯$D$å–æ­£å‘çš„è¾¹ç•Œæ›²çº¿)å›´æˆ,å‡½æ•°$P(x,y)$åŠ$Q(x,y)$åœ¨$D$ä¸Šå…·æœ‰ä¸€é˜¶è¿ç»­åå¯¼æ•°,åˆ™æœ‰
 $$\oint_{\partial D} (Pdx+Qdy) = \iint_D (\frac{\partial Q}{\partial x} - \frac{\partial  P}{\partial y}dxdy)$$
 
 \bigskip
-\textbf{¸ñÁÖµÚÒ»¹«Ê½}
-Éèº¯Êı$u(x,y,z)$ºÍ$v(x,y,z)$ÔÚ±ÕÇøÓò$\Omega$ÉÏ¾ßÓĞÒ»½×¼°¶ş½×Á¬ĞøÆ«µ¼Êı,ÔòÓĞ
+\textbf{æ ¼æ—ç¬¬ä¸€å…¬å¼}
+è®¾å‡½æ•°$u(x,y,z)$å’Œ$v(x,y,z)$åœ¨é—­åŒºåŸŸ$\Omega$ä¸Šå…·æœ‰ä¸€é˜¶åŠäºŒé˜¶è¿ç»­åå¯¼æ•°,åˆ™æœ‰
 $$\iiint_{\Omega} u\laplace v dxdydz
 =
 \oint\!\oint_{\Sigma} u \frac{\partial v}{\partial n}dS -
@@ -247,39 +248,39 @@ $$\iiint_{\Omega} u\laplace v dxdydz
 \frac{\partial  u}{\partial y}\frac{\partial v}{\partial y}+
 \frac{\partial  u}{\partial z}\frac{\partial v}{\partial z}+
 )dxdydz$$
-ÆäÖĞ$\Sigma$ÊÇ±ÕÇøÓò$\Omega$µÄÕû¸ö±ß½çÇúÃæ,$\frac{\partial v}{\partial n}$Îªº¯Êı$v(x,y,z)$ÑØ$\Sigma$µÄÍâ·¨Ïß·½ÏòµÄ·½Ïòµ¼Êı
+å…¶ä¸­$\Sigma$æ˜¯é—­åŒºåŸŸ$\Omega$çš„æ•´ä¸ªè¾¹ç•Œæ›²é¢,$\frac{\partial v}{\partial n}$ä¸ºå‡½æ•°$v(x,y,z)$æ²¿$\Sigma$çš„å¤–æ³•çº¿æ–¹å‘çš„æ–¹å‘å¯¼æ•°
 
-¸ü¼Ó¼ò½àµÄĞ´·¨:
+æ›´åŠ ç®€æ´çš„å†™æ³•:
 $$
 \int_{\Omega}u \laplace v d\Omega = \int_{\Sigma}u \frac{\partial v}{\partial n}d\Sigma - \int_{\Omega} \vec{\mbox{grad}}u \cdot \vec{\mbox{grad}} v d\Omega
 $$
-Ò²¿ÉÒÔÓÃint\'egration par partie À´Àí½â:
-divÊÇ¶ş´ÎÎ¢·Ö, gradÊÇÒ»´ÎÎ¢·Ö, div¿ÉÒÔ¿´³ÉÊÇÔÚgradµÄ»ù´¡ÉÏÔÙÀ´Ò»´ÎÎ¢·Ö, ¶ø
-$ \frac{\partial  v}{\partial n} = <\vec{\mbox{grad}} v,\vec{n}>$, ËùÒÔ
-$\frac{\partial  v}{\partial n}$ ¿ÉÒÔÀí½â³ÉÒ»´ÎÎ¢·Ö
+ä¹Ÿå¯ä»¥ç”¨int\'egration par partie æ¥ç†è§£:
+divæ˜¯äºŒæ¬¡å¾®åˆ†, gradæ˜¯ä¸€æ¬¡å¾®åˆ†, divå¯ä»¥çœ‹æˆæ˜¯åœ¨gradçš„åŸºç¡€ä¸Šå†æ¥ä¸€æ¬¡å¾®åˆ†, è€Œ
+$ \frac{\partial  v}{\partial n} = <\vec{\mbox{grad}} v,\vec{n}>$, æ‰€ä»¥
+$\frac{\partial  v}{\partial n}$ å¯ä»¥ç†è§£æˆä¸€æ¬¡å¾®åˆ†
 
 \bigskip
-\textbf{¸ñÁÖµÚ¶ş¹«Ê½}
-Éè$u(x,y,z)$¡¢$v(x,y,z)$ÊÇÁ½¸ö¶¨ÒåÔÚ±ÕÇøÓò$\Omega$ÉÏµÄ¾ßÓĞ¶ş½×Á¬ĞøÆ«µ¼ÊıµÄº¯Êı,$\frac{\partial u}{\partial n},\frac{\partial v}{\partial n}$ÒÀ´Î±íÊ¾$u(x,y,z)$¡¢$v(x,y,z)$ÑØ$\Sigma$µÄÍâ·¨Ïß·½ÏòµÄ·½Ïòµ¼Êı,ÔòÓĞ
+\textbf{æ ¼æ—ç¬¬äºŒå…¬å¼}
+è®¾$u(x,y,z)$ã€$v(x,y,z)$æ˜¯ä¸¤ä¸ªå®šä¹‰åœ¨é—­åŒºåŸŸ$\Omega$ä¸Šçš„å…·æœ‰äºŒé˜¶è¿ç»­åå¯¼æ•°çš„å‡½æ•°,$\frac{\partial u}{\partial n},\frac{\partial v}{\partial n}$ä¾æ¬¡è¡¨ç¤º$u(x,y,z)$ã€$v(x,y,z)$æ²¿$\Sigma$çš„å¤–æ³•çº¿æ–¹å‘çš„æ–¹å‘å¯¼æ•°,åˆ™æœ‰
 $$\iiint\limits_{\Omega}(u\Delta v - v\Delta u)dxdydz=\oint\!\oint_{\Sigma}(u \frac{\partial v}{\partial n}-v\frac{\partial u}{\partial n})dS$$
 
 \bigskip
 \textbf{Serie de Fourrier}
-¸ø¶¨Ò»¸öÖÜÆÚÎªTµÄº¯Êıx(t),ÄÇÃ´Ëü¿ÉÒÔ±íÊ¾ÎªÎŞÇî¼¶Êı£º
+ç»™å®šä¸€ä¸ªå‘¨æœŸä¸ºTçš„å‡½æ•°x(t),é‚£ä¹ˆå®ƒå¯ä»¥è¡¨ç¤ºä¸ºæ— ç©·çº§æ•°ï¼š
 \begin{equation}
-		x(t)=\sum _{k=-\infty}^{+\infty}a_k\cdot e^{ik(\frac{2\pi}{T})t}\eqspace (i\text{ÎªĞéÊıµ¥Î»})
+		x(t)=\sum _{k=-\infty}^{+\infty}a_k\cdot e^{ik(\frac{2\pi}{T})t}\eqspace (i\text{ä¸ºè™šæ•°å•ä½})
 \label{serie.fourrier.fonction}
 \end{equation}
-ÆäÖĞ,$a_k$¿ÉÒÔ°´ÏÂÊ½¼ÆËã:
+å…¶ä¸­,$a_k$å¯ä»¥æŒ‰ä¸‹å¼è®¡ç®—:
 $$
 a_k=\frac{1}{T}\int_{T}x(t)\cdot e^{-ik(\frac{2\pi}{T})t}dt
 $$
-×¢Òâµ½$f_k(t)=e^{ik(\frac{2\pi}{T})t}$ÊÇÖÜÆÚÎªTµÄº¯Êı,¹Êk È¡²»Í¬ÖµÊ±µÄÖÜÆÚĞÅºÅ¾ßÓĞĞ³²¨¹ØÏµ(¼´ËüÃÇ¶¼¾ßÓĞÒ»¸ö¹²Í¬ÖÜÆÚT).\newline
-$k=0$Ê±,\eqref{serie.fourrier.fonction} Ê½ÖĞ¶ÔÓ¦µÄÕâÒ»Ïî³ÆÎªÖ±Á÷·ÖÁ¿,Ò²¾ÍÊÇx(t)ÔÚÕû¸öÖÜÆÚµÄÆ½¾ùÖµ.\newline
-$k=\pm 1$Ê±¾ßÓĞ»ù²¨ÆµÂÊ$\omega_0=\frac{2\pi}{T}$,³ÆÎªÒ»´ÎĞ³²¨»ò»ù²¨,ÀàËÆµÄÓĞ¶ş´ÎĞ³²¨,Èı´ÎĞ³²¨µÈµÈ¡£
+æ³¨æ„åˆ°$f_k(t)=e^{ik(\frac{2\pi}{T})t}$æ˜¯å‘¨æœŸä¸ºTçš„å‡½æ•°,æ•…k å–ä¸åŒå€¼æ—¶çš„å‘¨æœŸä¿¡å·å…·æœ‰è°æ³¢å…³ç³»(å³å®ƒä»¬éƒ½å…·æœ‰ä¸€ä¸ªå…±åŒå‘¨æœŸT).\newline
+$k=0$æ—¶,\eqref{serie.fourrier.fonction} å¼ä¸­å¯¹åº”çš„è¿™ä¸€é¡¹ç§°ä¸ºç›´æµåˆ†é‡,ä¹Ÿå°±æ˜¯x(t)åœ¨æ•´ä¸ªå‘¨æœŸçš„å¹³å‡å€¼.\newline
+$k=\pm 1$æ—¶å…·æœ‰åŸºæ³¢é¢‘ç‡$\omega_0=\frac{2\pi}{T}$,ç§°ä¸ºä¸€æ¬¡è°æ³¢æˆ–åŸºæ³¢,ç±»ä¼¼çš„æœ‰äºŒæ¬¡è°æ³¢,ä¸‰æ¬¡è°æ³¢ç­‰ç­‰ã€‚
 
-\textbf{Èı½Çº¯Êı×åµÄÕı½»ĞÔ}
-ËùÎ½µÄÁ½¸ö²»Í¬ÏòÁ¿Õı½»ÊÇÖ¸ËüÃÇµÄÄÚ»ıÎª0£¬ÕâÒ²¾ÍÒâÎ¶×ÅÕâÁ½¸öÏòÁ¿Ö®¼äÃ»ÓĞÈÎºÎÏà¹ØĞÔ,ÀıÈç£¬ÔÚÈıÎ¬Å·ÊÏ¿Õ¼äÖĞ£¬»¥Ïà´¹Ö±µÄÏòÁ¿Ö®¼äÊÇÕı½»µÄ¡£ÊÂÊµÉÏ£¬Õı½»ÊÇ´¹Ö±ÔÚÊıÑ§ÉÏµÄÒ»ÖÖ³éÏó»¯ºÍÒ»°ã»¯¡£Ò»×én¸ö»¥ÏàÕı½»µÄÏòÁ¿±ØÈ»ÊÇÏßĞÔÎŞ¹ØµÄ£¬ËùÒÔ±ØÈ»¿ÉÒÔÕÅ³ÉÒ»¸önÎ¬¿Õ¼ä£¬Ò²¾ÍÊÇËµ£¬¿Õ¼äÖĞµÄÈÎºÎÒ»¸öÏòÁ¿¿ÉÒÔÓÃËüÃÇÀ´ÏßĞÔ±í³ö¡£Èı½Çº¯Êı×åµÄÕı½»ĞÔÓÃ¹«Ê½±íÊ¾³öÀ´¾ÍÊÇ£º
+\textbf{ä¸‰è§’å‡½æ•°æ—çš„æ­£äº¤æ€§}
+æ‰€è°“çš„ä¸¤ä¸ªä¸åŒå‘é‡æ­£äº¤æ˜¯æŒ‡å®ƒä»¬çš„å†…ç§¯ä¸º0ï¼Œè¿™ä¹Ÿå°±æ„å‘³ç€è¿™ä¸¤ä¸ªå‘é‡ä¹‹é—´æ²¡æœ‰ä»»ä½•ç›¸å…³æ€§,ä¾‹å¦‚ï¼Œåœ¨ä¸‰ç»´æ¬§æ°ç©ºé—´ä¸­ï¼Œäº’ç›¸å‚ç›´çš„å‘é‡ä¹‹é—´æ˜¯æ­£äº¤çš„ã€‚äº‹å®ä¸Šï¼Œæ­£äº¤æ˜¯å‚ç›´åœ¨æ•°å­¦ä¸Šçš„ä¸€ç§æŠ½è±¡åŒ–å’Œä¸€èˆ¬åŒ–ã€‚ä¸€ç»„nä¸ªäº’ç›¸æ­£äº¤çš„å‘é‡å¿…ç„¶æ˜¯çº¿æ€§æ— å…³çš„ï¼Œæ‰€ä»¥å¿…ç„¶å¯ä»¥å¼ æˆä¸€ä¸ªnç»´ç©ºé—´ï¼Œä¹Ÿå°±æ˜¯è¯´ï¼Œç©ºé—´ä¸­çš„ä»»ä½•ä¸€ä¸ªå‘é‡å¯ä»¥ç”¨å®ƒä»¬æ¥çº¿æ€§è¡¨å‡ºã€‚ä¸‰è§’å‡½æ•°æ—çš„æ­£äº¤æ€§ç”¨å…¬å¼è¡¨ç¤ºå‡ºæ¥å°±æ˜¯ï¼š
 $$\int _{0}^{2\pi}\sin (nx)\cos (mx) \,dx=0;$$
 $$\int _{0}^{2\pi}\sin (nx)\sin (mx) \,dx=0;(m\ne n)$$
 $$\int _{0}^{2\pi}\cos (nx)\cos (mx) \,dx=0;(m\ne n)$$
@@ -299,7 +300,7 @@ P=
              \end{array}
           \right)
 $$
-ÓÉ $(x_1,y_1)$, $(x_2,y_2)$, $(x_3,y_3)$ Èı¸öµã×é³ÉµÄÈı½ÇĞÎµÄÃæ»ı:$surf = \frac{1}{2}\det{P}$
+ç”± $(x_1,y_1)$, $(x_2,y_2)$, $(x_3,y_3)$ ä¸‰ä¸ªç‚¹ç»„æˆçš„ä¸‰è§’å½¢çš„é¢ç§¯:$surf = \frac{1}{2}\det{P}$
 
 %==========================================================================%
 %==========================================================================%
@@ -434,12 +435,12 @@ $$
 DJ(u).v 
 =\int_0^1 \frac{\partial g}{\partial u_1}(x,u,u')v + \frac{\partial g}{\partial u_2}(x,u,u')v' dx
 $$
-ÕâÀïµÄ$u_1$ ¶ÔÓ¦$u$,$u_2$¶ÔÓ¦$u'$
+è¿™é‡Œçš„$u_1$ å¯¹åº”$u$,$u_2$å¯¹åº”$u'$
 $$
 DJ(u).v 
 =\int_0^1 \frac{\partial g}{\partial u}(x,u,u')v + \frac{\partial g}{\partial u'}(x,u,u')v' dx
 $$
-¶Ô$v'$ ½øĞĞ·Ö²¿»ı·Ö, Í¬Ê±¿¼ÂÇµ½$v(0)=v(1)=0$, µÃµ½
+å¯¹$v'$ è¿›è¡Œåˆ†éƒ¨ç§¯åˆ†, åŒæ—¶è€ƒè™‘åˆ°$v(0)=v(1)=0$, å¾—åˆ°
 $$
 DJ(u).v 
 =\int_0^1 (\frac{\partial g}{\partial u}(x,u,u') - \frac{d}{dx}\frac{\partial g}{\partial u'}(x,u,u'))v(x) dx
@@ -454,11 +455,11 @@ Soit $u1 \in V_0$ un extremum local de la fonction $J(u)$, il v\'erifie $DJ(u1) 
 $$
 \forall v \in V_0, DJ(u).v = \int_0^1 (\frac{\partial  g}{\partial u}(x,u,u') - \frac{d}{dx}\frac{\partial g}{\partial u'}(x,u,u'))v(x) dx = 0
 $$
-È»ºóµÃµ½
+ç„¶åå¾—åˆ°
 $$
 \frac{\partial g}{\partial u} - \frac{d}{dx}\frac{\partial g}{\partial u'} = 0
 $$
-Õâ¾ÍÊÇ±ä·ÖÔ­ÀíÖĞµÄÅ·À­¹«Ê½
+è¿™å°±æ˜¯å˜åˆ†åŸç†ä¸­çš„æ¬§æ‹‰å…¬å¼
 \end{example}
 
 \section{Convecivit\'e}
@@ -481,7 +482,7 @@ Note que si $V=\R$, cela revient \`a dire que $f(x)$ est croissante.
 
 \section{Autre}
 Norme dans $H^1$: $\norm{u} = \int_0^1 u'^2 + u^2 dx$\newline
-ÆäÖĞ$H^1$ ÊÇÖ¸espace de Herbert ÉÏµÄÒ»½×¿ÉÎ¢(»¹ÊÇ¿Éµ¼»¹²»Ì«¿Ï¶¨)µÄº¯Êı¹¹³ÉµÄ¿Õ¼ä
+å…¶ä¸­$H^1$ æ˜¯æŒ‡espace de Herbert ä¸Šçš„ä¸€é˜¶å¯å¾®(è¿˜æ˜¯å¯å¯¼è¿˜ä¸å¤ªè‚¯å®š)çš„å‡½æ•°æ„æˆçš„ç©ºé—´
 
 
 L'EDP(sigle pour equations aux d\'eriv\'ees partielles) du second ordre lin\'eaire \`a cofficients constans, en dimension deux:
@@ -498,7 +499,7 @@ L'equation caract\'eristique de cette EDP:
 \begin{equation}
 		ax^2 + 2bxy + cy^2 + dx + ey + f = 0 \eqspace \text{equation conique}
 \end{equation}
-·½³ÌÖĞµÄ$x$,$y$ ²»Ò»¶¨Ö¸¿Õ¼ä, Ò²¿ÉÒÔÊÇÆäËûÎ´ÖªÁ¿, ±ÈÈçÊ±¼ä$t$
+æ–¹ç¨‹ä¸­çš„$x$,$y$ ä¸ä¸€å®šæŒ‡ç©ºé—´, ä¹Ÿå¯ä»¥æ˜¯å…¶ä»–æœªçŸ¥é‡, æ¯”å¦‚æ—¶é—´$t$
 
 \begin{itemize}
 		\item Elliptique si $ac - b^2 > 0$ (la solution minimise une fonctionnelle d'\'energie)
@@ -530,11 +531,11 @@ La formulation variationnelle correspondante est la suivante :
 \begin{equation}
     \begin{cases} u \in H^1(\Omega) \\ A(u,v) = F(v) \; \forall v \in H^1(\Omega) \, | \, v = 0 \text{ sur } \partial\Omega \\ u = 0 \text{ sur } \partial\Omega \end{cases}
 \end{equation}
-o¨´
+oÃ¹
 $$
 A(u,v) = \int_\Omega \nabla u \cdot \nabla v \eqspace \text{et} \eqspace F(v) = \int_\Omega fv.~
 $$
-ÎÒÃÇ¿ÉÒÔ¿´µ½ÔÚformulation forteÖĞ$u \in H^2(\Omega)$, ¶øÔÚformulation faible ÖĞ$u \in H^1(\Omega)$, Ò²¾ÍÊÇ±äÈõÁË
+æˆ‘ä»¬å¯ä»¥çœ‹åˆ°åœ¨formulation forteä¸­$u \in H^2(\Omega)$, è€Œåœ¨formulation faible ä¸­$u \in H^1(\Omega)$, ä¹Ÿå°±æ˜¯å˜å¼±äº†
 
 Le th\'eor\`eme de Lax-Milgram permet ensuite de conclure \`a l'existence et \`a l'unicit\'e d'une solution de la formulation variationnelle.
 
@@ -544,7 +545,7 @@ Avec des conditions de bord plus g\'en\'erales que celles pr\'esent\'ees ici, ce
 
 \section{Phenom\`enes}
 \textbf{Equation d'advection}
-Æ½Á÷\\
+å¹³æµ\\
 cherche une fonction $u(x,t)$ du point d'abscisse $ x$ , au temps $ t$ , $ u \in C^1([0;1] \times [0,T])$ solution du probl\`eme
 \begin{equation}
 \left\{
@@ -605,7 +606,7 @@ Soit $u(x,t), x \in [0,L], t \in [0,T] $ solution du probl\`eme
 \bigskip
 
 \textbf{Probl\`eme de Dirichlet non-homog\`ene}
-±ß½çÉÏ¶¨Öµ\\
+è¾¹ç•Œä¸Šå®šå€¼\\
 \begin{equation}
 \left\{
   \begin{array}{ll}

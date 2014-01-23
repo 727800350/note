@@ -1,6 +1,7 @@
+% !Mode:: "TeX:UTF-8"
 \documentclass[openany]{book}
-\input{../../public/package}   %µ¼ÈëĞèÒªÓÃµ½µÄpackage
-\input{../../public/book}   %µ¼ÈëĞèÒªÓÃµ½µÄpackage
+\input{../../public/package}   %å¯¼å…¥éœ€è¦ç”¨åˆ°çš„package
+\input{../../public/book}   %å¯¼å…¥éœ€è¦ç”¨åˆ°çš„package
 \begin{document}
 \chapter{Transfert thermique}
 %--------------------------------------------------------------------------%
@@ -26,10 +27,10 @@ Effusivit\'e thermique du mat\'eriau:$$b=\sqrt{\lambda \rho c}$$
 il caract\'erise sa capacit\'e \`a \'echanger de l'\'energie thermique avec son environnement\\
 
 La profondeur de p\'en'etration $e_p$:$$e_p=\sqrt{\frac{2a}{\omega}}$$
-Í¸ÉäÂÊ(µ±Í¸ÉäÂÊĞ¡ÓÚÄ³Ò»¸öÖµÊ±,¿ÉÒÔÈÏÎªne passe pas):$$\tau = exp(-\frac{x}{e_p})$$
+é€å°„ç‡(å½“é€å°„ç‡å°äºæŸä¸€ä¸ªå€¼æ—¶,å¯ä»¥è®¤ä¸ºne passe pas):$$\tau = exp(-\frac{x}{e_p})$$
 
 
-Á÷ÌåµÄÎÂ¶È-$x$±ä»¯ÇúÏßµÄºá½Ø¾à,Ê½ÖĞ$\lambda$ÎªfluideµÄ²ÎÊı:$$\eta=\frac{\lambda }{h}$$
+æµä½“çš„æ¸©åº¦-$x$å˜åŒ–æ›²çº¿çš„æ¨ªæˆªè·,å¼ä¸­$\lambda$ä¸ºfluideçš„å‚æ•°:$$\eta=\frac{\lambda }{h}$$
 
 \subsection{Convection forc\'ee}
 le nombre de Nusselt:$$N_u = \frac{hD}{\lambda }=\frac{D/\lambda }{1/h}=\frac{R^{cd}}{R^{cc}}=A\cdot (R_e)^{\alpha}\cdot (P_r)^{\beta}$$
@@ -44,10 +45,10 @@ $$
 $$
 \frac{\text{Diffusivit\'e de quantit\'e de mouvement $\nu$ (ou viscosit\'e cin\'ematique)}}{\text{Diffusivit\'e thermique}}
 $$
-¶ÔÓÚ³£¼ûµÄÁ÷Ìå:
+å¯¹äºå¸¸è§çš„æµä½“:
 \begin{description}
 \item [Fluides ususels:] $P_r$ de l'ordre $1$
-\item [M\'etaux liquides:] $P_r$ de l'ordre $10^{-2}$ ËµÃ÷ÒºÌ¬½ğÊôµÄ´«ÈÈĞÔÄÜ·Ç³£ºÃ
+\item [M\'etaux liquides:] $P_r$ de l'ordre $10^{-2}$ è¯´æ˜æ¶²æ€é‡‘å±çš„ä¼ çƒ­æ€§èƒ½éå¸¸å¥½
 \item [Huiles:] $P_r$ de l'ordre $10^3$
 \end{description}
 
@@ -110,7 +111,7 @@ $$\frac{ dH}{dt}=\dot{m}c_p dT_m$$
 \section{Mod\`ele}
 \subsection{Ailette:$B_i < 0.1$}
 pour une barre de section carr\'ee a et de longeur L:
-¶ÔÓÚÒ»°ãÍ¼ĞÎÀ´Ëµ,Ã»ÓĞÒ»¸öÈ·¶¨µÄÁ¿ÄÜ¹»µ¥¶À±íÊ¾ÌØÕ÷³ß´ç,ËùÒÔÒ»°ãÓÃ$\frac{\text{Ãæ»ı}}{\text{ÖÜ³¤}}$À´±íÊ¾Õâ¸öÌØÕ÷³ß´ç
+å¯¹äºä¸€èˆ¬å›¾å½¢æ¥è¯´,æ²¡æœ‰ä¸€ä¸ªç¡®å®šçš„é‡èƒ½å¤Ÿå•ç‹¬è¡¨ç¤ºç‰¹å¾å°ºå¯¸,æ‰€ä»¥ä¸€èˆ¬ç”¨$\frac{\text{é¢ç§¯}}{\text{å‘¨é•¿}}$æ¥è¡¨ç¤ºè¿™ä¸ªç‰¹å¾å°ºå¯¸
 \begin{eqnarray}
 \text{sa longeeur caract\'eristique}\quad l=\frac{A}{P}=\frac{a^2}{4a} \\
 B_i = \frac{ hl}{\lambda }
@@ -137,14 +138,14 @@ Aucun flux n'est plus dissip\'e en bout d'ailette. En effet, au bout d'une certa
  \text{en z:} & \Phi_1=\varphi(z)\cdot A \\
  \text{en z+dz:} &\Phi_2=-\varphi(z+dz) \cdot A\\
  \text{en surface lat\'eral:} & \Phi_3=-h(t(z)-T_f) \cdot P_m dz \\
- \text{Èı¸öfluxÏà¼ÓÎªÁã(¿¼ÂÇÁË½ø³öµÄ·ûºÅÎÊÌâ):}  &\Phi_1 + \Phi_2 + \Phi_3 = 0
+ \text{ä¸‰ä¸ªfluxç›¸åŠ ä¸ºé›¶(è€ƒè™‘äº†è¿›å‡ºçš„ç¬¦å·é—®é¢˜):}  &\Phi_1 + \Phi_2 + \Phi_3 = 0
  \end{eqnarray}
 
 \begin{eqnarray}
  \text{en z:} & \Phi_1=- \lambda \frac{dT}{dz} \cdot A \\
  \text{en z+dz:} &\Phi_2=-\lambda \frac{ d}{dz}(T+\frac{dT}{dz}dz) \cdot A\\
  \text{en surface lat\'eral:} & \Phi_3=h(T(z)-T_f) \cdot P_m dz \\
- \text{Èı¸öflux¶¼ÎªÕıÖµ,µ«ÊÇ$\Phi_1$½øÈ¥,$\Phi_2,\Phi_3$¶¼ÊÇ³öÈ¥:}  &\Phi_1 - \Phi_2 - \Phi_3 = 0\\
+ \text{ä¸‰ä¸ªfluxéƒ½ä¸ºæ­£å€¼,ä½†æ˜¯$\Phi_1$è¿›å»,$\Phi_2,\Phi_3$éƒ½æ˜¯å‡ºå»:}  &\Phi_1 - \Phi_2 - \Phi_3 = 0\\
 \end{eqnarray}
 
 R\'esultat:
@@ -157,20 +158,20 @@ R\'esultat:
 Pour l'ailette infinie
 \begin{equation}
 	\begin{split}
-	  \text{ÎÂ¶È²»ÄÜÎŞÇî´ó}\Rightarrow A=0 \\
+	  \text{æ¸©åº¦ä¸èƒ½æ— ç©·å¤§}\Rightarrow A=0 \\
 	  \text{en} z=0 \quad T_p - T_f =B \Rightarrow \frac{T-T_f}{T_p - T_f}=\exp{-mz}
 	\end{split}
 \end{equation}
-ÓÃµ½µÄ¹«Ê½:
+ç”¨åˆ°çš„å…¬å¼:
 \begin{equation}
 	\begin{split}
 	 \frac{ d}{dx}(y+\frac{dy}{dx}) & = \frac{ dy}{dx}+\frac{ d}{dx}(\frac{ dy}{dx}dx) \\
-	 & = \frac{ dy}{dx}+\frac{d^2y}{dx^2}dx + \frac{ dy}{dx}\frac{ ddy}{dx} \text{ÂÔÈ¥¶ş½×ÎŞÇîĞ¡} \\
+	 & = \frac{ dy}{dx}+\frac{d^2y}{dx^2}dx + \frac{ dy}{dx}\frac{ ddy}{dx} \text{ç•¥å»äºŒé˜¶æ— ç©·å°} \\
 	 & = \frac{ dy}{dx}+\frac{ d^2y}{dx^2}dx
 	\end{split}
 \end{equation}
-ÎÂ¶ÈÌİ¶È´óµÄµØ·½,´«ÈÈĞ§ÂÊ²»Ò»¶¨¸ß,Ïà·´ÎÂ¶ÈÌİ¶ÈµÍµÄµØ·½Ò²ÓĞ¿ÉÄÜ´«ÈÈĞ§ÂÊºÜ¸ß,ÀıÈçailette,ÓÉÓÚºáÏò´«ÈÈºÜ¿ì,
-µ¼ÖÂºáÏò¼¸ºõÃ»ÓĞÎÂ¶È²î,Ã»ÓĞÎÂ¶È²îÒ²¾ÍÃ»ÓĞÎÂ¶ÈÌİ¶È,µ«ÊÇºáÏò´«ÈÈĞ§ÂÊºÜ¸ß
+æ¸©åº¦æ¢¯åº¦å¤§çš„åœ°æ–¹,ä¼ çƒ­æ•ˆç‡ä¸ä¸€å®šé«˜,ç›¸åæ¸©åº¦æ¢¯åº¦ä½çš„åœ°æ–¹ä¹Ÿæœ‰å¯èƒ½ä¼ çƒ­æ•ˆç‡å¾ˆé«˜,ä¾‹å¦‚ailette,ç”±äºæ¨ªå‘ä¼ çƒ­å¾ˆå¿«,
+å¯¼è‡´æ¨ªå‘å‡ ä¹æ²¡æœ‰æ¸©åº¦å·®,æ²¡æœ‰æ¸©åº¦å·®ä¹Ÿå°±æ²¡æœ‰æ¸©åº¦æ¢¯åº¦,ä½†æ˜¯æ¨ªå‘ä¼ çƒ­æ•ˆç‡å¾ˆé«˜
 
 \subsection{Ecoulement}
 \subsection{Stationnaire Uniform \'Etabli}
@@ -184,10 +185,10 @@ $$ \frac{\partial  }{\partial x}=0 $$
 
 
 \textbf{Laminaire}
-ÎŞÂÛÔÚÁ÷ÌåÄÚ²¿»¹ÊÇÔÚÁ÷ÌåÓë±íÃæµÄ½çÃæ´¦,ÈÈÖ»Í¨¹ı·Ö×Ó´«µ¼½øĞĞ´«µİ.¼´,ÔÚÁ÷ÌåÁ£×ÓÄÚ×÷ÎªÄÚÄÜËù´¢±¸µÄÈÈ,°´ÕÕÁ£×Ó×¼Î¢¹ÛµÄ·Ö×ÓÔË¶¯,ºá¿çÁ÷Ïß´«µİ¸øÏàÁÚÁ÷ÏßÉÏµÄÁ£×Ó.
+æ— è®ºåœ¨æµä½“å†…éƒ¨è¿˜æ˜¯åœ¨æµä½“ä¸è¡¨é¢çš„ç•Œé¢å¤„,çƒ­åªé€šè¿‡åˆ†å­ä¼ å¯¼è¿›è¡Œä¼ é€’.å³,åœ¨æµä½“ç²’å­å†…ä½œä¸ºå†…èƒ½æ‰€å‚¨å¤‡çš„çƒ­,æŒ‰ç…§ç²’å­å‡†å¾®è§‚çš„åˆ†å­è¿åŠ¨,æ¨ªè·¨æµçº¿ä¼ é€’ç»™ç›¸é‚»æµçº¿ä¸Šçš„ç²’å­.
 \textbf{Turbulent}
-ÔÚÍÄÁ÷Ê±,´æÔÚºá¿çÁ÷ÏßÔËÊäÁ÷Ìå¿éµÄÎĞÁ÷,Í¨¹ıÕâ¸öÎĞÁ÷µÄºê¹ÛÔË¶¯,±»ÔËËÍµ½ÆäËûÁ÷Ìå²ãµÄÁ÷ÌåÁ£×Ó¸úÄÇÀïµÄÁ£×Ó»ìºÏ,ÔÚÁ÷Ìå²ã¼ä´«µİÄÜÁ¿.ÕâÖÖ»úÀí±»³ÆÎªÎĞ´«µ¼.\\
-ÍÄÁ÷Ê±,ÓÉÓÚ·Ö×Ó´«µ¼ÓÖ¸½¼ÓÁËÎĞÁ÷´«µ¼,ËùÒÔÖ»Óë·Ö×Ó´«µ¼µÄµ¼ÈÈÇé¿öÏà±È,Æä´«ÈÈĞ§¹ûÏÔÖøÔöÇ¿ÁË.Òò´ËÎĞÁ÷»ìºÏµÄ³Ì¶ÈÔ½´ó,´«ÈÈµÄĞ§ÂÊÒ²Ô½´ó.
+åœ¨æ¹æµæ—¶,å­˜åœ¨æ¨ªè·¨æµçº¿è¿è¾“æµä½“å—çš„æ¶¡æµ,é€šè¿‡è¿™ä¸ªæ¶¡æµçš„å®è§‚è¿åŠ¨,è¢«è¿é€åˆ°å…¶ä»–æµä½“å±‚çš„æµä½“ç²’å­è·Ÿé‚£é‡Œçš„ç²’å­æ··åˆ,åœ¨æµä½“å±‚é—´ä¼ é€’èƒ½é‡.è¿™ç§æœºç†è¢«ç§°ä¸ºæ¶¡ä¼ å¯¼.\\
+æ¹æµæ—¶,ç”±äºåˆ†å­ä¼ å¯¼åˆé™„åŠ äº†æ¶¡æµä¼ å¯¼,æ‰€ä»¥åªä¸åˆ†å­ä¼ å¯¼çš„å¯¼çƒ­æƒ…å†µç›¸æ¯”,å…¶ä¼ çƒ­æ•ˆæœæ˜¾è‘—å¢å¼ºäº†.å› æ­¤æ¶¡æµæ··åˆçš„ç¨‹åº¦è¶Šå¤§,ä¼ çƒ­çš„æ•ˆç‡ä¹Ÿè¶Šå¤§.
 
 
 %--------------------------------------------------------------------------%
@@ -204,13 +205,13 @@ $$ \frac{\partial  }{\partial x}=0 $$
 \end{itemize}
 \textbf{Bilan de masse}
 $$\frac{\partial  \rho}{\partial t} + \mbox{div} (\rho \vec{v})=0 $$
-»¯¼òÎª
+åŒ–ç®€ä¸º
 $$\mbox{div} \vec{v}=0$$
 \textbf{Bilan de quantit\'e de mouvement}
 $$
 \rho(\frac{\partial  \vec{v}}{\partial t}+ \vec{v}\cdot \vec{\mbox{grad}}\vec{v}) =  \vec{f} - \vec{\mbox{grad}} p + \mu \triangle\vec{v} + \frac{\mu}{3}\vec{\mbox{grad}} \mbox{div} \vec{v}
 $$
-»¯¼òÎª
+åŒ–ç®€ä¸º
 $$
 \rho(  \vec{v}\cdot \vec{\mbox{grad}}\vec{v}) =   - \vec{\mbox{grad}} p + \mu \triangle\vec{v}
 $$
@@ -218,7 +219,7 @@ $$
 $$
 \rho c_p (\frac{\partial  T}{\partial t} + \vec{v}\cdot \vec{\mbox{grad}} T)=P_{th} - \mbox{div} (\vec{\varphi}^{CD}+\vec{\varphi}^R) +  \sum_{ij} \tau_{ij}\frac{\partial  v_i}{\partial x_j} + \chi\frac{ DP_{th}}{Dt}
 $$
-»¯¼òÎª
+åŒ–ç®€ä¸º
 $$
 \rho c_p ( \vec{v}\cdot \vec{\mbox{grad}} T)=- \mbox{div} (\vec{\varphi}^{CD}) =\lambda \triangle T
 $$
@@ -232,13 +233,13 @@ $$
 (CD)Le transfert thermique dans le fluide \`a le paroi:
 $$\varphi^{cd} |_{pf} = -\\\lambda _f \frac{\partial T_f}{\partial y}|_{pf}$$
 
-(CC)Le transfert conduto-convectif(¸ù¾İÕı·½Ïò):
-$$\varphi ^{cc}=h(T_p - T_c) \quad \text{ÓÉpµ½cÎªÕı·½Ïò}$$
+(CC)Le transfert conduto-convectif(æ ¹æ®æ­£æ–¹å‘):
+$$\varphi ^{cc}=h(T_p - T_c) \quad \text{ç”±påˆ°cä¸ºæ­£æ–¹å‘}$$
 
 \subsection{Rayonnement}
 
 \subsubsection{Classfication}
-Les grandeurs physiques seront distingu¨¦es selon :
+Les grandeurs physiques seront distinguÃ©es selon :
 \begin{itemize}
 \item La composition spectrale du rayonnement
     \begin{itemize}
@@ -252,10 +253,10 @@ Les grandeurs physiques seront distingu¨¦es selon :
         \item Si elle caract\'erise une direction donn\'ee de propagation, elle est dite \textit{directionnelle} : $G_x$.
     \end{itemize}
 \end{itemize}
-ÎÂ¶ÈÎª$T$µÄÎïÌåµÄ:
+æ¸©åº¦ä¸º$T$çš„ç‰©ä½“çš„:
 L'\'energie \'emise est maximale pour une certaine longueur d'onde $\lambda _m$
 $$\lambda _m=\frac{3000k\cdot \mu m}{T}$$
-ÎïÌå(en l\'equilibre de temp\'erature T)µÄ·øÉä²¨³¤·¶Î§(ÔÚÕâ¸ö·¶Î§ÄÚ°üÀ¨ÁË$98\%$µÄÄÜÁ¿):
+ç‰©ä½“(en l\'equilibre de temp\'erature T)çš„è¾å°„æ³¢é•¿èŒƒå›´(åœ¨è¿™ä¸ªèŒƒå›´å†…åŒ…æ‹¬äº†$98\%$çš„èƒ½é‡):
 $$[\frac{\lambda _m }{2},8 \lambda _m]$$
 
 \`A l'\'equilibre thermique,le flux radiatif surfacique $\varphi^R$ est nul.\\
@@ -271,7 +272,7 @@ d \Phi_{\lambda } & = L_{\lambda}(O_1,u_1) \frac{d S_1 \cos \theta_1  d S_2 \cos
 \end{equation}
 \subsubsection{H\'emisph\'erique}
 Cas g\'en\'erale(\textbf{H\'emisph\'erique})
-¶ÔÓÚ$\theta$Îª°ë¶¥½Ç($\theta \in [0,\pi/2]$)µÄc\^one,¶ÔÓ¦µÄÁ¢Ìå½Ç¼°ÆäÎ¢·Ö·Ö±ğÎª:
+å¯¹äº$\theta$ä¸ºåŠé¡¶è§’($\theta \in [0,\pi/2]$)çš„c\^one,å¯¹åº”çš„ç«‹ä½“è§’åŠå…¶å¾®åˆ†åˆ†åˆ«ä¸º:
 $$\Omega = 2\pi(1-\cos \theta) \Rightarrow d\Omega=2\pi \sin \theta d\theta $$
 \begin{equation}
 	\begin{split}
@@ -293,8 +294,8 @@ d\varphi_{\lambda }^s &= \frac{d \Phi_{\lambda }^s}{dS_1}\\
 Flux radiatif:
 $$d\varphi_{\lambda }^R =d\varphi_{\lambda }^e - d\varphi_{\lambda }^a = d\varphi_{\lambda }^p - d\varphi_{\lambda }^i$$
 
-Ê¹ÓÃ$\varphi^e=\varepsilon \sigma T^4$µÄÇ°ÌáÊÇÒªÇóle corps est isotrope(c'est \`a dire ind\'ependante de direction)\\
-Èç¹ûÒªÓÃÕâ¸ö¹«Ê½³ËÉÏÃæ»ı»¹Ğè¶îÍâÒªÇóle corps est homo\`gene,Ò²¾ÍÊÇËµ¸÷¸öµãµÄÇé¿öÊÇÒ»ÑùµÄ
+ä½¿ç”¨$\varphi^e=\varepsilon \sigma T^4$çš„å‰ææ˜¯è¦æ±‚le corps est isotrope(c'est \`a dire ind\'ependante de direction)\\
+å¦‚æœè¦ç”¨è¿™ä¸ªå…¬å¼ä¹˜ä¸Šé¢ç§¯è¿˜éœ€é¢å¤–è¦æ±‚le corps est homo\`gene,ä¹Ÿå°±æ˜¯è¯´å„ä¸ªç‚¹çš„æƒ…å†µæ˜¯ä¸€æ ·çš„
 
 \begin{description}
 \item [\'Emissivit\'e monochromatique directionnelle $\varepsilon_{\lambda}$:] $L_{\lambda }^e(O_1,\theta_1,\varphi_1) = \varepsilon_{\lambda }(O_1,\theta_1,\varphi_1,T_1)L_{\lambda }^0(T_1)$
@@ -355,7 +356,7 @@ $$
 \underbrace{\int_{S(t)} \varphi \vec{W}.\vec{n}dS}_{\text{Mouvement de }S(t)}
 $$
 $\vec{n}$: vecteur normal unitaire\\
-$\vec{W}$:vitesse locale en un point de $S(t)$(n'est d¨¦finie que sur S)\\
+$\vec{W}$:vitesse locale en un point de $S(t)$(n'est dÃ©finie que sur S)\\
 \begin{itemize}
 \item  Domaine mat\'eriel :$\vec{W}=\vec{ U}$
 \item  Domaine fixe : $\vec{W}=0$
@@ -405,12 +406,12 @@ The complementary error function, denoted erfc, is defined as
  \mbox{erfc}(x)=1-\mbox{erf}(x)=\frac{2}{\sqrt{\pi}}\int_{x}^{\infty }e^{-t^2}dt
 \end{equation}
 $$\mbox{ierfc}(x)=\int_x^{\infty}\mbox{erfc}(u)du=\frac{ 1}{\sqrt{\pi}}e^{-x^2} -  x \cdot \mbox{erfc}(x)$$
-³£ÓÃÊıÖµ:
+å¸¸ç”¨æ•°å€¼:
 $$\mbox{erf}(\infty)=1$$
 $$\mbox{erf}(0.5) \simeq 0.5$$
 $$\mbox{ierfc}(0)=\frac{ 1}{\sqrt{\pi}}$$
 
-Å¼º¯Êı\\
+å¶å‡½æ•°\\
 For any complex number z:
 \begin{equation}
  erf(\overline{z})=\overline{erf(z)}
@@ -419,21 +420,21 @@ For any complex number z:
 \subsection{Angle solide}
 angle solide
 \begin{itemize}
-\item La valeur d¡¯un angle solide $\Omega$ est comprise entre 0 et 4¦Ğ
+\item La valeur dâ€™un angle solide $\Omega$ est comprise entre 0 et 4Ï€
 \item Pour un c\^one de \textbf{demi-angle} au sommet $\alpha$ : $\Omega = 2\pi(1- \cos \alpha)$
 \end{itemize}
 
-\textbf{²ÄÁÏµÄµ¼ÈÈĞÔ}
-¶à¿×ĞÔ ·²ÊÇÁ¼ºÃµÄ±£ÎÂ²ÄÁÏ,ÔÚ½á¹¹ÉÏ´ó¶à¶¼ÊÇ¶à¿×ÎïÖÊ,ÓĞÊ±ÈËÎªÖÆ³ÉÅİÄ­×´,ÏËÎ¬×´»ò²ã×´½á¹¹ \\
-ÀıÈç,Ê¯Í·µÄµ¼ÈÈÏµÊıÔ¼Îª$1Wm^{-1}K^{-1}$, µ«°ÑÊ¯Í·Ëé³ÉÉ°×Ó,Æäµ¼ÈÈÏµÊıÔòÎª$0.3Wm^{-1}K^{-1}$.ÔÙ°ÑÊ¯Í·ÖÆ³ÉÏËÎ¬×´(ÏñÊ¯ÃŞÒ»ÑùµÄ¶«Î÷),Ôòµ¼ÈÈÏµÊıÔ¼Îª$0.05Wm^{-1}K^{-1}$ \\
-ÈçÉÏ´¦Àíºó,µ¼ÈÈÏµÊı½µµÍµÄÀíÓÉÊÇÒòÎª¿ÅÁ£¼ä»òÏËÎ¬¼äµÄ½Ó´¥Ãæ»ı±äĞ¡ÁË,ÆÚ¼ä²úÉúÁËÏàµ±´óµÄ½Ó´¥ÈÈ×è,ÔÙ¼ÓÉÏ¼äÏ¶ÖĞº¬ÓĞ´óÁ¿¿ÕÆø,
-¶ø¿ÕÆøµÄµ¼ÈÈÏµÊı²Å$0.023Wm^{-1}K^{-1}$,±È¹ÌÌåĞ¡¶àÁË,ËùÒÔ×èµ²ÁËÈÈÁ÷µÄÒÆ¶¯.Òò´ËÎŞÂÛÔõÑùÑ¡ÔñÁ¼ºÃµÄ±£ÎÂ²ÄÁÏ,¼¸ºõ¶¼²»Èç¿ÕÆøµÄµ¼ÈëÏµÊıĞ¡.
-Ò»°ãÇé¿öÏÂ,Ã¿µ¥Î»Ìå»ıµÄÖÊÁ¿Ô½Ğ¡µÄÎïÖÊ,µ¼ÈÈÏµÊıÔ½Ğ¡. µ«ÊÇ,µµº¯ÓĞ¿Õ¼äµÄ¼äÏ¶¹ı´óÊ±,ÓÉÓÚ¼äÏ¶ÖĞµÄ¿ÕÆø²úÉú¶ÔÁ÷,·´¶ø¶Ô´«ÈÈ²»Àû.µ±¼äÏ¶´ïµ½$1cm$Ê±,¾Í»á·¢ÉúÕâÖÖÏÖÏó.
+\textbf{ææ–™çš„å¯¼çƒ­æ€§}
+å¤šå­”æ€§ å‡¡æ˜¯è‰¯å¥½çš„ä¿æ¸©ææ–™,åœ¨ç»“æ„ä¸Šå¤§å¤šéƒ½æ˜¯å¤šå­”ç‰©è´¨,æœ‰æ—¶äººä¸ºåˆ¶æˆæ³¡æ²«çŠ¶,çº¤ç»´çŠ¶æˆ–å±‚çŠ¶ç»“æ„ \\
+ä¾‹å¦‚,çŸ³å¤´çš„å¯¼çƒ­ç³»æ•°çº¦ä¸º$1Wm^{-1}K^{-1}$, ä½†æŠŠçŸ³å¤´ç¢æˆç ‚å­,å…¶å¯¼çƒ­ç³»æ•°åˆ™ä¸º$0.3Wm^{-1}K^{-1}$.å†æŠŠçŸ³å¤´åˆ¶æˆçº¤ç»´çŠ¶(åƒçŸ³æ£‰ä¸€æ ·çš„ä¸œè¥¿),åˆ™å¯¼çƒ­ç³»æ•°çº¦ä¸º$0.05Wm^{-1}K^{-1}$ \\
+å¦‚ä¸Šå¤„ç†å,å¯¼çƒ­ç³»æ•°é™ä½çš„ç†ç”±æ˜¯å› ä¸ºé¢—ç²’é—´æˆ–çº¤ç»´é—´çš„æ¥è§¦é¢ç§¯å˜å°äº†,æœŸé—´äº§ç”Ÿäº†ç›¸å½“å¤§çš„æ¥è§¦çƒ­é˜»,å†åŠ ä¸Šé—´éš™ä¸­å«æœ‰å¤§é‡ç©ºæ°”,
+è€Œç©ºæ°”çš„å¯¼çƒ­ç³»æ•°æ‰$0.023Wm^{-1}K^{-1}$,æ¯”å›ºä½“å°å¤šäº†,æ‰€ä»¥é˜»æŒ¡äº†çƒ­æµçš„ç§»åŠ¨.å› æ­¤æ— è®ºæ€æ ·é€‰æ‹©è‰¯å¥½çš„ä¿æ¸©ææ–™,å‡ ä¹éƒ½ä¸å¦‚ç©ºæ°”çš„å¯¼å…¥ç³»æ•°å°.
+ä¸€èˆ¬æƒ…å†µä¸‹,æ¯å•ä½ä½“ç§¯çš„è´¨é‡è¶Šå°çš„ç‰©è´¨,å¯¼çƒ­ç³»æ•°è¶Šå°. ä½†æ˜¯,æ¡£å‡½æœ‰ç©ºé—´çš„é—´éš™è¿‡å¤§æ—¶,ç”±äºé—´éš™ä¸­çš„ç©ºæ°”äº§ç”Ÿå¯¹æµ,åè€Œå¯¹ä¼ çƒ­ä¸åˆ©.å½“é—´éš™è¾¾åˆ°$1cm$æ—¶,å°±ä¼šå‘ç”Ÿè¿™ç§ç°è±¡.
 
-\textbf{ÀßÆ¬}
-ÔÚ¸÷ÖÖ½ØÃæĞÎ×´µÄ×î¼ÑÀßÆ¬ÖĞ,×î¼ÑÀßÆ¬ÊÇµ¹Å×ÎïÏßĞÎ½ØÃæÀßÆ¬,ÕâÖÖÀßÆ¬ËùĞè²ÄÁÏ¼°ÖÊÁ¿¿ÉÒÔ±ÈÈı½ÇĞÎÖ±ÀßÆ¬½ÚÔ¼°Ù·ÖÖ®¼¸,
-µ«´Ó¼Ó¹¤ÄÑÒ×³Ì¶È¼°ÄÍ¾ÃĞÔ·½Ãæ,Êµ¼Ê¹¤³Ì¶¼ÈÏÎªÈı½ÇĞÎÖ±ÀßÆ¬Îª×î¼ÑÀßÆ¬.
+\textbf{è‚‹ç‰‡}
+åœ¨å„ç§æˆªé¢å½¢çŠ¶çš„æœ€ä½³è‚‹ç‰‡ä¸­,æœ€ä½³è‚‹ç‰‡æ˜¯å€’æŠ›ç‰©çº¿å½¢æˆªé¢è‚‹ç‰‡,è¿™ç§è‚‹ç‰‡æ‰€éœ€ææ–™åŠè´¨é‡å¯ä»¥æ¯”ä¸‰è§’å½¢ç›´è‚‹ç‰‡èŠ‚çº¦ç™¾åˆ†ä¹‹å‡ ,
+ä½†ä»åŠ å·¥éš¾æ˜“ç¨‹åº¦åŠè€ä¹…æ€§æ–¹é¢,å®é™…å·¥ç¨‹éƒ½è®¤ä¸ºä¸‰è§’å½¢ç›´è‚‹ç‰‡ä¸ºæœ€ä½³è‚‹ç‰‡.
 \includegraphics{ailette_parabolique}\\
-%%   %\caption{µ¹Å×ÎïÏßĞÎ½ØÃæÀßÆ¬}\label{ailette_parabolique}  
+%%   %\caption{å€’æŠ›ç‰©çº¿å½¢æˆªé¢è‚‹ç‰‡}\label{ailette_parabolique}  
 
 \end{document}
