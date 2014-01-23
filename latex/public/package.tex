@@ -3,19 +3,23 @@
 \usepackage{ctex}
 \usepackage{amsmath, amsthm, amssymb}
 
-% custom head, foot and etc.
+%%%%%%%%%% header & footer %%%%%%%%%%
+\setlength\textheight{100.0pt} 
+\setlength\textwidth{430.0pt}                                  
 \usepackage{fancyhdr}                                
 \usepackage{lastpage}                                           
 \usepackage{layout}                                             
 %\pagestyle{empty}                   %不设置页眉页脚            
 \footskip = 20pt                                                
-\pagestyle{fancy}                    % 设置页眉                 
-\lhead{Page \thepage\ of \pageref{LastPage}}                    
-%% \chead{页眉中间}                                                
+\pagestyle{fancy}
+\fancyhead{} %clear all fields                                 
+\lhead{page \thepage\ of \pageref{LastPage}}                    
+%% \chead{}                                                
 \rhead{\small\leftmark}                                                
-\cfoot{\thepage}                                                
-%% \rfoot{right foot}                                                       
-\lfoot{\href{mailto:wangchaogo1990@gmail.com}{FEEDBACK}}
+\fancyfoot{} %clear all fields
+\lfoot{\href{mailto:wangchaogo1990@gmail.com}{feedback}}                                                
+%% \cfoot{}                                                
+\rfoot{\thepage}                                                
 \renewcommand{\headrulewidth}{1pt}  %页眉线宽，设为0可以去页眉线
 \setlength{\skip\footins}{0.5cm}    %脚注与正文的距离           
 \renewcommand{\footnotesize}{}      %设置脚注字体大小           
@@ -37,7 +41,7 @@
 %\fancyhead[RO]{\thepage} %奇数页眉的右边                       
 %\fancyhead[LE]{\thepage} %偶数页眉的左边                       
 %\fancyhead[RE]{\zihao{-5} 2005 c}                              
-%\fancyfoot[C]{}    
+%\fancyfoot[C]{}
 
 %图形
 \usepackage{graphicx}
