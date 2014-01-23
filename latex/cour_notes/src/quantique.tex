@@ -67,14 +67,14 @@ $$
 下一个最简单的原子是氦, 有两个电子, 都填布在最低的1S能级上, 他们的自旋必须相反. 因为1S 能级上已经没有地方容纳更多的电子了, 泡利不相容原理将禁止别的电子靠近氦原子, 就像他对氢分子那样, 因此我们可以预料到氦原子的化学性质很不活泼, 实际上他就是一种惰性气体.
 
 \section{费米子与玻色子}
-Toutes les particules élémentaires découvertes à ce jour sont soit des bosons, soit des fermions.\par
+Toutes les particules \'el\'ementaires d\'ecouvertes \`a ce jour sont soit des bosons, soit des fermions.\par
 
-un grand nombre de particules : les fermions sont des particules qui obéissent à la statistique de Fermi-Dirac alors que les bosons obéissent à la statistique de Bose-Einstein.\\
-la loi statistique Fermi-Dirac : quand on échange deux fermions, la fonction d'onde change de signe.
+un grand nombre de particules : les fermions sont des particules qui ob\'eissent \`a la statistique de Fermi-Dirac alors que les bosons ob\'eissent \`a la statistique de Bose-Einstein.\\
+la loi statistique Fermi-Dirac : quand on \'echange deux fermions, la fonction d'onde change de signe.
 物质粒子都是由费米子构成，而玻色子则是媒介子
 
 \textbf{宏观的玻色子现象}\\
-la condensation de Bose-Einstein玻色-爱因斯坦凝聚: 是玻色子原子在冷却到绝对零度附近时所呈现出的一种气态的、超流性的物态,几乎全部原子都聚集到能量最低的量子态，形成一个宏观的量子状态  occupent un unique état quantique de plus basse énergie (état fondamental)\par
+la condensation de Bose-Einstein玻色-爱因斯坦凝聚: 是玻色子原子在冷却到绝对零度附近时所呈现出的一种气态的、超流性的物态,几乎全部原子都聚集到能量最低的量子态，形成一个宏观的量子状态  occupent un unique \'etat quantique de plus basse \'energie (\'etat fondamental)\par
 la population macroscopique d'un mode unique de photon dans un laser
 大量的光子(玻色子)处于同一个量子状态 \par
 
@@ -91,7 +91,7 @@ la population macroscopique d'un mode unique de photon dans un laser
 \end{itemize}
 
 \chapter{Quantique}
-\section{Equation de Schr\.ondinger}
+\section{Equation de Schr\"ondinger}
 推广到三维情况下，方程为:
 $$
 \psi \left({\mathbf r}, t \right) = A \cos \left({\mathbf k} \cdot {\mathbf r} - \omega t + \varphi \right)
@@ -129,6 +129,55 @@ Likewise, after making the substitution
 $$ \omega  \stackrel{\mathrm{def}}{=}  kc $$
 the second equation becomes
 $$\frac{d^2{T}}{d{t}^2} + \omega^2T  =  \left( { d^2 \over dt^2 } + \omega^2 \right) T  =  0,$$
-where $k$ is the wave vector and $\omega$ is the angular frequency.
+where $k$ is the wave vector and $\omega$ is the angular frequency.\par
+我们可以解出
+$$
+T(t) = \exp^{-i \omega t}
+$$
 
+回到第一个方程\par
+La longueur d'onde dans le milieu est d\'efinie par $\lambda = 2 \pi/k$. L'\'equation de Helmholtz se r\'e\'ecrit :
+
+$$
+\left( \, \Delta \ + \ \frac{4\pi^2}{\lambda^2} \, \right) \ \psi(\vec{r}) \ = \ 0
+$$
+
+On utilise alors la relation de de Broglie pour une particule non relativiste, pour laquelle la quantit\'e de mouvement $p = m v$  :
+$$
+\lambda \ = \ \frac{h}{mv} \quad \Longrightarrow \quad \frac{1}{\lambda^2} \ = \ \frac{m^2 \, v^2}{h^2}
+$$
+
+Or, l'\'energie cin\'etique s'\'ecrit pour une particule non relativiste :
+$$
+\frac{1}{2} \, m \, v^2 \ = \ E \ - \ V(\vec{r})
+$$
+
+d'où l'\'equation de Schr?dinger stationnaire :
+$$
+\left[ \, \Delta \ + \ \frac{8\pi^2m}{h^2} \, \left( \, E \ - \ V(\vec{r}) \, \right) \ \right] \ \psi(\vec{r}) \ = \ 0
+$$
+
+En introduisant le quantum d'action $\hbar = h/2\pi$, on la met sous la forme habituelle :
+$$
+- \ \frac{\hbar^2}{2m} \, \Delta \psi(\vec{r}) \ + \ V(\vec{r}) \, \psi(\vec{r}) \ = \ E \, \psi(\vec{r})
+$$
+
+Il ne reste plus qu'\`a r\'eintroduire le temps t en explicitant la d\'ependance temporelle pour une onde monochromatique, puis en utilisant la relation de Planck-Einstein $E = \hbar \omega$:
+
+$$
+\psi(\vec{r},t) \ = \ \psi(\vec{r}) \ \mathrm{e}^{- \, i \, \omega \, t} \ = \ \psi(\vec{r}) \ \exp \left( - \, \frac{i \, E \, t}{\hbar} \right)
+$$
+
+On obtient finalement l'\'equation de Schr\"odinger g\'en\'erale :
+$$
+- \ \frac{\hbar^2}{2m} \, \Delta \psi(\vec{r},t) \ + \ V(\vec{r}) \, \psi(\vec{r},t) \ = \ i \, \hbar \ \frac{\partial \psi(\vec{r},t)}{\partial t}
+$$
+
+
+L'\'electron est trait\'e comme une onde $\Psi(r,t)$ se d\'epla\c cant dans un puits de potentiel $V$.
+La densit\'e de probabilit\'e $\rho(r,t)$ qui lui est associ\'ee est d\'efinie par
+$$
+\rho(r,t)= R(r,t)^2 = |\Psi(r,t)|^2=\Psi^*(\bold{r},t)\Psi(\bold{r},t)\,\!
+$$
+(probabilit\'e par unit\'e de volume, * indique un complexe conjugu\'e)
 \end{document}
