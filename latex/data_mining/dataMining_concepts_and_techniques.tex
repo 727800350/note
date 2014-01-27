@@ -1,0 +1,195 @@
+﻿% !Mode:: "TeX:UTF-8"
+\documentclass{article}
+\input{../public/package}   %导入需要用到的package
+\input{../public/article}   %导入需要用到的package
+\begin{document}
+\title{Data Mining \\ Concepts and Techniques \\Eric's Notes}
+\author{Eric}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\section{引论}
+数据挖掘是一个多学科的交叉领域.\\
+统计学, 机器学习, 神经网络, 模式识别, 知识库系统, 信息检索, 高性能计算和可视化等学科
+
+丰富的数据类型:
+流, 序列, 图, 时间序列, 符号序列, 生物学序列, 空间, 音频, 图像和视频数据
+
+高级数据库系统: 扩充关系的, 面向对象的, 对象-关系的和演绎的模型. 包括空间的, 时间的, 多媒体的, 主动的, 流和传感器的, 科学和工程数据库, 知识库, 办公信息库在内的面向应用的数据库系统百花齐放
+
+\textbf{数据仓库}\\
+一种多个异构数据源在单个站点以统一的模式组织的存储, 以支持管理决策.\\
+数据仓库技术包含数据清理, 数据集成和联机分析处理OLAP\\
+OLAP是以各种分析技术, 具有汇总, 合并和具体记忆从不同的角度观察信息的能力. 尽管OLAP 工具支持多维分析和决策, 但是对于深层次的分析, 仍然需要其他分析工具, 如提供数据分类, 聚类, 离群点/异常检测和刻画数据随时间变化等特征.
+
+OLAP 操作的列子包括下钻(drill-down) 和上卷(roll-up), 允许用户在不同的汇总级别观察数据\\
+例如, 可以对按季度汇总的数据下钻, 观察按月汇总的数据. 类似的, 可以对按城市汇总的数据上卷, 观察按国家汇总的数据
+
+\textbf{可挖掘什么类型的模式}\\
+特征化与区分, 频繁模式(频繁项集, 频繁子序列, 频繁子结构), 关联和相关性挖掘, 分类和回归, 聚类分析, 离群点分析.\\
+数据挖掘功能用于指定数据挖掘任务发现的模式, 一般而言, 这些任务分为: 描述性(descriptive)和预测性(predictive)
+
+\textbf{关联规则}\\
+关联规则从一个侧面揭示了事务之间的某种联系.\\
+支持度和置信度总是伴随着关联规则存在的,它们是对关联规则的必要的补充\\
+对某条关联规则而言,如 $A \rightarrow B (support=30\%, confidence= 60\%)$\\
+其中的$support=30\%$是说, 在所有的事务中同时出现A和B的概率.\\
+而$confidence=60\%$是说,所有事务中,在出现A的情况下出现B的概率,即条件概率.
+$$
+Support(X=>Y) = P(X \eqnote{and} Y) \eqspace
+Confidence(X=>Y) = P(Y | X)
+$$
+$$Buys(X, "computer") \Rightarrow buys (X,"software") [support = 1\%, confidence = 50\%]$$
+这个关联规则涉及单个重复的属性或谓词(buys), 单维关联规则 single-dimensional association rule
+
+置信度揭示了A出现时,B是否一定会出现,如果出现则其大概有多大的可能出现.如果置信度为$100\%$,\\
+则说明了A出现时,B一定出现.那么,对这种情况而言,假设A和B是市场上的两种商品,就没有理由不进行捆绑销售了.
+
+用于预测分析的分类和回归\\
+导出的模型可以用多种形式表示, 如分类规则(即if-then 规则), 决策树, 数学公式或神经网络\par
+离群点分析或异常挖掘\\
+数据集中可能包含一些数据对象, 他们与数据的一般行为或模型不一致. 这些数据对象是离群点(outlier).\\
+大部分的数据挖掘方法都将离群点视为噪声或异常而丢弃, 然而, 在一些应用中(例如, 欺诈检测), 罕见的事件可能比正常出现的事件更令人感兴趣.
+
+\textbf{机器学习}
+\begin{itemize}
+\item 监督学习Supervised learning: 基本上是分类的同义词
+\item 无监督学习 unsupervised learning: 基本上是聚类的同义词
+\item 半监督学习 semi-supervised learning, 标记的实例用来学习类模型, 而未标记的实例用来进一步改进类边界
+\item 主动学习
+\end{itemize}
+
+数据挖掘算法的有效性和可伸缩性\par
+增量数据挖掘
+
+\section{认识数据}
+\subsection{属性类型}
+\textbf{标称属性}nominal attribute: 值是一些符号或事物的名称. 每个值代表某种类别, 编码或状态. 又被称为分类的(categorical) 或枚举的(enumeration)
+\textbf{二元属性}binary attribute: 一种标称属性, 两个状态, 通常用0和1 或false, true表示\\
+对称二元属性: 两种状态具有同等价值并且携带相同的权重\\
+非对称二元属性:
+\textbf{序数属性}ordinal attribute: 其可能的值之间具有有意义的序或秩排序ranking, 但是相继值之间的差是未知的\\
+例如, 成绩可以用A+, A, A-, B+ 等划分, 意味着排序, 但是划分值之间的差别未明确
+\textbf{数值属性}numeric attribute: 可度量的量\\
+	区间标度属性interval-scaled: 用相等的单位尺度度量, 可以比较差, 但是没有真正的零点, 例如日期, 我们可以说两个日期相差多少时间, 但是对于0日期, 没有具体的含义\\
+	比率标度属性ratio-scaled: 具有固定零点的数值属性, 也就是说, 我们可以说一个值是另一个值的倍数(或比率). 此外, 这些值是有序的, 因此可以计算值之间的差, 均值, 中位数和众数\\
+	开氏温标具有绝对零点\par
+标称, 二元和序数属性都是定性的
+
+\textbf{离散属性和连续属性}(在文献中, 术语数值属性与连续属性通常可以互换地使用)
+
+\subsection{基本统计描述}
+\textbf{中心趋势度量}: 均值(平均值), 加权平均, 截尾均值, 中列数midrange(最大与最小值的平均值), 中位数(中间值), 众数(最常见的值)\\
+	正倾斜:\\
+	负倾斜
+\textbf{数据的散布}: 极差, 四分位数, 四分位数极差, 无数概括和盒图, 方差和标准差
+
+有助于在数据预处理时填补缺失值, 光滑噪声, 识别离群点.\\
+数据可视化: 散点图矩阵, 树图\\
+数据对象的相似性和相异性\\
+最近邻分类, 邻近性度量
+
+极差: $max – min$ \\
+\textbf{分位数}quantile: 取自数据分布的每隔一定间隔上的点, 把数据划分成数量上大小基本相等的连贯集合\\
+给定数据分布的第$k$ 个q-分位数是值$x$, 使得小于$x$ 的数据值最多为$k/q$, 而大于x的数据值最多为$(q-k)/q$, 其中$k$为整数, 使得$0<k<q$. 我们有$q-1$ 个q-分位数.
+2-分位数是一个数据点, 把数据分布划分为高低两半, 对应于中位数\\
+4-分位数是3个数据点, 他们把数据分布划分为4 个相等的部分, 使得每部分表示数据分布的四分之一. 通常把他们成为4分位数quartile\\
+第一个四分位数记作$Q_1$, 第三个四分位数记为$Q_3$, 四分位数极差$IQR = Q_3 – Q_1$\\
+100-分位数通常称为百分位数(percentile)
+
+\textbf{五数概括, 盒图和离群点}\\
+识别可疑的离群点的通常规则: 挑选落在第3 个四分位数之上或第1 个四分位数之下至少$1.5 * IQR$ 处的值\par
+五数概括(five-number summary)由中位数$Q_2$, 四分位数$Q_1$, $Q_3$, 最小和最大值, 按次序
+$Minimum, Q_1, median, Q_3, maximum$\par
+盒图(如图\ref{fig.hetu}): 盒的端点在四分位数上, 盒的长度为IQR; 中位数标在盒内; 盒外的两条线(胡须) 延伸到最小和最大值\\
+\begin{figure}[htbp]
+  \centering
+  % Requires \usepackage{graphicx}
+  \includegraphics[scale=0.5]{hetu}\\
+  \caption{盒图}
+  \label{fig.hetu}
+\end{figure}
+
+盒图可在$O(nlgn)$时间内计算, 依赖于所要求的质量, 近似盒图可在线性或者子线性时间内计算.
+
+分位数图quantile plot
+直方图histogram或频率直方图frequency histogram\\
+散点图scatter plot: 确定两个数值变量是否存在联系, 模式或趋势的最有效的图形方法之一\\
+
+\subsection{数据可视化}
+\begin{itemize}
+\item 基于像素的可视化技术pixel-oriented technique
+几何投影可视化技术
+	\begin{itemize}
+	\item 散点图
+	\item 散点图矩阵
+    \item 平行坐标parallel coordinates
+	\end{itemize}
+\item 基于图符icon-based的可视化技术
+	\begin{itemize}
+	\item 切尔诺夫脸chernoff faces
+	\item 人物线条画
+	\end{itemize}
+\item 层次可视化技术
+	\begin{itemize}
+	\item 世界中的世界
+	\item 树图tree-map
+	\end{itemize}
+\item 可视化复杂对象和关系
+	\begin{itemize}
+	\item 标签云tag cloud
+	\end{itemize}
+\end{itemize}
+	
+\subsection{度量数据的相似性与相异性}
+相似性和相异性都成为紧邻性proximity\\
+数据矩阵和相异性矩阵\\
+$n$ 个对象, $p$ 个属性\\
+数据矩阵data matrix $n \times p$\\
+$$
+\eqnote{data matrix}_{ij} = x_{ij}
+$$
+$x_{ij}$ 第$i$ 个对象的第$j$ 个属性的值
+
+相异性矩阵 dissimilarity matrix; $n \times n$
+$$
+sim(i,j) = 1 – d(i,j)
+$$
+数据矩阵由两种实体(行的对象,列的属性)组成, 因而被称为二模(two-mode)矩阵\\
+相异性矩阵只包含一种实体, 因而被称为单模(one-mode)矩阵\\
+
+许多聚类和最近邻算法都在相异性矩阵上运行
+
+\textbf{标称属性的邻近性度量}
+$$
+d(i,j) = \frac{p – m}{p}
+$$
+$m$: 匹配的数目(即对象i和j 取相同状态的属性数)\\
+$p$: 属性总数
+
+\textbf{数值属性的相异性}\par
+\begin{itemize}
+\item 欧几里得距离
+\item 曼哈顿距离, 街区距离, 两个点在标准坐标系上的绝对轴距总和
+\item 闵可夫斯基距离, $L_p$ 范数
+\item 上确界距离(又称为$L_{\infty}$ 范数和切比雪夫Chebyshev距离)
+\end{itemize}
+
+\textbf{序数属性}:转化为数值属性进行度量
+
+混合类型属性的相异性
+
+\subsubsection{余弦相似性}
+词频向量term frequency vector 通常很长, 并且是稀疏的\\
+使用这种结构的应用包括信息检索, 文本文档聚类, 生物学分类和基因特征映射.\\
+对于这类稀疏的数值数据, 前面介绍过的传统的距离度量效果并不好
+
+余弦相似性是一种度量, 他可以用来比较文档, 或针对给定的查询词向量对文档排序
+$$sim(x,y) = \dfrac{x \cdot y}{\norm{x} \norm{y}}$$
+
+当属性为二元属性时, 余弦相似性衡量的是他们共享的属性
+
+\section{数据预处理}
+
+\end{document}
