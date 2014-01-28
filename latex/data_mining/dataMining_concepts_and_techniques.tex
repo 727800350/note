@@ -191,5 +191,93 @@ $$sim(x,y) = \dfrac{x \cdot y}{\norm{x} \norm{y}}$$
 当属性为二元属性时, 余弦相似性衡量的是他们共享的属性
 
 \section{数据预处理}
+数据质量: 准确性, 完整性, 一致性, 时效性, 可信性和可解释性.
 
+\subsection{数据清理data cleaning}
+用来清除数据中的噪声, 填补缺失的值, 识别或删除离群点并解决不一致性.
+
+填充缺失值的方法:忽略元组, 人工填写缺失值,使用一个全局常量填充缺失值, 使用属性的中心度量(如均值或中位数)填充缺失值, 使用与给定元组属同一类的所有样本的属性均值或中位数,使用最可能的缺失值填充缺失值(用回归,贝叶斯形式化方法的基于推理工具或决策树归纳确定)
+
+噪声noise: 是被测量的变量的随机误差或方差.
+
+数据光滑技术
+\begin{description}
+	\item [分箱binning] 通过考察数据的近邻(即周围的值)来光滑有序数据值,将数据划分到等频的箱中, 局部光滑方法, 有用箱均值光滑(用箱中数据的均值代替箱中的每一个值), 用箱中位数光滑, 用箱边界光滑
+	\item [回归regression] 用一个函数拟合数据来光滑数据
+	\item [离群点分析outlier analysis] 可以通过聚类来检测离群点
+\end{description}
+
+唯一性规则, 连续性规则和控制规则
+
+数据清洗工具data srubbing tool, 数据审计工具data auditing tool, 数据迁移工具data migration tool. ETL(extraction/transformation/loading), Potter's Wheel 一个公开的数据清理工具, 集成了偏差检测和数据变换
+
+\subsection{数据集成data integration}
+将数据由多个数据源合并成一个一致的数据存储, 如数据仓库.
+\subsubsection{冗余和相关分析}
+一个属性如果能够由另外一个属性导出, 则这个属性可能是冗余的.
+
+标称数据的$\chi^2$卡方检验
+数值数据的相关系数, Pearson 积矩系数
+数值数据的协方差
+
+远足重复, 数据值冲突的检测与处理
+
+\subsection{数据规约data reduction}
+通过如聚集, 删除冗余特征或聚类来降低数据的规模.
+\begin{itemize}
+	\item 维规约dimensionality reduction: 使用数据编码方案, 例如小波分析和主成分分析, 属性子集选择(去掉不相关的属性)和属性构造(从原来的属性导出更有用的小属性集).
+	\item 数值规约numerosity reduction:使用参数模型(例如,回归,多元回归和对数线性模型)和非参数模型(例如直方图, 聚类, 抽样或数据聚集), 用较小的表示取代数据, 离散化和概念分层(例如年龄的原始值可以用交高层的概念如青年, 中年和老年取代)
+	\item 数据压缩data compression
+\end{itemize}
+\subsubsection{小波变换}
+离散小波变换DWT, 离散傅里叶变换DFT. 一般的说, DWT一种更好的有损压缩
+
+流行的小波变换包括Haar$_2$, Daubechies$_4$和Daubechies$_6$. \\
+离散小波变换的一般过程是使用一种层次金字塔算法pyramid algorithm, 他在每次迭代时将数据减半, 导致计算速度很快.
+
+主成分分析principal components analysis(PCA):PCA通过创建一个替换的, 较小的变量集合组合属性的基本要素
+
+属性子集选择: 通常使用压缩搜索空间的启发式算法, 通常这些方法是典型的贪心算法
+\subsection{数据变换data transformation}
+(例如,规范化)可以用来把数据压缩到较小的区间, 如$0.0$ 到$1.0$, 这可以提高涉及距离度量的挖掘算法的准确率和效率.\\
+规范化, 数据离散化和概念分层都是某种形式的数据变换
+
+数据变换策略:光滑smoothing(去掉数据中的噪声, 分箱, 回归和聚类);属性构造; 聚集; 规范化; 离散化; 由标称数据产生概念分层
+
+\subsection{规范化数据}
+最小-最大规范化: 对原始数据进行线性变换, 映射到$[-1,1]$或$[0,1]$
+$$
+v_i' = \dfrac{v_i - min_A }{max_A - min_A}(new\_max_A - new\_min_A) + new\_min_A
+$$
+
+z分数(z-score)规范化或零均值规范化
+$$
+v_i' = \dfrac{ v_i - \overline{A}}{\sigma_A}
+$$
+其中$\overline{A}$为属性$A$的均值, $\sigma_A$的属性$A$的标准差 \\
+式中的标准差可以使用均值绝对偏差替换,$A$的均值绝对偏差(mean absolute deviation)$s_A$定义为
+$$
+s_A = \dfrac{1}{n}( \norm{v_1 - \overline{A}}+ \norm{v_1 - \overline{A}}+ \ddots \norm{v_n - \overline{A}}+)
+$$
+
+按小数定标规范化: 移动属性$A$的值的小数点位置进行规范化
+$$
+v_i' = \dfrac{v_i}{10^j}
+$$
+
+\section{数据仓库和联机分析处理}
+\subsection{数据仓库}
+数据仓库是面向主题的subject-oriented, 集成的integrated, 时变的time-variant, 非易失的nonvolatile数据集合, 支持管理者的决策过程.
+
+对于异构数据库的集成, 传统的数据库做法: 在多个异构数据库上,建立一个包装程序和一个集成程序(或中介程序). 当查询在客户站点提交时,首先转换成各个异构数据库上相应的查询, 然后将所有的查询结果集成为全局回答. 这是查询驱动query-driven的方法.而数据仓库采用更新驱动update-driven的方法.\par
+数据仓库并不包含最近的数据.
+
+联机操作数据库系统的主要任务是执行联机事务和查询处理. 这种系统称作联机事务处理online transaction processing,OLTP系统. \\
+而数据仓库系统在数据分析和决策方面为用户和只是工人提供服务. 这种系统可以用不同的格式组织和提供数据, 以便满足不同用户的形形色色的需求. 这种系统称作联机分析处理online analytical processing,OLAP系统.\par
+OLTP与OLAP的区别
+\begin{itemize}
+	\item 用户和系统的面向性: OLTP是面向顾客的, 用于办事员, 客户; OLAP 是面向市场的, 用于知识工人(包括经理, 主管和分析人员)的数据分析.
+	\item 数据库设计: 通常OLTP系统采用实体-联系(ER)数据模型和面向应用的数据库设计. 而OLAP系统通常采用星形或雪花模型和面向主题的数据库设计.
+	\item 访问模式: OLTP系统的访问主要由短的原子事务组成, 需要并发控制和恢复机制. 然后OLAP系统的访问大部分是只读操作.
+\end{itemize}
 \end{document}
