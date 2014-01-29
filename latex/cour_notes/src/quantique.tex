@@ -58,25 +58,95 @@ $$
 \Delta E \Delta t \geq \hbar
 $$
 虽然经典意义上, 我们不可能在不违反能量守恒的前提下改变总能量, 但是在量子力学里, 如果时间不确定性是$\Delta t$, 我们无法把能量测量的比$\Delta E = \hbar /\Delta t$精确.
-粗略的说, 我们能借到一些能量$\Delta E$来越过壁垒, 只要我们在时间$\Delta t = \hbar / \Delta E$内把能量还回去. 如果势垒太高或者太宽, 隧穿的可能性就会变得非常小. \par
+粗略的说, 我们能借到一些能量$\Delta E$来越过壁垒, 只要我们在时间$\Delta t = \hbar / \Delta E$内把能量还回去. 如果势垒太高或者太宽, 隧穿的可能性就会变得非常小.
 
 扫描隧道显微镜
 
-\section{泡利与元素}
-如果我们让另一个氢原子靠近第一个氢原子, 会发生什么呢? 如果两个电子的自旋都向上, 泡利不相容原理将禁止两个氢原子靠近, 因为两个电子的波函数会重叠, 波函数重叠就意味着两个电子会处于同一个量子态. 如果两个电子的自选方向相反, 他们就可以互相靠近, 并且实际情况是, 两个电子大部分时间都呆在两个氢原子核之间. 这样就在两个氢原子之间产生了一个束缚力, 形成一个稳定的氢分子. 这种化学键, 也就是两个电子被分子中两个原子共享形成的化学键, 叫做共价键. 正是泡利不相容原理, 说明了为什么氢原子是化学活泼的, 为什么两个氢原子能够形成一个氢分子$H_2$. 注意, 同样是泡利不相容原理, 禁止了第三个氢原子与氢分子$H_2$ 再形成共价键, 因为两个能量最低的自旋态已经都被占据了.\par
-下一个最简单的原子是氦, 有两个电子, 都填布在最低的1S能级上, 他们的自旋必须相反. 因为1S 能级上已经没有地方容纳更多的电子了, 泡利不相容原理将禁止别的电子靠近氦原子, 就像他对氢分子那样, 因此我们可以预料到氦原子的化学性质很不活泼, 实际上他就是一种惰性气体.
+\subsection{核反应}
+加莫夫最早提出用量子隧道效应解释阿尔法衰变. 因为阿尔法粒子非常稳定, 我们可以认为它本来就在原子核里存在, 处在一个由别的核子形成的势场之中. 
+艾尔法粒子可以以隧道效应的方式从原子核里跑出来, 引起原子核衰变.
 
-\section{费米子与玻色子}
+\begin{figure}[htbp]
+		\includegraphics[scale = 0.5]{association_energy}
+		\caption{每个核子的平均结合能}
+		\label{fig.nuclear.association}
+\end{figure}
+从
+\ref{fig.nuclear.association},
+我们可以看出, 结合能从2兆电子伏特(氘的结合能)开始, 不断上升, 到铁的时候达到最大值, 即每个核子$8.8$兆电子伏特, 
+然后逐渐下降到重核(铀及以上元素)的每个核子$7.5$兆电子伏特.
+注意, 阿尔法粒子(氦原子核)与附近的元素相比, 特别稳定. 这就是为什么在重核中, 会形成阿尔法粒子, 并通过隧道效应跑出来, 因而引发原子核放射性衰变.
+
+结合能最大的铁所处的位置说明了, 有两种方式可以把原子核里的能量释放出来.一种是聚变(两个比较轻的原子核结合在一起形成一个重核), 另一种是衰变(一个很重的核裂解成两个较轻的的核).
+这两种过程释放出来的结合能, 将以最终生成粒子的动能的形式表现出来.
+
+一个典型的核聚变的反应的例子:
+$$^2H + ^3H \rightarrow ^4H_e + n$$
+$$\eqnote{氘} + \eqnote{氚} \rightarrow \eqnote{氦} + \eqnote{中子}$$
+这一反应的潜在释放能量是17.6兆电子伏特. 但如果用这种方式来发电的话, 会有一个问题, 那就是很难建立一个环境, 让这个反应持续进行, 原因来自于我们熟悉的昆仑排斥力.
+库伦排斥力会将相互接近的原子核推开, 如果用加速器把氘核加速到比库仑排斥势高的能量, 很容易引发这一核反应, 但是如果用这种方式来大规模产生能量, 经济上是不可行的.\\
+人们提出了另外一个种想法, 把反应原料加热到非常的温度, 以至于这种高热气体或者叫做等离子体里发生的普遍碰撞中, 反应物有足够的动能发生核反应. 但是如何产生所需的高温, 还没有好的办法.
+
+\section{泡利与元素}
+如果我们让另一个氢原子靠近第一个氢原子, 会发生什么呢? \\
+如果两个电子的自旋都向上, 泡利不相容原理将禁止两个氢原子靠近, 因为两个电子的波函数会重叠, 波函数重叠就意味着两个电子会处于同一个量子态. 
+如果两个电子的自选方向相反, 他们就可以互相靠近, 并且实际情况是, 两个电子大部分时间都呆在两个氢原子核之间. 
+这样就在两个氢原子之间产生了一个束缚力, 形成一个稳定的氢分子. 这种化学键, 也就是两个电子被分子中两个原子共享形成的化学键, 叫做共价键. 
+正是泡利不相容原理, 说明了为什么氢原子是化学活泼的, 为什么两个氢原子能够形成一个氢分子$H_2$. 
+注意, 同样是泡利不相容原理, 禁止了第三个氢原子与氢分子$H_2$ 再形成共价键, 因为两个能量最低的自旋态已经都被占据了.
+
+下一个最简单的原子是氦, 有两个电子, 都填布在最低的1S能级上, 他们的自旋必须相反. 
+因为1S 能级上已经没有地方容纳更多的电子了, 泡利不相容原理将禁止别的电子靠近氦原子, 就像他对氢分子那样, 
+因此我们可以预料到氦原子的化学性质很不活泼, 实际上他就是一种惰性气体.
+
+\subsection{金属, 绝缘体与半导体}
+从某种角度来说, 金属可以看成是共价键的一个极端形式, 其中的传到电子被整块金属中所有的原子共享.
+
+\todo{这里插入一个金属, 绝缘体, 半导体的能带图片就很好}
+电子热激发对于绝缘体和半导体的导电性质就很关键了.
+假设我们有一中材料, 它的基态是一个完全占据的能带加上一个在它上方的完全空闲的能带. 
+如果这两个能带之间的间隙(能隙)很大, 几乎没有电子能够通过碰撞而获得足够的能量跳到上面的能带上.
+因此, 当给这种材料加上一个电压时, 电子所处的能级附近没有空闲的能级让电子获取少量的能量跳过去 --- 因为泡利不允许两个电子占据同一个量子态. 
+低的能级已经满了, 高的能带又离得太远, 电子跳不上去. 这就是绝缘体的情形, 在上面的传到能带中, 本质上不存在自由传到电子,因此就无法出现传到电流.
+
+半导体: 它是一种能带结构和绝缘体类似的材料, 但是上下两个能带之间的能隙比绝缘体要小得多. 在常温下, 有显著数目的电子被激发到上面的导带中. 
+当加上一个电压之后, 上面的导带已经有比较多的电子, 电子获取外加电场提供的能量, 也有足够的空能级可以利用.下面的能带中也有一些空能级, 也可以参与导电过程. 
+这样, 半导体能够相当容易的传到电流, 而且他们的导电性能跟温度有很大的关系.
+
+\subsection{晶体管与微电子}
+我们可以根据需要调节半导体的导电性能, 调节的办法是在半导体中掺入大约百万分之一的适当杂质原子.
+
+锗和硅都有4个价电子, 绝大多数都填入了价带中的$4N$个态中, 把价带几乎占满, 价带上面是几乎全空的导带. 
+如果我们引入一个杂质, 比如磷, 磷有$5$个价电子, 那么, 因为只需要4 个电子形成晶格的4 个共价键, 多出来的一个电子很容易离开磷原子, 成为一个导电电子. 
+类似的, 如果我们引入的杂质只有3 个价电子, 比如硼, 在晶格中就会却是一个共价键, 这时硼就很容易从价带中俘获一个电子, 在价带中留下一个空穴, 空穴也可以被用来导电.
+
+磷原子在紧靠导带下面形成一个施主态(贡献一个电子的态), 这些电子只需要一个很小的能量就可以跳到导带上. 以这种形式掺杂的半导体叫做$n$型半导体.\par
+硼原子在紧靠导带下面形成一个受主态(接受一个电子的态), 在室温下, 电子很容易被激发到这些态上. 以这种形式掺杂的半导体叫做$p$型半导体.
+
+\section{量子合作和超流体}
+如果两列波之间有一个固定的相位差, 我们就说这两列波相干.\\
+两个不同原子光源发出的光, 不会表现出干涉效应, 我们说他们不相干. 每个光源发出的光都是由很多不同原子发出的, 每个原子发出光子的时刻不一样. 
+也就是, 每个光源发出的光, 都是由很多个相位不同的光波组成的. 因此, 两个这种光源发出来的光没有固定的相位差, 所有微弱的干涉效应都被掩盖了.
+
+与此相反, 激光有一个显著的特点, 就是从许多不同的原子辐射出来的光的相位是相同的. 正是激光的这种相干性, 才使得激光束可以将光能高度集中, 聚焦在一个很小的点上.\\
+laser,light amplification by stimulated emission of radiation
+
+受激辐射: 如果一个能量合适的光子, 照射到一个激发的原子上, 原子会被动的跃迁到低能态上.\\
+处于激发态的原子当然自己也会或早或迟的跃迁到低能态上, 可是受到一个辐射的激励时, 这个过程提前发生了.\\
+这种辐射出的光子, 与引起辐射光子的相位完全相同, 
+这是因为, 原来光波的变化电磁场, 引起受激原子的电荷分布同步震荡, 发射出来的光子相位完全相同, 也就是说他们是相干的, 并且他们的传播方向与激发光子完全相同.
+
+理论非常完美, 但是要利用这一机制产生出足够强度的激光, 让大多数原子处于激发态而不是基态(叫做\textbf{布局逆转}), 这不是一项简单的事情.
+
+激光一个有趣的应用是\textbf{三维摄影(又叫全息摄影)}\\
+P119
+
+\subsection{费米子与玻色子}
 Toutes les particules \'el\'ementaires d\'ecouvertes \`a ce jour sont soit des bosons, soit des fermions.\par
 
 un grand nombre de particules : les fermions sont des particules qui ob\'eissent \`a la statistique de Fermi-Dirac alors que les bosons ob\'eissent \`a la statistique de Bose-Einstein.\\
 la loi statistique Fermi-Dirac : quand on \'echange deux fermions, la fonction d'onde change de signe.
 物质粒子都是由费米子构成，而玻色子则是媒介子
-
-\textbf{宏观的玻色子现象}\\
-la condensation de Bose-Einstein玻色-爱因斯坦凝聚: 是玻色子原子在冷却到绝对零度附近时所呈现出的一种气态的、超流性的物态,几乎全部原子都聚集到能量最低的量子态，形成一个宏观的量子状态  occupent un unique \'etat quantique de plus basse \'energie (\'etat fondamental)\par
-la population macroscopique d'un mode unique de photon dans un laser
-大量的光子(玻色子)处于同一个量子状态 \par
 
 玻色子包括：
 \begin{itemize}
@@ -89,6 +159,20 @@ la population macroscopique d'un mode unique de photon dans un laser
 \item 由偶数个核子组成的原子核。因为质子和中子都是费米子，故含偶数个核子的原子核是自旋为整数的玻色子。
 \item 声子 - 请参阅固体物理学
 \end{itemize}
+
+\textbf{宏观的玻色子现象}\\
+实验证实: 费米子数目为偶数的元素, 表现为玻色子; 费米子数目为奇数的元素,服从泡利不相容原理, 表现出像费米子.
+
+la condensation de Bose-Einstein玻色-爱因斯坦凝聚: 是玻色子原子在冷却到绝对零度附近时所呈现出的一种气态的、超流性的物态,几乎全部原子都聚集到能量最低的量子态，
+形成一个宏观的量子状态  occupent un unique \'etat quantique de plus basse \'energie (\'etat fondamental)
+
+la population macroscopique d'un mode unique de photon dans un laser
+大量的光子(玻色子)处于同一个量子状态
+
+虹膜输运现象 P123
+
+\textbf{冷原子}\\
+超流体的液氦需要氦原子间有量子协作. 这种类型的波色-爱因斯坦凝聚发生在原子已经处于液态时, 如果是气体, 在凝聚为液滴
 
 \chapter{Quantique}
 \section{Equation de Schr\"ondinger}
@@ -106,7 +190,7 @@ $$|{\mathbf k}| = 2\pi/\lambda$$
 
 波动方程是双曲形偏微分方程的最典型代表,其最简形式可表示为:关于位置$x$ 和时间$t$ 的标量函数$u$(代表各点偏离平衡位置的距离)满足:
 $$
-{ \partial^2 u \over \partial t^2 } = c^2 \nabla^2u
+\dfrac{\partial^2 u}{\partial t^2} = c^2 \nabla^2u
 $$
 这里c通常是一个固定常数，代表波的传播速率.
 在针对实际问题的波动方程中，一般都将波速表示成可随波的频率变化的量，这种处理对应真实物理世界中的色散现象。此时，$ c$  应该用波的相速度代替:$v_\mathrm{p} = \frac{\omega}{k}$
@@ -118,17 +202,19 @@ $$
 Separation of variables begins by assuming that the wave function $u(r, t)$ is in fact separable:
 $$u(\mathbf{r},t)=A (\mathbf{r}) T(t)$$
 Substituting this form into the wave equation, and then simplifying, we obtain the following equation:
-$${\nabla^2 A \over A } = {1 \over c^2 T } { d^2 T \over d t^2  }.$$
-Notice the expression on the left-hand side depends only on $ r$ , whereas the right-hand expression depends only on $ t$ . As a result, this equation is valid in the general case if and only if both sides of the equation are equal to a constant value. From this observation, we obtain two equations, one for $ A(r)$ , the other for $ T(t)$ :
-$${\nabla^2 A \over A } = -k^2$$
+$$\dfrac{\nabla^2 A}{A} = \dfrac{1}{c^2 T } \dfrac{d^2 T}{d t^2}$$
+Notice the expression on the left-hand side depends only on $r$ , whereas the right-hand expression depends only on $t$.
+As a result, this equation is valid in the general case if and only if both sides of the equation are equal to a constant value. 
+From this observation, we obtain two equations, one for $A(r)$ , the other for $T(t)$ :
+$$\dfrac{\nabla^2 A}{A} = -k^2$$
 and
-$$ {1 \over c^2 T } { d^2 T \over dt^2  } = -k^2$$
+$$\dfrac{1}{c^2 T } \dfrac{d^2 T}{d t^2} = -k^2$$
 Rearranging the first equation, we obtain the Helmholtz equation:
 $$\nabla^2 A + k^2 A  =  ( \nabla^2 + k^2)  A  =  0$$
 Likewise, after making the substitution
 $$ \omega  \stackrel{\mathrm{def}}{=}  kc $$
 the second equation becomes
-$$\frac{d^2{T}}{d{t}^2} + \omega^2T  =  \left( { d^2 \over dt^2 } + \omega^2 \right) T  =  0,$$
+$$\frac{d^2{T}}{d{t}^2} + \omega^2T  =  \left( \dfrac{d^2 }{dt^2 } + \omega^2 \right) T  =  0,$$
 where $k$ is the wave vector and $\omega$ is the angular frequency.\par
 我们可以解出
 $$
@@ -177,7 +263,7 @@ $$
 L'\'electron est trait\'e comme une onde $\Psi(r,t)$ se d\'epla\c cant dans un puits de potentiel $V$.
 La densit\'e de probabilit\'e $\rho(r,t)$ qui lui est associ\'ee est d\'efinie par
 $$
-\rho(r,t)= R(r,t)^2 = |\Psi(r,t)|^2=\Psi^*(\bold{r},t)\Psi(\bold{r},t)\,\!
+\rho(r,t)= R(r,t)^2 = |\Psi(r,t)|^2=\Psi^*(\mathbf{r},t)\Psi(\mathbf{r},t)\,\!
 $$
 (probabilit\'e par unit\'e de volume, * indique un complexe conjugu\'e)
 \end{document}
