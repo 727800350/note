@@ -1,0 +1,183 @@
+\chapter{Analyse}
+
+\textbf{COERVIT\'E}
+Une fonction f d\'efinie sur un espace norm\'e X \`a valeurs dans $ \bar{\R}:=\R\cup\{-\infty,+\infty\}$ est dite coercive sur une partie non born\'ee $ P$ de $X$ si
+$$ \lim_{\mytop{\| x\| \to +\infty}{x\in P}}f(x)=+\infty $$
+
+ou de mani\`ere plus pr\'ecise
+$$
+\forall\,\nu\in\R,\quad \exists\,\rho\geqslant0:\quad (x\in X ~\mbox{et}~ \|x\|\geqslant\rho) \quad\Longrightarrow\quad f(x)\geqslant\nu.
+$$
+
+Il revient au m\^eme de dire que les intersections avec P des ensembles de sous-niveau de la fonction sont born\'ees :
+$$
+\forall\,\nu\in\R,\qquad\{x\in P: f(x)\leqslant\nu\}~\mbox{est born\'e.}
+$$
+Si l'on ne sp\'ecifie pas la partie P, il est sous-entendu que P=X.
+
+\underline{Cas d'une forme bilin\'eaire} \newline
+Plus sp\'ecifiquement, une forme bilin\'eaire $a:X\times X\to\R$ est dite coercive si elle v\'erifie :
+$$
+\exists\,\alpha>0,\quad\forall\,x\in X:\qquad a(x,x) \geqslant \alpha\|x\|^2.
+$$
+Certains auteurs pr\'ef\`erent utiliser l'appellation X-elliptique pour cette derni\`ere d\'efinition. Celle-ci intervient entre autres dans le th\'eor\`eme de Lax-Milgram et la th\'eorie des op\'erateurs elliptiques, accessoirement dans la m\'ethode des \'el\'ements finis.
+
+\underline{Lien entre les d\'efinitions}\newline
+Dans le cas où a est une forme bilin\'eaire, en posant $f(u)=a(u,u)$ on a \'equivalence entre la coercivit\'e de a et celle de $f$. En effet, $\scriptstyle\lim_{\| x\|\to\infty}f(x)=+\infty $implique qu'il existe $R>0 $tel que $\scriptstyle\|x\|\geqslant R\Rightarrow f(x)\geqslant 1$. Ainsi:
+$$
+\left(\frac{R}{\|u\|}\right)^2a(u,u)=a\left(\frac{R}{\|u\|}u,\frac{R}{\|u\|}u\right)=f\left(\frac{R}{\|u\|}u\right)\geqslant 1
+$$
+et
+$$
+a(u,u)\geqslant\left(\frac{\|u\|}{R}\right)^2.
+$$
+维基百科上没有直接给出coercivit\'e的定义, 但是按照维基百科的解释, 我觉得coercivit\'e的定义是
+$$
+ \alpha=\left(\frac{1}{R}\right)^2
+$$
+
+\bigskip
+\textbf{Application contractante}\newline
+Une application contractante, ou contraction, est une application k-lipschitzienne avec $0 \geq k \le 1$
+\bigskip
+
+\textbf{Th\'eor\`eme du point fixe pour une application contractante}\newline
+Soient $ E$  un espace m\'etrique complet (non vide) et $ f$  une application $ k$ -contractante de $ E$  dans $ E$ . Il existe un point fixe unique $x^*$ de f (c'est-\`a-dire un $x^*$ dans $ E$  tel que $ f(x^* ) = x^*)$ . De plus, toute suite d'\'el\'ements de E v\'erifiant la r\'ecurrence
+$$x_{n+1}=f(x_n)$$
+v\'erifie la majoration
+$$d(x_n,x^*) \le \frac {k^n}{1-k} d(x_0,x_1)$$
+donc converge vers $x^*$
+\bigskip
+
+\textbf{In\'egalit\'e de Poincar\'e}
+un r\'esultat de la th\'eorie des espaces de Sobolev\\
+Cette in\'egalit\'e permet de borner une fonction \`a partir d'une estimation sur ses d\'eriv\'ees et de la g\'eom\'etrie de son domaine de d\'efinition\\
+L'in\'egalit\'e de Poincar\'e classique
+Soit $p$, tel que $ 1 \leq p < \infinity$  et $\Omega$ un ouvert de largeur finie (born\'e dans une direction). Alors il existe une constante  $  C$  , d\'ependant uniquement de $\Omega$ et $p$, telle que, pour toute fonction $u$   de l'espace de Sobolev $W_0^{1,p(\Omega)}$
+$$
+\| u \|_{L^{p} (\Omega)} \leq C \| \nabla u \|_{L^{p} (\Omega)}
+$$
+
+\subsection{Formule}
+\textbf{拉普拉斯算子: 梯度的散度}
+$$\laplace f = \mbox{div} (\vec{\mbox{grad}}f)$$
+
+Cart\'esien: $$\laplace f = \sum_{i=1}^n \frac{\partial^2 f }{\partial x_i^2} $$
+
+函数的拉普拉斯算子也是该函数的黑塞矩阵的迹 $\laplace f = tr(H(f))$
+
+极坐标下的拉普拉斯算子表示法
+$$\laplace f = \frac{ 1}{\rho}\frac{\partial  }{\partial \rho}(\rho \frac{\partial  f}{\partial \rho}) + \frac{ 1}{\rho^2}\frac{\partial ^2 f}{\partial\theta^2} + \frac{\partial^2 f}{\partial z^2}$$
+
+\bigskip
+\textbf{Equation de poisson}
+$$\laplace \varphi = f$$
+si $f=0$, 那么泊松方程就会变成一个齐次方程, 称为拉普拉斯方程
+
+\bigskip
+\textbf{高斯}
+
+高斯公式用散度表示为：
+$$
+\iiint_{\Omega}\mathrm{div}\mathbf{A}dv=
+\int\!\!\!\!\int_{\Sigma}\!\!\!\!\!\!\!\!\!\!\!\!\!\!\;\;\;\bigcirc\,\,A_{n}dS
+=
+\int\!\!\!\!\int_{\Sigma}\!\!\!\!\!\!\!\!\!\!\!\!\!\!\;\;\;\bigcirc\,\,\mathbf{A}\cdot d\mathbf{S}
+$$
+其中Σ是空间闭区域Ω的边界曲面,而
+$$
+A_n=\mathbf{A}\cdot\mathbf{n}=P\cos\alpha+Q\cos\beta+R\cos\gamma
+$$
+$$
+d\mathbf{S}=\mathbf{n}\cdot S
+$$
+$n$是向量$A$在曲面$\Sigma$的外侧法向量上的投影。
+
+\bigskip
+%\vskip 0.5cm
+\textbf{斯托克斯公式}
+
+$\mathbf{R}^3$上的斯托克斯公式
+设$S$是分片光滑的有向曲面,$S$的边界为有向闭曲线$Γ$,即$\Gamma=\partial S$,且$Γ$的正向与$S$的侧符合右手规则: 函数$P(x,y,z),Q(x,y,z),R(x,y,z)$都是定义在"曲面$S$连同其边界$Γ$"上且都具有一阶连续偏导数的函数,则有
+$$\iint\limits_{S}(\frac{\partial R}{\partial y}-\frac{\partial Q}{\partial z})dydz+(\frac{\partial P}{\partial z}-\frac{\partial R}{\partial x})dzdx+(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y})dxdy
+=\oint\limits_{\Gamma}Pdx+Qdy+Rdz$$
+
+这个公式叫做$\mathbf{R}^3$上的斯托克斯公式或开尔文－斯托克斯定理、旋度定理。这和函数的旋度有关,用梯度算符可写成
+$$
+ \int_{S} \nabla \times \mathbf{F} \cdot d\mathbf{S} = \oint_{\partial S} \mathbf{F} \cdot d \mathbf{r}
+$$
+
+通过以下公式可以在"对坐标的"曲线积分""和对面积的"面积积分""之间相互转换：
+$$
+\iint\limits_{\Sigma}\begin{vmatrix} \cos \alpha & \cos \beta & \cos \gamma \\ \frac{\partial}{\partial x} & \frac{\partial}{\partial y} & \frac{\partial}{\partial z} \\ P & Q & R \end{vmatrix}dS=\oint\limits_{\Gamma}Pdx+Qdy+Rdz
+$$
+
+\bigskip
+\textbf{格林公式}
+设闭区域$D$由分段光滑的曲线$\partial D$($\partial D$是$D$取正向的边界曲线)围成,函数$P(x,y)$及$Q(x,y)$在$D$上具有一阶连续偏导数,则有
+$$\oint_{\partial D} (Pdx+Qdy) = \iint_D (\frac{\partial Q}{\partial x} - \frac{\partial  P}{\partial y}dxdy)$$
+
+\bigskip
+\textbf{格林第一公式}
+设函数$u(x,y,z)$和$v(x,y,z)$在闭区域$\Omega$上具有一阶及二阶连续偏导数,则有
+$$\iiint_{\Omega} u\laplace v dxdydz
+=
+\oint\!\oint_{\Sigma} u \frac{\partial v}{\partial n}dS -
+\iiint_{\Omega}(
+\frac{\partial  u}{\partial x}\frac{\partial v}{\partial x}+
+\frac{\partial  u}{\partial y}\frac{\partial v}{\partial y}+
+\frac{\partial  u}{\partial z}\frac{\partial v}{\partial z}+
+)dxdydz$$
+其中$\Sigma$是闭区域$\Omega$的整个边界曲面,$\frac{\partial v}{\partial n}$为函数$v(x,y,z)$沿$\Sigma$的外法线方向的方向导数
+
+更加简洁的写法:
+$$
+\int_{\Omega}u \laplace v d\Omega = \int_{\Sigma}u \frac{\partial v}{\partial n}d\Sigma - \int_{\Omega} \vec{\mbox{grad}}u \cdot \vec{\mbox{grad}} v d\Omega
+$$
+也可以用int\'egration par partie 来理解:
+div是二次微分, grad是一次微分, div可以看成是在grad的基础上再来一次微分, 而
+$ \frac{\partial  v}{\partial n} = <\vec{\mbox{grad}} v,\vec{n}>$, 所以
+$\frac{\partial  v}{\partial n}$ 可以理解成一次微分
+
+\bigskip
+\textbf{格林第二公式}
+设$u(x,y,z)$、$v(x,y,z)$是两个定义在闭区域$\Omega$上的具有二阶连续偏导数的函数,$\frac{\partial u}{\partial n},\frac{\partial v}{\partial n}$依次表示$u(x,y,z)$、$v(x,y,z)$沿$\Sigma$的外法线方向的方向导数,则有
+$$\iiint\limits_{\Omega}(u\Delta v - v\Delta u)dxdydz=\oint\!\oint_{\Sigma}(u \frac{\partial v}{\partial n}-v\frac{\partial u}{\partial n})dS$$
+
+\bigskip
+\textbf{Serie de Fourrier}
+给定一个周期为T的函数x(t),那么它可以表示为无穷级数：
+\begin{equation}
+		x(t)=\sum _{k=-\infty}^{+\infty}a_k\cdot e^{ik(\frac{2\pi}{T})t}\eqspace (i\text{为虚数单位})
+\label{serie.fourrier.fonction}
+\end{equation}
+其中,$a_k$可以按下式计算:
+$$
+a_k=\frac{1}{T}\int_{T}x(t)\cdot e^{-ik(\frac{2\pi}{T})t}dt
+$$
+注意到$f_k(t)=e^{ik(\frac{2\pi}{T})t}$是周期为T的函数,故k 取不同值时的周期信号具有谐波关系(即它们都具有一个共同周期T).\newline
+$k=0$时,\eqref{serie.fourrier.fonction} 式中对应的这一项称为直流分量,也就是x(t)在整个周期的平均值.\newline
+$k=\pm 1$时具有基波频率$\omega_0=\frac{2\pi}{T}$,称为一次谐波或基波,类似的有二次谐波,三次谐波等等。
+
+\textbf{三角函数族的正交性}
+所谓的两个不同向量正交是指它们的内积为0，这也就意味着这两个向量之间没有任何相关性,例如，在三维欧氏空间中，互相垂直的向量之间是正交的。事实上，正交是垂直在数学上的一种抽象化和一般化。一组n个互相正交的向量必然是线性无关的，所以必然可以张成一个n维空间，也就是说，空间中的任何一个向量可以用它们来线性表出。三角函数族的正交性用公式表示出来就是：
+$$\int _{0}^{2\pi}\sin (nx)\cos (mx) \,dx=0;$$
+$$\int _{0}^{2\pi}\sin (nx)\sin (mx) \,dx=0;(m\ne n)$$
+$$\int _{0}^{2\pi}\cos (nx)\cos (mx) \,dx=0;(m\ne n)$$
+$$\int _{0}^{2\pi}\sin (nx)\sin (nx) \,dx=\pi;$$
+$$\int _{0}^{2\pi}\cos (nx)\cos (nx) \,dx=\pi;$$
+\bigskip
+
+\textbf{Autres}
+Une matrice
+$$
+P=
+\left(
+             \begin{array}{ccc}
+               x_1 & y_1 & 1 \\
+               x_2 & y_2 & 1 \\
+               x_3 & y_3 & 1 \\
+             \end{array}
+          \right)
+$$
+由 $(x_1,y_1)$, $(x_2,y_2)$, $(x_3,y_3)$ 三个点组成的三角形的面积:$surf = \frac{1}{2}\det{P}$

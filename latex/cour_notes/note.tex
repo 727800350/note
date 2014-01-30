@@ -1,0 +1,28 @@
+% !Mode:: "TeX:UTF-8"
+\documentclass[openany]{book}
+\input{../public/package}   %导入需要用到的package
+\input{../public/book}   %导入需要用到的package
+
+\begin{document}
+\title{MES NOTES DE COURS}
+\author{Eric}
+\maketitle
+\tableofcontents
+\frontmatter
+
+\include{src/preface}
+
+\part{MATH\'EMATIQUES}
+\include{src/algebre}
+\include{src/analyse}
+\include{src/Differential_Equations_and_boundary_problems}
+\include{src/formule}
+
+\part{PHYSIQIUE}
+\include{src/quantique}
+\include{src/simulation}
+\include{src/automation}
+\include{src/transfert_thermique}
+\include{src/vecteur_et_tenseur}
+
+\end{document}

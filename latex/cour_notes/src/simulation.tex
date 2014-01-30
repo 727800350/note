@@ -1,0 +1,342 @@
+\chapter{Simulation}
+\section{Calcule diff\'erentiel}
+\textbf{Diff\'erentiabilit\'e au sens de G\^ateaux}
+\begin{definition}
+Une fonction $F(x)$ d'un espace vectoriel $ V$  dans $\R$ est
+une fonction diff\'erentiable au sens de Gateaux en $ x\in V$  si pour tout $ h \in V$  la fonction $ g(t) = F(x+th)$  est d\'erivable sur $\R$ en$
+t = 0 $ et si il existe une forme lin\'eaire sur $ V$  , not\'ee $ DF(x)$ , telle que
+$$
+\forall h \in V \eqspace \frac{d}{d t}F(x+th)|_{t = 0} = DF(x).h
+$$
+\end{definition}
+
+\textbf{Diff\'erentielle au sens de Fr\'echet}
+\begin{definition}
+		Soit $V$ et $W$ deux espaces vectoriels norm\'es.
+Une application $ f(x)$ de $V$  dans $W$  est diff\'erentiable (au sens de Fr\'echet, pr\'ecision souvent omise) en $x \in V$  si il existe
+une application lin\'eaire continue de $V$ dans $W$ , not\'ee $Df(x)$ telle que
+$$
+\lim_{\norm{h}\to 0}  \frac{ f(x+h) - f(x) - Df(x).h}{\norm{h}} = 0
+$$
+\end{definition}
+Pour une fonction num\'erique $f:\R \to \R$
+$$
+\lim_{h \to 0} \frac{ f(x+h) - f(x) - f'(x).h}{h} = 0 \Rightarrow
+Df(x).h = f'(x).h
+$$
+
+Normes \'equivalentes \\
+si 
+$\norm{x}_1$
+et 
+sont deux normes \'equivalentes, alors il existe $c_1,c_2 \in \R^+$ tells que
+$$
+c_1 \norm{x}_1 \leq \norm{x}_2 \leq c_2 \norm{x}_1
+$$
+
+$$
+\frac{d}{dt}F(x(t))|_{t = 0} 
+= \sum_i \frac{\partial F(x(0))}{\partial x_i}
+= \ps{\grad{F(x(0))}}{x'(0)}
+$$
+une droite passant par le point $x$ et de direction $ h \in \R^n$ , donc d'\'equation param\'etrique $ x(t) = x + th$ 
+
+$$
+\frac{d}{dt}F(x+th)|_{t = 0} 
+= \ps{\grad{F(x)}}{h}
+= DF(x).h
+$$
+
+\subsection{Formulaire}
+$$ D(g\circ f)(x) = Dg(f(x)) \circ Df(x) $$
+$$ D(f(x),g(x)).h = (Df(x).h, g(x)) + (f(x), Dg(x).h)$$
+L'ensemble des fonctions diff\'erentiables (au sens de Gateaux ou de Fr\'echet) est stable par addition, multiplication, composition
+
+\subsection{Jacobienne et Hessien}
+$$
+F :
+\begin{pmatrix}
+	x_1\\\vdots\\x_n
+\end{pmatrix} 
+\longmapsto 
+\begin{pmatrix}
+f_1(x_1,\dots,x_n)\\
+\vdots\\
+f_m(x_1,\dots,x_n)
+\end{pmatrix}
+$$
+
+matrice jacobienne de F:
+$$
+J_F\left(M\right)=
+\begin{pmatrix} 
+\dfrac{\partial f_1}{\partial x_1} & \cdots & \dfrac{\partial f_1}{\partial x_n} \\
+\vdots & \ddots & \vdots \\
+\dfrac{\partial f_m}{\partial x_1} & \cdots & \dfrac{\partial f_m}{\partial x_n}
+\end{pmatrix}
+$$
+
+$$
+JF(x)_{i,j} = \frac{\partial  f_i(x_1, \cdots, x_n)}{\partial x_j}
+$$
+
+$$
+HF(x) = Jf(x) \eqspace f(x) = F'(x)
+$$
+$$
+HF(x)_{i,j} = \frac{\partial ^2 F(x)}{\partial x_i \partial  x_j}
+$$
+$$
+\frac{d^2}{d t^2}F(x+th)|_{t=0} = \ps{HF(x).h}{h}
+$$
+
+\begin{proposition}
+Une fonction F(x) deux fois diff\'erentiable, admet un d\'eveloppement limit\'e au second ordre
+$$ \forall h \in V, F(x+h) = F(x) + \ps{\grad{F(x)}}{h} + \frac{1}{2}\ps{HF(x)h}{h} + \epsilon(h)\norm{h}^2 $$
+\end{proposition}
+
+\subsection{Examples}
+\begin{example}
+Soit $F(x) = \dfrac{1}{2}\ps{Ax}{x} - \ps{b}{x}$
+$$DF(x).h = \ps{Ax-b}{h}$$
+et pour le produit scalaire canonique
+$$
+F'(x) = \grad{F(x)} = Ax - b
+$$
+$$JF'(x) = HF(x) = A$$
+\end{example}
+
+\begin{example}
+$L$ une forme lin\'eaire continue sur $V$  et $a$  une forme bilin\'eaire continue sym\'etrique et d\'efinie positive sur $V$ \\
+Soit $J(v) = \dfrac{1}{2}a(u,v) - L(v)$
+$$
+DJ(u).v = a(u,v) - L(v)
+$$
+\end{example}
+
+\begin{example}
+$$J(u) = \int_0^1 g(x,u(x),u'(x))dx$$
+Calculons $DJ(u)$
+$$
+DJ(u).v 
+= \frac{d}{dt}J(u+tv)|_{t=0}
+=\frac{d}{dt}(\int_0^1 g(x,u+tv,u'+tv')dx)|_{t=0}
+$$
+$$
+DJ(u).v 
+=\int_0^1 \frac{\partial g}{\partial u_1}(x,u,u')v + \frac{\partial g}{\partial u_2}(x,u,u')v' dx
+$$
+这里的$u_1$ 对应$u$,$u_2$对应$u'$
+$$
+DJ(u).v 
+=\int_0^1 \frac{\partial g}{\partial u}(x,u,u')v + \frac{\partial g}{\partial u'}(x,u,u')v' dx
+$$
+对$v'$ 进行分部积分, 同时考虑到$v(0)=v(1)=0$, 得到
+$$
+DJ(u).v 
+=\int_0^1 (\frac{\partial g}{\partial u}(x,u,u') - \frac{d}{dx}\frac{\partial g}{\partial u'}(x,u,u'))v(x) dx
+$$
+En introduisant le produit scalaire de $L^2([0,1])$
+$$
+DJ(u).v 
+= \ps{-\frac{d}{dx}\frac{\partial g}{\partial u'}(x,u,u')+\frac{\partial g}{\partial u}(x,u,u')}{v}
+$$
+
+Soit $u1 \in V_0$ un extremum local de la fonction $J(u)$, il v\'erifie $DJ(u1) = 0$, Donc
+$$
+\forall v \in V_0, DJ(u).v = \int_0^1 (\frac{\partial  g}{\partial u}(x,u,u') - \frac{d}{dx}\frac{\partial g}{\partial u'}(x,u,u'))v(x) dx = 0
+$$
+然后得到
+$$
+\frac{\partial g}{\partial u} - \frac{d}{dx}\frac{\partial g}{\partial u'} = 0
+$$
+这就是变分原理中的欧拉公式
+\end{example}
+
+\section{Convecivit\'e}
+\begin{definition}
+		On suppose que $V$ est un espace de Hilbert. Une application $f(x)$ de $V$ dans $V$ est monotone si
+		$$
+		\forall x,y \in V, \ps{f(y)-f(x)}{y-x} \geq 0
+		$$
+\end{definition}
+Note que si $V=\R$, cela revient \`a dire que $f(x)$ est croissante.
+
+\begin{theorem}
+		Soit $F(x)$ une fonction diff\'erentiable sur un espace de Hilbert $H$. $F(x)$ est convexe \ssi l'application de $H$ dans $H$ d\'efinie par $f(x) = \grad{F(x)}$ est monotone.
+\end{theorem}
+
+\begin{theorem}
+		Sur $\R^n$ une fonction deux fois didd\'erentiable est convexe \ssi le Hessien $HF(x)$ est une matrice semi-d\'efinie positive.\\
+		R\'eciproquement si $\forall x,h \in V, \ps{HF(x)h}{h}>0$, alros $F$ est strictement convexe.
+\end{theorem}
+
+\section{Autre}
+Norme dans $H^1$: $\norm{u} = \int_0^1 u'^2 + u^2 dx$\newline
+其中$H^1$ 是指espace de Herbert 上的一阶可微(还是可导还不太肯定)的函数构成的空间
+
+
+L'EDP(sigle pour equations aux d\'eriv\'ees partielles) du second ordre lin\'eaire \`a cofficients constans, en dimension deux:
+\begin{equation}
+		a \frac{\partial^2 u}{\partial x^2} +
+		2b \frac{\partial^2 u}{\partial x \partial y} +
+		c \frac{\partial^2 u}{\partial y^2} +
+		d \frac{\partial u}{\partial x} +
+		e \frac{\partial u}{\partial y} +
+		fu
+		=0
+\end{equation}
+L'equation caract\'eristique de cette EDP:
+\begin{equation}
+		ax^2 + 2bxy + cy^2 + dx + ey + f = 0 \eqspace \text{equation conique}
+\end{equation}
+方程中的$x$,$y$ 不一定指空间, 也可以是其他未知量, 比如时间$t$
+
+\begin{itemize}
+		\item Elliptique si $ac - b^2 > 0$ (la solution minimise une fonctionnelle d'\'energie)
+		\item Parabolique si $ac - b^2 = 0$ (\'evolution dissipatif)
+		\item Hyperbolique si $ac - b^2 > 0$ (ph\'enom\`enes physiques conservatifs)
+\end{itemize}
+
+\textbf{Formulation faible(variationnelle)}
+
+\'etant donn\'e un op\'erateur diff\'erentiel $ \displaystyle R(.) $ et une fonction $ \displaystyle f $ d\'efinie sur un domaine ouvert $ \Omega$ , la formulation forte du probl\`eme est la suivante :
+
+Trouver $\displaystyle u$ d\'efinie sur $ \Omega$  v\'erifiant $ \displaystyle R(u)=f $ en tout point de $ \Omega$ .
+
+Une solution $ \displaystyle u$  est naturellement solution du probl\`eme suivant (formulation faible) :
+
+Trouver $ \displaystyle u$  d\'efinie sur$  \Omega $ v\'erifiant $ \int_\Omega R(u)\ v = \int_\Omega f\ v $ pour toute fonction $ \displaystyle v$  d\'efinie sur $ \Omega$ .
+
+la formulation variationnelle d'un probl\`eme r\'egi par des \'equations aux d\'eriv\'ees partielles correspond \`a une formulation faible de ces \'equations qui s'exprime en termes d'alg\`ebre lin\'eaire dans le cadre d'un \emph{espace de Hilbert}. A l'aide du \emph{th\'eor\`eme de Lax-Milgram}, elle permet de discuter de l'existence et de l'unicit\'e de solutions. La m\'ethode des \'el\'ements finis se fonde sur une formulation variationnelle pour d\'eterminer des solutions num\'eriques approch\'ees du probl\`eme d'origine.
+
+\underline{\'equation de Poisson}\newline
+Pour un ouvert $ \Omega$  de $ \R^n$ , consid\'erons l'espace $ L^2(\Omega) $ des fonctions de carr\'e int\'egrable et l'espace de Sobolev $ H^k(\Omega)$  des fonctions dont les d\'eriv\'ees partielles jusqu'\`a l'ordre k sont dans $ L^2(\Omega)$ .
+
+\'etant donn\'e une fonction $ f \in L^2(\Omega)$ , on cherche une solution du probl\`eme suivant (formulation forte):
+\begin{equation}
+    \begin{cases} u \in H^2(\Omega) \\ -\Delta u = f \text{ dans } \Omega \\ u = 0 \text{ sur } \partial\Omega \end{cases}
+\end{equation}
+
+La formulation variationnelle correspondante est la suivante :
+\begin{equation}
+    \begin{cases} u \in H^1(\Omega) \\ A(u,v) = F(v) \; \forall v \in H^1(\Omega) \, | \, v = 0 \text{ sur } \partial\Omega \\ u = 0 \text{ sur } \partial\Omega \end{cases}
+\end{equation}
+où
+$$
+A(u,v) = \int_\Omega \nabla u \cdot \nabla v \eqspace \text{et} \eqspace F(v) = \int_\Omega fv.~
+$$
+我们可以看到在formulation forte中$u \in H^2(\Omega)$, 而在formulation faible 中$u \in H^1(\Omega)$, 也就是变弱了
+
+Le th\'eor\`eme de Lax-Milgram permet ensuite de conclure \`a l'existence et \`a l'unicit\'e d'une solution de la formulation variationnelle.
+
+\`a noter qu'une solution du premier probl\`eme est toujours solution du second, alors que la r\'eciproque n'est pas vraie (une solution dans $  H^1(\Omega)$   peut ne pas \^etre assez r\'eguli\`ere pour \^etre dans $  H^2(\Omega)) $  : c'est d'ailleurs pour cette raison qu'une solution de la formulation variationnelle est parfois appel\'ee solution faible (ou encore semi-faible).
+
+Avec des conditions de bord plus g\'en\'erales que celles pr\'esent\'ees ici, ce probl\`eme est plus amplement d\'evelopp\'e ici.
+
+\section{Phenom\`enes}
+\textbf{Equation d'advection}
+平流\\
+cherche une fonction $u(x,t)$ du point d'abscisse $ x$ , au temps $ t$ , $ u \in C^1([0;1] \times [0,T])$ solution du probl\`eme
+\begin{equation}
+\left\{
+  \begin{array}{ll}
+		  \frac{\partial  u}{\partial t} + a \frac{\partial u}{\partial x } = 0 \\
+		  u(x,0) = u_0{x} \\
+		  u(0,t) = g(t)
+  \end{array}
+\right.
+\end{equation}
+\begin{definition}
+		Les droites caract\'eristiques dans le plan $(x,t)$ de l'\'equation \lasteq  sont les droites$
+x - at = Cte$
+\end{definition}
+
+\begin{proposition}
+		Une fonction $ u(x,t) \in C^1$  est solution de \lasteq  si et seulement si $ u$  est une
+fonction constante sur les droites caract\'eristiques.
+\end{proposition}
+
+Les solutions de l\'equation \lasteq est:
+\begin{equation}
+u(x,t)=
+\left\{
+  \begin{array}{ll}
+		  u_0(x-at) \si x >= at \\
+		  g(t-\frac{x}{a}) \si x \leq at
+  \end{array}
+\right.
+\end{equation}
+\bigskip
+
+\textbf{Equation de la diffusion}
+\begin{equation}
+\left\{
+  \begin{array}{ll}
+		  u \in C^2(\Omega \times [0,T]) \\
+		  C \frac{\partial  u}{\partial t} - k \laplace u + cu =0 \si x \in \Omega \\
+		  -k \frac{\partial u}{\partial n} = 0 \si x \in \Gamma \\
+		  u(x,0) = u_0{x} \si x \in \Omega\\
+  \end{array}
+\right.
+\end{equation}
+\bigskip
+
+\textbf{Equation des ondes}
+Soit $u(x,t), x \in [0,L], t \in [0,T] $ solution du probl\`eme
+\begin{equation}
+\left\{
+  \begin{array}{ll}
+		  \frac{\partial^2  u}{\partial t^2} = c^2 \frac{\partial^2 u}{\partial x^2 } \eqspace  x \in (0,L), t \in (0,T) \\
+		  u(x,0) = u_0{x} \eqspace x \in (0,L) \eqspace u_0(x)\in C([0,L])\  \text{la position initial}\\
+		  \frac{\partial  u}{\partial t}(x,0) = 0 \eqspace x \in (0,L)\ \text{la vitess initial est suppos\'ee null}\\
+		  u(0,t) = u(L,t) = 0 \eqspace t \in (0,T)
+  \end{array}
+\right.
+\end{equation}
+\bigskip
+
+\textbf{Probl\`eme de Dirichlet non-homog\`ene}
+边界上定值\\
+\begin{equation}
+\left\{
+  \begin{array}{ll}
+		 -\laplace u + cu = f \eqspace \forall x \in \Omega \\
+		 u_{\Gamma} = u_d
+  \end{array}
+\right.
+\end{equation}
+\bigskip
+
+\textbf{Probl\`eme de Neumann en dimension deux}\\
+les conditions aux limites sur $\Gamma$ portent sur la d\'eriv\'ee normale de la solution\\
+\begin{equation}
+\left\{
+  \begin{array}{ll}
+		 -\laplace u + cu = f \eqspace \forall x \in \Omega \\
+		 \frac{\partial u}{\partial n}_{\Gamma} = g
+  \end{array}
+\right.
+\end{equation}
+\bigskip
+
+\section{Discr\'etisation en temps}
+\begin{equation}
+\left\{
+  \begin{array}{ll}
+		  \frac{d X}{dt} = A X \\
+		  X(0) = X_0
+  \end{array}
+\right.
+\end{equation}
+On note $X^n = X(n\tau) \in \R^N$
+$$
+\frac{X^{n+1} - X^n}{\tau} = (1-\theta)AX^n + \theta A X^{n+1}
+$$
+\begin{itemize}
+		\item Euler explicite $\theta = 0$
+		\item Euler implicite $\theta = 1$
+		\item Trap\`ezes $\theta = 1/2$
+\end{itemize}
+\bigskip
+
