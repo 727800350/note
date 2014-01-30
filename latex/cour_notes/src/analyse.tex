@@ -58,7 +58,7 @@ $$
 \| u \|_{L^{p} (\Omega)} \leq C \| \nabla u \|_{L^{p} (\Omega)}
 $$
 
-\subsection{Formule}
+\section{算子(laplace, gradien etc.)}
 \textbf{拉普拉斯算子: 梯度的散度}
 $$\laplace f = \mbox{div} (\vec{\mbox{grad}}f)$$
 
@@ -144,31 +144,7 @@ $\frac{\partial  v}{\partial n}$ 可以理解成一次微分
 设$u(x,y,z)$、$v(x,y,z)$是两个定义在闭区域$\Omega$上的具有二阶连续偏导数的函数,$\frac{\partial u}{\partial n},\frac{\partial v}{\partial n}$依次表示$u(x,y,z)$、$v(x,y,z)$沿$\Sigma$的外法线方向的方向导数,则有
 $$\iiint\limits_{\Omega}(u\Delta v - v\Delta u)dxdydz=\oint\!\oint_{\Sigma}(u \frac{\partial v}{\partial n}-v\frac{\partial u}{\partial n})dS$$
 
-\bigskip
-\textbf{Serie de Fourrier}
-给定一个周期为T的函数x(t),那么它可以表示为无穷级数：
-\begin{equation}
-		x(t)=\sum _{k=-\infty}^{+\infty}a_k\cdot e^{ik(\frac{2\pi}{T})t}\eqspace (i\text{为虚数单位})
-\label{serie.fourrier.fonction}
-\end{equation}
-其中,$a_k$可以按下式计算:
-$$
-a_k=\frac{1}{T}\int_{T}x(t)\cdot e^{-ik(\frac{2\pi}{T})t}dt
-$$
-注意到$f_k(t)=e^{ik(\frac{2\pi}{T})t}$是周期为T的函数,故k 取不同值时的周期信号具有谐波关系(即它们都具有一个共同周期T).\newline
-$k=0$时,\eqref{serie.fourrier.fonction} 式中对应的这一项称为直流分量,也就是x(t)在整个周期的平均值.\newline
-$k=\pm 1$时具有基波频率$\omega_0=\frac{2\pi}{T}$,称为一次谐波或基波,类似的有二次谐波,三次谐波等等。
-
-\textbf{三角函数族的正交性}
-所谓的两个不同向量正交是指它们的内积为0，这也就意味着这两个向量之间没有任何相关性,例如，在三维欧氏空间中，互相垂直的向量之间是正交的。事实上，正交是垂直在数学上的一种抽象化和一般化。一组n个互相正交的向量必然是线性无关的，所以必然可以张成一个n维空间，也就是说，空间中的任何一个向量可以用它们来线性表出。三角函数族的正交性用公式表示出来就是：
-$$\int _{0}^{2\pi}\sin (nx)\cos (mx) \,dx=0;$$
-$$\int _{0}^{2\pi}\sin (nx)\sin (mx) \,dx=0;(m\ne n)$$
-$$\int _{0}^{2\pi}\cos (nx)\cos (mx) \,dx=0;(m\ne n)$$
-$$\int _{0}^{2\pi}\sin (nx)\sin (nx) \,dx=\pi;$$
-$$\int _{0}^{2\pi}\cos (nx)\cos (nx) \,dx=\pi;$$
-\bigskip
-
-\textbf{Autres}
+\section{Autres}
 Une matrice
 $$
 P=
