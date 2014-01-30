@@ -154,5 +154,8 @@
 \newcommand\lasteq{(\theequation)}
 \newcommand{\eqspace}{\hspace{0.5cm}}
 \newcommand{\norm}[1]{\left\Vert #1\right\Vert}
+%% insert text in math mode being treated as normal text
 \newcommand{\eqnote}[1]{\text{ #1 }}
+%% generate a fraction but without the line
+\newcommand\mytop[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
 
