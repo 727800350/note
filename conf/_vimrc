@@ -1,3 +1,104 @@
+"""""""""""""""""""""""""""""" 
+"Chinese Punctuation  
+"""""""""""""""""""""""""""""" 
+function! CheckChineseMark()  
+    "依次检查  
+    if search('。')  
+        let s:line=search('。')  
+        execute s:line . "s/。/\./g" 
+    endif  
+ 
+    if search('，')  
+        let s:line=search('，')  
+        execute s:line . "s/，/,/g" 
+    endif  
+ 
+    if search('；')  
+        let s:line=search('；')  
+        execute s:line . "s/；/,/g" 
+ 
+    endif  
+      
+    if  search('？')  
+        let s:line=search('？')  
+        execute s:line . "s/？/?/g" 
+    endif  
+ 
+    if search('：')  
+        let s:line=search('：')  
+        execute s:line . "s/：/\:/g" 
+    endif  
+ 
+    if search('‘')  
+        let s:line=search('‘')  
+        execute s:line . "s/‘/\'/g" 
+    endif  
+ 
+    if search('’')  
+        let s:line=search('’')  
+        execute s:line . "s/’/\'/g" 
+    endif  
+ 
+    if search('”')  
+        let s:line=search('”')  
+        execute s:line . "s/”/\"/g" 
+    endif  
+ 
+    if search('“')  
+        let s:line=search('“')  
+        execute s:line . "s/“/\"/g" 
+    endif  
+ 
+    if search('《')  
+        let s:line=search('《')  
+        execute s:line . "s/《/\</g" 
+    endif  
+ 
+    if search('》')  
+        let s:linie=search('》')  
+        execute s:line . "s/》/\>/g" 
+    endif  
+ 
+    if search('——')  
+        let s:line=search('——')  
+        execute s:line . "s/——/-/g" 
+    endif  
+ 
+    if search('）')  
+        let s:line=search('）')  
+        execute s:line . "s/）/\)/g" 
+    endif  
+ 
+    if search('（')  
+        let s:line=search('（')  
+        execute s:line . "s/（/\(/g" 
+    endif  
+ 
+    if search('……')  
+        let s:line=search('……')  
+        execute s:line . "s/……/^/g" 
+    endif  
+ 
+    if search('￥')  
+        let s:line=search('￥')  
+        execute s:line . "s/￥/$/g" 
+    endif  
+ 
+    if search('！')  
+        let s:line=search('！')  
+        execute s:line . "s/！/!/g" 
+    endif  
+ 
+    if  search('·')  
+        let s:line=search('·')  
+        execute s:line . "s/·/`/g" 
+    endif  
+ 
+endfunction  
+map <C-S> :call CheckChineseMark()<CR>
+imap <C-S> <ESC>:call CheckChineseMark()<CR>
+vmap <C-S> <ESC>:call CheckChineseMark()<CR>
+
 "===============================复制===============================
 "从系统剪切板中复制，剪切，粘贴
 "Ctrl Y  复制
@@ -248,9 +349,9 @@ autocmd FileType tex ab theorem \begin{theorem}<CR>\end{theorem}<ESC>O
 autocmd FileType tex ab example \begin{example}<CR>\end{example}<ESC>O
 autocmd FileType tex ab frame \begin{frame}<CR>\end{frame}<ESC>O
 autocmd FileType tex ab center \begin{center}<CR>\end{center}<ESC>O
-autocmd FileType tex ab itemize \begin{itemize}<CR>\item <CR>\end{itemize}<ESC>O<BACKSPACE><BACKSPACE>
-autocmd FileType tex ab enumerate \begin{enumerate}<CR>\item <CR>\end{enumerate}<ESC>O<BACKSPACE><BACKSPACE>
-autocmd FileType tex ab description \begin{description}<CR>\item <CR>\end{description}<ESC>O<BACKSPACE><BACKSPACE>
+" autocmd FileType tex ab itemize \begin{itemize}<CR>\item <CR>\end{itemize}<ESC>O<BACKSPACE><BACKSPACE>
+" autocmd FileType tex ab enumerate \begin{enumerate}<CR>\item <CR>\end{enumerate}<ESC>O<BACKSPACE><BACKSPACE>
+" autocmd FileType tex ab description \begin{description}<CR>\item <CR>\end{description}<ESC>O<BACKSPACE><BACKSPACE>
 autocmd FileType tex ab corollary \begin{corollary}<CR>\end{corollary}<ESC>O
 autocmd FileType tex ab 1equation \begin{equation}<CR>\end{equation}<ESC>O
 autocmd FileType tex ab split \begin{equation}<CR><TAB>\begin{split}<CR>\end{split}<CR><BACKSPACE>\end{equation}<ESC>kO
