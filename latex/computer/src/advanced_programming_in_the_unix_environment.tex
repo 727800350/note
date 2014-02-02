@@ -1,0 +1,42 @@
+% !Mode:: "TeX:UTF-8"
+\documentclass{article}
+\input{../../public/package}   %导入需要用到的package
+\input{../../public/article}   %导入需要用到的package
+\begin{document}
+\tableofcontents
+\newpage
+\section{IO}
+\fun{open, read, write, lseek, close}\\
+Unbufferd IO, means that each \fun{read} or \fun{write} invokes a system call in the kernel.\\
+These unbufferd I/O functions are not part of ISO C, but are part of POSIX.1 and the single UNIX Specification.
+
+\section{signal}
+\textbf{Program Start-Up}\todo{Not understood}\\
+When a program is executed, the status of all signals is either default or ignore. Normally, all signals are set to their default action, 
+unless the process that calls exec is ignoring the signal. Specifically, the exec functions change the disposition of 
+any signals being caught to their default action and leave the status of all other signals alone. 
+(Naturally, a signal that is being caught by a process that calls exec cannot be caught by the same function in the new program, 
+since the address of the signal- catching function in the caller probably has no meaning in the new program file that is executed.)
+
+One specific example is how an interactive shell treats the interrupt and quit signals for a background process. 
+With a shell that doesn't support job control, when we execute a process in the background, as in
+\begin{lstlisting}[language=sh]
+    cc main.c &
+\end{lstlisting}
+the shell automatically sets the disposition of the interrupt and quit signals in the background process to be ignored. 
+This is so that if we type the interrupt character, it doesn't affect the background process. 
+If this weren't done and we typed the interrupt character, it would terminate not only the foreground process, but also all the background processes.
+
+Many interactive programs that catch these two signals have code that looks like
+\begin{lstlisting}[language=C]
+         void sig_int(int), sig_quit(int);
+         if (signal(SIGINT, SIG_IGN) != SIG_IGN)
+             signal(SIGINT, sig_int);
+         if (signal(SIGQUIT, SIG_IGN) != SIG_IGN)
+             signal(SIGQUIT, sig_quit);
+\end{lstlisting}
+Doing this, the process catches the signal only if the signal is not currently being ignored.
+
+These two calls to signal also show a limitation of the signal function: we are not able to determine the current disposition of a signal 
+without changing the disposition. We'll see later in this chapter how the sigaction function allows us to determine a signal's disposition without changing it.
+\end{document}
