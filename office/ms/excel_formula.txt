@@ -1,0 +1,8 @@
+# encoding: utf-8
+columns() 返回该列的序列号
+
+计算各种类型单元格的个数
+真空单元格 =COUNTIF(data,"=") 　　
+真空+假空单元格 =COUNTIF(data,"") 　　
+非真空单元格 =COUNTIF(data,"<>") 　　
+文本型单元格 =COUNTIF(data,"*") 
