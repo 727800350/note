@@ -37,7 +37,7 @@ OLAP 操作的列子包括下钻(drill-down) 和上卷(roll-up), 允许用户在
 其中的$support=30\%$是说, 在所有的事务中同时出现A和B的概率.\\
 而$confidence=60\%$是说,所有事务中,在出现A的情况下出现B的概率,即条件概率.
 $$
-Support(X=>Y) = P(X \eqnote{and} Y) \eqspace
+Support(X=>Y) = P(X \cup Y)\footnote{$P(A \cup B)$ 表示事务包含集合A 和集合B的并的概率, 不要把它与$P(A or B)$混淆} \eqspace
 Confidence(X=>Y) = P(Y | X)
 $$
 $$Buys(X, "computer") \Rightarrow buys (X,"software") [support = 1\%, confidence = 50\%]$$
@@ -294,4 +294,123 @@ OLTP与OLAP的区别
 \subsection{数据仓库的设计与使用}
 设计需考虑以下四种视图: 自顶向下视图, 数据源视图, 数据仓库视图和商务查询视图.
 
+\section{挖掘频繁模式, 关联和相关性: 基本概念和方法}
+\subsection{基本概念}
+\begin{itemize}
+	\item 项集$X$ 在数据集$D$中是\textbf{闭的(closed)}, 如果不存在真超项集
+\footnote{$Y$是$X$的真超项集, 如果$X$ 是$Y$的真子项集, 即$X \subset Y$}
+$Y$使得$Y$与$X$在$D$中具有相同的支持度计数.(所谓闭项集,就是指一个项集X,它的直接超集的支持度计数都不等于它本身的支持度计数.)
+	\item 项集$X$ 是数据集$D$ 中的\textbf{闭频繁项集(closed frequent itemset)}, 如果$X$在$D$是闭的和频繁的.\\
+	\item 项集$X$ 是数据集$D$ 中的\textbf{极大频繁项集(maximal frequent itemset) 或极大项集(max-itemset)}, 如果$X$是频繁的, 并且不存在超项集$Y$使得$X \subset Y$在$D$ 是频繁的.
+\end{itemize}
+
+\begin{example}
+例如,有交易数据库
+\begin{table}[htbp]  % here, top, bottom, float page(单独的浮动页)
+  \centering
+  \begin{tabular}{|c|c|}
+\hline
+TID& item\\
+\hline
+1& abc\\
+\hline
+2& abcd\\
+\hline
+3& bce\\
+\hline
+4& acde\\
+\hline
+5& de\\
+\hline
+\end{tabular}
+\end{table}\\
+因为项集$\{b,c\}$出现在TID为$1,2,3$的事务中,所以$\{b,c\}$的支持度计数为$3$.而$\{b,c\}$的直接超集:$\{a,b,c\}$,$\{a,b,c,d\}$的支持度计数分别为$2,1$,都不等于$\{b,c\}$的支持度计数$3$,所以$\{b,c\}$为闭项集,如果支持度阈值为$40\%$,则$\{b,c\}$也为闭频繁项集.\\
+项集$\{a,b\}$出现在TID为$1,2$的事务中,其支持度计数为$2$.而它的直接超集$\{a,b,c\}$支持度计数也为$2$,所以$\{a,b\}$不是闭项集.
+\end{example}
+
+设$\mathcal{C}$ 是数据集$D$ 中满足最小支持度阀值$min\_sup$ 的闭频繁项集的集合, $\mathcal{M}$ 是$D$ 中满足$min\_sup$的极大频繁项集的集合.
+假设有$\mathcal{C}$ 和 $\mathcal{M}$ 的每个项集的支持度计数.
+注意, $\mathcal{C}$ 和它的技术信息可以用来导出频繁项集的完整信息\todo{how}, 因此, 称$\mathcal{C}$ 包含了关于频繁项集的完整信息;
+另一方面, $\mathcal{M}$ 只包含了极大项集的支持度信息, 通常, 他并不包含其对应的频繁项集的完整的支持度信息.
+
+\begin{example}
+假定事务数据库只有两个事务:$\{a_1,a_2,\dots,a_{100}\}$,$\{a_1,a_2,\dots,a_{50}\}$.
+设最小支持度计数阀值$min\_sup = 1$.\\
+两个闭频繁项集$\mathcal{C} = \{\{a_1,a_2,\dots,a_{100}\}:1;\{a_1,a_2,\dots,a_{50}\}:2\}$ \\
+只有一个极大频繁项集$\mathcal{M} = \{\{a_1,a_2,\dots,a_{50}\}:1\}$ \\
+注意, 我们不能断言$\{a_1,a_2,\dots,a_{50}\}$.是极大频繁项集, 因为他有一个频繁的超集$\{a_1,a_2,\dots,a_{100}\}$.\par
+比频繁项集的集合包含了频繁项集的完整信息. 例如, 可以从$\mathcal{C}$推出:
+\begin{enumerate}
+	\item $\{\{a_2,a_{45}\}:2\}$,因为$\{a_2,a_{45}\}$ 是$\{\{a_1,a_2,\dots,a_{50}\}:2\}$的子集
+	\item $\{\{a_8,a_{55}\}:1\}$
+\end{enumerate}
+然而, 从极大频繁项集只能断言两个项集$\{a_2,a_{45}\}$,$\{a_8,a_{55}\}$ 是频繁的, 但是不能推断他们的实际支持度计数.
+\end{example}
+
+\subsection{频繁项集挖掘方法}
+\subsubsection{Apriori 算法(先验算法)}
+Apriori uses breadth-first search and a Hash tree structure to count candidate item sets efficiently.
+
+在Apriori算法中,寻找最大项目集的基本思想是:算法需要对数据集进行多步处理.
+\begin{enumerate}
+	\item 第一步,简单统计所有含一个元素项目集出现的频率,并找出那些不小于最小支持度的项目集,即一维最大项目集.
+	\item 从第二步开始循环处理直到再没有最大项目集生成.
+	\item 循环过程是:第k步中,根据第k-1步生成的(k-1)维最大项目集产生k维侯选项目集,然后对数据库进行搜索,
+			得到侯选项目集的项集支持度,与最小支持度比较,从而找到k维最大项目集. 为了提高效率, 会应用下面的先验性质用于压缩搜索空间,
+			也就是在搜索过程中, 会排出一些明显不可能的项集
+\end{enumerate}
+
+\textbf{先验性质}: 频繁项集的所有非空子集也一定是频繁的.\\
+先验性质基于如下观察, 如果项集$I$ 不满足最小支持度阀值$min\_sup$, 则$I$ 不是频繁的, 即$P(I) < min\_sup$, 如果把项$A$添加到项集$I$ 中, 则结果项集(即$I \cup \{A\}$)不可能比$I$ 更频繁出现\footnote{因为, 添加了一项之后, 限制条件更多了, 所以支持度计数不可能会增加}, 因此, $I \cup \{A\}$ 也不是频繁的, 即$P(I \cup \{A\}) < min\_sup$
+
+该性质是一种\textbf{反单调性 antimonotone}, 指如果一个集合不能通过测试, 则它的所有超集也都不能通过相同的测试. 称它是反单调的, 因为在不通过测试的意义下, 该性质是单调的.
+
+算法的pseudo code见图\ref{fig.apriori}
+\begin{figure}[htbp]
+  \centering
+  % Requires \usepackage{graphicx}
+  \includegraphics[scale = 0.5]{apriori}\\
+  \caption{Apriori 算法}\label{fig.apriori}
+\end{figure}
+
+\begin{example}
+Let the database of transactions consist of following itemsets:
+\begin{verbatim}
+Itemsets
+{1,2,3,4}
+{1,2,4}
+{1,2}
+{2,3,4}
+{2,3}
+{3,4}
+{2,4}
+\end{verbatim}
+the value 3 is the support threshold.
+The first step of Apriori is to count up the number of occurrences, called the support, of each member item separately, by scanning the database a first time.
+We obtain the following result
+\begin{verbatim}
+Item	Support
+{1}	3
+{2}	6
+{3}	4
+{4}	5
+\end{verbatim}
+All the itemsets of size 1 have a support of at least 3, so they are all frequent.
+The next step is to generate a list of all pairs of the frequent items:
+\begin{verbatim}
+Item	Support
+{1,2}	3
+{1,3}	1
+{1,4}	2
+{2,3}	3
+{2,4}	4
+{3,4}	3
+\end{verbatim}
+The pairs $\{1,2\}, \{2,3\}, \{2,4\}$ , and $\{3,4\}$ all meet or exceed the minimum support of $3$, so they are frequent. The pairs $\{1,3\} and \{1,4\}$ are not. Now, because $\{1,3\}$ and $\{1,4\}$ are not frequent, any larger set which contains $\{1,3\}$ or $\{1,4\}$ cannot be frequent\footnote{应用先验性质}. In this way, we can prune sets: we will now look for frequent triples in the database, but we can already exclude all the triples that contain one of these two pairs:
+\begin{verbatim}
+Item	Support
+{2,3,4}	2
+\end{verbatim}
+In the example, there are no frequent triplets -- $\{2,3,4\}$ is below the minimal threshold, and the other triplets were excluded because they were super sets of pairs that were already below the threshold.
+\end{example}
 \end{document}
