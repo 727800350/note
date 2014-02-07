@@ -105,6 +105,9 @@
 \newcommand{\wuhao}{\fontsize{10.5pt}{15.75pt}\selectfont}
 
 %% code
+%% verbatim 中不能使用\textbf 等格式, alltt可以使用
+\usepackage{alltt}
+
 \usepackage{listings}
 \lstset{
     backgroundcolor=\color{white},
@@ -154,6 +157,12 @@
 \definecolor{LightCyan}{rgb}{0.88,1,1}
 \def\red#1{\textcolor[rgb]{1.00,0.00,0.00}{#1}}
 
+%% 化学
+\usepackage[version=3]{mhchem}
+%% ex: Ammonium sulphate is \ce{(NH4)2SO4}.
+
+\usepackage{fixltx2e}
+%% 默认情况下只能使用\textsuperscript,加了这个package之后可以使用\textsubscript
 
 %Math
 %随机数
@@ -197,4 +206,8 @@
 \newcommand{\eqnote}[1]{\text{ #1 }}
 %% generate a fraction but without the line
 \newcommand\mytop[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
+
+%% 特殊符号
+\usepackage{pifont}
+%% \ding{number}, 通过number 来调用不同的符号
 
