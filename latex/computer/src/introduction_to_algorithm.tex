@@ -145,9 +145,9 @@ $$
 
 为了便于计算,我们在这里设$\theta(1)=c$;
 先把每一层的加起来,得到都是$cn$,然后再把所有层加起来,得到
-$$T(n)=(lgn+1)cn=\Theta(nlgn)$$
+$$T(n)=(\lg n +1)cn=\Theta(n\lg n )$$
 So merge sort beats insertion sort.
-$$ \theta(nlgn)<\theta(n^2) $$
+$$ \theta(n\lg n )<\theta(n^2) $$
 
 \section{渐进符号,递归及解法}
 \begin{definition}
@@ -161,11 +161,11 @@ $O(g(n)) = \{f(n): $there exist positive constants $c$ and $n_0$ such that $0 \l
 We say that $g(n)$ is an asymptotically upper bound for $f(n)$
 
 \textbf{BIG $\Omega$下界 >=}\\
-$\Omega(g(n)) = \{f(n): $there exist positive constants $c$ and $n_0$ such that $0 leq cg(n) leq f(n)$ for all $n geq n_0\}$\\
+$\Omega(g(n)) = \{f(n): $there exist positive constants $c$ and $n_0$ such that $0\leq cg(n)\leq f(n)$ for all $n geq n_0\}$\\
 We say that $g(n)$ is an asymptotically lower bound for $f(n)$.
 
 \textbf{BIG $\Theta$ =}\\
-$\Theta(g(n)) = \{f(n) : $there exist positive constants $c_1, c_2$, and $n_0$ such that $0 leq c\lg n leq f(n) leq c_2g(n)$ for all $n geq n_0\}$\\
+$\Theta(g(n)) = \{f(n) : $there exist positive constants $c_1, c_2$, and $n_0$ such that $0\leq c\lg n\leq f(n)\leq c_2g(n)$ for all $n geq n_0\}$\\
 $$\Theta(g(n))=O(g(n)) \cap \Omega(g(n)) $$\\
 We say that $g(n)$ is an asymptotically tight bound for $f(n)$.
 
@@ -859,6 +859,349 @@ Your algorithm should take advantage of such overlapping, to the extent that it 
 when all of the intervals overlap (i.e., when there exists a value $x$ such that $x \in [a_i, b_i]$ for all $i$).
 Your algorithm should not be checking for this case explicitly; rather, its performance should naturally improve as the amount of overlap increases.
 
+\section{Heapsort}
+Implementation of heap: tree or array\\
+Max-heap: parent $\geq$ children,
+	heapsort\\
+Min-heap: parent $\leq$ children,
+	priority queue
+
+下面我们以Max-heap 进行讲解\\
+Array n elements, leaves: $floor(n/2) + 1, floor(n/2) + 2, floor(n/2) + 3, \cdots, n$
+
+The (binary) heap data structure is an array object that we can view as a nearly complete binary tree
+\begin{verbatim}
+PARENT(i)
+   return floor(i/2)
+LEFT(i)
+   return 2i
+RIGHT(i)
+   return 2i + 1
+\end{verbatim}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{sort_heap_example}
+  \caption{An example of heap}\label{fig.sort.heap.example}
+\end{figure}
+
+The height of a node: the length of the longest downward path to a leaf from that node\\
+The depth of a node: the length of the path to its root\\
+Root node has depth 0, leaf node has height 0
+
+\subsection{Maintaining the heap property}
+Its inputs are an array A and an index i into the array\\
+A[i] "float down"
+
+\begin{verbatim}
+Max-heapify(A, i)
+   l = left(i)
+   r = right(i)
+   if l <= A.heap-size and A[l] > A[i]
+      largest = l
+   else largest = i
+   if r <= A.heap-size and A[r] > A[i]
+      largest = r
+   if largest != i
+      exchange A[i] with A[largest]
+      Max-heapify(A, largest)
+\end{verbatim}
+
+max heapify: correct a single violation of the heap property in a sub tree's root\\
+\textbf{运行Max-heapify(A, i) 的前提条件precondition}: assume that the trees rooted at left(i) and right(i) are max-heaps
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{sort_heap_violation}
+  \caption{An example of violation of heap property}\label{fig.sort.heap.violation}
+\end{figure}
+图\ref{fig.sort.heap.violation}中的第二个节点violates the max heap property, 所以我们可以调用max-heapify(A, 2), 修复好这个之后, 再进行检查直到不出现violation 为止
+
+The children's subtrees each have size at most $2n/3$\todo{not understood}—the worst case occurs when the bottom level of the tree is exactly half full—and therefore we can describe the running time of MAX-HEAPIFY by the recurrence\\
+$T(n) \leq T(2n/3) +\Theta(1)$\\
+master theorem => $T(n) = O(\lg n)$
+
+add a new item : place the new item at the last position(向左向下走知道不能继续前进), 然后进行修复, compare it with its parent, if it is larger than its parent, exchange them 向上继续进行这个比较直到不违反heap的性质, 也就是向上修复\\
+delete the root : 将最后一个节点的值赋给root, 然后向下进行修复
+
+\subsection{Building a heap}
+build-max heap: produce a max heap from an unordered array
+
+The elements in the subarray $A[(floor(n/2)+ 1)…n]$ are all leaves of the tree\todo{how to prove}\\
+而leaf 已经是max-heap了, 因为leaf 没有children
+
+The procedure BUILD-MAX-HEAP goes through the remaining nodes of the tree and runs MAX-HEAPIFY on each one
+\begin{verbatim}
+Build-Max-heap(A)
+A.heap-size = A.length
+    for i = floor(A.length / 2) downto 1
+        Max-heapify(A, i) //每次调用max-heapify 之前, 都是满足max-heapify的precondition的
+\end{verbatim}
+
+Each call to MAX-HEAPIFY costs $O(\lg n)$ time, and BUILD-MAX-HEAP makes $O(n)$ such calls. Thus, the running time is $O(n\lg n )$. This upper bound, though correct, is not asymptotically tight.
+
+但是我们可以发现:\\
+max-heapify takes $O(1)$ for nodes that are one level above the leaves\\
+and in general $O(l)$ time for nodes that re l levels above the leaves
+
+an n-element heap has height $floor(\lg n )$ and at most $ceil(n/(2^{h+1}))$ nodes of any height $h$\todo{need proof}
+
+$$
+\sum_{h=0}^{\lfloor \lg n \rfloor} \lceil \frac{n}{2^{h+1}} \rceil O(h)
+=
+O(n \sum_{h=0}^{\lfloor \lg n \rfloor} \frac{h}{2^h})
+$$
+
+$$
+\sum_{h=0}^{\infty} \frac{ h}{2^h} = \frac{1/2}{(1 - 1/2)^2} = 2
+$$
+Thus, we can bound the running time of BUILD-MAX-HEAP as
+$$
+O(n \sum_{h=0}^{\lfloor \lg n \rfloor} \frac{h}{2^h})
+= O(n \sum_{h=0}^{\infty} \frac{h}{2^h})
+= O(n)
+$$
+
+Hence, we can build a max-heap from an unordered array in linear time
+
+\subsection{The heapsort algorithm}
+build-max-heap from unordered array\\
+find max element $A[1]$\\
+swap elements $A[n]$ with $A[1]$, now max element is at the end of the array\\
+Discard node $n$ from heap,\\
+New root may violate max heap property, fix it
+
+\begin{verbatim}
+Heapsort(A)
+    Build-Max-heap(A)
+    for i = A.length downto 2
+        exchange A[1] with A[i]
+        A.heap-size = A.heap-size - 1
+        Max-heapify(A, 1)
+\end{verbatim}
+
+把$A[1]$ 也就是最大值挪到最后一个位置, 同时将heap 的大小减一, 这样最大值就从heap 从取出来了并被放在了正确的位置上, 然后再修复这个heap; 然后再最大值重复这个操作
+
+time $O(n\lg n )$\\
+in place sort
+
+\subsection{Priority queues}
+max-priority queue, min-priority queue\\
+we can use a heap to implement a priority queue
+
+\begin{verbatim}
+HEAP-MAXIMUM(A)
+    return A[1]
+\end{verbatim}
+heap-maximum: $\Theta(1)$ time
+
+\begin{verbatim}
+HEAP-extract-MAX(A)
+    if A.heap-size < 1
+        error "heap underflow"
+    max = A[1]
+    A[1] = A[A.heap-size]
+    A.heap-size = A.heap-size - 1
+    MAX-HEAPIFY(A,1)
+    return max
+\end{verbatim}
+heap-extract-max: $O(\lg n )$ time
+
+\begin{verbatim}
+HEAP-INCREASE-KEY(A,i,key)
+    if key < A[i]
+        error "new key is smaller than current key"
+    A[i] = key
+    while i > 1 and A[PARENT(i)] < A[i]
+        exchange A[i] with A[PARENT(i)]
+        i = PARENT(i)
+\end{verbatim}
+HEAP-INCREASE-KEY: $O(\lg n )$ time
+
+\begin{verbatim}
+MAX-HEAP-INSERT(A,key)
+    A.heap-size = A.heap-size + 1
+    A[A.heap-size] = -\infty
+    HEAP-INCREASE-KEY(A,A.heap-size,key)
+\end{verbatim}
+MAX-HEAP-INSERT: $O(\lg n )$ time
+
+\section{线性时间排序}
+\begin{itemize}
+\item quicksort $\Theta(n\lg n )$  randomized
+\item heapsort $\Theta(n\lg n )$ 堆排序
+\item merge sort $\Theta(n\lg n )$
+\item insertion sort $\Theta(n^2)$
+\end{itemize}
+
+can we do better than $\Theta(n\lg n )$?\\
+comparison sorting model\\
+only use comparisons to determine relative order of elements
+
+\subsection{decision tree model 决策树}
+Ex: sort $<a_1, a_2, a_3>$
+
+In general $<a_1,a_2...,a_n>$
+\begin{itemize}
+\item each internal node labeled $i, j$ means compare $a_i$ vs. $a_j$
+\item left subtree $a_i <= a_j$
+\item right subtree $a_i > a_j$
+\item each leaf gives a permutation of the array
+\end{itemize}
+
+图\ref{fig.decision_tree.example}是一个决策树的例子
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{decision_tree_example}\\
+  \caption{Decision tree example}\label{fig.decision_tree.example}
+\end{figure}
+
+\textbf{A lower bound for the worst case}\\
+The length of the longest path from the root of a decision tree to any of its reachable leaves represents the worst-case number of comparisons. Consequently,
+the worst-case number of comparisons for a given comparison sort algorithm equals the height of its decision tree. A lower bound on the heights of all decision trees in which each permutation appears as a reachable leaf is therefore a lower bound on the running time of any comparison sort algorithm. The following theorem establishes such a lower bound.
+
+[Theorem 8.1] Any comparison sort algorithm requires $\Omega(n \lg n)$ comparisons in the worst case.\\
+Proof: From the preceding discussion, it suffices to determine the height of a decision tree in which each permutation appears as a reachable leaf.\\
+Consider a decision tree of height h with l reachable leaves corresponding to a comparison sort on n elements.
+Because each of the $n!$ permutations of the input appears as some leaf, we have $n! \leq l$.(至少含有$n!$ 个leaves)
+Since a binary tree of height h has no more than $2^h$ leaves, we have\\
+$n! \leq l \leq 2^h$,
+which, by taking logarithms, implies\\
+$h \geq \lg (n!) = \Omega(n\lg n)$ (Stirling's approximation $n! \simeq (n/e)^n$
+
+\subsection{Counting sort计数排序}
+Element $\in [0, k]$ for some integer $k$. \\
+When $k = O(n)$, the sort runs in $\Theta(n)$ time.\\
+The \textbf{basic idea} of counting sort is to \textbf{determine, for each input element $x$, the number of elements less than $x$}.
+This information can be used to place element $x$ directly into its position in the output array.\\
+For example, if there are $17$ elements less than $x$, then $x$ belongs in output position $18$.
+This scheme must be modified slightly to handle the situation in which several elements have the same value,
+since we don't want to put them all in the same position.
+
+input array $A[1,\ldots, n]$, and thus $length[A] = n$.\\
+the array $B[1,\ldots,n]$ holds the sorted output, \\
+the array $C[0,\ldots,k]$ provides temporary working storage.
+
+\begin{verbatim}
+COUNTING-SORT(A, B, k)
+ 1  for i ← 0 to k
+ 2     do C[i] ← 0
+ 3  for j ← 1 to length[A]
+ 4     do C[A[j]] ← C[A[j]] + 1
+ 5  // C[i] now contains the number of elements equal to i.
+ 6  for i ← 1 to k
+ 7     do C[i] ← C[i] + C[i - 1]
+ 8  // C[i] now contains the number of elements leqi
+ 9  for j ← length[A] downto 1
+10     do B[C[A[j]]] ← A[j]
+11        C[A[j]] ← C[A[j]] - 1
+\end{verbatim}
+
+An important property of counting sort is that it is \textbf{stable}.
+
+Analysis\\
+line $1-2 \Theta(k)$\\
+line $3-4 \Theta(n)$\\
+line $6-7 \Theta(k)$\\
+line $9-11 \Theta(n)$\\
+Overall time$\Theta(n+k)$\\
+在实际上, 当 $k\Theta(n)$ 时, 我们才采用 counting sort
+
+[Exercises 8.2-3] Suppose that the for loop header in line $9$ of the COUNTING-SORT procedure is rewritten as
+\begin{verbatim}
+9	 for j ← 1 to length[A]
+\end{verbatim}
+Show that the algorithm still works properly. Is the modified algorithm stable?\\
+凭直觉来看, 不是stable
+
+\subsection{Radix sort基数排序}
+LSD(Least Significant Digit first)的基数排序适用于位数小的数列,如果位数多的话,使用MSD的效率会比较好.\\
+MSD(Most Significant Digit first)的方式与LSD相反,是由高位数为基底开始进行分配,但在分配之后并不马上合并回一个数组中,
+而是\textbf{在每个"桶子"中建立"子桶"},将每个桶子中的数值按照下一数位的值分配到"子桶"中.在进行完最低位数的分配后再合并回单一的数组中.
+
+这里讲到的是LSD
+
+\subsubsection{说明}
+其原理在于对于待排序的数据,\textbf{整体权重未知}的情况下,
+先按权重小的因子排序,然后按权重大的因子排序.\\
+例如比较时间,先按日排序,再按月排序,最后按年排序,仅需排序三次.
+
+但是如果先排序高位就没这么简单了.\\
+\textbf{基数排序源于老式穿孔机,排序器每次只能看到一个列(这就是一个整体权重未知的例子)},
+很多教科书上的基数排序都是对数值排序(这样意义不大),数值的大小是已知的,与老式穿孔机不同.将数值按位拆分再排序,是无聊并自找麻烦的事.算法的目的是找到最佳解决问题的方案,而不是把简单的事搞的更复杂.
+
+\textbf{基数排序更适合用于对时间,字符串等这些整体权值未知的数据进行排序.}
+这时候基数排序的思想才能体现出来,例如字符串,如果从高位(第一位)往后排就很麻烦.
+而反过来,先对影响力较小,的低位(最后一位)进行排序就非常简单了.
+这时候基数排序的思想就能体现出来.
+
+$d$ 位数字, 每一位数字可以取 $k$ 个不同的数, 例如$0$ 到$9$ 十个数, 那么$k=10$
+\begin{verbatim}
+RADIX-SORT(A, d)
+    for i from 1 to d:
+        do use a stable sort to sort array A on digit i
+\end{verbatim}
+
+\subsubsection{Analysis}
+time:$\Theta(d(n+k))$
+
+证明:correctness\\
+induct on digit position $t$\\
+assume by induction 前$t-1$位已经排好序, 我们需要对第$t$位进行排序\\
+1, if two elements have same $t$th digit, stability $\Rightarrow$ same order $\Rightarrow$ sorted order\\
+2, if different $t$th digit $\Rightarrow$ sorted order
+
+---use counting sort digits\\
+---suppose we have $n$ integers each $b$ bits ( $range=[0,2^b-1]$, non-negative)\\
+---split into $b/r$ "digits" each $r$ bits (将$r$个bits组合成一个大的"bit")\\
+time $O(b/r*(n+k))=O(b/r*(n+2^r))$\\
+对r求导, 令其为零求得此时的r值 $r=\lg n$\\
+得到$O(bn/\lg n )$
+
+if number in range $0,2^b-1$ then $time = O(dn)$\\
+if  $d=O(1)$ then $time=O(n)$
+
+而且只要$d$小于$\lg n$, 就可以击败comparison sort\\
+但是在实际上, counting sort is not very good on a cache, in practice, radix sort is not that fast, unless your numbers are really small.\\
+但是在理论上, 这个算法很优美
+
+Finally, if you have arbitrary integers, that are one word length long, and you can manipulate a word in constant time.\\
+Then the best algorithm we known for sorting runs $n*\sqrt{\lg\lg n }$, and this is a randomized algorithm and very complicated\\
+有另外一个算法$n*lg(\lg n )$ worst case, 这篇论文应该可以看懂
+
+\section{Order statistics}
+given n elements\\
+find $k$th smallest element\\
+naive algorithm: sort and return $A[k]$\\
+$k=1$ minimum\\
+$k=n$ maximum\\
+median 中位数 $k=floor((n+1)/2)$ or $ceil((n+1)/2)$
+
+randomized divide and conquer\\
+random-select \\
+$\Theta(n)$ expected running time\\
+$\Theta(n^2)$ worst-case  差不多是$1/n^n$ 的概率\\
+intuition for analysis\\
+(we assume 所有数都不等)\\
+lucky case: $1/10, 9/10$\\
+$T(n) \leq T(9/10n)\Theta(n)$  假设第$i$小的位于$9/10$部分\\
+unlucky case: $0, n-1$\\
+$T(n)=T(n-1)\Theta(n)\Theta(n^2)$
+
+indicator random variable\\
+let $T(n)$  be the random variable for running time of random-select\\
+define indicator random variable $x_k, k \in [0, n-1]$\\
+$x_k = 1$	if partition generates an $k$ to $n-k-1$ splits \\
+$x_k = 0$	otherwise
+
+substitution method , $E[T(n)] \leq cn$\\
+$3/8n^2$ induction to get $3/8$
+
+worst-case linear time order statistics
+
+Why do we group in $5$ numbers, not $3$ or $7$ or others?\\
+$3$是不行的, $7$也行, 但是对于效率没有什么提升
+
 \section{Appendix}
 \subsection{Summations}
 \subsubsection{Approximation by integrals}
@@ -879,7 +1222,7 @@ $v_0',v'_0$
 A binary relation $R$ on two sets $A$ and $B$ is a subset of the Cartesian product$A \times B$
 If $(a, b) \in R$, we sometimes write $a R b$. When we say that R is a binary relation on a set $A$, we mean that R is a subset of $A \times A$. For example, the "less than" relation on the natural numbers is the set $\{(a, b) : a, b$ in $N$ and $a < b\}$. An n-ary relation on sets $A_1, A_2,\ldots, A_n$ is a subset of $A_1 \times A_2 \times \cdots \times  A_n$.
 
-A binary relation $R \subseteq A \times A$ is reflexive if 
+A binary relation $R \subseteq A \times A$ is reflexive if
 $a R b$ implies $b R a$ for all $a,b \in A$
 \subsection{Probability}
 $$
