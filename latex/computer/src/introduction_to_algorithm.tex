@@ -1202,6 +1202,394 @@ worst-case linear time order statistics
 Why do we group in $5$ numbers, not $3$ or $7$ or others?\\
 $3$是不行的, $7$也行, 但是对于效率没有什么提升
 
+\section{Hashing}
+symbol-table problem in compiler\\
+table S holding n symbols\\
+\textbf{dictionary operations}\\
+inset(S, x) x is an element\\
+delete(S, x)\\
+search(S, k) for a given key\\
+search time $\Theta(n)$ in the worst case\\
+search time $\Theta(1)$ the expected time\\
+
+\subsection{Direct address tables}
+Direct addressing is applicable when we can afford to allocate an array that has one position for every possible key.
+
+\begin{verbatim}
+Direct-address-search(T, k)
+    return T[k]
+
+Direct-address-insert(T, x)
+    T[key[x]] =x
+
+Direct-address-delete(T, x)
+    T[key[x]] =nil
+\end{verbatim}
+
+\subsection{Hash tables}
+With direct addressing, an element with key k is stored in slot $k$.\\
+With hashing, this element is stored in slot $h(k)$; that is we use a \textbf{hash function} $h$ to compute the slot from the key $k$.\\
+Here $h$ maps the universe $U$ of keys into the slots of a \textbf{hash table} $T[0,\ldots, m-1]$\\
+$h: U \rightarrow {0,1, \ldots m-1}$
+
+\paragraph{collision: two keys hash to the same slot.}~\\
+Solution: make h appear random thus avoiding collisions or at least minimizing their number.\\
+Since $|U|>m$, 肯定会有collisions
+
+\paragraph{Collision resolution by chaining}~\\
+We put all elements that hash to the same slot in a linked list.\\
+Slot $j$ contains a pointer to the head of list of all stored elements that hash to $j$.\\
+通过这种方式解决collision的dictionary operations很容易实现
+
+\begin{verbatim}
+chain-hash-insert(T, x)
+    insert x at the head of list T[h(key[x])]
+
+chain-hash-search(T, k)
+    search for an element with key k in list T[h(k)]
+
+chain-hash-delete(T, x)
+    delete x from the list T[h(key[x])]
+\end{verbatim}
+
+\paragraph{Analysis}~\\
+Insert: worst-case $O(1)$\\
+插入很快, 是因为我们假设hash table之前不含有x; 当然我们可以在insert之前先search一遍\\
+Search: proportional to the length of linked list\\
+Delete: $O(1)$ if the list is doubly linked\\
+	same as search if the list is singly linked
+
+\textit{How well does hashing with chaining perform? In particular, how long does it take to search for an element with a given key?}\\
+Def.: the \textbf{load factor} of a hash table with n keys and m slots is\\
+$\alpha = n/m =$average keys in a slot$=$ average number of elements stored in a chain
+
+\textbf{worst-case}\\
+集合S中的所有键经过hash函数生成的hash值是一样的, 因此all elements go to the same slot\\
+the access time is $\Theta(n) + $the time to compute the hash function.
+
+\textbf{average-case}\\
+assumption of \textbf{simple uniform hashing}\\
+---any given element is equally likely to hash into any of the m slots, independently of where any other element has hashed to.
+
+For $i \in [0,m-1]$, let us denote $n_i$ the length of the list $T[i]$\\
+So that $n=n_0 + n_1 + \ldots + n_{m-1}$\\
+And the average value of $n_i$ is $E[n_i]=\alpha=n/m$
+
+expected unsuccessful search time $\Theta(1+n/m)$  其中1是指进行hash操作的时间\\
+expected successful search $time =\Theta(1+n/m)$
+
+Page $227$: \todo{为什么是成比例的, 搜索哪个list不是通过计算key的hash值来确定的吗?}the situation for a successful search is slightly different, since each list is not equally likely to be searched. Instead, \red{the probability that a list is searched is proportional to the number of elements it contains}. Nonetheless, the expected search time is still $\Theta(1+\alpha)$\par
+Proof: the number of elements examined during a successful search for an element $x$ is $1$ plus the number of elements that appear before $x$ in x's list. Elements before $x$ in the list were all inserted after $x$ was inserted.\\
+Let $x_i$ denote the i\textsuperscript{th} element inserted into the table, and let $k_i=key[x_i]$\\
+For keys $k_i$ and $k_j$ ($k_j$注意细微差别), \\
+we define indicator random variable $X_{ij}=I{h(k_i)=h(k_j)}$\\
+Under the assumption of simple uniform hashing, we have $Pr\{h(k_i)=h(k_j)\}=1/m$\todo{how to compute?}\\
+$So E[X_{ij}]=1/m$\\
+For $x_i$, the number of elements examined in a successful search is $(1+\sum_{j=i+1}^n X_{ij})$, 其中的$1$是$x_i$ 本身, 他自己也要被检查\\
+Thus, the expected number of elements examined in a successful search is:
+$$
+E[\frac{1}{n} \sum_{i=1}^n (1 + \sum_{j = i + 1}^n X_{ij})]
+= 1 + \frac{n-1}{2m}
+= 1 + \frac{\alpha}{2} - \frac{\alpha}{2n}
+$$
+
+Thus the total time required for a successful search(including the time for computing the hash function) is $\Theta(2 + \alpha/2 - \alpha/{2n}=\Theta(1+\alpha)$
+
+if that is to say When the number of hash-table slots is at least proportional to the number of elements in the table, that is to say $n\Theta(m)$ and $ \alpha \Theta(1)$. Thus searching takes constant time on average. \\
+Since insertion takes $O(1)$ worst-case time and deletion takes $O(1)$ worst-case time when the lists are doubly linked, all dictionary operations can be supported in $O(1)$ time on average.
+
+\subsection{Hash functions}
+A good hash function satisfies (approximately) the assumption of simple uniform hashing.\\
+但是我们很少能够知道keys的distribution, 所以这个条件很难满足.\\
+如果我们知道distribution, 例如, if the keys are known to be random real numbers k independently and uniformly distributed in the range $0<=k<1$, the hash function\\
+$h(k) = floor(km)$ 满足simple uniform hashing的条件.
+
+In practice, heuristic(启发式的) techniques can often be used to create a good hash function.
+
+\underline{Interpreting keys into natural numbers}:\\
+Most hash functions assume that the universe of keys is the set $N={0,1,2, \ldots}$ of natural numbers\\
+因此, 当keys不是自然数时, 需要将其转化为自然数.\\
+例如, a character string $\rightarrow$ natural number \textbf{in suitable radix notation}\\
+For example: the string pt, $(112, 116)$ in ASCII character set, then expressed as a radix$-128$\todo{to be checked} integer, pt becomes $112*128+116=14452$
+
+\subsubsection{Division method}
+$h(k)=k \mod m$\\
+When using the division method, we usually avoid certain values of $m$.\\
+\red{一个数对$2^r$取余, 结果就是这个数的二进制表示的最后$r$位数字\\
+同样的道理, 一个数对$10^r$取余, 结果就是这个数 的$10$进制表示的最后$r$位数字}\\
+所以选择一个质数来作为$m$比较好, 这个质数一定不要接近$2$或者$10$的某个指数
+
+\subsubsection{Multiplication method}
+$h(k)=floor(m(kA\mod 1))$\\
+where $x \mod 1$ mans the fractional part of $x$, that is $x - floor(x)$\\
+$A$ is constant $\in (0,1)$
+
+An advantage of the multiplication method is that the value of m is not critical. We typically choose it to be a power of $2$($m=2^p$ for some integer $p$). 这样multiplication method 就很容易在计算机上实现
+
+\underline{具体执行方法}\\
+word size of the machine: $w$ bits\\
+$k$ fits into a single word\\
+A is a fraction of the form $s/2^w$, where s is an integer in the range $0 < s < 2^w$. \\
+we first multiply $k$ by the $w$-bit integer $s = A \cdot 2^w$. The result is a $2w$-bit value $r1*2^w + r0$, where $r1$ is the high-order word of the product and $r0$ is the low-order word of the product. \\
+The desired $p$-bit hash value consists of the $p$ most significant bits of $r0$.\\
+%% 这里有一个图片figure :D:\my-container\Documents\算法导论\figure\hash_multiplication_method.png\\
+\begin{figure}[htbp]
+  \centering
+  % Requires \usepackage{graphicx}
+  \includegraphics[width= 0.5\textwidth]{hash_multiplication_method}\\
+  \caption{Multiplication method for Hash}\label{fig.hash.mult}
+\end{figure}
+
+Although this method works with any value of the constant A, it works better with some values than with others.\\
+$A=(\sqrt{5} - 1)/2=0.6180339887$
+
+\underline{Example}: suppose we have $k = 123456, p = 14, m = 2^{14} = 16384$, and $w = 32$. Adapting Knuth's suggestion, we choose $A$ to be the fraction of the form $s/232$ that is closest to , so that $A = 2654435769/232$. \\
+Then $k \times s = 327706022297664 = (76300 \times 2^{32}) + 17612864$, \\
+and so $r1 = 76300$ and $r0 = 17612864$\\
+The $14$ most significant bits of $r0$ yield the value $h(k) = 67$\todo{14bits为什么只有67, 这么小??? 不知道这个是怎么算出来的}.\\
+$17612864$的二进制表示为: $1000, 0110, 0110, 0000, 0010, 0000, 0$\\
+$m=2^p$ and word size of machine is $w$-bit, \\
+$k$ fits into a singl word\\
+$h(k)=(A*k\mod 2^w) rsh (w-r)$\todo{这个是MIT视频教程中使用的方法}\\
+A an odd integer in the range $(2^{w-r}-1, 2^w)$, don't pick $A$ too close to $2^{m-1}$ or $2^w$\\
+rsh right shift
+
+\subsubsection{Collision resolution by open addressing}
+all elements are stored in the hash table itself.\\
+-- no storage for links
+
+进行多次hash操作直到找到一个空的slot\\
+probe sequence should be a permutation
+
+table may full up $\mathbf{n \leq m}$\\
+deletion is difficult
+
+\todo{这一段没有怎么看懂. 书上的237页}To perform insertion using open addressing, we successively examine, or probe, the hash table until we find an empty slot in which to put the key. Instead of being fixed in the order $0, 1, \ldots, m - 1$ (which requires $\Theta(n)$ search time), the sequence of positions probed depends upon the key being inserted. To determine which slots to probe, we extend the hash function to include the probe number (starting from $0$) as a second input. Thus, the hash function becomes\\
+$h : U \times {0, 1, \ldots, m - 1} \rightarrow {0, 1, \ldots, m - 1}$.\\
+With open addressing, we require that for every key $k$, the probe sequence\\
+$〈h(k,0),h(k,1), \ldots, h(k,m - 1)〉$\\
+be a permutation of $〈0, 1, \ldots, m -1〉$, so that every hash-table position is eventually considered as a slot for a new key as the table fills up. In the following pseudocode, we assume that the elements in the hash table $T$ are keys with no satellite information; the key $k$ is identical to the element containing key $k$. Each slot contains either a key or $NIL$ (if the slot is empty).
+
+\begin{verbatim}
+HASH-INSERT(T, k)
+1  i ← 0
+2  repeat j ← h(k, i)
+3         if T[j] = NIL
+4            then T[j] ← k
+5                 return j
+6            else i ← i + 1
+7   until i = m
+8 error "hash table overflow"
+\end{verbatim}
+
+搜索用到的sequence和insert用到的sequence一样
+\begin{verbatim}
+HASH-SEARCH(T, k)
+1  i ← 0
+2  repeat j ← h(k, i)
+3         if T[j] = k
+4            then return j
+5         i ← i + 1
+6    until T[j] = NIL or i = m
+7  return NIL
+\end{verbatim}
+
+Deletion from an open-address hash table is difficult.\\
+对于delete, 我们不能简单的将其标记为nil, 这样在search的时候就会出现问题.\\
+例如, 插入$k1$的时候, $i$位置是有值的,所以$k1$会在$i$之后继续probe; 然后$i$位置的值被删除, 被标记成了$nil$, 这样在查找$k1$的时候, 当试探到$i$位置的时候, 发现是$nil$, 达到search中止的条件, 返回$nil$, 但是$k1$确实存在于hash table.\\
+所以, 删除不能简单地标记为$nil$, 我们可以标记为DELTETED, 这样insert的代码需要稍作修改, search的代码不用动\\
+但是又产生了另外一个问题, search times are no longer dependent on the load factor α, and for this reason chaining is more commonly selected as a collision resolution technique when keys must be deleted.\\
+probe strategy\\
+1, linear probing: \\
+Given an ordinary hash function $h'$, which we refer to as an auxiliary hash function.\\
+$h(k,i)=(h'(k)+i) \mod m$\\
+Because the initial probe determines the entire probe sequence, there are only m distinct probe sequences.\\
+这个方案不好, 如果碰到primary clustering集群现象, 也就是在一个空的slot前面全是full slots, 所以每次探查的效率不高\\
+
+2, quadratic probing $h(k,i)=(h'(k) + c_1 * i + c_2 * i^2) \mod m$\\
+better than linear probing\\
+but to make full use of hash table\todo{书上没有展开讲解} , c$1$, $c2$ and $m$ are constrained.\\
+milder温和的 form of clustering, secondary clustering\\
+与linear probing一样, 只有m个不同probe sequence
+
+3, double hashing\\
+$h(k,i)=(h_1(k) + i*h_2(k))\mod m$\\
+one weay pick $m=2^r$ and $h_2(k)$ always returns an odd奇数 number\\
+another way is to let m be prime and $h_2$ always returns a positive integer less than $m$\\
+For example:\\
+$h_1(k) = k\mod m$\\
+$h_2(k) = 1+ (k\mod m')$ where $m'$ is chosen slightly less than $m$ (say $m-1$)\\
+$\Theta(m^2)$ probe sequences\todo{未理解}, rather than $\Theta(m)$\\
+
+For uniform hashing, there are $m!$ permutations, so $m!$ probe sequences.
+
+\textbf{Analysis of open addressing hashing}\\
+With open addressing, we have at most one element per slot, and thus $n \leq m$, which implies $\alpha \leq 1$
+
+\underline{Theorem}: Given an open-address hash table with load factor $\alpha < 1$, the expected number of probes in an \textit{unsuccessful search} is at most $1/(1-\alpha)$, assuming uniform hashing\\
+Proof: In an unsuccessful search, every probe but the last accesses an occupied slot that does not contain the desired key, and the last slot probed is empty.\\
+Let us define the random variable $X$ to be the number of probes made in an unsuccessful search, and let us also define the event $A_i$, for $i \in [1,\infty]$ to be the event that there is i\textsuperscript{th} probe and it is an occupied slot. Then \textbf{the event $\{X \geq i\}$ is the intersection of events} \\
+$A_1 \cap A_2 \cap \ldots \cap A_{i-1}$\\
+$$
+\begin{aligned}
+Pr\{X \geq i\} & =Pr\{A_1 \cap A_2 \cap \ldots \cap A_{i-1}\} \\
+	&= Pr\{A_1\} * Pr\{A_2 | A_1\} * Pr\{A_3 | A_1 \cap A_2\} *\ldots* Pr\{A_{i-1} | A_1 \cap A_2 \cap \ldots \cap A_{i-2}\}
+\end{aligned}
+$$
+Since there are $n$ elements and $m$ slots, $Pr\{A_1\}=n/m$.\\
+$Pr\{A_2 | A_1\}$ 由于$A_1$ 是确定发生的, 所以第一个slot已经被占用, 所以还剩下$m-1$个slots, 同时还剩下 $n-1$个elements, 所以$Pr\{A_2 | A_1\}=(n-1)/(m-1)$\\
+所以
+$$
+\begin{aligned}
+Pr\{X \geq i\}
+&=n/m * (n-1)/(m-1) * (n-2)/(m-2) *\ldots* (n-i+2)/(m-i+2)\\
+&\leq (n/m)^{i-1}\\
+&=(\alpha)^{i-1}\\
+\end{aligned}
+$$
+
+$$
+E[X]
+=\sum_{i=i}^{\infty} i*Pr\{X=i\}\\
+=\sum_{i=1}^{\infty} Pr\{X \geq i\}\\
+\leq \sum_{i=1}^{\infty} (\alpha)^{i-1}\\
+= \sum_{i=0}^{\infty} (\alpha)^i\\
+=1/(1 - \alpha)
+$$
+
+\noindent table $50$\% full, $2$次\\
+table $90$\% full, $10$次
+
+Theorem: Given an open-address hash table with load factor $\alpha < 1$, the expected number of probes in an successful search is at most \\
+$1/\alpha * \ln 1/(1-\alpha)$ that is 1ln11-  ,assuming uniform hashing and assuming that each key in the table is equally likely to be searched for.\\
+Proof: A search for a key $k$ follows the same probe sequence as was followed when the element with key $k$ was inserted. If $k$ was the $(i+1)$\textsuperscript{st} key inserted into the hash table, the expected number of probes made in a search for $k$ is at most $1/(1 -  i/m)=m/(m - i)$\\
+($k$是$i+1$个插入的, 说明hash table中已经含有$i$个element, 所以此时的load factor $i/m$)\\
+\textbf{Averaging over all $n$ keys} in the hash table gives us the average number of probes in a successful search:
+$$
+\begin{aligned}
+\frac{1}{n} \sum_{i=0}^{n-1}\frac{m}{m-i}
+&= \frac{ m}{n} \sum_{i=0}^{n-1}\frac{1}{m-i}\\
+&= \frac{1}{\alpha}(H_m - H_{m-n})
+\end{aligned}
+$$
+
+where $H_i=\sum_{j=1}^i 1/j$ is the $i$\textsuperscript{th} harmonic number
+$$
+\begin{aligned}
+1/\alpha * (H_m - H_{m-n})
+&= 1/\alpha * \sum_{k=m-n+1}^m 1/k\\
+&\leq 1/\alpha * \int_{m-n}^m (1/x)dx\\
+&=1/\alpha * \ln m/(m-n)\\
+&=1/\alpha * \ln 1/(1 - \alpha)
+\end{aligned}
+$$
+
+\noindent table $50$\% full, $1.387$次\\
+table $90$\% full, $2.559$次
+
+\section{Universal hashing and perfect hashing}
+全域哈希和完全哈希\\
+Perfect hashing: search time $\Theta(1)$ worst case when the set of keys are static(that is, when the set of keys never change once stored).
+
+\subsection{Universal hashing}
+weakness of hashing\\
+For any choice of hash function, there exists a bad set of keys that all hash to the same slot.\\
+The idea is to choose a hash function at \underline{random} independent from keys.\\
+This method is called \textbf{universal hashing}.
+
+\underline{Def}: Let $U$ be a universe of keys, and  $H$ a finite collection of hash functions mapping $U$ to ${0, 1, ... m-1}$.
+
+\underline{Universal collection of hash functions}\\
+Such a collection is said to be \textbf{universal} if for each pair of distinct keys $k,l \in U$, the number of hash functions $h \in H$ for which $h(k)=h(l)$ is at most $|H|/m$.\\
+In other words, with a hash function randomly chosen from $H, Pr\{h(k)=h(l)\} \leq 1/m$\todo{|H|/m and 1/m 都不理解}
+
+\underline{Thm}: if we choose $h$ randomly from the set of hash function $H$, and then we suppose we are hashing $n$ keys into $m$ slots in table $T$, then, for a given key $x$,\\
+E\\
+\underline{Prof}:\\
+Let $C_x$ be random variable denoting total number of collisions of keys in $T$ with $x$, and \\
+let indicator random variable $C_{xy}=1$ if $h(x)=h(y)$ and $0$ otherwise \\
+Note: $E[C_{xy}]=1/m$\todo{这个概率暂时不懂} and $C_x= \sum_{y \in T-{x}} C_{xy}$\\
+After the calculation, we get $E[C_x]=(n-1)/m$\\
+
+\underline{Constructing a universal hash function}\\
+Let $m$ be prime, decompose key $k$ into $r+1$ digits:\\
+$k=<k_0, k_1, ...., k_r>$ where $0<= k_i <=m-1$\\
+Pick $a=<a_0, a-1, ..a_r>$ each $a_i$ is choosen randomly from ${0,1 ... m-1}$\\
+Define $h_a(k)=(\sum_{i=0}^r a_i * k_i) \mod m$\\
+How big is
+
+\underline{Thm}: H is universal\\
+\underline{Proof}: let
+
+\underline{Number theory fact 质数的倒数}\\
+Let $m$ be prime. For any $z \in Z_m$ (integers $\mod m$) such that $z \neq 0, \exists$ unique $z' \in Z_m$ such that $z*z' = 1 \mod m$\\
+Example: $m=7$\\
+\begin{verbatim}
+z	1	2	3	4	5	6
+z'	1	4	5	2	3	6
+\end{verbatim}
+
+\subsection{Perfect hashing 完全哈希}
+Hashing can be used to obtain excellent worst-case performance when the set of keys is \textbf{static: once the keys are stored in the table, the set of keys never changes.}\\
+Some applications naturally have static sets of keys: consider the set of reserved words保留关键词 in a programming language, or the set of fil names on a CD-ROM.
+
+Perfect hashing: search takes $O(1)$ time in the worst case.\\
+Idea: \textbf{$2$ level hashing scheme with universal hashing at each level.} No collisions at level $2$.\\
+The first level is essentially the same as for hashing with chainning.\\
+Instead of making a list of the keys hashing to slot $j$, however, we use a small secondary hash table $S_j$ with an associated hash function $h_j$. By choosing the hash functions $h_j$ carefully, we can guarantee that there are no collisions at level $2$.\\
+
+\subsubsection{Collision-free}
+\underline{Thm}: Hash $n$ keys into $m=n^2$ slots using random $h$ in universal $H$\\
+then $Pr\{\text{number of collisions}\}< 1/2$\todo{为什么要用概率, 用期望值我觉得是一个更好的选择}\\
+\underline{Proof}: There are $C_n^2$ pairs of keys that may collide; each pair collide with probability $1/m$ if $h$ is chooosen at random from a universal family of $H$ of has$h$ functions.\\
+Let $X$ be a random variable that counts the number of collisions.\\
+When $m=n^2$, the expected number of collisions is\\
+$E[X]=C_n^2 /m=(n^2 - n)/(2n^2) < 1/2$\\
+Applying Markov's inequality, $Pr[X \geq 1] \leq E[X]/1 < 1/2$\\
+
+\underline{Markov's inequalty}\todo{Proof}\\
+For random variable $x \geq 0, Pr(x \geq t) \leq E[x]/t$\\
+Proof : E[x]=
+
+在上面定理所描述的情况下$m=n^2$, 随机选择的一个hash function很有可能没有collisions.\\
+所以当the set $K$ of $n$ keys to be hashed(remember that $K$ is static), it is thus easy to find a collision-free hash function $h$ with a few random trials.
+
+当$n$很大时, hash table $m=n^2$ 占用的空间就会很大, 所以我们采用$2$ level hashing approach.\\
+First-level, hash function h hashs the keys into $m=n$ slots\\
+Second-level, if $n_j$ keys hash to slot $j$, a secondary hash table $S_j$ of size $m_j=n_j^2$ is used to provide collision-free constant-time lookup.
+
+\underline{Corollary}: $Pr\{\text{no collisions}\} \geq 1/2$\\
+\underline{Proof}: $Pr{\geq 1 collision} \leq E[number of collisions]/1 < 1/2$
+
+To find a good level $2$ hash function, just test at random. Find one quickly, since $\geq 1/2$ wil work.
+
+\subsubsection{Analysis of storage}
+Thm: if we store $n$ keys in hash table of size $m=n$ using a hash function $h$ randomly chosen from a universal class of hash functions, then
+$$
+E[\sum_{j=0}^{m-1} g_j^2] < 2n
+$$
+
+where $n_j$ is the number of keys hashing to slot $j$.\\
+\underline{Proof}: $a^2 = a + C_a^2$ 恒等式  $C_a^2$是一个组合数\\
+We have:
+$$
+\begin{aligned}
+E[\sum_{j=0}^{m-1} n_j^2]
+&=E[\sum_{j=0}^{m-1} (n_j + 2*C_{n_j}^2)]\\
+&=E[\sum_{j=0}^{m-1} n_j] + 2*E[\sum_{j=0}^{m-1} C_{n_j}^2]\\
+&=E[n] + 2*E[\sum_{j=0}^{m-1} C_{n_j}^2]\\
+&=n + 2*E[\sum_{j=0}^{m-1} C_{n_j}^2]
+\end{aligned}
+$$
+to evaluate the summation $\sum_{j=0}^{m-1} C_{n_j}^2$ we observe it is just the total number of collisions. By the proprities of universal hashing, the expected value of this summation is at most\\
+$C_n^2 * 1/m =n(n-1)/(2m)=(n-1)/2$\\
+since $m=n$. Thus,
+$$
+E[\sum_{j=0}^{m-1} n_j^2]
+\leq n + 2*(n-1)/2
+=2n - 1
+< 2n
+$$
 \section{Appendix}
 \subsection{Summations}
 \subsubsection{Approximation by integrals}
