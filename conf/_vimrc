@@ -94,6 +94,50 @@ function! CheckChineseMark()
         execute s:line . "s/﹞/`/g" 
     endif  
  
+    if  search('﹜')  
+        let s:line=search('﹜')  
+        execute s:line . "s/﹜/,/g" 
+    endif  
+ 
+    if  search('成')  
+        let s:line=search('成')  
+        execute s:line . "s/成/Theta/g" 
+    endif  
+
+    if  search('汍')
+        let s:line=search('汍')  
+        execute s:line . "s/汍/epsilon/g" 
+    endif  
+
+    if  search('次')
+        let s:line=search('次')  
+        execute s:line . "s/次/Omega/g" 
+    endif  
+
+    if  search('﹋')  
+        let s:line=search('﹋')  
+        execute s:line . "s/﹋/in/g" 
+    endif  
+ 
+    if  search('≒')  
+        let s:line=search('≒')  
+        execute s:line . "s/≒/leq/g" 
+    endif  
+ 
+    if  search('≡')
+        let s:line=search('≡')  
+        execute s:line . "s/≡/geq/g" 
+    endif  
+ 
+    if  search('≧')  
+        let s:line=search('≧')  
+        execute s:line . "s/≧/neq/g" 
+    endif  
+ 
+    if  search('＞')  
+        let s:line=search('＞')  
+        execute s:line . "s/＞/approx/g" 
+    endif  
 endfunction  
 map <C-S> :call CheckChineseMark()<CR>
 imap <C-S> <ESC>:call CheckChineseMark()<CR>
@@ -330,9 +374,7 @@ endfunction
 "===============================Latex ab===============================
 " autocmd FileType tex ab L L_{\lambda}^
 autocmd FileType tex ab var \varepsilon
-autocmd FileType tex ab over \overrightarrow{}<ESC>i
 autocmd FileType tex ab arrow \Leftrightarrow
-autocmd FileType tex ab mod \text{mod}
 autocmd FileType tex ab eps \epsilon
 autocmd FileType tex ab del \delta
 autocmd FileType tex ab Del \Delta
@@ -346,18 +388,12 @@ autocmd FileType tex ab 2int \int\int_{D}
 autocmd FileType tex ab 2frac \frac{d^2}{dx^2}F
 autocmd FileType tex ab F_y' F_{y'}
 autocmd FileType tex ab theorem \begin{theorem}<CR>\end{theorem}<ESC>O
-autocmd FileType tex ab example \begin{example}<CR>\end{example}<ESC>O
+" autocmd FileType tex ab example \begin{example}<CR>\end{example}<ESC>O
 autocmd FileType tex ab frame \begin{frame}<CR>\end{frame}<ESC>O
 autocmd FileType tex ab center \begin{center}<CR>\end{center}<ESC>O
-" autocmd FileType tex ab itemize \begin{itemize}<CR>\item <CR>\end{itemize}<ESC>O<BACKSPACE><BACKSPACE>
-" autocmd FileType tex ab enumerate \begin{enumerate}<CR>\item <CR>\end{enumerate}<ESC>O<BACKSPACE><BACKSPACE>
-" autocmd FileType tex ab description \begin{description}<CR>\item <CR>\end{description}<ESC>O<BACKSPACE><BACKSPACE>
 autocmd FileType tex ab corollary \begin{corollary}<CR>\end{corollary}<ESC>O
 autocmd FileType tex ab 1equation \begin{equation}<CR>\end{equation}<ESC>O
-autocmd FileType tex ab split \begin{equation}<CR><TAB>\begin{split}<CR>\end{split}<CR><BACKSPACE>\end{equation}<ESC>kO
-autocmd FileType tex ab case \begin{equation}<CR>\left\{<CR>\begin{array}{ll}<CR>\end{array}<CR>\right.<CR><BACKSPACE><BACKSPACE>\end{equation}<ESC>l2xkkO
+" autocmd FileType tex ab split \begin{equation}<CR><TAB>\begin{split}<CR>\end{split}<CR><BACKSPACE>\end{equation}<ESC>kO
 autocmd FileType tex ab eqnarray \begin{eqnarray}<CR>\end{eqnarray}<ESC>O
 autocmd FileType tex ab lambda \lambda
 autocmd FileType tex ab lamda \lambda
-autocmd FileType tex ab grad \vec{\mbox{grad}}
-autocmd FileType tex ab div \mbox{div}
