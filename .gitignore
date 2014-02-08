@@ -6,7 +6,7 @@
 *.out
 *.out.bak
 *.synctex.gz
-*.synctex.gz<busy>
+*.synctex.gz(busy)
 *.toc
 *.tex.bak
 *.pdf
