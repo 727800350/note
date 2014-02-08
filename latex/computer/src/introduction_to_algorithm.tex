@@ -1590,6 +1590,516 @@ E[\sum_{j=0}^{m-1} n_j^2]
 =2n - 1
 < 2n
 $$
+
+\section{Binary search tree(BST)}
+Search trees are data structures that support many \textbf{dynamic-set operations}, including \textbf{search, minimum, maximum, predecessor前任, successor继承者, \red{insert, delete}}.\\
+Thus, a search tree can be used both as a dictionay and as a priority queue.\\
+These basic operations on a binary search tree take time proportional to the height of the tree.\\
+所以, 对于complete binary tree with n nodes, these operations run in $\Theta(\lg n)$ worst-case.
+
+\subsection{what is a binary seach tree?}
+Each node is an object, \\
+key field and satellite data, and left, right, p(parent) pointers.\\
+if a child or parent is missing, the appropriate field contains the value NIL.
+
+\underline{binary search tree property}\\
+Let $x$ be a node in a binary search tree.\\
+If $y$ is a node in the left subtree of $x$, then $key[y] \leq key[x]$.\\
+If $y$ is a node in the right subtree of $x$, then $key[x] \leq key[y]$.\\
+二叉排序树中,各结点关键字是惟一的.\\
+注意:实际应用中,不能保证被查找的数据集中各元素的关键字互不相同,所以可将二叉排序树定义中BST性质(1)里的"小于"改为"小于等于",或将BST性质(2)里的"大于"改为"大于等于",甚至可同时修改这两个性质.\\
+
+\subsubsection{tree walk 遍历}
+\noindent Inorder tree walk 中序遍历\\
+the key of the root of a subtree is printed between the values in its left subtree and those in its right subtree.\\
+preorder tree walk: 前序遍历\\
+postorder tree walk  后序遍历
+
+\begin{verbatim}
+Inorder-tree-walk(x):
+    if x \neq nil:
+        Inorder-tree-walk(left[x])
+        print key[x]
+        Inorder-tree-walk(right[x])
+\end{verbatim}
+
+it takes $\Theta(n)$ time to walk an n-node binary search tree.
+
+\subsection{Querying a binary search tree}
+search, minimum, maximum, successor, predecessor\\
+all these operations $\Theta(h)$ time, where $h$ is the height of the binary search tree
+
+\subsubsection{Searching}
+递归式的
+\begin{verbatim}
+Tree-Search(x,k):
+    if x=nil or k=key[x]
+        return x
+    if k < key[x]
+        return Tree-Search(left[x], k)
+    else return Tree-Search(right[x], k)
+\end{verbatim}
+执行的时候, x是root, 表示从root 开始search
+
+迭代式的
+\begin{verbatim}
+Iterative-Tree-Search(x, k):
+    while x != nil and k != key[x]
+        if k<key[x]
+            x=left[x]
+        else x=right[x]
+    return x
+\end{verbatim}
+
+\subsubsection{Minimum and maximum}
+\noindent 一直往left subtree走就可以找到minimum\\
+一直往right subtree走就可以找到maximum
+
+\begin{verbatim}
+Tree-Minimum(x):
+while left[x] != nil
+    x=left[x]
+return x
+
+Tree-Maximum(x):
+while right[x] != nil
+    x=right[x]
+return x
+\end{verbatim}
+
+\subsubsection{Successor and predecessor}
+successor 后继,
+predecessor 前趋
+
+\textbf{Successor} of a node x is the node with \textbf{the smallest key greater than $key[x]$}\\
+A node's in-order successor is the left-most child of its right subtree\\
+后继: 如果没有右子节点, 那么$x$ 的直接后继结点就是从$x$ 向上的路径中第一次右转时的节点
+
+\textbf{Predecessor} of a node $x$ is the node with \textbf{the greatest key smaller than $key[x]$}\\
+前趋: 如果没有左子节点, 那么$x$ 的直接前趋节点就是从$x$ 向上的路径中第一次左转时的节点\\
+A node's in-order predecessor is the right-most child of its left subtree
+
+某个节点有两个子女, 则其后继没有左子女, 其前趋没有右子女.\\
+因为如果后继有左子女, 由于以后继为root的子树在那么左子女
+
+The structure of a binary search tree allows us to determine the successor of a node \textbf{without ever comparing keys}.
+
+\begin{verbatim}
+Tree-Successor(x):
+if right[x] !=nil
+    return Tree-Minimum(right[x])
+#当右子树非空时, the successsor is just the leftmost node in the right subtree
+
+y=p[x]  # p is for parent
+while y!=nil and x=right[y]
+// 这里也可以分成两种情况, x 是p[x] 的left child 与 x 是p[x]的right child 两种情况
+    x=y
+    y=p[y]
+return y
+\end{verbatim}
+
+\begin{figure}[htbp]
+  \centering
+  % Requires \usepackage{graphicx}
+  \includegraphics[scale = 0.7]{bst_example}\\
+  \caption{Binary search tree example}\label{fig.bst.example}
+\end{figure}
+
+On the other hand, as Exercise 12.2-6 asks you to show, \\
+if the right subtree of node is empty and $x$ has a successor $y$, then $y$ is the lowest ancestor of $x$ whose left child is also an ancestor of $x$. In Figure \ref{fig.bst.example}, the successor of the node with key 13 is the node with key 15. T\textbf{o find $y$, we simply go up the tree from $x$ until we encounter a node that is the left child of its parent}; this is accomplished by lines 3-7 of TREE-SUCCESSOR.
+
+Tree-Predecessor is symmetric to Tree-Successor, both run in time $O(h)$
+
+\subsection{Insertion and deletion}
+\textbf{Insertion}\\
+\begin{verbatim}
+TREE-INSERT(T, z)
+1  y ← NIL // 这个初始化时必须的, 因为当x一开始就是nil时, 就直接在line 9 对y==nil 进行判断
+2  x ← root[T]
+3  while x neq NIL
+4      do y ← x
+5         if key[z] < key[x]
+6            then x ← left[x]
+7            else x ← right[x]
+8  p[z] ← y
+9  if y = NIL
+10     then root[T] ← z  # Tree T was empty
+11     else if key[z] < key[y]
+12             then left[y] ← z
+13             else right[y] ← z
+\end{verbatim}
+
+\noindent line 4: 将$x$保存下来, 是因为while循环结束的时候, $x=nil$, 也就是现在$x$是叶子节点的子节点, 这个时候, $x$的parent就是一个叶子节点, 也就是说$y$是一个叶子节点, 而$z$ 将要成为$y$的一个子节点.\\
+如果我们不把x的parent 保存下来, 一旦我们走到了一个leaf 处, 我们就没有办法把$z$ 放置到我们已经找到的位置.
+
+\bigskip
+\textbf{Deletion}\\
+3 cases:\\
+1, if z has \textbf{no children},见图\ref{fig.bst.deletion.case.1}, 直接删除掉z 就行了
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{bst_deletion_case1}\\
+  \caption{Case 1 of deletion}\label{fig.bst.deletion.case.1}
+\end{figure}
+%% figure:BST_delete_no_children\\
+
+2, if $z$ has only \textbf{a single child}, 见图\ref{fig.bst.deletion.case.2},那么删除$z$, 将$z$ 的父节点与此孩子节点(子树) 关联就可以了
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{bst_deletion_case2}\\
+  \caption{Case 2 of deletion}\label{fig.bst.deletion.case.2}
+\end{figure}
+%% figure: BST_delete_one_child
+
+3, if $z$ has \textbf{two children},见图\ref{fig.bst.deletion.case.3}, 删除掉$z$ 的后继, 然后用$z$的后继来替代$z$\\
+因为只有将$z$ 的后继放在$z$的位置, 才能够保持BST 的性质,$z$ 的后继由于是在$z$ 的右子树中的节点, 所以是大于$z$的左子树中所有的节点; 同时后继是右子树中最小的节点, 所以将这个后继挪到$z$的位置后, 是小于右子树中的所有节点\\
+%% figure: BST_delete_two_children
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{bst_deletion_case3}\\
+  \caption{Case 3 of deletion}\label{fig.bst.deletion.case.3}
+\end{figure}
+
+我们可以将case 3 化为case 1和case 2两种已经解决的情况, 我们可以任意选取一个$z$的子树, 从底部开始, 把这个子树上所有的节点, 一个一个从树上摘下来, 存着, 然后$z$ 就成为一个只有一颗子树的节点, 然后就适用case 2. 删除完$z$ 后, 再把存着的那些节点重新插入到树上, 就完成了. 这个方法虽然有点笨, 但是确实是可行的.
+
+其他办法: 要想不影响树的特性,那么最简单的想法是如果能只动$z$以及$z$以下的节点,那么树的其它部分肯定是OK的.那只要处理$z$以及$z$的子树就行了.想想,如果能在子树中找一个节点来替代$z$的位置,并保证新的子树也是满足二叉查找树要求的,这样改动量可能就比较小了.那么找哪个节点来代替它呢?当然是键值最接近X的,这样二叉树的特征就比较容易保持嘛.键值最接近$z$的,上面已经说过了,就是直接前趋和直接后继.正好,对于有两个子树的$z$来说,它的直接前趋和直接后继都是在它的子树中的,分别是左子树的最大值,右子树的最小值.而且,从子树中取下这两个节点(取下来干嘛?代替需要删除的X节点呗),也是比较容易的,因为"最大""最小"值节点,最多拥有不超过一个子节点(不然它绝对不够格做最大或最小).而没有子节点和只有一个子节点的节点删除,是我们已经会啦~~~.好,那么就\textbf{取前趋或后继就来代替需要删除的节点},问题就解决了.
+
+\todo{这个代码不知道为什么不分三种情况来写, 非要写在一起, 看的就头疼, 还没有看懂}
+\begin{verbatim}
+TREE-DELETE(T, z)
+1  if left[z] = NIL or right[z] = NIL
+2      then y ← z
+3      else y ← TREE-SUCCESSOR(z) //也可以用predeccessor
+4  if left[y] neq NIL
+5      then x ← left[y]
+6      else x ← right[y]
+7  if x neq NIL
+8      then p[x] ← p[y]
+9  if p[y] = NIL
+10      then root[T] ← x
+11      else if y = left[p[y]]
+12              then left[p[y]] ← x
+13              else right[p[y]] ← x
+14  if y neq z
+15      then key[z] ← key[y]
+16           copy y's satellite data into z
+17  return y
+\end{verbatim}
+
+\subsection{Randomly built binary search trees}
+exponential height
+
+\section{Red-Black Tress}
+\noindent balanced search tree\\
+$O(\lg n)$ height
+
+\noindent Examples:\\
+AVL trees\\
+2-3 trees\\
+2-3-4 trees\\
+B-trees\\
+Red-Black trees\\
+Skip lists\\
+Treaps
+
+\subsection{Properties of red-black trees}
+Red-black trees are one of many search-tree schemes that are "balanced" in order to guarantee that basic dynamic-set operations take $O(\lg n)$ time in the worst case.
+
+\textbf{red-black properties}:
+\begin{enumerate}
+\item Every node is either red or black.
+\item The root is black.
+\item Every leaf ($NIL$) is black.
+\item If a node is red, then both its children are black.
+\item For each node, all simple paths from the node to descendant leaves contain the same number of black nodes.
+\end{enumerate}
+
+4 说明red 的parent 必须是black, 也就是说不能出现连续的两个red,\\
+同时也说明at least half the nodes on any simple path from the root to a leaf, not including the root, must be black.
+
+$bh(x)$: black height of $x$, 不包括$x$ 节点, 但包括叶节点$T.nil$
+
+we use the one sentinel $T:nil$ to represent all the NILs—all leaves and the root's parent for saving space.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{red_black_tree_presentation}\\
+  \caption{Presentation of red black tree}\label{fig.rbt.presentation}
+\end{figure}
+
+在实际适用中, 为了方便, 我们有时不将$nil$ 画出.
+
+\noindent \underline{Lemma}: A red-black tree with n internal nodes has height at most $2\lg(n+1)$.\\
+\underline{Proof}: We start by showing that the subtree rooted at any node $x$ contains at least\\
+$2^{bh(x)} - 1$ internal nodes. 这个用数学归纳法证明\\
+To complete the proof of the lemma, let h be the height of the tree.\\
+the black-height of the root must be at least $h/2$; thus,\\
+$n \geq 2^{h/2} - 1 \Rightarrow h \leq 2 \lg(n+1)$\\
+
+Although the algorithms TREE-INSERT and TREE-DELETE from Chapter 12 run in $O(\lg n)$ time\\
+When given a red-black tree as input, they do not directly support the dynamic-set operations INSERT and DELETE, since they do not guarantee that the modified binary search tree will be a red-black tree. 后面会讲到
+
+\subsection{Rotations}
+A local operation in a search tree that preserves the binary-search-tree property
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{red_black_tree_rotation}\\
+  \caption{Rotation in a search tree}\label{fig.rbt.rotation}
+\end{figure}
+tree rotation 对, 中序遍历没有影响
+
+\begin{verbatim}
+LEFT-ROTATE(T, x)
+    y=x.right //set y
+    x.right=y.left //turn y's left subtree into x's right subtree
+    if y.left != T.nil
+        y.left.p = x
+    y.p = x.p
+    if x.p == T.nil //link x's parent to y
+        T.root = y
+    elseif x == x.p.left
+        x.p.left = y
+    else x.p.right =y
+    y.left = x //put x on y's left
+    x.p = y
+\end{verbatim}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{red_black_tree_rotation_example}\\
+  \caption{Rotation example of a red black tree}\label{fig.rbt.rotation.example}
+\end{figure}
+
+\subsection{Insertion}
+当我们insert 的时候, 我们总是把新的node color red, 因为如果color black, 那么distance(black height) 会成为棘手的问题, 相对于red-red clash而言
+
+当进入到case 3, 表示就结束了\\
+当进入到case 2时, 说明很快就会进入case 3, 所以也表示结束\\
+所以在计算时间的时候, 我们只需要考虑case 1\\
+在case 1的情形里, 每次都会将violation 往上移动two generations, 而树的高度$h<=2\lg(n+1)$, 所以情形一的循环次数最多为$\lg(n+1)$\\
+所以最终是$\lg n$ time
+\begin{verbatim}
+RB-Insert(T,x):
+    Tree-Insert(T,x)
+    color[x] = red
+    while x != root[T] or color[x]=red
+    //当x 是根节点或者x是black node(不会有violation), 循环结束
+        if p[x]=left[p[p[x]]] //A 类, A 与B是对称的, B: p[x]=right[p[p[x]]]
+            y=right[p[p[x]]] //y is x's uncle
+            if color[y]=red //y is red
+                then <case 1>
+            else if x=right[p[x]] //bad side
+                    then <case 2>
+                <case 3>  //good side,这里不用else, 因为case 2也会进入case 3
+        else (same as catogory A with "right" and "left" exchanged) //B
+    color[root[T]]=black //改变root的color 对distance 没有影响
+\end{verbatim}
+
+\subsection{Deletion}
+
+\begin{verbatim}
+RB-DELETE(T, z)
+ 1 if left[z] = nil[T] or right[z] = nil[T]
+ 2    then y ← z
+ 3    else y ← TREE-SUCCESSOR(z)// y is the realDelNode
+ 4 if left[y] neq nil[T] //if y has no children, x = nil
+ 5    then x ← left[y]
+ 6    else x ← right[y]
+ 7 p[x] ← p[y]
+ 8 if p[y] = nil[T]
+ 9    then root[T] ← x
+10    else if y = left[p[y]]
+11            then left[p[y]] ← x
+12            else right[p[y]] ← x
+13 if y 3neq z
+14    then key[z] ← key[y]
+15         copy y's satellite data into z
+16 if color[y] = BLACK //if red, no need to fix up
+17    then RB-DELETE-FIXUP(T, x)
+18 return y
+
+RB-DELETE-FIXUP(T, x)
+ 1 while x neq root[T] and color[x] = BLACK
+ 2     do if x = left[p[x]]
+ 3           then w ← right[p[x]]
+ 4                if color[w] = RED
+ 5                   then color[w] ← BLACK                        \\  Case 1
+ 6                        color[p[x]] ← RED                       \\  Case 1
+ 7                        LEFT-ROTATE(T, p[x])                    \\  Case 1
+ 8                        w ← right[p[x]]                         \\  Case 1
+ 9                if color[left[w]] = BLACK and color[right[w]] = BLACK
+10                   then color[w] ← RED                          \\  Case 2
+11                        x =p[x]                                  \\  Case 2
+12                   else if color[right[w]] = BLACK
+13                           then color[left[w]] ← BLACK          \\  Case 3
+14                                color[w] ← RED                  \\  Case 3
+15                                RIGHT-ROTATE(T, w)              \\  Case 3
+16                                w ← right[p[x]]                 \\  Case 3
+17                         color[w] ← color[p[x]]                 \\  Case 4
+18                         color[p[x]] ← BLACK                    \\  Case 4
+19                         color[right[w]] ← BLACK                \\  Case 4
+20                         LEFT-ROTATE(T, p[x])                   \\  Case 4
+21                         x ← root[T]                            \\  Case 4
+22        else (same as then clause with "right" and "left" exchanged)
+23 color[x] ← BLACK
+\end{verbatim}
+
+\textbf{Within the while loop, $x$ always points to a nonroot doubly black node}
+
+\textbf{Case 1: $x$'s sibling w is red}\ \ See Figure \ref{fig.rbt.deletion.case1}\\
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{red_black_tree_deletion_case1}\\
+  \caption{Case 1 for the deletion in a red black tree}\label{fig.rbt.deletion.case1}
+\end{figure}
+Case 1 (lines 5–8 of RB-DELETE-FIXUP and Figure \ref{fig.rbt.deletion.case1} occurs when node $w$, the sibling of node $x$, is red. \\
+Since $w$ must have black children, we can switch the colors of $w$ and $x:p$ and then perform a left-rotation on $x:p$ without violating any of the red-black properties. The new sibling of x, which is one of $w$'s children prior to the rotation, is now black, and thus we have converted case $1$ into case $2$, $3$, or $4$.\\
+Cases 2, 3, and 4 occur when node $w$ is black; they are distinguished by the colors of $w$'s children.
+
+\textbf{Case 2: $x$'s sibling $w$ is black, and both of $w$'s children are black}\ \ See Figure \ref{fig.rbt.deletion.case2}\\
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{red_black_tree_deletion_case2}\\
+  \caption{Case 2 for the deletion in a red black tree}\label{fig.rbt.deletion.case2}
+\end{figure}
+In case 2 (lines 10–11 of RB-DELETE-FIXUP and Figure \ref{fig.rbt.deletion.case2}), both of $w$'s children are black. Since $w$ is also black, we take one black off both $x$ and w, leaving $x$ with only one black and leaving $w$ red. To compensate for removing one black from $x$ and w, we would like to add an extra black to $x:p$, which was originally either red or black. We do so by repeating the while loop with $x:p$ as the new node $x$. Observe that if we enter case 2 through case 1, the new node $x$ is red-and-black, since the original $x:p$ was red. Hence, the value $c$ of the color attribute of the new node $x$ is RED, and the loop terminates when it tests the loop condition. We then color the new node $x$ (singly) black in line 23.
+
+\textbf{Case 3: $x$'s sibling $w$ is black, $w$'s left child is red, and $w$'s right child is black}\ \ See Figure \ref{fig.rbt.deletion.case3}\\
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{red_black_tree_deletion_case3}\\
+  \caption{Case 3 for the deletion in a red black tree}\label{fig.rbt.deletion.case3}
+\end{figure}
+Case 3 (lines 13–16 and Figure \ref{fig.rbt.deletion.case3}) occurs when $w$ is black, its left child is red, and its right child is black. \\
+We can switch the colors of $w$ and its left child w:left and then perform a right rotation on $w$ without violating any of the red-black properties. The new sibling $w$ of $x$ is now a black node with a red right child, and thus we have transformed case 3 into case 4.
+
+\textbf{Case 4: $x$'s sibling $w$ is black, and $w$'s right child is red}\ \ See Figure \ref{fig.rbt.deletion.case4}\\
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{red_black_tree_deletion_case4}\\
+  \caption{Case 4 for the deletion in a red black tree}\label{fig.rbt.deletion.case4}
+\end{figure}
+Case 4 (lines 17–21 and Figure \ref{fig.rbt.deletion.case4}) occurs when node $x$'s sibling $w$ is black and $w$'s right child is red. By making some color changes and performing a left rotation on $x:p$, we can remove the extra black on x, making it singly black, without violating any of the red-black properties. Setting $x$ to be the root causes the while loop to terminate when it tests the loop condition.
+
+\subsection{Analysis}
+height of a red-black tree of n nodes is $O(\lg n)$\\
+the total cost of the procedure without the call to RB-DELETE-FIXUP takes $O(\lg n)$ time.\\
+Within RB-DELETE-FIXUP, each of \textbf{cases $1$, $3$, and $4$ lead to termination} after performing a constant number of color changes and at most three rotations.\\
+Case 2 is the only case in which the while \underline{loop can be repeated}, and then the pointer $x$ moves up the tree at most $O(\lg n)$ times, performing no rotations. Thus, the procedure RB-DELETE-FIXUP takes $O(\lg n)$ time and performs at most three rotations, and the overall time for RB-DELETE is therefore also $O(\lg n)$
+
+\section{Augmenting data structures}
+\subsection{Dynamic order statistics}
+\noindent $select(x, i)$ return $i$\textsuperscript{th} smallest element in the subtree rooted at $x$\\
+$rank(x)$ return the rank of a given element in the total ordering of the set\\
+$size[x]$ which is the number of nodes in the subtree rooted at $x$.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale =0.7]{order_statistics_tree}\\
+  \caption{An order statistics tree}\label{fig.order_statistics_tree}
+\end{figure}
+
+\bigskip
+An \textbf{order-statistic tree} $T$ is simply a red-black tree with additional information (size) stored in each node.\\
+$size[x] = size[left[x]] + size[right[x]] + 1$\\
+$size[nil] = 0$
+
+\bigskip
+在order-statistic tree中, 可以有相同的keys, 但是这样我们就需要重新定义一下rank\\
+\textbf{rank}: the position at which it would be printed in an inorder walk of the tree.
+
+\begin{verbatim}
+OS-select(x, i)
+    r = size[left[x]] + 1
+    if i = r
+        return x
+    else if i<r
+        return OS-select(left[x], i)
+    else return OS-select(right[x], i - r)
+\end{verbatim}
+
+$O(\lg n)$ time
+
+\begin{verbatim}
+OS-RANK(T,x)
+    r = size[left[x]] + 1
+    y = x
+    while y != root[T]
+        if y = right[p[y]]
+            r = r + size[left[p[y]]] + 1
+        y = p[y]
+    return r
+\end{verbatim}
+
+$O(\lg n)$ time
+
+maintaining subtree sizes\\
+刚开始的时候, 为一个干净的红黑树添加size, 需要$O(\lg n)$ time\\
+在insert 和 delete 操作的时候, update size 是$O(1)$ 的操作, 因此insert 和 delete 仍然是 $O(\lg n)$ 的操作
+
+\subsection{How to augment a data structure}
+\underline{Theorem} 14.1 (\textbf{Augmenting a red-black tree})\\
+Let f be an attribute that augments a red-black tree $T$ of $n$ nodes, and suppose that the value of $f$ for each node $x$ depends on only the information in nodes $x$, $x:left$, and $x:right$, possibly including $x:left:f$ and $x:right:f$. Then, we can maintain the values of $f$ in all nodes of $T$ during insertion and deletion without asymptotically affecting the $O(\lg n)$ performance of these operations.
+
+\subsection{Interval tree}
+这里我们研究的都是闭区间\\
+Given a query interval, we can then quickly find an interval in the set that overlaps it
+
+\textbf{interval trichotomy}\\
+Any two intervals i and i' satisfy the interval trichotomy; that is, exactly one of the following three properties holds:
+\begin{enumerate}
+\item $i$ and $i'$ overlap,
+\item $i$ is to the left of $i'$ (i.e., $high[i] < low[i']$),
+\item $i$ is to the right of $i'$ (i.e., $high[i'] < low[i]$).
+\end{enumerate}
+
+we say that intervals $a$ and $b$ \textbf{overlap} if $a \cap b \neq \varnothing$ (Tex 中空集的表示方法),\\
+that is if $low[a] \leq high[b]$ and $low[b] \leq high[a]$
+
+Aninterval tree isared-black tree that maintains adynamic setof elements, with each element $x$ containing an interval $x:int$.
+
+\noindent INTERVAL-INSERT(T, x)\\
+INTERVAL-DELETE(T, x)\\
+INTERVAL-SEARCH(T, i): returns a pointer to an element $x$ in the interval tree $T$ such that $int[x]$ overlaps interval $i$, or a pointer to the sentinel $nil[T]$ if no such element is in the set.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale =0.7]{interval_tree}\\
+  \caption{An interval tree}\label{fig.interval_tree}
+\end{figure}
+
+\bigskip
+\textbf{Underlying data structure}\\
+We choose a red-black tree in which each node $x$ contains an interval $x:int$ and the key of $x$ is the low endpoint\\
+\textbf{Additional information}\\
+In addition to the intervals themselves, each node $x$ contains a value $x:max$, which is the maximum value of any interval endpoint stored in the subtree rooted at $x$\\
+\textbf{Maintaining the information}\\
+We must verify that insertion and deletion take $O(\lg n)$ time on an interval tree of n nodes. We can determine $x:max$ given interval $x:int$ and the max values of node $x's$ children:\\
+$max[x] = max(high[int[x]], max[left[x]], max[right[x]])$\\
+\textbf{Developing new operations}
+\begin{verbatim}
+INTERVAL-SEARCH(T, i)
+    x = root[T]
+    while x != nil[T] and i does not overlap int[x]
+        if left[x] != nil[T] and max[left[x]] >= low[i]
+            x = left[x]
+        else x = right[x]
+    return x
+\end{verbatim}
+也可以写成递归的形式, tail recursive call
+
+\bigskip
+\noindent list all overlapping intervals:\\
+if $I$ have $k$ overlaps, then the time is $O(k\lg n)$\\
+if $I$ search the second time, I get the same interval, so when I find one, delete it, and search agagin\\
+output sensitive, 运行时间取决于输出结果
+
+\bigskip
+\noindent \underline{Theorem}: let $L = {i \in left[x]}, R = {i \in right[x]}$\\
+1.if search goes right, then ${i' \in L, i' \eqnote{overlaps} i} = \varnothing$\\
+2.if search goes left, then ${i' \in L, i' \eqnote{overlaps} i} = \varnothing => {i' \in R, i' \eqnote{overlaps} i} = \varnothing$\\
+对于2. search goes left, 如果这时在左边没有找到overlaps, 那么我们也不可能在右边找到
+
+\bigskip
+segment tree
+
 \section{Appendix}
 \subsection{Summations}
 \subsubsection{Approximation by integrals}
