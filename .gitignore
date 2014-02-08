@@ -6,6 +6,10 @@
 *.out
 *.out.bak
 *.synctex.gz
+*.synctex.gz<busy>
 *.toc
 *.tex.bak
 *.pdf
+
+latex/test.tex
+*.txt
