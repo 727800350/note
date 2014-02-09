@@ -70,8 +70,8 @@ running time\\
 we want upper bounds 上界
 
 kinds of analysis\\
-worst-case $T(n)=max$ time of any input of size n\\
-average-case $T(n)=expected time$期望时间\\
+worst-case $T(n)=$max time of any input of size n\\
+average-case $T(n)=$expected time期望时间\\
 (need assumption of statistical  distribution of inputs)\\
 best-case (bogus假象)
 
@@ -2304,6 +2304,445 @@ The number of subproblems is $O(n2)$.
 
 iv.The input is a rooted tree. A subproblem is a rooted subtree.\\
 If the tree has n nodes, how many subproblems are there? exponential
+
+\section{贪婪算法和最小生成树}
+A greed algorithm always makes the choice that looks best at the moment. That is, it makes a locally optimal choice in the hope that this choice will lead to a globally optimal solution.
+
+Dynamic programming usually solves the sub problems bottom up, a greedy algorithm usually progresses in a top-down fashion, making one greedy choice after another, reducing each given problem instance to a smaller one.
+
+\subsection{Greedy versus dynamic programming}
+The 0-1 knapsack problem:\\
+Insolvable by greedy strategy, solvable by dynamic programming\\
+Unable to fill the knapsack to capacity, and the empty space lowers the effective value per pound.
+
+The fractional knapsack problem:\\
+Solvable by greedy strategy, compute the value per pound $v_1/w_i$ for each item, take as much as possible of the item with the greatest value per pound.
+
+\subsection{Tree}
+\noindent
+Graph: $E = O(V^2) \Rightarrow \lg E = O(\lg V)$  //省略绝对值的写法\\
+digraph: directed graph\\
+connected $\Rightarrow |E| > |V| - 1$: there is a path from any vertex to any other vertex in the graph.
+
+adjacency matrix邻接矩阵 $n \times n$ matrix\\
+where $V={1,2, … n}$\\
+$A[i,j] = 1 \si (i,j) \in E$\\
+$A[i,j] = 0 \si (i,j) \not \in E$
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{adjacency_matrix}\\
+  \caption{Represent a graph with adjacency matrix}\label{fig.adjacency.matrix}
+\end{figure}
+
+Represent a graph with adjacency matrix, $O(V^2)$ storage $\Rightarrow$ dense representation\\
+a complete graph, all elements are $1$
+
+a sparse graph稀疏矩阵: 极端例子 a linked list
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.6]{adjacency_list}\\
+  \caption{Represent a graph with adjacency list}\label{fig.adjacency.list}
+\end{figure}
+
+Adjacency list\\
+矩阵中每一行为1组成的一个list
+
+\noindent
+$|\mbox{Adj}[j]| =$ degree  if undirected graph\\
+$|\mbox{Adj}[j]| =$ out degree  if directed graph
+
+Handshaking Lemma (undirected graph)\\
+$\sum_{v \in V} degree(v) = 2|E|$\\
+每加入一条边, 这条边的两个顶点的degree 都增加$1$\\
+For undirected graphs $\Rightarrow$ adjacency list uses $\Theta(V+E)$ storage
+
+\subsection{Huffman code}
+Huffman coding is a form of statistical coding.\\
+Decoding: Once receiver has tree, it scans incoming bit stream, 0 means go left and 1 means go right.\\
+Huffman coding is an entropy encoding algorithm used for lossless data compression.
+
+\textbf{Huffman's paper: A method for the construction of minimum redundancy codes}
+
+\textbf{Arithmetic coding and LZW coding}\\
+\textbf{Linear time if input probabilities are sorted}
+
+Uniform probability distribution and a number of members which is a power of two: Huffman coding is equivalent to simper binary block encoding, eg ASCII coding.
+
+Shannon-Fano coding
+
+A symbol with zero probability has zero contribution to the entropy.\\
+$\lim_{p \to 0} p \cdot \log_{2} p = 0$
+
+Entropy: the theoretical limit length established by Shannon.
+
+A prefix code (sometimes called "prefix free codes") that is the bit string representing some particular symbol is never a prefix of the bit string representing another symbol.
+
+\subsection{MST - Minimum spanning tress}
+Distributed system\\
+Input: connected, undirected graph $G=(V, E)$\\
+$N: E \rightarrow R$ 权值\\
+For simplicity, assume all edge weights are distinct $\Rightarrow N$ is injective\\
+Output: A spanning tree $T$ (connects all vertexes) of minimum weight\\
+	$W(T) = \sum_{(u, v) \in T} w(u, v)$ //$(u,v)$ is an edge
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.5]{mst_result}\\
+  \caption{红色是最小生成树的结果}\label{fig.mst.result}
+\end{figure}
+
+remove $(u, v)$ from $T$, then $T$ is partitioned into two sub trees $T_1$ and $T_2$\\
+
+\noindent
+\underline{Theorem}: $T_1$ is MST for $G_1 = (V_1, E_1)$ the sub graph of $G$ induced by vertexes in $T_1$\\
+for $T_2$ the same thing\\
+\underline{Proof}: cut and paste\\
+$W(T) = W(u, v) + W(T_1) + W(T_2)$\\
+if $\exists T'$ better than $T_1$ for $G_1$, then\\
+overlapping sub problems? Yes\\
+dynamic programming? Yes, but MST exhibits a better property $\Rightarrow$ greedy algorithm
+
+\noindent
+\underline{Theorem}: Let $T$ be MST of $G=(V, E)$, Suppose $(u,v)$ in $E$, least-weight edge connecting $A$ to $V-A$, then $(u,v)$ in $T$\\
+\underline{Proof}: cut and paste
+
+\section{Amortized Analysis}
+\subsection{Incrementing a binary counter}
+A k-bit binary counter that counts upward from $0$.\\
+Use an array $A[0…k-1]$ of bits, where $A.length = k$, as the counter.\\
+A binary number $x$ that is stored in the counter has its lowest-order bit in $A[0]$ and its highest-order bit in $A[1]$, so that $x=\sum_{i=0}^{k-1} A[i]*2^i$. Initially, $x = 0$
+\begin{verbatim}
+Increment(A)
+    i = 0
+    while i<A.length and A[i] == 1
+        A[i] =0
+        i = i + 1
+    if i < A.length
+        A[i] = 1
+\end{verbatim}
+
+A single execution of INCREMENT takes time $\Theta(k)$ in the worst case, in which array $A$ contains all $1$s. Thus, a sequence of $n$ INCREMENT operations on an initially zero counter takes time $O(nk)$ in the worst case.\\
+We can tighten our analysis to yield a worst-case cost of $O(n)$ for a sequence of $n$ INCREMENT operations by observing that not all bits flip each time INCREMENT is called.\\
+$A[0]$ does flip each time INCREMENT is called\\
+$A[1]$, flips only every other time, flips $n/2$ times\\
+Similarly, bit $A[2]$ flips only every fourth time, or $n/4$ times\\
+bit $A[i]$ flips $n/(2^i)$ times in a sequence of $n$ INCREMENT operations on an initially zero counter.\\
+For $i \geq k$, bit $A[i]$ does not exist, and so it cannot flip. The total number of flips in the sequence is thus
+$$
+\sum_{i=0}^{k-1}\lfloor \frac{n}{2^i} \rfloor
+< n \sum_{i=0}^{\infty} \frac{1}{2^i}
+= 2n
+$$
+The worst-case time for a sequence of $n$ INCREMENT operations on an initially zero counter is therefore $O(n)$. The average cost of each operation, and therefore the amortized cost per operation, is $O(n)/n = O(1)$
+\subsection{Dynamic tables}
+\begin{verbatim}
+insert elements
+     i	1	2	3	4	5	6	7	8	9 	10
+size_i	1	2	4	4	8	8	8	8	16	16
+cost_i	1	2	3	1	5	1	1	1	9 	1
+\end{verbatim}
+
+Cost of n inserts
+$$
+=\sum_{i=1}^n \mbox{cost}_i
+=n+\sum_{j=0}^{\lfloor (\lg (n-1))\rfloor } 2^j
+\leq 3n = \Theta(n)
+$$
+The average cost of a insert $= \Theta(n)/n=\Theta(1)$
+
+\textbf{Amortized analysis}\\
+Analyze a sequence of operations to show that average cost is small, even though 1 or serveral operations may be expensive\\
+这里不涉及到概率分析
+
+Types of amortized arguments\\
+Aggregate (just saw)\\
+accounting\\
+potential
+
+\subsection{Accounting method}
+charge the $i$\textsuperscript{th} operation a fictitious amortized cost $c_i$ ($1$ pays for $1$ unit of operation)\\
+fee is consumed to perform op\\
+unused amount stored in bank for use in later ops
+
+bank balance must not go negative:
+$\sum_{i=1}^n \mbox{true-cost}_i \leq \sum_{i=1}^n \mbox{amortized-cost}_i$
+
+\bigskip
+Dynamic table\\
+Charge $c_i = 3$\$ for $i$\textsuperscript{th} insert\\
+\indent	1\$ pays for immediate insert\\
+\indent	2\$ stored for table doubling\\
+When table doubles\\
+	\indent	1\$ moves recent item\\
+	\indent	1\$ moves old item
+\begin{verbatim}
+0	0	0	0	2	2	2	2
+\end{verbatim}
+第五项插入时, 收取3\$, 其中1\$ 用于自己的插入, 剩下的2\$ 存入bank, 第$6, 7, 8$ 项插入时, 进行同样的操作, 这时银行刚好有8\$的存款\\
+插入第$9$ 项时, table 需要double, 银行中剩余的8\$ 刚好可以支付原来$8$个elements 的移动到新table的花费
+\begin{verbatim}
+0	0	0	0	0	0	0	0	2
+\end{verbatim}
+
+Invariant bank balance $\geq 0$\\
+$\sum_{i=1}^n \mbox{amortized-cost}_i =  3n$\\
+实际上第一项可以只支付2\$, 从而可以省下1\$.
+
+\subsection{Potential method}
+Bank account viewed as potential energy of dynamic set
+
+Framework
+start with data structure $D_0$
+op $i$ transforms $D_{i-1}$ to $D_{i}$
+
+Define potential function\\
+$\Phi: \{D\} \rightarrow R$ such that $\Phi(D_0) = 0$ and $\Phi(D) \geq 0$\\
+Amortized cost $ac_i$ with respect $\Phi$ is\\
+$ac_i = c_i + \Phi(D_i) - \Phi(D_{i-1})$\\
+if $\Phi(D_i) - \Phi(D_{i-1})>0$ overcharge\\
+if $\Phi(D_i) - \Phi(D_{i-1})<0$ undercharge
+$$
+\begin{aligned}
+\sum_{i=0}^n ac_i
+&= \sum_{i=0}^n (c_i + \Phi(D_i) - \Phi(D_{i-1}))
+&= \sum_{i=0}^n c_i + \Phi(D_n) - \Phi(D_0)
+&= \sum_{i=0}^n c_i + \Phi(D_n)
+\end{aligned}
+$$
+我们需要$\sum_{i=0}^n ac_i \geq \sum_{i=0}^n c_i$, 所以应该保证$\Phi(D_n)\geq 0$, 但是实际上我们不知道应该怎样选择这样一个potential function, 所以我们通常保证$\Phi(D_i) \geq 0$
+
+\textbf{Table doubling}\\
+Define: $\Phi(D_i) = 2i – 2^{ceil(\lg i)}$\\
+(Assume $2^{ceil(\lg 0)} = 0$)\\
+Note: $\Phi(D_0) = 0$ and $\Phi(D_i) \geq 0$ (because $ceil(\lg i) = \lg i$ or $\lg i + 1$)\\
+For example:
+\begin{verbatim}
+full	full	full	full	full	full		
+\end{verbatim}
+插入了$6$ 个, 此时 $\Phi = 2*6 – 2^{ceil(\lg 6)} = 12 – 8 =4$\\
+如果我们用accounting method, 那么
+\begin{verbatim}
+0	0	0	0	2	2		
+\end{verbatim}
+此时bank balance 是$4$, 和上面的potential 一样\\
+Amortized cost of $i$\textsuperscript{th} insert
+$$
+\begin{aligned}
+ac_i
+&= c_i +\Phi(D_i) - \Phi(D_{i-1})\\
+&=
+\left\{
+  \begin{array}{ll}
+		  i & \si i-1 \mbox{exact power of } 2\\
+		  1 & \sinon
+  \end{array}
+\right.
++ (2i – 2^{ceil(\lg i)}) - (2(i-1) – 2^{ceil(\lg (i-1))})\\
+&=
+\left\{
+  \begin{array}{ll}
+		  i & \si i-1 \mbox{exact power of } 2\\
+		  1 & \sinon
+  \end{array}
+\right.
++ 2 - 2^{ceil(\lg i)} + 2^{ceil(\lg (i-1))}
+\end{aligned}
+$$
+
+Case 1: $i -1$ is exact power of $2$
+$$
+ac_i = i + 2 - 2^{ceil(\lg i)} + 2^{ceil(\lg (i-1))}
+= i + 2 – 2^{\lg (i-1) + 1} + 2^{\lg (i-1)} = i + 2 – 2*(i-1) + (i-1) = 3
+$$
+
+Case 2: $i -1$ is not exact power of $2$\\
+$ac_i = 1 + 2 - 2^{ceil(\lg i)} + 2^{ceil(\lg (i-1))} = 3$\\
+$ceil(\lg i)$ 与$ceil(\lg (i-1)$ 是相等的\\
+
+\textbf{Conclusions}\\
+Amortized costs provide a clean abstraction for data structure performance.\\
+Diff potential functions or accounting costs may yield diff bounds
+
+\section{Advanced data structures}
+Because disks operate much more slowly than random-access memory, we measure the performance of B-trees not only by how much computing time the dynamic-set operations consume but also by how many disk accesses they perform.\par
+Fibonacci heaps are key components of some of the asymptotically fastest algorithms to date for graph problems.
+
+Splay trees
+
+\textbf{Persistent data structure}: a data structure that always preserves the previous version of itself when it is modified. Such data structures are effectively immutable, as their operations do not (visibly) update the structure in-place, but instead always yield a new updated structure. (A persistent data structure is not a data structure committed to persistent storage, such as a disk; this is a different and unrelated sense of the word "persistent.")\par
+A data structure is partially persistent if all versions can be accessed but only the newest version can be modified. The data structure is fully persistent if every version can be both accessed and modified. If there is also a meld or merge operation that can create a new version from two previous versions, the data structure is called confluently persistent. Structures that are not persistent are called ephemeral.
+
+Fusion trees
+
+Exponential search trees
+
+\section{B-Trees}
+B-trees are similar to red-black trees (Chap-ter 13), but they are better at minimizing disk I/O operations. Many database systems use B-trees, or variants of B-trees, to store information.\\
+B-tree nodes may have many children, from a few to thousands.\\
+If an internal B-tree node x contains x.n keys, then x has x.n+1 children. The keys in node x serve as dividing points separating the range of keys handled by x into x.n + 1 sub ranges, each handled by one child of x.\\
+In a typical B-tree application, the amount of data handled is so large that all the data do not fit into main memory at once. The B-tree algorithms copy selected pages from disk into main memory as needed and write back onto disk the pages that have changed. B-tree algorithms keep only a constant number of pages in main memory at any time; thus, the size of main memory does not limit the size of B-trees that can be handled.
+
+B-tree algorithm depends primarily on the number of DISK-READ and DISK-WRITE operations, we typically want each to read or write as much information as possible. \todo{这一段话不懂, 多读取信息和节点的大小有什么关系, 读取信息是物理上的}Thus, a B-tree node is usually as large as a whole disk page, and this size limits the number of children a B-tree node can have.
+\subsection{Definition of B-Trees}
+\section{AVL tree}
+\noindent
+Self-balancing binary search tree
+
+The heights of the two child subtrees of any node differ by at most one;
+
+Time complexity in big $O$ notation
+\begin{verbatim}
+        Average  	Worst case
+ Space	O(n)	       O(n)
+Search	O(\log n)	O(\log n)
+Insert	O(\log n)	O(\log n)
+Delete	O(\log n)	O(\log n)
+\end{verbatim}
+
+Worst case is when right subtree has height  1 more than the left subtree for every node.
+
+\noindent
+$N_h$: min \# of nodes of height $h$\\
+$N_h = 1+ N_{h-1} + N_{h-2}$\\
+It looks like Fibonacci\\
+$N_h > F_h = \frac{\phi^h}{\sqrt{5}}$ with $\phi = 1.618$  golden ratio\\
+ $\frac{\phi^h}{\sqrt{5}} < n => h < c * \lg n$
+
+\textbf{Insert}\\
+1. simple BST insert\\
+2. fix AVL property from changed node up
+
+\textbf{AVL sort}\\
+1. insert $n$ items - $\Theta(n\lg n)$\\
+2. in-order traversal -$\Theta(n)$
+\section{Graph}
+We adopt a common notational convention: only inside asymptotic notation, such as $O$-notation, $\Theta$-notation, the symbol $V$ denotes $|V|$ and the symbol $E$ denotes $|E|$.
+
+\noindent
+The vertex set of a graph: $V[G]$\\
+The edge set of a graph: $E[G]$
+
+Sparse graph: $|E|$ is much less than $|V|^2$
+
+\textbf{Breadth-first search: BFS}\\
+Breadth-first search is so named because it expands the frontier between discovered and undiscovered vertices uniformly across the breadth of the frontier. That is, the algorithm discovers all vertices at distance $k$ from $s$ before discovering any vertex at distance $k+1$.
+
+\bigskip
+三种颜色的含义:\\
+\textbf{White}: not having been discovered\\
+\textbf{Gray}: frontier, discovered vertices that have not yet had their adjacency lists fully examined\\
+\textbf{Black}: all its adjacency vertices have been examined
+
+\noindent
+$O(V+E)$ time
+
+\bigskip
+\textbf{Breadth-first trees}\\
+The procedure BFS builds a breadth-first tree as it searches the graph, the tree is represented by the $\pi$ field in each vertex.\\
+$G=(V, E)$ with source $s$\\
+Predecessor subgraph of $G$ as $G\pi = (V\pi, E\pi)$, where\\
+$V\pi = {v \in V: \pi[v] != NIL} {\cup s}$\\
+$E\pi = {(\pi[v], v) : v \in V\pi - {s}}$
+
+\section{最短路径算法}
+Negative edge weight $\Rightarrow$ some shortest path may not exist.\\
+Ex:\\
+1.	图中出现了一个环, 而且这个环的总权值是负的negative cycle, 那么从u 到v的路径到达这个环时, 由于这个环的权值是负的, 它会永远地绕着这个环转下去, 使路径不断地变短\\
+2.	$u$ 和$v$ 之间根本就没有路径
+
+\textbf{optimal substructure}\\
+a sub-path of a shortest path is shortest path.  // 用反证法 contradiction\\
+Triangle inequality\\
+$dist(u,v) \leq dist(u,x) + dist(x,v)$ //最短路径的定义\\
+dist 表示最短路径
+
+\textbf{Single source shortest path problem}\\
+从源点$s$ 到所有其他点的最短路径\\
+Assume all the edge weight are non-negative.\\
+Idea: greedy
+
+\subsection{Dijkstra's algorithm}
+详细的可以看en wiki\\
+a graph search algorithm that solves the single-source shortest path problem for a graph with non-negative edgepath costs, producing a shortest path tree. This algorithm is often used in routing and as a subroutine in other graph algorithms.\\
+It picks the unvisited vertex with the lowest-distance, calculates the distance through it to each unvisited neighbor, and updates the neighbor's distance if smaller. Mark visited (set to red) when done with neighbors.
+
+这里有一个图片(algo\_Dijkstra.gif),但是由于图片是gif 动态的, 无法放在这里
+\begin{verbatim}
+1  function Dijkstra(Graph, source):
+2      for each vertex v in Graph:                                // Initializations
+3          dist[v] := infinity ;     // Unknown distance function from source to v
+5          previous[v] := undefined ;                // Previous node in optimal path
+6      end for                                                    // from source
+7
+8      dist[source] := 0 ;                       // Distance from source to source
+9      Q := the set of all nodes in Graph ; // All nodes in the graph are unoptimized –
+                                                 //thus are in Q, priority queue
+10    S: = empty set                  // no node optimized – thus S empty
+11      while Q is not empty:                                      // The main loop
+12          u := vertex in Q with smallest distance in dist[] ;    // Source node in first case
+13          remove u from Q ;
+14          if dist[u] = infinity:
+15              break ;                                            // all remaining vertices are
+16          end if                                                 // inaccessible from source
+17          put u in S
+18          for each neighbor v of u: //where v has not yet been removed from Q.
+20              alt := dist[u] + dist_between(u, v) ;
+21              if alt < dist[v]:                                  // Relax (u,v,a)
+22                  dist[v] := alt ;
+23                  previous[v] := u ;
+24                  decrease-key v in Q;     // Reorder v in the Queue
+                                       //因为v的距离被重新赋值了, 所以它在Q中的值也要相应地降低
+25              end if
+26          end for
+27      end while
+28      return dist;
+29  end function
+\end{verbatim}
+
+Read the shortest path from source to target by reverse iteration
+\begin{verbatim}
+1  S := empty sequence
+2  u := target
+3  while previous[u] is defined:       // Construct the shortest path with a stack S
+4      insert u at the beginning of S             // Push the vertex into the stack
+5      u := previous[u]                           // Traverse from target to source
+6  end while ;
+\end{verbatim}
+
+\noindent
+Shortest path tree: the union of all shortest paths
+
+breath first search: BFS 广度优先搜索\\
+BFS 就是Dijkra\\
+
+two changes\\
+1. 不使用priority queue, 而是使用 FIFO queue\\
+2. relax
+
+\section{String matching}
+The Rabin-Karp algorithm\\
+String matching with finite automata\\
+The Knuth-Morris-Pratt algorithm
+
+\section{并行}
+\noindent
+parallel algorithms\\
+dynamic multithreading\\
+share memory, multicore
+\begin{verbatim}
+Ex: fib(n)
+if n<2
+    return n
+x = spawn fib(n-1)
+y = spawn fib(n-2)
+sync
+return (x+y)
+\end{verbatim}
+spawn: 衍生: Subroutine can execute at the same time with parent\\
+Sync: wait until all children are done
+
+\noindent
+cashing
 \section{Appendix}
 \subsection{Summations}
 \subsubsection{Approximation by integrals}
