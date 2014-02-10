@@ -2743,44 +2743,397 @@ Sync: wait until all children are done
 
 \noindent
 cashing
+
 \section{Appendix}
 \subsection{Summations}
-\subsubsection{Approximation by integrals}
+harmonic series
+$$H_n = 1+1/2+1/3+,\cdots,+1/n=\sum 1/k=\ln n + 0(1)
 $$
-\sum_{k=1}^n \frac{ 1}{k} \geq \int_1^{n+1}\frac{1}{x}dx = \ln(n+1)
+\subsubsection{Approximation by integrals}
+When a summation can be expressed as $\sum_{k=m}^n f(k)$, where $f(k)$ is a monotonically increasing function, we can approximate it by integrals:
+$$
+\int_{m-1}^n f(x)dx \leq \sum_{k=m}^n f(k) \leq \int_m^{n+1} f(x)dx
 $$
 
+\begin{figure}[htbp]
+\begin{minipage}[t]{0.5\textwidth}
+	\centering
+	\includegraphics[width= \textwidth]{approximation_by_integrals_lower_bound}
+  	\caption{approximation by lower bound}
+  	\label{fig.approximation_by_integrals_lower_bound}
+\end{minipage}
+\begin{minipage}[t]{0.5\textwidth}
+	\centering
+	\includegraphics[width= \textwidth]{approximation_by_integrals_upper_bound}
+  	\caption{approximation by upper bound}
+  	\label{fig.approximation_by_integrals_upper_bound}
+\end{minipage}
+\end{figure}
+when $f$ is monotonically decreasing function:
 $$
-\sum_{k=2}^n \frac{ 1}{k} \leq \int_1^{n}\frac{1}{x}dx = \ln n
+\int_m^{n+1} f(x)dx \leq \sum_{k=m}^n f(k) \leq \int_{m-1}^n f(x)dx
+$$
+$n$\textsuperscript{th} harmonic number:
+for a lower bound, we obtain
+$$
+\sum_{k=1}^n \frac{1}{k} \geq \int_1^{n+1}\frac{1}{x}dx = \ln(n+1)
+$$
+
+for the upper bound, we derive the inequality
+$$
+\sum_{k=2}^n \frac{1}{k} \leq \int_1^{n}\frac{1}{x}dx = \ln n
 $$
 which yields the bound
 $$
-\sum_{k=1}^n \frac{ 1}{k} \leq \ln n + 1
+\sum_{k=1}^n \frac{1}{k} \leq \ln n + 1
 $$
 
 \subsection{Relations}
-$v_0',v'_0$
-A binary relation $R$ on two sets $A$ and $B$ is a subset of the Cartesian product$A \times B$
-If $(a, b) \in R$, we sometimes write $a R b$. When we say that R is a binary relation on a set $A$, we mean that R is a subset of $A \times A$. For example, the "less than" relation on the natural numbers is the set $\{(a, b) : a, b$ in $N$ and $a < b\}$. An n-ary relation on sets $A_1, A_2,\ldots, A_n$ is a subset of $A_1 \times A_2 \times \cdots \times  A_n$.
+A binary relation $R$ on two sets $A$ and $B$ is a subset of the Cartesian product $A \times B$
+If $(a, b) \in R$, we sometimes write $a\ R\ b$. When we say that $R$ is a binary relation on a set $A$, we mean that $R$ is a subset of $A \times A$.
 
-A binary relation $R \subseteq A \times A$ is reflexive if
-$a R b$ implies $b R a$ for all $a,b \in A$
+For example, the "less than" relation on the natural numbers is the set $\{(a, b) : a, b$ in $N$ and $a < b\}$.
+
+An n-ary relation on sets $A_1, A_2,\ldots, A_n$ is a subset of $A_1 \times A_2 \times \cdots \times  A_n$.
+
+A binary relation $R \subseteq A \times A$ is
+\begin{description}
+  \item[reflexive] if $a\ R\ b$ implies $b\ R\ a$ for all $a,b \in A$
+  \item[symmetric] if $a\ R\ b$ implies $b\ R\ a$ for all $a, b \in A$. For example, "="
+  \item[transitive] if $a\ R\ b$ and $b\ R\ c$ imply $a\ R\ c$ for all $a, b, c \in A$.
+\end{description}
+
+A relation that is reflexive, symmetric, and transitive is an equivalence relation
+
+\bigskip
+\begin{theorem}
+\underline{An equivalence relation is the same as a partition} \\
+The equivalence classes of any equivalence relation $R$ on a set $A$ form a partition of A, and any partition of $A$ determines an equivalence relation on $A$ for which the sets in the partition are the equivalence classes.
+\end{theorem}
+
+\bigskip
+A binary relation $R$ on a set $A$ is antisymmetric if $a\ R\ b$ and $b\ R\ a$ imply $a = b$.
+
+A relation that is reflexive, antisymmetric, and transitive is a partial order偏序.\\
+And we call a set on which a partial order is defined a partially ordered set.\\
+For example, the relation "is a descendant(子孙,后裔) of" is a partial order on these of all people (if we view individuals as being their own descendants).
+
+In a partially ordered set A, there may be no single "maximum" element a such that $b\ R\ a$ for all $b \in A$. Instead, there may several maximal elements a such that for no $b \in A$, where $b \neq a$, is it the case that $a\ R\ b$. For example, in a collection of different-sized boxes there may be several maximal boxes that don't fit inside any other box, yet no single "maximum" box into which any other box will fit.
+
+A partial order $R$ on a set $A$ is a total or linear order if for all $a, b \in A$, we have $a\ R\ b$ or $b\ R\ a$. That is, every pairing of elements of $A$ can be related by $R$.
+
+1. The subset relation "$\subseteq$" on all subsets of $Z$ is a partial order but not a total order.
+
+2. Give examples of relations that are
+\begin{itemize}
+	\item reflexive and symmetric but not transitive,
+	\item reflexive and transitive but not symmetric,$\leq$
+	\item symmetric and transitive but not reflexive.
+\end{itemize}
+
+\subsubsection{Functions}
+Given two sets $A$ and $B$, a function $f$ is a binary relation on $A \times B$ such that $f$ or all $a \in A$,
+there exists precisely one $b \in B$ such that $(a, b) \in f$
+
+$f : A \rightarrow B$, \\
+if $b = f(a), a$ is called the argument of $f$ and $b$ the value of $f$ at $a$.
+
+When the domain of a function $f$ is a Cartesian product, we often omit the extra parentheses surrounding the argument of $f$.\\
+eg, $f : A_1 \times A_2 \times \cdots \times A_n \rightarrow B$, we write $b = f(a_1,a_2,\ldots,a_n)$ instead of $b = f((a_1,a_2,\ldots,a_n))$. \\
+We also call each $a_i$ an argument to the function $f$, though technically the (single) argument to $f$ is the n-tuple $(a_1,a_2,\ldots,a_n)$.\\
+严格上来讲$(a_1,a_2,\ldots,a_n)$是一个参数
+
+Give a bijection: $Z \rightarrow Z \times Z$.
+
+\subsection{Graphs}
+\textbf{Directed and undirected}\\
+A directed graph (or digraph) $G$ is a pair $(V, E)$, where $V$ is a finite set and $E$ is a binary relation on $V$. \\
+The set $V$ is called the $vertex顶点$ set of $G$, and its elements are called vertices (singular: vertex).\\
+The set $G$ is called the edge set of $G$, and its elements are called edges.\\
+In a directed graph, self-loops---edges from a vertex to itself are possible.\\
+Vertices are represented by circles in the figure, and edges are represented by arrows
+
+In an undirected graph $G = (V, E)$, the edge set E consists of unordered pairs of vertices, rather than ordered pairs.\\
+In an undirected graph, self-loops are forbidden.
+
+\bigskip
+If $(u, v)$ is an edge in a directed graph $G = (V, E)$, we say that $(u, v)$ is incident from入射 or leaves vertex u and is incident to or enters vertex v.\\
+If $(u, v)$ is an edge in an undirected graph $G = (V, E)$, we say that $(u, v)$ is incident on vertices u and v.\\
+If $(u, v)$ is an edge in a graph $G = (V, E)$, we say that vertex v is adjacent 毗邻to vertex u.
+
+The degree of a vertex in an undirected graph is the number of edges incident on it.\\
+A vertex whose degree is $0$, such as vertex $4$ is isolated.
+
+\bigskip
+In a directed graph:\\
+The out-degree of a vertex is the number of edges leaving it,\\
+The in-degree of a vertex is the number of edges entering it.\\
+The degree of a vertex in a directed graph is its in-degree plus its out-degree.
+
+A path of length k from a vertex u to a vertex u' in a graph $G = (V, E)$ is a sequence $<v_0, v_1, \ldots, v_k>$of vertices such that $u = v_0, u' =v_k$, and $(v_{i-1}, v_i) \in E$ for $i = 1, 2,..., k$. \\
+The length of the path is the number of edges in the path.
+
+If there is a path p from u to u', we say that u' is reachable from u via p.\\
+A path is simple if all vertices in the path are distinct.
+
+\bigskip
+In a directed graph, a path$<v_0, v_1, \ldots, v_k>$ forms a cycle if $v_0=v_k$  and the path contains at least one edge. \\
+The cycle is simple if, in addition, $v_1, v_2,..., v_k$ are distinct. \\
+A self-loop is a cycle of length $1$.
+
+Two paths $<v_0, v_1, v_2, \ldots,v_{k-1}, v_0>$  and $<v'_0, v'_1, v'_2, \ldots,v'_{k-1}, v'_0>$ form the same cycle if there exists an integer j such that $v'_i=v_{(i+j) \mod k}$ for $i = 0, 1,..., k - 1$.\\
+例如:\\
+$v_0, v_1, v_2, v_3, v_4, v_0$\\
+$v'_0, v'_1, v'_2, v'_3, v'_4, v'_0$\\
+如果$v'_0 = v_3$, 那么\\
+$v'_1=v_4=v_{1+3}$\\
+$v'_2=v_{2+3}=v_5$ 但是实际上应该为$v_0$, 所以这里应该取{$(2+3) \mod5$}\\
+$v'_3=v_{(3+3)\mod 5}=v_1$\\
+$v'_4=v_{(4+3) \mod 5}=v_2$
+
+A directed graph with no self-loops is simple. In an undirected graph, a path$〈v_0, v_1, \ldots, v_k〉$forms a (simple) cycle if $k \geq 3,v_0 = v_k$ and $v_1, v_2, \ldots, v_k$ are distinct.
+
+A graph with no cycles is acyclic.
+
+\bigskip
+An undirected graph is connected if every pair of vertices is connected by a path. \\
+The connected components of a graph are the equivalence classes of vertices under the "is reachable from" relation.\\
+An undirected graph is connected if it has exactly one connected component, that is, if every vertex is reachable from every other vertex.
+
+A directed graph is strongly connected if every two vertices are reachable from each other. The strongly connected components of a directed graph are the equivalence classes of vertices under the "are mutually reachable" relation. A directed graph is strongly connected if it has only one strongly connected component.
+
+Two graphs $G = (V, E)$ and $G' = (V', E')$ are isomorphic if there exists a bijection $f : V \rightarrow V'$ \\
+such that $(u, v) \in E$ if and only if $(f((u), f(v)) \in E'$.
+
+In other words, we can relabel the vertices of $G$ to be vertices of $G'$, maintaining the corresponding edges in $G$ and $G'$.
+
+\begin{figure}[htbp]
+   \centering
+   \includegraphics[scale = 0.7]{graph_isomorphic}\\
+   \caption{graph isomorphic}\label{fig.graph.isomorphic}
+ \end{figure}
+
+$V = {1, 2, 3, 4, 5, 6}$ and $V' = {u, v, w, x, y, z}$. \\
+Bijection $f(1) = u, f(2) = v, f(3) = w, f(4) = x, f(5) = y, f(6) = z$\\
+图\ref{fig.graph.isomorphic}中a表示了一个\textbf{isomorphic}, b没有
+
+\bigskip
+Given an undirected graph $G = (V, E)$, the \textbf{directed version} of $G$ is the directed graph $G' = (V, E')$, where $(u, v) \in E'$ if and only if $(u, v) \in E$.
+
+Given a directed graph $G = (V, E)$, the \textbf{undirected version} of $G$ is the undirected graph $G'= (V, E')$, where $(u, v) \in E'$ if and only if $u \neq v$ and $(u, v) \in E$.
+
+In a directed graph $G = (V, E)$, a \textbf{neighbor} of a vertex $u$ is any vertex that is adjacent to $u$ in the undirected version of $G$ \\
+That is, $v$ is a neighbor of $u$ if either $(u, v) \in E$ or $(v, u) \in E$. \\
+In an undirected graph, $u$ and $v$ are neighbors if they are adjacent.
+
+\bigskip
+Several kinds of graphs are given special names. \\
+A \textbf{complete graph} is an undirected graph in which every pair of vertices is adjacent. \\
+A \textbf{bipartite双边 graph} is an undirected graph $G = (V, E)$ in which $V$ can be partitioned into two sets $V_1$ and $V_2$ such that $(u, v) \in E$ implies either $u \in V_1$ and $v \in V_2$ or $u \in V_2$ and $v \in V_1$. \\
+That is, all edges go between the two sets $V_1$ and $V_2$.
+
+An acyclic, undirected graph is a \textbf{forest},
+and a connected, acyclic, undirected graph is a (free) \textbf{tree}. We often take the first letters of "directed acyclic graph"定向 非 循 环 图 and call such a graph a \textbf{dag}.
+
+EX: Show that any connected, undirected graph $G = (V, E)$ satisfies $|E| \geq |V | - 1$.
+
+\subsubsection{Trees}
+A free tree is a connected, acyclic, undirected graph. We often omit the adjective "free" when we say that a graph is a tree. \\
+If an undirected graph is acyclic but possibly disconnected, it is a forest.
+
+Many algorithms that work for trees also work for forests.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{forest_and_tree}\\
+  \caption{forest and tree}\label{fig.forest_and_tree}
+\end{figure}
+
+图\ref{fig.forest_and_tree}中a tree, b forest, c neither of them
+
+\begin{theorem}
+[Properties of free trees] Let $G = (V, E)$ be an undirected graph. The following statements are equivalent.
+\begin{enumerate}
+	\item $G$ is a free tree.
+	\item Any two vertices in $G$ are connected by a unique simple path.
+	\item $G$ is connected, but if any edge is removed from $E$ the resulting graph is disconnected.
+	\item $G$ is connected, and $|E| = |V | - 1$.
+	\item $G$ is acyclic, and $|E| = |V | - 1$.
+	\item $G$ is acyclic, but if any edge is added to $E$ the resulting graph contains a cycle.
+\end{enumerate}
+\end{theorem}
+\noindent
+2中,unique 排除了cycle的存在, 因为如果有cycle, cycle中的两点间的path就不是unique\\
+3中, edge移走后, 点还在\\
+6中, 只增加edge, 而不增加点
+
+\bigskip
+A \textbf{rooted tree} is a free tree in which one of the vertices is distinguished from the others. The distinguished vertex is called the root of the tree. We often refer to a vertex of a rooted tree as a \textbf{node} of the tree.\\
+Consider a node $x$ in a rooted tree $T$ with root $r$ \\
+Any node $y$ on the unique path from $r$ to $x$ is called an \textbf{ancestor} of $x$ \\
+If $y$ is an ancestor of x, then $x$ is a \textbf{descendant} of $y$ \\
+(Every node is both an ancestor and a descendant of itself.) \\
+If $y$ is an ancestor of $x$ and $x \neq y$, then $y$ is a \textbf{proper ancestor} of $x$ and $x$ is a \textbf{proper descendant} of $y$ The subtree rooted at $x$ is the tree induced by descendants of x, rooted at $x$
+
+If the last edge on the path from the root $r$ of a tree $T$ to a node $x$ is $(y, x)$, then $y$ is the \textbf{parent} of x, and $x$ is a \textbf{child} of $y$ The root is the only node in $T$ with no parent. If two nodes have the same parent, they are \textbf{siblings}. A node with no children is an \textbf{external node or leaf}. A non leaf node is an \textbf{internal node}.
+
+\bigskip
+The number of children of a node $x$ in a rooted tree $T$ is called the \textbf{degree} of $x$
+
+The length of the path from the root $r$ to a node $x$ is the \textbf{depth} of $x$ in $T$ \\
+The \textbf{height} of a node in a tree is the number of edges on the longest simple downward path from the node to a leaf, \\
+and the height of a tree is the height of its root.
+
+\bigskip
+An \textbf{ordered tree} is a rooted tree in which the children of each node are ordered. That is, if a node has $k$children, then there is a first child, a second child... and a $k$\textsuperscript{th} child.
+
+\bigskip
+\textbf{Binary and positional trees}\\
+Binary trees are defined recursively. A \textbf{binary tree} $T$ is a structure defined on a finite set of nodes that either\\
+\indent contains no nodes, or\\
+\indent is composed of three disjoint sets of nodes: a \textbf{root} node, a binary tree called its \textbf{left} subtree, and a binary tree called its \textbf{right subtree}.\\
+
+The binary tree that contains no nodes is called the empty tree or null tree, sometimes denoted NIL.
+
+If the left subtree is nonempty, its root is called the \textbf{left child} of the root of the entire tree. Likewise, the root of a non null right subtree is the right child of the root of the entire tree.
+
+\bigskip
+\textbf{Full binary tree}\\
+each node is either a leaf or has degree exactly $2$. There are no degree-1 nodes.
+
+A $k$-ary tree is a positional tree in which for every node, all children with labels greater than $k$ are missing. \\
+Thus, a binary tree is a $k$-ary tree with $k = 2$.\\
+A complete k-ary tree is a $k$-ary tree in which all leaves have the same depth and all internal nodes have degree k.
+
+How many leaves does a complete $k$-ary tree of height $h$ have? \\
+The root has $k$ children at depth $1$, each of which has $k$ children at depth $2$, etc. \\
+Thus, the number of leaves at depth $h$ is $k^h$. \\
+Consequently, the height of a complete $k$-ary tree with $n$ leaves is $\log_k n$. The number of internal nodes of a complete k-ary tree of height $h$ is
+
+$$
+1 + k + k^2 + \cdots + k^{h-1} = \sum_{i=0}^{h-1} k^i = \frac{k^h - 1}{k-1}
+$$
+
+Thus, a complete binary tree $(k=2)$ has $2^h - 1$ internal nodes.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.7]{tree_height}\\
+  \caption{tree height}\label{fig.tree.height}
+\end{figure}
+
+\bigskip
+[Exercises B.5-3] Show by induction that the number of degree-$2$ nodes in any nonempty binary tree is $1$ less than the number of leaves.
+
+[Exercises B.5-4] Use induction to show that a nonempty binary tree with $n$ nodes has height at least $\lg n$.
+
 \subsection{Probability}
+The conditional probability of an event $A$ given that another event $B$ occurs is defined to be.
+在已知$B$发生的情况下, $A$发生的概率.
 $$
-Pr(A\cap B)=\frac{Pr(A)*Pr(B \cap A)}{Pr(B)}
+Pr(A|B) = \dfrac{Pr(A \cap B)}{Pr(B)}
 $$
+whenever $Pr\{B\} \neq 0$. (We read "$Pr\{A | B\}$" as "the probability of $A$ given $B$.").
+Intuitively, since we are given that event $B$ occurs, the event that $A$ also occurs is $A \cap B$. That is, $A \cap B$ is the set of outcomes in which both $A$ and $B$ occur.
+Since the outcome is one of the elementary events in $B$, we normalize the probabilities of all the elementary events in $B$ by dividing them by $Pr\{B\}$, so that they sum to $1$.
 
-$$
-B=(B \cap A)\cup (B \cap \bar{A})
-$$
+\bigskip
+Two events are \textbf{independent} if $Pr(A \cap B) = Pr(A)\cdot Pr(B)$ \\
+which is equivalent, if $Pr\{B\} \neq 0$, to the condition $Pr\{A | B\} = Pr\{A\}$.
+也就是说$A$的发生与$B$没有关系
 
-$$
-Pr(B)=Pr(B \cap A)+Pr(B \cap \bar{A})
-=Pr(A)*Pr(B|A)+Pr(\bar{A})*Pr(B|\bar{A})
-$$
+\begin{example}
+suppose that two fair coins are flipped and that the outcomes are independent. Then the probability of two heads is $(1/2)(1/2) = 1/4$.
+Now suppose that one event is that the first coin comes up heads and the other event is that the coins come up differently.\\
+Each of these events occurs with probability $1/2$, and the probability that both events occur is $1/4$;
+thus, according to the definition of independence, the events are independent-even though one might think that both events depend on the first coin.
 
-$$
-Pr(A\cap B)=\frac{Pr(A)*Pr(B \cap A)}{Pr(A)*Pr(B|A)+Pr(\bar{A})*Pr(B|\bar{A})}
-$$
+Finally, suppose that the coins are welded together so that they both fall heads or both fall tails and that the two possibilities are equally likely.
+Then the probability that each coin comes up heads is $1/2$, but the probability that they both come up heads is $1/2 \neq (1/2)(1/2)$.
+Consequently, the event that one comes up heads and the event that the other comes up heads are not independent.
+\end{example}
 
+A collection $A_1, A_2,\ldots, A_n$ of events is said to be \textbf{pairwise independent} if
+$$Pr\{A_i \cap A_j\} = Pr\{A_i\}Pr\{A_j\}$$
+for all $1 \leq i < j \leq n$.
+
+We say that the events of the collection are \textbf{(mutually) independent}
+if every $k$-subset $A_{i_1},A_{i_1},\ldots,A_{i_n}$ of the collection, where $2 \leq k \leq n$ and $1 \leq i_1< i_2< \ldots < i_k \leq n$, satisfies
+$$ Pr\{A_{i_1} \cap A_{i_1} \cap \cdots \cap A_{i_n}\} = Pr\{A_{i_1}\} Pr\{A_{i_2}\} \cdots Pr\{A_{i_n}\} $$
+
+\subsubsection{Baye's theorem}
+$$ Pr(A\cap B)=\frac{Pr(A) \times Pr(B \cap A)}{Pr(B)} $$
+
+$$ B=(B \cap A)\cup (B \cap \bar{A}) $$
+
+\noindent
+$B \cap A and B \cap \overline{A}$ are mutually exclusive events
+$$ Pr(B)=Pr(B \cap A)+Pr(B \cap \bar{A}) =Pr(A) \times Pr(B|A)+Pr(\bar{A}) \times Pr(B|\bar{A}) $$
+上面的式子可以化为:
+$$ Pr(A\cap B)=\frac{Pr(A) \times Pr(B \cap A)}{Pr(A) \times Pr(B|A)+Pr(\bar{A}) \times Pr(B|\bar{A})} $$
+
+\subsubsection{Discrete random variables}
+We define two random variables $X$ and $Y$ to be independent if for all $x$ and $y$, the events $X=x$ and $Y=y$ are independent or equivalently, if for all $x$ and $y$, we have $Pr(X=x and Y=y)=Pr(X=x) \times Pr(Y=y)$.
+
+\underline{Linearity of expectation}
+$E[X+Y]=E[X]+E[Y]$ \\
+whenever $E[X]$ and $E[Y]$ are defined. And it holds even if $X$ and $Y$ are not independent.\\
+Linearity of expectation is the key property that enables us to perform probabilistic analysis by using indicator random variables.
+
+When two random variables $X$ and $Y$ are independent and each has a defined expectation,
+\begin{equation}
+\begin{aligned}
+E[XY]
+&=\sum_x\sum_y x \times y \times Pr(X=x and Y=y) \\
+&=\sum_x\sum_y x \times y \times Pr(X=x) \times Pr(Y=y)\\
+&=(\sum_x x \times Pr(X=x))(\sum_y y \times Pr(Y=y))\\
+&=E[X]E[Y]
+\end{aligned}
+\end{equation}
+In general, when $n$ random variables $X_1, X_2, \ldots, X_n$ are mutually independent,
+$$
+E[X_1 \times X_2 \times \ldots \times X_n]=E[X_1] \times E[X_2] \times \ldots \times E[X_n]
+$$
+When a random variable $X$ takes on values from the set of natural numbers N={0,1,2, \ldots}, there is a nice formula for its expectation:
+\begin{equation}
+\begin{aligned}
+E[X]
+&=\sum_{i=0}^{\infty} i \times Pr(X=i)\\
+&=\sum_{i=0}^{\infty} i \times (Pr(X \geq i) – Pr(X \geq i+1)\\
+&=\sum_{i=1}^{\infty} Pr(X \geq i)
+\end{aligned}
+\end{equation}
+
+Variance
+\begin{equation}
+\begin{aligned}
+Var[X]
+&=E[(X-E[X])^2] \\
+&=E[X^2-2XE[X]+E^2[X]]\\
+&=E[X^2]-2E[XE[X]]+E^2[X]\\
+&=E[X^2]-2E^2[X]+E^2[X]\\
+&=E[X^2]-E^2[X]
+\end{aligned}
+\end{equation}
+
+When $X$ and $Y$ are independent random variables,\\
+$$Var[X+Y]=Var[X] + Var[Y]$$\\
+In general, if n random variables $$X_1, X_2, \ldots, X_n$$ are \todo{这个地方不理解为什么用pairwise, 而不用mutually independent}pairwise independent, then
+$$Var[\sum_{i=1}^n X_i]= \sum_{i=1}^n Var[X_i]$$
+
+\subsubsection{Indicator random variable}
+A random variable that has the value $1$ or $0$, according to whether a specified event occurs or
+not is called an indicator random variable for that event.
+
+Handy facts: Suppose $X$ is an indicator random variable for the event $A$. Let $p$ denote $P(A)$.
+Then\\
+$E(X) = p$ (3.42)\\
+$Var(X) = p(1 - p)$ (3.43)\\
+This two facts are easily derived. In the ?rst case we have, using our properties for expected value,\\
+$EX = 1 \times P(X = 1) + 0 \times P(X = 0) = P(X = 1) = P(A) = p$ (3.44)\\
+The derivation for $Var(X)$ is similar (use (3.29)).
+
+The indicator random variable $IA$ associated with event $A$ has value $1$ if event $A$ occurs and has value $0$ otherwise. In other words, $IA$ maps all outcomes in the set $A$ to $1$ and all outcomes outside $A$ to $0$.\\
+Random variables can be used to dene events. In particular, any predicate involving
+random variables denes the event consisting of all outcomes for which the predicate is true.\\
+e.g. for random variables $R1, R2$, $R1 = 1$ is an event, $R2  2$ is an event, $R1 = 1$ and $R2 = 2$ is an event.
 \end{document}
