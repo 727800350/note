@@ -1,0 +1,6 @@
+<snippet>
+    <content><![CDATA[\\textbf{$SELECTION}]]></content>
+    <tabTrigger>textbf</tabTrigger>
+    <scope>text.tex.latex</scope>
+    <description>Make font bold</description>
+</snippet>

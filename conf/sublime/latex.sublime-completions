@@ -1,0 +1,19 @@
+{
+        "scope": "text.tex - source - meta.tag, punctuation.definition.tag.begin",
+
+        "completions":
+        [
+              { "trigger": "\\frac", "contents": "\\dfrac{$1}{$2}$0"},
+              { "trigger": "\\partial", "contents": "\\dfrac{\\partial $1}{\\partial $2}"},
+
+              {"trigger": "\\definition", "contents": "\\begin{definition}\n$1\n\\end{definition}"},
+              {"trigger": "\\theorem", "contents": "\\begin{theorem}\n$1\n\\end{theorem}"},
+              {"trigger": "\\proof", "contents": "\\begin{proof}\n$1\n\\end{proof}"},
+              {"trigger": "\\example", "contents": "\\begin{example}\n$1\n\\end{example}"},
+              {"trigger": "\\exemple", "contents": "\\begin{example}\n$1\n\\end{example}"},
+              {"trigger": "\\corollary", "contents": "\\begin{corollary}\n$1\n\\end{corollary}"},
+              
+              {"trigger": "\\equation", "contents": "\\begin{equation}\n$1\n\\end{equation}"},
+              {"trigger": "\\aligned", "contents": "\\begin{equation}\n\\begin{aligned}\n$1\n\\end{aligned}\n\\end{equation}"}
+        ]
+}
