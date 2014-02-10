@@ -2,156 +2,156 @@
 "Chinese Punctuation  
 """""""""""""""""""""""""""""" 
 function! CheckChineseMark()  
-    "ÒÀ´Î¼ì²é  
-    if search('¡£')  
-        let s:line=search('¡£')  
-        execute s:line . "s/¡£/\./g" 
+    "check one by one
+    if search('ã€‚')  
+        let s:line=search('ã€‚')  
+        execute s:line . "s/ã€‚/\./g" 
     endif  
  
-    if search('£¬')  
-        let s:line=search('£¬')  
-        execute s:line . "s/£¬/,/g" 
+    if search('ï¼Œ')  
+        let s:line=search('ï¼Œ')  
+        execute s:line . "s/ï¼Œ/,/g" 
     endif  
  
-    if search('£»')  
-        let s:line=search('£»')  
-        execute s:line . "s/£»/,/g" 
+    if search('ï¼›')  
+        let s:line=search('ï¼›')  
+        execute s:line . "s/ï¼›/,/g" 
  
     endif  
       
-    if  search('£¿')  
-        let s:line=search('£¿')  
-        execute s:line . "s/£¿/?/g" 
+    if  search('ï¼Ÿ')  
+        let s:line=search('ï¼Ÿ')  
+        execute s:line . "s/ï¼Ÿ/?/g" 
     endif  
  
-    if search('£º')  
-        let s:line=search('£º')  
-        execute s:line . "s/£º/\:/g" 
+    if search('ï¼š')  
+        let s:line=search('ï¼š')  
+        execute s:line . "s/ï¼š/\:/g" 
     endif  
  
-    if search('¡®')  
-        let s:line=search('¡®')  
-        execute s:line . "s/¡®/\'/g" 
+    if search('â€˜')  
+        let s:line=search('â€˜')  
+        execute s:line . "s/â€˜/\'/g" 
     endif  
  
-    if search('¡¯')  
-        let s:line=search('¡¯')  
-        execute s:line . "s/¡¯/\'/g" 
+    if search('â€™')  
+        let s:line=search('â€™')  
+        execute s:line . "s/â€™/\'/g" 
     endif  
  
-    if search('¡±')  
-        let s:line=search('¡±')  
-        execute s:line . "s/¡±/\"/g" 
+    if search('â€')  
+        let s:line=search('â€')  
+        execute s:line . "s/â€/\"/g" 
     endif  
  
-    if search('¡°')  
-        let s:line=search('¡°')  
-        execute s:line . "s/¡°/\"/g" 
+    if search('â€œ')  
+        let s:line=search('â€œ')  
+        execute s:line . "s/â€œ/\"/g" 
     endif  
  
-    if search('¡¶')  
-        let s:line=search('¡¶')  
-        execute s:line . "s/¡¶/\</g" 
+    if search('ã€Š')  
+        let s:line=search('ã€Š')  
+        execute s:line . "s/ã€Š/\</g" 
     endif  
  
-    if search('¡·')  
-        let s:linie=search('¡·')  
-        execute s:line . "s/¡·/\>/g" 
+    if search('ã€‹')  
+        let s:linie=search('ã€‹')  
+        execute s:line . "s/ã€‹/\>/g" 
     endif  
  
-    if search('¡ª¡ª')  
-        let s:line=search('¡ª¡ª')  
-        execute s:line . "s/¡ª¡ª/-/g" 
+    if search('â€”â€”')  
+        let s:line=search('â€”â€”')  
+        execute s:line . "s/â€”â€”/-/g" 
     endif  
  
-    if search('£©')  
-        let s:line=search('£©')  
-        execute s:line . "s/£©/\)/g" 
+    if search('ï¼‰')  
+        let s:line=search('ï¼‰')  
+        execute s:line . "s/ï¼‰/\)/g" 
     endif  
  
-    if search('£¨')  
-        let s:line=search('£¨')  
-        execute s:line . "s/£¨/\(/g" 
+    if search('ï¼ˆ')  
+        let s:line=search('ï¼ˆ')  
+        execute s:line . "s/ï¼ˆ/\(/g" 
     endif  
  
-    if search('¡­¡­')  
-        let s:line=search('¡­¡­')  
-        execute s:line . "s/¡­¡­/^/g" 
+    if search('â€¦â€¦')  
+        let s:line=search('â€¦â€¦')  
+        execute s:line . "s/â€¦â€¦/^/g" 
     endif  
  
-    if search('£¤')  
-        let s:line=search('£¤')  
-        execute s:line . "s/£¤/$/g" 
+    if search('ï¿¥')  
+        let s:line=search('ï¿¥')  
+        execute s:line . "s/ï¿¥/$/g" 
     endif  
  
-    if search('£¡')  
-        let s:line=search('£¡')  
-        execute s:line . "s/£¡/!/g" 
+    if search('ï¼')  
+        let s:line=search('ï¼')  
+        execute s:line . "s/ï¼/!/g" 
     endif  
  
-    if  search('¡¤')  
-        let s:line=search('¡¤')  
-        execute s:line . "s/¡¤/`/g" 
+    if  search('Â·')  
+        let s:line=search('Â·')  
+        execute s:line . "s/Â·/`/g" 
     endif  
  
-    if  search('¡¢')  
-        let s:line=search('¡¢')  
-        execute s:line . "s/¡¢/,/g" 
+    if  search('ã€')  
+        let s:line=search('ã€')  
+        execute s:line . "s/ã€/,/g" 
     endif  
  
-    if  search('¦¨')  
-        let s:line=search('¦¨')  
-        execute s:line . "s/¦¨/Theta/g" 
+    if  search('Î˜')  
+        let s:line=search('Î˜')  
+        execute s:line . "s/Î˜/Theta/g" 
     endif  
 
-    if  search('¦Å')
-        let s:line=search('¦Å')  
-        execute s:line . "s/¦Å/epsilon/g" 
+    if  search('Îµ')
+        let s:line=search('Îµ')  
+        execute s:line . "s/Îµ/epsilon/g" 
     endif  
 
-    if  search('¦¸')
-        let s:line=search('¦¸')  
-        execute s:line . "s/¦¸/Omega/g" 
+    if  search('Î©')
+        let s:line=search('Î©')  
+        execute s:line . "s/Î©/Omega/g" 
     endif  
 
-    if  search('¡Ê')  
-        let s:line=search('¡Ê')  
-        execute s:line . "s/¡Ê/in/g" 
+    if  search('âˆˆ')  
+        let s:line=search('âˆˆ')  
+        execute s:line . "s/âˆˆ/in/g" 
     endif  
  
-    if  search('¡Ü')  
-        let s:line=search('¡Ü')  
-        execute s:line . "s/¡Ü/leq/g" 
+    if  search('â‰¤')  
+        let s:line=search('â‰¤')  
+        execute s:line . "s/â‰¤/leq/g" 
     endif  
  
-    if  search('¡İ')
-        let s:line=search('¡İ')  
-        execute s:line . "s/¡İ/geq/g" 
+    if  search('â‰¥')
+        let s:line=search('â‰¥')  
+        execute s:line . "s/â‰¥/geq/g" 
     endif  
  
-    if  search('¡Ù')  
-        let s:line=search('¡Ù')  
-        execute s:line . "s/¡Ù/neq/g" 
+    if  search('â‰ ')  
+        let s:line=search('â‰ ')  
+        execute s:line . "s/â‰ /neq/g" 
     endif  
  
-    if  search('¡Ö')  
-        let s:line=search('¡Ö')  
-        execute s:line . "s/¡Ö/approx/g" 
+    if  search('â‰ˆ')  
+        let s:line=search('â‰ˆ')  
+        execute s:line . "s/â‰ˆ/approx/g" 
     endif  
 endfunction  
 map <C-S> :call CheckChineseMark()<CR>
 imap <C-S> <ESC>:call CheckChineseMark()<CR>
 vmap <C-S> <ESC>:call CheckChineseMark()<CR>
 
-"===============================¸´ÖÆ===============================
-"´ÓÏµÍ³¼ôÇĞ°åÖĞ¸´ÖÆ£¬¼ôÇĞ£¬Õ³Ìù
-"Ctrl Y  ¸´ÖÆ
+"===============================å¤åˆ¶===============================
+"ä»ç³»ç»Ÿå‰ªåˆ‡æ¿ä¸­å¤åˆ¶ï¼Œå‰ªåˆ‡ï¼Œç²˜è´´
+"Ctrl Y  å¤åˆ¶
 map <C-Y> "+y  
 map <C-X> "+x
 map <C-P> "+p
-"±£´æÎÄ¼ş²¢ÁôÔÚ²åÈëÄ£Ê½ [²åÈëÄ£Ê½]
+"ä¿å­˜æ–‡ä»¶å¹¶ç•™åœ¨æ’å…¥æ¨¡å¼ [æ’å…¥æ¨¡å¼]
 imap jj <ESC>:w<CR>li
-"·µ»ØNormalÄ£Ê½ [²åÈëÄ£Ê½]
+"è¿”å›Normalæ¨¡å¼ [æ’å…¥æ¨¡å¼]
 imap kk <ESC>l
 
 "F3 switches between two windows after a split
@@ -159,40 +159,40 @@ map <F3> <c-w>w
 if has('mouse')
 	set mouse=a
 endif
-set backspace=2 "ÆôÓÃÍË¸ñ¼ü
+set backspace=2 "å¯ç”¨é€€æ ¼é”®
 
 
-set nocompatible             " ¹Ø±Õ¼æÈİÄ£Ê½
+set nocompatible             " å…³é—­å…¼å®¹æ¨¡å¼
 
-set nu "number ĞĞºÅ
-colorscheme evening "ÑÕÉ«Ö÷Ìâ
-set showmatch "ÏÔÊ¾Æ¥ÅäµÄÀ¨ºÅ
+set nu "number è¡Œå·
+colorscheme evening "é¢œè‰²ä¸»é¢˜
+set showmatch "æ˜¾ç¤ºåŒ¹é…çš„æ‹¬å·
 "set laststatus=2 "always show status line
 set shortmess=atI "shortens messages"
-set showcmd         " ÏÔÊ¾ÃüÁî``
-set ruler                    " ÓÒÏÂ½ÇÏÔÊ¾¹â±êÎ»ÖÃµÄ×´Ì¬ĞĞ
+set showcmd         " æ˜¾ç¤ºå‘½ä»¤``
+set ruler                    " å³ä¸‹è§’æ˜¾ç¤ºå…‰æ ‡ä½ç½®çš„çŠ¶æ€è¡Œ
 
 
 set ic "ignore case
-set hlsearch                 " ¿ªÆô¸ßÁÁÏÔÊ¾½á¹û
-set incsearch                " ²éÕÒbookÊ±£¬µ±ÊäÈë/bÊ±»á×Ô¶¯ÕÒµ½,in c search
+set hlsearch                 " å¼€å¯é«˜äº®æ˜¾ç¤ºç»“æœ
+set incsearch                " æŸ¥æ‰¾bookæ—¶ï¼Œå½“è¾“å…¥/bæ—¶ä¼šè‡ªåŠ¨æ‰¾åˆ°,in c search
 
-set cursorline              " Í»³öÏÔÊ¾µ±Ç°ĞĞ
-syntax enable                " ´ò¿ªÓï·¨¸ßÁÁ
-syntax on                  "Ò²ÊÇÓï·¨¸ßÁÁ,²»Í¬µÄÏµÍ³¿ÉÄÜÓÃ²»Ò»ÑùµÄÓï·¨ 
-filetype indent on           " Õë¶Ô²»Í¬µÄÎÄ¼şÀàĞÍ²ÉÓÃ²»Í¬µÄËõ½ø¸ñÊ½
-filetype plugin on           " Õë¶Ô²»Í¬µÄÎÄ¼şÀàĞÍ¼ÓÔØ¶ÔÓ¦µÄ²å¼ş
-filetype plugin indent on    " ÆôÓÃ×Ô¶¯²¹È«
+set cursorline              " çªå‡ºæ˜¾ç¤ºå½“å‰è¡Œ
+syntax enable                " æ‰“å¼€è¯­æ³•é«˜äº®
+syntax on                  "ä¹Ÿæ˜¯è¯­æ³•é«˜äº®,ä¸åŒçš„ç³»ç»Ÿå¯èƒ½ç”¨ä¸ä¸€æ ·çš„è¯­æ³• 
+filetype indent on           " é’ˆå¯¹ä¸åŒçš„æ–‡ä»¶ç±»å‹é‡‡ç”¨ä¸åŒçš„ç¼©è¿›æ ¼å¼
+filetype plugin on           " é’ˆå¯¹ä¸åŒçš„æ–‡ä»¶ç±»å‹åŠ è½½å¯¹åº”çš„æ’ä»¶
+filetype plugin indent on    " å¯ç”¨è‡ªåŠ¨è¡¥å…¨
 
-set autoread     "µ±ÎÄ¼şÔÚÍâ²¿±»ĞŞ¸ÄÊ±£¬×Ô¶¯ÖØĞÂ¶ÁÈ¡
-set autoindent "×Ô¶¯Ëõ½ø
-set smartindent  "ÖÇÄÜËõ½ø
-set tabstop=4  "tab Ëõ½ø4¸ö¿Õ¸ñ£¬¶ø²»ÊÇÄ¬ÈÏµÄ8¸ö
+set autoread     "å½“æ–‡ä»¶åœ¨å¤–éƒ¨è¢«ä¿®æ”¹æ—¶ï¼Œè‡ªåŠ¨é‡æ–°è¯»å–
+set autoindent "è‡ªåŠ¨ç¼©è¿›
+set smartindent  "æ™ºèƒ½ç¼©è¿›
+set tabstop=4  "tab ç¼©è¿›4ä¸ªç©ºæ ¼ï¼Œè€Œä¸æ˜¯é»˜è®¤çš„8ä¸ª
 
-"²»Òª±¸·İÎÄ¼ş
+"ä¸è¦å¤‡ä»½æ–‡ä»¶
 set nobackup
 set nowb
-set noswapfile      " ²»Ê¹ÓÃswpÎÄ¼ş£¬×¢Òâ£¬´íÎóÍË³öºóÎŞ·¨»Ö¸´
+set noswapfile      " ä¸ä½¿ç”¨swpæ–‡ä»¶ï¼Œæ³¨æ„ï¼Œé”™è¯¯é€€å‡ºåæ— æ³•æ¢å¤
 
 " go back automatically to the last position
 if has("autocmd")
@@ -207,7 +207,7 @@ set guifont=fangsong:h12
 let &termencoding=&encoding
 set fileencodings=ucs-bom,utf-8,ucs-2,ansi,gb18030,gbk,gb2312,big5,cp936,latin1
 
-" ======= ÒıºÅ && À¨ºÅ×Ô¶¯Æ¥Åä ======= "
+" ======= å¼•å· && æ‹¬å·è‡ªåŠ¨åŒ¹é… ======= "
 :inoremap ( ()<ESC>i
 :inoremap ) <c-r>=ClosePair(')')<CR>
 :inoremap { {}<ESC>i
@@ -227,25 +227,26 @@ function ClosePair(char)
         return a:char
     endif
 endf
-" ======= ÒıºÅ && À¨ºÅ×Ô¶¯Æ¥Åä ======= "
+" ======= å¼•å· && æ‹¬å·è‡ªåŠ¨åŒ¹é… ======= "
 
-"===============================×Ô¶¯²¹È«===============================
+"===============================è‡ªåŠ¨è¡¥å…¨===============================
 imap <c-\> <c-p>
-" c-j×Ô¶¯²¹È«£¬µ±²¹È«²Ëµ¥´ò¿ªÊ±£¬c-j,kÉÏÏÂÑ¡Ôñ
-" f:ÎÄ¼şÃû²¹È«£¬l:ĞĞ²¹È«£¬d:×Öµä²¹È«£¬]:tag²¹È«,t thesaurus
+" c-jè‡ªåŠ¨è¡¥å…¨ï¼Œå½“è¡¥å…¨èœå•æ‰“å¼€æ—¶ï¼Œc-j,kä¸Šä¸‹é€‰æ‹©
+" f:æ–‡ä»¶åè¡¥å…¨ï¼Œl:è¡Œè¡¥å…¨ï¼Œd:å­—å…¸è¡¥å…¨ï¼Œ]:tagè¡¥å…¨,t thesaurus
 imap <C-]>             <C-X><C-]> 
 imap <C-F>             <C-X><C-F> 
 imap <C-D>             <C-X><C-K>  
-set dictionary+=$HOME\_mydict "×Ô¶¨Òåµ¥´Ê¿â
-set thesaurus+=$HOME\_mthesaur  "×Ô¶¨Òå·ÖÀà´Ê¿â
+set dictionary+=$HOME\_mydict "è‡ªå®šä¹‰å•è¯åº“
+set thesaurus+=$HOME\_mthesaur  "è‡ªå®šä¹‰åˆ†ç±»è¯åº“
 imap <C-L>             <C-X><C-L> 
 imap <C-T>             <C-X><C-T> 
 set  complete-=k complete+=k
 "Ctrl-X Ctrl-S completion for spelling correction
 "Ctrl-X Ctrl-D completion by macro and definition name defined by #define
 "Ctrl-X Ctrl-I searches forward through the current file and included files defined by #include <somefile.h>
-" ======= ±àÒë && ÔËĞĞ ======= "
-" ±àÒëÔ´ÎÄ¼ş
+
+" ======= compile && run ======= "
+" compile source file
 func! CompileCode()
         exec "w"
         if &filetype == "c"
@@ -278,7 +279,7 @@ func! CompileCode()
         endif
 endfunc
 
-" ÔËĞĞ¿ÉÖ´ĞĞÎÄ¼ş
+" execute
 func! RunCode()
         exec "w"
         if &filetype == "c" || &filetype == "cpp" || &filetype == "haskell"
@@ -298,16 +299,16 @@ func! RunCode()
         endif
 endfunc
 
-" Ctrl + c Ò»¼ü±£´æ¡¢±àÒë
+" Ctrl + c one key to save and compile
 map <c-c> :call CompileCode()<CR>
 imap <c-c> <ESC>:call CompileCode()<CR>
 vmap <c-c> <ESC>:call CompileCode()<CR>
 
-" Ctrl + R Ò»¼ü±£´æ¡¢ÔËĞĞ
+" Ctrl + R one key to save and run
 map <c-r> :call RunCode()<CR>
 imap <c-r> <ESC>:call RunCode()<CR>
 vmap <c-r> <ESC>:call RunCode()<CR>
-" ======= ±àÒë && ÔËĞĞ ======= "
+" ======= compile && run ======= "
 
 
 "==============================comments===================================
@@ -371,29 +372,3 @@ function! Uncomment() range
     execute ":" . a:firstline . "," . a:lastline . 's,^' . commentString . ',,'
   endif
 endfunction
-"===============================Latex ab===============================
-" autocmd FileType tex ab L L_{\lambda}^
-autocmd FileType tex ab var \varepsilon
-autocmd FileType tex ab arrow \Leftrightarrow
-autocmd FileType tex ab eps \epsilon
-autocmd FileType tex ab del \delta
-autocmd FileType tex ab Del \Delta
-autocmd FileType tex ab 1frac \frac{d}{dx}
-autocmd FileType tex ab frac \frac{}{}<ESC>2hi
-autocmd FileType tex ab dfrac \dfrac{}{}<ESC>2hi
-autocmd FileType tex ab 1partial \frac{\partial }{\partial}<ESC>10hi
-autocmd FileType tex ab dpartial \dfrac{\partial }{\partial}<ESC>10hi
-autocmd FileType tex ab 1int \int_{x_0}^{x_1}F
-autocmd FileType tex ab 2int \int\int_{D}
-autocmd FileType tex ab 2frac \frac{d^2}{dx^2}F
-autocmd FileType tex ab F_y' F_{y'}
-autocmd FileType tex ab theorem \begin{theorem}<CR>\end{theorem}<ESC>O
-" autocmd FileType tex ab example \begin{example}<CR>\end{example}<ESC>O
-autocmd FileType tex ab frame \begin{frame}<CR>\end{frame}<ESC>O
-autocmd FileType tex ab center \begin{center}<CR>\end{center}<ESC>O
-autocmd FileType tex ab corollary \begin{corollary}<CR>\end{corollary}<ESC>O
-autocmd FileType tex ab 1equation \begin{equation}<CR>\end{equation}<ESC>O
-" autocmd FileType tex ab split \begin{equation}<CR><TAB>\begin{split}<CR>\end{split}<CR><BACKSPACE>\end{equation}<ESC>kO
-autocmd FileType tex ab eqnarray \begin{eqnarray}<CR>\end{eqnarray}<ESC>O
-autocmd FileType tex ab lambda \lambda
-autocmd FileType tex ab lamda \lambda
