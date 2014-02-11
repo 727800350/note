@@ -9,29 +9,35 @@
 \newpage
 \tableofcontents
 \newpage
-\section{Lecture 1}
-C procedure paradigm
-Assembly 汇编
-C++
-Concurrent Programming 并发编程
+\section{Lecture 1 - 基本介绍}
+C procedure paradigm\\
+Assembly 汇编\\
+C++\\
+Concurrent Programming 并发编程\\
 Sequential Programming 顺序
-Scheme Lisp functional paradigm
+
+Scheme Lisp functional paradigm\\
 You always rely on the return value of a function to move forward, And you program without side effects
+
 Python
+
 \section{Lecture 2}
 The memory system as a whole is organized as a large array of bytes. Every byte has its
 own "address" which is like its index in the array.
 
 The byte is sometimes defined as the "smallest addressable unit" of memory. Most computers also support reading and writing larger units of memory— 2 byte "half-words" (sometimes known as a "short" word) and 4 byte "words".
+
 Half-words and words span consecutive bytes in memory. By convention the address of any multiple-byte thing is the address of its lowest byte— its "base-address".
 
-Most computers restrict half-word and word accesses to be "aligned"— 
-a half-word must start at an even address and 
-a word must start at an address that is a multiple of $4$.
+Most computers restrict \textbf{half-word} and word accesses to be "aligned"—
+\indent a \textbf{half-word} must \textbf{start at an even address} and \\
+\indent a \textbf{word} must \textbf{start} at an \textbf{address that is a multiple of $4$}.
 
 The ASCII code defines $128$ characters and a mapping of those characters onto the numbers $0..127$.
-All standard ASCII characters have zero in the uppermost bit (the "most significant" bit) since they only span the range $0..127$.
-不同数据类型间的赋值
+
+All standard ASCII characters have \textbf{zero in the uppermost bit (the "most significant" bit)} since they only span the range $0..127$.
+
+\subsection{不同数据类型间的赋值}
 \begin{verbatim}
 low-level memory
 C/C++
@@ -45,20 +51,21 @@ double        	8 bytes
 binary digit => bit
 Byte=> 8 bits   2^8=256
 \end{verbatim}
-Currently almost all machines use $4$ bytes to store an address, creating a $4$GB addressable range.
-Because each byte of memory has to have an address. In a $32$-bit operating system, an address is $32$ bits long; thus, there are $2^32$ possible addresses, which means there are $2^32$ bytes $= 4$ GB.
+Currently almost all machines use $4$ bytes to store an address, creating a $4$GB addressable range.\\
+Because each byte of memory has to have an address. In a $32$-bit operating system, an address is $32$ bits long; thus, there are $2^{32}$ possible addresses, which means there are $2^{32}$ bytes $= 4$ GB.
 
 Some processors have a special hardware Floating Point Unit, FPU, that substantially speeds up floating point operations.
 
 Instruction— Machine instructions themselves are also encoded using bit patterns,most often using the same 4-byte native word size. The different bits in the instruction encoding indicate things such as what type of instruction it is (load,store, multiply, etc.) and the registers involved.
 
-负数的表示
+\subsection{负数的表示}
 \begin{verbatim}
 0111,1111,1111,1111
 \end{verbatim}
-如果最左端的$0$是一个$1$, 那么这个$1$ 会贡献$2^{15}$, 当上面的数字加上$1$ 之后, 刚好变成了$1000,0000,0000,0000$\todo{to be checked}, 所以原来的那个数是$2^{15} – 1$
+如果最左端的$0$是一个$1$, 那么这个$1$ 会贡献$2^{15}$, 当上面的数字加上$1$ 之后, 刚好变成了$1000,0000,0000,0000$\\
+所以原来的那个数是$2^{15} – 1$
 
-正负整数
+\textbf{正负整数}\\
 第一位$0$表示正, $1$表示负, $(-1)^0=1, (-1)^1 = -1$
 \begin{verbatim}
 7: 0000,0000,0000,0111
@@ -97,29 +104,40 @@ Instruction— Machine instructions themselves are also encoded using bit patter
 所以得到一个正数的相反数, 就是将这个正数的所有二进制取反(补码), 然后再加上1
 
 \section{Lecture 3}
+\begin{table}[htbp]
+\caption{int intArray[6]}
+  \centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+  intArray[0] & intArray[1] & intArray[2] & intArray[3] & intArray[4] & intArray[5] \\
+\hline
+\end{tabular}
+\end{table}
 \begin{verbatim}
 int array[10]
 array \equiv &array[0]
 array + k \equiv &array[k]
 \end{verbatim}
 
-\verb void swap(int *a, int *b)
+\verb+void swap(int *a, int *b)+
 
 \section{Lecture 4}
-Arithmetic on a void pointer
-For a \verb (void*) pointer, array subscripting and pointer arithmetic don't quite make sense. 
-These manipulations include implicit multiplication by the size of the element type, and 
-what is sizeof(void)?  Unknown!  
+\subsection{Arithmetic on a void pointer}
+For a \verb (void*) pointer, array subscripting and pointer arithmetic don't quite make sense.
+These manipulations include implicit multiplication by the size of the element type, and
+what is sizeof(void)?  Unknown!
+
 有些编译器将size(void) 设为1, 和 char *的大小一样, 但是如果我们利用这个特性, 那我们的code 将不具有可移植性, 所以要明确的进行转换
 
 \begin{lstlisting}[language = C]
-void *ptr;  
+void *ptr;
 p = (char*)ptr + 4;  // increments ptr by exactly 4, no extra multiplication
 \end{lstlisting}
-Note that you do not need to cast the result back to (void*), a (void*) is the "universal 
-recipient" of pointer types and can be freely assigned any type of pointer.  It is best to 
+Note that you do not need to cast the result back to (void*), a (void*) is the "universal
+recipient" of pointer types and can be freely assigned any type of pointer.  It is best to
 use casts only when you absolutely must.
-函数通过void 指针的通用化
+
+\subsection{函数通过void 指针的通用化}
 \begin{lstlisting}[language = C]
 void swap(int *a, int *b){
 int temp=*a;
@@ -128,6 +146,7 @@ int temp=*a;
 }
 \end{lstlisting}
 能够只交换指针吗?
+
 generic version: size 表示需要提取多少个字节来表示数据
 \begin{lstlisting}[language = C]
 void swap(void *a, void *b, int size){
@@ -210,28 +229,28 @@ void * bsearch(void *key, void *base, int n, int elemsize, int (* cmp)(void *, v
 \end{lstlisting}
 
 function and method 是不同的
+
 method 是与object相关的, 含有隐含的this 指针
 
-\bigskip\rule{6.8cm}{0.2em}
-C 中模仿类实现stack
+\subsection{C 中模仿类实现stack}
+\textbf{stack.h}
 \begin{lstlisting}[language = C]
 // a stack data structure
-stack.h
 typedef struct {
 int *elems;
 int logicalLen;
 int allocLen;
 } stack;
-\end{lstlisting}
-这里我们要存储的元素是int类型的, 我们定义的栈结构中int *elems, 所以我们实际上在栈中存储的是我们想要存储东西的指针, 在这里, 也就是说栈中的元素是int *类型的
+// 这里我们要存储的元素是int类型的, 我们定义的栈结构中int *elems, 所以我们实际上在栈中存储的是我们想要存储东西的指针, 在这里, 也就是说栈中的元素是int *类型的
 
-\begin{lstlisting}[language = C]
 void stackNew(stack *s);  // 模仿类的初始化函数
 void stackDispose(stack *s);  //模仿类的析构函数
 void stackPush(stack *s, int value);  // 检测边界, 需要重新申请空间然后复制元素后再添加
 int stackPop(stack *s);
+\end{lstlisting}
 
-stack.c
+\textbf{stack.c}
+\begin{lstlisting}[language = C]
 void stackNew(stack *s){
 s->logicalLen = 0;
 s->allocLen = 4;
@@ -265,25 +284,25 @@ return s->elems[s->logicalLen];
 }
 \end{lstlisting}
 
-C 中模仿类实现stackd的泛型化
+\subsection{C 中模仿类实现stackd的泛型化}
+\textbf{stack.h}
 \begin{lstlisting}[language = C]
-stack.h
 typedef struct{
 void *elems;
 int elemsize;
 int logicalLen;
 int allocLen;
 }stack;
-\end{lstlisting}
-这里我们要存储的元素是void类型的, 我们定义的栈结构中void *elems, 所以我们实际上在栈中存储的是我们想要存储东西的指针, 在这里, 也就是说栈中的元素是void *类型的
+// 这里我们要存储的元素是void类型的, 我们定义的栈结构中void *elems, 所以我们实际上在栈中存储的是我们想要存储东西的指针, 在这里, 也就是说栈中的元素是void *类型的
 
-\begin{lstlisting}[language = C]
 void stackNew(stack *s, int elemsize);
 void stackDispose(stack *s);
 void stackPush(stack *s, void *elemAddr); //elemAddr要存储的元素的地址
 void stackPop(stack *s, void *elemAddr); //出栈元素放到elemAddr地址中
+\end{lstlisting}
 
-stack.c
+\textbf{stack.c}
+\begin{lstlisting}[language = C]
 void stackNew(stack *s, int elemsize){
 s->elemsize = elemsize;
 s->logicalLen = 0;
@@ -300,7 +319,7 @@ static void stackGrow(stack *s){
 s->allocLen *= 2;
 s->elems = realloc(s->elems, s->allocLen * elemsize);
 }
-//static 这个函数只能在本文件中使用, 
+//static 这个函数只能在本文件中使用,
 
 void stackPush(stack *s, void *elemAddr){
 if (s->logicLen == s->allocLen)
@@ -315,11 +334,11 @@ s->logicalLen --;
 void *source = (char *)s->elems + s->logicalLen * s->elemsize;
 memcpy(elemAddr, source, s->elemsize);
 }
-\end{lstlisting}
 //我们也可以void * stackPop(stack *s), 但是这样需要在函数中动态申请内存, 这样代码会变得很难维护, 所以不推荐那样做
+\end{lstlisting}
 
 \section{Lecture 7}
-内存释放
+\subsection{内存释放}
 \begin{lstlisting}[language = C]
 int main(){
 const char *friends[] = {"AI", "Bob", "Eric"};
@@ -330,7 +349,7 @@ for (int i=0; i<3; i++){
 	stackPush(&stringstack, &copy);
 }
 \end{lstlisting}
-strdup会调用malloc, 所以之后我们需要将其释放掉
+\textbf{strdup会调用malloc, 所以之后我们需要将其释放掉}
 
 这里我们要存储的元素是char *类型的, 我们定义的栈结构中void *elems, 所以我们实际上在栈中存储的是我们想要存储东西的指针, 在这里, 也就是说栈中的元素是char **类型的
 
@@ -374,11 +393,16 @@ void stringFree(void *elem){
 \end{lstlisting}
 如果我们存储的是int 等类型, 我们只需要将freefun 传入NULL
 
-memcpy 拷贝的两个地址区域不能overlap, memcpy不会进行检查, 所以可能会出错
-memmove 会检查重叠的区域, 但是执行效率要比memcpy低
+\bigskip\noindent
+\textbf{memcpy 拷贝的两个地址区域不能overlap, memcpy不会进行检查, 所以可能会出错\\
+memmove 会检查重叠的区域, 但是执行效率要比memcpy低}
 
-figure: 编程范式-rotate
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-rotate}\\
+	\caption{编程范式 rotate}\label{fig.编程范式.rotate}
+\end{figure}
+
 将middle与end之间的移动到前面, 同时将front与middle之间的移动到后面
 \begin{lstlisting}[language = C]
 void rotate(void *front, void *middle, void *end){
@@ -394,9 +418,12 @@ void qsort(void *base, int n, int elemSize, int (*cmpfn)(void *, void *))
 \end{lstlisting}
 
 \section{Lecture 8}
-malloc, realloc, free
-figure: 内存分段
- 
+\subsection{malloc, realloc, free}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{内存分段}\\
+	\caption{内存分段}\label{fig.内存分段}
+\end{figure}
 
 \begin{lstlisting}[language = C]
 foo(){
@@ -405,35 +432,57 @@ int b;
 }
 \end{lstlisting}
 读到a的时候, 将a 压入内存中的stack区域
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.7]{stack_push_a}\\
+	\caption{压a 进入stack之后}\label{fig.stack.push.a}
+\end{figure}
 然后读到b, 再将b 压入stack中, 由于内存中下方的地址是低地址, 所以是从下方压栈, 所以b在a的下方, 也就是说b在低地址, a在高地址
- 
-heap segment
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.7]{stack_push_ab}\\
+	\caption{压a再压b 进入stack之后}\label{fig.stack.push.ab}
+\end{figure}
+ \bigskip
+\subsubsection{heap segment}
 在使用malloc 申请 堆内存的时候
 \begin{lstlisting}[language = C]
 int *a = malloc(40 * sizeof(int));
 \end{lstlisting}
 我们不光得到了160个字节的内存,  我们还得到了这160个字节前面的4 个或者8 个字节(具体是4 个还是8 个取决于具体的机器).
-figure: 编程范式-malloc
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-malloc}\\
+	\caption{编程范式 malloc}\label{fig.编程范式.malloc}
+\end{figure}
+
 前面的多出来的额外的字节记录了这个申请到的内存的一些信息, 比如大小等等
 这样, 当我们执行free(a) 的时候, 内核会从a 的地址处倒退4 个或者8 个字节, 提取出这个申请的内存的大小信息, 然后将这么大小的内存回收到堆中
 当我们执行free(a + 40) 的时候, 内核会将 a+40 这个地址的前4 个或者 8 个字节解释成内存大小信息, 导致error
 
-启发式策略
+\bigskip
+\textbf{启发式策略}\\
 将堆内存划分成不同的区域, 在每个区域中, 当遇到申请内存的请求时, 分配出固定大小的内存, 而不是按照用户传给的数字的精确值, 这样可以更加快速的分配内存
-figure: 编程范式-启发式策略
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-启发式策略}\\
+	\caption{编程范式 启发式策略}\label{fig.编程范式.启发式策略}
+\end{figure}
+
 例如 $malloc(4)$ 发现 $4 < 2^3$, 所以直接在$2^3$ 这个区域分配出$8$ 个子节大小的内存
 
-内存压缩
+\textbf{内存压缩}\\
 当malloc 遇到一个请求, 但是目前堆中没有连续的内存能够满足这个请求, 但是我们发现未被使用的内存的和是大于这个请求值的.
 所以我们可以采用内存压缩的策略, 将用过的内存压缩到一起(内存搬运), 然后就可以继续处理用户的请求
 但是这样内存管理就会遇到一个问题, 就是我们必须将已经分配的内存指针$a$ 和 $b$ 更新, 让他们指向新的位置, 否则用户是不知道的
 handle
 当申请内存的时候, 不返回direct pointer to the data(不是直接指数据的指针), 而是一个距离实际数据有两跳的指针, 也就是说相当于二级指针
-figure: 编程范式-内存压缩
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-内存压缩}\\
+	\caption{编程范式 内存压缩}\label{fig.编程范式.内存压缩}
+\end{figure}
+
 这样, 当我们进行内存压缩的时候, 只需要对红线右边的进行改动, 对用户的操作则没有影响
 但是, 我们必须确保用户对数据的操作与内存压缩这两个操作不能同时发生, 否则会出现问题, 所以需要使用安全锁机制
 \begin{lstlisting}[language = C]
@@ -442,18 +491,21 @@ HandleLock(handle);
 ... do sth...
 HandleUnlock(handle);
 
-stack segment
+\subsubsection{stack segment}
 void A(){
 int a;
 B();
 }
 \end{lstlisting}
-figure: 编程范式-栈的调用原理
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-栈的调用原理}\\
+	\caption{编程范式 栈的调用原理}\label{fig.编程范式.栈的调用原理}
+\end{figure}
+
 每次调用一个函数, 栈指针就向下移动(减去刚刚占用的空间), 然后当调用的函数返回时, 栈指针再向上移动, 回到原来的位置
 
-\section{Lecture 9}
-汇编
+\section{Lecture 9 - 汇编}
 在这门课中, 老师invented a assembly language
 小型的伪汇编语言
 所有的汇编指令都是4字节, 也就是32位宽
@@ -472,7 +524,7 @@ R3 = R2 + 7; //ALU operation
 M[R1] = R3; //store operation
 
 R2 = M[R1];
-R2 = R2 + 1; 
+R2 = R2 + 1;
 M[R1] = R2;
 \bigskip\rule{6.8cm}{0.2em}
 
@@ -483,8 +535,12 @@ i=200;
 s1=i;
 s2=s1+1;
 \end{lstlisting}
-figure: 编程范式-汇编-short
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-汇编-short}\\
+	\caption{编程范式 汇编 short}\label{fig.编程范式.汇编.short}
+\end{figure}
+
 
 \begin{lstlisting}[language = C]
 M[R1+4]=200;
@@ -495,8 +551,8 @@ R2=.2 M[R1+2];
 R3=R2+1;
 M[R1] = .2 R3;
 \end{lstlisting}
-\bigskip\rule{6.8cm}{0.2em}
-for循环
+
+\subsection{for循环}
 \begin{lstlisting}[language = C]
 int array[4];
 int i;
@@ -504,8 +560,12 @@ for (i=0; i<4; i++){
 	array[i]=0;
 }
 \end{lstlisting}
-figure: 编程范式-汇编-array
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-汇编-array}\\
+	\caption{编程范式 汇编 array}\label{fig.编程范式.汇编.array}
+\end{figure}
+
 \begin{lstlisting}[language = C]
 M[R1] = 0;
 
@@ -526,19 +586,20 @@ R2=M[R1]
 R2=R2-1
 M[R1]=R2
 \end{lstlisting}
-汇编代码中, 从上往下是地址从低到高, 所以 PC + 是往下走, PC - 是往上走
+\textbf{汇编代码中, 从上往下是地址从低到高, 所以 PC + 是往下走, PC - 是往上走}
 
-BEQ R2, 4,  PC+40  // 如果 $R2 >=4$ 就跳转到 PC+40
-PC 特殊寄存器, 程序计数器, 存储着当前指令的地址
-BEQ  branch on equal or greater
-BNE branch on not equal
-BLT branch on less than
-BLE branch on less than or equal to
-BGT branch on greater than
-BGE branch on greater than or equal to
+\bigskip\noindent
+\textbf{BEQ R2, 4,  PC+40  // 如果 $R2 >=4$ 就跳转到 PC+40}\\
+PC 特殊寄存器, 程序计数器, 存储着当前指令的地址\\
+BEQ  branch on equal or greater\\
+BNE branch on not equal\\
+BLT branch on less than\\
+BLE branch on less than or equal to\\
+BGT branch on greater than\\
+BGE branch on greater than or equal to\\
 
-operation code操作码
-表示这个机器支持的汇编操作类型
+\subsection{operation code操作码}
+表示这个机器支持的汇编操作类型,
 例如:
 \begin{verbatim}
 000000	R1=M[R2+4]
@@ -546,8 +607,8 @@ operation code操作码
 010011	R3=R6*R10
 111111	M[R1-20]=R19
 \end{verbatim}
-这里我们采用的是定长编码
-实际上也可以是变长编码
+这里我们采用的是定长编码,
+实际上也可以是变长编码,
 例如:
 \begin{verbatim}
 000
@@ -562,8 +623,12 @@ char snink[4];
 short *why;
 }
 \end{lstlisting}
-figure: 编程范式-activation-foo
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-activation-foo}\\
+	\caption{编程范式 activation foo}\label{fig.编程范式.activation.foo}
+\end{figure}
+
 
 \begin{lstlisting}[language = C]
 int main(int argc, char **argv){
@@ -573,10 +638,10 @@ return 0;
 }
 \end{lstlisting}
 
-sp特殊寄存器
+sp特殊寄存器:
 static pointer 指向执行栈的最低地址, 也就是之前我们一直使用的基地址R1
 
-RV 特殊寄存器
+RV 特殊寄存器:
 存放函数的返回值
 
 \begin{lstlisting}[language = C]
@@ -597,8 +662,12 @@ y=
 swap(&x, &y);
 }
 \end{lstlisting}
-figure: 编程范式-汇编-fun
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-汇编-fun}\\
+	\caption{编程范式 汇编 fun}\label{fig.编程范式.汇编.fun}
+\end{figure}
+
 
 \begin{lstlisting}[language = C]
 void swap(int *x, int *bp){
@@ -618,14 +687,18 @@ M[SP+4] = R1;
 CALL <swap>
 SP=SP+8;
 
-SP=SP + 8;  
+SP=SP + 8;
 RET;		//return
 \end{lstlisting}
 
-figure: 编程范式-汇编-swap
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-汇编-swap}\\
+	\caption{编程范式 汇编 swap}\label{fig.编程范式.汇编.swap}
+\end{figure}
+
 \begin{lstlisting}[language = C]
-<swap>: 
+<swap>:
 SP = SP-4;
 //temp=*a
 R1=M[SP+8]
@@ -644,10 +717,10 @@ SP=SP+4  // 回到进入swap函数时的地址
 RET;
 \end{lstlisting}
 
-C++ reference
-C++中 \& 表示的引用 reference
-the way references work is that they are basically just automatically dereferenced pointers.
-所以在将C++ code 编译成汇编代码后, 和C的汇编代码几乎一样
+\subsection{C++ reference}
+C++中 \& 表示的引用 reference\\
+the way references work is that they are basically just automatically dereferenced pointers.\\
+所以在将C++ code 编译成汇编代码后, 和C的汇编代码几乎一样\\
 
 引用:就是给变量起一个别名.引用与它所引用的变量共享存储单元
 \begin{lstlisting}[language = C]
@@ -667,7 +740,7 @@ b=a;
 }
 i=10; j=20;
 swap(i, j); //right
-swap(&i, &j); 
+swap(&i, &j);
 
 int x=17;
 int y=x;
@@ -685,7 +758,7 @@ b.minky(\&n);//这个语句实际上是 binky::minky(\&b, \&n)
 
 static 有76 种意思.
 
-preprocessing
+\subsection{preprocessing}
 预处理会对
 \begin{verbatim}
 #define
@@ -707,7 +780,7 @@ MAX(m++, n++) 最终会使较大的值进行2 次自增操作, 较小值只进�
 #endif
 
 #include <stdio.h>   //系统 head file
-#include <assert.h> 
+#include <assert.h>
 #include "vector.h" //user defined head file
 \end{lstlisting}
 对于\#include ..., preprocessor 所包括的文件内容完全复制并替换\#include  这一语句
@@ -731,9 +804,9 @@ gcc -E vector.c //只进行预处理
 
 当我们只用到了头文件的一个或者很少量的函数, 我们可以手动地写出这些函数的protype, 而不是把这个头文件包括进来, 因为包括整个头文件会使处理变慢
 
+\subsection{compilation}
+\textbf{main.c file}\\
 \begin{lstlisting}[language = C]
-// compilation
-// main.c file
 #include <stdio.h>  //printf
 #include <stdlib.h>  //malloc, free
 #include <assert.h>
@@ -748,8 +821,8 @@ return 0;
 \end{lstlisting}
 
 经过gcc处理
+\textbf{main.o file}
 \begin{verbatim}
-main.o file
 ....
 CALL <malloc>
 .....
@@ -763,18 +836,21 @@ RET
 \end{verbatim}
 link 之后生成a.out
 
-\section{Lecture 13}
-错误
+\section{Lecture 13 - 错误}
 如果将\#include <stdio.h>  //printf注释掉, 我们就找不到printf 函数的声明, 很多编译器会issue an error; 但是gcc 不会报错, 而是会根据这个printf 的调用进行函数原型的推断, 并且推断函数的返回值是 int 类型的
 
-函数protype错误
+\subsection{函数protype错误}
 \begin{lstlisting}[language = C]
 int strlen(char *, int); //声明一个假的 strlen, 使得编译的时候不出现警告
 int num=65;
 int length = strlen((char *)&num, num); //真正的strlen 只有一个参数
 \end{lstlisting}
-figure: 编程范式-错误代码的编译
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-错误代码的编译}\\
+	\caption{编程范式 错误代码的编译}\label{fig.编程范式.错误代码的编译}
+\end{figure}
+
 在链接成功之后, 执行, 然后这是用到的就是真正的strlen, 发现参数只有一个, 而且参数的位置是
 SP + 4, 也就是图中的 \&num 会被作为真正的参数
 
@@ -782,24 +858,29 @@ C++ 中函数可以重载, 而C 中不可以,
 C 的汇编代码中, 函数的调用都是CALL 加上 函数名就够了
 但是C++ 的汇编代码中, 函数的调用时CALL 加上 函数名而参数的类型列表. 之后这样才能区分重载函数的不同版本
 
-segmentation fault
+\subsection{segmentation fault}
 you dereference a bad pointer
 
 例如对 NULL 指针 进行 * 运算
-figure: 编程范式-RAM
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-RAM}\\
+	\caption{编程范式 RAM}\label{fig.编程范式.RAM}
+\end{figure}
+
 地址0,1 2, 3, 4不在任何segment 中, 但是操作系统可以识别他们
 所以当 * NULL, 也就是 * 0, 所以报 segmentation fault
 
-bus errors
+\subsection{bus errors}
 是对4 个段中的地址进行dereference, 但是这个地址并不是你认为可以引用的
 \begin{lstlisting}[language = C]
-void *vp= 
+void *vp=
 *(short *)vp = 7;  //short 类型的地址不能以奇地址为首地址
 *(int *)vp = 7;  //int类型只能以4 的倍数的整数地址为首地址, 所以 2002 就不行
 \end{lstlisting}
-无线循环 缓冲区溢出
-永真循环
+
+\subsection{无线循环 缓冲区溢出}
+\subsubsection{永真循环}
 \begin{lstlisting}[language = C]
 int main(){
 int i;
@@ -810,12 +891,16 @@ for (i=0;i<=2;i++){
 return 0;
 }
 \end{lstlisting}
-figure: 编程范式-永真循环
- 
-如图中所示, i=1执行之后, i=2, 仍然满足循环条件, 所以继续执行array[2] = 0;
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-永真循环}\\
+	\caption{编程范式 永真循环}\label{fig.编程范式.永真循环}
+\end{figure}
+
+如图\ref{fig.编程范式.永真循环}中所示, i=1执行之后, i=2, 仍然满足循环条件, 所以继续执行array[2] = 0;\\
 然后根据 array[2] 就是 SP+8, 也就是 i 的位置, 所以array[2] = 0;实际上是 i = 0; 然后发现又满足条件, 所以就会这样一直循环下去
 
-saved PC导致的无限循环
+\subsubsection{saved PC导致的无限循环}
 \begin{lstlisting}[language = C]
 void foo(){
 int array[4];
@@ -825,8 +910,12 @@ for (i=0;i<=4;i++){
 }
 }
 \end{lstlisting}
-figure: 编程范式-savedPC导致的循环
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-savedPC导致的循环}\\
+	\caption{编程范式 savedPC导致的循环}\label{fig.编程范式.savedPC导致的循环}
+\end{figure}
+
 
 在汇编代码中
 CALL <foo>
@@ -835,7 +924,7 @@ instruction
 但是在foo执行的时候, 当i = 4 的时候, array[4] -= 4; 也就是将saved PC 的值减了4, 也就是有指向了 CALL <foo>, 这样当foo 执行完的时候, 又继续执行foo, 形成了一个无线循环
 
 \section{Lecture 14}
-peseudo 全局变量
+\subsection{peseudo 全局变量}
 \begin{lstlisting}[language = C]
 int main(){
 DeclareAndInitArray();
@@ -860,19 +949,23 @@ for (i=0;i<100;i++){
 \end{lstlisting}
 程序会输出结果, 而且看上去输出的就是DeclareAndInitArray 中赋的值, 但是这是由于在main 函数中, 执行DeclareAndInitArray 时, 申请的栈空间和执行PrintArray 申请的栈空间是一样的, 所以当行DeclareAndInitArray 执行完毕后, 栈指针SP 又回到了当初时的位置, 但是在行DeclareAndInitArray 中进行的数组赋值的内存内容并没有被清理(不会清理, 因为清理还需要消耗时间而且也没有这个必要), 所以行PrintArray 会输出之前的结果
 
-printf
-protype:	int printf(const char * control, ...);
+printf\\
+protype:	int printf(const char * control, ...);\\
 返回值: 成功解析的占位符的个数
 
-通过printf 的protype 我们可以解释
+通过printf 的protype 我们可以解释\\
 why we push parameters on the stack , why the $0$\textsuperscript{th} parameter is always at the bottom
 
 \begin{lstlisting}[language = C]
 printf("%d + %d = %d\n", 4, 5, 9);
 \end{lstlisting}
-figure: 编程范式-printf
- 
-第0 个参数\verb "%d + %d = %d\n"是确定有的, 所以先输出, 当解析到 %d 的时候, 知道上面肯定有额外的参数, 然后就进行替换; 然后一直进行下去 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-printf}\\
+	\caption{编程范式 printf}\label{fig.编程范式.printf}
+\end{figure}
+
+第0 个参数\verb "%d + %d = %d\n"是确定有的, 所以先输出, 当解析到 \%d 的时候, 知道上面肯定有额外的参数, 然后就进行替换; 然后一直进行下去 \\
 因此第0 个参数, 也就是control 就像一个导航图,
 
 PS: Pascal 中参数个数必须是确定的, 所以没有必要一定要 from right to left, 实际上Pascal 采用的是 from left to right
@@ -896,7 +989,7 @@ void SellTickets(int agentID, int numTicketToSell){
 while (numTiketsToSell > 0){
 	printf("Agent %d sells a ticket.\n", agentID);
 	numTicketsToSell --;
-	if(RandomChance(0.1)) 
+	if(RandomChance(0.1))
 ThreadSleep(1000);	 //0.1的概率 暂停1000毫秒
 }
 printf("Agent %d: All done.\n", agentID);
@@ -917,8 +1010,7 @@ while( *numTickets > 0){
 ThreadNew(name,SellTickets,2,agent, &numTickets);
 \end{lstlisting}
 
-Semaphore
-信号量
+\subsection{Semaphore - 信号量}
 //形成一个transaction
 \begin{lstlisting}[language = C]
 int main(){
@@ -947,9 +1039,9 @@ SemaphoreSignal(lock);
 }
 \end{lstlisting}
 
-Semaphore 信号量, 非负整数
+\textbf{Semaphore 信号量, 非负整数}
 \begin{lstlisting}[language = C]
-Semaphore lock = SemaphoreNew(---, 1); 
+Semaphore lock = SemaphoreNew(---, 1);
 \end{lstlisting}
 //初始化为1,表示任一时刻, 只允许一个人进入critical region
 
@@ -957,18 +1049,23 @@ Semaphore lock = SemaphoreNew(---, 1);
 SemaphoreWait(lock);  //减一操作 atomic --
 SemaphoreSignal(lock); //加一操作 atomic ++
 \end{lstlisting}
-由于信号量不允许有非负整数变为负整数
+由于信号量不允许有非负整数变为负整数\\
 当一个SemaphoreWait 发现一个 信号量为0 时, 他不会将其减为-1, 而是会等待, 并立即放弃处理器的控制权, 直到他检测到这个信号量被其他的进程作用SemaphoreSignal而变为正整数
 
-如果我们当初将lock 初始化为0 的话, 因为已经到0 了, 不能再继续进行减一操作了, 所以所有的线程都会认为有某个线程占用这个lock, 导致所有的线程都在等待, 从而形成一个死锁dead lock
+如果我们当初将lock 初始化为0 的话, 因为已经到0 了, 不能再继续进行减一操作了, 所以所有的线程都会认为有某个线程占用这个lock, 导致所有的线程都在等待, 从而形成一个\textbf{死锁dead lock}
 
 \section{Lecture 16}
 考虑只有2 个agents 的情况
-figure: 编程范式-多线程-堆栈
- 
-如图中所示, 当一个线程被激活时, 他会获得进程的堆栈的副本, 然后这个线程运行, 然后运行之后, 再将线程的堆栈(共享信息)覆盖进程的堆栈中的共享信息, 因为在线程的运行过程中, 会对进行的共享信息进行修改, 所以必须同步到进程.
-例如这里的情况, 当一个agent 售出一张票时, 他必须将进程的堆栈中的数据进行更新
-writer and reader
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-多线程-堆栈}\\
+	\caption{编程范式 多线程 堆栈}\label{fig.编程范式.多线程.堆栈}
+\end{figure}
+
+如图\ref{fig.编程范式.多线程.堆栈}中所示, 当一个线程被激活时, 他会获得进程的堆栈的副本, 然后这个线程运行, 然后运行之后, 再将线程的堆栈(共享信息)\\覆盖进程的堆栈中的共享信息, 因为在线程的运行过程中, 会对进行的共享信息进行修改, 所以必须同步到进程.\\
+例如这里的情况, 当一个agent 售出一张票时, 他必须将进程的堆栈中的数据进行更新\\
+
+\subsection{Writer and reader}
 假设一台html server 与一个一台client browser
 常见情况: 当一个页面加载到大概75\% 的时候, 你知道还有更多的内容. 表示服务器已经传递了75\% 的内容, 所以browser 的渲染过程必须被blocked, 以等待剩下的内容
 下面的例子以上面的说明为指导性原则
@@ -1030,17 +1127,21 @@ SemaphoreSignal(empty);
 }
 }
 \end{lstlisting}
-这样最开始的时候 empty=8, 所以在没有reaer 插进来的情况下, writer 可以写8 次, 这时empty=0, 同时full=8, 当writer 想继续写的时候, 发现empty是0, 从而不能继续进行
+这样最开始的时候 empty=8, 所以在没有reaer 插进来的情况下, writer 可以写8 次, 这时empty=0, 同时full=8, 当writer 想继续写的时候, 发现empty是0, 从而不能继续进行\\
 而只有reader 才能对empty 进行增加的操作, 所以reader 可以执行, 同样, 在没有writer 插进来的情况下, reader 可以连续执行8 次. 这样就完成了一个轮回
 
 如果最开始的时候, writer执行了1 次, empty=7, full=1; reader插进来了, full=1>0, 所以reader可以执行, 执行了1 次之后, empty=8, full=0, 回到了最开始的状态, 但是此时我们已经完成一个字符的写和读取
 
 如果最开始的时候, reader 想执行, 但是发现full=0, 不能继续减下去, 所以只能由writer 先执行.
 
-哲学家与餐叉的故事- 死锁
+\subsection{哲学家与餐叉的故事- 死锁}
 5 个哲学家
-figure: 编程范式-多线程-哲学家
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{编程范式-多线程-哲学家}\\
+	\caption{编程范式 多线程 哲学家}\label{fig.编程范式.多线程.哲学家}
+\end{figure}
+
 think, eat, think, eat, think, eat, go to bed;
 \begin{lstlisting}[language = C]
 Semaphore forks[]= {1, 1, 1, 1, 1}; //每个信号量表示了某项资源的可用性
@@ -1055,11 +1156,11 @@ SemaphoreSignal(forks[id]);
 }
 }
 \end{lstlisting}
-在上面的这个函数中, 存在着一个dead lock 死锁的情形:
+在上面的这个函数中, 存在着一个dead lock 死锁的情形:\\
 第1 个哲学家拿到了逆时针方向(右边)的餐叉; 这个时候, 处理器切换到了第2 个哲学家, 他也拿到了逆时针方向的餐叉, 依次下去, 所有人都拿到了逆时针方向的餐叉, 也就是说5 个人都拿到了餐叉. 在这个时候, 任何一个人想拿起第二把餐叉, 发现信号量为0, 于是所有人都失去处理器的控制权, 所有人都在等待左边人持有的某些资源. 这样就形成了一个死锁.
-所以当允许5 个人尝试去吃, 就可能形成死锁
+\textbf{所以当允许5 个人尝试去吃, 就可能形成死锁}
 
-因为我们有5 个叉子, 所以任意时刻, 最多只有2 个人可以同时就餐
+因为我们有5 个叉子, 所以任意时刻, 最多只有2 个人可以同时就餐\\
 允许4 个尝试去吃
 \begin{lstlisting}[language = C]
 Semaphore forks[]= {1, 1, 1, 1, 1};
@@ -1084,9 +1185,11 @@ numAllowedToEat 也可以被设置成2 或3, 但是设置成4 更好
 That's the minimum amount of a fix that I need to implant into the code to make sure I do not have deadlock.
 因为改动越小, 可以尽可能得留出足够多的弹性空间给线程管理器做规划
 
-FTP download
+\subsection{FTP download}
 简化版本的例子
+\begin{lstlisting}[language = C]
 int downloadSingleFile(const char *server, const char *path);
+\end{lstlisting}
 返回值: 下载的字节数
 
 \begin{lstlisting}[language = C]
@@ -1129,10 +1232,10 @@ SemaphoreSignal(parentToSignal);
 }
 \end{lstlisting}
 
-Ice cream store simulation
-manager, 检查冰淇淋是否合格
-10 - 4- clerks, 制作冰淇淋  [10,40]
-10 customers, 每个顾客会买, 随机1 到4 个冰淇淋
+\subsection{Ice cream store simulation}
+manager, 检查冰淇淋是否合格\\
+10 - 4- clerks, 制作冰淇淋  [10,40]\\
+10 customers, 每个顾客会买, 随机1 到4 个冰淇淋\\
 1 cashier
 
 52 possible threads
@@ -1222,14 +1325,14 @@ SS(line.customers[i];
 \end{lstlisting}
 
 \section{Lecture 19}
-imperative: 因为主要是围绕动词展开的
-procedural
+imperative: 因为主要是围绕动词展开的\\
+procedural:
 C
 
-object-oriented
+object-oriented:
 C++
 
-functional
+functional:
 Scheme	runtime language
 
 \begin{lstlisting}[language = Lisp]
@@ -1239,7 +1342,7 @@ Scheme	runtime language
 //212
 \end{lstlisting}
 
-kawaa
+\subsection{kawaa}
 open source
 \begin{verbatim}
 >4
@@ -1266,9 +1369,10 @@ hello
 #f
 \end{verbatim}
 
-car 第一个元素 first  address register
-cdr 余下的元素  data register
-cons 合并
+\bigskip\noindent
+car 第一个元素 first  address register\\
+cdr 余下的元素  data register\\
+cons 合并\\
 \begin{verbatim}
 >(car '(1 2 3 4 5))  // 如果不用' ,那么第一个参数1 将被认为是一个函数
 1
@@ -1353,9 +1457,11 @@ sum-of的实现方式, 不使用Scheme 默认的迭代方式
 \end{verbatim}
 
 实现flatten 函数需要考虑的三种情况
-'()
-'(1 elements)
-'((1 2) elements)
+\begin{enumerate}
+	\item '()
+	\item '(1 elements)
+	\item '((1 2) elements)
+\end{enumerate}
 
 \begin{lstlisting}[language = Lisp]
 (define flatten (sequence)
@@ -1370,9 +1476,11 @@ sum-of的实现方式, 不使用Scheme 默认的迭代方式
 		(and (<= (car num-list) (cadr num-list))
 			(sorted? (cdr num-list)))))
 \end{lstlisting}
-cadr: (cadr list) == (car (cdr list))
-cddddr
-cadadr
+
+\bigskip\noindent
+cadr: (cadr list) == (car (cdr list))\\
+cddddr\\
+cadadr\\
 c 和r 之间最多有4个
 
 \begin{verbatim}
@@ -1384,12 +1492,16 @@ c 和r 之间最多有4个
 #t   //但是不推荐这种用法
 \end{verbatim}
 
-内存模型
+\subsection{内存模型}
 \begin{lstlisting}[language = Lisp]
 (car '(1 2 3 4))
 \end{lstlisting}
-figure: Scheme-内存模型
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{Scheme-内存模型}\\
+	\caption{Scheme 内存模型}\label{fig.Scheme.内存模型}
+\end{figure}
+
 
 \begin{verbatim}
 >(sorted? '(1 2 3 4) <=)
@@ -1436,7 +1548,7 @@ figure: Scheme-内存模型
 		(cons (fn (car seq)) (my-unary-map fn (cdr seq)))))
 \end{lstlisting}
 
-apply
+\subsection{apply}
 \begin{verbatim}
 >(apply + '(1 2 3))
 6
@@ -1458,7 +1570,7 @@ apply
 (flatten (1 2)) == (apply append ((flatten 1) (flatten 2))) == (apply append ((1) (2))) == (1 2) //推断是生成这样的, 但是((flatten 1) (flatten 2))==(((1) (2))) 括号的深度好像有问题
 \end{verbatim}
 
-eval
+\subsection{eval}
 \begin{verbatim}
 >'(+ 1 2 3) //抑制evaluation
 (+ 1 2 3)
@@ -1468,7 +1580,7 @@ eval
 
 \begin{lstlisting}[language = Lisp]
 (define (translate points delta)
-	(map (lambda (x) (+ x delta)) points) 
+	(map (lambda (x) (+ x delta)) points)
 )
 
 (define (translate seq delta)
@@ -1513,8 +1625,8 @@ power set: a set which contains all of its subsets
 (define (ps set)
 	(if (null? set) '(())
 		(let ((ps-rest (ps (cdr set))))
-			(append ps-rest 
-				(map (lambda (subset) (cons (car set) subset)) 
+			(append ps-rest
+				(map (lambda (subset) (cons (car set) subset))
 					ps-rest
 				)
 			)
@@ -1538,16 +1650,20 @@ power set: a set which contains all of its subsets
 
 \begin{verbatim}
 >(permute '(1 2 3))
-((1 2 3) (1 3 2) 
+((1 2 3) (1 3 2)
  (2 1 3) (2 3 1)
  (3 1 2) (3 2 1))
 >(permute '(1 2 3 4))
 \end{verbatim}
-figure: scheme-permute
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{scheme-permute}\\
+	\caption{scheme permute}\label{fig.scheme.permute}
+\end{figure}
+
 在第一个方框中, 我们可以看到以1 开头的排列后面刚好是 2 3 4 的全排列
 
-这个函数没有看懂
+\todo{个函数没有看懂}
 \begin{lstlisting}[language = Lisp]
 (define (permute items)
 	(apply append
@@ -1557,7 +1673,7 @@ figure: scheme-permute
 		items))
 \end{lstlisting}
 
-All lists are immutable
+\textbf{All lists are immutable}
 
 self-type identifying
 \begin{verbatim}
@@ -1567,12 +1683,16 @@ self-type identifying
 
 \begin{verbatim}
 >'(1 2 3)
-//等价于: 
+//等价于:
 (cons 1 (cons 2 (cons 3 '())))
 //对于第一个元素来说, 1 是car field, 后面的(cons 2 (cons 3 '()))是 cdr field
 \end{verbatim}
-figure: scheme-内存模型2
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{scheme-内存模型2}\\
+	\caption{scheme 内存模型2}\label{fig.scheme.内存模型2}
+\end{figure}
+
 \section{Lecture 23}
 当我们请求
 \begin{verbatim}
@@ -1583,16 +1703,20 @@ figure: scheme-内存模型2
 >(cons '(1 2 3) '(4 5 6))
 ((1 2 3) 4 5 6)
 \end{verbatim}
-figure: scheme-cons
- 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{scheme-cons}\\
+	\caption{scheme cons}\label{fig.scheme.cons}
+\end{figure}
+
 从12:00 minutes 继续看
 
 \section{Lecture 24}
-Python
-scripting language
-imperative
-object-oriented
-functional
+Python:
+scripting language,
+imperative,
+object-oriented,
+functional.
 
 \begin{verbatim}
 ?> x = 5  //这个地方实际上输出的是None, 但是由于None 是不可见的, 所以我们看不到任何输出, None 有点类似于C 中的void
@@ -1605,7 +1729,21 @@ False
 \end{verbatim}
 
 \section{Lecture 25}
-默认的几乎都是浅拷贝
+\begin{verbatim}
+>>>
+>>> a = [10, 12, 14]
+>>> a
+[10, 12, 14]
+>>> w = [a,a]
+>>> w
+[[10, 12, 14] [10, 12, 14]]
+>>> a.append(17)
+>>> a
+[10, 12, 14, 17]
+>>> w
+[[10, 12, 14, 17] [10, 12, 14, 17]]
+\end{verbatim}
+默认的几乎都是浅拷贝, 也就是只是把地址拷贝过去用, 而不是把地址所指向的内容全部拷贝过去
 
 \begin{verbatim}
 from copy import copy,deepcopy
@@ -1632,7 +1770,12 @@ testcopy.py
  print "copy: ",y
  print "deepcopy: ",z
  print "t=x, t: ",t
- \end{lstlisting} 
+ \end{lstlisting}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.7]{copy_deep}\\
+	\caption{Deep copy}\label{fig.copy.deep}
+\end{figure}
 
 \section{Lecture 26}
 xml
@@ -1645,9 +1788,14 @@ import sys
 \end{lstlisting}
 
 \section{Lecture 27}
-Haskell
+\subsection{Haskell}
 Functional
- 
+\begin{enumerate}
+	\item Lisp/Scheme (1959)
+	\item ML/OCamml (1979)
+	\item Miranda (1985)
+	\item Haskell 98 (1959)
+\end{enumerate}
 Haskell is neat
 Haskell 中的列表中所有元素必须是相同类型的
 \begin{verbatim}
@@ -1658,14 +1806,17 @@ Fibonacci
 \begin{verbatim}
 fib = 1:1:zipWith (+) fib (tail fib)
 \end{verbatim}
-1:1 前两个元素
+
+\bigskip\noindent
+1:1 前两个元素\\
 zipWith is like a map function
 
 \begin{verbatim}
 if a then b else c
 \end{verbatim}
 
-Types:integer, float, char
+\bigskip\noindent
+Types:integer, float, char\\
 Like Scheme, functions are a type
 
 User types
