@@ -133,9 +133,13 @@
     mathescape=true,
     xleftmargin=3em,
     xrightmargin=3em,
+    numberstyle=\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{dkgreen},
+    stringstyle=\color{mauve},
 }
-\newcommand{\fun}[1]{\textit{#1}}
 
+\newcommand{\fun}[1]{\textit{#1}}
 
 %% hyper reference
 %% 使用hyperref包,section,subsection,subsubsection命名中使用中文出现问题
@@ -156,9 +160,15 @@
 %\definecolor{name}{system}{definition}
 \definecolor{Gray}{gray}{0.9}
 \definecolor{LightCyan}{rgb}{0.88,1,1}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
 \def\red#1{\textcolor[rgb]{1.00,0.00,0.00}{#1}}
 \def\yellow#1{\textcolor[rgb]{1.00,1.00,0.00}{#1}}
 \def\lime#1{\textcolor[rgb]{0.00,1.00,0.00}{#1}}
+
+
 
 %% 化学
 \usepackage[version=3]{mhchem}
