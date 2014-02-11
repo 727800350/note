@@ -2,5 +2,5 @@
     <content><![CDATA[\$\$$SELECTION\$\$]]></content>
     <tabTrigger>$$</tabTrigger>
     <scope>text.tex.latex</scope>
-    <description>Surround it with $$</description>
+    <description>math $$</description>
 </snippet>

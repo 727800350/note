@@ -1,0 +1,9 @@
+<snippet>
+    <content><![CDATA[
+\\begin{theorem}
+$SELECTION\\end{theorem}
+$0
+	]]></content>
+    <scope>text.tex.latex</scope>
+    <description>math make theorem</description>
+</snippet>

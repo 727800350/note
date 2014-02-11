@@ -1,0 +1,6 @@
+<snippet>
+    <content><![CDATA[\\underline{$SELECTION}]]></content>
+    <tabTrigger>underline</tabTrigger>
+    <scope>text.tex.latex</scope>
+    <description>font make underline</description>
+</snippet>
