@@ -37,7 +37,7 @@ OLAP 操作的列子包括下钻(drill-down) 和上卷(roll-up), 允许用户在
 其中的$support=30\%$是说, 在所有的事务中同时出现A和B的概率.\\
 而$confidence=60\%$是说,所有事务中,在出现A的情况下出现B的概率,即条件概率.
 $$
-Support(X=>Y) = P(X \cup Y)\footnote{$P(A \cup B)$ 表示事务包含集合A 和集合B的并的概率, 不要把它与$P(A or B)$混淆} \eqspace
+Support(X=>Y) = P(X \cap Y)\footnote{$P(A \cap B)$ 表示事务包含集合A 和集合B的并的概率, 不要把它与$P(A or B)$混淆} \eqspace
 Confidence(X=>Y) = P(Y | X)
 $$
 $$Buys(X, "computer") \Rightarrow buys (X,"software") [support = 1\%, confidence = 50\%]$$
@@ -413,4 +413,53 @@ Item	Support
 \end{verbatim}
 In the example, there are no frequent triplets -- $\{2,3,4\}$ is below the minimal threshold, and the other triplets were excluded because they were super sets of pairs that were already below the threshold.
 \end{example}
+
+\subsubsection{提高Apriori 算法的效率}
+\begin{description}
+	\item[基于散列的技术] 压缩候选$k$ 项集的集合$C_k\ (k > 1)$
+	\item[事务压缩] 压缩进一步跌打扫描的事务数
+	\item[划分] 为候选项集划分数据
+	\item[抽样] 对给定数据的一个子集上挖掘
+	\item[动态项集计数] 在不同的不同点添加候选项集
+\end{description}
+
+\subsubsection{挖掘频繁项集的的模式增长方法}
+Frequent-pattern growth(FP-growth)
+
+采用分支策略, 首先将代表频繁项集的数据压缩到一颗\textbf{频繁模式树(FP 树)}, 该树仍保留项集的关联信息. 然后把这种压缩后的数据库划分成一组条件数据库(一种特殊类型的投影数据库), 每个数据库关联一个频繁项或``模式段'', 并分别挖掘每个条件数据库. 对于每个``模式段", 只需要考察与它相关联数据集. 因此, 随着被考察的模式的``增长", 这种方法可以显著地压缩被搜索的数据集的大小.
+
+\subsubsection{使用垂直数据格式挖掘频繁项集}
+\begin{itemize}
+	\item TID: itemset 被称为水平数据格式(horizontal data format)
+	\item item: TID\_set 被称为垂直数据格式(vertical data format)
+\end{itemize}
+
+\subsubsection{挖掘闭模式和极大模式}
+
+\subsection{那些模式是有去的: 模式评估方法}
+不是所有满足支持度和置信度的规则都是有趣的, 所以需要采用模式评估方法对他们进行评估.
+
+相关性度量: 提升度 ,$\chi^2$\\
+$$
+A \Rightarrow B[support, confidence, correlation]
+$$
+
+\textbf{提升度 lift}:一种简单的相关性度量
+$$
+lift(A,B) = \frac{P(A \cap B)}{P(A)P(B)} ( = \frac{P(B|A)}{P(B)})
+$$
+如果值小于1, 则A 的出现与B 的出现是负相关的; 如果值大于1, 则正相关; 如果值等于1, 则A 与B 是相互独立的, 之间没有相关性.
+
+一般在数据挖掘中当提升度大于3时,我们才承认挖掘出的关联规则是有价值的.
+
+提升度是一种比较简单地判断手段,在实际应用中它受零事务的影响较大.
+
+\bigskip
+其他的模式评估度量: 全置信度, 最大置信度, Kluc(Kulczynski), 余弦
+
+\section{高级模式挖掘}
+多层模式, 多唯模式, 连续数据中的模式, 稀有模式, 负模式, 受约束的频繁模式, 高维数据中的频繁模式, 巨型模式, 压缩和近似模式.
+其他的模式包括挖掘序列模式和结构模式, 时空数据, 多媒体数据和流数据挖掘模式.
+
+模式挖掘是一个比频繁模式挖掘更一般的术语, 因为前者还涵盖了稀有模式和负模式.
 \end{document}
