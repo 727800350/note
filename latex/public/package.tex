@@ -44,6 +44,7 @@
 %\fancyfoot[C]{}
 
 %图形
+\usepackage{pstricks}
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{tikz} %pdf figure
@@ -178,6 +179,10 @@
 %% 默认情况下只能使用\textsuperscript,加了这个package之后可以使用\textsubscript
 
 %Math
+%% Macro
+\def\vecteur#1{(#1_1,~#1_2,~\ldots,~#1_n)}
+%% \def\vecteur#1{\ensuremath{(#1_1,~#1_2,~\ldots,~#1_n)}}
+
 %随机数
 %\usepackage[first=0,last=9]{lcg}
 %\newcommand{\ra}{\rand0.\arabic{rand}}
