@@ -52,6 +52,11 @@
 \def\pgfsysdriver{pgfsys-dvipdfmx.def}
 \pgfsetxvec{\pgfpoint{10pt}{0}}
 \pgfsetyvec{\pgfpoint{0}{10pt}}
+\tikzset{
+box/.style={rectangle, rounded corners=6pt,
+minimum width=50pt, minimum height=20pt, inner sep=6pt,
+draw=gray,thick, fill=lightgray}
+}
 \usepackage{ccaption}
 \usepackage{epstopdf} %convert eps to pdf
 %% bmp, gif not supported
