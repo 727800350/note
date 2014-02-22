@@ -538,4 +538,51 @@ $$
 为了改善对数据的理解, 模式可以用于语义注释或语境分析. 模式分析也可以用在推荐系统中, 基于类似用户的模式, 向用户推荐他可能感兴趣的信息项(如书, 电影, Web页面). 不同的分析任务也可能需要挖掘不同的模式类型.
 
 \textbf{多层关联规则的冗余性}
+
+\begin{itemize}
+\item 单维或维内关联规则(intradimension association rule)
+\item 多维关联规则(两个或多个维或谓词) multidimensional association rule;
+\item 不重复谓词的关联规则,叫做维间关联规则(interdimension association rule)
+\item 重复谓词的关联规则, 叫做混合维关联规则(hybird-dimension association rule)
+\end{itemize}
+$$
+age(X,"20...29") \cap occupation(X,"student") \Rightarrow buys(X,"laptop")
+$$
+
+在多维关联规则挖掘中, 搜索频繁\textbf{谓词集}. \textbf{k - 谓词集}是包含k 个合取谓词的集合, 例如上述规则中的谓词集$\{age, occupation, buys\}$ 是一个$3-$谓词集.
+
+\subsection{挖掘量化关联规则}
+\begin{itemize}
+	\item 数据立方体方法
+	\item 基于聚类的方法, 例如自顶向下的基于聚类的量化频繁模式
+	\item 基于异常行为的统计方法
+\end{itemize}
+
+\subsection{挖掘稀有模式和负模式}
+\begin{definition}
+\label{def.negative.1}
+如果项集$X$ 和$Y$ 都是频繁的, 但是很少一起出现($sup(X \cap Y) < sup(X) \times sup(Y)$), 则项集X 和Y 是负相关的, 并且模式 $X \cap Y$ 是负相关模式. 如果
+$sup(X \cap Y) \ll sup(X) \times sup(Y)$, 则X 和Y 是强负相关的, 并且$X \cap Y$ 是强负相关模式.
+\end{definition}
+该定义容易扩展到k-项集的模式, 其中$k>2$
+定义~\ref{def.negative.1} 有一个问题, 他不是\red{零不变}的, 即他的值可能被零事务(发生次数为零的事务)影响. 但是对于定量的兴趣度度量, 零不变性是至关重要的.
+
+\begin{definition}
+如果X 和Y 是强负相关的, 则
+$$
+sup(X \cap \stcomp{Y}) \times sup(\stcomp{X} \cap Y) \gg sup(X \cap Y) \times sup(\stcomp{X} \cap \stcomp{Y})
+$$	
+\end{definition}
+但是这个定义又不是零不变的
+
+定义~\ref{def.negative.3} 是基于Kulczynski 度量(条件概率的平均值), 它遵循兴趣度度量的精神实质
+\begin{definition}
+\label{def.negative.3}
+假设项集X和Y 都是频繁的, 即
+$sup(X) \geq min\_sup$,
+$sup(Y) \geq min\_sup$,
+其中$min\_sup$ 是最小支持度阀值.
+如果 $ (P(X| Y) + P(Y|X))/2 < \epsilon $
+其中 $\epsilon$ 是负模式阀值, 则 $X \cap Y$ 是负相关模式
+\end{definition}
 \end{document}
