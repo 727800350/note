@@ -35,12 +35,20 @@ C'est un espace pr\'ehilbertien complet, c'est-\`a-dire un espace de Banach dont
 C'est la g\'en\'eralisation en dimension quelconque d'un espace euclidien ou hermitien.
 \bigskip
 
+Application hermitien's eigenvalues are real values.
+\begin{proof}
+Soient A une matrice autoadjointe (r\'eelle ou complexe), $\lambda$ une racine de son polyn\^ome caract\'eristique (il en existe au moins une, mais a priori complexe), et $X$ une matrice colonne complexe non nulle telle que
+$AX=\lambda X$. Alors
+$$ \overline\lambda X^*.X=(AX)^*.X=X^*.A^*.X=X^*.A.X=\lambda X^*.X $$
+or $X*.X$ est non nul, donc $\lambda$ est r\'eel.
+\end{proof}
+
 \textbf{Th\'eor\`eme de Riesz (Fr\'echet-Riesz)}\newline
 un th\'eor\`eme qui repr\'esente les \'el\'ements du dual d'un espace de Hilbert comme produit scalaire par un vecteur de l'espace.
 Soient :
 \begin{itemize}
-		\item H un espace de Hilbert (r\'eel ou complexe) muni de son produit scalaire not\'e $<.,.>$
-		\item f ∈ H' une forme lin\'eaire continue sur H.
+	\item H un espace de Hilbert (r\'eel ou complexe) muni de son produit scalaire not\'e $<.,.>$
+	\item f in H' une forme lin\'eaire continue sur H.
 \end{itemize}
 Alors il existe un unique $y$ dans $H$ tel que pour tout x de H on ait $f(x) = <y, x>$
 $$
