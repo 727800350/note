@@ -333,3 +333,72 @@ $$
 $$
 (probabilit\'e par unit\'e de volume, * indique un complexe conjugu\'e)
 
+\section{Le moment cine\'etique: l'orbital et l'intrins\`eque}
+\noindent
+$L_+ = L_x + i L_y$\\
+$L_{\_} = L_x - i L_y$\\
+$L^2\ket{\lambda^2,\mu} = \lambda^2 \hbar^2 \ket{\lambda^2,\mu}$\\
+$L_z\ket{\lambda^2,\mu} = \mu \hbar \ket{\lambda^2,\mu}$
+
+求$\norm{L_+\ket{\lambda^2, \mu}}$
+$$
+\norm{L_+ \ket{\lambda^2,\mu}}^2 = \braket{\lambda^2,\mu}{L_+^+ L_+}{\lambda^2,\mu}
+$$
+$$
+L_+^+ = L_x - i L_y = L_{\_}
+$$
+\begin{equation}
+\begin{aligned}
+L_{\_} L_+ 
+& = (L_x - i L_y)(L_x + i L_y)\\
+& = L_x^2 + L_y^2 + i(L_x L_y - L_y L_x)\\
+& = L_x^2 + L_y^2 + i[L_x, L_y]\\
+& = L_x^2 + L_y^2 - \hbar L_z
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+\norm{L_+ \ket{\lambda^2,\mu}}^2 
+& = \braket{\lambda^2,\mu}{L_+^+ L_+}{\lambda^2,\mu}\\
+& = \braket{\lambda^2,\mu}{L_x^2 + L_y^2 - \hbar L_z}{\lambda^2,\mu}\\
+& = \braket{\lambda^2,\mu}{L^2 - L_z^2 - \hbar L_z}{\lambda^2,\mu}\\
+& = \braket{\lambda^2,\mu}{L^2}{\lambda^2,\mu}
+- \braket{\lambda^2,\mu}{L_z^2}{\lambda^2,\mu}
+- \braket{\lambda^2,\mu}{\hbar L_z}{\lambda^2,\mu}\\
+& = \hbar^2(\lambda^2 - \mu^2 - \mu)
+\end{aligned}
+\end{equation}
+Donc, $\norm{L_+ \ket{\lambda^2,\mu}} = \hbar \sqrt{\lambda^2 - \mu^2 - \mu}$\\
+Donc, $\norm{L_{\_} \ket{\lambda^2,\mu}} = \hbar \sqrt{\lambda^2 - \mu^2 + \mu}$\\
+从模非负可以推出$\mu^2 < \lambda^2$
+
+求$L_+\ket{\lambda^2, \mu}$ 的方向
+\todo{这里不知道为什么不显示}
+$$
+\begin{aligned}
+[L_z, L_+]
+& = [L_z, L_x + i L_y] \\
+& = [L_z, L_x] + i [L_z, L_y] \\
+& = i\hbar L_y + i(-i\hbar L_x) \\
+& = \hbar (L_x + i L_y) \\
+& = \hbar L_+
+\end{aligned}
+$$
+
+\begin{equation}
+\begin{aligned}
+L_zL_+\ket{\lambda^2,\mu}
+& = (L_+L_z + \hbar L_+)\ket{\lambda^2, \mu} \\
+& = L_+L_z\ket{\lambda^2, \mu} + \hbar L_+\ket{\lambda^2, \mu} \\
+& = L_+ \hbar \mu \ket{\lambda^2, \mu} + \hbar L_+\ket{\lambda^2, \mu} \\
+& = \hbar (\mu + 1) L_+ \ket{\lambda^2, \mu}
+\end{aligned}
+\end{equation}
+考虑到$L_z \ket{\lambda^2,\mu + 1} = \hbar (\mu+1)\ket{\lambda^2,\mu+1}$, 和\lasteq 对比, 可以推出
+$$
+L_+\ket{\lambda^2,\mu} \varpropto \ket{\lambda^2,\mu+1}
+$$
+结合前面求出的模, 我们得出
+$$ L_+ \ket{\lambda^2,\mu} = \hbar \sqrt{\lambda^2 - \mu^2 - \mu}\ket{\lambda^2, \mu+1} $$
+$$ L_{\_} \ket{\lambda^2,\mu} = \hbar \sqrt{\lambda^2 - \mu^2 + \mu}\ket{\lambda^2, \mu-1} $$
