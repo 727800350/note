@@ -190,4 +190,61 @@ $$f(x)=\frac{1}{\sigma {\sqrt  {2\pi }}} e^{{- \dfrac{(x-\mu )^{2}}{2\sigma ^{2}
 近似正态分布平均数为$\mu =\lambda$ 且方差为$\sigma ^{2}=\lambda$ .
 
 这些近似值是否完全充分正确取决于使用者的使用需求
+
+PCA: Principal component analysis
+a useful statistical technique
+
+wiki: the frist principal component has the largest possible variance.\\
+用covariance matrix 矩阵来讲解的话, 说是最大的eigenvalue 对应的eigenvector所在方向为the most principal component方向
+
+find application in face recognition and image compression, and is a common technique for finding patterns in data of high dimension.
+
+Standard Deviation
+$$
+s = \sqrt{\dfrac{\sum_{i=1}^n (X_i - \overline{X})^2}{n-1}}
+$$
+Why are you using $n-1$ and not $n$?
+Well, the answer is a bit complicated, but in general, if your data set is a sample data set, ie. you have taken a subset of the real-world (like surveying $500$ people about the election) then you must use $n-1$ because it turns out that this gives you an answer that is closer to the standard deviation that would result if you had used the entire population, than if you'd used$n$. If, however, you are not calculating the standard deviation for a sample, but for an entire population, then you should divide by $n$ instead of $n-1$. 
+For further information, refer to \href{http://mathcentral.uregina.ca/RR/database/RR.09.95/weston2.html}{when $n$ or $n-1$ in computing the standard deviation}
+
+Standard deviation and variance only operate on 1 dimension.\\
+Covariance is always measured between 2 dimensions. If you calculate the covariance between one dimension and itself, you get the variance
+$$ \operatorname{Var}(X) = \operatorname{E}\left[(X - E(x))^2 \right] = \dfrac{\sum_{i=1}^n (X_i - \overline{X})^2}{n-1} $$
+$$ \operatorname{Cov}(X,Y) = \operatorname{E}{\big[(X - \operatorname{E}[X])(Y - \operatorname{E}[Y])\big]} =  \dfrac{\sum_{i=1}^n (X_i - \overline{X})(Y_i - \overline{Y})}{n-1} $$
+
+The exact value is not as important as it’s sign (ie. positive or negative). 
+If the value is positive,then that indicates that both dimensions increase together.
+If the value is negative, then as one dimension increases, the other decreases.
+In the last case, if the covariance is zero, it indicates that the two dimensions are independent of each other.
+
+The covariance Matrix
+the covariance matrix Σ is the matrix whose (i, j) entry is the covariance
+$$
+\Sigma_{ij}
+= \mathrm{cov}(X_i, X_j) = \mathrm{E}\begin{bmatrix}
+(X_i - \mu_i)(X_j - \mu_j)
+\end{bmatrix}
+$$
+where $\mu_i = \mathrm{E}(X_i)$ is the expected value of the ith entry in the vector X. In other words, we have
+
+$$
+\Sigma
+= \begin{bmatrix}
+ \mathrm{E}[(X_1 - \mu_1)(X_1 - \mu_1)] & \mathrm{E}[(X_1 - \mu_1)(X_2 - \mu_2)] & \cdots & \mathrm{E}[(X_1 - \mu_1)(X_n - \mu_n)] \\ \\
+ \mathrm{E}[(X_2 - \mu_2)(X_1 - \mu_1)] & \mathrm{E}[(X_2 - \mu_2)(X_2 - \mu_2)] & \cdots & \mathrm{E}[(X_2 - \mu_2)(X_n - \mu_n)] \\ \\
+ \vdots & \vdots & \ddots & \vdots \\ \\
+ \mathrm{E}[(X_n - \mu_n)(X_1 - \mu_1)] & \mathrm{E}[(X_n - \mu_n)(X_2 - \mu_2)] & \cdots & \mathrm{E}[(X_n - \mu_n)(X_n - \mu_n)]
+\end{bmatrix}.
+$$
+The inverse of this matrix, $\Sigma^{-1}$ is the inverse covariance matrix, also known as the concentration matrix or precision matrix
+
+If you ever need to find the eigenvectors of a matrix in a program, just find a maths library that does it all for you.  A useful maths package, called newmat, is available at \href{http://webnz.com/robert/}{newmat}
+
+PCA 的求解过程
+Step 1: Get some data
+Step 2: Subtract the mean
+Step 3: Calculate the covariance matrix
+Step 4: Calculate the unit eigenvectors and eigenvalues of the covariance matrix
+Step 5: Choosing components and forming a feature vector
+Step 6: Deriving the new data set
 \end{document}
