@@ -155,7 +155,7 @@ laser,light amplification by stimulated emission of radiation
 Toutes les particules \'el\'ementaires d\'ecouvertes \`a ce jour sont soit des bosons, soit des fermions.\par
 
 un grand nombre de particules : les fermions sont des particules qui ob\'eissent \`a la statistique de Fermi-Dirac alors que les bosons ob\'eissent \`a la statistique de Bose-Einstein.\\
-la loi statistique Fermi-Dirac : quand on \'echange deux fermions, la fonction d'onde change de signe.
+la loi statistique Fermi-Dirac : quand on \'echanglee deux fermions, la fonction d'onde changlee de signe.
 物质粒子都是由费米子构成,而玻色子则是媒介子
 
 玻色子包括:
@@ -275,13 +275,13 @@ From this observation, we obtain two equations, one for $A(r)$ , the other for $
 $$\dfrac{\nabla^2 A}{A} = -k^2$$
 and
 $$\dfrac{1}{c^2 T } \dfrac{d^2 T}{d t^2} = -k^2$$
-Rearranging the first equation, we obtain the Helmholtz equation:
+Rearrangleing the first equation, we obtain the Helmholtz equation:
 $$\nabla^2 A + k^2 A  =  ( \nabla^2 + k^2)  A  =  0$$
 Likewise, after making the substitution
 $$ \omega  \stackrel{\mathrm{def}}{=}  kc $$
 the second equation becomes
 $$\frac{d^2{T}}{d{t}^2} + \omega^2T  =  \left( \dfrac{d^2 }{dt^2 } + \omega^2 \right) T  =  0,$$
-where $k$ is the wave vector and $\omega$ is the angular frequency.\par
+where $k$ is the wave vector and $\omega$ is the angleular frequency.\par
 我们可以解出
 $$
 T(t) = \exp^{-i \omega t}
@@ -304,7 +304,7 @@ $$
 \frac{1}{2} \, m \, v^2 \ = \ E \ - \ V(\vec{r})
 $$
 
-d'où l'\'equation de Schr?dinger stationnaire :
+d'o\`u l'\'equation de Schr\"odinger stationnaire :
 $$
 \left[ \, \Delta \ + \ \frac{8\pi^2m}{h^2} \, \left( \, E \ - \ V(\vec{r}) \, \right) \ \right] \ \psi(\vec{r}) \ = \ 0
 $$
@@ -402,3 +402,83 @@ $$
 结合前面求出的模, 我们得出
 $$ L_+ \ket{\lambda^2,\mu} = \hbar \sqrt{\lambda^2 - \mu^2 - \mu}\ket{\lambda^2, \mu+1} $$
 $$ L_{\_} \ket{\lambda^2,\mu} = \hbar \sqrt{\lambda^2 - \mu^2 + \mu}\ket{\lambda^2, \mu-1} $$
+
+\section{Approximations}
+\subsection{Th\'eorie de la perturbation ind\'ependante du temps}
+\subsubsection{Corrections du premier ordre d'\'energie propre}
+On commence en utilisant un hamiltonien non perturb\'e $\scriptstyle H_0$, qui est aussi consid\'er\'e comme ind\'ependant du temps. Il possède des niveaux d'\'energie et \'etats propres connus, d\'etermin\'es par l'\'equation de Schr\"odinger ind\'ependante du temps :
+$$
+ H_0 |n^{(0)}\rangle = E_n^{(0)} |n^{(0)}\rangle \quad,\quad n = 1, 2, 3, \cdots 
+$$
+Pour simplifier, on postule que les \'energies sont discrètes. Les exposants $\scriptstyle (0)$ indiquent que ces quantit\'es sont associ\'ees au système non perturb\'e.
+On peut alors introduire une perturbation dans le hamiltonien. Soit $\scriptstyle V$ un hamiltonien repr\'esentant une petite perturbation physique, comme un potentiel \'energ\'etique produisant un champ externe (donc $\scriptstyle V$ est formellement un op\'erateur hermitique). Soit $\scriptstyle \lambda$ un paramètre sans dimension pouvant prendre des valeurs allant contin?ment de 0 (pas de perturbation) \`a 1 (perturbation totale). Le hamiltonien perturb\'e est :
+$$
+\scriptstyle H = H_0 + \lambda V  
+$$
+Les niveaux d'\'energie et \'etats propres du hamiltonien perturb\'e sont de nouveau donn\'es par l'\'equation de Schr\"odinger :
+$$
+ \left(H_0 + \lambda V \right) |n\rangle = E_n|n\rangle 
+$$
+Le but est alors d'exprimer $\scriptstyle E_n$ et $\scriptstyle\mid n\,\rangle$  en termes de niveaux d'\'energie et d'\'etats propres de l'ancien hamiltonien. Si la perturbation est suffisamment faible, on peut les \'ecrire en s\'eries entières de $\scriptstyle \lambda$ :
+$$
+ E_n = E_n^{(0)} + \lambda E_n^{(1)} + \lambda^2 E_n^{(2)} + \cdots 
+ |n\rangle = |n^{(0)}\rangle + \lambda |n^{(1)}\rangle + \lambda^2 |n^{(2)}\rangle + \cdots 
+$$
+o\`u
+$$
+ E_n^{(k)} = \frac{1}{k!} \frac{d^k E_n}{d \lambda^k} 
+$$
+et
+$$
+ |n^{(k)}\rangle = \frac{1}{k!}\frac{d^k |n\rangle }{d \lambda^k}.
+$$
+ Si l'on introduit ces s\'eries dans l'\'equation de Schr\"odinger, on obtient :
+$$
+\begin{matrix}
+\left(H_0 + \lambda V \right) \left(|n^{(0)}\rangle + \lambda |n^{(1)}\rangle + \cdots \right) \qquad\qquad\qquad\qquad\\
+\qquad\qquad\qquad= \left(E_n^{(0)} + \lambda E_n^{(1)} + \lambda^2 E_n^{(2)} + \cdots \right) \left(|n^{(0)}\rangle + \lambda |n^{(1)}\rangle + \cdots \right)
+\end{matrix}
+$$
+忽略掉 $\lambda$ 的2阶及其以上, 并利用
+$H_0 |n^{(0)}\rangle = E_n^{(0)} |n^{(0)}\rangle$
+得到
+$$ \lambda(H_0 |n^{(1)}\rangle + V |n^{(0)}\rangle) = \lambda(E_n^{(0)} |n^{(1)}\rangle + E_n^{(1)} |n^{(0)}\rangle) $$
+同除$\lambda$得到
+\begin{equation}
+H_0 |n^{(1)}\rangle + V |n^{(0)}\rangle = E_n^{(0)} |n^{(1)}\rangle + E_n^{(1)} |n^{(0)}\rangle
+\label{eq.approximation.perturbation.ordre.1}
+\end{equation}
+两边同时乘以 $\scriptstyle \langle n^{(0)}|$\\
+Le premier terme de gauche s'annule avec le premier terme de droite (le hamiltonien non perturb\'e est hermitien). Cela conduit \`a la modification \'energ\'etique du premier ordre :
+\begin{equation}
+E_n^{(1)} = \langle n^{(0)} | V | n^{(0)} \rangle
+\end{equation}
+
+\subsubsection{Corrections du premier ordre d'\'etat propre}
+$\langle n^{(0)}| n^{(1)}\rangle  = \langle n^{(1)}|n^{(0)}\rangle = 0$
+
+Afin d'obtenir la correction $\scriptstyle \mid n^{(1)}\rangle$ du premier ordre \`a l'\'etat propre d'\'energie, on utilise sa valeur extraite de l'\'equation au premier ordre ci-dessus. On utilise ensuite l'identit\'e
+$$
+\begin{aligned}
+V|n^{(0)}\rangle 
+= & \Big( \sum_{k\ne n} |k^{(0)}\rangle\langle k^{(0)}| \Big) V|n^{(0)}\rangle  + \left(|n^{(0)}\rangle\, \langle n^{(0)}|\right)  V|n^{(0)}\rangle \\
+= & \sum_{k\ne n} |k^{(0)}\rangle\langle k^{(0)}| V|n^{(0)}\rangle  + E_n^{(1)} |n^{(0)}\rangle
+\end{aligned}
+$$
+o\`u les $\scriptstyle |k^{(0)}\rangle$ sont les \'etats propres de $\scriptstyle H_0$ situ\'es dans le compl\'ement orthogonal de $\scriptstyle |n^{(0)}\rangle$. 
+应用\eqref{eq.approximation.perturbation.ordre.1}, 得到
+$$
+(V - E_n^{(1)})|n^{(0)}\rangle = (E_n^{(0)} - H_0) |n^{(1)}\rangle 
+$$
+Les termes proportionnels \`a $\scriptstyle |k^{(0)}\rangle$ se compensent, et le r\'esultat est :
+$$
+ \left(E_n^{(0)} - H_0 \right) |n^{(1)}\rangle = \sum_{k \ne n} |k^{(0)}\rangle \langle k^{(0)}|V|n^{(0)} \rangle 
+$$
+Supposons pour le moment que le niveau d'\'energie d'ordre z\'ero ne soit pas d\'eg\'en\'er\'e, c'est-\`a-dire qu'il n'y ait pas d'\'etat propre de $\scriptstyle H_0$ dans le compl\'ement orthogonal de $\scriptstyle |n^{(0)}\rangle$ d'\'energie $\scriptstyle E_n^{(0)}$. On multiplie alors par $\scriptstyle \langle k^{(0)}|$ , ce qui donne :
+$$
+ \left(E_n^{(0)} - E_k^{(0)}  \right) \langle k^{(0)}|n^{(1)}\rangle =  \langle k^{(0)}|V|n^{(0)} \rangle 
+$$
+et par cons\'equent le composant de la correction de premier ordre selon $\scriptstyle |k^{(0)}\rangle$  par le postulat $\scriptstyle  E_n^{(0)} \ne E_k^{(0)}$. Nous avons au total :
+\begin{equation}
+ |n^{(1)}\rangle = \sum_{k \ne n} \frac{\langle k^{(0)}|V|n^{(0)} \rangle}{E_n^{(0)} - E_k^{(0)}} |k^{(0)}\rangle
+\end{equation}
