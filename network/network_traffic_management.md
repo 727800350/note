@@ -50,6 +50,8 @@
 	+ 为当前和未来的流量分析技术发展趋势
 	+ Ex: NetFlow, sFlow(sFlow资源(CPU, 内存, 带宽)占用比NetFlow 少很多)
 
+主动测量就是通过向网络、服务器或应用发送测试流量，以获取与这些对象相关的性能指标。例如，可以向网络发送数据包并不断提高发送速率直至网络饱和，以此来测量网络的最大负载能力。
+
 _mib2, rmon, rmon2, netflow, sflow_等技术就是帮助我们分析网络的流量, 区别在于获得的数据内容丰富程度不一样.
 
 + mib2和rmon只提供 osi 2层信息,mrtg,solarwind等主要使用这些信息
@@ -156,3 +158,4 @@ NAS服务器和RADIUS 服务器通过UDP 协议进行通信, 双方使用不经�
 - Distributed CEF (dCEF)
 - Line card 线卡: 交换机, 路由器或其它网络设备的访问线路与访问设备间的一种设备接口.具有多种速率的数字和模拟线卡,都可以用来连接电缆或光纤线路.数字线卡主要为数据网络提供数据包转发, ping 响应以及数据包分片等功能.
 - MRTG: Multi Router Traffic Grapher
+- service-level agreement (SLA) 
