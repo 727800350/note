@@ -1,6 +1,0 @@
-<snippet>
-    <content><![CDATA[\\red{$SELECTION}]]></content>
-    <tabTrigger>red</tabTrigger>
-    <scope>text.tex.latex</scope>
-    <description>font make red</description>
-</snippet>

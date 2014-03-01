@@ -1,6 +1,0 @@
-<snippet>
-    <content><![CDATA[\\subsection{$SELECTION}]]></content>
-    <!-- <tabTrigger>subsection</tabTrigger> -->
-    <scope>text.tex.latex</scope>
-    <description>section make subsection</description>
-</snippet>

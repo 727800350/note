@@ -1,6 +1,0 @@
-<snippet>
-    <content><![CDATA[\\begin{lstlisting}[language = ${2:C}]$1\\end{lstlisting}$0]]></content>
-    <tabTrigger>\listings</tabTrigger>
-    <scope>text.tex.latex</scope>
-    <description>code insert listings lstlisting</description>
-</snippet>

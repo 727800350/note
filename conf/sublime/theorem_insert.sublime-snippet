@@ -1,6 +1,0 @@
-<snippet>
-    <content><![CDATA[\\$1begin{theorem}$2\\end{theorem}$0]]></content>
-    <tabTrigger>\theorem</tabTrigger>
-    <scope>text.tex.latex</scope>
-    <description>math insert theorem</description>
-</snippet>

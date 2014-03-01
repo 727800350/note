@@ -1,6 +1,0 @@
-<snippet>
-    <content><![CDATA[\\begin{verbatim}$1$SELECTION$2\\end{verbatim}$0]]></content>
-    <tabTrigger>verbatim</tabTrigger>
-    <scope>text.tex.latex</scope>
-    <description>code make verbatim</description>
-</snippet>

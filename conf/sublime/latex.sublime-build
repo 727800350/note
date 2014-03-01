@@ -1,4 +1,0 @@
-{
-	"cmd": ["xelatex","$file"],
-	"selector": "source.latex"
-}

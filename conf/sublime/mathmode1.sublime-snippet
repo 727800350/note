@@ -1,6 +1,0 @@
-<snippet>
-    <content><![CDATA[\$$SELECTION\$]]></content>
-    <tabTrigger>$</tabTrigger>
-    <scope>text.tex.latex</scope>
-    <description>math $</description>
-</snippet>
