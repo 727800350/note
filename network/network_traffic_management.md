@@ -1,3 +1,24 @@
+<link rel="stylesheet" href="http://yandex.st/highlightjs/6.2/styles/googlecode.min.css"> 
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script src="http://yandex.st/highlightjs/6.2/highlight.min.js"></script> 
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+ $(document).ready(function(){
+      $("h1,h2,h3,h4,h5,h6").each(function(i,item){
+        var tag = $(item).get(0).localName;
+        $(item).attr("id","wow"+i);
+        $("#category").append('<a class="new'+tag+'" href="#wow'+i+'">'+$(this).text()+'</a></br>');
+        $(".newh1").css("margin-left",0);
+        $(".newh2").css("margin-left",20);
+        $(".newh3").css("margin-left",40);
+        $(".newh4").css("margin-left",60);
+        $(".newh5").css("margin-left",80);
+        $(".newh6").css("margin-left",100);
+      });
+ });
+</script>
+<div id="category"></div>
+
 #### 网络流量管理的目的
 1. 能够清楚知道网络流量的种类
 1. 知道网络带宽的详细使用情况:何人/何地/做什么/使用多少
@@ -30,9 +51,20 @@
 	1. 调整计费规则
 	1. 行政管理手段, etc.
 
-#### 网络流量检测的方法
+#### 网络流量监测的方法
+监测的方法有传统统计方法(如利用SNMP, RMON), Flow based 方法(如NetFlow), Packet/Content Based 方法及分布式数据采集和关联分析方法等.
+
+- **传统统计方法**测量信息直接来自网络设备, 只包括字节数, 报文数量等最基本的内容, 不适用于流量检测要求较高的场合.  
+- **Flow Based 方法**利用路由器已有的能力进行数据采集, 以传输层端口定义业务\todo{这个地方对吗?}, 与真实情况有较大的误差.  
+- **Packet/Content Based 方法**使用专用采集设备, 采用链路分光或镜像的方式采集原始报文, 能够对业务进行深入的识别和分析.  
+- **分布式数据采集和关联分析方法**, 对网络中多个采集点数据进行汇总和关联, 提供全面的分析能力.
+
+业务流量分析的方法是针对流来分析, 具体方法有: 基于不同流定义数据的过滤, 汇聚和关联; 分析特定指标按照时间的变化情况(趋势分析); 在特定条件下, 对于某个指标进行排名; 对相同或不同时段, 指标, 趋势等的比较(比较分析); 多个指标间关联(关联分析)等.
+
+具体分类方法
+
 - 基于SNMP
-	+ SNMP 只能够识别到设备的物理端口(**SNMP采集的数据是基于端口的,无法提供端到端的准确的流量信息,因此对流向的统计手段不明确**)
+	+ SNMP 只能够识别到设备的物理端口(**SNMP采集的数据是基于端口的,无法提供端到端的准确流量信息,因此对流向的统计手段不明确**)
 	+ MRTG, HP OpenView (RMON, RMONII - **共享以太网时代的技术,已经过时**)
 - 基于抓包分析
 	+ 可以对数据包进行详细的7层分析
@@ -124,8 +156,33 @@ Internet  Protocol Flow Information eXport
 网络中流量统计信息的格式趋于标准化
 IPFIX偏向于使用流控制传输协议(SCTP)作为其传输层协议,但同时也允许使用传输控制协议(TCP)和用户数据报协议(UDP)(基于Netflow V9)
 
-
 ### Application Identification
+#### 业务识别方法
+1. 基于端口口
+2. 基于协议解码: 必须了解业务协议编码和协议过程; 需要维护业务连接状态, 资源消耗大; 对于加密协议难以分析
+3. 基于业务签名: 业务签名难以总结
+4. 基于传输层模式的业务识别: 仅对业务传输层连接进行分析, 而不分析报文内容. 根据分析对象的不同, 可分为**报文级别的分析**(协议类型, 报文长度, 报文到达间隔等), **流级别的分析**(流到达间隔, 流持续时间, 流量等)和**流之间特征的分析**(流并发数目, 流之间的关系).&nbsp;&nbsp;&nbsp;&nbsp;  随着数据挖掘技术的发展, 开始将**机器学习**中的算法, 如主成分分析和密度估计, 最大期望算法等引入到流量识别的研究当中, 将其与基于流的传输层识别方法相结合
+4. 基于行为模式: 如在通信过程中所使用的协议个数, 连接的主机数目, 连接的端口数, 连接到的IP地址, 信令包与数据包的比例等. 例如, P2P业务一般连接到的IP地址个数和端口个数相近. 非P2P流量同时具有比较高的连接成功率和连接响应成功率, 而P2P 流量即使有一项很高, 另外一项也不高.
+
+#### 传统P2P应用识别与控制方法
+
+- 归纳出常用的一个或多个固定端口(如KuGoo软件通用的商业端口是7000). 但是现在大多数P2P软件都不再使用固定端口，或使用动态端口，或在软件中设有端口设置功能供用户自行设置端口，甚至有的P2P软件使用8O等其它业务的固定端口号，以欺骗流量检测设备。
+- 用关键字进行P2P流量识别. 对于利用关键字识别P2P流量，关键字符串的部分或全部字节可能随软件的运行环境、版本等的改变而改变。
+- 就是利用大于1024的TCP/UDP端口数进行P2P识别的技术。但是，该方法无法将P2P业务和端口扫描、DdoS攻击等类型的流量区分开来。
+- 利用IP地址连接的通信对端IP地址的数量进行P2P识别的技术。但是该方法无法区分一个IP地址是否属于一个为众多用户提供服务器的设备，还是一个用户在大量发起P2P连接。
+
+因此综上所述，传统的P2P应用识别技术已经不能应对P2P技术本身的发展和变化了。
+
+#### BMC P2P应用识别与控制技术概述
+一种基于数学建模技术应用于P2P网络的流量识别与控制的方法, 通过对P2P技术特征的分析，得出典型的P2P流量模型，通过**模型特征值**的提取，能够非常高效便捷的对它们进行识别。  
+对网络中的每一个IP地址的通信会话进行数学建模，采集该IP地址活动会话所连接的对端IP地址分布、TCP/UDP端口分布和会话状态信息，利用数学建模技术产生数学模型特征值；将数学模型特征值与预设的P2P流量数学模型参数进行匹配.  
+上述预设的P2P流量数学模型参数包括最小IP地址扩散度Cip、最小TCP/UDP端口扩散度Mport、最大会话接通率Cratemax和最小会话接通率Cratemin，上述四个参数被配置到数学模型库中。  
+本技术优于传统P2P识别技术之处在于:
+
+1. 本技术不依赖于对报文的内容进行关键字或者特征码识别，因此，本技术能够对加密的P2P和未知的新出现的P2P流量进行识别；
+2. 本技术不是仅仅依靠对高于1024的TCP/UDP端口进行统计，识别P2P，它避免了把P2P流量和网络扫描、DdoS攻击等流量混淆起来。因此更精确；
+3. 本技术不是仅仅依靠对IP地址所连接的对端IP地址数量进行统计，因此避免了把P2P流量和网站服务器的流量混淆。
+
 #### Network-Based Application Recognition (NBAR)
 Network Based Application Recognition (NBAR) is the mechanism used by some Cisco routers and switches to recognize a dataflow by inspecting some packets sent.
 - Validation or reclassification of ToS marking based on Deep & Stateful Packet Inspection
@@ -141,6 +198,30 @@ Network Based Application Recognition (NBAR) is the mechanism used by some Cisco
 - 用户的使用模式是什么?
 - 工作时间和非工作时间的流量模式各是什么?
 
+常用工具:  
+SPSS, SAS; PostgreSQL(对象-关系型数据库); Matlab; 
+WEKA(开源, Java实现. 集合了大量能承担数据挖掘任务的机器学习算法, 包括对数据进行预处理, 分类, 回归, 聚类, 关联规则分析等)
+
+### 网络业务分析
+IP网络对业务提供网络层(IP层) 和传输层(TCP/UDP协议)的底层支持. 网络层主要提供分组传输, 差错控制而后路由支持. 传输层提供端到端的数据传输, 差错控制, 流量控制和QoS支持.  
+TCP协议不能保证时延和带宽, 实现起来相对复杂, 效率相对较低.  
+UDP协议提供不可靠的传输, 可靠性由应用层负责. 不提供流量控制和带宽保证, 但是实时性高, 具有实现简单, 高效的特点.  
+一些典型业务: FTP, Telnet, HTTP, SMTP等业务使用TCP; NFS, SNMP, TFTP等业务使用UDP. 还有一些业务同时使用TCP和UDP两种协议, 如DNS, P2P.
+
+使用P2P 模式: 即时通信(QQ, Skype); 协同工作(如Groove, KDT); P2P网络中搜索(Infrasearch, Pointera)
+
+#### 典型业务
+**DNS业务**: 
+DNS 是一个典型的客户/服务器 交互系统. 一个多层次, 基于域的命名系统, 使用分布式数据库实现这种命名机制.
+
+**BT 业务**: 
+拥有完整文件的Peer 被称为seed.  
+BT网络的中央索引服务器称为Tracker, 负责保存共享文件的信息(主要是文件的SHA1 Hash 值)并共享每个文件的用户的信息(Peer ID, IP地址, 监听端口号, 是否完成下载). 共享同一个资源的Peer 群通过Tracker 共享用户和文件的信息, Peer 之间通过这些信息上传和下载的方式共享文件.  
+BT 网络中Web server 用于发布种子文件并提供种子文件的下载. 种子文件用于保存共享文件的信息: Tracker 地址, 文件名, 文件长度, 分块大小, 分块HASH 值等
+
+#### 业务监测和分析的内容
+涉及网络流量分析的各个方面, 包括流量流向分析, 组分分析, 质量分析, 业务模式分析等.
+用户角度(主要是进行用户行为分析)和网络角度(用户群体的集合特征)
 
 #### RADIUS 
 NAS网络接入服务器(Network Access Server)
