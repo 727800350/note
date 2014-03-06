@@ -93,6 +93,23 @@ _mib2, rmon, rmon2, netflow, sflow_等技术就是帮助我们分析网络的流
 
 至于rmon2和netflow/sflow技术那种更好,有很多的争论,关键是要看在什么环境下,什么需求下,才能说哪种技术比较适合.没有最好的,只有最适合的.
 
+#### 网络流量监控硬件
+高密度现场可编程逻辑器件, 包括复杂可编程逻辑器件CPLD(Complex Programable Logic Device)和现场可编程门阵列FPGA(field-programmable gate array), 能够将大量逻辑功能集中在一个单片集成电路(Integrate Circuit, IC)中, 也使具有高速网络流量监控功能的硬件实现成为可能.
+
+流量监控硬件一般采用超大规模集成电路芯片, 实现流数据的特征提取(流识别, 分类), 快速查表, 统计计数, 数据缓存, 流质量分析记忆流控策略. 同时, 基于硬件结构的报文转发引擎, 可提供双向线速转发, 流量监控过程不影响网络性能.
+
+**网络处理器**  
+传统的基于GPP(general purpose processor)的网络设备只能满足灵活性的要求; 而基于ASIC(application specific integrated circuit专用集成电路)的网络设备只满足高性能要求.  
+具有可编程性, 强大处理能力的网络处理器(NP, network processor). 同时具有GPP的灵活性和ASIC的高速处理能力.
+
+特点  
+并行处理: 包括线程级的并行和处理器级的并行  
+深层数据处理: 也叫智能处理, 根据不同的服务要求对数据包进行不同深度的处理.
+
+**内容可寻址存储器**Content addressable memory(CAM): 硬件过滤, 快速查找
+
+基于**哈希技术**的流测量和管理算法是网络监控领域的一种关键技术.
+
 #### 流量控制技术
 - MPLS流量工程(Traffic Engineering, TE)
 	+ 路由器等网络设备自身实现
