@@ -1,0 +1,246 @@
+% !Mode:: "TeX:UTF-8"
+\documentclass{article}
+\input{../public/package}   %导入需要用到的package
+\input{../public/article}   %导入需要用到的package
+\begin{document}
+\title{Paper Reading Notes}
+\author{Eric}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Toward Scalable Internet Traffic Measurement and Analysis with Hadoop}
+\label{toward-scalable-internet-traffic-measurement-and-analysis-with-hadoop}
+
+\subsection{Related work}\label{related-work}
+\begin{enumerate}
+\item tcpdump
+\item libpcap
+\item CoralReef
+\item Snort
+\item Bro
+\item Tstat
+\item tcptrace
+\item flow-tools
+\item flowscan
+\item argus
+\item peakflow
+\item RIPE: file-based processing method
+\end{enumerate}
+
+\subsection{Contribution}\label{contribution}
+\begin{itemize}
+\item New Hadoop APIs that can read or write IP packets and NetFlow v5 data
+  in the native libpcap format
+\item no distinct mark between two packet(libpcap) records in a libpcap file
+  =\textgreater{} difficult for a map task to parse packet records from its HDFS block\\ 
+  propose a heuristic algorithm that can process packet   records per block by using the timestamp-based bit pattern of a packet header in libpcap
+\end{itemize}
+
+\subsection{Traffic measurement and analysis system with hadoop}
+\label{traffic-measurement-and-analysis-system-with-hadoop}
+
+\subsubsection{TCP}\label{tcp}
+TCP performance metrics such as \textbf{round-trip time (RTT), retransmission rate, and out-of-order} cannot be computed per HDFS block, 
+because the computation of these metrics is \textbf{not commutative and asso- ciative} across TCP flow parts on several HDFS blocks
+
+\subsection{Improvement of performance}\label{improvement-of-performance}
+
+\begin{enumerate}
+\item high-speed packet capture driver, such as PF RING and TNAPI
+\item parallel disk I/O function, such as RAID0 (data striping mode)
+\item solid-state disk (SSD)
+\end{enumerate}
+
+\section{流测量算法综述}\label{ux6d41ux6d4bux91cfux7b97ux6cd5ux7efcux8ff0}
+
+\textbf{报文分析}相对平等地分析每个报文, 因此导致对报文间关系及其更高层次信息分析的缺失.
+
+\subsection{抽样测量}\label{ux62bdux6837ux6d4bux91cf}
+
+由于IP流的重尾特性, 抽样报文仍需要大量的资源维护流信息 \#\#\# 报文抽样
+1993年 K Claffy 就系统研究了基于时间和基于报 文到达次序为抽样的激发机制.
+分析系统抽样\#随机抽样分层的测量技术
+
+1998年, Cozzani 基于报文内容抽样的测量技术
+
+美国AT\&T实验室的 N.G.Duffield, 2001年发表的论文提出了\textbf{Trajectory基于报文内容}的抽样技术,后来他又在论文中研究关于Trajectory抽样应用
+
+NetranMet测量器: Realtime traffic flow measurement, already
+\href{http://www.caida.org/tools/}{deprecated}
+
+\subsubsection{长流测量}\label{ux957fux6d41ux6d4bux91cf}
+
+2002, Cristian Estan 提出 \textbf{sample and
+hold算法}用于发现长流有效地解决了如何在报文抽样情况下获取和维护流信息的问题.\\
+它的基本思想是对报文进行抽样,并且对每一个报文都进行处理.\\
+当一个流的一个报文被抽到之后.  在一个内存的哈希表中建立了这个流长度的计数器. 这个流后序的每一个报文都更新这个计数器. 一直到测量结束\\
+这实质上是通过抽样报文来抽流的方法.  由于长流的报文数量大. 因此长流被抽到的概率也相当大\\
+这种方法可以精确地识别长流.  用的内存也很小它的缺点是对每一个报文都要进行处理和访问内存.  因此要求内存的速度达到\textbf{线速}. 给测量系统很大的压力
+
+\subsubsection{流分布的估计}\label{ux6d41ux5206ux5e03ux7684ux4f30ux8ba1}
+由抽样流数据推断出原始流数据, 特别是对平均流长度的推断
+
+\textbf{比例法scaling method和EM算法}\\比例法算法简单.
+由抽样数据很容易就可以计算出原始的未抽样的统计数据.  但这种方法只能用于对TCP 流的抽样估计. 抽样时要对SYN报文进行统计.  对于没有SYN报文的UDP流不适用\\
+EM 算法求流长度分布的\textbf{极大似估计的迭代求解方法}. 它不要求协议信息.  尽管它也可以利用这一信息. 因此它既适用于TCP流也适用于普通流.\\
+缺点是计算复杂性及被推断流的总数的缺少控制.对于它还有一个挑战是好的循环结束标准的选择. 不当的结束标准可能造成尾部的震荡
+
+\subsection{哈希测量}\label{ux54c8ux5e0cux6d4bux91cf}
+
+缺点是哈希方法主要是保留IP 流大小信息, 但是丢失IP 流的五元组地址信息
+\#\#\# Bloom filter 表示一个集合的数据结构.它支持成员查询,随机存储
+
+该算法的最大特点是.
+仅使用一小块远小于数据集数据范围的内存空间表示数据集.
+并且各个数据仍然能被区分开来.尽管存在错误的肯定.
+但当错误的概率足够小的时候. 大量空间的节省使得这一缺点微不足道了
+
+\subsubsection{流识别}\label{ux6d41ux8bc6ux522b}
+Multistage filters算法用于发现长流. 并维护了长流的信息. 这是一个与bloom
+filter相似,但不同的技术
+
+\subsubsection{流总数和流分布的估计}\label{ux6d41ux603bux6570ux548cux6d41ux5206ux5e03ux7684ux4f30ux8ba1}
+用哈希技术给出了一族Bitmap算法来统计活动IP流的数量. 这些算法实现简单.
+有些可以用硬件实现, 速度快可实现在线处理
+
+IP流哈希映射. 使用贝叶斯统计估计流的大小分布
+
+\section{网络测量分析及研究综述}\label{ux7f51ux7edcux6d4bux91cfux5206ux6790ux53caux7814ux7a76ux7efcux8ff0}
+主动测量: 向网络主动发送流量, 对网络性能产生干扰, 使测量偏离实际值.
+\textbf{Heisenberg 测不准原理}.
+
+被动测量: 关键的技术是组标识算法的研究,
+即对经过这两个监测点的报文进行识别.
+
+网络性能度量: 可连接性, 单程包延迟和丢失率, 往返包延迟和丢失率,
+包延迟的变化量, 包丢失模式, 大批传输容量, 链接带宽容量\\
+其中:
+(1)单程度量的测量困难在于定时,而往返测量会受到路由非对称等因素的影响.\\
+(2)个别度量和抽样度量相结合,而抽样度量的测量采用Poisson抽样技术(抽样的时间间隔服从指数分布)
+
+Legend 和Klivansky分别对LAN 和WAN的流量进行测试分析,发现它们不再服从泊松分布,而是具有自相似性,也即在大的时间范围上,网络流量呈现自相似性
+
+从目前的研究看,网络流量模型的发展大约朝两个方向:
+\begin{enumerate}
+\item 利用传统的时间序列模型.\\
+	对于平稳过程用 AR过程或ARMA 模型, 对于Internet这样这样的非平稳过程应用 ARIMA模型和 ARIMA季节性模型来描述.\\
+	但由于ARIMA 模型不能描述网络业务内在的长相关性.而FAIMA(p,d,q) fractional ARIMA模型是一个既适于长相关,也适于短相关的较好的流量模型,但与传统的ARIMA过程相比,FAIMA模型的结构辩计要复杂和困难得多.如何简化模型过程
+\item 以Cruz为代表的采用\textbf{非概率统计}的方法,建立一个突发性约束的流量模型\\
+	给出网络流量上界和平均网络流量的上界,从而避免了传统的基于概率统计的网络分析方法.这个突发模型再加上时间特征,实现了任意时刻的网络流量预测和特定时刻的网络性能分析.但是这个模型实现起来比较麻烦
+\end{enumerate}
+
+Poisson shot-noise 过程拟合
+
+Ipv6 下的网络测量
+
+treno 资料\\\href{http://staff.psc.edu/mathis/ippm/}{Internet
+Performance and IP Provider
+Metrics}\\\href{http://staff.psc.edu/mathis/papers/inet96.treno.html}{Diagnosing
+Internet Congestion with a Transport Layer Performance Tool}
+
+\section{Machine Learned Real-time Traffic Classifiers}\label{machine-learned-real-time-traffic-classifiers}
+中山大学. 词语缩写严重(但是没有解释), 图标注解无
+
+classifiers based on decision tree outperform others on both accuracy and performance
+
+\subsection{Related work}\label{related-work-1}
+The idea is that traffic generated by each class of applications has
+unique statistical property and machine learning techniques are suitable
+for mining such distinct patterns of each class automatically
+
+EM algo\\
+\href{http://en.wikipedia.org/wiki/Expectation\%E2\%80\%93maximization_algorithm}{wiki}\\
+\href{http://www.cnblogs.com/jerrylead/archive/2011/04/06/2006936.html}{(EM算法)The EM Algorithm}
+
+Moore et al. proposed a Na:ive Bayes classifier with kernel estimation and FCBF to categorize traffic
+
+Zander et al. used EM based AutoClass to learn the natural classes inherent in a training dataset.
+
+Erman et al. showed that the unsupervised AutoClass achieved higher accuracy than the supervised Na\:ive Bayes, while clustering tended to discover new unknown applications.
+
+Erman et al. further compared three clustering algorithms and proposed a hybrid approach as semi-supervised learning in
+
+an early TCP flow classification system.\\
+Their key idea is that the first few packets (say 4 or 5) with payloads right after TCP 3-way handshake should be the application's negotiation phase, and the payload size of these packets is a good predictor of the source application.  Based on this, they proposed three optional clustering algorithms to build a classifier
+
+Gaussian filtered PDFs
+
+\subsection{Data}\label{data}
+publicly available real world WAN traffic data provided by MAWI Working Group
+
+the properties in both directions of a flow can be quite different, all attributes except duration are computed not only in the bidirectional flow as a whole, 
+but also separately in both directions of the flow
+
+\subsection{Machine Learned Traffic Classifiers}\label{machine-learned-traffic-classifiers}
+
+Feature selection algorithms are broadly categorized into the filter or wrapper.\\
+In this study, we evaluate two subset search filter algorithms: consistency-based subset search (CON) and correlation-based feature selection (CFS).\\
+We use best-first search (BFS) and genetic algorithm (GA) to generate candidate subsets from the feature space
+
+accuracy, precision and recall\todo{find the exacte definition}\\
+Accuracy is the percentage of correctly classified flow instances over the total number of instances.\\
+Precision is the number of class members classified correctly over the total number of instances classified as class members.\\
+Recall is the number of class members classified correctly over the total number of class members.
+
+\subsection{Results}\label{results}
+
+1-rule algorithm c2s-psvar as the splitting feature
+
+the boosting method does increase the accuracy of C4.5, it significantly slows down the speed.
+
+Packet size related features are preferable than time related features.
+
+The accuracies of EM and K-Means algorithms with different predefined cluster numbers are between 60\% and 70\%. 
+And the times (hours) taken by clustering are so much longer than supervised algorithms.
+
+\subsubsection{Early classification}\label{early-classification}
+build the classifiers with early sub-flow statistics instead of full- flow statistics.
+
+Surprisingly, features derived from the first 6 packets are able to train accurate classifiers.
+
+\section{A P2P Network Traffic Classification Method Using SVM}\label{a-p2p-network-traffic-classification-method-using-svm}
+太简, 好多重要的都没有讲, 用了很多方法, 但是没有解释
+
+P2P 程序针对 signatures 的算法的对策: plain-text ciphers, variable-length padding,or encryption
+
+Related work
+\begin{itemize}
+\item the network traffic was classified into different applications with methods of principal component analysis and density estimation 
+\item Roughan M et.al. used methods of nearest neighbor and linear discriminate to analysis successfully map the network application to different Qos types 
+\item McGregor A et.al used EM (Expectation Maximization) algorithm and a fixed set of traffic attributes to cluster the network traffic into different applications 
+\item Soule and Salamatian used the EM algorithm with Simulated Annealing theory to classify the network traffic 
+\item Bayes Classifier was used to classify the network traffic with masses of traffic attributes
+\end{itemize}
+
+the packets are first classified into bidirectional TCP or UDP flows according to the packet's five-tuple\\
+and the traffic statistic characteristics(such as packet length,duration and so on) which are irrelevant to protocol and ports are extracted to be feature vectors that are is used to represent the network flows\\
+use SFS(Sequential forward selection) algorithm to search the optimal featur set\\
+SFS 是greedy algorithm吗?\\
+和之前看的PCA 方法哪个好?\\
+\href{http://www.cnblogs.com/heaad/archive/2011/01/02/1924088.html}{特征选择常用算法综述}
+
+WildPackets omniPeek to gather real-time traffic data
+
+Figure 6, 的逻辑不完整
+
+\subsection{the optimal classification result}\label{the-optimal-classification-result}
+It tries to find the optimal result with limited information provided by small set of samples
+
+use \textbf{SMO algorithm (Sequential Minimal Optimization)} to do \textbf{SVM learning}\\
+SMO algorithm is one characteristic of Osuna decomposition algorithm, and it decomposes the whole quadratic programming to be a series of minimum- scale QP sub problems.\\
+Each optimization handles only two samples so as to avoid iteration. Although this minimum optimization can not guarantee its result is the final result of the optimized Lagrange multiplier, it can make the designation function closer to the minimum value. Then optimize other Lagrange multipliers until all multipliers tally with KKT condition, and the designation function gets the minimum value.
+
+expand the two-class SVM to multi-class SVM: one-against-one method
+
+The classifier uses k-fold (k=10) inter-cross validation method for training and learning
+
+\section{Words}\label{words}
+\begin{itemize}
+\item return-on-investment (ROI)
+\item solid-state disk (SSD)
+\item 线速:
+  达到线速标准的设备,避免了非线速设备的转发瓶颈,称作无阻塞处理.即厂商标称交换能力大于设备上所有类型各个接口的带宽总和的2倍(全双工).需要说明的是通常二层线速指的是交换能力,单位Gbps千兆比特每秒(背板带宽单位), 三层线速指的是包转发率,单位Mpps百万包/秒(million packets per second).
+\end{itemize}
+
+\end{document}
