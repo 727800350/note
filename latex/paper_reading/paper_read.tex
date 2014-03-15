@@ -139,6 +139,43 @@ Performance and IP Provider
 Metrics}\\\href{http://staff.psc.edu/mathis/papers/inet96.treno.html}{Diagnosing
 Internet Congestion with a Transport Layer Performance Tool}
 
+\section{Internet Traffic Classification Demystified: Myths, Caveats, and the Best Practices}
+critically revisit traffic classification by conducting a thorough evaluation of three classification approaches, based on
+\begin{itemize}
+\item transport layer ports(CoralReef)
+\item host behavior(BLINC)
+\item and flow features(7 个常用的机器学习算法, WEKA): Naive Bayes, Naives Bayes Kernel Estimation, Bayesian Network, C4.5 Decision Tree, k-Nearest Neighbors(K-NN), Neutral Networks, Support Vector Machines(SVM)
+\end{itemize}
+
+inspects packet payloads: more accurate, but resource-intensive, expensive, scales poorly to high bandwidths, does not workon encrypted traffic, and causes tremendous privacy and legal concerns. \\
+Two proposed traffic classification approaches that avoid payload inspection are:\\
+(1) host-behavior-based, which takes advantage of information regarding “social interaction” of hosts\\
+(2) flow features-based, which classifies based on flow duration, number and size of packets per flow, and inter-packet arrival time
+
+\subsection{Related work}
+Host-behavior-based approach: capture social interaction observable even with encrypted payload\\
+Propose Traffic Dispersion Graphs
+
+37 features\\
+use the \textbf{Correlation-based Filter (CFS)}, which is computationally practical 
+and outperforms the other filter method (Consistency based Filter) in terms of classification accuracy and efficiency \\
+use a Best First search to generate candidate sets of features from the feature space
+
+\subsection{Results}
+Port-based approach still accurately identifies most legacy applications for the dataset at our hand \\
+this finding suggests that ports still possess significant discriminative power in classifying certain types of traffic
+
+ the best place to use BLINC is the border link of a single-homed edge network where it can observe as much behavioral information of in- ternal hosts as possible\\
+ BLINC is effective on links that capture both directions of every flow to a host
+
+lower byte accuracy (or recall) than flow accuracy (or recall)
+
+Supervised Machine Learning Algorithms\\
+Web and DNS are the easiest to classify\\
+P2P and FTP applications require themost training
+
+ROBUST TRAFFIC CLASSIFICATION: Support Vector Machine Classifier
+
 \section{Machine Learned Real-time Traffic Classifiers}\label{machine-learned-real-time-traffic-classifiers}
 中山大学. 词语缩写严重(但是没有解释), 图标注解无
 
@@ -181,10 +218,10 @@ We use best-first search (BFS) and genetic algorithm (GA) to generate candidate 
 accuracy, precision and recall\todo{find the exacte definition}\\
 Accuracy is the percentage of correctly classified flow instances over the total number of instances.\\
 Precision is the number of class members classified correctly over the total number of instances classified as class members.\\
-Recall is the number of class members classified correctly over the total number of class members.
+Recall is the number of class members classified correctly over the total number of class members.\\
+$F-Measure = \dfrac{2 \times precision \times recall}{precision + recall}$
 
 \subsection{Results}\label{results}
-
 1-rule algorithm c2s-psvar as the splitting feature
 
 the boosting method does increase the accuracy of C4.5, it significantly slows down the speed.
