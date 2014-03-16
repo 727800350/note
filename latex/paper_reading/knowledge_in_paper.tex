@@ -230,11 +230,16 @@ $$ \lim_{x \to \infty} \Pr[X>x+t|X>x] =1$$
 长尾分布是重尾分布中的一个特例.所有的长尾分布都是重尾分布,但反之则不然,也就是说,我们可以找出某一个重尾分布,它不是长尾分布.
 
 \chapter{PCA: Principal component analysis}
+降维技术使得数据更易使用, 并且他们能够去除数据中的噪声, 使得其他机器学习任务更加精确. 降维往往作为预处理步骤, 在数据应用其他算法之前清洗数据.\\
+有很多技术可以用于数据降维, 独立成分分析(Independent Component Analysis, ICA), 因子分析(Factor Analysis)和主成分分析比较流行, 其中又以主成分分析应用最广泛.\\
+机器学习实战一书中的python 实例是将数据集都调入内存, 如果无法做到, 就需要采用其他的方法, 可以参考一篇优秀的论文 - Incremental Eigenanalysis for Classification
+
 a useful statistical technique
 
 wiki: the frist principal component has the largest possible variance.\\
 \noindent
-用covariance matrix 矩阵来讲解的话, 说是最大的eigenvalue 对应的eigenvector所在方向为the most principal component方向
+用covariance matrix 矩阵来讲解的话, 说是最大的eigenvalue 对应的eigenvector所在方向为the most principal component方向\\
+\red{机器学习实战中说, 求得的特征值若为零, 则意味着这些特征值是其他特征的副本, 也就是, 他们可以通过其他特征来表示, 没有理解todo}
 
 \section{Idea}
 我们以二元变量$X = (X_1, X_2)$为例, 说明主成分分析的思想. 对此二维变量进行了$n$ 次观测, 得到数据$x_i = (x_{i1},x_{i2}) \eqspace (i=1,2,\dots,n))$.假设它们在二维平面x1ox2上的分布如Figure~\ref{fig.PCA.idea}所示
