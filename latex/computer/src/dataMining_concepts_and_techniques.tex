@@ -3,7 +3,9 @@
 \input{../../public/package}   %导入需要用到的package
 \input{../../public/article}   %导入需要用到的package
 \begin{document}
-\title{Data Mining \\ Concepts and Techniques \\Eric's Notes}
+\title{Data Mining Concepts and Techniques\\
+		\& Machine Learning\\
+Eric's Notes}
 \author{Eric}
 \maketitle
 \newpage
@@ -54,12 +56,24 @@ $$Buys(X, "computer") \Rightarrow buys (X,"software") [support = 1\%, confidence
 
 \textbf{机器学习}
 \begin{itemize}
-\item 监督学习Supervised learning: 基本上是分类的同义词
-\item 无监督学习 unsupervised learning: 基本上是聚类的同义词
+\item 监督学习Supervised learning: 基本上是分类的同义词, 回归也属于监督学习\\
+	 之所以称为监督学习, 是因为这类算法必须知道预测什么, 即目标变量的分类信息.
+\item 无监督学习 unsupervised learning: 基本上是聚类的同义词\\
+		将数据集合分成由类似的对象组成的多个类的过程称为聚类; 将寻找描述数据统计值的过程称为\textbf{密度估计}\\
+		此外, 无监督学习可以减少数据特征的维度, 以便我们可以使用二维或三维图形直观表示信息
 \item 半监督学习 semi-supervised learning, 标记的实例用来学习类模型, 而未标记的实例用来进一步改进类边界
 \item 主动学习
 \end{itemize}
 
+\textbf{如何选择合适的算法}\\
+首先考虑使用机器学习的算法的目的. 如果想要预测目标变量的值, 可以选择监督学习算法, 否则可以选择无监督学习算法.
+确定选择监督学习算法之后, 需要进一步确定目标变量的类型, 如果目标变量是离散型, 如"是/否, 1/2/3, A/B/C"等, 则可以选择分类算法;
+如果目标是连续型的数值, 则需使用回归算法.
+
+如果不想预测目标变量的值, 可以选择无监督学习算法. 进一步分析是否需要将数据划分为离散的分组. 如果这是唯一的需求, 则使用聚类算法; 
+如果还需要估计数据与每个分组的相似程度, 则需使用密度估计算法.
+
+\bigskip
 数据挖掘算法的有效性和可伸缩性\par
 增量数据挖掘
 
