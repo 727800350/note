@@ -149,7 +149,7 @@ critically revisit traffic classification by conducting a thorough evaluation of
 
 inspects packet payloads: more accurate, but resource-intensive, expensive, scales poorly to high bandwidths, does not workon encrypted traffic, and causes tremendous privacy and legal concerns. \\
 Two proposed traffic classification approaches that avoid payload inspection are:\\
-(1) host-behavior-based, which takes advantage of information regarding “social interaction” of hosts\\
+(1) host-behavior-based, which takes advantage of information regarding "social interaction" of hosts\\
 (2) flow features-based, which classifies based on flow duration, number and size of packets per flow, and inter-packet arrival time
 
 \subsection{Related work}
@@ -271,6 +271,74 @@ Each optimization handles only two samples so as to avoid iteration. Although th
 expand the two-class SVM to multi-class SVM: one-against-one method
 
 The classifier uses k-fold (k=10) inter-cross validation method for training and learning
+
+\section{Lightweight Application Classificaiton for Network management}
+Naives Bayes, NetFlow
+
+\section{Is P2P dying or just hiding?}
+
+\section{Cluster analysis of traffic on a campus network}
+popular clustering algorithms such as k-means and DBSCAN are not directly applicable to datasets containing IP addresses. \\
+Moreover, such generic algorithms can yield results that are difficult to interpret. 
+
+This paper presents using a hybrid clustering algorithm.\\
+The algorithm integrates the longest prefix matching concept of TCP/IP traffic routing and the nearest neighbor algorithm.\\
+The similarity between IP addresses is determined by the longest prefix match. 
+Similar IP addresses are then grouped together by an adapted version of the nearest neighbor algorithm.
+
+\section{Study of information network traffic identification based on C4.5 algorithm}
+The author has adopted the correlation feature selection (CFS) algorithm and the genetic algorithm (GA) to select the attribute feature subset. 
+
+The method which combined N-fold cross-validation with testing set: assess the classification results.
+
+\section{Lightweight, Payload-Based Traffic Classification: An Experimental Evaluation}
+Statistical methods have a hard time differentiating the traffic of a malicious peer-to-peer application from a corporate-friendly one.
+
+"stateful" methods
+
+\subsection{Verification methods}
+A first degree of verification is the \textbf{signature-based one}
+
+A second degree of verification, the \textbf{syntactical} one: it aims at checking the correctness of the transmitted data from the syntactical point of 
+view (e.g. a supposed HTTP payload must contain HTTP headers). 
+A verifier should decode all the fields contained in the message and guarantee that the message is well formed.
+
+A third degree of verification relates to \textbf{protocol conformance},
+e.g. controlling that an HTTP GET Request from a client is followed by a valid response from the server. 
+This form of verification is more accurate because it can validate the runtime behavior of the protocol against its canonical state machine as defined by specifications. 
+
+A fourth degree of verification refers to the \textbf{semantic} of the data, e.g., the possibility to verify whether an image object transferred by the HTTP protocol is in fact an image, or some other form of content.
+
+\subsection{Payload-based processing methods}
+The simplest method is the Packet Based-No State (PBNS)\\
+which operates by checking the value of some fields present in each packet, such as the TCP/UDP ports. \\
+This method is very simple computationally (only packet headers until L4 have to be processed), 
+it does not require state, but the results in terms of accuracy are inadequate on current traffic. 
+
+A second method is the Packet Based – Per Flow State (PBFS):\\ 
+which requires a session table in which each record includes the session ID (the 5-tuple IP source/destination, transport protocol, port source/destination) 
+and the corresponding application-layer protocol (Protocol ID), which accounts for some tens of bytes each. 
+This method supports the implementation of a verification mechanism based on application-layer data, although this is limited to a per-packet inspection.
+
+A third method is the Message Based – Per Flow State (MBFS):\\
+which operates on messages instead of packets. This requires a TCP/IP normalizer2 module that takes care of IP fragments and TCP segments. 
+Basically, MBFS technologies can perform the same checks of the PBFS ones, but operate on messages;
+
+The fourth method is the Message Based – Per Protocol State (MBPS):\\
+which goes one step further by interpreting exactly what each application transmits and receives. \\
+A MBPS processor understands not only the semantic of the message, but also the different phases of a messages exchange 
+(e.g. an HTTP GET must be followed by a valid response code from the web server, while MBFS does not implement such kind of correlation between messages) 
+because it has a full understanding of the protocol state machine. 
+
+\bigskip
+protocol state machine
+
+\bigskip
+false positives (FP) and false negatives (FN)\\
+In this paper a false positive for protocol X (FP(X)) occurs when a session contain protocol Y is erroneously classified as X. \\
+A false negative for protocol X (FN(X)) occurs when a session containing protocol X is erroneously classified as Y (FN-Wrong Classification), or it remains unclassified (FN-Unclassified).
+
+\textbf{asymmetric routing}, where packets within the same session follow different paths in the two directions.
 
 \section{Words}\label{words}
 \begin{itemize}
