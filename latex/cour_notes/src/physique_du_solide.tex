@@ -1,0 +1,115 @@
+% !Mode:: "TeX:UTF-8"
+\documentclass[openany]{article}
+\input{../../public/package}   %导入需要用到的package
+\input{../../public/article}   %导入需要用到的package
+
+\begin{document}
+\href{http://book.douban.com/subject/20493641/}{固体物理基础教程}
+比较基础的参考书, 熟悉概念比较好.
+
+\section{点阵几何}
+sym\'etrie sph\'erique: toutes les directions sont \'equivalents.
+
+\paragraph{r\'eseau r\'eciproque}
+晶体几何 波矢空间, 也叫做倒空间或者动量空间\\
+正空间中每种晶格都会在倒空间对应一种特定的格子(称为倒格子).\\
+而布里渊区就是倒格子中一个基本的原胞.\\
+正倒格子一一对应,
+倒空间的一个点对应于正空间的一个面, 反之亦然.
+
+cubique simple 对应的倒空间是 cubique simple\\
+cubique centr\'e 对应的倒空间是 cubique en faces centr\'es\\
+cubique en face centr\'e 对应的倒空间是 cubique centr\'e
+
+倒格失$G_h = h \vec{A} + k \vec{B} + l \vec{C}$ 垂直于晶面族$\{h,k,l\}$
+
+\paragraph{初基元胞的体积}
+bravias 中初基元胞的体积是 $\Omega = \vec{a} \dot (\vec{b} \times \vec{c})$\\
+倒格子初基元胞的体积是 $\Omega^* = \vec{A} \dot (\vec{B} \times \vec{C})$\\
+两者的关系: $\Omega \Omega^* = (2\pi)^3$
+
+各布里渊区的体积相同(即第一布里渊区的体积等于第二布里渊区的体积等于\ldots{}), 都等于倒格子初基元胞的体积$\Omega^*$
+
+\paragraph{Indice de Miller}
+\href{http://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Indices_miller_direction_exemples.png/799px-Indices_miller_direction_exemples.png}{Rep\'erage d'une direction}
+
+\href{http://upload.wikimedia.org/wikipedia/commons/e/e8/Indices_miller_plan_definition.png}{Rep\'erage d'un plan}
+
+\href{http://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Miller_Indices_Felix_Kling.svg/411px-Miller_Indices_Felix_Kling.svg.png}{Indices miller}
+图中第三排过原点的不懂怎么计算?
+
+\subsection{晶体结构的测定}
+晶格可以看做是入射X 射线的三维光栅.
+
+当一束X 射线入射到某一晶面族上时, 尽管X 射线的穿透能力很强,
+但每一层晶面仍会对其产生少量的反射,
+当该晶面族个层晶面的反射波在某个方向上的相位相同时,
+便会产生一个加强的反射光束, 这就是衍射线的方向.
+
+\section{晶格振动理论}
+当存在能量起伏使得晶体中某一个原子产生振动时,
+必然会通过原子间相互作用而引起晶体中其他原子的振动, 即形成一种波动, 称之为\textbf{格波}. 晶体就是通过格波来传递能量的.
+
+然而, 研究晶体中大量原子的热振动, 也是一个非常复杂的问题.
+原子作为微观粒子, 需要使用量子力学. 但是时至今日, 量子力学能为我们提供的有效工具仅仅是氢原子中单电子的运动, 而这一模型和晶体相去甚远. 因此,
+求解晶体中原子的运动不得不借助于经典的牛顿力学, 但是为了准确一点, 在求解过程和结果分析中随时进行\textbf{量子力学修正}.
+然后通过大量物理实验规律来验证.\\
+其次, 即使采用了牛顿力学, 由于晶体中大量原子的相互作用, 原子的受力分析仍然很复杂, 就需要我们抓住主要矛盾, 忽略次要矛盾, 通过\textbf{近似}条件来简化问题.
+
+\section{原子间化学键}
+原子相互靠近时会形成化学键, 他是外层电子相互作用的结果, 在分子或晶体中,
+\textbf{化学键的形成使系统总能和势能降低}.
+原子的结合是核和所有电子静电相互作用的结果,
+这\textbf{只能在量子力学的基础上得到解释}.\\理论的主要原理在考察简单分子时得到了验证.
+对复杂的多原子系统的分析和计算遇到了不少数学上的困难, 须进行简化.
+解决这些复杂问题是量子力学和固体力学量子理论的任务.
+
+原子间结合的类型分为离子(异极)键, 共价键(同极), 金属键, 范德瓦尔斯键, 以及特别的氢键.  前三种比后两种强.\\
+所有强化学键都是互相靠近的原子外层轨道相互作用的结果,并在分子或晶体这一新系统中形成共有的电子态.\\
+虽然描写物体中电子分布的函数到处是连续的, 但是每一类结合的分布都有自己的特点.\\
+在一些原子中电子浓度的增大和在另一些原子中电子浓度的减少引起库仑作用, 即离子结合.\\
+如果一部分外层电子在空间上集中在成键原子之间的轨道上, 这就是共价结合.\\
+如果外层电子集体化, 即在整个晶体点阵中分布, 这就是金属结合.
+
+孤立的原子具有分立的能级. 由N个相距远的原子组成的系统中, 每一个能级本质上是N重简并的. \emph{原子靠近时这些能级系会发生变化.  相互作用使能级分裂从而减少简并度}.\\
+当原子形成晶体时, 分裂的能级很多, 以至于形成连续能带.\\
+晶体电子能谱的性质既和原子组成有关, 又和原子间距离有关. 在金属中能级转化为连续的能带, 电子只能填充较低的部分. 在共价和离子晶体中, 在填满的低能带和高能带间存在禁带.
+
+由于能谱和原子间距离有关, 在某些晶体发生相变时, 晶体的性质会发生改变, 压力引起的相变就会如此, 在很高压力下, 所有晶体都会金属化.\\
+这是自然的, 因为在高压下, 原子的被迫靠近是外层电子的重叠增加, 共有电子数增加, 能谱发生变化, 使能带合并在一起.
+
+分子晶体比较特别, 分子中原子间是共价键,
+分子间是弱的范德瓦尔斯键或者氢键.
+
+原子间互作用势能的非对称性(在r大处势函数变化较平缓)时热振动振幅和非简谐性随温度而增大,
+非简谐性使原子间距增大, 引起晶体的热膨胀.
+振动的非简谐性还可以说明晶体声学和光学中的各种非线性效应.
+
+\textbf{电离势}: 使价电子电离所需要的能量.\\
+\textbf{亲和能}: 非金属容易得到电子, 释放一个电子的能量称为亲和能.
+
+共价键通常定义为一对电子实现的\textbf{有方向的化学键}. 从量子力学观点看, 这一形式的规律可解释为形成了由自旋相反电子配对的稳定轨道.\\
+共价键的本质要用量子力学解释.
+
+\section{Examen}
+2014.03.20
+
+\paragraph{Probl\`eme 3 - Cellule solaire}
+Une cellule solaire est constitu\'e d'une jonction PN en silicium. 
+Dans le r\'egion P, la concentration d'atomes accepteurs est $N_a = 10^{18} {cm}^{-3}$
+Dans le r\'egion N, la concentration d'atomes donneurs est $N_d = 10^{16} {cm}^{-3}$.
+Pour silicium, la concentraton intrins\`eque $n_i = 10^{10} cm^{-3}$.
+La largeur de bande interdite $E_g  = 1.12 eV$.
+
+\textbf{Questions:}
+
+3.1. Calculer la position du niveau de Fermi dans la r\'egion P. Et calculer la concentration des \'electons dans la r\'gion P.
+
+3.1. Calculer la position du niveau de Fermi dans la r\'egion N. Et calculer la concentration des trous dans la r\'gion N.
+
+3.2. Tracer le diagramme \'energ\'etique de la jonction \`a l'\'equilibre.\\
+Page 117 dans le livre.
+
+3.3. Dans quelle zone faut-il amener des photons pour obtenir un g\'en\'erateur de courant?\\
+Expliquer le principe de la cellule photonvolta\"ique.
+\end{document}
