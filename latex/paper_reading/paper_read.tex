@@ -348,4 +348,41 @@ A false negative for protocol X (FN(X)) occurs when a session containing protoco
   达到线速标准的设备,避免了非线速设备的转发瓶颈,称作无阻塞处理.即厂商标称交换能力大于设备上所有类型各个接口的带宽总和的2倍(全双工).需要说明的是通常二层线速指的是交换能力,单位Gbps千兆比特每秒(背板带宽单位), 三层线速指的是包转发率,单位Mpps百万包/秒(million packets per second).
 \end{itemize}
 
+\section{NetraMark: a tool to benchmark traffic classification}
+port based, deep packet inspection, graph-based classifiers\\
+source code available\\
+6 guidelines: comparability, reproducibility, efficiency, extensibility, synery(combination of different classifiers) and flexibility/easy of use.
+
+deep packet(payload) inspection, DPI
+
+host-level communication behavior-based approches, BLINC
+
+traffic dispersion graphes(TDG)
+
+$precision = \dfrac{TP}{TP + FP}$, $recall = \dfrac{TP}{TP+FN}$, $F-measure = $
+
+\section{Internet 流量模型分析与综述}
+english title: survey and analysis on the internet traffic model
+
+大尺度下的自相似性和小时间尺度下的多分型性, 既存在于与互联网, 也存在与Ad Hoc网和卫星网.
+
+长相关性, 周期性, 混沌性
+
+流量建模
+\begin{itemize}
+	\item 基于流
+	\item 基于包
+		\begin{itemize}
+			\item 基于包的到达过程和包的长度分布
+			\item 根据时间序列的流量大小分布特征
+		\end{itemize}
+\end{itemize}
+
+传统(短相关)模型: 泊松(Poisson)模型, 马尔可夫(Markov)模型, 回归regression 模型.  
+
+自相似(长相关)模型: 重尾分布的ON/OFF模型, M/G/$\infty$排队模型, FBM/FGN模型, FARIMA模型, 基于小波的模型.
+
+短相关模型描述流量中包的到达是一个泊松过程,刻画了流量的短相 关特性,因此适合于小缓冲区的排队系统分析;自相似模型描述流量自相似和长相关特性,刻画流量的长相关特
+征,因此适合于大缓冲区的排队系统分析;多分形模型更多地用于流量的细节分析,流量预测模型主要用于预测未来到达流量的大小等等
 \end{document}
+
