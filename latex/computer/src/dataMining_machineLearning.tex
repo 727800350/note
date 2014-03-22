@@ -735,4 +735,76 @@ AVC-组群可以放在内存中. 如果这个不能满足, rainforest 还有一�
 使用每个子集构造一棵树, 导致多棵树, 然后再用这些树构造一颗新树, 他非常接近于原来的所有训练数据都放在内存所产生的树.
 
 \subsection{贝叶斯分类法}
+统计学分类方法, 预测隶属关系的概率, 如一个给定的元组属于一个特定类的概率.\\
+基于贝叶斯定理. 朴素贝叶斯分类法假定一个属性值在给定类上的影响独立于其他属性的值. 这一假定称为类条件独立性.
+
+\noindent
+$P(H |X)$ 后验概率(posterior probability), 或在条件$X$下, $H$的后验概率.\\
+$P(H)$ 先验概率(priori probability), 或$H$的先验概率.\\
+$P(X|H)$ 后验概率(posterior probability), 或在条件$H$下, $X$的后验概率.
+$P(X)$ 先验概率(priori probability), 或$X$的先验概率.\\
+
+例如, 假设数据元组由属性age和income描述的顾客, 而X是一位35岁的顾客．其收入为4万美元．令H为某种假设, 如顾客将购买计算机.\\
+则, $P(H|X)$反映当我们知道顾客的收入和年龄时, 顾客X 将购买计算机的概率.\\
+$P(H)$ 表示任意给定顾客将购买计算机的概率, 而不管他们的年龄, 收入等信息.\\
+$P(X|H)$ 表示 已知顾客将购买计算机, 该顾客是35岁且收入为4万美元的概率.\\
+$P(X)$ 表示顾客集合中的年龄为35岁且收入为4万美元的概率.
+
+贝叶斯定理是关于随机事件A和B的条件概率(或边缘概率)的一则定理.
+$$ P(A|B) = \frac{P(B | A)\, P(A)}{P(B)} $$
+其中$P(A|B)$是在$B$发生的情况下$A$发生的可能性
+
+理论上,概率模型分类器是一个条件概率模型.
+$$ p(C \vert F_1,\dots,F_n)\, $$
+独立的类别变量$C$有若干类别,条件依赖于若干特征变量 $F_1,F_2,...,F_n$.但问题在于如果特征数量n较大或者每个特征能取大量值时,基于概率模型列出概率表变得不现实.所以我们修改这个模型使之变得可行. 贝叶斯定理有以下式子:
+$$ p(C \vert F_1,\dots,F_n) = \frac{p(C) \ p(F_1,\dots,F_n\vert C)}{p(F_1,\dots,F_n)}. \, $$
+用朴素的语言可以表达为:
+$$ \mbox{posterior} = \frac{\mbox{prior} \times \mbox{likelihood}}{\mbox{evidence}}.  \, $$
+实际中,我们只关心分式中的分子部分,因为\textbf{分母不依赖于$C$而且特征$F_i$的值是给定的,于是分母可以认为是一个常数}.这样分子就等价于联合分布模型.
+$$ p(C \vert F_1, \dots, F_n)\, $$
+重复使用链式法则,可将该式写成条件概率的形式,如下所示:
+$$
+\begin{aligned}
+& p(C \vert F_1, \dots, F_n)\,\\
+& \varpropto p(C) \ p(F_1,\dots,F_n\vert C)\\
+& \varpropto p(C) \ p(F_1\vert C) \ p(F_2,\dots,F_n\vert C, F_1)\\
+& \varpropto p(C) \ p(F_1\vert C) \ p(F_2\vert C, F_1) \ p(F_3,\dots,F_n\vert C, F_1, F_2)\\
+& \varpropto p(C) \ p(F_1\vert C) \ p(F_2\vert C, F_1) \ p(F_3\vert C, F_1, F_2) \ p(F_4,\dots,F_n\vert C, F_1, F_2, F_3)\\
+& \varpropto p(C) \ p(F_1\vert C) \ p(F_2\vert C, F_1) \ p(F_3\vert C, F_1, F_2) \ \dots p(F_n\vert C, F_1, F_2, F_3,\dots,F_{n-1}).
+\end{aligned}
+$$
+现在"朴素"的条件独立假设开始发挥作用:假设每个特征$F_i$对于其他特征$F_j,j\neq i$是条件独立的.这就意味着
+$$ p(F_i \vert C, F_j) = p(F_i \vert C)\, $$
+对于$i\ne j$,所以联合分布模型可以表达为
+$$
+\begin{aligned}
+p(C \vert F_1, \dots, F_n) 
+& \varpropto p(C) \ p(F_1\vert C) \ p(F_2\vert C) \ p(F_3\vert C) \ \cdots\, \\
+& \varpropto p(C) \prod_{i=1}^n p(F_i \vert C).\,
+\end{aligned}
+$$
+这意味着上述假设下,类变量C的条件分布可以表达为:
+$$ p(C \vert F_1,\dots,F_n) = \frac{1}{Z}  p(C) \prod_{i=1}^n p(F_i \vert C) $$
+其中$Z$(证据因子)是一个只依赖与$F_1,\dots,F_n$等的缩放因子,当特征变量的值已知时是一个常数.
+
+如果类的先验概率未知, 则通常我们假定这些类是等概率的, 即
+$ P(C_1)= P(C_2)= \cdots P(C_m) $
+
+记$X = (\vecteur(x))$ 为n个属性 $\vecteur{F}$对元组的n 个测量.\\
+若$F_k$ 是分类属性, 则$P(F_k \vert C)$ 很容易计算\\
+若$F_k$ 是连续属性, 则需要多做一点工作, 通常\textbf{假定连续值属性服从均值为$\mu$, 标准差为$\sigma$的高斯分布}, 由下式定义
+$$ g(x,\mu, \sigma) = {1 \over \sigma\sqrt{2\pi} }\,e^{- {{(x-\mu )^2 \over 2\sigma^2}}} $$
+因此
+$$ P(X_k \vert C) = g(x_k, \mu_C, \sigma_C) $$
+其中$\mu_C, \sigma_C$ 分别是C类训练元组属性$F_k$的均值和标准差.
+
+贝叶斯分类还可以用来为不直接使用贝叶斯定理的其他分类法提供理论判定. 
+例如, 在某种假定下, 可以证明: 与朴素贝叶斯分类法一样, 许多神经网络和曲线拟合算法输出最大的后验假定.
+
+\bigskip
+\textbf{零概率处理}: 由于零概率的出现会将乘积中所有不为零的概率消除, 会产生问题.
+
+一个简单的技巧来避免该问题, 可以假定训练数据库D 很大, 以至于对每个计算加1 造成的估计概率的变化可以忽略不计, 但可以方便的避免概率值为零. 这种概率估计技术成为
+\textbf{拉普拉斯校准}.\\
+如果对q 个计数都加上1, 则必须记住在用于计算概率的对应分母上加上q.
 \end{document}
