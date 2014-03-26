@@ -10,6 +10,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:${PATH}
 
 start() {
     echo "Starting ${PACKAGE_DESC}: "
+## nohup: Run a Command or Shell-Script Even after You Logout
+## redirect stdout to a log file and redirect stderr to stdout
     nohup /usr/local/bin/ntopng -i wlan0 -w 3000 -U Eric -l > /var/log/ntopng.log 2>&1 &
     echo $! > /var/tmp/${PACKAGE_NAME}.pid
     echo "${PACKAGE_NAME}."
@@ -47,7 +49,6 @@ case "$1" in
     stop)
         stop
         ;;
-    #reload)
     restart | force-reload)
         restart
         ;;
