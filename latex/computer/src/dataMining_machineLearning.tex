@@ -807,4 +807,19 @@ $$ P(X_k \vert C) = g(x_k, \mu_C, \sigma_C) $$
 一个简单的技巧来避免该问题, 可以假定训练数据库D 很大, 以至于对每个计算加1 造成的估计概率的变化可以忽略不计, 但可以方便的避免概率值为零. 这种概率估计技术成为
 \textbf{拉普拉斯校准}.\\
 如果对q 个计数都加上1, 则必须记住在用于计算概率的对应分母上加上q.
+
+\subsection{模型评估和选择}
+\begin{table}[htbp]
+\centering
+\caption{混淆矩阵}
+\begin{tabular}{|lllll|}
+\hline
+       &      & \multicolumn{2}{c}{prediction}  &   \\
+       &       & yes        & no & total \\
+\multirow{2}{*}{actual}   & yes   & TP   & FN & P     \\
+       & no    & FP         & TN & N     \\
+       & total & P'         & N' & P+N   \\
+\hline
+\end{tabular}
+\end{table}
 \end{document}
