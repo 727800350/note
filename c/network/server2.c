@@ -56,8 +56,7 @@ int main(void) {
 
 	printf("Accepting connections ...\n");
 	while (1) {
-		if ((connectfd = accept(listenfd, (struct sockaddr *) &client,
-				&sin_size)) == -1) {
+		if ((connectfd = accept(listenfd, (struct sockaddr *) &client, &sin_size)) == -1) {
 			perror("accept() error");
 			exit(1);
 		}
@@ -72,6 +71,8 @@ int main(void) {
 			//child process
 			close(listenfd);
 			process_cli(connectfd,client);
+			close 这里不是必需, 因为下面的exit(0), 而进程终止的部分工作就是关闭所有由内核打开的描述符
+			close(connectfd);
 			exit(0);
 		}
 		else {
@@ -121,5 +122,4 @@ void process_cli(int connectfd, struct sockaddr_in client) {
 			send(connectfd, sendbuf, strlen(sendbuf), 0);
 		}
 	}
-	close(connectfd);
 }
