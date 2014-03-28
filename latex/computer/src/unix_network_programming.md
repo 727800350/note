@@ -2,10 +2,41 @@ Unix network Programming note
 
 Note: This markdown file also contains other resources, but it is mostly from UNP.
 
-# TCP and UDP
+<link rel="stylesheet" href="http://yandex.st/highlightjs/6.2/styles/googlecode.min.css">
+ 
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script src="http://yandex.st/highlightjs/6.2/highlight.min.js"></script>
+ 
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+ $(document).ready(function(){
+      $("h1,h2,h3,h4,h5,h6").each(function(i,item){
+        var tag = $(item).get(0).localName;
+        $(item).attr("id","wow"+i);
+        $("#category").append('<a class="new'+tag+'" href="#wow'+i+'">'+$(this).text()+'</a></br>');
+        $(".newh1").css("margin-left",0);
+        $(".newh2").css("margin-left",20);
+        $(".newh3").css("margin-left",40);
+        $(".newh4").css("margin-left",60);
+        $(".newh5").css("margin-left",80);
+        $(".newh6").css("margin-left",100);
+      });
+ });
+</script>
+<div id="category"></div>
+
+# TCP
 Note that TCP does not guarantee that the data will be received by the other endpoint, as this is impossible. It delivers data to the other endpoint if possible, and notifies the user (by giving up on retransmissions and breaking the connection) if it is not possible. Therefore, TCP cannot be described as a 100% reliable protocol; it provides **reliable delivery of data or reliable notification of failure.**
 
+# UDP
 We also say that UDP provides a connectionless service, as there need not be any long-term relationship between a UDP client and server. For example, a UDP client can create a socket and send a datagram to a given server and then immediately send another datagram on the same socket to a different server. Similarly, a UDP server can receive several datagrams on a single UDP socket, each from a different client.
+
+![UDP客户/服务器程序所用的套接字函数](http://pic002.cnblogs.com/images/2012/367190/2012081121141279.jpg)  
+如上图所示, 客户不与服务器建立连接, 而是只管使用`sendto`函数给服务器发送数据报, 其中必须指定目的地(即服务器)第地址作为参数. 类似的, 服务器不接受来自客户的连接, 而是只管调用`recvfrom` 函数, 等待来自某个客户的数据到达. recvfrom将与所接受的数据报一道返回客户的协议地址, 因此服务器可以把响应发送给正确的客户.
+
+写一个长度为0 的数据报是可行的. 在UDP情况下, 这会形成一个只包含一个IP首部和一个UDP首部而没有数据的IP数据报. 这也意味着对于UDP协议, recvfrom返回0 值是可接受的: 他并不像TCP套接字上read 返回0值那样表示对端已关闭连接. 既然UDP是无连接的, 因此也没有诸如关闭一个UDP连接之类的事情.
+
+大多数TCP服务器是并发的, 而大多数UDP服务器是迭代的
 
 ## API
 	inet_pton: presentation to network
@@ -19,22 +50,105 @@ We also say that UDP provides a connectionless service, as there need not be any
 在一个信号处理函数运行期间, 正被递交的信号是阻塞的. 而且, 安装处理函数时在传递给sigaction函数的sa_mask 信号集中指定的任何额外信号也被阻塞.
 
 一般有3 种方式进行操作
-(1) eg: signal(SIGINT ,SIG_IGN );
-//SIG_IGN 代表忽略信号,SIGINT信号代表由InterruptKey产生,通常是CTRL +C 或者是DELETE .发送给所有ForeGround Group的进程.
-(2) eg: signal(SIGINT ,SIG_DFL );
-//SIGINT信号代表由InterruptKey产生,通常是CTRL +C或者是DELETE.发送给所有ForeGroundGroup的进程. SIG_DFL代表执行系统默认操作,其实对于大多数信号的系统默认动作时终止该进程.这与不写此处理函数是一样的.
-(3) 自定义的信号或是信号处理函数
+
+1. eg: `signal(SIGINT ,SIG_IGN )`;  
+`SIG_IGN` 代表忽略信号,SIGINT信号代表由`InterruptKey`产生,通常是`CTRL+C` 或者是`DELETE` .发送给所有ForeGround Group的进程.
+2. eg: `signal(SIGINT ,SIG_DFL)`;  
+`SIG_DFL`代表执行系统默认操作,其实对于大多数信号的系统默认动作时终止该进程.这与不写此处理函数是一样的.
+3.  自定义的信号或是信号处理函数
+
+## 内核如何实现信号的捕捉
+如果信号的处理动作是用户自定义函数,在信号递达时就调用这个函数,这称为捕捉信号.由于信号处理函数的代码是在用户空间的,处理过程比较复杂,举例如下:[捕捉信号](http://learn.akae.cn/media/ch33s04.html)
+
+1. 用户程序注册了`SIGQUIT`信号的处理函数`sighandler`.
+1. 当前正在执行`main`函数,这时发生中断或异常切换到内核态.
+1. 在中断处理完毕后要返回用户态的`main`函数之前检查到有信号`SIGQUIT`递达.
+1. 内核决定返回用户态后不是恢复main函数的上下文继续执行,而是执行`sighandler`函数,**`sighandler`和`main`函数使用不同的堆栈空间,它们之间不存在调用和被调用的关系,是两个独立的控制流程**.
+1. `sighandler`函数返回后自动执行特殊的系统调用`sigreturn`再次进入内核态.
+1. 如果没有新的信号要递达,这次再返回用户态就是恢复`main`函数的上下文继续执行了.
+
+当捕捉到信号时,不论进程的主控制流程当前执行到哪儿,都会先跳到信号处理函数中执行,从信号处理函数返回后再继续执行主控制流程.信号处理函数是一个单独的控制流程,因为它和主控制流程是异步的,二者不存在调用和被调用的关系,并且使用不同的堆栈空间.引入了信号处理函数使得一个进程具有多个控制流程,如果这些控制流程访问相同的全局资源(全局变量,硬件资源等),就有可能出现冲突.
+
+## Pause
+    #include <unistd.h>
+    int pause(void);
+
+pause函数使调用进程挂起直到有信号递达.
+
+- 如果信号的处理动作是终止进程,则进程终止,pause函数没有机会返回
+- 如果信号的处理动作是忽略,则进程继续处于挂起状态,pause不返回
+- 如果信号的处理动作是捕捉,则调用了信号处理函数之后pause返回-1,errno设置为EINTR.
+
+所以pause只有出错的返回值(想想以前还学过什么函数只有出错返回值?).错误码EINTR表示"被信号中断".
+
+    #include <unistd.h>
+    #include <signal.h>
+    #include <stdio.h>
+    
+    void sig_alrm(int signo) {
+    	/* nothing to do */
+    }
+    
+    unsigned int mysleep(unsigned int nsecs) {
+    	struct sigaction newact, oldact;
+    	unsigned int unslept;
+    
+    	newact.sa_handler = sig_alrm;
+    	sigemptyset(&newact.sa_mask);
+    	newact.sa_flags = 0;
+    	sigaction(SIGALRM, &newact, &oldact);
+    
+    	alarm(nsecs);
+    	pause();
+    
+    	unslept = alarm(0);
+    	sigaction(SIGALRM, &oldact, NULL);
+    
+    	return unslept;
+    }
+    
+    int main(void) {
+    	while(1){
+    		mysleep(2);
+    		printf("Two seconds passed\n");
+    	}
+    	return 0;
+    }
+
+上述代码的运行流程:
+
+1. `main`函数调用`mysleep`函数,后者调用`sigaction`注册了`SIGALRM`信号的处理函数`sig_alrm`.
+1. 调用`alarm(nsecs)`设定闹钟.
+1. 调用`pause`等待,内核切换到别的进程运行.
+1. `nsecs`秒之后,闹钟超时,内核发`SIGALRM`给这个进程.
+1. 从内核态返回这个进程的用户态之前处理未决信号,发现有`SIGALRM`信号,其处理函数是`sig_alrm`.
+1. 切换到用户态执行`sig_alrm`函数,进入`sig_alrm`函数时`SIGALRM`信号被自动屏蔽,从`sig_alrm`函数返回时`SIGALRM`信号自动解除屏蔽.然后自动执行系统调用`sigreturn`再次进入内核,再返回用户态继续执行进程的主控制流程(`main`函数调用的`mysleep`函数).
+1. `pause`函数返回-1,然后调用`alarm(0)`取消闹钟,调用`sigaction`恢复`SIGALRM`信号以前的处理动作.
+
+现在重新审视例 33.2 "mysleep",设想这样的时序:
+
+1. 注册SIGALRM信号的处理函数.
+1. 调用`alarm(nsecs)`设定闹钟.
+1. 内核调度优先级更高的进程取代当前进程执行,并且优先级更高的进程有很多个,每个都要执行很长时间
+1. nsecs秒钟之后闹钟超时了,内核发送`SIGALRM`信号给这个进程,处于未决状态.
+1. 优先级更高的进程执行完了,内核要调度回这个进程执行.`SIGALRM`信号递达,执行处理函数`sig_alrm`之后再次进入内核.
+1. 返回这个进程的主控制流程,`alarm(nsecs)`返回,调用`pause()`挂起等待.
+**可是SIGALRM信号已经处理完了,还等待什么呢**?
+
+出现这个问题的根本原因是**系统运行的时序(Timing)**并不像我们写程序时所设想的那样.  
+虽然alarm(nsecs)紧接着的下一行就是`pause()`,但是无法保证`pause()`一定会在调用`alarm(nsecs)`之后的nsecs秒之内被调用.  
+由于异步事件在任何时候都有可能发生(这里的异步事件指出现更高优先级的进程),如果我们写程序时考虑不周密,就可能由于时序问题而导致错误,这叫做**竞态条件(Race Condition)**
+
+使用`sigsuspend` 代替可以解决`pause` 的问题.
 
 ## API
 函数signal 的正常函数原型:
 `void (*signal (int signo, void (* func)(int)))(int);`  
 为了简化, 我们定义  
-```
-typedef void Sigfunc(int);
-Sigfunc *signal(int signo, Sigfunc *func);
-```  
-func 是指向信号处理函数的指针
-**返回值**也是指向信号处理函数的指针
+
+	typedef void Sigfunc(int);
+	Sigfunc *signal(int signo, Sigfunc *func); 
+	func 是指向信号处理函数的指针, 返回值也是指向信号处理函数的指针
 
 僵死进程
 
@@ -70,25 +184,25 @@ I/O 复用(select/pull);
 [阻塞式IO模型](http://www.kankanews.com/ICkengine/wp-content/plugins/wp-o-matic/cache/5415ca1f52_063846-CPcp-255033.jpg)
 
 - 非阻塞式IO  
-[非阻塞式IO](http://images.cnblogs.com/cnblogs_com/yjf512/201205/201205310957235923.jpg)
+![非阻塞式IO](http://images.cnblogs.com/cnblogs_com/yjf512/201205/201205310957235923.jpg)
 
 
 - IO复用模型  
-[IO复用模型](http://blog.chinaunix.net/attachment/201206/20/10275706_1340176181jjx0.jpg)
+![IO复用模型](http://blog.chinaunix.net/attachment/201206/20/10275706_1340176181jjx0.jpg)
 
 - 信号驱动式IO  
-[信号驱动式IO](http://www.kankanews.com/ICkengine/wp-content/plugins/wp-o-matic/cache/5415ca1f52_064039-xaMw-255033.jpg)
+![信号驱动式IO](http://www.kankanews.com/ICkengine/wp-content/plugins/wp-o-matic/cache/5415ca1f52_064039-xaMw-255033.jpg)
 
 - 异步IO模型  
-[异步IO模型](http://images.cnblogs.com/cnblogs_com/yjf512/201205/201205310957257186.jpg)
+![异步IO模型](http://images.cnblogs.com/cnblogs_com/yjf512/201205/201205310957257186.jpg)
 
 - 5 中模型的比较  
-[比较](http://hi.csdn.net/attachment/201012/24/0_129318173593Bo.gif) 
+![比较](http://hi.csdn.net/attachment/201012/24/0_129318173593Bo.gif) 
 
 ## IO复用模型
 ### Select
 允许进程指示内核等待多个(**我们感兴趣的**)事件中的任何一个发生, 并只在有一个或多个事件发生或经历一段指定的时间后才唤醒它.  
-这样就不必为每个client fork 一个子进程来处理.
+这样就不必为每个client fork 一个子进程来处理. 而是服务任意个客户的单进程程序.
 #### 描述符就绪条件
 - 满足下面4 个条件中的任何一个时, 一个套接字准备好读
 	1. todo:该套接字接受缓冲区中的数据字节数大于等于套接字接受缓冲区**低水位标记**的当前大小. 对这样的套接字执行读操作不会阻塞并将**返回一个大于0的值**
@@ -114,6 +228,10 @@ Example:
 其中,最后一个参数timeout,可以设置select等待的时间.i)如果该值设置为0,那么,select()在检查描述符后就立即返回.ii)如果该值为`null`;那么select 会永远等待下去,一直到有一个描述符准备好IO; iii)其他, 那么,select()会等待指定的时间,然后再返回.select()的返回值指定了发生事件的fd个数
 1. 用`FD_ISSET`测试fd_set中的每一个fd ,检查是否有相应的事件发生,如果有,就进行处理.
 
+在批量方式下(将标准输入/输出分别重定向到两个文件, 而标准输入的文件中有很多行).  
+**标准输入中的EOF并不意味着我们同时也完成了从套接字的读入**; 因为可能仍有请求在去往服务器的路上, 或者仍有应答在返回客户的路上(**实际情况中必须考虑带宽**).  
+所以我们需要一种关闭TCP连接其中一半的方法. 也就是说, 我们想给服务器发送一个FIN, 告诉它我们已经完成了数据发送, 但是仍然保持套接字描述符打开以便读取(这样client 可以继续从套接字读数据, server 在读到EOF时, 就意味着client 发给server的数据已经全部读完了). 这个功能将有`shutdown` 完成.
+
 
 #### API
 
@@ -128,6 +246,7 @@ Example:
 	example: tcpcliser/tcpservselect01.c; elect/strcliselect02.c
 
 当一个服务器在处理多个客户时, 他绝对不能阻塞只与单个客户相关的某个函数调用. 否则可能导致服务器被挂起, 拒绝为所有其他客户提供服务. 这就是所谓的拒绝服务(denial of service)攻击todo: 这个攻击的意思不是耗尽服务器资源吗? 难道是以这种方式耗尽的.
+
 ### poll
 poll库是在linux2.1.23中引入的,windows平台不支持poll.  
 poll与select的基本方式相同,都是先创建一个关注事件的描述符的集合,然后再去等待这些事件发生,然后再轮询描述符集合,检查有没有事件发生,如果有,就进行处理.因此,poll有着与select相似的处理流程:  
@@ -160,6 +279,20 @@ poll与select的基本方式相同,都是先创建一个关注事件的描述符
 
 如果我们不再关心某个特定描述符, 那么可以把与它对应的`pollfd`结构的`fd` 成员设置成一个负值. `poll` 函数将忽略这样的`pollfd` 结构的`events` 成员, 返回时, 将他的`revents`成员的值置为0.
 
+# 高级IO函数
+## 套接字超时
+在涉及套接字的IO操作上设置超时的方法有以下3 种:
+
+1. 调用`alarm`, 他在指定超时期满时产生`SIGALARM`信号.
+1. 在`select`中阻塞等待IO(select 有内置的时间限制), 以此代替直接阻塞在read或write调用上
+1. 使用较新的`SO_RECVTIMEO`和`SO_SNDTIMEO`套接字选项(但是并非所有实现都支持这两个套接字).
+
+	example: lib/connect_timeo.c, advio/dgclitimeo.c, lib/readable_timeo.c
+
+## 高级轮询技术
+Solaris 上名为`/dev/null`的特殊文件提供了一个可扩展的轮询大量描述符的方法.  
+select 和 poll 存在的一个问题是, 每次调用它们都得传递待查询的文件描述符. 轮询设备能在调用之间维持状态, 因此轮询进程可以预先设置好待查询描述符的列表, 然后进入一个
+循环等待事件发生, 每次循环回来时不必再次设置该列表.
 
 ### fcntl(file control) 函数
 
@@ -197,6 +330,9 @@ poll与select的基本方式相同,都是先创建一个关注事件的描述符
 
 多"用户/对象/进程优先级"以及多进程,一般会使得对可重入代码的控制变得复杂.同时, **IO代码通常不是可重入的**,因为他们依赖于像磁盘这样共享的,单独的(类似编程中的静态(Static),全域(Global))资源.
 
+调用了malloc或free,因为malloc也是用**全局链表来管理堆**的  
+调用了标准I/O库函数.标准I/O库的很多实现都以不可重入的方式使用**全局数据结构**.
+
 #### errno 变量
 errno 变量存在不可重入的问题, 这个整型变量历来每个进程各有一个副本. 但是同一个进程的各个线程共享一个errno 变量.
 
@@ -217,15 +353,47 @@ errno 变量存在不可重入的问题, 这个整型变量历来每个进程各
 	这段代码中我们, 在信号处理函数中调用了fpritnf 这个标准IO 函数, 它引入了另外一个重入问题.
 
 # 守护进程和inetd 超级服务器
+要启动一个守护进程,可以采取以下的几种方式:
 
+1. 在系统期间通过系统的初始化脚本启动守护进程.这些脚本通常在目录etc/rc.d 下,
+通过它们所启动的守护进程具有超级用户的权限.系统的一些基本服务程序通常都是通过
+这种方式启动的.
+2. 很多网络服务程序是由inetd 守护程序启动的.在后面的章节中我们还会讲到它.
+它监听各种网络请求,如telnet,ftp 等,在请求到达时启动相应的服务器程序(telnet server,
+ftp server 等).
+3. 由cron 定时启动的处理程序.这些程序在运行时实际上也是一个守护进程.
+4. 由at 启动的处理程序.
+5. 守护程序也可以从终端启动,通常这种方式只用于守护进程的测试,或者是重起因
+某种原因而停止的进程.
+6. 在终端上用nohup 启动的进程.用这种方法可以把所有的程序都变为守护进程
 
-    #include"unp.h"
-    #include<syslog.h>
+守护进程不属于任何的终端,所以当需要输出某些信息时,它无法像通常程序那样将
+信息直接输出到标准输出和标准错误输出中.这就需要某些特殊的机制来处理它的输出.  
+为了解决这个问题,Linux 系统提供了`syslog()`系统调用.通过它,守护进程可以向系统的
+log 文件写入信息.它在Linux 系统函数库`syslog.h` 中的定义如下:
+`void syslog( int priority, char *format, ...);`  
+该调用有两个参数:priority 参数指明了进程要写入信息的等级和用途
+
+## syslogd 守护进程
+Unix 系统中的syslogd 守护进程通常由某个系统初始化脚本启动, 而且在系统工作期间一直运行. 源自Berkeley 的syslogd 实现在启动时执行以下步骤:
+
+1. 读取配置文件. 通常为`/etc/syslog.conf` 的配置文件指定本守护进程可能收取的各种日志信息应如何处理.
+1. 创建一个Unix域数据报套接字, 给它捆绑路径名`/var/run/log` (在某些系统上是`/dev/log`)
+1. 创建一个UDP 套接字, 给它捆绑端口514(syslog 服务使用的端口号)
+1. 打开路径名`/dev/klog`. 来自内核的中的任何出错消息到输出到这里
+1. 此后syslogd 在一个无限循环中运行. 调用select 以等待它的3 个描述符(分别来自上面的第2, 3, 4 步)之一变为可读, 读入日志消息, 并按照配置文件进行处理.如果守护进程受到`SIGHUP`信号, 那就重新读取配置文件.
+
+通过创建一个unix 雨数据报套接字, 我们就可以从自己的守护进程中通过往syslogd 绑定的路径名发送我们的消息达到发送日志消息的目的, 然而更简单的接口是使用`syslog` 函数.
+
+## 守护进程启动实例
+
+   	 	#include"unp.h"
+    	#include<syslog.h>
     
-    #define MAXFD 64
-    extern int daemon_proc; /* defined in error.c */
+    	#define MAXFD 64
+    	extern int daemon_proc; /* defined in error.c */
     
-    int daemon_init(const char *pname, int facility){
+    	int daemon_init(const char *pname, int facility){
     	int i;
     	pid_t pid;
     
@@ -297,6 +465,8 @@ setsid函数用于创建一个新的会话,并担任该会话组的组长.调用
 
 我们知道通常情况下所有描述符跨`exec` 保持打开, 因此exec加载的实际服务器程序使用描述符0,1,2与客户通信.
 
+不同的进程(非父进程与子进程的关系)各自拥有标准输入, 标准输出和标准错误输出这几个描述符.
+
 	example: 
 	lib/daemon_inetd.c: daemon_inetd 函数, 用于由`inetd` 启动的服务器程序中
 	inetd/daytimetcpserv3.c: 使用daemon_inted 函数的例子
@@ -323,6 +493,164 @@ setsid函数用于创建一个新的会话,并担任该会话组的组长.调用
 # 信号驱动式IO
 进程预先告知内核, 使得当某个描述符上发生某事时, 内核使用信号通知相关进程.
 
+针对一个套接字使用信号驱动式IO(SIGIO)要求进程执行以下3个步骤:
+
+1. 建立SIGIO信号的信号处理函数
+1. 设置该套接字的属主, 通常使用`fcntl`的`F_SETOWN`命令设置
+1. 开启该套接字的信号驱动式IO, 通常通过使用`fcntl` 的`F_SETFL`命令打开`O_ASYNC`标志完成
+
+尽管很容易把一个套接字设置成以信号驱动式IO模式工作, 确定哪些条件导致内核条件递交给套接字属主的SIGIO信号却殊非易事. 这种判定取决于支撑协议.
+
+- 对于UDP套接字, SIGIO信号在发生以下事件时产生
+	- 数据报到达套接字
+	- 套接字上发生异步错误
+- 对于TCP套接字, 不幸的是, 信号驱动式IO对于TCP套接字近乎无用. 问题在于该信号产生得过于频繁, 并且它的出现并没有告诉我们发生了什么事件. 下列条件均导致对于一个TCP套接字产生SIGIO信号.
+	- 监听套接字上某个连接请求已经完成
+	- 某个断连请求已经发起
+	- 某个断连请求已经关闭
+	- 某个连接之半已经关闭
+	- 数据到达套接字
+	- 发生某个异步错误
+
+举例来说, 如果一个进程即读自又写往一个TCP套接字, 那么当有新数据到达时或者当以前写出的数据得到确认时, SIGIO信号均会产生, 而且信号处理函数中无法区分这两种情况.  
+如果SIGIO用于这种数据读写情形, 那么TCP套接字应该设置成非阻塞式, 以防`read`或`write`发生阻塞.  
+我们应该考虑**只对监听套接字使用SIGIO**, 因为对于监听套接字产生SIGIO的唯一条件式某个新连接的完成
+
+# 进程
+
+    #include <sys/types.h>
+    #include <unistd.h>
+    #include <stdio.h>
+    #include <stdlib.h>
+    
+    int main(void){
+    	pid_t pid;
+    	char *message;
+    	int n;
+    	pid = fork();
+    	if (pid < 0) {
+    		perror("fork failed");
+    		exit(1);
+    	}
+    	if (pid == 0) {
+    		message = "This is the child\n";
+    		n = 6;
+    	} else {
+    		message = "This is the parent\n";
+    		n = 3;
+    	}
+    	for(; n > 0; n--) {
+    		printf(message);
+    		sleep(1);
+    	}
+    	return 0;
+    }
+    
+    output:
+    $ ./a.out 
+    This is the child
+    This is the parent
+    This is the child
+    This is the parent
+    This is the child
+    This is the parent
+    This is the child
+    $ This is the child
+    This is the child
+
+
+这个程序的运行过程如下图所示  
+![运行过程](http://learn.akae.cn/media/images/process.fork.png)
+
+这个程序是在Shell下运行的,因此Shell进程是父进程的父进程.父进程运行时Shell进程处于等待状态, 当父进程终止时Shell进程认为命令执行结束了,于是打印Shell提示符,而事实上子进程这时还没结束,所以子进程的消息打印到了Shell提示符后面.最后光标停在This is the child的下一行,这时用户仍然可以敲命令,即使命令不是紧跟在提示符后面,Shell也能正确读取.
+
+一个进程在终止时会关闭所有文件描述符,释放在用户空间分配的内存,但它的PCB还保留着,内核在其中保存了一些信息:如果是正常终止则保存着退出状态,如果是异常终止则保存着导致该进程终止的信号是哪个.  
+这个进程的父进程可以调用wait或waitpid获取这些信息,然后彻底清除掉这个进程.我们知道一个进程的退出状态可以在Shell中用特殊变量$?查看,因为Shell是它的父进程,当它终止时Shell调用wait或waitpid得到它的退出状态同时彻底清除掉这个进程.
+
+如果一个进程已经终止,但是它的父进程尚未调用wait或waitpid对它进行清理,这时的进程状态称为僵尸(Zombie)进程.任何进程在刚终止时都是僵尸进程(在进程终止和父进程执行清理之间有一个时间窗口),正常情况下,僵尸进程都立刻被父进程清理了
+
+    #include <sys/types.h>
+    #include <sys/wait.h>
+    
+    pid_t wait(int *status);
+    pid_t waitpid(pid_t pid, int *status, int options);
+    成功则返回清理掉的子进程id,若出错则返回-1.
+
+父进程调用wait或waitpid时可能会:
+
+- 阻塞(如果它的所有子进程都还在运行).
+- 带子进程的终止信息立即返回(如果一个子进程已终止,正等待父进程读取其终止信息).
+- 出错立即返回(如果它没有任何子进程).
+
+这两个函数的区别是:  
+如果父进程的所有子进程都还在运行,调用wait将使父进程阻塞,而调用waitpid时如果在**options参数中指定WNOHANG可以使父进程不阻塞而立即返回0.**  
+wait等待第一个终止的子进程,而waitpid可以通过pid参数指定等待哪一个子进程.
+
+例如下面的代码:
+    
+    #include <sys/types.h>
+    #include <sys/wait.h>
+    #include <unistd.h>
+    #include <stdio.h>
+    #include <stdlib.h>
+    
+    int main(void)
+    {
+    	pid_t pid;
+    	pid = fork();
+    	if (pid < 0) {
+    		perror("fork failed");
+    		exit(1);
+    	}
+    	if (pid == 0) {
+    		int i;
+    		for (i = 3; i > 0; i--) {
+    			printf("This is the child\n");
+    			sleep(1);
+    		}
+    		exit(3);
+    	} else {
+    		int stat_val;
+    		printf("before waitpidf\n");
+    // 		waitpid(pid, &stat_val, 0);
+    		waitpid(pid, &stat_val, WNOHANG);
+    		printf("after waitpidf\n");
+    		if (WIFEXITED(stat_val))
+    			printf("Child exited with code %d\n", WEXITSTATUS(stat_val));
+    		else if (WIFSIGNALED(stat_val))
+    			printf("Child terminated abnormally, signal %d\n", WTERMSIG(stat_val));
+    	}
+    	return 0;
+    }
+    
+子进程的终止信息在一个int中包含了多个字段,用宏定义可以取出其中的每个字段:
+
+- 如果子进程是正常终止的,WIFEXITED取出的字段值非零,WEXITSTATUS取出的字段值就是子进程的退出状态,
+- 如果子进程是收到信号而异常终止的,WIFSIGNALED取出的字段值非零,WTERMSIG取出的字段值就是信号的编号.
+
+上面程序的输出:
+    
+    when we use waitpid(pid, &stat_val, 0); 阻塞
+    the output is:
+    [Eric@human ~]$ ./test2 
+    before waitpidf
+    This is the child
+    This is the child
+    This is the child
+    after waitpidf
+    Child exited with code 3
+    [Eric@human ~]$
+    
+    when we use waitpid(pid, &stat_val, WNOHANG); 不阻塞
+    the output is:
+    [Eric@human ~]$ ./test2 
+    before waitpidf
+    after waitpidf
+    This is the child
+    Child exited with code 0
+    [Eric@human ~]$ This is the child
+    This is the child
+
 
 # 线程
 `fork` 是昂贵的. fork要把父进程的内存镜像复制到子进程, 并在子进程中复制所有描述符, 如此, 等等.
@@ -342,7 +670,7 @@ setsid函数用于创建一个新的会话,并担任该会话组的组长.调用
 1. 线程ID
 1. 寄存器集合, 包括程序计数器和栈指针
 1. 栈(用于存放局部变量和返回地址)
-1. errno:todo. [ref](http://learn.akae.cn/media/ch35s02.html)
+1. errno. [ref](http://learn.akae.cn/media/ch35s02.html). pthread库的函数都是通过返回值返回错误号,虽然每个线程也都有一个errno,但这是为了兼容其它函数接口而提供的,pthread库本身并不使用它. 所以errno 还是看成同一个进程的所有线程共享一个全局的errno.
 1. 信号掩码
 1. 优先级
 
@@ -364,7 +692,14 @@ setsid函数用于创建一个新的会话,并担任该会话组的组长.调用
 不能对一个已经处于`detach`状态的线程调用`pthread_join`,这样的调用将返回`EINVAL`
 
 ## 线程特定数据
+[线程特定数据详解](http://www.cnblogs.com/javawebsoa/p/3249130.html)
 
+也被称为线程私有数据,是一种存储和查找一个特定线程相关数据的机制.每个线程访问它自己独立的数据,而不用担心和其它线程的访问的同步.
+
+线程特定数据看似很复杂,其实我们可以把它理解为就是一个索引和指针.key结构中存储的是索引,pthread结构中存储的是指针,指向线程中的私有数据,通常是malloc函数返回的指针.
+
+下面看一个具体的过程,启动一个进程并创建了若干线程,其中一个线程(比如线程1),要申请线程私有数据,系统调用`pthread_key_creat()`在图3所示的key结构数组中找到第一个未用的元素,并把它的键,也就是看面说的索引(0-127),返回给调用者,假设返回的索引是1,线程之后通过`pthrea_getspecific()`调用获得本线程的`pkey[1]`值,返回的是一个空指针`ptr = null`,这个指针就是我们可以通过索引1使用的线程数据的首地址了,但是他现在为空,因此根据实际情况用`malloc`分配一快内存,在使用`pthread_setspecific()`调用将特定数据的指针指向刚才分配到内存区域.整个过程结束后key结构和pthread结构如图3所示.  
+![特定数据的结构](http://img.blog.csdn.net/20130809181815203)
 
 ## 互斥锁 Mutual Exclusive Lock
 互斥锁变量(`pthread_mutex_t`类型)是静态分配的(全局变量或static变量), 我们就必须把他初始化为常值`PTHREAD_MUTEX_INITIALIZER`  
@@ -440,4 +775,3 @@ Mutex变量是非0即1的,可看作一种资源的可用数量,初始化时Mutex
 
     int pthread_cond_timedwait(pthread_cond_t *restrict cond, pthread_mutex_t *restrict mutex, const struct timespec *restrict abstime);
     int pthread_cond_broadcast(pthread_cond_t *cond);
-
