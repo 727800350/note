@@ -28,6 +28,26 @@ Note: This markdown file also contains other resources, but it is mostly from UN
 # TCP
 Note that TCP does not guarantee that the data will be received by the other endpoint, as this is impossible. It delivers data to the other endpoint if possible, and notifies the user (by giving up on retransmissions and breaking the connection) if it is not possible. Therefore, TCP cannot be described as a 100% reliable protocol; it provides **reliable delivery of data or reliable notification of failure.**
 
+**socket中TCP的三次握手建立连接**  
+![socket中TCP的三次握手建立连接详解](http://images.cnblogs.com/cnblogs_com/skynet/201012/201012122157467258.png)  
+从图中可以看出:
+
+1. 当客户端调用connect时,触发了连接请求,向服务器发送了SYN J包,这时connect进入阻塞状态.  
+1. 服务器监听到连接请求,即收到SYN J包,调用accept函数接收请求向客户端发送SYN K ,ACK J+1,这时accept进入阻塞状态.  
+1. 客户端收到服务器的SYN K ,ACK J+1之后,这时connect返回,并对SYN K进行确认,服务器收到ACK K+1时,accept返回,至此三次握手完毕,连接建立.
+
+客户端的`connect`在三次握手的第二个次返回,而服务器端的`accept`在三次握手的第三次返回.
+
+内核为任何一个给定的监听套接字维护两个队列:
+
+1. **未完成连接队列(incomplete connection queue)**: 每个这样的SYN 分节对应其中一项:
+已由某个客户发出并到达服务器,而服务器正在等待完成相应的TCP三路握手过程.这些套接字处于SYN_RCVD状态
+2. **已完成连接队列(completed connection queue)**, 每个已完成TCP 三路握手过程的客户对应其中一项. 这些套接字处于established 状态
+
+当来自客户的SYN到达时,TCP在未完成连接队列中创建一个新项.  
+如果三路握手正常完成, 该项就从未完成连接队列移到已完成连接队列的末尾.  
+当进程调用accept时,已完成连接队列中的队头项将返回给进程,或者如果该队列为空,那么进程将被投入睡眠,直到TCP 在该队列中放入一项才唤醒它
+
 # UDP
 We also say that UDP provides a connectionless service, as there need not be any long-term relationship between a UDP client and server. For example, a UDP client can create a socket and send a datagram to a given server and then immediately send another datagram on the same socket to a different server. Similarly, a UDP server can receive several datagrams on a single UDP socket, each from a different client.
 
