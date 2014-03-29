@@ -9,7 +9,7 @@
 %% etex
 
 %% scale rule
-numeric u; u := 1cm;
+numeric u; u := 6cm;
 
 numeric pi; pi := 3.1415926;
 numeric radian; radian := 180/pi;
@@ -72,7 +72,7 @@ vardef symtrie(expr s,a,b) =
 enddef;
 
 %% get the bisector point in [a,b]
-vardef bisector(expr a,b,common) = 
+vardef bisector(expr a,common,b) = 
 	save c; pair c;
 	c = whatever[a,b];
 	c - common = whatever*dir(1/2*angle(a-common) + 1/2*angle(b-common));
@@ -80,9 +80,9 @@ vardef bisector(expr a,b,common) =
 enddef;
 
 % set some user-adjustable constants
-angle_radius := .4u;
-angle_delta := .05u;
-mark_size := .2u;
+angle_radius := .04u;
+angle_delta := .01u;
+mark_size := .04u;
 def mark_angle(expr A, common, B, n) =
 	% draw 1, 2, 3 or 4 arcs
 	draw_angle(A, common, B, angle_radius);
@@ -134,6 +134,7 @@ def draw_point primary p =
 	draw p withpen pencircle scaled 3;
 enddef;
 
+%% when p is for example p5, in mps format, only show p, but after using epstopdf, p5 will appear.
 vardef nomme@#(suffix p) = 
 	draw_point p;
 	label.@#(str p,p);
