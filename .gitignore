@@ -13,3 +13,7 @@
 
 latex/test.tex
 *.txt
+
+## metapost
+*.mps
+*.mpx
