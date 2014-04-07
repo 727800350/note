@@ -9,13 +9,13 @@
 \tableofcontents
 \newpage
 
-\subsection{Identit\'es vectorielles}
+\section{Identit\'es vectorielles}
 Les identit\'es suivantes peuvent être utiles en analyse vectorielle.
 \href{http://fr.wikipedia.org/wiki/Identit%C3%A9s_vectorielles}{wiki}
 
 $$ \mathbf a \cdot (\mathbf b \times \mathbf c) = \mathbf b\cdot(\mathbf c \times \mathbf a) = \mathbf c\cdot(\mathbf a\times \mathbf b) $$
 $$ \mathbf a\times (\mathbf b\times \mathbf c) = (\mathbf c \times \mathbf b) \times \mathbf a = \mathbf b (\mathbf a \cdot \mathbf c) - \mathbf c(\mathbf a\cdot \mathbf b) $$
-$$ (\mathbf a \times \mathbf b)\cdot(\mathbf c \times \mathbf d) = (\mathbf a \cdot \mathbf c)(\mathbf b \cdot \mathbf d) - (\mathbf a\cdot \mathbf d)(\mathbf b\cdot \mathbf c) (Identit\'e de Binet-Cauchy) $$
+$$ (\mathbf a \times \mathbf b)\cdot(\mathbf c \times \mathbf d) = (\mathbf a \cdot \mathbf c)(\mathbf b \cdot \mathbf d) - (\mathbf a\cdot \mathbf d)(\mathbf b\cdot \mathbf c) \eqnote{Identit\'e de Binet-Cauchy} $$
 $$ \nabla \times (\nabla \psi) = \mathbf 0 $$
 $$ \nabla \cdot (\nabla \times \mathbf V) = 0 $$
 $$ \nabla\times(\nabla\times\mathbf V) = \nabla(\nabla\cdot \mathbf V)-\nabla^2\mathbf V $$
@@ -28,6 +28,7 @@ $$ \nabla \times (\mathbf A\times \mathbf B) = (\nabla\cdot \mathbf B)\mathbf A 
 $$ \mathbf V \times (\nabla \times \mathbf V)=\nabla (\mathbf V^2/2) - (\mathbf V\cdot \mathbf \nabla)\mathbf V $$
 $$ (\mathbf A \cdot \nabla) \mathbf B - (\mathbf A \times \nabla) \times \mathbf B = (\nabla \cdot \mathbf B) \mathbf A - \mathbf A \times (\nabla \times \mathbf B) $$
 
+\bigskip
 Pour l'onde sinuso\"idale: 
 $\vec{E} = \vec{E_0} e^{i(\omega t - \vec{k}\cdot \vec{r})}$
 %% e^{i(\omega t - \vec{k}\cdot \vec{r})}
@@ -68,7 +69,7 @@ $$
 \vec{B} = \dfrac{\vec{k} \times \vec{E}}{\omega}
 $$
 
-\subsection{Paquet d'ondes}
+\section{Paquet d'ondes}
 \href{http://ressources.univ-lemans.fr/AccesLibre/UM/Pedago/physique/02/divers/paquet2.html}{ref}
 
 Le paquet d'ondes est constitu\'e par la superposition d'ondes de longueurs d'onde diff\'erentes centr\'ees sur une valeur particuli\`ere de $\lambda = \lambda_0$. Le "paquet" est la r\'egion de l'espace o\`u ces ondes interf\`erent de mani\`ere constructive.
@@ -79,4 +80,27 @@ Cette perturbation se d\'eplace \`a la vitesse $x / t  = V_g = d\omega(k) / dk$ 
 
 La c\'el\'erit\'e c d'une onde unique de vecteur d'onde $k$ est $c = V_p = \omega / k$ (vitesse de phase). \\
 Quand la vitesse de groupe n'est pas constante, il y a dispersion.
+
+\section{Cavit\'e}
+\href{http://fr.wikipedia.org/wiki/Cavit%C3%A9_optique#Types_de_cavit.C3.A9}{不同种类的cavit\'e}
+
+Chaque cavité a une fréquence de résonance spécifique qui dépend de ses dimensions physiques, du matériau qui la compose et du type d'onde utilisé. Elles sont cependant souvent accompagnées d'appareillage permettant de changer ces caractéristiques et donc d'ajuster la fréquence dans une certaine mesure. Les formes les plus utilisées sont : le cube, le cylindre, la sphère et le tore (forme de beigne).
+
+\textbf{Modes de résonance}\\
+La lumière réfléchie plusieurs fois par les miroirs peut interférer avec elle-même. Il en découle que seules quelques longueurs d'onde, et leurs ondes associées, peuvent être présentes dans la cavité. Ces ondes sont appelées les modes de résonance. Ils dépendent de la forme de la cavité.
+
+On définit deux types de modes : les modes longitudinaux qui diffèrent par leur longueur d'onde, et les modes transverses qui diffèrent en plus par leur forme. Dans le cas général, on peut observer une superposition de ces modes.
+
+Il existe aussi des cavités dans lesquelles toutes les longueurs d'onde sont possibles. Dans ce cas on ne définit pas de modes de résonance.
+
+Si une cavité optique n'est pas vide (une cavité laser, par exemple, contient un milieu amplificateur), la valeur de L utilisée n'est pas la vraie distance séparant les miroirs, mais la longueur effective de la cavité obtenue avec l'optique matricielle (à ne pas confondre avec le chemin optique). 
+
+\subsection{Laser}
+Laser: Light Amplification by Stimulated Emission of Radiation
+
+Maser: Microwave Amplification by Stimulated Emission of Radiation
+
+Une source laser associe un amplificateur optique basé sur l'effet laser à une cavité optique, encore appelée résonateur, généralement constituée de deux miroirs, dont \textbf{au moins l'un des deux est partiellement réfléchissant}, c'est-à-dire qu'une partie de la lumière sort de la cavité et l'autre partie est réinjectée vers l'intérieur de la cavité laser. Avec certaines longues cavités, la lumière laser peut être extrêmement directionnelle. Les caractéristiques géométriques de cet ensemble imposent que \textbf{le rayonnement émis soit d'une grande pureté spectrale}, c’est-à-dire temporellement cohérent. \\
+Le spectre du rayonnement contient en effet un ensemble discret de raies très fines, à des longueurs d'ondes définies par la cavité et le milieu amplificateur. La finesse de ces raies est cependant limitée par la stabilité de la cavité et par l'émission spontanée au sein de l'amplificateur (bruit quantique). Différentes techniques permettent d'obtenir une émission autour d'une seule longueur d'onde.
 \end{document}
+
