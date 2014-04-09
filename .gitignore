@@ -10,6 +10,9 @@
 *.toc
 *.tex.bak
 *.pdf
+*.nav
+*.snm
+*.vrb
 
 latex/test.tex
 *.txt
