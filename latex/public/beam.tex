@@ -1,13 +1,256 @@
 % !Mode:: "TeX:UTF-8"
 \usepackage{ctex}
-\usepackage[french]{babel}
+\usepackage[english]{babel}
 \usepackage{amsmath, amsthm, amssymb}
 \usepackage{graphicx}
     
+%图形
+\usepackage{pstricks}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{tikz} %pdf figure
+\usetikzlibrary{positioning}
+\def\pgfsysdriver{pgfsys-dvipdfmx.def}
+\pgfsetxvec{\pgfpoint{10pt}{0}}
+\pgfsetyvec{\pgfpoint{0}{10pt}}
+\tikzset{
+box/.style={rectangle, rounded corners=6pt,
+minimum width=50pt, minimum height=20pt, inner sep=6pt,
+draw=gray,thick, fill=lightgray}
+}
+\usepackage{ccaption}
+\usepackage{epstopdf} %convert eps to pdf
+%% bmp, gif not supported
+\DeclareGraphicsExtensions{.eps,.mps,.pdf,.jpg,.png}
+\DeclareGraphicsRule{*}{eps}{*}{}
+\graphicspath{{figure/}{../figure/}}
+
+\usepackage[colorinlistoftodos]{todonotes}
+
+%字体
+%% 主要字体为Times New Roman和宋体
+%% 模板某些标题需要华文行楷和32号字
+%\setmainfont{Times New Roman}
+%% 不需要设置CJKmainfont，ctex 宏包已经很好的处理了
+%% 不仅设置了粗体为黑体，斜体为楷体，还兼容了winfonts和adobefonts
+%% 直接设置反而会在只有adobefonts的情况下报错
+%\setCJKmainfont{宋体}
+%\setCJKfamilyfont{hwxingkai}{STXingkai}
+%\newcommand{\hwxingkai}{\CJKfamily{hwxingkai}}
+%\newcommand{\xiaochuhao}{\fontsize{32pt}{\baselineskip}\selectfont}
+
+
+\newcommand{\song}{\CJKfamily{song}} %宋体
+\newcommand{\fs}{\CJKfamily{fs}} %仿宋体
+\newcommand{\kai}{\CJKfamily{kai}} %楷体
+\newcommand{\hei}{\CJKfamily{hei}} %黑体
+\newcommand{\li}{\CJKfamily{li}} %隶书
+\newcommand{\you}{\CJKfamily{you}} %幼圆
+
+% 一号, 1.4 倍行距
+\newcommand{\yihao}{\fontsize{26pt}{36pt}\selectfont}
+% 二号, 1.25倍行距
+\newcommand{\erhao}{\fontsize{22pt}{28pt}\selectfont}
+% 小二, 单倍行距
+\newcommand{\xiaoer}{\fontsize{18pt}{18pt}\selectfont}
+% 三号, 1.5倍行距
+\newcommand{\sanhao}{\fontsize{16pt}{24pt}\selectfont}
+% 小三, 1.5倍行距
+\newcommand{\xiaosan}{\fontsize{15pt}{22pt}\selectfont}
+% 四号, 1.5 倍行距
+\newcommand{\sihao}{\fontsize{14pt}{21pt}\selectfont}
+% 半小四, 1.5倍行距
+\newcommand{\banxiaosi}{\fontsize{13pt}{19.5pt}\selectfont}
+% 小四, 1.5倍行距
+\newcommand{\xiaosi}{\fontsize{12pt}{18pt}\selectfont}
+% 大五号, 单倍行距
+\newcommand{\dawuhao}{\fontsize{11pt}{11pt}\selectfont}
+% 五号, 单倍行距
+\newcommand{\wuhao}{\fontsize{10.5pt}{15.75pt}\selectfont}
+
+%% code
+%% verbatim 中不能使用\textbf 等格式, alltt可以使用
+\usepackage{alltt}
+
+\usepackage{listings}
+\lstset{
+    backgroundcolor=\color{white},
+%%     basicstyle=\wuhao\ttfamily,
+    columns=flexible,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    frame=single,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    stepnumber=1,
+    rulecolor=\color{black},
+    tabsize=4,
+    texcl=true,
+    title=\lstname,
+    escapeinside={\%*}{*)},
+    extendedchars=false,
+    mathescape=true,
+    xleftmargin=3em,
+    xrightmargin=3em,
+    numberstyle=\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{dkgreen},
+    stringstyle=\color{mauve},
+}
+
+\newcommand{\fun}[1]{\textit{#1}}
+
+%% hyper reference
+%% 使用hyperref包,section,subsection,subsubsection命名中使用中文出现问题
+%% 编译通不过, 加了CJKbookmarks=true 之后可以使用中文
+%% \usepackage[colorlinks,linkcolor=blue,anchorcolor=red,citecolor=green,CJKbookmarks=true]{hyperref}
+
+%表格
+%allow the use of \toprule, \midrule, and \bottomrule
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{longtable}
+
+%\usepackage{dirtree}  %目录结构图
+
+%颜色
+\usepackage{color}
+%\definecolor{name}{system}{definition}
+\definecolor{Gray}{gray}{0.9}
+\definecolor{LightCyan}{rgb}{0.88,1,1}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\def\red#1{\textcolor[rgb]{1.00,0.00,0.00}{#1}}
+\def\yellow#1{\textcolor[rgb]{1.00,1.00,0.00}{#1}}
+\def\lime#1{\textcolor[rgb]{0.00,1.00,0.00}{#1}}
+
+
+
+%% 化学
+\usepackage[version=3]{mhchem}
+%% ex: Ammonium sulphate is \ce{(NH4)2SO4}.
+
+\usepackage{fixltx2e}
+%% 默认情况下只能使用\textsuperscript,加了这个package之后可以使用\textsubscript
+
+%Math
+%% Macro
+\def\vecteur#1{(#1_1,~#1_2,~\ldots,~#1_n)}
+%% \def\vecteur#1{\ensuremath{(#1_1,~#1_2,~\ldots,~#1_n)}}
+
+%随机数
+%\usepackage[first=0,last=9]{lcg}
+%\newcommand{\ra}{\rand0.\arabic{rand}}
+
+\newcommand{\R}{\mathbb{R}}   %the real number set
+%% \newcommand{\C}{\mathbb{C}} %xelatex says \C has already been used.
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\newcommand{\si}{\textrm{ si }}
+\newcommand{\sinon}{\textrm{ si non}}
+\newcommand{\et}{\textrm{ et }}
+\newcommand{\ou}{\textrm{ ou }}
+\newcommand{\non}{\textrm{non }}
+\newcommand{\ssi}{si et seulement si }
+\newcommand{\infinity}{\infty}
+
+%定义运算符
+\DeclareMathOperator{\arccot}{arcot}
+\DeclareMathOperator{\arcth}{arcth}
+\DeclareMathOperator{\arcsh}{arcsh}
+\DeclareMathOperator{\arch}{arch}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\dth}{th} %\th 已经被定义了
+\DeclareMathOperator{\sh}{sh}
+
+\newcommand*\laplace{\mathop{}\!\mathbin\bigtriangleup}
+\newcommand*\dalambert{\mathop{}\!\mathbin\Box}
+\newcommand{\grad}[1]{\nabla #1}
+\newcommand{\gradien}[1]{\nabla #1}
+\newcommand{\divergence}[1]{\nabla \cdot #1}
+\newcommand{\rotationnel}[1]{\nabla \times #1}
+\newcommand{\rot}[1]{\nabla \times #1}
+
+\newcommand{\stcomp}[1]{\overline{#1}} % set complement
+
+\usepackage{xspace}
+%produit scalaire
+\newcommand{\ps}[2]{\ensuremath{\langle #1 , #2\rangle}\xspace}
+
+%use \lasteq to reference the last equation
+\newcommand\lasteq{(\theequation)}
+\newcommand{\eqspace}{\hspace{0.5cm}}
+\newcommand{\norm}[1]{\left\Vert #1\right\Vert}
+%% insert text in math mode being treated as normal text
+\newcommand{\eqnote}[1]{\text{ #1 }}
+%% generate a fraction but without the line
+\newcommand\mytop[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
+
+%% 特殊符号
+\usepackage{pifont}
+%% \ding{number}, 通过number 来调用不同的符号
+
+\mode<presentation> {
+%% \usetheme{default}
+%% \usetheme{AnnArbor}
+%% \usetheme{Antibes}
+%% \usetheme{Bergen}
+%% \usetheme{Berkeley}
+%% \usetheme{Berlin}
+%% \usetheme{Boadilla}
+%% \usetheme{CambridgeUS}
+%% \usetheme{Copenhagen}
+%% \usetheme{Darmstadt}
+%% \usetheme{Dresden}
+%% \usetheme{Frankfurt}
+%% \usetheme{Goettingen}
+%% \usetheme{Hannover}
+%% \usetheme{Ilmenau}
+%% \usetheme{JuanLesPins}
+%% \usetheme{Luebeck}
+%% \usetheme{Madrid}
+%% \usetheme{Malmoe}
+%% \usetheme{Marburg}
+%% \usetheme{Montpellier}
+%% \usetheme{PaloAlto}
+%% \usetheme{Pittsburgh}
+%% \usetheme{Rochester}
+\usetheme{Singapore}
+%% \usetheme{Szeged}
+%% \usetheme{Warsaw}
+
+%% \usecolortheme{albatross}
+%% \usecolortheme{beaver}
+%% \usecolortheme{beetle}
+%% \usecolortheme{crane}
+%% \usecolortheme{dolphin}
+%% \usecolortheme{dove}
+%% \usecolortheme{fly}
+%% \usecolortheme{lily}
+%% \usecolortheme{orchid}
+%% \usecolortheme{rose}
+%% \usecolortheme{seagull}
+\usecolortheme{seahorse}
+%% \usecolortheme{whale}
+%% \usecolortheme{wolverine}
+
 \usefonttheme{professionalfonts}
-\usetheme{Darmstadt}
-\usecolortheme{beaver}
 \useinnertheme{rectangles}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
 \setbeamertemplate{itemize item}{$\infty$}
 \setbeamertemplate{itemize subitem}{$\bullet$}
 \setbeamertemplate{itemize subsubitem}{$\diamond$}
@@ -23,5 +266,6 @@
        \insertframenumber{} / \inserttotalframenumber\hspace*{5ex}
     \end{beamercolorbox}}%
   \vskip0pt%
+}
 }
 

@@ -66,10 +66,10 @@ draw=gray,thick, fill=lightgray}
 
 \usepackage[colorinlistoftodos]{todonotes}
 
+
 %尺寸
 \usepackage[top=2.54cm, bottom=2.54cm, left=3.18cm, right=3.18cm]{geometry} % ms word
 %\usepackage[top=0.2cm, bottom=0.2cm, left=0cm, right=0cm,paperwidth=9cm,paperheight=11.7cm]{geometry} % kindle
-
 %字体
 %% 主要字体为Times New Roman和宋体
 %% 模板某些标题需要华文行楷和32号字
@@ -153,7 +153,8 @@ draw=gray,thick, fill=lightgray}
 \usepackage[colorlinks,linkcolor=blue,anchorcolor=red,citecolor=green,CJKbookmarks=true]{hyperref}
 
 %表格
-\usepackage{booktabs}  %让表格中的横线不一样粗
+%allow the use of \toprule, \midrule, and \bottomrule
+\usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{multirow}
 \usepackage{colortbl}
