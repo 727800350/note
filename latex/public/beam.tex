@@ -1,4 +1,6 @@
 % !Mode:: "TeX:UTF-8"
+%% \usepackage{metalogo}
+%% \usepackage{doc}
 \usepackage{ctex}
 \usepackage[english]{babel}
 \usepackage{amsmath, amsthm, amssymb}
@@ -104,10 +106,8 @@ draw=gray,thick, fill=lightgray}
 
 \newcommand{\fun}[1]{\textit{#1}}
 
-%% hyper reference
-%% 使用hyperref包,section,subsection,subsubsection命名中使用中文出现问题
 %% 编译通不过, 加了CJKbookmarks=true 之后可以使用中文
-%% \usepackage[colorlinks,linkcolor=blue,anchorcolor=red,citecolor=green,CJKbookmarks=true]{hyperref}
+\hypersetup{colorlinks,linkcolor=blue,urlcolor=green,anchorcolor=red,citecolor=green,CJKbookmarks=true}
 
 %表格
 %allow the use of \toprule, \midrule, and \bottomrule
@@ -197,7 +197,7 @@ draw=gray,thick, fill=lightgray}
 \newcommand\mytop[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
 
 %% 特殊符号
-\usepackage{pifont}
+%% \usepackage{pifont}
 %% \ding{number}, 通过number 来调用不同的符号
 
 \mode<presentation> {
@@ -210,7 +210,7 @@ draw=gray,thick, fill=lightgray}
 %% \usetheme{Boadilla}
 %% \usetheme{CambridgeUS}
 %% \usetheme{Copenhagen}
-%% \usetheme{Darmstadt}
+\usetheme{Darmstadt}
 %% \usetheme{Dresden}
 %% \usetheme{Frankfurt}
 %% \usetheme{Goettingen}
@@ -225,7 +225,7 @@ draw=gray,thick, fill=lightgray}
 %% \usetheme{PaloAlto}
 %% \usetheme{Pittsburgh}
 %% \usetheme{Rochester}
-\usetheme{Singapore}
+%% \usetheme{Singapore}
 %% \usetheme{Szeged}
 %% \usetheme{Warsaw}
 
@@ -251,9 +251,9 @@ draw=gray,thick, fill=lightgray}
 %\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
 
 %\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
-\setbeamertemplate{itemize item}{$\infty$}
-\setbeamertemplate{itemize subitem}{$\bullet$}
-\setbeamertemplate{itemize subsubitem}{$\diamond$}
+\setbeamertemplate{itemize item}{$\spadesuit$}
+\setbeamertemplate{itemize subitem}{$\heartsuit$}
+\setbeamertemplate{itemize subsubitem}{$\clubsuit$}
 \setbeamertemplate{enumerate item}{\insertenumlabel.}
 \setbeamertemplate{enumerate subitem}{\insertenumlabel.\insertsubenumlabel}
 \setbeamertemplate{enumerate subsubitem}{\insertenumlabel.\insertsubenumlabel.\insertsubsubenumlabel}
