@@ -65,7 +65,7 @@ vardef mediatrice(expr a,b) =
 enddef;
 
 %% get the symmetry point of s about [a,b] 
-vardef symtrie(expr s,a,b) = 
+vardef symetrie(expr s,a,b) = 
 	save c; pair c;
 	c := s rotatedaround(projection(s,a,b),180);
 	c
