@@ -360,7 +360,8 @@ errno 变量存在不可重入的问题, 这个整型变量历来每个进程各
 		fprintf(stderr,"close error, errno=%d\n", errno);
 		exit(1);
 	}
-	从close 系统调用返回时把错误代码存入errno到稍后由程序显示errno 的值之间存在一个小的时间窗口. 期间同一个进程内的另一个执行线程(例如一个信号处理函数的某次调用) 可能改变了errno 的值.
+	从close 系统调用返回时把错误代码存入errno到稍后由程序显示errno 的值之间存在一个小的时间窗口. 
+	期间同一个进程内的另一个执行线程(例如一个信号处理函数的某次调用) 可能改变了errno 的值.
 	就信号处理函数考虑这个问题, 可通过把信号处理函数编写成预先保存并事后恢复errno 的值加以避免, 代码如下:
 
     void sig_alarm(int signo){
@@ -430,11 +431,13 @@ Unix 系统中的syslogd 守护进程通常由某个系统初始化脚本启动,
     	if (setsid() < 0)   /* become session leader */
     			return (-1);
 
-		// 这里必须忽略SIGHUP信号, 因为当会话头进程终止时(即首次fork 产生的子进程) 终止时, 其会话中的所有进程(即在此fork产生的子进程) 都收到SIGHUP信号    
+		// 这里必须忽略SIGHUP信号, 因为当会话头进程终止时(即首次fork 产生的子进程) 终止时, 
+		// 其会话中的所有进程(即在此fork产生的子进程) 都收到SIGHUP信号    
     	Signal(SIGHUP, SIG_IGN);
 
 		// 再次调用fork的目的是确保本守护进程即使将来打开了一个终端设备, 也不会自动获得控制终端.
-		// 因为当没有控制终端的会话头进程打开一个终端设备时, 该终端自动成为这个会话头进程的控制终端. 然后再次调用fork 之后, 我们确保新的子进程不再是一个会话头进程, 从而不能自动获得一个控制终端
+		// 因为当没有控制终端的会话头进程打开一个终端设备时, 该终端自动成为这个会话头进程的控制终端. 
+		// 然后再次调用fork 之后, 我们确保新的子进程不再是一个会话头进程, 从而不能自动获得一个控制终端
     	if ( (pid = Fork()) < 0)
     			return (-1);
     	else if (pid)
@@ -755,7 +758,8 @@ Mutex变量是非0即1的,可看作一种资源的可用数量,初始化时Mutex
 
 ## pthread API
     #include <pthread.h>
-    int pthread_create(pthread_t *restrict thread, const pthread_attr_t *restrict attr, void *(*start_routine)(void*), void *restrict arg);
+    int pthread_create(pthread_t *restrict thread, const pthread_attr_t *restrict attr, 
+						void *(*start_routine)(void*), void *restrict arg);
     返回值:成功返回0,失败返回正的错误号, Exxx
     类似于fork
     
@@ -764,7 +768,8 @@ Mutex变量是非0即1的,可看作一种资源的可用数量,初始化时Mutex
     类似于getpid
     
     void pthread_exit(void *value_ptr);
-    pthread_exit或者return返回的指针所指向的内存单元必须是全局的或者是用malloc分配的,不能在线程函数的栈上分配,因为当其它线程得到这个返回指针时线程函数已经退出了.
+    pthread_exit或者return返回的指针所指向的内存单元必须是全局的或者是用malloc分配的,不能在线程函数的栈上分配,
+	因为当其它线程得到这个返回指针时线程函数已经退出了.
     
     int pthread_join(pthread_t thread, void **value_ptr);
     返回值:成功返回0,失败返回错误号
@@ -781,17 +786,21 @@ Mutex变量是非0即1的,可看作一种资源的可用数量,初始化时Mutex
     int pthread_mutex_lock(pthread_mutex_t *mutex);
     int pthread_mutex_unlock(pthread_mutex_t *mutex);
     int pthread_mutex_trylock(pthread_mutex_t *mutex);
-    如果一个线程既想获得锁,又不想挂起等待,可以调用pthread_mutex_trylock,如果Mutex已经被另一个线程获得,这个函数会失败返回EBUSY,而不会使线程挂起等待.还可以缓解死锁
+    如果一个线程既想获得锁,又不想挂起等待,可以调用pthread_mutex_trylock,如果Mutex已经被另一个线程获得,
+	这个函数会失败返回EBUSY,而不会使线程挂起等待.还可以缓解死锁
 
     pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
     int pthread_cond_destroy(pthread_cond_t *cond);
     int pthread_cond_init(pthread_cond_t *restrict cond, const pthread_condattr_t *restrict attr);
     返回值:成功返回0,失败返回错误号.
-    和Mutex的初始化和销毁类似,pthread_cond_init函数初始化一个Condition Variable,attr参数为NULL则表示缺省属性,pthread_cond_destroy函数销毁一个Condition Variable.如果Condition Variable是静态分配的,也可以用宏定义PTHEAD_COND_INITIALIZER初始化,相当于用pthread_cond_init函数初始化并且attr参数为NULL
+    和Mutex的初始化和销毁类似,pthread_cond_init函数初始化一个Condition Variable,attr参数为NULL则表示缺省属性,
+	pthread_cond_destroy函数销毁一个Condition Variable.
+	如果Condition Variable是静态分配的,也可以用宏定义PTHEAD_COND_INITIALIZER初始化,相当于用pthread_cond_init函数初始化并且attr参数为NULL
     
     int pthread_cond_wait(pthread_cond_t *restrict cond, pthread_mutex_t *restrict mutex);
     int pthread_cond_signal(pthread_cond_t *cond);
 
-    int pthread_cond_timedwait(pthread_cond_t *restrict cond, pthread_mutex_t *restrict mutex, const struct timespec *restrict abstime);
+    int pthread_cond_timedwait(pthread_cond_t *restrict cond, pthread_mutex_t *restrict mutex, 
+								const struct timespec *restrict abstime);
     int pthread_cond_broadcast(pthread_cond_t *cond);
