@@ -685,7 +685,7 @@ wait等待第一个终止的子进程,而waitpid可以通过pid参数指定等�
     This is the child
 
 
-# 线程
+# 线程 pthread
 `fork` 是昂贵的. fork要把父进程的内存镜像复制到子进程, 并在子进程中复制所有描述符, 如此, 等等.
 
 统一进程内的所有线程共享
@@ -706,6 +706,70 @@ wait等待第一个终止的子进程,而waitpid可以通过pid参数指定等�
 1. errno. [ref](http://learn.akae.cn/media/ch35s02.html). pthread库的函数都是通过返回值返回错误号,虽然每个线程也都有一个errno,但这是为了兼容其它函数接口而提供的,pthread库本身并不使用它. 所以errno 还是看成同一个进程的所有线程共享一个全局的errno.
 1. 信号掩码
 1. 优先级
+
+## demo
+	/* Includes */
+	#include <unistd.h>     /* Symbolic Constants */
+	#include <sys/types.h>  /* Primitive System Data Types */ 
+	#include <errno.h>      /* Errors */
+	#include <stdio.h>      /* Input/Output */
+	#include <stdlib.h>     /* General Utilities */
+	#include <pthread.h>    /* POSIX Threads */
+	#include <string.h>     /* String handling */
+	
+	/* prototype for thread routine */
+	void print_message_function ( void *ptr );
+	
+	/* struct to hold data to be passed to a thread
+	   this shows how multiple data items can be passed to a thread */
+	typedef struct str_thdata
+	{
+	    int thread_no;
+	    char message[100];
+	} thdata;
+	
+	int main()
+	{
+	    pthread_t thread1, thread2;  /* thread variables */
+	    thdata data1, data2;         /* structs to be passed to threads */
+	    
+	    /* initialize data to pass to thread 1 */
+	    data1.thread_no = 1;
+	    strcpy(data1.message, "Hello!");
+	
+	    /* initialize data to pass to thread 2 */
+	    data2.thread_no = 2;
+	    strcpy(data2.message, "Hi!");
+	    
+	    /* create threads 1 and 2 */    
+	    pthread_create(&thread1, NULL, (void *) &print_message_function, (void *) &data1);
+	    pthread_create(&thread2, NULL, (void *) &print_message_function, (void *) &data2);
+	
+	    /* Main block now waits for both threads to terminate, before it exits
+	       If main block exits, both threads exit, even if the threads have not
+	       finished their work */ 
+	    pthread_join(thread1, NULL);
+	    pthread_join(thread2, NULL);
+	              
+	    /* exit */  
+	    exit(0);
+	} /* main() */
+	
+	/**
+	 * print_message_function is used as the start routine for the threads used
+	 * it accepts a void pointer 
+	**/
+	void print_message_function ( void *ptr )
+	{
+	    thdata *data;            
+	    data = (thdata *) ptr;  /* type cast to a pointer to thdata */
+	    
+	    /* do the work */
+	    printf("Thread %d says %s \n", data->thread_no, data->message);
+	    
+	    pthread_exit(0); /* exit */
+	} /* print_message_function ( void *ptr ) */
+
 
 **运行流程**  
 在一个线程中调用`pthread_create()`创建新的线程后,当前线程从`pthread_create()`返回继续往下执行,而新的线程所执行的代码由我们传给`pthread_create`的函数指针`start_routine`决定.  
