@@ -65,9 +65,12 @@ We also say that UDP provides a connectionless service, as there need not be any
 就是告知某个进程发生了某个事件的通知, 有时也称为软件中断.
 信号通常是异步发生的, 也就是说进程预先不知道信号的准确发生时刻
  
-在进程表的表项中有一个软中断信号域,该域中每一位对应一个信号,当有信号发送给进程时,对应位置位.由此可以看出,进程对不同的信号可以同时保留,但对于同一个信号,进程并不知道在处理之前来过多少个, 也就是信号不排队(但是现在有排队的信号实现)
+在进程表的表项中有一个软中断信号域,该域中每一位对应一个信号,当有信号发送给进程时,对应位置位被设置.  
+由此可以看出,进程对不同的信号可以同时保留,但对于同一个信号,进程并不知道在处理之前来过多少个, 也就是信号不排队(但是现在有排队的信号实现).
 
 在一个信号处理函数运行期间, 正被递交的信号是阻塞的. 而且, 安装处理函数时在传递给sigaction函数的sa_mask 信号集中指定的任何额外信号也被阻塞.
+
+A process can selectively block the receipt of certain signals. When a signal is blocked, it can be delivered, but the resulting pending signal will not be received until the process unblocks the signal.
 
 一般有3 种方式进行操作
 
@@ -88,6 +91,13 @@ We also say that UDP provides a connectionless service, as there need not be any
 1. 如果没有新的信号要递达,这次再返回用户态就是恢复`main`函数的上下文继续执行了.
 
 当捕捉到信号时,不论进程的主控制流程当前执行到哪儿,都会先跳到信号处理函数中执行,从信号处理函数返回后再继续执行主控制流程.信号处理函数是一个单独的控制流程,因为它和主控制流程是异步的,二者不存在调用和被调用的关系,并且使用不同的堆栈空间.引入了信号处理函数使得一个进程具有多个控制流程,如果这些控制流程访问相同的全局资源(全局变量,硬件资源等),就有可能出现冲突.
+
+When the kernel is returning from an exception handler and is ready to pass control to process p, 
+it **checks the set of unblocked pending signals** (pending & ~blocked) for process p.  
+
+- If this set is empty (the usual case), then the kernel passes control to the next instruction (Inext) in the logical control flow of p.  
+- However, if the set is nonempty, then the kernel chooses some signal k in the set (typically the smallest k) and forces p to receive signal k.  
+The receipt of the signal triggers some action by the process. Once the process completes the action, then control passes back to the next instruction (Inext) in the logical control flow of p. 
 
 ## Pause
     #include <unistd.h>
@@ -796,7 +806,7 @@ Mutex变量是非0即1的,可看作一种资源的可用数量,初始化时Mutex
     返回值:成功返回0,失败返回错误号.
     和Mutex的初始化和销毁类似,pthread_cond_init函数初始化一个Condition Variable,attr参数为NULL则表示缺省属性,
 	pthread_cond_destroy函数销毁一个Condition Variable.
-	如果Condition Variable是静态分配的,也可以用宏定义PTHEAD_COND_INITIALIZER初始化,相当于用pthread_cond_init函数初始化并且attr参数为NULL
+	如果Condition Variable是静态分配的,也可以用宏定义PTHEAD_COND_INITIALIZER初始化,相当于用pthread_cond_init初始化并且attr参数为NULL
     
     int pthread_cond_wait(pthread_cond_t *restrict cond, pthread_mutex_t *restrict mutex);
     int pthread_cond_signal(pthread_cond_t *cond);
