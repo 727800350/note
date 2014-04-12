@@ -87,6 +87,8 @@ Now execute program:
     
     
 ## Collection
+	MYSQL *mysql_init(MYSQL *mysql)
+
     /* Connect to database */
     MYSQL *mysql_real_connect(MYSQL *mysql, 
 	const char *host, const char *user, const char *passwd, const char *db, 
