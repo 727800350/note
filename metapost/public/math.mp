@@ -8,9 +8,6 @@
 %% \begin{document}
 %% etex
 
-%% scale rule
-numeric u; u := 6cm;
-
 numeric pi; pi := 3.1415926;
 numeric radian; radian := 180/pi;
 
