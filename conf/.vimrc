@@ -102,7 +102,7 @@ endf
 func! CompileCode()
         exec "w"
         if &filetype == "c"
-            exec "!gcc -Wall -lpcap %<.c -o %<"
+            exec "!gcc -Wall $(mysql_config --cflags) $(mysql_config --libs) -lpcap %<.c -o %<"
         elseif &filetype == "cpp"
             exec "!g++ -Wall -std=c++98 %<.cpp -o %<"
         elseif &filetype == "java"
