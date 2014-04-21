@@ -857,6 +857,12 @@ Mutex变量是非0即1的,可看作一种资源的可用数量,初始化时Mutex
     int pthread_mutex_init(pthread_mutex_t *restrict mutex, const pthread_mutexattr_t *restrict attr);
 	返回值:成功返回0,失败返回错误号
 
+The `pthread_mutex_init()` function initializes a mutex with the specified attributes for use.  
+If attr is specified as NULL, all attributes are set to the default mutex attributes for the newly created mutex.
+
+Mutex initialization using the `PTHREAD_MUTEX_INITIALIZER` does not immediately initialize the mutex. Instead, on first use, the `pthread_mutex_lock()` or `pthread_mutex_trylock()` functions branch into a slow path and cause the initialization of the mutex.  
+Because a mutex is not just a simple memory object and requires that some resources be allocated by the system, an attempt to call `pthread_mutex_destroy()` or `pthread_mutex_unlock()` on a mutex that was statically initialized using `PTHREAD_MUTEX_INITIALER` and was not yet locked causes an `EINVAL` error.
+
     int pthread_mutex_lock(pthread_mutex_t *mutex);
     int pthread_mutex_unlock(pthread_mutex_t *mutex);
     int pthread_mutex_trylock(pthread_mutex_t *mutex);
