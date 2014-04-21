@@ -878,3 +878,49 @@ Mutex变量是非0即1的,可看作一种资源的可用数量,初始化时Mutex
     int pthread_cond_timedwait(pthread_cond_t *restrict cond, pthread_mutex_t *restrict mutex, 
 								const struct timespec *restrict abstime);
     int pthread_cond_broadcast(pthread_cond_t *cond);
+
+# Address
+## IP
+Convert IP addresses from a dots-and-number string to a struct in_addr and back
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <arpa/inet.h>
+
+    char *inet_ntoa(struct in_addr in);
+    int inet_aton(const char *cp, struct in_addr *inp);
+    in_addr_t inet_addr(const char *cp);
+
+`inet_aton()` returns non-zero if the address is a valid one, and it returns zero if the address is invalid.  
+`inet_ntoa()` returns the dots-and-numbers string **in a static buffer that is overwritten with each call to the function**.  
+`inet_addr()` returns the address as an `in_addr_t`, or -1 if there's an error. 
+
+	struct sockaddr_in antelope;
+	char *some_addr;
+
+	inet_aton("10.0.0.1", &antelope.sin_addr); // store IP in antelope
+
+	some_addr = inet_ntoa(antelope.sin_addr); // return the IP
+	printf("%s\n", some_addr); // prints "10.0.0.1"
+
+	// and this call is the same as the inet_aton() call, above:
+	antelope.sin_addr.s_addr = inet_addr("10.0.0.1");
+	
+	 /* Internet address.  */
+	typedef uint32_t in_addr_t;                                                 
+	struct in_addr{
+	    in_addr_t s_addr;
+	};
+
+## Socket
+    #include <netinet/in.h>
+    struct sockaddr_in {
+        short            sin_family;   // e.g. AF_INET
+        unsigned short   sin_port;     // e.g. htons(3490)
+        struct in_addr   sin_addr;     // see struct in_addr, below
+        char             sin_zero[8];  // zero this if you want to
+    };
+
+    struct in_addr {
+        unsigned long s_addr;  // load with inet_aton()
+    };
+
