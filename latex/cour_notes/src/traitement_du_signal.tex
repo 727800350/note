@@ -1,0 +1,40 @@
+% !Mode:: "TeX:UTF-8"
+\documentclass{article}
+\input{../../public/package}
+\input{../../public/article}
+\begin{document}
+\title{Traitement du signal}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduction}
+模拟信号: 连续时间连续幅度变化
+
+数字信号处理系统的三种方式: 软件实现; 硬件实现; 软硬件结合(数字信号处理器Digital Signal Processor,DSP)
+
+数字信号处理系统由耗电的有源器件(晶体管)构成; 而模拟处理系统使用电阻, 电容, 电感等无源器件, 所以数字处理系统的功耗比较大.
+
+音乐信号的处理:  
+如使用压缩器和扩张器来压缩或扩张音乐信号的幅度范围;
+使用均衡器和滤波器改变音乐信号的频率分布
+
+\section{\'Echantillonnage}
+采样定理,又称香农采样定理,奈奎斯特采样定理,是信息论,特别是通讯与信号处理学科中的一个重要基本结论
+
+如果信号是带限的,并且采样频率大于信号带宽的2倍,那么,原来的连续信号可以从采样样本中完全重建出来.
+
+\textbf{奈奎斯特频率(Nyquist频率)}是离散信号系统采样频率的一半.
+
+只要离散系统的奈奎斯特频率高于被采样信号的最高频率或带宽,就可以避免混叠现象.
+
+如果不能满足上述采样条件,采样后信号的频率就会重叠,即高于采样频率一半的频率成分将被重建成低于采样频率一半的信号.这种频谱的重叠导致的失真称为混叠,而重建出来的信号称为原信号的混叠替身,因为这两个信号有同样的样本值.
+
+Le théorème d'échantillonnage énonce que l'échantillonnage d'un signal, c'est-à-dire sa représentation sous une forme discrète, par une liste de valeurs prélevées régulièrement dans ce signal, exige une fréquence d'échantillonnage supérieure au double de l'écart entre les fréquences minimale et maximale qu'il contient.
+
+Dans le cas le plus courant, la fréquence minimale du signal est petite par rapport à sa fréquence maximale et le théorème affirme plus simplement :
+
+La représentation discrète d'un signal par des échantillons régulièrement espacés exige une fréquence d'échantillonnage supérieure au double de la fréquence maximale présente dans ce signal.
+
+En général, on échantillonne dans l'intervalle compris entre 0 et la fréquence de Nyquist, c'est-à-dire la moitié de la fréquence d'échantillonnage.
+\end{document}
