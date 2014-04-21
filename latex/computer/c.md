@@ -24,7 +24,10 @@ By constrast, `strdup` is a Posix function, and it performs **dynamic memory all
 - `setbuf, setbuffer, setlinebuf, setvbuf` stream buffering operations in `<stdio.h>`
 
 # Time
-- `time(NULL)` returns a timestamp in seconds (number of seconds since the epoch)
+- `time(NULL)` returns a timestamp in seconds (number of seconds since the epoch)  
+`#include <time.h>`
+-` times(struct tms *buf)` stores the current process times in the struct tms that buf points to  
+`#include <sys/times.h>`
 
 # Unix network
 **IP 的结构**
