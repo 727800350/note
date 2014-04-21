@@ -48,6 +48,19 @@ Note that TCP does not guarantee that the data will be received by the other end
 如果三路握手正常完成, 该项就从未完成连接队列移到已完成连接队列的末尾.  
 当进程调用accept时,已完成连接队列中的队头项将返回给进程,或者如果该队列为空,那么进程将被投入睡眠,直到TCP 在该队列中放入一项才唤醒它
 
+**TCP FLAG 标记**  
+基于标记的TCP包匹配经常被用于过滤试图打开新连接的TCP数据包.  
+TCP标记和他们的意义如下所列:
+
+* F : FIN - 结束; 结束会话
+* S : SYN - 同步; 表示开始会话请求
+* R : RST - 复位;中断一个连接
+* P : PUSH - 推送; 数据包立即发送
+* A : ACK - 应答
+* U : URG - 紧急
+* E : ECE - 显式拥塞提醒回应
+* W : CWR - 拥塞窗口减少
+* 
 # UDP
 We also say that UDP provides a connectionless service, as there need not be any long-term relationship between a UDP client and server. For example, a UDP client can create a socket and send a datagram to a given server and then immediately send another datagram on the same socket to a different server. Similarly, a UDP server can receive several datagrams on a single UDP socket, each from a different client.
 
@@ -917,6 +930,33 @@ Convert IP addresses from a dots-and-number string to a struct in_addr and back
 	    in_addr_t s_addr;
 	};
 
+
+**IP 的结构**
+    
+    struct ip{
+    #if __BYTE_ORDER == __LITTLE_ENDIAN
+    unsigned int ip_hl:4; /* header length */
+    unsigned int ip_v:4; /* version */
+    #endif
+    #if __BYTE_ORDER == __BIG_ENDIAN
+    unsigned int ip_v:4; /* version */
+    unsigned int ip_hl:4; /* header length */
+    #endif
+    u_int8_t ip_tos; /* type of service */
+    u_short ip_len; /* total length */
+    u_short ip_id; /* identification */
+    u_short ip_off; /* fragment offset field */
+    #define IP_RF 0x8000 /* reserved fragment flag */
+    #define IP_DF 0x4000 /* dont fragment flag */
+    #define IP_MF 0x2000 /* more fragments flag */
+    #define IP_OFFMASK 0x1fff /* mask for fragmenting bits */
+    u_int8_t ip_ttl; /* time to live */
+    u_int8_t ip_p; /* protocol */
+    u_short ip_sum; /* checksum */
+    struct in_addr ip_src, ip_dst; /* source and dest address */
+    }; 
+    
+
 ## Socket
     #include <netinet/in.h>
     struct sockaddr_in {
@@ -930,3 +970,20 @@ Convert IP addresses from a dots-and-number string to a struct in_addr and back
         unsigned long s_addr;  // load with inet_aton()
     };
 
+`gethostbyname`和`gethostbyaddr`这两个函数仅仅支持IPv4,  
+`getaddrinfo`函数能够处理名字到地址以及服务到端口这两种转换,返回的是一个`sockaddr`结构的链表而不是一个地址清单. 这些`sockaddr`结构随后可由套接口函数直接使用.如此一来,`getaddrinfo`函数把协议相关性安全隐藏在这个库函数内部.应用程序只要处理由getaddrinfo函数填写的套接口地址结构.该函数在 POSIX规范中定义了.
+
+    #include<netdb.h>
+    int getaddrinfo( const char *hostname, const char *service, 
+					 const struct addrinfo *hints, struct addrinfo **result );
+	返回值:0-成功,非0-出错
+参数说明
+hostname:一个主机名或者地址串(IPv4的点分十进制串或者IPv6的16进制串)  
+service:服务名可以是十进制的端口号,也可以是已定义的服务名称,如ftp,http等  
+hints:可以是一个空指针,也可以是一个指向某个addrinfo结构体的指针, 调用者在这个结构中填入关于期望返回的信息类型的暗示. 举例来说:指定的服务既可支持TCP也可支持UDP,所以调用者可以把	hints结构中的ai_socktype成员设置成SOCK_DGRAM使得返回的仅仅是适用于数据报套接口的信息.  
+result:本函数通过result指针参数返回一个指向addrinfo结构体链表的指针.  
+
+`getnameinfo` converts a socket address to a corresponding host and service, in a protocol-independent manner.  
+It combines the functionality of `gethostbyaddr(3)` and `getservbyport(3)`, but unlike those functions, 
+`getnameinfo()` is reentrant and allows programs to eliminate IPv4-versus-IPv6 dependencies.
+the inverse is `getaddrinfo(3)`
