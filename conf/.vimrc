@@ -28,8 +28,6 @@ map <F3> <c-w>w
 set backspace=2 "启用退格键
 let g:vimrc_author='Eric'
 let g:vimrc_email='wangchaogo1990@gmail.com'
-let g:vimrc_homepage='http://www.baidu.com'
-
 
 set nocompatible             " 关闭兼容模式
 
@@ -84,8 +82,8 @@ endif
 ":inoremap < <><ESC>i
 ":inoremap > <C-R>=ClosePair('>')<CR>
 :inoremap " ""<ESC>i
-:inoremap ' ''<ESC>i
-:inoremap ` ``<ESC>i
+" :inoremap ' ''<ESC>i
+" :inoremap ` ``<ESC>i
 " :inoremap $ $$<ESC>i
 function ClosePair(char)
     if getline('.')[col('.') - 1] == a:char
@@ -102,7 +100,8 @@ endf
 func! CompileCode()
         exec "w"
         if &filetype == "c"
-            exec "!gcc -Wall $(mysql_config --cflags) $(mysql_config --libs) -lpcap %<.c -o %<"
+            exec "!gcc -Wall $(mysql_config --cflags) $(mysql_config --libs) -lpcap -c %<.c"
+"             exec "!gcc -Wall $(mysql_config --cflags) $(mysql_config --libs) -lpcap %<.c -o %<"
         elseif &filetype == "cpp"
             exec "!g++ -Wall -std=c++98 %<.cpp -o %<"
         elseif &filetype == "java"
@@ -122,8 +121,7 @@ func! CompileCode()
         elseif &filetype == "mp"
             exec "!mpost -tex=latex  %<.mp"
         elseif &filetype == "tex"
-            exec "!pdflatex  %<.tex"
-"            exec "!pdflatex  %<.tex | !del /f /q /s *.aux *.bbl *.blg *.log *.out *.bak *.synctex.gz"
+            exec "!xelatex  %<.tex"
         endif
 endfunc
 
@@ -219,12 +217,6 @@ function! Uncomment() range
   endif
 endfunction
 
-" ======================== Microsoft Word =============================
-" reading Ms-Word documents (requires antiword)
-autocmd BufReadPre *.doc set ro
-autocmd BufReadPre *.doc set hlsearch!
-autocmd BufReadPost *.doc %!antiword "%"
-
 "===============================Latex ab===============================
 autocmd FileType tex ab L L_{\lambda}^
 autocmd FileType tex ab var \varepsilon
@@ -240,7 +232,6 @@ autocmd FileType tex ab partial \frac{\partial }{\partial}<ESC>10hi
 autocmd FileType tex ab 1int \int_{x_0}^{x_1}F
 autocmd FileType tex ab 2int \int\int_{D}
 autocmd FileType tex ab 2frac \frac{d^2}{dx^2}F
-autocmd FileType tex ab F_y' F_{y'}
 autocmd FileType tex ab theorem \begin{theorem}<CR>\end{theorem}<ESC>O
 autocmd FileType tex ab example \begin{example}<CR>\end{example}<ESC>O
 autocmd FileType tex ab frame \begin{frame}<CR>\end{frame}<ESC>O
@@ -257,10 +248,5 @@ autocmd FileType tex ab lambda \lambda
 autocmd FileType tex ab lamda \lambda
 autocmd FileType tex ab grad \vec{\mbox{grad}}
 autocmd FileType tex ab div \mbox{div}
-
-
-"===============================Python ab===============================
-autocmd FileType py ab del \delta
-autocmd FileType py ab for for:<ESC>hi
 
 autocmd FileType md :inoremap * **<ESC>i
