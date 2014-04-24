@@ -37,4 +37,33 @@ Dans le cas le plus courant, la fréquence minimale du signal est petite par rap
 La représentation discrète d'un signal par des échantillons régulièrement espacés exige une fréquence d'échantillonnage supérieure au double de la fréquence maximale présente dans ce signal.
 
 En général, on échantillonne dans l'intervalle compris entre 0 et la fréquence de Nyquist, c'est-à-dire la moitié de la fréquence d'échantillonnage.
+
+\section{Ergodique 遍历}
+L'hypothèse ergodique, ou hypothèse d'ergodicité, est une hypothèse fondamentale de la physique statistique. Elle fut formulée initialement par Ludwig Boltzmann
+
+Elle s'appliquait alors aux systèmes composés d'un très grand nombre de particules, et affirmait qu'à l'équilibre, la valeur moyenne d'une grandeur calculée de manière statistique est égale à la moyenne d'un très grand nombre de mesures prises dans le temps.\\
+La première valeur est celle que permet de calculer la physique statistique, la seconde est proche de ce qu'on peut expérimentalement mesurer.\\
+L'hypothèse ergodique est donc fondamentale pour un bon rapprochement entre la théorie et l'expérience.
+
+L'hypothèse d'ergodicité intervient également en \textbf{traitement du signal}, où elle consiste à admettre que \textbf{l'évolution d'un signal aléatoire au cours du temps apporte la même information qu'un ensemble de réalisations}.
+
+Elle est importante dans l'étude des chaines de Markov, les processus stationnaires et pour l'apprentissage numérique.
+
+\textbf{Approche intuitive de l'hypothèse ergodique}\\
+D'une facon intuitive, reprendre l'exemple d'un gaz, les milliards de particules qui le constituent peuvent être considérées comme des copies les unes des autres ayant toutes le même comportement aléatoire. 
+Elles prennent chacune des valeurs aléatoires, probablement différentes, de position et de vitesse à un instant donnée. \\
+La vitesse moyenne des particules peut se calculer en \textbf{sommant les vitesses de toutes les particules à un instant donné}. \\
+Cependant, on peut calculer également une moyenne en \textbf{considérant une seule particule} mais en mesurant ses vitesses \textbf{à différents instants}.\\
+L'hypothèse d'ergodicité revient à dire que \textbf{les deux méthodes sont équivalentes}.
+
+On peut également penser à une forêt d'une seule espèce et s'intéresser à la croissance d'un arbre en fonction du temps : l'hypothèse ergodique revient à considérer qu'il est similaire d'observer la forêt à un instant donné qu'un arbre tout au long de sa vie pour en conna?tre l'évolution (par exemple relever le diamètre du tronc en fonction du temps ou mesurer tous les diamètres de la forêt et le reporter en fonction de l'age de l'arbre).
+
+\bigskip
+Un \textbf{processus ergodique} est un processus stochastique pour lequel les statistiques peuvent être approchées par l'étude d'une seule réalisation suffisamment longue.
+
+\bigskip
+\textbf{Lien avec la stationnarité}\\
+Un signal peut être:\\
+stationnaire mais non ergodique.\\
+ergodique mais non stationnaire; par exemple le signal $Z(x; \omega)=A(\omega)$ constant pour chaque réalisation.
 \end{document}
