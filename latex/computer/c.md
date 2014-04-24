@@ -29,6 +29,20 @@ By constrast, `strdup` is a Posix function, and it performs **dynamic memory all
 -` times(struct tms *buf)` stores the current process times in the struct tms that buf points to  
 `#include <sys/times.h>`
 
+**struct timeval**  
+The struct timeval structure represents an elapsed time. It is declared in sys/time.h and has the following members:
+
+	struct timeval{
+    	long int tv_sec; // the number of whole seconds of elapsed time.
+    	long int tv_usec; // the rest of the elapsed time 
+	}
+	tv_usec(a fraction of a second), represented as the number of 
+	microseconds. It is always less than one million.
+
+`time_t` just stores seconds, so  
+`time_t time = (time_t)ut_tv.tv_sec;`  
+Should work, but since you're just looking for a difference, there's always the magic of subtraction.
+
 # #define  
 Function macro definitions accept two special operators (`#` and `##`) in the replacement sequence:
 If the operator # is used before a parameter is used in the replacement sequence, that parameter is replaced by a **string literal** (as if it were enclosed between double quotes)
