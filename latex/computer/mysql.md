@@ -280,7 +280,7 @@ Now execute program:
     /* send SQL query */
     int mysql_query(MYSQL *mysql, const char *stmt_str)
     return Zero for success
-	stmt_str is without a terminating semicolon (“;”) or \g
+	stmt_str is without a terminating semicolon (";") or \g
 
     mysql_query(conn, "insert into ... values(...)")
 
@@ -298,15 +298,96 @@ After invoking `mysql_query()` or `mysql_real_query()`, you **must call `mysql_s
 Instead, each row must be retrieved individually by calling `mysql_fetch_row()`.  
 This reads the result of a query directly from the server without storing it in a temporary table or local buffer, which is somewhat faster and uses much less memory than `mysql_store_result()`.   
 The client allocates memory only for the current row and a communication buffer that may grow up to max_allowed_packet bytes.
+
+## Transaction
+	mysql_autocommit(conn, 0); 
+	//Do stuff here
+	mysql_commit(conn); //...or mysql_rollback(conn);
+
+I would rather use the "query" method for all these calls:
+
+	mysql_query(conn, "START TRANSACTION");
+	//Do stuff here
+	mysql_query(conn, "COMMIT"); //...or mysql_query(conn, "ROLLBACK"); 
+
+## Timestamp
+timestamp存储的是从Unix 纪元(格林威治时间 1970 年 1 月 1 日 00:00:00)到指定时间的秒数
+
+[实验MySql TIMESTAMP 类型](http://www.xwuxin.com/?p=1642)
+
+[Mysql中datetime和timestamp的相互转换](http://hi.baidu.com/tingli08/item/7151545b5ffeff9909be17ed)
+
+[mysql多个TimeStamp设置](http://www.cnblogs.com/yjf512/archive/2012/11/02/2751058.html)
+
+### Store timestamp into mysql  
+`from_unixtime` converts int to datatime type  
+`unix_timestamp` convets datetime type to int
+
+	insert into timetest(time_stamp) values(integer); //error
+	insert into timetest(time_stamp) values("2014-03-01");
+	insert into timetest(time_stamp) values("2014-03-01 09:10:00");
+	insert into timetest(time_stamp) values(FROM_UNIXTIME(1111000000));
+
+### Timestamp bind example
+	  MYSQL_TIME  ts;
+	  MYSQL_BIND  bind[3];
+	  MYSQL_STMT  *stmt;
+	
+	  strmov(query, "INSERT INTO test_table(date_field, time_field, \
+	                               timestamp_field) VALUES(?,?,?");
+	
+	  stmt = mysql_stmt_init(mysql);
+	  if (!stmt)
+	  {
+	    fprintf(stderr, " mysql_stmt_init(), out of memory\n");
+	    exit(0);
+	  }
+	  if (mysql_stmt_prepare(mysql, query, strlen(query)))
+	  {
+	    fprintf(stderr, "\n mysql_stmt_prepare(), INSERT failed");
+	    fprintf(stderr, "\n %s", mysql_stmt_error(stmt));
+	    exit(0);
+	  }
+	
+	  /* set up input buffers for all 3 parameters */
+	  bind[0].buffer_type= MYSQL_TYPE_DATE;
+	  bind[0].buffer= (char *)&ts;
+	  bind[0].is_null= 0;
+	  bind[0].length= 0;
+	  ...
+	  bind[1]= bind[2]= bind[0];
+	  ...
+	
+	  mysql_stmt_bind_param(stmt, bind);
+	
+	  /* supply the data to be sent in the ts structure */
+	  ts.year= 2002;
+	  ts.month= 02;
+	  ts.day= 03;
+	
+	  ts.hour= 10;
+	  ts.minute= 45;
+	  ts.second= 20;
+	
+	  mysql_stmt_execute(stmt);
+	  ..
   
-# MySQL
-## Storage
-`MyISAM` is the default storage engine. It is based on the older (and no longer available) ISAM storage engine but **has many useful extensions**.  
-Each MyISAM table is stored on disk in **three files**. The files have names that begin with the table name and have an extension to indicate the file type.  
-An `.frm` file stores the table format. The data file has an `.MYD (MYData)` extension. The index file has an `.MYI (MYIndex)` extension.  
-To specify explicitly that you want a MyISAM table, indicate that with an ENGINE table option:
+[struct tm 的结构](http://man7.org/linux/man-pages/man3/ctime.3.html)
 
-    CREATE TABLE t (i INT) ENGINE = MYISAM;
-老版本的MySQL使用TYPE而不是ENGINE(例如，TYPE = MYISAM), but ENGINE is the preferred term and TYPE is deprecated.
+     struct tm {
+               int tm_sec;    /* Seconds (0-60) */
+               int tm_min;    /* Minutes (0-59) */
+               int tm_hour;   /* Hours (0-23) */
+               int tm_mday;   /* Day of the month (1-31) */
+               int tm_mon;    /* Month (0-11) */
+               int tm_year;   /* Year - 1900 */
+               int tm_wday;   /* Day of the week (0-6, Sunday = 0) */
+               int tm_yday;   /* Day in the year (0-365, 1 Jan = 0) */
+               int tm_isdst;  /* Daylight saving time */
+           };
 
+    char *ctime(const time_t *timep);
+    char *ctime_r(const time_t *timep, char *buf);
 
+    struct tm *gmtime(const time_t *timep);
+    struct tm *gmtime_r(const time_t *timep, struct tm *result);
