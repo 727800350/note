@@ -930,6 +930,26 @@ Convert IP addresses from a dots-and-number string to a struct in_addr and back
 	    in_addr_t s_addr;
 	};
 
+Example of `inet_ntoa`
+
+	struct in_addr addr1,addr2;
+	ulong l1,l2;
+	l1= inet_addr("192.168.0.74");
+	l2 = inet_addr("211.100.21.179");
+	memcpy(&addr1, &l1, 4);
+	memcpy(&addr2, &l2, 4);
+	printf("%s : %s\n", inet_ntoa(addr1), inet_ntoa(addr2)); //注意这一句的运行结果
+	printf("%s\n", inet_ntoa(addr1));
+	printf("%s\n", inet_ntoa(addr2));
+	return 0;
+	}
+实际运行结果如下:  
+192.168.0.74 : 192.168.0.74 //从这里可以看出,`printf`里的`inet_ntoa(addr2)`先于`inet_ntoa(addr1)`执行.  
+192.168.0.74  
+211.100.21.179  
+`inet_ntoa`返回一个`char *`,而这个`char *`的空间是在`inet_ntoa`里面静态分配的,所以`inet_ntoa`后面的调用会覆盖上一次的调用.  
+第一句printf的结果只能说明在printf里面的可变参数的求值是从右到左的,仅此而已.
+
 
 **IP 的结构**
     
