@@ -43,7 +43,7 @@ The struct timeval structure represents an elapsed time. It is declared in sys/t
 `time_t time = (time_t)ut_tv.tv_sec;`  
 Should work, but since you're just looking for a difference, there's always the magic of subtraction.
 
-# #define  
+## define  
 Function macro definitions accept two special operators (`#` and `##`) in the replacement sequence:
 If the operator # is used before a parameter is used in the replacement sequence, that parameter is replaced by a **string literal** (as if it were enclosed between double quotes)
 
@@ -58,6 +58,24 @@ The operator `##` concatenates two arguments **leaving no blank spaces** between
     glue(c,out) << "test";
     This would also be translated into:
     cout << "test";
+
+"\","#","#@"和"##"
+
+在用`#define` 定义时  
+斜杠("\")是用来续行的  
+"#"用来把参数转换成字符串,是给参数加上双引号  
+"##"则用来连接前后两个参数,把它们变成一个  
+"#@"是给参数加上单引号.
+
+下面的例子会使您很容易理解。
+	
+	#define Conn(x,y) x##y
+	#define ToChar(a) #@a 
+	#define ToString(x) #x
+	 int n = Conn(123,456);   结果就是n=123456;
+	 char* str = Conn("asdf", "adf")结果就是 str = "asdfadf";
+	 char a = ToChar(1);结果就是a='1';
+	 char* str = ToString(123132);就成了str="123132";
 
 `realloc`: 重新分配内存, 但是原来的内容保留下来
 
