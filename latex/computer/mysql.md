@@ -340,26 +340,50 @@ These types include the exact numeric data types (INTEGER, SMALLINT, DECIMAL, an
 The keyword INT is a synonym for INTEGER, and the keywords DEC and FIXED are synonyms for DECIMAL. MySQL treats DOUBLE as a synonym for DOUBLE PRECISION (a nonstandard extension). MySQL also treats REAL as a synonym for DOUBLE PRECISION (a nonstandard variation), unless theREAL_AS_FLOAT SQL mode is enabled.
 
 ### Storage Requirements for Numeric Types
+Unsigned: 2^{n bits} - 1
 
-| Data Type                  | Storage Required(Byte) | Signed                                    | Unsigned(2^{n bits} - 1) |
-|----------------------------|------------------------|-------------------------------------------|--------------------------|
-| TINYINT                    | 1                      | -128, 127                                 | 0, 255                   |
-| SMALLINT                   | 2                      | -32768, 32767                             | 0, 65535                 |
-| MEDIUMINT                  | 3                      | -8388608, 8388607                         | 0, 16777215              |
-| INT, INTEGER               | 4                      | -2147483648, 2147483647                   | 0, 4294967295            |
-| BIGINT                     | 8                      | -9223372036854775808, 9223372036854775807 | 0, 18446744073709551615  |
-| FLOAT(p)                   | 4 if p \in [0,24];     |                                           |                          |
-|                            | 8 if p \in [25,53]     |                                           |                          |
-| FLOAT                      | 4                      |                                           |                          |
-| DOUBLE [PRECISION], REAL   | 8                      |                                           |                          |
-| DECIMAL(M,D), NUMERIC(M,D) | Varies                 |                                           |                          |
-| BIT(M)                     | \simeq (M+7)/8 bytes   |                                           |                          |
+| Type      | Storage | Minimum Value        | Maximum Value        |
+|-----------|---------|----------------------|----------------------|
+|           | (Bytes) | (Signed/Unsigned)    | (Signed/Unsigned)    |
+| TINYINT   | 1       | -128                 | 127                  |
+|           |         | 0                    | 255                  |
+| SMALLINT  | 2       | -32768               | 32767                |
+|           |         | 0                    | 65535                |
+| MEDIUMINT | 3       | -8388608             | 8388607              |
+|           |         | 0                    | 16777215             |
+| INT       | 4       | -2147483648          | 2147483647           |
+|           |         | 0                    | 4294967295           |
+| BIGINT    | 8       | -9223372036854775808 | 9223372036854775807  |
+|           |         | 0                    | 18446744073709551615 |
 
 ### Date and time
 The date and time types for representing temporal values are DATE, TIME, DATETIME, TIMESTAMP, and YEAR.   
 The TIMESTAMP type has special automatic updating behavior.
 
+| Data Type | “Zero” Value          |
+|-----------|-----------------------|
+| DATE      | '0000-00-00'          |
+| TIME      | '00:00:00'            |
+| DATETIME  | '0000-00-00 00:00:00' |
+| TIMESTAMP | '0000-00-00 00:00:00' |
+| YEAR      | 0000                  |
 
+### Prepared Statement Type Codes
+| Input Variable C Type | buffer_type Value    | SQL Type of Destination Value |
+|-----------------------|----------------------|-------------------------------|
+| signed char           | MYSQL_TYPE_TINY      | TINYINT                       |
+| short int             | MYSQL_TYPE_SHORT     | SMALLINT                      |
+| int                   | MYSQL_TYPE_LONG      | INT                           |
+| long long int         | MYSQL_TYPE_LONGLONG  | BIGINT                        |
+| float                 | MYSQL_TYPE_FLOAT     | FLOAT                         |
+| double                | MYSQL_TYPE_DOUBLE    | DOUBLE                        |
+| MYSQL_TIME            | MYSQL_TYPE_TIME      | TIME                          |
+| MYSQL_TIME            | MYSQL_TYPE_DATE      | DATE                          |
+| MYSQL_TIME            | MYSQL_TYPE_DATETIME  | DATETIME                      |
+| MYSQL_TIME            | MYSQL_TYPE_TIMESTAMP | TIMESTAMP                     |
+| char[]                | MYSQL_TYPE_STRING    | TEXT, CHAR, VARCHAR           |
+| char[]                | MYSQL_TYPE_BLOB      | BLOB, BINARY, VARBINARY       |
+|                       | MYSQL_TYPE_NULL      | NULL                          |
 
 ## Timestamp
 timestamp存储的是从Unix 纪元(格林威治时间 1970 年 1 月 1 日 00:00:00)到指定时间的秒数
