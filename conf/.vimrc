@@ -15,8 +15,8 @@ imap <c-\> <c-p>
 imap <C-]>             <C-X><C-]> 
 imap <C-F>             <C-X><C-F> 
 imap <C-D>             <C-X><C-K>  
-set dictionary+=C:\Users\Administrator\_mydict "自定义单词库
-set thesaurus+=C:\Users\Administrator\_mthesaur  "自定义分类词库
+set dictionary+=~/.mydict "自定义单词库
+set thesaurus+=~/.mthesaur  "自定义分类词库
 imap <C-L>             <C-X><C-L> 
 imap <C-T>             <C-X><C-T> 
 set  complete-=k complete+=k
@@ -27,7 +27,6 @@ set  complete-=k complete+=k
 map <F3> <c-w>w
 set backspace=2 "启用退格键
 let g:vimrc_author='Eric'
-let g:vimrc_email='wangchaogo1990@gmail.com'
 
 set nocompatible             " 关闭兼容模式
 
@@ -84,7 +83,7 @@ endif
 :inoremap " ""<ESC>i
 " :inoremap ' ''<ESC>i
 " :inoremap ` ``<ESC>i
-" :inoremap $ $$<ESC>i
+:inoremap $ $$<ESC>i
 function ClosePair(char)
     if getline('.')[col('.') - 1] == a:char
         return "\<Right>"
@@ -100,8 +99,8 @@ endf
 func! CompileCode()
         exec "w"
         if &filetype == "c"
-            exec "!gcc -Wall $(mysql_config --cflags) $(mysql_config --libs) -lpcap -c %<.c"
-"             exec "!gcc -Wall $(mysql_config --cflags) $(mysql_config --libs) -lpcap %<.c -o %<"
+"             exec "!gcc -Wall $(mysql_config --cflags) $(mysql_config --libs) -lpcap -c %<.c"
+            exec "!gcc -Wall $(mysql_config --cflags) $(mysql_config --libs) -lpcap %<.c -o %<"
         elseif &filetype == "cpp"
             exec "!g++ -Wall -std=c++98 %<.cpp -o %<"
         elseif &filetype == "java"
@@ -218,10 +217,7 @@ function! Uncomment() range
 endfunction
 
 "===============================Latex ab===============================
-autocmd FileType tex ab L L_{\lambda}^
 autocmd FileType tex ab var \varepsilon
-autocmd FileType tex ab over \overrightarrow{}<ESC>i
-autocmd FileType tex ab arrow \Leftrightarrow
 autocmd FileType tex ab mod \text{mod}
 autocmd FileType tex ab eps \epsilon
 autocmd FileType tex ab del \delta
@@ -244,9 +240,5 @@ autocmd FileType tex ab 1equation \begin{equation}<CR>\end{equation}<ESC>O
 autocmd FileType tex ab split \begin{equation}<CR><TAB>\begin{split}<CR>\end{split}<CR><BACKSPACE>\end{equation}<ESC>kO
 autocmd FileType tex ab case \begin{equation}<CR>\left\{<CR>\begin{array}{ll}<CR>\end{array}<CR>\right.<CR><BACKSPACE><BACKSPACE>\end{equation}<ESC>l2xkkO
 autocmd FileType tex ab eqnarray \begin{eqnarray}<CR>\end{eqnarray}<ESC>O
-autocmd FileType tex ab lambda \lambda
-autocmd FileType tex ab lamda \lambda
-autocmd FileType tex ab grad \vec{\mbox{grad}}
-autocmd FileType tex ab div \mbox{div}
 
 autocmd FileType md :inoremap * **<ESC>i
