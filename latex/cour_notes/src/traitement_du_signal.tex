@@ -66,4 +66,96 @@ Un \textbf{processus ergodique} est un processus stochastique pour lequel les st
 Un signal peut être:\\
 stationnaire mais non ergodique.\\
 ergodique mais non stationnaire; par exemple le signal $Z(x; \omega)=A(\omega)$ constant pour chaque réalisation.
+
+\section{Representation in Terms of Basis Functions}
+The set of basis functions: $ \phi_{-N}(t), \ldots, \phi_{-2}(t), \phi_{-1}(t), \phi_0(t), \phi_1(t), \phi_2(t), \ldots, \phi_N(t)$, Where $N$ may be infinity in some cases.\\
+The linear combination of these as:
+\begin{equation}
+x(t) = \sum_{n = -N}^N a_n \phi_n(t)
+\label{eq.base.combination}
+\end{equation}
+
+One property that is desired for a set of basis functions is known as \textbf{finality of coefficients}.\\
+It allows one to determine any given coefficient without needing to know any other coefficient. 
+Stated another way, more terms can be added to the representation(to obtain greater accuracy, for example) without making any changes in the earlier coefficients.\\
+To achive finality of coefficients, it is necessary that the basis functions be \textbf{orthogonal over the time interval} 
+for which the representation is to be valid.
+
+The condition for orthogonality of basis functions requires that for all k,
+$$
+\int_{t_1}^{t_2} \phi_n(t) \phi_k^{*}(t)
+=
+\begin{cases}
+	0 & k \neq n\\
+	\lambda_k & k = n
+\end{cases}
+$$
+where $\phi_k^{*}(t)$ is the complex conjugate of $\phi_k(t)$ and $\lambda_k$ is real. For real basis functions this condition becomes:
+$$
+\int_{t_1}^{t_2} \phi_n(t) \phi_k(t)
+=
+\begin{cases}
+	0 & k \neq n\\
+	\lambda_k & k = n
+\end{cases}
+$$
+If $\lambda_k = 1$ for all $k$, the basis functions are said to be \textbf{orthonormal}.
+
+The limits of integration in the last two equations can define either a finite interval or an infinite(semi-infinite) interval, 
+depending upon the nature of problem.
+
+In order to demonstrate how the coefficients can be determined, multiply both sides of equation \eqref{eq.base.combination} by $\phi_j^{*}(t)$ , for any $j$, and integrate over the specified interval. This gives
+\begin{equation}
+\int_{t_1}^{t_2} \phi_j^{*}(t)x(t)dt 
+= \int_{t_1}^{t_2} \phi_j^{*}(t) [\sum_{n = -N}^N a_n \phi_n(t)] dt 
+= \sum_{n = -N}^N a_n \int_{t_1}^{t_2} \phi_j^{*}(t) \phi_n(t) dt 
+\end{equation}
+
+From the orthogonality condition, equation \lasteq may be written as
+$$ \int_{t_1}^{t_2} \phi_j^{*}(t) x(t) dt = a_j \lambda $$
+Since all the terms on the right side of equation \lasteq will be zero except for $n = j$. Thus, the coefficient $a_j$ may be expressed quite generally as
+\begin{equation}
+a_j = \frac{1}{\lambda_j} \int_{t_1}^{t_2} \phi_j^*(t) x(t) dt
+\end{equation}
+
+When the basis functions are complex, eg., a complex Fourier series representation, it is very likely that the coefficients $a_j$ will be complex too.
+
+The enery or average power of a signal:
+\begin{equation}
+E 
+= \int_{t_1}^{t_2}x^2(t)dt
+= \int_{t_1}^{t_2}x(t) \sum_{n = -N}^N a_n \phi_n(t) dt
+= \sum_{n = -N}^N a_n \int_{t_1}^{t_2}x(t) \phi_n(t) dt
+\end{equation}
+Now it is seen that, assuming $x(t)$ is real, the integral in equation \lasteq is $\lambda_n$ times the complex conjugate of $a_n$. Therefore,
+\begin{equation}
+E
+= \sum_{n = -N}^N a_n \lambda_n a_n^* = \sum_{n = -N}^N \lambda_n \norm{a_n}^2
+\end{equation}
+
+\subsection{Energy}
+Since $\lambda_n$ is the energy in the nth basis function, 
+each term of the summation in \lasteq is simply the energy associated with the nth component of the representation. 
+Thus, \lasteq states that \textbf{the energy of singal is the sum of the energies of its individual orthogonal components, regardless of what form they may have}. \\
+This is one form of a quite general theorm that is usually referred to as \textit{Parseval}'s theorem.
+
+In almost all cases, the value of $N$ in equation \eqref{eq.base.combination} required for an exact representation will be infinity,
+but the values of $a_n$ tend to be smaller as $n$ becomes large. 
+
+\subsection{Approximation}
+Since it is not possible to use an infinite number of terms in any pratical situation, 
+the series must be terminated after some finite number of terms, and the resulting expression is an approximation to $x(t)$. 
+
+Thus the approximation $\hat{x}(t)$ may be expressed as
+\begin{equation}
+\hat{x}(t) = \sum_{n = -M}^M a_n \phi_n(t)
+\end{equation}
+
+The integral squared error:
+$$
+I = \int_{t_1}^{t_2} \norm{x(t) - \hat{x}(t)}^2 dt
+$$
+经过一系列的运算， 我们可以证明当$I$ 取最小值时， $\hat{a}_n = a_n$.\\
+From this result it may be conclued that the previously defined coefficients $a_n$ are also the best ones from the standpoint of minimizing the approximation error when only a finite number of terms is used.
 \end{document}
+
