@@ -310,6 +310,57 @@ I would rather use the "query" method for all these calls:
 	//Do stuff here
 	mysql_query(conn, "COMMIT"); //...or mysql_query(conn, "ROLLBACK"); 
 
+## Bind
+statement: **Multiple statement handles can be associated with a single connection. 但是同一个进程(线程) 只能有一个**
+
+[C API Prepared Statement Data Structures](http://dev.mysql.com/doc/refman/5.1/en/c-api-prepared-statement-data-structures.html)  
+**`MYSQL_BIND`**  
+This structure is used both for statement **input** (data values sent to the server) and **output** (result values returned from the server):
+
+- For input, use `MYSQL_BIND` structures with `mysql_stmt_bind_param()` to bind parameter data values to buffers for use by `mysql_stmt_execute()`.
+- For output, use `MYSQL_BIND` structures with `mysql_stmt_bind_result()` to bind buffers to result set columns, for use in fetching rows with `mysql_stmt_fetch()`.
+
+To use a `MYSQL_BIND` structure, **zero its contents to initialize** it, then set its members appropriately. For example, to declare and initialize an array of three `MYSQL_BIND` structures, use this code:
+
+	MYSQL_BIND bind[3];
+	memset(bind, 0, sizeof(bind));
+The `MYSQL_BIND` structure contains the following members for use by application programs. For several of the members, the manner of use depends on whether the structure is used for input or output.
+
+	enum enum_field_types buffer_type
+	void *buffer
+	unsigned long buffer_length
+	unsigned long *length
+	my_bool *is_null
+	my_bool is_unsigned
+	my_bool *error // For output
+
+## Data type
+MySQL supports all standard SQL numeric data types.  
+These types include the exact numeric data types (INTEGER, SMALLINT, DECIMAL, and NUMERIC), as well as the approximate numeric data types (FLOAT, REAL, andDOUBLE PRECISION).   
+The keyword INT is a synonym for INTEGER, and the keywords DEC and FIXED are synonyms for DECIMAL. MySQL treats DOUBLE as a synonym for DOUBLE PRECISION (a nonstandard extension). MySQL also treats REAL as a synonym for DOUBLE PRECISION (a nonstandard variation), unless theREAL_AS_FLOAT SQL mode is enabled.
+
+### Storage Requirements for Numeric Types
+
+| Data Type                  | Storage Required(Byte) | Signed                                    | Unsigned(2^{n bits} - 1) |
+|----------------------------|------------------------|-------------------------------------------|--------------------------|
+| TINYINT                    | 1                      | -128, 127                                 | 0, 255                   |
+| SMALLINT                   | 2                      | -32768, 32767                             | 0, 65535                 |
+| MEDIUMINT                  | 3                      | -8388608, 8388607                         | 0, 16777215              |
+| INT, INTEGER               | 4                      | -2147483648, 2147483647                   | 0, 4294967295            |
+| BIGINT                     | 8                      | -9223372036854775808, 9223372036854775807 | 0, 18446744073709551615  |
+| FLOAT(p)                   | 4 if p \in [0,24];     |                                           |                          |
+|                            | 8 if p \in [25,53]     |                                           |                          |
+| FLOAT                      | 4                      |                                           |                          |
+| DOUBLE [PRECISION], REAL   | 8                      |                                           |                          |
+| DECIMAL(M,D), NUMERIC(M,D) | Varies                 |                                           |                          |
+| BIT(M)                     | \simeq (M+7)/8 bytes   |                                           |                          |
+
+### Date and time
+The date and time types for representing temporal values are DATE, TIME, DATETIME, TIMESTAMP, and YEAR.   
+The TIMESTAMP type has special automatic updating behavior.
+
+
+
 ## Timestamp
 timestamp存储的是从Unix 纪元(格林威治时间 1970 年 1 月 1 日 00:00:00)到指定时间的秒数
 
