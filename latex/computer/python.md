@@ -1,73 +1,58 @@
 # Python sequence
-sequence在python不是一种特定的类型，而是泛指一系列的类型
+sequence在python不是一种特定的类型,而是泛指一系列的类型
 
 list, tuple, 字符串都属于sequence
 
 # IO
 ## 重定向
-import sys
-out = open("out.txt","w")
-sys.stdout = out  //之后的print语句就会输出到out 指向的文件中
-print .....
-out.close()
 
-out = open("out.txt","w")  //w is write, a+ 追加
-print>>out,"string",integer //输出到out中
-sys.stdout  //sys模块中
+	import sys
+	out = open("out.txt","w")
+	sys.stdout = out  //之后的print语句就会输出到out 指向的文件中
+	print .....
+	out.close()
+
+输出到文件
+
+	out = open("out.txt","w")  //w is write, a+ 追加
+	print>>out,"string",integer //输出到out中
+	sys.stdout  //sys模块中
 
 # random 随机数生成
-`random.random()`用于生成一个0到1的随机符点数: 0 <= n < 1.0
-`random.uniform(a, b)`,指定范围内的随机符点数. 如果a > b，则生成的随机数n: a <= n <= b。如果 a <b， 则 b <= n <= a。
-
-`random.randint(a, b)`，指定范围内的整数, 生成的随机数n: a <= n <= b
-
-`random.randrange([start], stop[, step])`，从指定范围内，按指定基数递增的集合中 获取一个随机数
-
-如：random.randrange(10, 100, 2)，结果相当于从[10, 12, 14, 16, ... 96, 98]序列中获取一个随机数。random.randrange(10, 100, 2)在结果上与 random.choice(range(10, 100, 2) 等效。
-
-`random.choice(sequence)`从序列中获取一个随机元素  
-
-print random.choice("学习Python")    
-print random.choice(["JGood", "is", "a", "handsome", "boy"])   
-print random.choice(("Tuple", "List", "Dict")) 
-
-`random.shuffle(x[, random])`，用于将一个列表中的元素打乱。如:
-p = ["Python", "is", "powerful", "simple", "and so on..."]   
-random.shuffle(p)   
-print p   
-#---- 结果（不同机器上的结果可能不一样。）   
-#['powerful', 'simple', 'is', 'Python', 'and so on...'] 
-
-`random.sample(sequence, k)`,从指定序列中随机获取指定长度的片断.sample函数不会修改原有序列
-
-list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]   
-slice = random.sample(list, 5) #从list中随机获取5个元素，作为一个片断返回   
-print slice   
-print list #原有序列并没有改变。
+- `random.random()`用于生成一个0到1的随机符点数: 0 <= n < 1.0
+-  `random.uniform(a, b)`,指定范围内的随机符点数. 如果a > b,则生成的随机数n: a <= n <= b.如果 a <b, 则 b <= n <= a.
+- `random.randint(a, b)`,指定范围内的整数, 生成的随机数n: a <= n <= b
+- `random.randrange([start], stop[, step])`,从指定范围内,按指定基数递增的集合中 获取一个随机数  
+如:random.randrange(10, 100, 2),结果相当于从[10, 12, 14, 16, ... 96, 98]序列中获取一个随机数.random.randrange(10, 100, 2)在结果上与 random.choice(range(10, 100, 2) 等效.
+- `random.choice(sequence)`从序列中获取一个随机元素  
+- `random.shuffle(x[, random])`,Shuffle the sequence x in place.   
+The optional argument random is a 0-argument function returning a random float in [0.0, 1.0); by default, this is the function random().
+- `random.sample(sequence, k)`,从指定序列中随机获取指定长度的片断.sample函数不会修改原有序列
 
 # Numeric
 `int(String)`: convert a string to integer
 
-divmod(x, y) which returns a tuple (x / y, x % y)
+`divmod(x, y)` which returns a tuple `(x / y, x % y)`
 
 ## 小数位数
->>> round(2.675,2)
-2.6800000000000002
->>> round(2.675,2) == 2.68
-True
->>> round(2.675,2) == 2.67
-False
+
+	>>> round(2.675,2)
+	2.6800000000000002
+	>>> round(2.675,2) == 2.68
+	True
+	>>> round(2.675,2) == 2.67
+	False
 
 保留小数位要用字符替换 
 
->>> "%.0f" % 3.45
-'3'
->>> "%.1f" % 3.45
-'3.5'
->>> "%.2f" % 3.45
-'3.45'
->>> "%.3f" % 3.45
-'3.450'
+	>>> "%.0f" % 3.45
+	'3'
+	>>> "%.1f" % 3.45
+	'3.5'
+	>>> "%.2f" % 3.45
+	'3.45'
+	>>> "%.3f" % 3.45
+	'3.450'
 
 ## math module
 - `math.floor()`
@@ -77,31 +62,32 @@ False
 ## Mysql with MySQLdb module
 [MySQL Python tutorial](http://zetcode.com/db/mysqlpython/)
 
-### _mysql module
+### `_mysql` module
 The _mysql module implements the MySQL C API directly. It is not compatible with the Python DB API interface. Generally, the programmers prefer the object oriented MySQLdb module.
 
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-import _mysql
-import sys
-
-try:
-    con = _mysql.connect('localhost', 'testuser', 'test623', 'testdb')
-        
-    con.query("SELECT VERSION()")
-    result = con.use_result()
-    
-    print "MySQL version: %s" % result.fetch_row()[0]
-    
-except _mysql.Error, e:
-    print "Error %d: %s" % (e.args[0], e.args[1])
-    sys.exit(1)
-
-finally:
-    if con:
-        con.close()
+	#!/usr/bin/python
+	# -*- coding: utf-8 -*-
+	import _mysql
+	import sys
+	
+	try:
+	    con = _mysql.connect('localhost', 'testuser', 'test623', 'testdb')
+	        
+	    con.query("SELECT VERSION()")
+	    result = con.use_result()
+	    
+	    print "MySQL version: %s" % result.fetch_row()[0]
+	    
+	except _mysql.Error, e:
+	    print "Error %d: %s" % (e.args[0], e.args[1])
+	    sys.exit(1)
+	
+	finally:
+	    if con:
+	        con.close()
 
 [MySQL C API function mapping](http://mysql-python.sourceforge.net/MySQLdb.html)
+
 | C API                          | _mysql                             |
 |--------------------------------|------------------------------------|
 | mysql_affected_rows()          | conn.affected_rows()               |
@@ -151,33 +137,33 @@ finally:
 ### MySQLdb module
 MySQLdb is a thin Python wrapper around _mysql. It is compatible with the Python DB API, which makes the code more portable. Using this model is the preferred way of working with the MySQL.
 
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-import MySQLdb as mdb
-import sys
-
-try:
-    con = mdb.connect('localhost', 'testuser', 'test623', 'testdb');
-## 	mdb.connect(host,user,passwd,db):
-
-## 	cursor is used to traverse the records from the result set. 
-## 	call the execute() method of the cursor and execute the SQL statement.
-    cur = con.cursor()
-    cur.execute("SELECT VERSION()")
-
-## 	retrieve only one record
-    ver = cur.fetchone()
-    
-    print "Database version : %s " % ver
-    
-except mdb.Error, e:
-    print "Error %d: %s" % (e.args[0],e.args[1])
-    sys.exit(1)
-    
-finally:    
-    if con:    
-        con.close()
+	#!/usr/bin/python
+	# -*- coding: utf-8 -*-
+	import MySQLdb as mdb
+	import sys
+	
+	try:
+	    con = mdb.connect('localhost', 'testuser', 'test623', 'testdb');
+	## 	mdb.connect(host,user,passwd,db):
+	
+	## 	cursor is used to traverse the records from the result set. 
+	## 	call the execute() method of the cursor and execute the SQL statement.
+	    cur = con.cursor()
+	    cur.execute("SELECT VERSION()")
+	
+	## 	retrieve only one record
+	    ver = cur.fetchone()
+	    
+	    print "Database version : %s " % ver
+	    
+	except mdb.Error, e:
+	    print "Error %d: %s" % (e.args[0],e.args[1])
+	    sys.exit(1)
+	    
+	finally:    
+	    if con:    
+	        con.close()
 
 # General
 应该尽量避免使用Python全局变量.  
-在文件开头声明Python全局变量variable， 在具体函数中使用该变量时，需要事先声明 global variable，否则系统将该变量视为局部变量。 CONSTANT = 0  (将全局变量大写便于识别)
+在文件开头声明Python全局变量variable, 在具体函数中使用该变量时,需要事先声明 global variable,否则系统将该变量视为局部变量. CONSTANT = 0  (将全局变量大写便于识别)
