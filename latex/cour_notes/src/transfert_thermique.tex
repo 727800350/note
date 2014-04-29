@@ -1,5 +1,13 @@
 % !Mode:: "TeX:UTF-8"
-\chapter{Transfert thermique}
+\documentclass{article}
+\input{../../public/package}
+\input{../../public/article}
+\begin{document}
+\title{Transfert thermique}
+\maketitle
+\tableofcontents
+\newpage
+%% \chapter{Transfert thermique}
 \section{Des nombres importants}
 Biot:$$B_i = \frac{ hD}{\lambda }=\frac{\tau^{cd}}{\tau^{cc}}$$
 $$B_i = \frac{ \text{coefficient de transfert } \times \text{dimension caract\'eristique} }{\text{conductivit\'e thermique}}$$
@@ -99,9 +107,29 @@ Le changement d'enthalpie: $$dH=m c_p dT \quad (J)$$
 En r\'egime stationnaire pour gaz parfait ou liquide
 $$\frac{ dH}{dt}=\dot{m}c_p dT_m$$
 
+\section{Introduction}
+Toute la physique des transferts dans les milieux continues repose sur l'hypoth\`ese de \textbf{l'\'equilibre thermodynamique local(E.T.L)}\\
+Cela signifie qu'il est toujours possible de d\'efinir, \`a chaque instant $t$, en tout point $r$, les variables physiques usuelles, eg. t\'emp\'erature $T(r,t)$.
 
-%--------------------------------------------------------------------------%
-%--------------------------------------------------------------------------%
+\bigskip
+r\'ef\'erentiel d'un \'el\'ement du syst\`eme mat\'eriel: transport par des particules $\Rightarrow$ diffusion
+\begin{itemize}
+\item conduction \'electrique
+\item diffusion d'une esp\`ese dans un milieu
+\item conduction thermique
+\end{itemize}
+
+r\'ef\'erentiel quelconque: convection.\\
+les ph\'enom\`enes de diffusion se couplent aux ph\'enom\`enes de convection dans un r\'ef\'erentiel quelconque.
+
+\bigskip
+$$ d\Phi = \vec{q} \cdot \vec{n} dS $$
+$d\Phi$: la puissance \'el\'ementaire [$W$]; flux \'el\'ementaire d'\'energie \`a travers $dS$\\
+$\vec{q}$: vecteur flux surfacique d'\'energie [$W/m^2$]
+
+$$\varphi = \vec{q} \cdot \vec{n}$$
+$\varphi$: flux surfacique, $>0$ dans le sens des axes
+
 \section{Mod\`ele}
 \subsection{Ailette:$B_i < 0.1$}
 pour une barre de section carr\'ee a et de longeur L:
@@ -123,11 +151,6 @@ $$
 Aucun flux n'est plus dissip\'e en bout d'ailette. En effet, au bout d'une certaine longueur, la temp\'erature de l'ailette est proche de la temp\'erature de r\'ef\'erence du fluide.Le flux \'echang\'e tend vers $0$.
 
 \subsubsection{D\'emonstration}
-%\begin{figure}
-%\def\svgwidth{0.5\columnwidth}
-%\input{image/ailette.pdf_tex}
-%\end{figure}
-
 \begin{eqnarray}
  \text{en z:} & \Phi_1=\varphi(z)\cdot A \\
  \text{en z+dz:} &\Phi_2=-\varphi(z+dz) \cdot A\\
@@ -177,16 +200,12 @@ $$ \frac{\partial  }{\partial x}=0 $$
 Quand T suffisament grand
 $$ \frac{\partial  }{\partial x}=0 $$
 
-
 \textbf{Laminaire}
 无论在流体内部还是在流体与表面的界面处,热只通过分子传导进行传递.即,在流体粒子内作为内能所储备的热,按照粒子准微观的分子运动,横跨流线传递给相邻流线上的粒子.
 \textbf{Turbulent}
 在湍流时,存在横跨流线运输流体块的涡流,通过这个涡流的宏观运动,被运送到其他流体层的流体粒子跟那里的粒子混合,在流体层间传递能量.这种机理被称为涡传导.\\
 湍流时,由于分子传导又附加了涡流传导,所以只与分子传导的导热情况相比,其传热效果显著增强了.因此涡流混合的程度越大,传热的效率也越大.
 
-
-%--------------------------------------------------------------------------%
-%--------------------------------------------------------------------------%
 \subsection{Bilan}
 \textbf{Hypoth\`eses simplificatrices}
 \begin{itemize}
@@ -218,7 +237,6 @@ $$
 \rho c_p ( \vec{v}\cdot \vec{\mbox{grad}} T)=- \mbox{div} (\vec{\varphi}^{CD}) =\lambda \triangle T
 $$
 
-
 \section{Flux surfacique}
 \subsection{Milieu transparant et corps opaque}
 \textbf{Un milieu transparant}: il n'int\'egit pas de champ de rayonnement; il n'\'emet pas, n'absorbe pas, ne r\'efl\'echit pas, ni ne diffuse de rayonnement; tout rayonnment incident est transmis quelles que soient sa direction et sa fr\'equence.\\
@@ -231,7 +249,6 @@ $$\varphi^{cd} |_{pf} = -\\\lambda _f \frac{\partial T_f}{\partial y}|_{pf}$$
 $$\varphi ^{cc}=h(T_p - T_c) \quad \text{由p到c为正方向}$$
 
 \subsection{Rayonnement}
-
 \subsubsection{Classfication}
 Les grandeurs physiques seront distinguées selon :
 \begin{itemize}
@@ -334,8 +351,6 @@ z[ \frac{ \lambda _1}{\lambda _m(T)}, \frac{ \lambda _2}{\lambda _m(T)}]
 \frac{ \int_{\lambda _1}^{\lambda _2}\pi L_{\lambda}^0(T)d \lambda }{\sigma T^4}
 $$
 
-%--------------------------------------------------------------------------%
-%--------------------------------------------------------------------------%
 \section{Formule}
 \subsection{Th\'eor\`eme de R\'enaulde}
 Grandeur int\'egrale
@@ -387,8 +402,7 @@ $$
 	\end{split}
 \end{equation}
 \end{example}
-%--------------------------------------------------------------------------%
-%--------------------------------------------------------------------------%
+
 \section{Math}
 \subsection{erf(x)}
 In mathematics, the error function (also called the Gauss error function) is a special function (non-elementary) of sigmoid shape which occurs in probability, statistics and partial differential equations. It is defined as:
@@ -428,6 +442,4 @@ angle solide
 \textbf{肋片}
 在各种截面形状的最佳肋片中,最佳肋片是倒抛物线形截面肋片,这种肋片所需材料及质量可以比三角形直肋片节约百分之几,
 但从加工难易程度及耐久性方面,实际工程都认为三角形直肋片为最佳肋片.
-\includegraphics{ailette_parabolique}\\
-%%   %\caption{倒抛物线形截面肋片}\label{ailette_parabolique}  
-
+\end{document}
