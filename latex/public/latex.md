@@ -199,7 +199,7 @@ Similarly you can insert vertical stretched space with `\vfill`. It may be usefu
 # Figure
 [Floats,_Figures_and_Captions](http://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions)
 
-| ?Specifier | Permission                                                                                                                   |
+| Specifier  | Permission                                                                                                                   |
 |------------|------------------------------------------------------------------------------------------------------------------------------|
 | h          | Place the float here                                                                                                         |
 | t          | Position at the top of the page.                                                                                             |
@@ -207,6 +207,123 @@ Similarly you can insert vertical stretched space with `\vfill`. It may be usefu
 | p          | Put on a special page for floats only.                                                                                       |
 | !          | Override internal parameters LaTeX uses for determining "good" float positions.                                              |
 | H          | Places the float at precisely the location in the LaTeX code. Requires the float package. This is somewhat equivalent to h!. |
+
+## Special figure effect
+### Side captions
+have a caption appear on the side of a float, rather than above or below. The `sidecap` package can be used to place a caption **beside a figure or table**. 
+
+The following example demonstrates this for a figure by using a `SCfigure` environment in place of the figure environment.
+
+	\begin{SCfigure}
+	  \centering
+	  \caption{ ... caption text ... }
+	  \includegraphics[width=0.3\textwidth]%
+	    {Giraff_picture}% picture filename
+	\end{SCfigure}
+![Latex_example_sidecap](http://upload.wikimedia.org/wikipedia/commons/5/59/Latex_example_sidecap.png)
+
+### Lists of figures and tables
+`\caption[short]{long}`, used for the List of Tables or List of Figures.   Typically the short description is for the caption listing, and the long description will be placed beside the figure or table.
+
+	\begin{document}
+	\listoffigures
+	\section{Introduction}
+	\begin{figure}[hb]
+	  \centering
+	  \includegraphics[width=4in]{gecko}
+	  \caption[Close up of \textit{Hemidactylus} sp.]
+	   {Close up of \textit{Hemidactylus} sp., which is
+	   part the genus of the gecko family. It is the
+	   second most speciose genus in the family.}
+	\end{figure}
+	\end{document}
+![list figure](http://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/LaTeX_figure_caption_with_lof_entry.png/400px-LaTeX_figure_caption_with_lof_entry.png)
+
+### Wrapping text around figures
+Before you make the choice of including figures with text wrapping in your document, make sure you have considered all the options.  
+For example, you could use a layout with two columns for your documents and have no text-wrapping at all.
+
+\usepackage{wrapfig}
+
+\begin{wrapfigure}[lineheight]{position}{width}
+
+There are overall eight possible positioning targets:
+
+| r | R | right side of the text                               |
+|---|---|------------------------------------------------------|
+| l | L | left side of the text                                |
+| i | I | inside edge–near the binding (in a twoside document) |
+| o | O | outside edge–far from the binding                    |
+
+The uppercase-character allows the figure to float, while the lowercase version means "exactly here".
+
+The width is, of course, the width of the figure.
+
+	\begin{wrapfigure}{r}{0.5\textwidth}
+	  \begin{center}
+	    \includegraphics[width=0.48\textwidth]{gull}
+	  \end{center}
+	  \caption{A gull}
+	\end{wrapfigure}
+
+![Wrap figure](http://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Latex_example_wrapfig.png/337px-Latex_example_wrapfig.png)
+
+
+	\begin{wrapfigure}{r}{0.5\textwidth}
+	  \vspace{-20pt}
+	  \begin{center}
+	    \includegraphics[width=0.48\textwidth]{gull}
+	  \end{center}
+	  \vspace{-20pt}
+	  \caption{A gull}
+	  \vspace{-10pt}
+	\end{wrapfigure}
+[result figure](http://upload.wikimedia.org/wikipedia/commons/d/dc/Latex_example_wrapfig_vspace.png)
+
+### Subfloats
+subfigure
+
+	\begin{figure}
+	        \centering
+	        \begin{subfigure}[b]{0.3\textwidth}
+	                \includegraphics[width=\textwidth]{gull}
+	                \caption{A gull}
+	                \label{fig:gull}
+	        \end{subfigure}%
+	        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+	          %(or a blank line to force the subfigure onto a new line)
+	        \begin{subfigure}[b]{0.3\textwidth}
+	                \includegraphics[width=\textwidth]{tiger}
+	                \caption{A tiger}
+	                \label{fig:tiger}
+	        \end{subfigure}
+	        ~ 
+	        \begin{subfigure}[b]{0.3\textwidth}
+	                \includegraphics[width=\textwidth]{mouse}
+	                \caption{A mouse}
+	                \label{fig:mouse}
+	        \end{subfigure}
+	        \caption{Pictures of animals}\label{fig:animals}
+	\end{figure}
+[result figure](http://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Latex_example_subfig.png/500px-Latex_example_subfig.png)
+
+Subtable
+
+You will notice that the figure environment is set up as usual. You may also use a table environment for subtables. For each subfloat, you need to use:
+
+	\begin{table}[<placement specifier>]
+	    \begin{subtable}[<placement specifier>]{<width>}
+	        \centering
+	        ... table 1 ...
+	        \caption{<sub caption>}
+	    \end{subtable}
+	    ~
+	    \begin{subtable}[<placement specifier>]{<width>}
+	        \centering
+	        ... table 2 ...
+	        \caption{<sub caption>}
+	    \end{subtable}
+	\end{table}
 
 ## 图形后缀, 目录
 若想省略文件后缀,可在插入图形前使用两个命令.  
