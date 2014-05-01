@@ -356,6 +356,10 @@ EPS 转换为PDF1.然而前者有安全漏洞,后者用法繁琐,用户最好还
 - dvipdfm 支持JPEG,PNG,PDF,不支持EPS,但是它可以实时
 地调用Ghostscript 把EPS 转为PDF
 
+`\usepackage{epstopdf}`  
+但是在使用`\includegraphics`的时候仍然使用: `\includegraphics [width=5cm]{back1.eps}`  
+而不需要换成相应的pdf文件, 在编译的时候, 会生成`back1-eps-converted-to.pdf`文件
+
 # Hyperlink
 `\usepackage{hyperref}`
 
