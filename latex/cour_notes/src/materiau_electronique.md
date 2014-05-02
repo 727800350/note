@@ -63,6 +63,11 @@ Z_L = j L \omega = j X et X = L \omega > 0.
 
 对于硅单晶来说, 主流的方法是液体结晶.
 
+# Diode
+polarisation directe: 正向导通
+
+polarisation inverse: 断路
+
 # PN结
 ## 杂质半导体 dopage
 不含杂质的纯粹的半导体物质叫做本征半导体(I 型半导体 semi-conducteur intrinseque)
