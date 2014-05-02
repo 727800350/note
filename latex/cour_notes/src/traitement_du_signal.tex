@@ -68,6 +68,9 @@ stationnaire mais non ergodique.\\
 ergodique mais non stationnaire; par exemple le signal $Z(x; \omega)=A(\omega)$ constant pour chaque réalisation.
 
 \section{Representation in Terms of Basis Functions}
+下面的section的参考资料:
+\href{http://www.amazon.com/Continuous-Discrete-Signal-System-Analysis/dp/0030510198}{Continuous and Discrete Signal and System Analysis}
+
 The set of basis functions: $ \phi_{-N}(t), \ldots, \phi_{-2}(t), \phi_{-1}(t), \phi_0(t), \phi_1(t), \phi_2(t), \ldots, \phi_N(t)$, Where $N$ may be infinity in some cases.\\
 The linear combination of these as:
 \begin{equation}
@@ -155,7 +158,99 @@ The integral squared error:
 $$
 I = \int_{t_1}^{t_2} \norm{x(t) - \hat{x}(t)}^2 dt
 $$
-经过一系列的运算， 我们可以证明当$I$ 取最小值时， $\hat{a}_n = a_n$.\\
+经过一系列的运算, 我们可以证明当$I$ 取最小值时, $\hat{a}_n = a_n$.\\
 From this result it may be conclued that the previously defined coefficients $a_n$ are also the best ones from the standpoint of minimizing the approximation error when only a finite number of terms is used.
-\end{document}
 
+\section{The implulse function}
+delta function
+
+It should be emphasized that the factor multiplying an impulse is really designing the \textit{area} of the impulse and is not just scaling its magnitude.
+Thus, $A\delta(t-a)$ is an impulse with an area of $A$ located at $t=0$
+
+The delta function is defined to be a function satisfies the following conditions:
+\begin{enumerate}
+\item $\delta(t - t_0) = 0 \eqspace t \neq t_0$
+\item $\int_{t_1}^{t_2} \delta(t - t_0)dt =1 \eqspace t_1 < t_0 < t_2$
+\item $\int_{- \infty}^{+ \infty} f(t) \delta(t - t_0)dt = f(t_0) \eqspace f(t) \text{continuous at }t_0$
+\end{enumerate}
+
+\bigskip
+Some other properties:\\
+Time scaling:
+$$ \delta(bt - t_0) = \frac{1}{\norm{b}} \delta(t - \frac{t_0}{b}) $$
+
+Integral of product of delta function:
+$$ \int_{t_1}^{t_2} \delta(\lambda - t) \delta(\lambda - t_0)d \lambda = \delta(t - t_0) \eqspace t_1 < t_0 < t_2 $$
+
+\section{Fourier Transform}
+Suppose $x(t)$ a periodic function with period $T$
+$$ x(t) = \sum_{n = - \infty}^{\infty} \alpha_n e^{jn\omega_0 t} $$
+
+The Fourier transform then becomes:
+$$
+\begin{aligned}
+		X(\omega) & = \mathcal{F}\{\sum_{n = - \infty}^{\infty} \alpha_n e^{jn\omega_0 t}\} \\
+				  & =  \sum_{n = - \infty}^{\infty} \alpha_n \mathcal{F}\{e^{jn\omega_0 t}\} \\
+				  & =  2\pi \sum_{n = - \infty}^{\infty} \alpha_n \delta(\omega - n \omega_0)
+\end{aligned}
+$$
+
+The constants $\alpha_n$ can be expressed in terms of the Fourier transform of $x_T(t)$, the waveform over one period, as fllows:
+$$
+\begin{aligned}
+		\alpha_n & = \frac{1}{T} \int_{ - T/2}^{T/2} x(t) e^{-jn\omega_0 t}dt \\
+			     & = \frac{1}{T} \int_{ - T/2}^{T/2} x_T(t) e^{-jn\omega_0 t}dt \\
+  				   & = \frac{1}{T} X_T(n\omega_0)
+\end{aligned}
+$$
+
+Therefore, 
+$$ X(\omega) = \omega_0 \sum_{n = - \infty}^{\infty} X_T(n\omega_0)\delta(\omega - n \omega_0) $$
+$$ x(t) \Leftrightarrow \frac{2\pi}{T} \sum_{n = - \infty}^{\infty} X_T(\frac{2\pi n}{T})\delta(\omega - \frac{2\pi n}{T}) $$
+
+The Fourier transform is thus seen to be a series of impulses at the harmonics of the repetition period with strengths determined by the shape of the waveform in one period.
+
+\subsection{Unit Impulse Train}
+\href{http://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Dirac\_comb.svg/300px-Dirac\_comb.svg.png}{Figure of Unit Impulse Train}
+
+$$x(t) = \sum_{n = - \infty}^{\infty} \delta(t - nT)$$
+写成Fourier Series 的形式:
+$$x(t) = \sum_{n = - \infty}^{\infty} \alpha_n e^{jn\omega_0 t} \eqspace \omega_0 = \frac{2\pi}{T}$$
+
+$$
+\begin{aligned}
+		\alpha_n & = \frac{1}{T} \int_{ - T/2}^{T/2} x(t) e^{-jn\omega_0 t}dt \\
+				& = \frac{1}{T} \int_{ - T/2}^{T/2} (\sum_{n = - \infty}^{\infty} \delta(t - nT)) e^{-jn\omega_0 t}dt \\
+				& = \sum_{n=-\infty}^{\infty} \frac{1}{T} \int_{ - T/2}^{T/2} \delta(t - nT) e^{-jn\omega_0 t}dt \\
+			 	&\text{As nT in [-T/2, T/2], n can only equal to 0}\\
+				 &= \frac{1}{T} \int_{-T/2}^{T/2} \delta(t) \times 1 dt \\
+				 & = \frac{1}{T}
+\end{aligned}
+$$
+
+Therefore, $x(t)$ can be written as
+$$ x(t) = \frac{1}{T} \sum_{n = - \infty}^{\infty} e^{jn\omega_0 t} $$
+Taking the Fourier transform gives:
+\begin{equation}
+\begin{aligned}
+X(\omega)
+& = \frac{1}{T} \sum_{n = -\infty}^{\infty} \mathcal{F}\{ e^{jn\omega_0 t} \} \\
+& = \frac{2\pi}{T} \sum_{n = -\infty}^{\infty} \delta(\omega - n\omega_0) \\
+\sum_{n = - \infty}^{\infty} \delta(t - nT)
+& \Leftrightarrow
+\frac{2\pi}{T} \sum_{n = -\infty}^{\infty} \delta(\omega - n\omega_0) \\
+\end{aligned}
+\end{equation}
+
+In terms of frequency $f$, \lasteq can be written as
+$$
+\sum_{n = - \infty}^{\infty} \delta(t - nT)
+\Leftrightarrow
+\frac{1}{T} \sum_{n = -\infty}^{\infty} \delta(f - \dfrac{n}{T}) \\
+$$
+
+Thus, it is seen that an impulse train in the time domaine has as its Fourier transform an impulse train in the frequency domain.
+
+Unit impulse train 在时域(a)与频域(b)上的对比:
+\href{http://i.imgbox.com/GHbA7Fbm.jpg}{The Unit impulse train}
+\end{document}
