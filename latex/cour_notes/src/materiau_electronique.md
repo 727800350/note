@@ -1,3 +1,19 @@
+# 半导体
+能带  
+![能带](http://i.imgbox.com/ImFYUiOp.jpg)
+
+费米能级  
+![费米能级](http://i.imgbox.com/KFmNlmSY.jpg)
+
+半导体的能带  
+![半导体的能带](http://i.imgbox.com/n8XD28Mc.jpg)
+
+dopage: 使半导体导电  
+![dopage](http://i.imgbox.com/fqVVgWFf.jpg)
+
+N型和P型半导体  
+![N型和P型半导体](http://i.imgbox.com/MxwQQfLO.jpg)
+
 # 电路元器件
 参考自[半导体基础](http://book.douban.com/subject/2108871/)
 
