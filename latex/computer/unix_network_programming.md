@@ -797,6 +797,17 @@ wait等待第一个终止的子进程,而waitpid可以通过pid参数指定等�
 1. 线程可以调用`pthread_exit`终止自己
 2. 如果进程的`main` 函数返回或者任何线程调用了`exit`, 整个进程就终止, 其中包括它的任何线程
 
+**But** [When to use pthread_cancel and not pthread_kill](http://stackoverflow.com/questions/3438536/when-to-use-pthread-cancel-and-not-pthread-kill)  
+I would use neither of those two but that's just personal preference.
+
+Of the two, `pthread_cancel` is the safest for terminating a thread since the thread is only supposed to be affected when it has set its cancelability state to true using `pthread_setcancelstate()`.
+
+In other words, it shouldn't disappear while holding resources in a way that might cause deadlock. The `pthread_kill()` call sends a signal to the specific thread, and this is a way to affect a thread asynchronously for reasons other than cancelling it.
+
+**Most of my threads tends to be in loops doing work anyway and periodically checking flags to see if they should exit**. That's mostly because I was raised in a world when `pthread_kill()` was dangerous and `pthread_cancel()` didn't exist.
+
+I subscribe to the theory that **each thread should totally control its own resources, including its execution lifetime**. I've always found that to be the best way to avoid deadlock. To that end, I simply use mutexes for communication between threads (I've rarely found a need for true asynchronous communication) and a flag variable for termination.
+
 一般情况下,线程终止后,其终止状态一直保留到其它线程调用`pthread_join`获取它的状态为止.  
 但是线程也可以被置为`detach`状态,这样的线程一旦终止就**立刻回收它占用的所有资源**,而不保留终止状态.  
 不能对一个已经处于`detach`状态的线程调用`pthread_join`,这样的调用将返回`EINVAL`
