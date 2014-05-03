@@ -15,6 +15,19 @@ To specify explicitly that you want a MyISAM table, indicate that with an ENGINE
 ## Alter
 	alter table flows add column ip_prot tinyint(4) null default 0;
 
+## Select
+mysql不支持`select top n`的语法,应该用这个替换:  
+`select * from tablename order by orderfield desc/asc limit position, counter;`
+position 指示从哪里开始查询，如果是0则是从头开始，counter 表示查询的个数
+
+取前15条记录：
+`select * from tablename order by orderfield desc/asc limit 0,15`
+
+//为了检索从某一个偏移量到记录集的结束所有的记录行，可以指定第二个参数为 -1：
+`mysql> SELECT * FROM table LIMIT 95,-1; // 检索记录行 96-last.`
+//如果只给定一个参数, 它表示返回最大的记录行数目:
+`mysql> SELECT * FROM table LIMIT 5;` //检索前 5 个记录行,也就是说，LIMIT n 等价于 LIMIT 0,n。
+
 ## [用户管理及权限管理](http://www.libuchao.com/2013/04/06/mysql-user-and-privilege)
 
 	CREATE USER test IDENTIFIED BY '123456';
