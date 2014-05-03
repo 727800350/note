@@ -202,6 +202,12 @@ eg: `vi +/"you make"` filename or `vi +/you\ make filename`
 Using `+/pattern` is helpful if you have to leave an editing session before you're finished. You can mark your place by inerting a pattern such as `ZZZ` or `HERE`. Then when you return to the file,all you have to remember is `/ZZZ or /HERE`
 - `vim -b file` edit binary file or we can use `:set binary`
 
+**gain root permission without leaving vim**  
+Often when I edit some files which require root permission (e.g. the files under /etc) I forget run vim with sudo.  
+To force a save use the following command  
+`:w !sudo tee %`  
+It will prompt you for your password
+
 ## Buffer
 **recovering from buffer**  
 `$ex -r` or `$vi -r`  
