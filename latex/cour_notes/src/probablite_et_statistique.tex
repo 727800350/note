@@ -12,7 +12,7 @@
 \subsection{Loi des grands nombres}
 On consid\`ere une suite $(X_n)_{n\in\N^*}$ de variables al\'eatoires ind\'ependantes d\'efinies sur un m\^eme espace probabilis\'e, ayant m\^eme variance finie et m\^eme esp\'erance not\'ees respectivement $V(X)$ et $E(X)$. 
 
-La loi faible des grands nombres stipule que, pour tout r\'eel epsilon strictement positif, la probabilit\'e que la moyenne empirique $Y_n \equiv \bar x= \frac{1}{n} \sum_{i=1}^{n} X_i$ s'\'eloigne de l'esp\'erance d'au moins $\epsilon$ tend vers $0$ quand $n$ tend vers l'infini.
+La loi faible des grands nombres stipule que, pour tout r\'eel $\epsilon$ strictement positif, la probabilit\'e que la moyenne empirique $Y_n \equiv \bar x= \frac{1}{n} \sum_{i=1}^{n} X_i$ s'\'eloigne de l'esp\'erance d'au moins $\epsilon$ tend vers $0$ quand $n$ tend vers l'infini.
 
 \begin{theorem}
 $\forall\varepsilon>0,\quad \lim_{n \to +\infty} \mathbb{P}\left(\left|\frac{X_1+X_2+\cdots+X_n}{n} -E(X)\right| \geqslant \varepsilon\right) = 0$
@@ -127,8 +127,9 @@ $$ L(p_H =  0.5 \mid \mbox{HH}) = P(\mbox{HH}\mid p_H = 0.5) =0.25 $$
 $$ L(p_H = 0.6 \mid \mbox{HH}) = P(\mbox{HH}\mid p_H = 0.6) =0.36 $$
 注意到似然函数的值变大了.\\
 这说明,如果参数$p_H$ 的取值变成0.6的话,结果观测到连续两次正面朝上的概率要比假设$p_H = 0.5$ 时更大.也就是说,参数$p_H$ 取成0.6 要比取成0.5 更有说服力,更为"合理".
+\\(这里的$p_H$ 就是似然函数中的$\theta$, 而连续两次正面朝上HH 就是似然函数中随机变量$X$取得$x$.)
 
-总之,似然函数的重要性不是它的具体取值,而是当参数变化时函数到底变小还是变大.对同一个似然函数,如果存在一个参数值,使得它的函数值达到最大的话,那么这个值就是最为"合理"的参数值.
+总之,\textbf{似然函数的重要性不是它的具体取值,而是当参数变化时函数到底变小还是变大}.对同一个似然函数,如果存在一个参数值,使得它的函数值达到最大的话,那么这个值就是最为"合理"的参数值.
 
 在这个例子中,似然函数实际上等于:
 $$ L(p_H = \theta  \mid \mbox{HH}) = P(\mbox{HH}\mid p_H = \theta) =\theta^2 , 其中0 \le p_H  \le 1.  $$
@@ -165,6 +166,8 @@ $$
 E\left\{(X-\mu)^4\right\}-\left(E\left\{(X-\mu)^2\right\}\right)^2
 \right]
 $$
+\todo{上式的第一个等号有点不理解}
+$$(Var(X) = E(X^2) - (E(X))^2)$$
 Le premier terme est le quatri\`eme moment centr\'e et vaut $3\sigma^4$; le second est le carr\'e de la variance, soit $\sigma^4$. Donc :
 
 $$ \mathrm{var}(T)=\frac{2\sigma^4}{n}.  $$
@@ -186,12 +189,13 @@ Dans ce cas, on a donc \'egalit\'e, ce qui montre que l'estimateur est efficace.
 \end{example}
 
 \section{Fisher information}
-The Fisher information is a way of measuring the amount of information that an observable random variable $X$ carries about an unknown parameter $\theta$ upon which the probability of $X$ depends.
+The Fisher information is a way of \textbf{measuring the amount of information that an observable random variable $X$ carries about an unknown parameter $\theta$ upon which the probability of $X$ depends}.
 
 The probability function for $X$, which is also the likelihood function for $\theta$, is a function $f(X; \theta)$; 
 it is the probability mass (or probability density) of the random variable $X$ conditional on the value of $\theta$. 
 
 The partial derivative with respect to $\theta$ of the natural logarithm of the likelihood function is called the \textbf{score}.
+\\(In statistics, the score, score function, efficient score or informant indicates \textbf{how sensitively a likelihood function $L(\theta; X)$ depends on its parameter $\theta$}. Explicitly, the score for $\theta$ is the gradient of the log-likelihood with respect to $\theta$: $\dfrac{\partial}{\partial\theta} \log L(\theta;X)$.)
 
 Under certain regularity conditions, it can be shown that the first moment of the score (that is, its expected value) is $0$:
 $$
