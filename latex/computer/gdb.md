@@ -92,3 +92,16 @@ This works on the display command also.
 For example, if you want to print ten elements of the array x starting from the 0th element, you would issue this:  
 `print x[0]@10`
 
+# Thread
+[linux gdb-多线程调试](http://blog.csdn.net/lhl_blog/article/details/8888010)
+
+gdb provides these facilities for debugging multi-thread programs:
+
+automatic notification of new threads  
+- `thread threadno`, a command to switch among threads
+- `info threads`, a command to inquire about existing threads
+- `thread apply [threadno] [all] args`, a command to apply a command to a list of threads
+
+thread-specific breakpoints  
+- `set print thread-events`, which controls printing of messages on thread start and exit.
+- `set libthread-db-search-path path`, which lets the user specify which libthread_db to use if the default choice isn't compatible with the program.
