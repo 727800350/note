@@ -105,3 +105,10 @@ automatic notification of new threads
 thread-specific breakpoints  
 - `set print thread-events`, which controls printing of messages on thread start and exit.
 - `set libthread-db-search-path path`, which lets the user specify which libthread_db to use if the default choice isn't compatible with the program.
+
+# core dump
+[使用gdb和core dump迅速定位段错误](http://my.oschina.net/michaelyuanyuan/blog/68618)
+
+`$ulimit -c unlimited`: 这里就是设置生成的core文件无大小限制  
+`$gdb 程序名 core.xxx`  
+运行命令: `where`, 即可看到出现段错误的行数了
