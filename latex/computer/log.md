@@ -18,6 +18,40 @@ The action field of a rule describes the abstract term ''logfile''.
 	*.=crit;kern.none            /var/adm/critical
 	This will store all messages with the priority crit in the file /var/adm/critical, except for any kernel message.
 
+# zlog
+[zlog 使用手册](http://hardysimpson.github.io/zlog/UsersGuide-CN.html)
+
+zlog是一个高可靠性、高性能、**线程安全**、灵活、概念清晰的纯C日志函数库。
+
+事实上，在C的世界里面没有特别好的日志函数库（就像JAVA里面的的log4j，或者C++的log4cxx）。C程序员都喜欢用自己的轮子。printf就是个挺好的轮子，但没办法通过配置改变日志的格式或者输出文件。syslog是个系统级别的轮子，不过速度慢，而且功能比较单调。
+
+zlog在效率、功能、安全性上大大超过了log4c，并且是用c写成的，具有比较好的通用性。
+
+zlog有这些特性：
+
+syslog分类模型，比log4j模型更加直接了当
+日志格式定制，类似于log4j的pattern layout
+多种输出，包括动态文件、静态文件、stdout、stderr、syslog、用户自定义输出函数
+运行时手动、自动刷新配置文件（同时保证安全）
+高性能，在我的笔记本上达到25万条日志每秒, 大概是syslog(3)配合rsyslogd的1000倍速度
+用户自定义等级
+多线程和多进程环境下保证安全转档
+精确到微秒
+简单调用包装dzlog（一个程序默认只用一个分类）
+MDC，线程键-值对的表，可以扩展用户自定义的字段
+自诊断，可以在运行时输出zlog自己的日志和配置状态
+不依赖其他库，只要是个POSIX系统就成(当然还要一个C99兼容的vsnprintf)
+
+## Configuration
+%m - usermessage %n - newline
+
+[formats]
+simple = "%m%n"
+[rules]
+my_cat.DEBUG    >stdout; simple
+my_cat.*    "/var/log/aa.log", 1M; simple
+> 和 stdout 之间不能有空格等字符
+
 # log4c
 ## Install
 	yum install log4c
@@ -32,6 +66,7 @@ The convention of using dotted names for categories determines an obvious hierar
 There is always a root category which represents a conceptual root of the hierarchy of categories.
 
 ## Demo
+see examples in the tar bar of log4c.
 
 `gcc helloworld.c -o helloworld -llog4c`
 
