@@ -1,0 +1,6 @@
+yum install -y gcc gcc-c++ gcc-gfortran gdb
+yum install -y sudo git git-svn
+yum install -y unzip
+yum remove -y evolution
+yum install -y mutt
+yum update -y firefox
