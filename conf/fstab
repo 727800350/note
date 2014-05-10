@@ -1,0 +1,36 @@
+#
+# /etc/fstab
+# Created by anaconda on Sat May 10 05:32:12 2014
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+UUID=23e2c6e5-ebee-40cf-a437-05d64b955c60 /                       ext4    defaults        1 1
+UUID=de7898b7-338e-456c-a52e-69060f7c240c /boot                   ext4    defaults        1 2
+UUID=2263e1e0-9cc0-45d6-8896-21acdd13b5b9 swap                    swap    defaults        0 0
+tmpfs                   /dev/shm                tmpfs   defaults        0 0
+devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+sysfs                   /sys                    sysfs   defaults        0 0
+proc                    /proc                   proc    defaults        0 0
+
+## Sat May 10 07:23:45 EDT 2014
+UUID=60de52d4-2a84-41a0-a0ba-1dc237744cc3 /work /ext4 defaults 0 0
+
+## [eric@human by-uuid]$ file 0270D11E70D1196D
+## 0270D11E70D1196D: symbolic link to `../../sdb1'
+## [eric@human by-uuid]$ file 158801CDEB3E000F 
+## 158801CDEB3E000F: symbolic link to `../../sdb6'
+## [eric@human by-uuid]$ file 2263e1e0-9cc0-45d6-8896-21acdd13b5b9 
+## 2263e1e0-9cc0-45d6-8896-21acdd13b5b9: symbolic link to `../../sdb11'
+## [eric@human by-uuid]$ file 23e2c6e5-ebee-40cf-a437-05d64b955c60 
+## 23e2c6e5-ebee-40cf-a437-05d64b955c60: symbolic link to `../../sdb10'
+## [eric@human by-uuid]$ file 286d0e68-7dc6-454e-a89e-3fe3371f82e7 
+## 286d0e68-7dc6-454e-a89e-3fe3371f82e7: symbolic link to `../../sdb3'
+## [eric@human by-uuid]$ file 30F401CDEB3E0765 
+## 30F401CDEB3E0765: symbolic link to `../../sdb7'
+## [eric@human by-uuid]$ file 60de52d4-2a84-41a0-a0ba-1dc237744cc3 
+## 60de52d4-2a84-41a0-a0ba-1dc237744cc3: symbolic link to `../../sdb8'
+## [eric@human by-uuid]$ file de7898b7-338e-456c-a52e-69060f7c240c 
+## de7898b7-338e-456c-a52e-69060f7c240c: symbolic link to `../../sdb9'
+## [eric@human by-uuid]$ file F2726EF0726EB8CD 
+## F2726EF0726EB8CD: symbolic link to `../../sdb5'
