@@ -14,7 +14,8 @@ sysfs                   /sys                    sysfs   defaults        0 0
 proc                    /proc                   proc    defaults        0 0
 
 ## Sat May 10 07:23:45 EDT 2014
-UUID=60de52d4-2a84-41a0-a0ba-1dc237744cc3 /work /ext4 defaults 0 0
+UUID=60de52d4-2a84-41a0-a0ba-1dc237744cc3 /work ext4 defaults 0 0
+## after changing fstab, `mount -a` to make it take effect without reboot
 
 ## [eric@human by-uuid]$ file 0270D11E70D1196D
 ## 0270D11E70D1196D: symbolic link to `../../sdb1'
