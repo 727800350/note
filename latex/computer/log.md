@@ -45,12 +45,40 @@ MDC，线程键-值对的表，可以扩展用户自定义的字段
 ## Configuration
 %m - usermessage %n - newline
 
-[formats]
-simple = "%m%n"
-[rules]
-my_cat.DEBUG    >stdout; simple
-my_cat.*    "/var/log/aa.log", 1M; simple
-> 和 stdout 之间不能有空格等字符
+	[formats]
+	simple = "%m%n"
+	[rules]
+	my_cat.DEBUG    >stdout; simple
+	my_cat.*    "/var/log/aa.log", 1M; simple
+	> 和 stdout 之间不能有空格等字符
+
+## zlog API
+	/* zlog macros */
+	zlog_fatal(cat, format, ...)
+	zlog_error(cat, format, ...)
+	zlog_warn(cat, format, ...)
+	zlog_notice(cat, format, ...)
+	zlog_info(cat, format, ...)
+	zlog_debug(cat, format, ...)
+
+	/* vzlog macros */
+	vzlog_fatal(cat, format, args)
+	vzlog_error(cat, format, args)
+	vzlog_warn(cat, format, args)
+	vzlog_notice(cat, format, args)
+	vzlog_info(cat, format, args)
+	vzlog_debug(cat, format, args)
+
+	 /* hzlog macros */
+	 hzlog_fatal(cat, buf, buf_len)
+	 hzlog_error(cat, buf, buf_len)
+	 hzlog_warn(cat, buf, buf_len)
+	 hzlog_notice(cat, buf, buf_len)
+	 hzlog_info(cat, buf, buf_len)
+	 hzlog_debug(cat, buf, buf_len) 
+
+返回值  
+这些函数不返回.如果有错误发生,详细错误会被写在由环境变量ZLOG_PROFILE_ERROR指定的错误日志里面.
 
 # log4c
 ## Install
