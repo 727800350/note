@@ -50,21 +50,25 @@ node)连接,形成一负反馈组态.
 - 非线性的问题: 信号饱和, 延迟率, 非线性转换函数.
 - 功率损耗的考量: 输出功率的限制, 输出电流的限制
 
+"反馈放大电路的反馈极性在线路接成后就固定不变",这种说法是否正确?  
+不正确.反馈放大电路的接线是在假定信号处于中频段时接成的负反馈.在信号处于低频段或高频段时,各级放大电路中由于电路存在电抗器件,出现附加相移,若级数较多时,附加相移大于或等于180度,就会使原来的负反馈转化为正反馈.
+
+
 **fréquence de coupure**  
 截止频率(英语:Cutoff frequency):指一个系统的输出信号能量开始大幅下降(在带阻滤波器中为大幅上升)的边界频率
 
-La fréquence de coupure d’un circuit électronique est la fréquence
-limite de fonctionnement utile d’un circuit électronique. La pulsation
+La fréquence de coupure d'un circuit électronique est la fréquence
+limite de fonctionnement utile d'un circuit électronique. La pulsation
 de coupure est la pulsation correspondante.
 
 Les fréquences de coupure basse et haute définissent la bande passante.
 
 Conventionellement, cette limite est souvent fixée à la fréquence pour
 laquelle la puissance de sortie est réduite de moité, pour un signal
-d’entrée de même amplitude, par rapport à la puissance de sortie à la
+d'entrée de même amplitude, par rapport à la puissance de sortie à la
 fréquence de référence.
 
 # Comparateur
-[COMPARATEUR À HYSTÉRÉSIS](http://jacques.boudier.pagesperso-orange.fr/c_online/Electronique/Electronique%20analogique/cours%20009.htm)
+[COMPARATEUR à HYSTéRéSIS](http://jacques.boudier.pagesperso-orange.fr/c_online/Electronique/Electronique%20analogique/cours%20009.htm)
 
 # Amplification de Puissance
