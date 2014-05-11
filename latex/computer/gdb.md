@@ -160,6 +160,23 @@ The new process is debugged after a fork. The parent process runs unimpeded.
 `show follow-fork-mode`  
 Display the current debugger response to a `fork` or `vfork` call.
 
+On Linux, if you want to debug both the parent and child processes, use the command [set detach-on-fork](http://sourceware.org/gdb/onlinedocs/gdb/Forks.html).
+
+`set detach-on-fork mode`  
+Tells gdb whether to detach one of the processes after a fork, or retain debugger control over them both.
+
+- on  
+The child process (or parent process, depending on the value of follow-fork-mode) will be detached and allowed to run independently. This is the default. 
+
+- off  
+Both processes will be held under the control of gdb. One process (child or parent, depending on the value of follow-fork-mode) is debugged as usual, while the other is held suspended.
+
+`show detach-on-fork`  
+Show whether detach-on-fork mode is on/off.
+
+If you choose to set ‘detach-on-fork’ mode off, then gdb will retain control of all forked processes (including nested forks).  
+You can list the forked processes under the control of gdb by using the `info inferiors` command, and **switch from one fork to another** by using the `inferior` command (see [Debugging Multiple Inferiors and Programs](https://sourceware.org/gdb/onlinedocs/gdb/Inferiors-and-Programs.html#Inferiors-and-Programs)).
+
 # Thread
 [linux gdb-多线程调试](http://blog.csdn.net/lhl_blog/article/details/8888010)
 
