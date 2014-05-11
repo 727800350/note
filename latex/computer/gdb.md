@@ -136,6 +136,30 @@ n/f/u三个参数可以一起使用.例如:
 	(gdb) p/t i
 	$26 = 1100101$$$$$$
 
+# [Debugging programs with multiple processes](http://developer.apple.com/library/mac/#documentation/DeveloperTools/gdb/gdb/gdb_5.html)
+
+On most systems, GDB has no special support for debugging programs which create additional processes using the fork function. When a program forks, GDB will continue to debug the parent process and the child process will run unimpeded. If you have set a breakpoint in any code which the child then executes, the child will get a SIGTRAP signal which (unless it catches the signal) will cause it to terminate.
+
+However, if you want to debug the child process there is a workaround which isn't too painful. Put a call to sleep in the code which the child process executes after the fork.
+
+On some systems, GDB provides support for debugging programs that create additional processes using the fork or vfork functions. Currently, the only platforms with this feature are HP-UX (11.x and later only?) and GNU/Linux (kernel version 2.5.60 and later).
+
+By default, when a program forks, GDB will continue to debug the parent process and the child process will run unimpeded.
+
+If you want to follow the child process instead of the parent process, use the command `set follow-fork-mode`.
+
+`set follow-fork-mode mode`  
+Set the debugger response to a program call of fork or vfork. A call to fork or vfork creates a new process. The mode argument can be:
+
+- parent  
+The original process is debugged after a fork. The child process runs unimpeded. This is the default.
+
+- child  
+The new process is debugged after a fork. The parent process runs unimpeded.
+
+`show follow-fork-mode`  
+Display the current debugger response to a `fork` or `vfork` call.
+
 # Thread
 [linux gdb-多线程调试](http://blog.csdn.net/lhl_blog/article/details/8888010)
 
@@ -156,3 +180,49 @@ thread-specific breakpoints
 `$ulimit -c unlimited`: 这里就是设置生成的core文件无大小限制  
 `$gdb 程序名 core.xxx`  
 运行命令: `where`, 即可看到出现段错误的行数了
+
+# Program's environment
+Environment variables conventionally record such things as your user name, your home directory, your terminal type, and your search path for programs to run.
+
+`path directory`  
+Add directory to the front of the PATH environment variable (the search path for executables) that will be passed to your program. The value of PATH used by GDB does not change. You may specify several directory names, separated by whitespace or by a system-dependent separator character (`:' on Unix, `;' on MS-DOS and MS-Windows). If directory is already in the path, it is moved to the front, so it is searched sooner. You can use the string `$cwd' to refer to whatever is the current working directory at the time GDB searches the path. If you use `.' instead, it refers to the directory where you executed the path command. GDB replaces `.' in the directory argument (with the current path) before adding directory to the search path.
+
+`show paths`  
+Display the list of search paths for executables (the PATH environment variable).
+
+`show environment [varname]`  
+Print the value of environment variable varname to be given to your program when it starts. If you do not supply varname, print the names and values of all environment variables to be given to your program. You can abbreviate environment as env.
+
+`set environment varname [=value]`  
+Set environment variable varname to value. The value changes for your program only, not for GDB itself. value may be any string; the values of environment variables are just strings, and any interpretation is supplied by your program itself. The value parameter is optional; if it is eliminated, the variable is set to a null value. For example, this command:  
+`set env USER = foo`  
+tells the debugged program, when subsequently run, that its user is named `foo'. (The spaces around `=' are used for clarity here; they are not actually required.)
+
+`unset environment varname`  
+Remove variable varname from the environment to be passed to your program. This is different from `set env varname ='; unset environment removes the variable from the environment, rather than assigning it an empty value.
+
+# input and output
+`info terminal`  
+Displays information recorded by GDB about the terminal modes your program is using.
+
+You can redirect your program's input and/or output using shell redirection with the run command. For example,  
+`run > outfile`  
+starts your program, diverting its output to the file `outfile`
+
+# Debugging an already-running process
+`attach process-id`  
+This command attaches to a running process,one that was started outside GDB.
+
+`detach`  
+When you have finished debugging the attached process, you can use the detach command to release it from GDB control.   
+Detaching the process continues its execution. After the detach command, that process and GDB become completely independent once more, and you are ready to attach another process or start one with run. detach does not repeat if you press RET again after executing the command.  
+If you exit GDB or use the run command while you have an attached process, you kill that process. By default, GDB asks for confirmation if you try to do either of these things;
+
+# Killing the child process
+`kill`  
+Kill the child process in which your program is running under GDB.
+This command is useful if you wish to debug a core dump instead of a running process. GDB ignores any core dump file while your program is running.
+
+On some operating systems, a program cannot be executed outside GDB while you have breakpoints set on it inside GDB. You can use the kill command in this situation to permit running your program outside the debugger.
+
+The kill command is also useful if you wish to recompile and relink your program, since on many systems it is impossible to modify an executable file while it is running in a process. In this case, when you next type run, GDB notices that the file has changed, and reads the symbol table again (while trying to preserve your current breakpoint settings).
