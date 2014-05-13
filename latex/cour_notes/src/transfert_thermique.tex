@@ -248,8 +248,8 @@ $$\varphi^{cd} |_{pf} = -\\\lambda _f \frac{\partial T_f}{\partial y}|_{pf}$$
 (CC)Le transfert conduto-convectif(根据正方向):
 $$\varphi ^{cc}=h(T_p - T_c) \quad \text{由p到c为正方向}$$
 
-\subsection{Rayonnement}
-\subsubsection{Classfication}
+\section{Rayonnement}
+\subsection{Classfication}
 Les grandeurs physiques seront distinguées selon :
 \begin{itemize}
 \item La composition spectrale du rayonnement
@@ -265,25 +265,34 @@ Les grandeurs physiques seront distinguées selon :
     \end{itemize}
 \end{itemize}
 温度为$T$的物体的:
-L'\'energie \'emise est maximale pour une certaine longueur d'onde $\lambda _m$
+L'\'energie \'emise est maximale pour une certaine longueur d'onde $\lambda _m$\\
+$\lambda_m$ est le plus repr\'esent\'ee, 其中的下标$m$ 不是表示波长最大, 而是指当波长取这个值时, luminance 最大(根据la loi de Planck)
 $$\lambda _m=\frac{3000k\cdot \mu m}{T}$$
+上面的这个方程表明: le rayonnment est une notion autant thermodynamique qu'electromagn\'etique. Les seules m\'ethodes pratiques pour mesurer des t\'emp\'eratures \'elev\'ee sont radiatives.
+
 物体(en l\'equilibre de temp\'erature T)的辐射波长范围(在这个范围内包括了$98\%$的能量):
 $$[\frac{\lambda _m }{2},8 \lambda _m]$$
 
+\noindent
 \`A l'\'equilibre thermique,le flux radiatif surfacique $\varphi^R$ est nul.\\
 \`A l'\'equilibre thermique,$\varphi^i=\varphi^p,\varphi^R=\varphi^p-\varphi^i=0$. \\
 Le flux\\
 ($\theta_1,\theta_2$ les angles $(n_1,u_1),(n_2,u_2)$ et $u_1$ le vecteur unitaire de $O_1$ vers $O_2$)
 \begin{equation}
-\begin{split}
-d \Phi_{\lambda } & = L_{\lambda}(O_1,u_1) \frac{d S_1 \cos \theta_1  d S_2 \cos \theta_2}{O_1 O_2^2} d \lambda \\
-& =  L_{\lambda}(O_1,u_1) d S_1 \cos \theta_1 d\Omega_1 d \lambda \\
-& = L_{\lambda}(O_1,u_1) d S_2 \cos \theta_2 d\Omega_2 d \lambda\\
-\end{split}
+\begin{aligned}
+d \Phi_{\lambda} 
+& = L^{'}_{\lambda}(O_1,u_1) \frac{d S_1 \cos \theta_1  d S_2 \cos \theta_2}{O_1 O_2^2} d \lambda \\
+& = L^{'}_{\lambda}(O_1,u_1) d S_1 \cos \theta_1 d\Omega_1 d \lambda \\
+& = L^{'}_{\lambda}(O_1,u_1) d S_2 \cos \theta_2 d\Omega_2 d \lambda
+\end{aligned}
 \end{equation}
-\subsubsection{H\'emisph\'erique}
+\subsection{H\'emisph\'erique}
 Cas g\'en\'erale(\textbf{H\'emisph\'erique})
-对于$\theta$为半顶角($\theta \in [0,\pi/2]$)的c\^one,对应的立体角及其微分分别为:
+对于$\theta$为半顶角($\theta \in [0,\pi/2]$)的c\^one,对应的立体角及其微分分别为
+\todo{the proof}:
+
+\href{http://i.imgbox.com/90aLTQdS.png}{立体角的计算}
+
 $$\Omega = 2\pi(1-\cos \theta) \Rightarrow d\Omega=2\pi \sin \theta d\theta $$
 \begin{equation}
 	\begin{split}
@@ -315,9 +324,7 @@ $$d\varphi_{\lambda }^R =d\varphi_{\lambda }^e - d\varphi_{\lambda }^a = d\varph
 \item [Corps opaque,pas de transimission] $\alpha_{\lambda }(O_1,\theta_1,\varphi_1,T_1)=\varepsilon_{\lambda }(O_1,\theta_1,\varphi_1,T_1)$
 \end{description}
 
-\begin{eqnarray}
-\end{eqnarray}
-
+\subsection{Corps particuliers usuels}
 \subsubsection{Corps gris}
 Les propri\'et\'es radiatives($\alpha,\varepsilon$) sont ind\'ependantes de la longeeur d'onde $\lambda $ mais d\'ependante de la direction.\\
 Sur l'hypoth\`ese que les N surfaces $S_j$ sont grises:
@@ -328,27 +335,34 @@ $$\forall j: \quad \varepsilon_j =\alpha_j = 1- \rho_j$$
 S_j \varphi_j^i = \sum_{k=1}^N S_k f_{kj}\varphi_k^p \Rightarrow \varphi_j^i = \sum_{k=1}^N f_{jk}\varphi_k^p\\
 S_k f_{kj}=S_j f_{jk}
 \end{eqnarray}
+
+\subsubsection{Corps \`a propri\'et\'es radiatives isotropes}
+ind\'ependante de la direction, mais d\'epandante de la longueur d'onde.
+$$\varepsilon_{\lambda}(O_1, T_1) = \alpha_{\lambda}(O_1, T_1) = 1 - \rho_{\lambda}(O_1, T_1)$$
+
 \subsubsection{Corps noir}
 $$\varphi^p = \varphi^i,\varphi^e = \varphi^a,\varepsilon=\alpha=1,\varphi^r=0$$
-Absorber tout rayonnement,donc ne r\'efl\'echit aucun rayonnement \\
+\textbf{Absorber tout rayonnement},donc ne r\'efl\'echit aucun rayonnement.
+
 La luminance monochromatique du rayonnement \'emis:
 $$L_{\lambda}^{e^{C.N}}= L_{\lambda}^0(T) \quad \forall(\theta_1,\varphi_1)$$
 
-\subsubsection{Rayonnement d'\'equilibre}
+\subsection{Rayonnement d'\'equilibre}
 La luminance du rayonnement d'\'equilibre et celle du rayonnement \'emis par un corps noir est:
 $$L^0(T)=\int_{0}^{\infty}L_{\lambda}^0(T)d \lambda =\frac{\sigma}{\pi}T^4$$
 $\sigma$ est dite \textit{constante de Stefan}:
 $$\sigma=\frac{ 2\pi^5 k_B^4}{15c^2 h^3}=5.670\times 10^{-8} Wm^{-2}K^{-4}$$
 
+Luminance du rayonnement d\'equilibre pour les diff\'erentes t\'emp\'eratures, \href{http://www.afhalifax.ca/magazine/wp-content/sciences/Planck/Le\%20corps\%20noir\_files/rayonnement\_corps\_noir.png}{rayonnement\_corps\_noir}\\
+从图上可以看到, 对于不同的温度, 曲线是不会相交的
+
 Le flux surfacique total de rayonnement isotrope incident sur un \'el\'ement de surface ou partant de cet \'el\'ement, \`a l'\'equilibre \`a la temp\'erature $T$:
 $$\varphi^i=\varphi^p=\int_{0}^{\infty}\pi L_{\lambda}^0(T)d \lambda =\sigma T^4$$
-
+由于这个积分是从$0$到$\infty$, 实际中通常考虑的是一段波长, 可以采用下面的公式, 并借助查表来计算:
 $$
-z[ \frac{ \lambda _1}{\lambda _m(T)}, \frac{ \lambda _2}{\lambda _m(T)}]
-=
-\frac{ \int_{\lambda _1}^{\lambda _2} L_{\lambda}^0(T)d \lambda }{\int_{0}^{\infty}L_{\lambda}^0(T)d \lambda }
-=
-\frac{ \int_{\lambda _1}^{\lambda _2}\pi L_{\lambda}^0(T)d \lambda }{\sigma T^4}
+z[\frac{ \lambda _1}{\lambda _m(T)}, \frac{ \lambda _2}{\lambda _m(T)}]
+= \frac{ \int_{\lambda _1}^{\lambda _2} L_{\lambda}^0(T)d \lambda }{\int_{0}^{\infty}L_{\lambda}^0(T)d \lambda }
+= \frac{ \int_{\lambda _1}^{\lambda _2}\pi L_{\lambda}^0(T)d \lambda }{\sigma T^4}
 $$
 
 \section{Formule}
