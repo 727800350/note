@@ -4,3 +4,10 @@ yum install -y unzip
 yum remove -y evolution
 yum install -y mutt
 yum update -y firefox
+
+## chrome
+
+## project
+## yum install -y libpcap
+## yum install -y wireshark ## no gui
+## yum install -y wireshark-gnome
