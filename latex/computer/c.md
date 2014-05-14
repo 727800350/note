@@ -67,7 +67,7 @@ The operator `##` concatenates two arguments **leaving no blank spaces** between
 "##"则用来连接前后两个参数,把它们变成一个  
 "#@"是给参数加上单引号.
 
-下面的例子会使您很容易理解。
+下面的例子会使您很容易理解.
 	
 	#define Conn(x,y) x##y
 	#define ToChar(a) #@a 
@@ -188,6 +188,36 @@ Here are some examples showing what this program prints with different combinati
      % testopt -a -
      aflag = 1, bflag = 0, cvalue = (null)
      Non-option argument -
+
+**chroot**  
+[Is chroot a security feature?](https://securityblog.redhat.com/2013/03/27/is-chroot-a-security-feature/)  
+chroot: an operation that changes the apparent root directory for the current running process and its children.  
+This call changes an ingredient in the pathname resolution process and does nothing else.  
+This call does not close open file descriptors, and such file descriptors may allow access to files outside the chroot tree.  
+A program that is run in such a modified environment cannot name (and therefore normally not access) files outside the designated directory tree.  
+The modified environment is called a "chroot jail".  
+This can be useful for: Testing and development and Privilege separation 
+
+This call does not change the current working directory, so that after the call '.' can be outside the tree rooted at '/'.  In particular, the superuser can escape from a "chroot jail" by doing:  
+`mkdir foo; chroot foo; cd ..`  
+So chrooted programs should relinquish root privileges as soon as practical after chrooting
+
+## 动态链接库
+[添加搜索路径方法步骤](http://blog.sciencenet.cn/blog-402211-745740.html)
+
+修改`/etc/ld.so.conf`,添加路径.  
+在CentOS 6.3下我看到这个文件实际上是包含了`/etc/ld.so.conf.d/`这个目录下的所有`.conf`文件,因此我们可以在这个路径下面创建一个新的文件,其中写上诸如`/usr/local/lib` 等路径,保存退出.  
+切记一定要主动执行命令:`ldconfig`,它会更新记录了系统中有哪些so文件的缓存文件(`/etc /ld.so.cache`)
+
+ldconfig几个需要注意的地方
+1. 往/lib和/usr/lib里面加东西,是不用修改/etc/ld.so.conf的,但是完了之后要调一下ldconfig,不然这个library会找不到
+2. `/usr/local/lib` 和 `/usr/local/lib64` 居然不在标准路径之列
+3. 如果想在这两个目录以外放lib,但是又不想在/etc/ld.so.conf中加东西(或者是没有权限加东西).那也可以,就是export一个全局变 量LD_LIBRARY_PATH,然后运行程序的时候就会去这个目录中找library.一般来讲这只是一种临时的解决方案,在没有权限或临时需要的时 候使用.
+4. ldconfig做的这些东西都与运行程序时有关,跟编译时一点关系都没有.编译的时候还是该加-L就得加,不要混淆了.
+5. 总之,就是不管做了什么关于library的变动后,最好都ldconfig一下,不然会出现一些意想不到的结果.不会花太多的时间,但是会省很多的事.
+
+### [Linux操作系统下动态库的生成及链接方法](http://www.enet.com.cn/article/2007/0731/A20070731751268.shtml)
+Have not tried
 
 ## User related
 - `getpwnam()` function returns a pointer to a structure containing the broken-out fields of the record in the **password database** (e.g., the local password file /etc/passwd, NIS, and LDAP) that matches the username name.
