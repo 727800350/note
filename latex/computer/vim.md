@@ -136,6 +136,7 @@ all following characters are converted to uppercase or lowercase until the end o
 | .      | 匹配任意字符                                           |
 | [abc]  | 匹配方括号中的任意一个字符.可以使用-表示字符范围,如[a-z0-9]匹配小写字母和阿拉伯数字. |
 | [^abc] | 在方括号内开头使用^符号,表示匹配除方括号中字符之外的任意字符.                 |
+| \| 	 |或,如:for\|bar 表示匹配for或者bar|
 | \d     | 匹配阿拉伯数字,等同于[0-9].                                |
 | \D     | 匹配阿拉伯数字之外的任意字符,等同于[^0-9].                        |
 | \x     | 匹配十六进制数字,等同于[0-9A-Fa-f].                         |
@@ -150,6 +151,8 @@ all following characters are converted to uppercase or lowercase until the end o
 | \L     | 非小写字母 [^a-z]                                     |
 | \u     | 大写字母 [A-Z]                                       |
 | \U     | 非大写字母 [^A-Z]                                     |
+
+一般的正则表达式中表示或的方法:`(my name)|(your name)`
 
 **表示数量的元字符**
 
