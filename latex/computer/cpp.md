@@ -51,6 +51,10 @@ to assign a block (an array) of elements of type type
 	delete [] pointer;
 
 # Class
+定义class的结尾}后需要一个分号,和结构体的定义一样.
+
+对象作为参数传递时是传值, 而不是传递对象的地址,如果需要传递地址,需要明确指出.
+
 private, public or protected.  
 These specifiers modify the access rights that the members following
 them acquire:
