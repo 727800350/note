@@ -1,4 +1,27 @@
 # IO
+## File IO
+### [ofstream](http://www.cplusplus.com/reference/fstream/ofstream/)
+Output file stream  
+ios_base <--- ios <--- ostream <--- ofstream
+
+Objects of this class maintain a filebuf object as their internal stream buffer, which performs input/output operations on the file they are associated with.
+
+File streams are associated with files either on construction, or by calling member open.
+
+	explicit ofstream (const char* filename, ios_base::openmode mode = ios_base::out);
+
+demo
+
+	// ofstream constructor.
+	#include <fstream>      // std::ofstream
+	int main () {
+	std::ofstream ofs ("test.txt", std::ofstream::out);
+	ofs << "lorem ipsum";
+	ofs.close();
+	return 0;
+	}
+
+
 `cin >> mystring;`  
 However, as it has been said, `cin` extraction stops reading as soon as if finds any blank space character, so in this
 case we will be able to get just one word for each extraction.
@@ -49,6 +72,9 @@ to assign a block (an array) of elements of type type
 
 	delete pointer;
 	delete [] pointer;
+
+## 二维数组
+[C++二维数组new小结(zz)](http://www.cnblogs.com/beyondstorm/archive/2008/08/26/1276278.html)
 
 # Class
 定义class的结尾}后需要一个分号,和结构体的定义一样.
