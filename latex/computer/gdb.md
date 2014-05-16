@@ -4,6 +4,27 @@ gdb program
 break, delete, run, continue, step, next and print  
 **you need only use the first letter**
 
+# GUI
+ddd: Display Data Debugger
+
+ddd is just a graphical environment on top of gdb
+
+启动ddd 的三种方式:
+
+	ddd
+	ddd <program> core
+	ddd <program> <process_id>
+
+ddd runs a number of debuggers under the scenes:
+
+- GNU Debugger: gdb
+- Perl Debugger: perl -d
+- Bash Debugger: bashdb
+- Python Debugger: pydb
+- GNU Make Debugger: remake
+- dbx: dbx
+- Ladebug: ladebug
+
 # Running the program
 
 - run: Reset the program, run (or rerun) from the beginning. You can supply command-line arguments to 'run' the same way you can supply command-line arguments to your executable from the shell.  
