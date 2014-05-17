@@ -3,7 +3,8 @@
 
 ![dnsheaderformat](http://www.tcpipguide.com/free/diagrams/dnsheaderformat.png)
 
-![报文](http://1811.img.pp.sohu.com.cn/images/blog/2012/5/28/15/27/e6055747_138545c4ff8g213.gif)
+## ![报文](http://1811.img.pp.sohu.com.cn/images/blog/2012/5/28/15/27/e6055747_138545c4ff8g213.gif)
+![报文](http://i.imgbox.com/U26Avc6h.gif)
 
 [DNS报文结构](http://zhaotao110.blog.sohu.com/218341780.html)
 
@@ -242,3 +243,33 @@ soon afterward.
    name is limited to 255 octets (including the separators).  The zero
    length full name is defined as representing the root of the DNS tree,
    and is typically written and displayed as "."
+
+# Other
+DNS uses its own unique **encoding** for Unicode characters.   
+For example:  
+`www.á.com`: How the DNS name may appear in, say, a web page  
+`www.xn--1ca.com`: What the browser converts the name to when sending it as a DNS request "over the wire"
+
+The reason why DNS uses a complicated special encoding for non-ASCII Unicode characters instead of simply using UTF-8 is because RFC1035 section 2.3.1 says that names can only have letters, numbers, and the '-' (hyphen) character. I felt, a decade ago, that it would have been possible to add real UTF-8 support to DNS, but there was too much anxiety that doing so would break unspecified legacy DNS routers, appliances, etc.
+
+# DNS 相关协议
+## NETBIOS
+NETBIOS(Network Basic Input/Output System)协议是由IBM公司开发,主要用于数十台计算机的小型局域网.
+
+该协议是一种在局域网上的程序可以使用的应用程序编程接口(API),为程序提供了请求低级服务的统一的命令集,作用是为了给局域网提供网络以及其他特殊功能.  
+系统可以利用WINS服务,广播及Lmhost文件等多种模式将NetBIOS名--特指基于NETBIOS协议获得计算机名称-解析为相应IP地址,实现信息通讯,所以在局域网内部使用NetBIOS协议可以方便地实现消息通信及资源的共享.因为它占用系统资源少,传输效率高,所以几乎所有的局域网都是在NetBIOS协议的基础上工作的.
+
+不管使用哪一种传输方式,NetBIOS提供三种不同的服务:
+
+- 名字服务:名字登记和解析
+- 会话服务:可靠的基于连接的通信
+- 数据包服务:不可靠的无连接通信
+
+## LLMNR
+在DNS 服务器不可用时,DNS 客户端计算机可以使用本地链路多播名称解析 (LLMNR—Link-Local Multicast Name Resolution)(也称为多播 DNS 或 mDNS)来解析本地网段上的名称.例如,如果路由器出现故障,从网络上的所有 DNS 服务器切断了子网,则支持 LLMNR 的子网上的客户端可以继续在对等基础上解析名称,直到网络连接还原为止.
+
+LLMNR工作过程
+
+1. 主机在自己的内部名称缓存中查询名称.如果在缓存中没有找到了名称,那么主机就会向自己配置的主DNS服务器发送查询请求.如果主机没有收到回应或收到了错误信息,主机还会尝试搜索配置的备用DNS服务器.如果主机没有配置DNS服务器,或者如果在连接DNS服务器的时候没有遇到错误但失败了,那么名称解析会失败,并转为使用LLMNR.
+2. 主机通过用户数据报协议(UDP)发送多播查询,查询主机名对应的IP地址,这个查询会被限制在本地子网(也就是所谓的链路局部)内.
+1. 链路局部范围内每台支持LLMNR,并且被配置为响应传入查询的主机在收到这个查询请求后,会将被查询的名称和自己的主机名进行比较.如果没有找到匹配的主机名,那么计算机就会丢弃这个查询.如果找到了匹配的主机名,这台计算机会传输一条包含了自己IP地址的单播信息给请求该查询的主机
