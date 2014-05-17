@@ -131,21 +131,25 @@ $$\varphi = \vec{q} \cdot \vec{n}$$
 $\varphi$: flux surfacique, $>0$ dans le sens des axes
 
 \section{Ailette:$B_i < 0.1$}
-对于一般图形来说,没有一个确定的量能够单独表示特征尺寸,所以一般用$\frac{\text{面积}}{\text{周长}}$来表示这个特征尺寸\\
-pour une barre de section carr\'ee a et de longeur L:
-$$ \text{sa longeeur caract\'eristique}\quad l=\frac{A}{P}=\frac{a^2}{4a} $$
+$B_i \leq 0.1 \Rightarrow$ approximation ailette valide en terme de champ de t\'emp\'erature, et en terme de flux.
+
+对于一般图形来说,没有一个确定的量能够单独表示特征尺寸,所以一般用$\dfrac{\text{面积}}{\text{周长}}$来表示这个特征尺寸\\
 
 $$D_t = \frac{A}{P}$$
 
+对于圆柱体: $D_t = \dfrac{A}{P} = \dfrac{\pi R^2}{2 \pi R} = \dfrac{R}{2}$
+
+对于正方体: $D_t = \dfrac{A}{P} = \dfrac{a^2}{4a} = \dfrac{a}{4}$
+
 $$ B_i = \frac{h D_t}{\lambda} = \frac{h}{\lambda} \cdot \frac{A}{P} = \frac{hA}{\lambda P}$$
 
-$$ m^2 = \frac{Ph}{A \lambda}$$
+$$ m^2 = \frac{hP}{\lambda A}$$
 
 $$ D_t^2 m^2 = B_i$$
 
 \subsection{Ailette id\'eale}
 $$ m\cdot l \leq 1 \quad \frac{T(z)-T_f}{T_p - T_f} \simeq 1 $$
-La temp\'erature de l'ailette rest en tout point tr\`es voisine de $T_p  \Rightarrow \frac{ T - T_f}{T_p - T_f}\simeq 1$
+La temp\'erature de l'ailette rest en tout point tr\`es voisine de $T_p  \Rightarrow \dfrac{ T - T_f}{T_p - T_f}\simeq 1$
 
 \subsection{Ailette infinie}
 $$ m\cdot l \geq 3 \quad  \frac{T(z)-T_f}{T_p - T_f}=exp(-mz) $$
@@ -185,7 +189,6 @@ $$
 用到的公式(泰勒展开):
 $$ \frac{ d}{dx}(y+\frac{dy}{dx})  = \frac{ dy}{dx}+\frac{ d^2y}{dx^2}dx $$
 
-\todo{下面的这一段推理我不知道当初为什么放在这里了?}
 \begin{equation}
 	\begin{split}
 	\frac{ d^2T}{dz^2}=\frac{ hP_m}{\lambda A}(T(z)-T_f)=m^2(T(z)-T_f) \\
@@ -196,7 +199,7 @@ Pour l'ailette infinie
 \begin{equation}
 	\begin{split}
 	  \text{温度不能无穷大}\Rightarrow A=0 \\
-	  \text{en} z=0 \quad T_p - T_f =B \Rightarrow \frac{T-T_f}{T_p - T_f}=\exp(-mz)
+	  \eqnote{en } z=0 \quad T_p - T_f =B \Rightarrow \frac{T-T_f}{T_p - T_f}=\exp(-mz)
 	\end{split}
 \end{equation}
 
@@ -259,15 +262,17 @@ d \Phi_{\lambda}
 
 \subsection{H\'emisph\'erique}
 Cas g\'en\'erale(\textbf{H\'emisph\'erique})
-对于$\theta$为半顶角($\theta \in [0,\pi/2]$)的c\^one,对应的立体角及其微分分别为
-\todo{the proof}:
 
-\href{http://i.imgbox.com/90aLTQdS.png}{立体角的计算},
-\href{http://i.imgbox.com/1adl5otW.png}{$\theta$的积分域从$0$到$\pi/2$的图析}
+$\theta$为半顶角($\theta \in [0,\pi/2]$)的c\^one
 
-从图中可以看到, 当$\theta$取一个值时, 实际上得到的是一个c\^one, 因为$\phi$ 会旋转$2\pi$个角度, 同时, 由于只考虑半球面,所以$\theta$ 只用取$0$到$\pi/2$
+从\href{http://i.imgbox.com/90aLTQdS.png}{立体角的计算}中可以得出立体角的公式为$d\Omega = \sin \theta d\theta d\varphi $\\
+其中$\theta$ 为经线圈上的夹角, $\varphi$ 为纬线圈上的夹角.
 
-$$\Omega = 2\pi(1-\cos \theta) \Rightarrow d\Omega=2\pi \sin \theta d\theta $$
+从\href{http://i.imgbox.com/1adl5otW.png}{$\theta$的积分域从$0$到$\pi/2$的图析}中可以看到, 当$\theta$取一个值时, 实际上得到的是一个c\^one, 因为$\varphi$ 会旋转$2\pi$个角度, 同时, 由于只考虑半球面,所以$\theta$ 只用取$0$到$\pi/2$.
+
+角度为$\theta'$的c\^one的立体角为:
+$$\Omega = \int d\Omega= \int_0^{2\pi} \int_0^{\theta'} \sin \theta d\theta d\varphi = 2\pi(1-\cos \theta')$$
+
 \begin{equation}
 	\begin{split}
 d\varphi_{\lambda }^s  & = \frac{d \Phi_{\lambda }^s}{dS_1} \\
