@@ -267,3 +267,54 @@ This command is useful if you wish to debug a core dump instead of a running pro
 On some operating systems, a program cannot be executed outside GDB while you have breakpoints set on it inside GDB. You can use the kill command in this situation to permit running your program outside the debugger.
 
 The kill command is also useful if you wish to recompile and relink your program, since on many systems it is impossible to modify an executable file while it is running in a process. In this case, when you next type run, GDB notices that the file has changed, and reads the symbol table again (while trying to preserve your current breakpoint settings).
+
+# strace
+Strace monitors the system calls and signals of a specific program. It is helpful when you do not have the source code and would like to debug the execution of a program. strace provides you the execution sequence of a binary from start to end.
+
+Each line in the trace contains the system call name, followed by its arguments in parentheses and its return value.
+
+- Trace the Execution of an Executable
+You can use strace command to trace the execution of any executable. The following example shows the output of strace for the Linux ls command.
+
+		$  strace ls
+		execve("/bin/ls", ["ls"], [/* 21 vars */]) = 0
+		brk(0)                                  = 0x8c31000
+		access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+		mmap2(NULL, 8192, PROT_READ, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb78c7000
+		access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+		open("/etc/ld.so.cache", O_RDONLY)      = 3
+		fstat64(3, {st_mode=S_IFREG|0644, st_size=65354, ...}) = 0
+		...
+		...
+
+- Be default, strace displays all system calls for the given executable. To display **only a specific system call**, use the strace -e option as shown below.  
+`$ strace -e open ls`  
+If you want to trace multiple system calls use the `-e trace=` option. The following example displays both open and read system calls.  
+`$ strace -e trace=open,read ls /home`
+
+- Save the Trace Execution to a File Using Option `-o`    
+`$ strace -o output.txt ls`
+
+- Execute Strace on a Running Linux Process Using Option `-p`    
+`$  strace -p 1725 -o output.txt`
+
+- Print Timestamp for Each Trace Output Line Using Option `-t`  
+`$ strace -t -e open ls /home`  
+Print Relative Time for System Calls Using Option `-r`    
+但是需要注意的是在多任务背景下，CPU随时可能会被切换出去做别的事情，所以相对时间不一定准确，此时最好使用 `-T` 
+	 $ strace -r ls 
+     
+- **Generate Statistics Report** of System Calls Using Option `-c`
+Using option -c, strace provides useful statistical report for the execution trace. The “calls” column in the following output indicated how many times that particular system call was executed.
+	
+		$ strace -c ls /home
+		bala
+		% time     seconds  usecs/call     calls    errors syscall
+		------ ----------- ----------- --------- --------- ----------------
+		  -nan    0.000000           0         9           read
+		  -nan    0.000000           0         1           write
+		  -nan    0.000000           0        11           open
+		  -nan    0.000000           0        13           close
+		  -nan    0.000000           0         1           execve
+		  ...
+
