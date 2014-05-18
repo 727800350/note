@@ -472,3 +472,45 @@ Traffic with the 'Evil Bit' Set
 
 	# tcpdump 'ip[6] & 128 != 0'
 
+
+# [lsof](http://www.danielmiessler.com/study/lsof/)
+lsof: list open files
+
+lsof has a truly staggering number of options. You can use it to get information about devices on your system, what a given user is touching at any given point, or even what files or network connectivity a process is using.
+
+- -U: UNIX socket
+
+- -u: user
+	- `-u ^user` //Show what all users are doing except a certain user using
+	- # kill -9 \`lsof -t -u daniel\` //Kill everything a given user is doing
+
+- -a: AND, For example, specifying `-a -U -ufoo` produces a listing of only UNIX socket files that belong to processes owned by user foo.  
+**Caution: the -a option causes all list selection options to be ANDed;**
+
+- -i: internet address
+    - -i6 // IPv6 only
+    - -iTCP // Show only TCP connections (works the same for UDP)
+    - -i:22 // related to a given port using -i:port
+    - -i@172.16.12.5 // Show connections to a specific host using @host 
+    - -i@172.16.12.5:22
+    - #lsof -i -sTCP:LISTEN or # lsof -i | grep -i LISTEN // Find listening ports
+    - # lsof -i -sTCP:ESTABLISHED // Find established connections
+
+- -p: process
+	- # lsof -p 10075  // See what a given process ID has open using -p
+
+- -t : get process IDs only
+
+- Files and Directories
+	- # lsof /var/log/messages/  // Show everything interacting with a given directory
+	- # lsof /home/daniel/firewall_whitelist.txt  // Show everything interacting with a given file
+
+
+- Similar to tcpdump, the power really shows itself when you start combining queries.
+	- # lsof -u daniel -i @1.1.1.1 // Show me everything daniel is doing connected to 1.1.1.1
+	- # lsof -i @fw.google.com:2150=2180  // Show open connections with a port range
+
+Items of the **same selection set** - command names, file descriptors, network addresses, process identifiers, user identifiers - are joined in a single ORed set and applied before the result participates in ANDing.  
+Thus, for example, specifying `-i@aaa.bbb, -i@ccc.ddd, -a -ufff,ggg` will select the listing of files that belong to either *fff* OR *ggg* AND have network connections to either host *aaa.bbb* OR *ccc.ddd*.  
+`-i@aaa.bbb` 与 `-i@ccc.ddd` 属于同一个selection set; 同样, `-ufff` 与`-uggg` 也属于同一个selection set
+
