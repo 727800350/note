@@ -318,3 +318,157 @@ Using option -c, strace provides useful statistical report for the execution tra
 		  -nan    0.000000           0         1           execve
 		  ...
 
+# [tcpdump](http://www.danielmiessler.com/study/tcpdump/)
+TcpDump可以将网络中传送的数据包的"头"完全截获下来提供分析.它支持针对网络层,协议,主机,网络或端口的过滤,并提供and,or,not等逻辑语句来帮助你去掉无用的信息
+
+tcpdump存在于基本的 FreeBSD系统中,由于它需要将网络接口设置为混杂模式,普通用户不能正常执行,但具备root权限的用户可以直接执行它来获取网络上的信息.
+
+## A short list of the options mostly used
+
+- -i any : Listen on all interfaces just to see if you're seeing any traffic.
+- -n : Don't resolve hostnames to avoid DNS lookups
+- -nn : Don't resolve hostnames or port names
+- -X : Show the packet's contents in both hex and ASCII
+- -XX : Same as -X, but also shows the ethernet header
+- -v, -vv, -vvv : Increase the amount of packet information you get back, 比普通的多了个TTL和服务类型等
+- -c : Only get x number of packets and then stop
+- -S : Print absolute sequence numbers
+- -s : Define the snaplength (size) of the capture in bytes.  
+Use `-s0` to get everything, unless you are intentionally capturing less.
+- -e : Get the ethernet header as well
+- -b 在网络层上选择协议,包括ip,arp,rarp,ipx都是这一层的.  
+例如:tcpdump -b arp 将只显示网络中的arp即地址转换协议信息
+- -l 使标准输出变为缓冲行形式, 可以将数据重定向  
+如`tcpdump -l >tcpcap.txt`将得到的数据存入tcpcap.txt文件中
+- -w 直接将包写入文件中,并不分析和打印出来, 将来可以用`-r`或其他软件如Wireshark, Snort, etc读取
+- -r 从指定的文件中读取包(这些包一般通过-w选项产生)
+- -F 从指定的文件中读取**表达式**,忽略其它的表达式
+
+## 表达式
+表达式是一个正则表达式,tcpdump利用它作为过滤报文的条件,如果一个报文满足表
+达式的条件,则这个报文将会被捕获.如果没有给出任何条件,则网络上所有的信息包将会
+被截获.
+
+在表达式中一般如下几种类型的关键字,
+
+- 第一种是**关于类型**的关键字,主要包括*host,net,port*
+例如 host 210.27.48.2,指明 210.27.48.2是一台主机,
+net 202.0.0.0 指明202.0.0.0是一个网络地址,
+port 23 指明端口号是23.如果没有指定类型,缺省的类型是host.  
+portrange: `tcpdump portrange 21-23`
+
+- 第二种是**确定传输方向**的关键字,主要包括*src , dst ,dst or src, dst and src* ,
+这些关键字指明了传输的方向.举例说明,src 210.27.48.2 ,指明ip包中源地址是210.27.
+48.2 , dst net 202.0.0.0 指明目的网络地址是202.0.0.0 .如果没有指明方向关键字,则
+缺省是src or dst关键字.
+
+- 第三种是**协议**的关键字,主要包括*fddi,ip ,arp,rarp,tcp,udp*等类型.Fddi指明是在
+FDDI(分布式光纤数据接口网络)上的特定的网络协议,实际上它是"ether"的别名,fddi和e
+ther具有类似的源地址和目的地址,所以可以将fddi协议包当作ether的包进行处理和分析.
+其他的几个关键字就是指明了监听的包的协议内容.如果没有指定任何协议,则tcpdump将会
+监听所有协议的信息包.
+
+- 除了这三种类型的关键字之外,其他重要的关键字如下:*gateway, broadcast,less,
+greater*, 
+还有三种逻辑运算,取非运算是 'not ' '! ', 与运算是'and','&&';或运算 是'or' ,'||',
+
+**Packet Size Filter** 
+	
+	tcpdump less 32 
+	tcpdump greater 128
+	
+	// filtering for size using symbols 
+	tcpdump > 32 
+	tcpdump <= 128
+
+### Example
+(1)想要截获所有210.27.48.1 的主机收到的和发出的所有的数据包:
+	
+	#tcpdump host 210.27.48.1
+(2) 想要截获主机210.27.48.1 和主机210.27.48.2 或210.27.48.3的通信,使用命令
+:(在命令行中适用　括号时,一定要
+	
+	#tcpdump host 210.27.48.1 and \ (210.27.48.2 or 210.27.48.3 \)
+(3) 如果想要获取主机210.27.48.1除了和主机210.27.48.2之外所有主机通信的ip包
+,使用命令:
+	
+	#tcpdump ip host 210.27.48.1 and ! 210.27.48.2
+	
+## 输出信息
+基本上tcpdump的总的输出格式为:系统时间 来源主机.端口 > 目标主机.端口 数据包参数
+
+从上面tcpdump的输出可以看出,tcpdump对截获的数据并没有进行彻底解码,数据包内的大部分内容是使用十六进制的形式直接打印输出的.显然这不利于分析网络故障,通常的解决办法是先使用带-w参数的tcpdump 截获数据并保存到文件中,然后再使用其他程序进行解码分析.
+
+- TCP包的输出信息
+用TCPDUMP捕获的TCP包的一般输出信息是:
+		
+		src > dst: flags data-seqno ack window urgent options
+src > dst:表明从源地址到目的地址,    
+flags是TCP包中的标志信息,S 是SYN标志, F (FIN), P (PUSH) , R (RST) "." (没有标记);   data-seqno是数据包中的数据的顺序号,   
+ack是下次期望的顺序号,   
+window是接收缓存的窗口大小,   
+urgent表明数据包中是否有紧急指针.  
+Options是选项.
+
+- UDP包的输出信息
+用TCPDUMP捕获的UDP包的一般输出信息是:
+		
+		route.port1 > ice.port2: udp lenth
+UDP十分简单,上面的输出行表明从主机ROUTE的port1端口发出的一个UDP数据包到主机
+ICE的port2端口,类型是UDP, 包的长度是lenth
+
+## Advanced
+filter based on specific portions of a packet
+
+Show me all URGENT (URG) packets...
+
+	# tcpdump 'tcp[13] & 32!=0'
+
+Show me all ACKNOWLEDGE (ACK) packets...
+
+	# tcpdump 'tcp[13] & 16!=0'
+
+Show me all PUSH (PSH) packets...
+
+	# tcpdump 'tcp[13] & 8!=0'
+
+Show me all RESET (RST) packets...
+
+	# tcpdump 'tcp[13] & 4!=0'
+
+Show me all SYNCHRONIZE (SYN) packets...
+
+	# tcpdump 'tcp[13] & 2!=0'
+
+Show me all FINISH (FIN) packets...
+
+	# tcpdump 'tcp[13] & 1!=0'
+
+Show me all SYNCHRONIZE/ACKNOWLEDGE (SYNACK) packets...
+
+	# tcpdump 'tcp[13]=18'
+
+Note: Only the PSH, RST, SYN, and FIN flags are displayed in tcpdump's flag field output. URGs and ACKs are displayed, but they are shown elsewhere in the output rather than in the flags field
+
+tcp[13] looks at offset 13 in the TCP header, the number represents the location within the byte, and the !=0 means that the flag in question is set to 1, i.e. it's on
+
+Capture TCP Flags Using the tcpflags Option...
+
+	# tcpdump 'tcp[tcpflags] & & tcp-syn != 0'
+
+### Specialized Traffic
+
+Finally, there are a few quick recipes you'll want to remember for catching specific and specialized traffic, such as IPv6 and malformed/likely-malicious packets.
+
+IPv6 traffic
+
+	# tcpdump ip6
+
+Packets with both the RST and SYN flags set (why?)
+
+	# tcpdump 'tcp[13] = 6'
+
+Traffic with the 'Evil Bit' Set
+
+	# tcpdump 'ip[6] & 128 != 0'
+
