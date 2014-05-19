@@ -293,7 +293,8 @@ If you want to trace multiple system calls use the `-e trace=` option. The follo
 `$ strace -e trace=open,read ls /home`
 
 - Save the Trace Execution to a File Using Option `-o`    
-`$ strace -o output.txt ls`
+`$ strace -o output.txt ls`  
+也可以使用> 进行重定向, 但是必须使用`2>`, 而不是默认的`> == 1>`
 
 - Execute Strace on a Running Linux Process Using Option `-p`    
 `$  strace -p 1725 -o output.txt`
@@ -317,6 +318,16 @@ Using option -c, strace provides useful statistical report for the execution tra
 		  -nan    0.000000           0        13           close
 		  -nan    0.000000           0         1           execve
 		  ...
+
+- `strace -f` to trace child process
+
+- `-ff`: If the `-o filename` option is in effect, each processes trace is written to `filename.pid` where pid is the numeric process id of each process. This is incompatible with -c, since no per-process counts are kept.
+
+如果一个系统调用在执行时被另外一个进程调用,strace将保持当前调用的顺序,标记为unfinished,当调用返回时再标记为resumed
+
+	[pid 28772] select(4, [3], NULL, NULL, NULL <unfinished ...>
+	[pid 28779] clock_gettime(CLOCK_REALTIME, {1130322148, 939977000}) = 0
+	[pid 28772] <... select resumed> )      = 1 (in [3])
 
 # [tcpdump](http://www.danielmiessler.com/study/tcpdump/)
 TcpDump可以将网络中传送的数据包的"头"完全截获下来提供分析.它支持针对网络层,协议,主机,网络或端口的过滤,并提供and,or,not等逻辑语句来帮助你去掉无用的信息
