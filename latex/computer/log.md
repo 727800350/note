@@ -52,6 +52,32 @@ MDC，线程键-值对的表，可以扩展用户自定义的字段
 	my_cat.*    "/var/log/aa.log", 1M; simple
 	> 和 stdout 之间不能有空格等字符
 
+syslog有一个通配符"*",匹配所有的设施(facility).zlog里面也一样,"*"匹配所有分类.这提供了一个很方便的办法来重定向你的系统中各个组件的错误.只要这么写:
+
+	[rules]
+	*.error    "/var/log/error.log"
+
+zlog强大而独有的特性是**上下级分类匹配**.如果你的分类是这样的:
+
+	c = zlog_get_category("my_cat");
+然后配置文件是这样的
+
+	[rules]
+	my_cat.*      "/var/log/my_cat.log"
+	my_.NOTICE    "/var/log/my.log"
+
+这两条规则都匹配c分类"my_cat".通配符"_" 表示上级分类. **"my_"是"my_cat"和"my_dog"的上级分类**.还有一个通配符是"!", 表示否.
+
+zlog有6个默认的级别:"DEBUG", "INFO", "NOTICE", "WARN", "ERROR"和"FATAL".就像其他的日志函数库那样, aa.DEBUG意味着任何大于等于DEBUG级别的日志会被输出.当然还有其他的表达式.配置文件中的级别是大小写不敏感的.
+
+<TABLE BORDER=1 CELLSPACING=0 CELLPADDING=1>
+<TR><TD ALIGN=center NOWRAP>表达式</TD><TD ALIGN=center NOWRAP>含义</TD></TR>
+<TR><TD ALIGN=center NOWRAP>*</TD><TD ALIGN=center NOWRAP>所有等级</TD></TR>
+<TR><TD ALIGN=center NOWRAP>aa.debug</TD><TD ALIGN=center NOWRAP>代码内等级&gt;=debug</TD></TR>
+<TR><TD ALIGN=center NOWRAP>aa.=debug</TD><TD ALIGN=center NOWRAP>代码内等级==debug</TD></TR>
+<TR><TD ALIGN=center NOWRAP>aa.!debug</TD><TD ALIGN=center NOWRAP>代码内等级!=debug</TD></TR>
+</TABLE>
+
 ## zlog API
 	/* zlog macros */
 	zlog_fatal(cat, format, ...)

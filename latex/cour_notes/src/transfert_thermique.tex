@@ -8,6 +8,36 @@
 \tableofcontents
 \newpage
 %% \chapter{Transfert thermique}
+经典热力学只研究在系统的初, 终状态之间可参数发生了什么变化, 而且认为系统与外界间的热量交换是在无限小温差下发生的一系列无线缓慢的平衡过程.\\
+然而任何实际的热量传递过程都必须存在着温度梯度. 热量传递是典型的非平衡过程, 即不可逆过程, 他所研究的恰恰是热力学没有给出答案, 但又是工程实践中无法回避的现实问题-
+系统内外的热量交换是以何种方式, 多大的速率进行的.\\
+换一个角度看待这个问题, 也可以认为热力学中可逆方式交换的热量必定是传热学(即实际工程)意义上可能达到的最高极限.
+
+\bigskip
+\textbf{传热问题的研究方法}\\
+从某种角度讲, 一切传热问题所遵循的基本规律只有两个, 一个是特定传热问题的特殊规律, 第二个就是能量守恒(在对流换热情况下还要涉及质量守恒和动量守恒等基本法则).
+
+在运用能量守恒法则时, 必须首先明确定义分析的对象是一个控制容积(control volume), 还是一个控制面(control surface)? 这两者之间有原则性区别.\\
+对控制容积还应进一步区分微元容积有有限容积, 用前者得到的一般是微分方程, 用后者得到积分方程或代数方程.
+\begin{enumerate}
+\item 针对控制容积的能量守恒方程
+	\begin{enumerate}
+	\item 能量平衡式中各项的单位都是$W$瓦, 即单位时间传递的热流量
+	\item 进入控制容积的热流量, 指以各种方式进入的热功率的总和. 涉及对流时, 则指流体在流入控制容积的同时代入的热流量. 当涉及辐射方式时, 一般换热仅在物体的表面上进行(气体辐射及透热介质除外)
+	\item 内热源. 可以为负, 即为实际上的冷热源
+	\item 在非相变条件下, 蓄存热量的增加意味着温度升高. 增量为负值表示蓄存减少, 温度降低. 显然稳态传热时, 该项一定为零.
+	\item 除非特殊情况, 否则研究传热问题时一般忽略动能和势能的变化
+	\item 上述能量守恒关系还有一种表达形式, 既不针对瞬时值, 而是就某一有限时间间隔而言. 这只要对上述平衡关系中的每一项作时间积分即可.
+	\end{enumerate}
+\item 针对表面的能量守恒方程\\
+	任何物体或系统都存在表面, 物体通过表面才得以和外界进行热量的传递和交换. 针对表名的能量守恒关系与针对给定容积时有原则性区别. 原因是表面既没有体积, 也没有质量,
+	因此内热源项和蓄热项将不复存在, 也就是说, 针对表面的能量守恒关系只有进与出两项, 不管是瞬时功率还是一段时间内的累积热量, 都必须随时保持相等.
+	\begin{center}
+	$\phi_{in} = \phi_{out}$ 或者 $Q_{in} = Q_{out}$
+	\end{center}
+	针对表面的这种能量守恒原则无论对稳态或非稳态, 瞬时或任意时间间隔都是正确的
+\end{enumerate}
+
 \section{Des nombres importants}
 Biot:$$B_i = \frac{ hD}{\lambda }=\frac{\tau^{cd}}{\tau^{cc}}$$
 $$B_i = \frac{ \text{coefficient de transfert } \times \text{dimension caract\'eristique} }{\text{conductivit\'e thermique}}$$
@@ -130,7 +160,41 @@ $\vec{q}$: vecteur flux surfacique d'\'energie [$W/m^2$]
 $$\varphi = \vec{q} \cdot \vec{n}$$
 $\varphi$: flux surfacique, $>0$ dans le sens des axes
 
-\section{Ailette:$B_i < 0.1$}
+\section{热阻}
+\subsection{无限长侧表面绝热套筒的热阻}
+左视剖面如图所示:
+\href{http://i.imgbox.com/X9xXlBML.png}{示意图}\\
+截取的套筒微元长度为dz(图中未标出,即为灰色方块的长度),沿径向方向的温度场分布记为T(r),
+
+$$
+d\phi = -\lambda \dfrac{dT}{dr}\cdot dS = -\lambda \dfrac{dT}{dr} \cdot 2\pi rdz
+$$
+$$ T_1 - T_2 = \dfrac{d\phi}{2\pi r\lambda dz} \ln{\dfrac{R_2}{R_1}} $$
+显然这个模型的径向热阻为 $R_t = \dfrac{1}{2\pi rdz} \ln{\dfrac{R_2}{R_1}}$
+
+\subsection{有限长套筒热阻}
+在上一题的基础上,将套筒的长度限定为L,则将上式积分可得,总的热阻为:
+$$ R_t = \dfrac{L}{\pi \lambda(R_2^2 - R_1^2)} $$
+
+\textbf{对流热阻}\\
+考虑流体-固体界面处的热阻模型,固体壁的温度为$T_p$,接触面积为$\Sigma$ ,液体的温度为$T_c$,对流换热系数为$h$.\\
+则有$\phi^{cc} = h\Sigma(T_p - T_c)$ , 所以热阻
+$$R_t = \dfrac{1}{h\Sigma}$$
+注:以后的很多实际传热问题中,换热系数h并不是单纯的对流换热系数,而是"对流换热与辐射换热系数之和"!!! $h=h^{cc} + h^R$
+
+\section{Ailette}
+为了提高换热效率,从经济性的角度考量,大多会想办法增大"固-液-气"的接触面积.
+所以聪明的工程师们设计出了"肋片"这一装置.
+此种设计充分体现了"分形会增大系统表面积"这一精妙的数学思想～～
+
+所谓肋片,就是粘在主换热片/管上的小薄片装置,剖视图如图所示
+\href{http://i.imgbox.com/UBJtc7TX.png}{肋片的示意图}
+
+肋片横截剖面上的温度场分析可以近似采用"线性均匀分布"假设,即:温度场的梯度仅仅沿z轴方向.
+
+线性模型的建立,还需要牢记一个基本条件:材料导热系数不随温度的变化而产生变化,这就导致系统的焓变为零.
+这一假设将广泛运用于以下章节的分析中.
+
 $B_i \leq 0.1 \Rightarrow$ approximation ailette valide en terme de champ de t\'emp\'erature, et en terme de flux.
 
 对于一般图形来说,没有一个确定的量能够单独表示特征尺寸,所以一般用$\dfrac{\text{面积}}{\text{周长}}$来表示这个特征尺寸\\
@@ -148,12 +212,27 @@ $$ m^2 = \frac{hP}{\lambda A}$$
 $$ D_t^2 m^2 = B_i$$
 
 \subsection{Ailette id\'eale}
+理想肋片由铝或者铜制成,其导热性能非常强.假设其长度为L,则应有
 $$ m\cdot l \leq 1 \quad \frac{T(z)-T_f}{T_p - T_f} \simeq 1 $$
+
 La temp\'erature de l'ailette rest en tout point tr\`es voisine de $T_p  \Rightarrow \dfrac{ T - T_f}{T_p - T_f}\simeq 1$
 
+传导传热的时间效应消失掉了.这一模型的传热效率(根据前两节的公式求极限即可得到)为:
+$$
+\eta_{isotherme} = \dfrac{L}{D_t} = \dfrac{LP}{A}
+$$
+
 \subsection{Ailette infinie}
-$$ m\cdot l \geq 3 \quad  \frac{T(z)-T_f}{T_p - T_f}=exp(-mz) $$
+无线长的肋片中,总能将肋片的温度场调整到与环境达到平衡.而在现实应用中,一般将符合如下条件的肋片按照无限长肋片模型处理,即
+$$ m\cdot l \geq 5 $$
+此时有:
+$$ \frac{T(z)-T_f}{T_p - T_f}=exp(-mz) $$
+传热效率: $\eta_{\infty} = \dfrac{\lambda m}{h} = \dfrac{1}{\sqrt{B_i}}$
+
 Aucun flux n'est plus dissip\'e en bout d'ailette. En effet, au bout d'une certaine longueur, la temp\'erature de l'ailette est proche de la temp\'erature de r\'ef\'erence du fluide.Le flux \'echang\'e tend vers $0$.
+
+肋片热场的近似,最吸引工程师们的就是在Bi远小于1时的情况(一般要求小于等于0.1).
+这时候才可以说如果$B_i \leq 0.1$,物体最大与最小过余温度之差小于5\%,对于一般工程计算,此时已经足够精确的可以认为整个物体温度均匀
 
 \subsection{D\'emonstration}
 \href{http://i.imgbox.com/IttTCHOi.png}{Ailette 的模型图}

@@ -1,17 +1,8 @@
 yum install -y gcc gcc-c++ gcc-gfortran gdb
 yum install -y sudo git git-svn
-yum install -y unzip
 yum remove -y evolution
 yum install -y mutt
 yum update -y firefox
-
-## ddd, GUI gdb
-## not included in yum, compiling from source code needs the following libs
-yum install -y openmotif openmotif-devel
-## but make error
-## [CentOS 6下安装DDD](http://www.cnblogs.com/chezxiaoqiang/archive/2012/02/25/2674393.html)
-## running error
-yum install -y xterm
 
 ## chrome
 

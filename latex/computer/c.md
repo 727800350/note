@@ -23,6 +23,13 @@ By constrast, `strdup` is a Posix function, and it performs **dynamic memory all
 `FILE *fdopen(int fd, const char *mode);`
 - `setbuf, setbuffer, setlinebuf, setvbuf` stream buffering operations in `<stdio.h>`
 
+	#include <unistd.h>
+    int dup(int oldfd);
+	int dup2(int oldfd, int newfd);
+dup() uses  the lowest-numbered unused descriptor for the new descriptor.  
+dup2() makes newfd be the copy of oldfd, closing newfd first if necessary  
+On success, these system calls return the new descriptor.  On error, -1 is returned, and errno is set appropriately.
+
 # Time
 - `time(NULL)` returns a timestamp in seconds (number of seconds since the epoch)  
 `#include <time.h>`
