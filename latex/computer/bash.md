@@ -24,6 +24,12 @@ so `xargs` breaks the list of arguments into sublists small enough to be accepta
 `-n`: Select only the newest (most recently started) of the matching processes.
 `shell> strace -c -p $(pgrep -n php-cgi)`
 
+# 网络
+**putty 中文乱码**  
+Window->Appearance->Font: 选择Courier New  
+Window->Translation->Remote character set: UTF-8  
+之后, 在Session->Saved Sessions 中起一个名字, 然后Save, 下次使用的时候, 直接load, 就可以了
+
 # File System
 `du`: 查看目录大小  
 查看某个目录的大小 `/home/master/documents`  
