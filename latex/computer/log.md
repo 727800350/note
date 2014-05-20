@@ -78,6 +78,84 @@ zlog有6个默认的级别:"DEBUG", "INFO", "NOTICE", "WARN", "ERROR"和"FATAL".
 <TR><TD ALIGN=center NOWRAP>aa.!debug</TD><TD ALIGN=center NOWRAP>代码内等级!=debug</TD></TR>
 </TABLE>
 
+### 配置文件的例子
+
+	# comments
+	[global]
+	strict init = true
+	buffer min = 1024
+	buffer max = 2MB
+	rotate lock file = /tmp/zlog.lock
+	default format = "%d.%us %-6V (%c:%F:%L) - %m%n"
+	file perms = 600
+
+	[levels]
+	TRACE = 10
+	CRIT = 130, LOG_CRIT
+	
+	[formats]
+	simple = "%m%n"
+	normal = "%d %m%n"
+	
+	[rules]
+	default.*               >stdout; simple
+	*.*                     "%12.2E(HOME)/log/%c.log", 1MB*12; simple
+	my_.INFO                >stderr;
+	my_cat.!ERROR           "/var/log/aa.log"
+	my_dog.=DEBUG           >syslog, LOG_LOCAL0; simple
+	my_mice.*               $user_define;
+
+全局参数以[global]开头.[]代表一个节的开始,四个小节的顺序不能变,依次为global-levels-formats-rules.这一节可以忽略不写.语法为
+
+`(key) = (value)`  
+`strict init`  
+如果"strict init"是true，zlog_init()将会严格检查所有的格式和规则，任何错误都会导致zlog_init() 失败并且返回-1。当"strict init"是false的时候，zlog_init()会忽略错误的格式和规则。 这个参数默认为true。
+
+`reload conf period`  
+这个选项让zlog能在一段时间间隔后自动重载配置文件。重载的间隔以每进程写日志的次数来定义。当写日志次数到了一定值后，内部将会调用zlog_reload()进行重载。每次zlog_reload()或者zlog_init()之后重新计数累加。因为zlog_reload()是原子性的，重载失败继续用当前的配置信息，所以自动重载是安全的。默认值是0，自动重载是关闭的。
+
+`buffer min, buffer max`  
+zlog在堆上为每个线程申请缓存。"buffer min"是单个缓存的最小值，zlog_init()的时候申请这个长度的内存。写日志的时候，如果单条日志长度大于缓存，缓存会自动扩充，直到到"buffer max"。 单条日志再长超过"buffer max"就会被截断。如果 "buffer max" 是 0，意味着不限制缓存，每次扩充为原先的2倍，直到这个进程用完所有内存为止。缓存大小可以加上 KB, MB 或 GB这些单位。默认来说"buffer min"是 1K ， "buffer max" 是2MB。
+
+`rotate lock file`  
+这个选项指定了一个锁文件，用来保证多进程情况下日志安全转档。zlog会在zlog_init()时候以读写权限打开这个文件。确认你执行程序的用户有权限创建和读写这个文件。转档日志的伪代码是：
+
+default format
+这个参数是缺省的日志格式,默认值为:` "%d %V [%p:%F:%L] %m%n"`
+这种格式产生的输出类似这样:  
+`2012-02-14 17:03:12 INFO [3758:test_hello.c:39] hello, zlog`
+
+`file perms`  
+这个指定了创建日志文件的缺省访问权限。必须注意的是最后的产生的日志文件的权限为"file perms"& ~umask。默认为600，只允许当前用户读写。
+				
+`fsync period`  
+在每条规则写了一定次数的日志到文件后，zlog会调用fsync(3)来让操作系统马上把数据写到硬盘。次数是每条规则单独统计的，并且在zlog_reload()后会被清0。必须指出的是，在日志文件名是动态生成或者被转档的情况下，zlog不能保证把所有文件都搞定，zlog只fsync()那个时候刚刚write()的文件描述符。这提供了写日志速度和数据安全性之间的平衡。例子：
+				
+### 转换字符
+| 字符       | 效果     | 例子        |
+| -------- | ---------- | ----------- |
+| %c       | 分类名     | aa_bb       |
+| %d()     | 打日志的时间.需说明具体的日期格式.就像%d(%F)或者%d(%m-%d %T).如果不跟小括号,默认是%d(%F%T).括号内的格式和 strftime(2)的格式一致.详见5.4.3  | %d(%F) 2011-12-01%d(%m-%d %T) 12-01 17:17:42%d(%T) 17:17:42.035%d 2012-02-14 17:03:12%d()           |
+| %E()     | 获取环境变量的值        | %E(USER) simpson                                   |
+| %ms      | 毫秒,3位数字字符串取自gettimeofday(2)       | 013        |
+| %us      | 微秒,6位数字字符串取自gettimeofday(2)    | 002323                                                                                              |
+| %F       | 源代码文件名,来源于__FILE__宏.在某些编译器下 __FILE__是绝对路径|test_hello.c或者在某些编译器下/home/zlog/src/test/test_hello.c  |
+| %f       | 源代码文件名，输出%F最后一个’/’后面的部分.当然这会有一定的性能损失  | test_hello.c          |
+| %H       | 主机名,来源于 gethostname(2)    | zlog-dev                                  |
+| %L       | 源代码行数,来源于__LINE__宏        | 135                                                                                                 |
+| %m       | 用户日志,用户从zlog函数输入的日志.           | hello, zlog                                                                                         |
+| %M       | MDC (mapped diagnostic context),每个线程一张键值对表,输出键相对应的值.例如 %M(clientNumber),clientNumbe是键| %M(clientNumber) 12345  |
+| %n       | 换行符，目前还不支持windows换行符             | \n                                       |
+| %p       | 进程ID，来源于getpid()                | 2134                                                                                                |
+| %U       | 调用函数名，来自于__func__(C99)或者__FUNCTION__(gcc)，如果编译器支持的话。  | main                 |
+| %V       | 日志级别，大写        | INFO                           |
+| %v       | 日志级别，小写             | info                                                                                                |
+| %t       | 16进制表示的线程ID，来源于pthread_self()"0x%x",(unsigned int) pthread_t    | 0xba01e700        |
+| %T       | 相当于%t,不过是以长整型表示的"%lu", (unsigned long) pthread_t     | 140633234859776       |
+| %%       | 一个百分号      | %           |
+| %[其他字符]  | 解析为错误，zlog_init()将会失败    |            |
+|          |        |                |
+
 ## zlog API
 	/* zlog macros */
 	zlog_fatal(cat, format, ...)
