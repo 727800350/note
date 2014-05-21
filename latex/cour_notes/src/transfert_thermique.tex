@@ -64,79 +64,6 @@ La profondeur de p\'en'etration $e_p$:$$e_p=\sqrt{\frac{2a}{\omega}}$$
 
 流体的温度-$x$变化曲线的横截距,式中$\lambda$为fluide的参数:$$\eta=\frac{\lambda }{h}$$
 
-\subsection{Convection forc\'ee}
-le nombre de Nusselt:$$N_u = \frac{hD}{\lambda }=\frac{D/\lambda }{1/h}=\frac{R^{cd}}{R^{cc}}=A\cdot (R_e)^{\alpha}\cdot (P_r)^{\beta}$$
-C'est donc le rapport de la r\'esistance thermique de conduction par la r\'esistance thermique de convection. Il est d'autant plus \'elev\'e que la convection est pr\'edominante sur la conduction. Il caract\'erise le type de transfert
-de chaleur.\\
-\textbf{Propri\'et\'es thermophysiques du fluide $\rho, \mu, \nu, C_p, \lambda, a$ sont \'evalu\'es \`a la temp\'erature de film $T_f = (T_0 + T_p)/2$}
-
-Le nombre de Prandtl:
-$$
-P_r = \frac{ \mu C_p}{\lambda }=\frac{ \nu}{a}
-$$
-$$
-\frac{\text{Diffusivit\'e de quantit\'e de mouvement $\nu$ (ou viscosit\'e cin\'ematique)}}{\text{Diffusivit\'e thermique}}
-$$
-对于常见的流体:
-\begin{description}
-\item [Fluides ususels:] $P_r$ de l'ordre $1$
-\item [M\'etaux liquides:] $P_r$ de l'ordre $10^{-2}$ 说明液态金属的传热性能非常好
-\item [Huiles:] $P_r$ de l'ordre $10^3$
-\end{description}
-
-Le nombre de P\'eclet:$$P_e = R_e \cdot P_r$$
-
-\subsubsection{Convection forc\'ee externe laminaire}
-\begin{eqnarray}
- 0.6<P_r<10 & \frac{ \delta _{th}}{\delta _m}=pr^{-1/3} \\
- & h(x)=\frac{ \lambda }{\frac{ 2}{3}\delta _{th}(x)}
-\end{eqnarray}
-
-\subsection{Convection naturelle}
-Le nombre de Grashof(comme nombre de Reynolds):
-$$G_{r_L} = \frac{ \rho^2 g \beta (T_p - T_0)L^3}{\mu ^2}$$
-$$N_{u_L} = C G_{r_L}^{\alpha}P_r^{\beta}$$
-$$G_{r_x} = \frac{ \rho^2 g \beta (T_p - T_0)x^3}{\mu ^2}$$
-$$N_{u_x} = C^{\prime} G_{r_x}^{\alpha}P_r^{\beta}$$
-
-\begin{itemize}
-\item $G_{r_x}\leq 10^9$ laminaire
-\item $G_{r_x}\geq 10^9$ et $G_{r_x} \leq 10^{10}$ transitoire
-\item $G_{r_x}\geq 10^{10}$ turbulent
-\end{itemize}
-
-Le nombre de Rayleigh:\\
-Nombre de Rayleigh fait intervenir le terme moteur(Archim\`ede) et les deux ph\'enom\`enes de diffusion:le frottement visqueux $\nu$ mais aussi la conduction thermique $a$, ce qui est plus physique.
-$$R_{a_x}(x)=G_{r_x}P_r=\frac{ g\beta(T_p - T_0)x^3}{\nu a}$$
-$$N_{u_L} = C R_{a_L}^{\alpha'}P_r^{\beta'}$$
-$$N_{u_x} = C^{\prime} R_{a_x}^{\alpha'}P_r^{\beta'}$$
-Ces r\'esultats sont faiblement d\'ependants du nombre de Prandtl.
-
-\subsection{Massique}
-\begin{tabular}{|c|c|}
-\hline
-transfert de chaleur & transfert d'esp\`ece \\
-\hline
-$\varphi^{cc}= - \lambda \vec{\mbox{grad}}T$ & $q^{cc}= - D_{s/m} \vec{\mbox{grad}}c $\\
-\hline
-$\varphi^{cc}=h^{cc}(T_p - T_f)$ & $q^{cc}=h^{cc}(c_p - c)$\\
-\hline
-$h^{cc}$ coefficient de transfert conducto-convectif ($Wm^{-2}K^{-1}$) & $h^{cc} $($m/s$) \\
-\hline
-$R_{e_x}=\frac{ux}{\nu}$ et $R_{e_L}=\frac{ uL}{\nu}$ & $R_{e_x}=\frac{ux}{\nu}$ et $R_{e_L}=\frac{ uL}{\nu}$ \\
-\hline
-$P_r=\frac{ \nu}{a} $& $S_c=\frac{\nu}{D_{s/m}} $\\
-\hline
-$N_u$ & $S_h $\\
-\hline
-$\frac{ dH}{dt}=\varphi S$ & $\frac{dM}{dt}=qS$\\
-\hline
-\end{tabular}
-
-Le changement d'enthalpie: $$dH=m c_p dT \quad (J)$$
-En r\'egime stationnaire pour gaz parfait ou liquide
-$$\frac{ dH}{dt}=\dot{m}c_p dT_m$$
-
 \section{Introduction}
 Toute la physique des transferts dans les milieux continues repose sur l'hypoth\`ese de \textbf{l'\'equilibre thermodynamique local(E.T.L)}\\
 Cela signifie qu'il est toujours possible de d\'efinir, \`a chaque instant $t$, en tout point $r$, les variables physiques usuelles, eg. t\'emp\'erature $T(r,t)$.
@@ -430,24 +357,39 @@ z[\frac{ \lambda _1}{\lambda _m(T)}, \frac{ \lambda _2}{\lambda _m(T)}]
 = \frac{ \int_{\lambda _1}^{\lambda _2}\pi L_{\lambda}^0(T)d \lambda }{\sigma T^4}
 $$
 
-\section{Conversation de la masse}
-\subsection{Th\'eor\`eme de R\'enaulde}
+\section{Transferts convectifs}
+La distribution de la température de surface de la \href{http://i.imgbox.com/o4djIdyE.png}{fenêtre}
+
+在$dt$ 时间内穿过$dS$ 面的masse, $dm = \rho \vec{v} dt \cdot \vec{n} dS$
+Le d\'ebit de masse \`a traverse $dS$:
+$$d\dot{m} = \dfrac{dm}{dt} = \rho \vec{v} \cdot \vec{n} dS$$
+\`ou, $\rho$ la masse volumique et $\vec{v}$ la vitesse local du fluide par rapport \`a la surface $dS$, $\vec{n}$ la direction normale de $dS$.
+
+Transfer d'enthalpie en M par rapport \`a $Oyz$, caract\'eris\'e par un flux convectif $d\Phi^{cv}$:
+$$ d \Phi^{cv} = \rho \vec{v} \cdot \vec{n} h dS = d\dot{m} h $$
+\`ou $h$ est l'enthalpie massique local du fluide en M.
+
+Le vecteur flux surfacique convectif est d\'efini par:
+$$ \vec{q}^{cv} = \rho \vec{v} h \eqnote{tel que:} \varphi^{cv} = \rho \vec{v} \cdot \vec{n} h$$
+
+\subsection{Th\'eor\`eme de transport} 
+\subsubsection{Th\'eor\`eme de R\'enaulde}
 Grandeur int\'egrale
-$$
-\Phi(t)=\int_{D(t)} \varphi(\vec{x},t)dv
-$$
+$$ \Phi(t)=\int_{V(t)} \varphi(\vec{x},t)dv $$
 $\varphi(\vec{x},t)$ grandeur locale volumique
+
 $$
 \frac{ d\Phi}{dt}=
-\underbrace{\int_{D(t)}\frac{\partial \varphi}{\partial t}dv}_{\text{Instationnarit\'e de } \varphi(\vec{x},t)}
+\underbrace{\int_{V(t)}\frac{\partial \varphi}{\partial t}dv}_{\text{Instationnarit\'e de } \varphi(\vec{x},t)}
 +
 \underbrace{\int_{S(t)} \varphi \vec{W}.\vec{n}dS}_{\text{Mouvement de }S(t)}
 $$
 $\vec{n}$: vecteur normal unitaire\\
 $\vec{W}$:vitesse locale en un point de $S(t)$(n'est définie que sur S)\\
 \begin{itemize}
-\item  Domaine mat\'eriel :$\vec{W}=\vec{ U}$
-\item  Domaine fixe : $\vec{W}=0$
+\item Domaine mat\'eriel :$\vec{W}=\vec{U}$
+\item []由于是syst\`eme mat\'eriel, $dS$ 表面质点的速度必定与syst\`eme 本身的速度一样
+\item Domaine fixe : $\vec{W}=0$
 \end{itemize}
 
 \begin{example}
@@ -464,22 +406,57 @@ En prenant \emph{la limite} d'une particule, on obtient la forme locale
 $$
 \frac{\partial \rho }{\partial t} + div(\rho \vec{ U})=0
 $$
+这也被叫做\'equation de continuit\'e.
 \end{example}
-\subsection{Bilan d'\'energie}
+
 \begin{example}
- \textbf{Bilan d'\'energie(Point de vue d'un syst\`eme mat\'eriel)}
- $$H_m = mh=\rho V h=\int \rho h dv$$
- \begin{equation}
+$A = \rho a$
+$$
+\dfrac{\mathcal{A}}{dt} 
+= \dfrac{d}{dt} \int_{V(t)} A dV
+= \dfrac{d}{dt} \int_{V(t)} \rho a dV
+= \int_{V(t)} \frac{\partial (\rho a)}{\partial t}dV + \int_{S(t)} (\rho a) \vec{v} \dot \vec{n}dS
+= \int_{V(t)} (\rho \frac{\partial a}{\partial t} + a \frac{\partial \rho}{\partial t})dV + \int_{V(t)} \divergence{\rho a \vec{v}}dV
+= \int_{V(t)} (\rho \frac{\partial a}{\partial t} + a \frac{\partial \rho}{\partial t} + a \divergence{\rho \vec{v}} + \rho \vec{v} \dot \gradien{a})dV
+= \int_{V(t)} (\rho \frac{\partial a}{\partial t} + a \mathbf{(\frac{\partial \rho}{\partial t} + \divergence{\rho \vec{v}})} + \rho \vec{v} \dot \gradien{a})dV
+= \int_{V(t)} \rho \mathbf{(\frac{\partial a}{\partial t} + \vec{v} \dot \gradien{a})}dV
+= \int_{V(t)} \rho \frac{da}{dt}dV
+$$
+\end{example}
+
+\subsection{Bilan d'\'energie}
+\subsubsection{Point de vue d'un syst\`eme mat\'eriel}
+$$H_m = mh=\rho V h=\int \rho h dv$$
+
+\begin{equation}
+\dfrac{d H_m}{dt} = \int_{S_m(t)} -(\vec{q}^{cd} + \vec{q}^{R})\dot \vec{n}dS + \int_{V_m(t)} P dV
+\end{equation}
+Pas de term de convection du point de vue d'un syst\`eme mat\'eriel
+\todo{Why}
+
+\begin{equation}
  	\begin{split}
 	 \frac{ dH_m}{dt}
-	 = & \int_V \frac{\partial (\rho h)}{\partial t}dv+ \int_S (\rho h)\vec{u}\vec{n}ds \\
+	 = & \int_V \frac{\partial (\rho h)}{\partial t}dv+ \int_S (\rho h)\vec{u} \dot \vec{n}ds \\
 	 = & \int_V (\rho \frac{\partial h}{\partial t}+ h \frac{ \partial \rho}{\partial t})dv+ \int_V div(\rho h\vec{u})dv \\
 	 = & \int_V [\rho \frac{\partial h}{\partial t}+ h \frac{ \partial \rho}{\partial t}+ h\cdot div(\rho \vec{u}) +\rho\vec{u}\cdot \vec{\mbox{grad}} h]dv \\
 	 = & \int_V [\rho ( \frac{\partial h}{\partial t} + \vec{u}\cdot \vec{\mbox{grad}} h )+ h (\frac{ \partial \rho}{\partial t}+ div(\rho \vec{u}))]dv \\
-	 = & \int_V \rho \frac{ dh}{dt}dv
+	 = & \int_V \rho \frac{ dh}{dt}dv \\
+	 = & \int_V \rho c_p\frac{dT}{dt}dv
 	\end{split}
 \end{equation}
-\end{example}
+
+\begin{equation}
+\dfrac{d H_m}{dt}
+= \int_V \rho c_p\frac{dT}{dt}dv
+= \int_{S_m(t)} -\vec{q}^{cd} \dot \vec{n}dS + \int_{V_m(t)} (P^{R} + P)dV
+\end{equation}
+
+\subsubsection{Point de vue d'un syst\`eme ouvert}
+Surface: $S_o(t)$, volume: $V_o(t)$
+
+flux convectif d'enthalpie $\vec{q}^{cv} = \rho(\vec{v} - \vec{w})h$\\
+\`ou $v, w$ sont les vitesses respectives du fluide et de d\'eplacement de la surface par rapport au r\'ef\'erentiel.
 
 \section{Math}
 \subsection{erf(x)}
@@ -561,4 +538,73 @@ $$
 $$
 \rho c_p ( \vec{v}\cdot \vec{\mbox{grad}} T)=- \mbox{div} (\vec{\varphi}^{CD}) =\lambda \triangle T
 $$
+
+\subsection{Convection forc\'ee}
+le nombre de Nusselt:$$N_u = \frac{hD}{\lambda }=\frac{D/\lambda }{1/h}=\frac{R^{cd}}{R^{cc}}=A\cdot (R_e)^{\alpha}\cdot (P_r)^{\beta}$$
+C'est donc le rapport de la r\'esistance thermique de conduction par la r\'esistance thermique de convection. Il est d'autant plus \'elev\'e que la convection est pr\'edominante sur la conduction. Il caract\'erise le type de transfert
+de chaleur.\\
+\textbf{Propri\'et\'es thermophysiques du fluide $\rho, \mu, \nu, C_p, \lambda, a$ sont \'evalu\'es \`a la temp\'erature de film $T_f = (T_0 + T_p)/2$}
+
+Le nombre de Prandtl:
+$$
+P_r = \frac{ \mu C_p}{\lambda }=\frac{ \nu}{a}
+$$
+$$
+\frac{\text{Diffusivit\'e de quantit\'e de mouvement $\nu$ (ou viscosit\'e cin\'ematique)}}{\text{Diffusivit\'e thermique}}
+$$
+对于常见的流体:
+\begin{description}
+\item [Fluides ususels:] $P_r$ de l'ordre $1$
+\item [M\'etaux liquides:] $P_r$ de l'ordre $10^{-2}$ 说明液态金属的传热性能非常好
+\item [Huiles:] $P_r$ de l'ordre $10^3$
+\end{description}
+
+Le nombre de P\'eclet:$$P_e = R_e \cdot P_r$$
+
+\subsubsection{Convection forc\'ee externe laminaire}
+\begin{eqnarray}
+ 0.6<P_r<10 & \frac{ \delta _{th}}{\delta _m}=pr^{-1/3} \\
+ & h(x)=\frac{ \lambda }{\frac{ 2}{3}\delta _{th}(x)}
+\end{eqnarray}
+
+\subsection{Convection naturelle}
+Le nombre de Grashof(comme nombre de Reynolds):
+$$G_{r_L} = \frac{ \rho^2 g \beta (T_p - T_0)L^3}{\mu ^2}$$
+$$N_{u_L} = C G_{r_L}^{\alpha}P_r^{\beta}$$
+$$G_{r_x} = \frac{ \rho^2 g \beta (T_p - T_0)x^3}{\mu ^2}$$
+$$N_{u_x} = C^{\prime} G_{r_x}^{\alpha}P_r^{\beta}$$
+
+\begin{itemize}
+\item $G_{r_x}\leq 10^9$ laminaire
+\item $G_{r_x}\geq 10^9$ et $G_{r_x} \leq 10^{10}$ transitoire
+\item $G_{r_x}\geq 10^{10}$ turbulent
+\end{itemize}
+
+Le nombre de Rayleigh:\\
+Nombre de Rayleigh fait intervenir le terme moteur(Archim\`ede) et les deux ph\'enom\`enes de diffusion:le frottement visqueux $\nu$ mais aussi la conduction thermique $a$, ce qui est plus physique.
+$$R_{a_x}(x)=G_{r_x}P_r=\frac{ g\beta(T_p - T_0)x^3}{\nu a}$$
+$$N_{u_L} = C R_{a_L}^{\alpha'}P_r^{\beta'}$$
+$$N_{u_x} = C^{\prime} R_{a_x}^{\alpha'}P_r^{\beta'}$$
+Ces r\'esultats sont faiblement d\'ependants du nombre de Prandtl.
+
+\subsection{Massique}
+\begin{tabular}{|c|c|}
+\hline
+transfert de chaleur & transfert d'esp\`ece \\
+\hline
+$\varphi^{cc}= - \lambda \vec{\mbox{grad}}T$ & $q^{cc}= - D_{s/m} \vec{\mbox{grad}}c $\\
+\hline
+$\varphi^{cc}=h^{cc}(T_p - T_f)$ & $q^{cc}=h^{cc}(c_p - c)$\\
+\hline
+$h^{cc}$ coefficient de transfert conducto-convectif ($Wm^{-2}K^{-1}$) & $h^{cc} $($m/s$) \\
+\hline
+$R_{e_x}=\frac{ux}{\nu}$ et $R_{e_L}=\frac{ uL}{\nu}$ & $R_{e_x}=\frac{ux}{\nu}$ et $R_{e_L}=\frac{ uL}{\nu}$ \\
+\hline
+$P_r=\frac{ \nu}{a} $& $S_c=\frac{\nu}{D_{s/m}} $\\
+\hline
+$N_u$ & $S_h $\\
+\hline
+$\frac{ dH}{dt}=\varphi S$ & $\frac{dM}{dt}=qS$\\
+\hline
+\end{tabular}
 \end{document}
