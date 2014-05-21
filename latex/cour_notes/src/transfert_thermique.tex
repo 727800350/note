@@ -412,15 +412,17 @@ $$
 \begin{example}
 $A = \rho a$
 $$
+\begin{aligned}
 \dfrac{\mathcal{A}}{dt} 
-= \dfrac{d}{dt} \int_{V(t)} A dV
-= \dfrac{d}{dt} \int_{V(t)} \rho a dV
-= \int_{V(t)} \frac{\partial (\rho a)}{\partial t}dV + \int_{S(t)} (\rho a) \vec{v} \dot \vec{n}dS
-= \int_{V(t)} (\rho \frac{\partial a}{\partial t} + a \frac{\partial \rho}{\partial t})dV + \int_{V(t)} \divergence{\rho a \vec{v}}dV
-= \int_{V(t)} (\rho \frac{\partial a}{\partial t} + a \frac{\partial \rho}{\partial t} + a \divergence{\rho \vec{v}} + \rho \vec{v} \dot \gradien{a})dV
-= \int_{V(t)} (\rho \frac{\partial a}{\partial t} + a \mathbf{(\frac{\partial \rho}{\partial t} + \divergence{\rho \vec{v}})} + \rho \vec{v} \dot \gradien{a})dV
-= \int_{V(t)} \rho \mathbf{(\frac{\partial a}{\partial t} + \vec{v} \dot \gradien{a})}dV
-= \int_{V(t)} \rho \frac{da}{dt}dV
+& = \dfrac{d}{dt} \int_{V(t)} A dV \\
+& = \dfrac{d}{dt} \int_{V(t)} \rho a dV \\
+& = \int_{V(t)} \frac{\partial (\rho a)}{\partial t}dV + \int_{S(t)} (\rho a) \vec{v} . \vec{n}dS \\
+& = \int_{V(t)} (\rho \frac{\partial a}{\partial t} + a \frac{\partial \rho}{\partial t})dV + \int_{V(t)} \divergence{\rho a \vec{v}}dV \\
+& = \int_{V(t)} (\rho \frac{\partial a}{\partial t} + a \frac{\partial \rho}{\partial t} + a \divergence{\rho \vec{v}} + \rho \vec{v}\cdot \gradien{a})dV \\
+& = \int_{V(t)} (\rho \frac{\partial a}{\partial t} + a (\frac{\partial \rho}{\partial t} + \divergence{\rho \vec{v}}) + \rho \vec{v}\cdot \gradien{a})dV \\
+& = \int_{V(t)} \rho (\frac{\partial a}{\partial t} + \vec{v} \cdot \gradien{a})dV \\
+& = \int_{V(t)} \rho \frac{da}{dt}dV
+\end{aligned}
 $$
 \end{example}
 
@@ -429,7 +431,7 @@ $$
 $$H_m = mh=\rho V h=\int \rho h dv$$
 
 \begin{equation}
-\dfrac{d H_m}{dt} = \int_{S_m(t)} -(\vec{q}^{cd} + \vec{q}^{R})\dot \vec{n}dS + \int_{V_m(t)} P dV
+\dfrac{d H_m}{dt} = \int_{S_m(t)} -(\vec{q}^{\ cd} + \vec{q}^{\ R})\cdot \vec{n}dS + \int_{V_m(t)} P dV
 \end{equation}
 Pas de term de convection du point de vue d'un syst\`eme mat\'eriel
 \todo{Why}
@@ -437,9 +439,9 @@ Pas de term de convection du point de vue d'un syst\`eme mat\'eriel
 \begin{equation}
  	\begin{split}
 	 \frac{ dH_m}{dt}
-	 = & \int_V \frac{\partial (\rho h)}{\partial t}dv+ \int_S (\rho h)\vec{u} \dot \vec{n}ds \\
+	 = & \int_V \frac{\partial (\rho h)}{\partial t}dv+ \int_S (\rho h)\vec{u} \cdot \vec{n}ds \\
 	 = & \int_V (\rho \frac{\partial h}{\partial t}+ h \frac{ \partial \rho}{\partial t})dv+ \int_V div(\rho h\vec{u})dv \\
-	 = & \int_V [\rho \frac{\partial h}{\partial t}+ h \frac{ \partial \rho}{\partial t}+ h\cdot div(\rho \vec{u}) +\rho\vec{u}\cdot \vec{\mbox{grad}} h]dv \\
+	 = & \int_V [\rho \frac{\partial h}{\partial t}+ h \frac{ \partial \rho}{\partial t}+ h \cdot div(\rho \vec{u}) +\rho\vec{u}\cdot \vec{\mbox{grad}} h]dv \\
 	 = & \int_V [\rho ( \frac{\partial h}{\partial t} + \vec{u}\cdot \vec{\mbox{grad}} h )+ h (\frac{ \partial \rho}{\partial t}+ div(\rho \vec{u}))]dv \\
 	 = & \int_V \rho \frac{ dh}{dt}dv \\
 	 = & \int_V \rho c_p\frac{dT}{dt}dv
@@ -449,7 +451,7 @@ Pas de term de convection du point de vue d'un syst\`eme mat\'eriel
 \begin{equation}
 \dfrac{d H_m}{dt}
 = \int_V \rho c_p\frac{dT}{dt}dv
-= \int_{S_m(t)} -\vec{q}^{cd} \dot \vec{n}dS + \int_{V_m(t)} (P^{R} + P)dV
+= \int_{S_m(t)} -\vec{q}^{\ cd} \cdot \vec{n}dS + \int_{V_m(t)} (P^{R} + P)dV
 \end{equation}
 
 \subsubsection{Point de vue d'un syst\`eme ouvert}
