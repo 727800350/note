@@ -38,32 +38,6 @@
 	针对表面的这种能量守恒原则无论对稳态或非稳态, 瞬时或任意时间间隔都是正确的
 \end{enumerate}
 
-\section{Des nombres importants}
-Biot:$$B_i = \frac{ hD}{\lambda }=\frac{\tau^{cd}}{\tau^{cc}}$$
-$$B_i = \frac{ \text{coefficient de transfert } \times \text{dimension caract\'eristique} }{\text{conductivit\'e thermique}}$$
-Comme $$Re=\frac{U\times l}{\nu}$$
-$U$: la vitess de fluide(transfert)\\
-$\nu$: coefficient de viscosit\'e dynamique\\
-Il qui caract\'erise le r\'egime d'\'ecoulement
-
-Diffusivit\'e thermique $a$ en $m^2/s$:$$a=\frac{\lambda }{\rho c_p};\frac{\partial T}{\partial t}=a\triangle T + \frac{P}{\rho c_p}$$
-
-Nombre de Fourier:$$F_0=\frac{ at}{x^2}$$
-
-Le temps caract\'eristique de conduction thermique:$$\tau^{cd}=\frac{x^2}{a}$$
-Le temps caract\'eristique de convection thermique:$$\tau^{cc}=\frac{\tau^{cd}}{B_i}=\frac{e^2/a }{he/\lambda }=\frac{\rho c_p e}{h}$$
-
-La longueur caract\'eristique de conduction thermique \`a l'instant $t$:$$l^{cd}=\sqrt{at}$$
-
-Effusivit\'e thermique du mat\'eriau:$$b=\sqrt{\lambda \rho c}$$
-il caract\'erise sa capacit\'e \`a \'echanger de l'\'energie thermique avec son environnement\\
-
-La profondeur de p\'en'etration $e_p$:$$e_p=\sqrt{\frac{2a}{\omega}}$$
-透射率(当透射率小于某一个值时,可以认为ne passe pas):$$\tau = exp(-\frac{x}{e_p})$$
-
-
-流体的温度-$x$变化曲线的横截距,式中$\lambda$为fluide的参数:$$\eta=\frac{\lambda }{h}$$
-
 \section{Introduction}
 Toute la physique des transferts dans les milieux continues repose sur l'hypoth\`ese de \textbf{l'\'equilibre thermodynamique local(E.T.L)}\\
 Cela signifie qu'il est toujours possible de d\'efinir, \`a chaque instant $t$, en tout point $r$, les variables physiques usuelles, eg. t\'emp\'erature $T(r,t)$.
@@ -433,8 +407,8 @@ $$H_m = mh=\rho V h=\int \rho h dv$$
 \begin{equation}
 \dfrac{d H_m}{dt} = \int_{S_m(t)} -(\vec{q}^{\ cd} + \vec{q}^{\ R})\cdot \vec{n}dS + \int_{V_m(t)} P dV
 \end{equation}
-Pas de term de convection du point de vue d'un syst\`eme mat\'eriel
-\todo{Why}
+Pas de term de convection du point de vue d'un syst\`eme mat\'eriel, 
+因为syst\`eme mat\'eriel 没有与外界的物质交换, 所以没有convection(convection本身是通过物质交换来完成的)
 
 \begin{equation}
  	\begin{split}
@@ -449,16 +423,119 @@ Pas de term de convection du point de vue d'un syst\`eme mat\'eriel
 \end{equation}
 
 \begin{equation}
-\dfrac{d H_m}{dt}
-= \int_V \rho c_p\frac{dT}{dt}dv
+\dfrac{d \mathcal{H_m}}{dt}
+= \int_{V_m(t)} \rho c_p\frac{dT}{dt}dv
 = \int_{S_m(t)} -\vec{q}^{\ cd} \cdot \vec{n}dS + \int_{V_m(t)} (P^{R} + P)dV
 \end{equation}
 
 \subsubsection{Point de vue d'un syst\`eme ouvert}
 Surface: $S_o(t)$, volume: $V_o(t)$
 
-flux convectif d'enthalpie $\vec{q}^{cv} = \rho(\vec{v} - \vec{w})h$\\
+flux convectif d'enthalpie $\vec{q}^{\ cv} = \rho(\vec{v} - \vec{w})h$\\
 \`ou $v, w$ sont les vitesses respectives du fluide et de d\'eplacement de la surface par rapport au r\'ef\'erentiel.
+
+$$
+\dfrac{d\mathcal{H_o}}{dt}
+= \dfrac{d}{dt} \int_{V_o(t)} Hdv
+= \int_{V_o(t)} \frac{\partial \rho h}{\partial t}dV + \int_{S_o(t)} \rho h \vec{w} . \vec{n}dS
+$$
+
+L\'equation de bilan d'enthalpie pour ce syst\`eme ouvert:
+$$
+\dfrac{d\mathcal{H_o}}{dt}
+= \int_{V_o(t)} \frac{\partial \rho h}{\partial t}dV + \int_{S_o(t)} \rho h \vec{w} . \vec{n}dS
+= - \int_{S_o(t)} (\vec{q}^{\ cv} + \vec{q}^{\ cd}). \vec{n}dS + \int_{V_0(t)}(P^R + P )dV
+$$
+
+\subsection{Application simple: transferts dans une conduite}
+\'ecoulement stationnaire, d\'ebit massique $\dot{m}$ constant dans une conduite cylindrique(de section constante $\Sigma$)
+
+\textbf{Hypoth\`eses simplificatrices}\\
+\begin{enumerate}
+\item Les propri\'et\'es thermophysiques du fluide ($\lambda, c_p, \ldots$) sont suppos\'es unifromes, ind\'ependantes de la t\'emp\'erature
+\item []La masse volumique $\rho$ d\'epends de la t\'emp\'erature
+\item La vitesse du fluide $\vec{v}$(valeur alg\'ebrique $u$) est, en tout point, parall\`ele aux g\'en\'eratrices de la conduite $Ox$
+\item []en r\'egime stationnaire($\dfrac{\partial \rho}{\partial t} = 0$) , la conversation de la masse($\dfrac{\partial \rho}{\partial t} + \divergence{\rho \vec{v}}=0$), on peut d\'eduire que $\dfrac{\partial (\rho u)}{\partial x} = 0$
+\item Le fluide est un gaz parfait ou un liquide
+\end{enumerate}
+
+\subsubsection{Bilan d'\'energie en r\'egime stationnaire}
+根据syst\`eme mat\'eriel 中的关系:
+\begin{equation}
+\dfrac{d \mathcal{H}}{dt}
+= \int_V \rho c_p\frac{dT}{dt}dv
+= \int_V \rho c_p\frac{dT}{dt}dxdydz
+\end{equation}
+
+其中(考虑到$v$ 沿着 $Ox$方向, 且 stationnaire)
+$$
+\dfrac{dT}{dt}
+= \frac{\partial T}{\partial t} + \vec{v} . \gradien{T}
+= \frac{\partial T}{\partial t} + u_x \frac{\partial T}{\partial x} + u_y \frac{\partial T}{\partial y} + u_z \frac{\partial T}{\partial z}
+= u_x \frac{\partial T}{\partial x}
+= u \frac{\partial T}{\partial x}
+$$
+代入\lasteq 得到
+\begin{equation}
+\dfrac{d \mathcal{H}}{dt}
+= \int_V \rho c_p\frac{dT}{dt}dv
+= \int_V \rho c_p u \frac{\partial T}{\partial x} dxdydz
+\end{equation}
+考虑到我们是取的conduite 的$dx$ 一小段为研究对象, 所以我们可以认为在$dx$这一小段, 各个物理参数保持不变,即 $\rho, \dfrac{\partial T}{\partial x}$在$dx$上为定值; 同时由于$c_p$ 为constante.\\
+所以上述方程\lasteq 可以化为
+\begin{equation}
+\dfrac{d \mathcal{H}}{dt}
+= \int_V \rho c_p u \frac{\partial T}{\partial x} dxdydz
+= dx \int_\Sigma \rho c_p u \frac{\partial T}{\partial x} dydz
+= c_p dx \int_\Sigma \rho u \frac{\partial T}{\partial x} dydz
+\end{equation}
+
+由于
+$$
+\frac{\partial}{\partial x}(\rho u T)
+= \rho u \frac{\partial T}{\partial x} + T \frac{\partial \rho u}{\partial x}
+$$
+\lasteq 可以继续化简为:
+\begin{equation}
+\dfrac{d \mathcal{H}}{dt}
+= c_p dx \int_\Sigma \rho u \frac{\partial T}{\partial x} dydz
+= c_p dx \dfrac{d}{dx}\int_\Sigma \rho u T dydz
+\end{equation}
+
+\textbf{t\'emp\'erature de m\'elange} $T_m(x)$:
+$$
+T_m(x) 
+= \dfrac{\int_\Sigma \rho u T dydz}{\int_\Sigma \rho u dydz}
+= \dfrac{\int_\Sigma \rho u T dydz}{\dot{m}}
+$$
+这个温度相当于界面$\Sigma$的平均温度.
+
+得到
+$$\int_\Sigma \rho u T dydz = T_m(x) \dot{m} $$
+使用这个平均温度, 我么可以化简\lasteq
+
+\begin{equation}
+\dfrac{d \mathcal{H}}{dt}
+= c_p dx \dfrac{d}{dx}\int_\Sigma \rho u T dydz
+= \dot{m} c_p dT_m(x)
+\end{equation}
+
+\textbf{bilan d'\'energie pour une tranche \'el\'ementaire}\\
+Pour simplifier, on suppose que:
+\begin{enumerate}
+\item les \'echanges radiatifs sont lin\'erisables et inclus dans $h$ ou n\'egligeables
+\item la conduction axiale est n\'egligeable
+\end{enumerate}
+
+\begin{equation}
+\dfrac{d \mathcal{H}}{dt}
+= \dot{m} c_p dT_m(x)
+= P dx h [T_p(x) - T_m(x)]
+\end{equation}
+$T_p(x)$ la t\'emp\'erature de la paroi
+
+Dans la cas \`ou la $T_p$ est constante en $x$
+$$ \dfrac{T_m - T_p}{T_0 - T_p} = \exp(\dfrac{-Phx}{\dot{m} c_p}) $$
 
 \section{Math}
 \subsection{erf(x)}
@@ -494,6 +571,32 @@ For any complex number z:
 但从加工难易程度及耐久性方面,实际工程都认为三角形直肋片为最佳肋片.
 
 \section{TTM2}
+\subsection{Des nombres importants}
+Biot:$$B_i = \frac{ hD}{\lambda }=\frac{\tau^{cd}}{\tau^{cc}}$$
+$$B_i = \frac{ \text{coefficient de transfert } \times \text{dimension caract\'eristique} }{\text{conductivit\'e thermique}}$$
+Comme $$Re=\frac{U\times l}{\nu}$$
+$U$: la vitess de fluide(transfert)\\
+$\nu$: coefficient de viscosit\'e dynamique\\
+Il qui caract\'erise le r\'egime d'\'ecoulement
+
+Diffusivit\'e thermique $a$ en $m^2/s$:$$a=\frac{\lambda }{\rho c_p};\frac{\partial T}{\partial t}=a\triangle T + \frac{P}{\rho c_p}$$
+
+Nombre de Fourier:$$F_0=\frac{ at}{x^2}$$
+
+Le temps caract\'eristique de conduction thermique:$$\tau^{cd}=\frac{x^2}{a}$$
+Le temps caract\'eristique de convection thermique:$$\tau^{cc}=\frac{\tau^{cd}}{B_i}=\frac{e^2/a }{he/\lambda }=\frac{\rho c_p e}{h}$$
+
+La longueur caract\'eristique de conduction thermique \`a l'instant $t$:$$l^{cd}=\sqrt{at}$$
+
+Effusivit\'e thermique du mat\'eriau:$$b=\sqrt{\lambda \rho c}$$
+il caract\'erise sa capacit\'e \`a \'echanger de l'\'energie thermique avec son environnement\\
+
+La profondeur de p\'en'etration $e_p$:$$e_p=\sqrt{\frac{2a}{\omega}}$$
+透射率(当透射率小于某一个值时,可以认为ne passe pas):$$\tau = exp(-\frac{x}{e_p})$$
+
+
+流体的温度-$x$变化曲线的横截距,式中$\lambda$为fluide的参数:$$\eta=\frac{\lambda }{h}$$
+
 \subsection{Ecoulement}
 \subsection{Stationnaire Uniform \'Etabli}
 Stationnaire
@@ -610,3 +713,4 @@ $\frac{ dH}{dt}=\varphi S$ & $\frac{dM}{dt}=qS$\\
 \hline
 \end{tabular}
 \end{document}
+
