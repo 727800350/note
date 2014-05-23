@@ -8,7 +8,8 @@
 \tableofcontents
 \newpage
 %% \chapter{Transfert thermique}
-经典热力学只研究在系统的初, 终状态之间可参数发生了什么变化, 而且认为系统与外界间的热量交换是在无限小温差下发生的一系列无线缓慢的平衡过程.\\
+\section{Introduction}
+经典热力学只研究在系统的初, 终状态之间参数发生了什么变化, 而且认为系统与外界间的热量交换是在无限小温差下发生的一系列无限缓慢的平衡过程.\\
 然而任何实际的热量传递过程都必须存在着温度梯度. 热量传递是典型的非平衡过程, 即不可逆过程, 他所研究的恰恰是热力学没有给出答案, 但又是工程实践中无法回避的现实问题-
 系统内外的热量交换是以何种方式, 多大的速率进行的.\\
 换一个角度看待这个问题, 也可以认为热力学中可逆方式交换的热量必定是传热学(即实际工程)意义上可能达到的最高极限.
@@ -18,7 +19,7 @@
 从某种角度讲, 一切传热问题所遵循的基本规律只有两个, 一个是特定传热问题的特殊规律, 第二个就是能量守恒(在对流换热情况下还要涉及质量守恒和动量守恒等基本法则).
 
 在运用能量守恒法则时, 必须首先明确定义分析的对象是一个控制容积(control volume), 还是一个控制面(control surface)? 这两者之间有原则性区别.\\
-对控制容积还应进一步区分微元容积有有限容积, 用前者得到的一般是微分方程, 用后者得到积分方程或代数方程.
+对控制容积还应进一步区分微元容积与有限容积, 用前者得到的一般是微分方程, 用后者得到积分方程或代数方程.
 \begin{enumerate}
 \item 针对控制容积的能量守恒方程
 	\begin{enumerate}
@@ -30,15 +31,14 @@
 	\item 上述能量守恒关系还有一种表达形式, 既不针对瞬时值, 而是就某一有限时间间隔而言. 这只要对上述平衡关系中的每一项作时间积分即可.
 	\end{enumerate}
 \item 针对表面的能量守恒方程\\
-	任何物体或系统都存在表面, 物体通过表面才得以和外界进行热量的传递和交换. 针对表名的能量守恒关系与针对给定容积时有原则性区别. 原因是表面既没有体积, 也没有质量,
+	任何物体或系统都存在表面, 物体通过表面才得以和外界进行热量的传递和交换. 针对表面的能量守恒关系与针对给定容积时有原则性区别. 原因是表面既没有体积, 也没有质量,
 	因此内热源项和蓄热项将不复存在, 也就是说, 针对表面的能量守恒关系只有进与出两项, 不管是瞬时功率还是一段时间内的累积热量, 都必须随时保持相等.
 	\begin{center}
-	$\phi_{in} = \phi_{out}$ 或者 $Q_{in} = Q_{out}$
+	$\Phi_{in} = \Phi_{out}$ 或者 $Q_{in} = Q_{out}$
 	\end{center}
 	针对表面的这种能量守恒原则无论对稳态或非稳态, 瞬时或任意时间间隔都是正确的
 \end{enumerate}
 
-\section{Introduction}
 Toute la physique des transferts dans les milieux continues repose sur l'hypoth\`ese de \textbf{l'\'equilibre thermodynamique local(E.T.L)}\\
 Cela signifie qu'il est toujours possible de d\'efinir, \`a chaque instant $t$, en tout point $r$, les variables physiques usuelles, eg. t\'emp\'erature $T(r,t)$.
 
@@ -61,32 +61,46 @@ $\vec{q}$: vecteur flux surfacique d'\'energie [$W/m^2$]
 $$\varphi = \vec{q} \cdot \vec{n}$$
 $\varphi$: flux surfacique, $>0$ dans le sens des axes
 
-\section{热阻}
-\subsection{无限长侧表面绝热套筒的热阻}
+\section{Transfert conduction et conducto-convetif}
+\textbf{Conduction et conducto-convection}\\
+(CD)Le transfert thermique dans le fluide \`a le paroi:
+$$\varphi^{cd} |_{pf} = -\\\lambda _f \frac{\partial T_f}{\partial y}|_{pf}$$
+
+(CC)Le transfert conduto-convectif(根据正方向):
+$$\varphi ^{cc}=h(T_p - T_c) \quad \text{由p到c为正方向}$$
+
+Transferts conductifs stationnaires au sein d'un milieu immobile.
+
+$\lambda, h$ 与 $T$ 无关 $\Rightarrow$ transferts conductifs lin\'eaires
+\subsection{热阻}
+\subsubsection{无限长侧表面绝热套筒的热阻}
 左视剖面如图所示:
 \href{http://i.imgbox.com/X9xXlBML.png}{示意图}\\
-截取的套筒微元长度为dz(图中未标出,即为灰色方块的长度),沿径向方向的温度场分布记为T(r),
+截取的套筒微元长度为dz(图中未标出,即为灰色方块的长度),沿径向方向的温度场分布记为T(r),热量由中心向外扩展
 
 $$
-d\phi = -\lambda \dfrac{dT}{dr}\cdot dS = -\lambda \dfrac{dT}{dr} \cdot 2\pi rdz
+d\Phi = -\lambda \dfrac{dT}{dr}\cdot dS = -\lambda \dfrac{dT}{dr} \cdot 2\pi rdz
 $$
-$$ T_1 - T_2 = \dfrac{d\phi}{2\pi r\lambda dz} \ln{\dfrac{R_2}{R_1}} $$
-显然这个模型的径向热阻为 $R_t = \dfrac{1}{2\pi rdz} \ln{\dfrac{R_2}{R_1}}$
+$$-dT = \dfrac{d\Phi}{2\pi \lambda dz} \cdot \dfrac{dr}{r}$$
+$$ T_1 - T_2 = \dfrac{d\Phi}{2\pi \lambda dz} \ln{\dfrac{R_2}{R_1}} $$
+($R_1 \leftrightarrow r_1 et R_2 \leftrightarrow r_2$)
 
-\subsection{有限长套筒热阻}
-在上一题的基础上,将套筒的长度限定为L,则将上式积分可得,总的热阻为:
+显然这个模型的径向热阻为 $R_t = \dfrac{1}{2\pi \lambda dz} \ln{\dfrac{R_2}{R_1}}$
+
+\subsubsection{有限长套筒热阻}
+在上一题的基础上,将套筒的长度限定为L,则将上式积分可得,总的热阻为(en coordonn\'ees cart\'esiennes):
 $$ R_t = \dfrac{L}{\pi \lambda(R_2^2 - R_1^2)} $$
 
-\textbf{对流热阻}\\
+\subsubsection{对流热阻}
 考虑流体-固体界面处的热阻模型,固体壁的温度为$T_p$,接触面积为$\Sigma$ ,液体的温度为$T_c$,对流换热系数为$h$.\\
-则有$\phi^{cc} = h\Sigma(T_p - T_c)$ , 所以热阻
+则有$\Phi^{cc} = h\Sigma(T_p - T_c)$ , 所以热阻
 $$R_t = \dfrac{1}{h\Sigma}$$
 注:以后的很多实际传热问题中,换热系数h并不是单纯的对流换热系数,而是"对流换热与辐射换热系数之和"!!! $h=h^{cc} + h^R$
 
-\section{Ailette}
+\subsection{Ailette}
 为了提高换热效率,从经济性的角度考量,大多会想办法增大"固-液-气"的接触面积.
 所以聪明的工程师们设计出了"肋片"这一装置.
-此种设计充分体现了"分形会增大系统表面积"这一精妙的数学思想～～
+此种设计充分体现了\textbf{分形会增大系统表面积}这一精妙的数学思想～～
 
 所谓肋片,就是粘在主换热片/管上的小薄片装置,剖视图如图所示
 \href{http://i.imgbox.com/UBJtc7TX.png}{肋片的示意图}
@@ -94,6 +108,7 @@ $$R_t = \dfrac{1}{h\Sigma}$$
 肋片横截剖面上的温度场分析可以近似采用"线性均匀分布"假设,即:温度场的梯度仅仅沿z轴方向.
 
 线性模型的建立,还需要牢记一个基本条件:材料导热系数不随温度的变化而产生变化,这就导致系统的焓变为零.
+\todo{Why}
 这一假设将广泛运用于以下章节的分析中.
 
 $B_i \leq 0.1 \Rightarrow$ approximation ailette valide en terme de champ de t\'emp\'erature, et en terme de flux.
@@ -109,22 +124,24 @@ $$D_t = \frac{A}{P}$$
 $$ B_i = \frac{h D_t}{\lambda} = \frac{h}{\lambda} \cdot \frac{A}{P} = \frac{hA}{\lambda P}$$
 
 $$ m^2 = \frac{hP}{\lambda A}$$
+\textbf{\red{$B_i$ 与 $m$中, $h$ 都在分子部分}}
 
 $$ D_t^2 m^2 = B_i$$
 
-\subsection{Ailette id\'eale}
+\subsubsection{Ailette id\'eale}
 理想肋片由铝或者铜制成,其导热性能非常强.假设其长度为L,则应有
 $$ m\cdot l \leq 1 \quad \frac{T(z)-T_f}{T_p - T_f} \simeq 1 $$
 
-La temp\'erature de l'ailette rest en tout point tr\`es voisine de $T_p  \Rightarrow \dfrac{ T - T_f}{T_p - T_f}\simeq 1$
+La temp\'erature de l'ailette rest \textbf{en tout point} tr\`es voisine de $T_p  \Rightarrow \dfrac{ T - T_f}{T_p - T_f}\simeq 1$
 
 传导传热的时间效应消失掉了.这一模型的传热效率(根据前两节的公式求极限即可得到)为:
 $$
 \eta_{isotherme} = \dfrac{L}{D_t} = \dfrac{LP}{A}
 $$
 
-\subsection{Ailette infinie}
-无线长的肋片中,总能将肋片的温度场调整到与环境达到平衡.而在现实应用中,一般将符合如下条件的肋片按照无限长肋片模型处理,即
+\subsubsection{Ailette infinie}
+无线长的肋片中,总能将肋片的温度场调整到与环境达到平衡(温度场形成一个稳定的分布, 不随时间变化).
+而在现实应用中,一般将符合如下条件的肋片按照无限长肋片模型处理,即
 $$ m\cdot l \geq 5 $$
 此时有:
 $$ \frac{T(z)-T_f}{T_p - T_f}=exp(-mz) $$
@@ -135,11 +152,12 @@ Aucun flux n'est plus dissip\'e en bout d'ailette. En effet, au bout d'une certa
 肋片热场的近似,最吸引工程师们的就是在Bi远小于1时的情况(一般要求小于等于0.1).
 这时候才可以说如果$B_i \leq 0.1$,物体最大与最小过余温度之差小于5\%,对于一般工程计算,此时已经足够精确的可以认为整个物体温度均匀
 
-\subsection{D\'emonstration}
+\subsubsection{D\'emonstration}
 \href{http://i.imgbox.com/IttTCHOi.png}{Ailette 的模型图}
 
-\textbf{进入的符号取正, 出去的为负, 在稳态条件下, 进入的与出去的代数和为零}
+向上为 $z$ 正方向
 
+\textbf{进入的符号取正, 出去的为负, 在稳态条件下, 进入的与出去的代数和为零(对于下面的control volume)}
 \begin{eqnarray}
 \text{en z:} & \Phi_1=\varphi(z)\cdot A \\
 \text{en z+dz:} &\Phi_2=-\varphi(z+dz) \cdot A\\
@@ -147,7 +165,7 @@ Aucun flux n'est plus dissip\'e en bout d'ailette. En effet, au bout d'une certa
 \text{三个flux相加为零:}  &\Phi_1 + \Phi_2 + \Phi_3 = 0
 \end{eqnarray}
 
-边界条件
+边界条件(control surface)
 \begin{equation}
 \begin{aligned}
 \eqnote{en} z = 0, \eqspace T(0) = T_0 \\
@@ -187,14 +205,6 @@ Pour l'ailette infinie
 温度梯度大的地方,传热效率不一定高,相反温度梯度低的地方也有可能传热效率很高,例如ailette,由于横向传热很快,
 导致横向几乎没有温度差,没有温度差也就没有温度梯度,但是横向传热效率很高
 
-\section{Flux surfacique}
-\subsection{Conduction et conducto-convection}
-(CD)Le transfert thermique dans le fluide \`a le paroi:
-$$\varphi^{cd} |_{pf} = -\\\lambda _f \frac{\partial T_f}{\partial y}|_{pf}$$
-
-(CC)Le transfert conduto-convectif(根据正方向):
-$$\varphi ^{cc}=h(T_p - T_c) \quad \text{由p到c为正方向}$$
-
 \section{Rayonnement}
 \textbf{Milieu transparant et corps opaque}
 \begin{description}
@@ -220,7 +230,7 @@ Les grandeurs physiques seront distingu\'ees selon :
 温度为$T$的物体的:
 L'\'energie \'emise est maximale pour une certaine longueur d'onde $\lambda _m$\\
 $\lambda_m$ est le plus repr\'esent\'ee, 其中的下标$m$ 不是表示波长最大, 而是指当波长取这个值时, luminance 最大(根据la loi de Planck)
-$$\lambda _m=\frac{3000k\cdot \mu m}{T}$$
+$$\lambda _m=\frac{3000k\cdot \mu m}{T} \eqnote{书中使用的是}2898$$
 上面的这个方程表明: le rayonnment est une notion autant thermodynamique qu'electromagn\'etique. Les seules m\'ethodes pratiques pour mesurer des t\'emp\'eratures \'elev\'ee sont radiatives.
 
 物体(en l\'equilibre de temp\'erature T)的辐射波长范围(在这个范围内包括了$98\%$的能量):
@@ -235,10 +245,11 @@ Le flux\\
 \begin{aligned}
 d \Phi_{\lambda} 
 & = L^{'}_{\lambda}(O_1,u_1) \frac{d S_1 \cos \theta_1  d S_2 \cos \theta_2}{O_1 O_2^2} d \lambda \\
-& = L^{'}_{\lambda}(O_1,u_1) d S_1 \cos \theta_1 d\Omega_1 d \lambda \\
-& = L^{'}_{\lambda}(O_1,u_1) d S_2 \cos \theta_2 d\Omega_2 d \lambda
+& = L^{'}_{\lambda}(O_1,u_1) d S_1 \cos \theta_1 d\Omega_1 d \lambda \eqnote{从$O_1$看$dS_2$}\\
+& = L^{'}_{\lambda}(O_1,u_1) d S_2 \cos \theta_2 d\Omega_2 d \lambda \eqnote{从$O_2$看$dS_1$}
 \end{aligned}
 \end{equation}
+方程中$L^{'}$ 中一撇表示这个$L$是与direction 有关的;上面的关系可以表示incident, absorb\'e, r\'efl\'echi, \'emis et partant
 
 \subsection{H\'emisph\'erique}
 Cas g\'en\'erale(\textbf{H\'emisph\'erique})
@@ -260,6 +271,7 @@ d\varphi_{\lambda }^s  & = \frac{d \Phi_{\lambda }^s}{dS_1} \\
  & = d \lambda \int_{\Omega = 2\pi(1-\cos \theta)} L_{\lambda }^s(O_1,\theta_1)\cos \theta_1 2\pi \sin\theta_1 d\theta_1
 	\end{split}
 \end{equation}
+\lasteq 中是除以$dS_1$, 所以是通过$dS_1$的flux, 也就是说以$dS_1$为研究对象
 
 Cas d'un rayonnement isotrope(luminance ind\'epandante de la direction)
 \begin{equation}
@@ -274,7 +286,7 @@ Flux radiatif:
 $$d\varphi_{\lambda }^R =d\varphi_{\lambda }^e - d\varphi_{\lambda }^a = d\varphi_{\lambda }^p - d\varphi_{\lambda }^i$$
 
 使用$\varphi^e=\varepsilon \sigma T^4$的前提是要求le corps est isotrope(c'est \`a dire ind\'ependante de direction)\\
-如果要用这个公式乘上面积还需额外要求le corps est homo\`gene,也就是说各个点的情况是一样的
+如果要用这个公式乘上面积(用一个点的值代替这个面积中所有点的值)还需额外要求le corps est homo\`gene,也就是说各个点的情况是一样的
 
 \begin{description}
 \item [\'Emissivit\'e monochromatique directionnelle $\varepsilon_{\lambda}$:] $L_{\lambda }^e(O_1,\theta_1,\varphi_1) = \varepsilon_{\lambda }(O_1,\theta_1,\varphi_1,T_1)L_{\lambda }^0(T_1)$
@@ -284,7 +296,7 @@ $$d\varphi_{\lambda }^R =d\varphi_{\lambda }^e - d\varphi_{\lambda }^a = d\varph
 \end{description}
 
 \bigskip
-\`A l;\'echelle \'el\'ementaire, les ph\'enom\`enes de transfert par rayonnement et conduction pr\'esentent une grande analogie.
+\`A l'\'echelle \'el\'ementaire, les ph\'enom\`enes de transfert par rayonnement et conduction pr\'esentent une grande analogie.
 \begin{itemize}
 \item Le flux surfacique radiatif provient des contributions \'energ\'etiques des photons traversant dans toutes les directions de l'espace l'unit\'e de surface par unit\'e de temps
 \item Le flux surfacique conductif provient, dans le cas d'un gaz monoatomique pour simplifier, des contributions des \'energ\'es cin\'etiques des atomes traversant dans toutes les directions de l'espace l'unit\'e de surface par unit\'e de temps
@@ -292,7 +304,7 @@ $$d\varphi_{\lambda }^R =d\varphi_{\lambda }^e - d\varphi_{\lambda }^a = d\varph
 
 \subsection{Corps particuliers usuels}
 \subsubsection{Corps gris}
-Les propri\'et\'es radiatives($\alpha,\varepsilon$) sont ind\'ependantes de la longeeur d'onde $\lambda $ mais d\'ependante de la direction.\\
+Les propri\'et\'es radiatives($\alpha,\varepsilon$) sont \textbf{ind\'ependantes de la longeeur d'onde} $\lambda $ \textbf{mais d\'ependante de la direction}.\\
 Sur l'hypoth\`ese que les N surfaces $S_j$ sont grises:
 $$\forall j: \quad \varepsilon_j =\alpha_j = 1- \rho_j$$
 \begin{eqnarray}
@@ -308,6 +320,7 @@ $$\varepsilon_{\lambda}(O_1, T_1) = \alpha_{\lambda}(O_1, T_1) = 1 - \rho_{\lamb
 
 \subsubsection{Corps noir}
 $$\varphi^p = \varphi^i,\varphi^e = \varphi^a,\varepsilon=\alpha=1,\varphi^r=0$$
+\todo{$partant - incident = 0?$}
 \textbf{Absorber tout rayonnement},donc ne r\'efl\'echit aucun rayonnement.
 
 La luminance monochromatique du rayonnement \'emis:
@@ -337,7 +350,8 @@ La distribution de la température de surface de la \href{http://i.imgbox.com/o4
 在$dt$ 时间内穿过$dS$ 面的masse, $dm = \rho \vec{v} dt \cdot \vec{n} dS$
 Le d\'ebit de masse \`a traverse $dS$:
 $$d\dot{m} = \dfrac{dm}{dt} = \rho \vec{v} \cdot \vec{n} dS$$
-\`ou, $\rho$ la masse volumique et $\vec{v}$ la vitesse local du fluide par rapport \`a la surface $dS$, $\vec{n}$ la direction normale de $dS$.
+\`ou, $\rho$ la masse volumique et $\vec{v}$ la vitesse local du fluide par rapport \`a la surface $dS$, $\vec{n}$ la direction normale de $dS$.\\
+后面出现的: $\dot{m} = \rho \vec{v} \cdot \vec{n}S$
 
 Transfer d'enthalpie en M par rapport \`a $Oyz$, caract\'eris\'e par un flux convectif $d\Phi^{cv}$:
 $$ d \Phi^{cv} = \rho \vec{v} \cdot \vec{n} h dS = d\dot{m} h $$
@@ -402,22 +416,20 @@ $$
 
 \subsection{Bilan d'\'energie}
 \subsubsection{Point de vue d'un syst\`eme mat\'eriel}
-$$H_m = mh=\rho V h=\int \rho h dv$$
+$$\mathcal{H}_m = mh=\rho V h=\int \rho h dv$$
 
 \begin{equation}
-\dfrac{d H_m}{dt} = \int_{S_m(t)} -(\vec{q}^{\ cd} + \vec{q}^{\ R})\cdot \vec{n}dS + \int_{V_m(t)} P dV
+\dfrac{d \mathcal{H}_m}{dt} = \int_{S_m(t)} -(\vec{q}^{\ cd} + \vec{q}^{\ R})\cdot \vec{n}dS + \int_{V_m(t)} P dV
 \end{equation}
+其中$P$是puissance(en $W$)
 Pas de term de convection du point de vue d'un syst\`eme mat\'eriel, 
 因为syst\`eme mat\'eriel 没有与外界的物质交换, 所以没有convection(convection本身是通过物质交换来完成的)
 
 \begin{equation}
  	\begin{split}
-	 \frac{ dH_m}{dt}
-	 = & \int_V \frac{\partial (\rho h)}{\partial t}dv+ \int_S (\rho h)\vec{u} \cdot \vec{n}ds \\
-	 = & \int_V (\rho \frac{\partial h}{\partial t}+ h \frac{ \partial \rho}{\partial t})dv+ \int_V div(\rho h\vec{u})dv \\
-	 = & \int_V [\rho \frac{\partial h}{\partial t}+ h \frac{ \partial \rho}{\partial t}+ h \cdot div(\rho \vec{u}) +\rho\vec{u}\cdot \vec{\mbox{grad}} h]dv \\
-	 = & \int_V [\rho ( \frac{\partial h}{\partial t} + \vec{u}\cdot \vec{\mbox{grad}} h )+ h (\frac{ \partial \rho}{\partial t}+ div(\rho \vec{u}))]dv \\
-	 = & \int_V \rho \frac{ dh}{dt}dv \\
+	\frac{ d\mathcal{H}_m}{dt}
+	= & \frac{d}{dt} \int_V \rho h dV\\
+	= & \int_V \rho \frac{dh}{dt}dv \ \ ,(dh = c_pdT)\\
 	 = & \int_V \rho c_p\frac{dT}{dt}dv
 	\end{split}
 \end{equation}
@@ -478,7 +490,7 @@ $$
 代入\lasteq 得到
 \begin{equation}
 \dfrac{d \mathcal{H}}{dt}
-= \int_V \rho c_p\frac{dT}{dt}dv
+= \int_V \rho c_p\frac{dT}{dt}dxdydz
 = \int_V \rho c_p u \frac{\partial T}{\partial x} dxdydz
 \end{equation}
 考虑到我们是取的conduite 的$dx$ 一小段为研究对象, 所以我们可以认为在$dx$这一小段, 各个物理参数保持不变,即 $\rho, \dfrac{\partial T}{\partial x}$在$dx$上为定值; 同时由于$c_p$ 为constante.\\
@@ -494,11 +506,13 @@ $$
 $$
 \frac{\partial}{\partial x}(\rho u T)
 = \rho u \frac{\partial T}{\partial x} + T \frac{\partial \rho u}{\partial x}
+= \rho u \dfrac{\partial T}{\partial x}
 $$
 \lasteq 可以继续化简为:
 \begin{equation}
 \dfrac{d \mathcal{H}}{dt}
 = c_p dx \int_\Sigma \rho u \frac{\partial T}{\partial x} dydz
+= c_p dx \int_\Sigma \frac{\partial}{\partial x}(\rho u T) dydz
 = c_p dx \dfrac{d}{dx}\int_\Sigma \rho u T dydz
 \end{equation}
 
