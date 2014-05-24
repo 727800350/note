@@ -55,6 +55,20 @@ Window->Appearance->Font: 选择Courier New
 Window->Translation->Remote character set: UTF-8  
 之后, 在Session->Saved Sessions 中起一个名字, 然后Save, 下次使用的时候, 直接load, 就可以了
 
+**PSCP**, the PuTTY Secure Copy client, and it is a command line application
+
+The format for pscp is straight forward:
+
+	pscp [options] source destination
+
+To copy a Windows file to Linux system, at the DOS prompt, type
+
+	pscp c:/music.mp3  ubuntu@10.0.0.3:/home/ubuntu/Music
+
+The reverse works as well (copy Linux file to Windows)
+
+	pscp ubuntu@10.0.0.3:/home/ubuntu/Music/music.mp3 c:/
+
 **scp**  
 secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的命令有cp,不过cp只是在本机进行拷贝不能跨服务器,而且scp传输是加密的.可能会稍微影响一下速度。
 
