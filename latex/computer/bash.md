@@ -101,5 +101,9 @@ secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的�
 于du不同的是,du是面向文件的命令,只计算被文件占用的空间.不计算文件系统metadata 占用的空间.df则是基于文件系统总体来计算,通过文件系统中未分配空间来确定系统中已经分配空间的大小
 
 # 杂项
-`man number item`: find item in section number, eg: `man 3 fopen`
-
+**man**  
+`man number item`: find item in section number, eg: `man 3 fopen`  
+`man -k word`: 关键字查找, 查找包含word(命令本身或者解释中) 的command  
+`man -f word`: 根据关键字在联机帮助中搜索完全匹配的条目, Equivalent to whatis  
+把man page 转成文本文件,如: `man ls | col -b > ~/Desktop/man_ls.txt`  
+`man -t ls > man_ls.ps && ps2pdf man_ls.ps && rm man_ls.ps`: print
