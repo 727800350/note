@@ -1,4 +1,4 @@
-# syslog
+﻿# syslog
 ## Configuration
 Every rule consists of two fields, a selector field and an action field.
 
@@ -153,8 +153,8 @@ default format
 | %t       | 16进制表示的线程ID，来源于pthread_self()"0x%x",(unsigned int) pthread_t    | 0xba01e700        |
 | %T       | 相当于%t,不过是以长整型表示的"%lu", (unsigned long) pthread_t     | 140633234859776       |
 | %%       | 一个百分号      | %           |
-| %[其他字符]  | 解析为错误，zlog_init()将会失败    |            |
-|          |        |                |
+| %[其他字符]  | 解析为错误，zlog_init()将会失败    |            |
+|          |        |                |
 
 ## zlog API
 	/* zlog macros */
