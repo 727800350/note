@@ -116,14 +116,7 @@ $$Buys(X, "computer") \Rightarrow buys (X,"software") [support = 1\%, confidence
 识别可疑的离群点的通常规则: 挑选落在第3 个四分位数之上或第1 个四分位数之下至少$1.5 * IQR$ 处的值\par
 五数概括(five-number summary)由中位数$Q_2$, 四分位数$Q_1$, $Q_3$, 最小和最大值, 按次序
 $Minimum, Q_1, median, Q_3, maximum$\par
-盒图(如图\ref{fig.hetu}): 盒的端点在四分位数上, 盒的长度为IQR; 中位数标在盒内; 盒外的两条线(胡须) 延伸到最小和最大值\\
-\begin{figure}[htbp]
-  \centering
-  % Requires \usepackage{graphicx}
-  \includegraphics[scale=0.5]{hetu}\\
-  \caption{盒图}
-  \label{fig.hetu}
-\end{figure}
+盒图(如图\href{http://i.imgbox.com/E7zYvy7e.jpg}{盒图示例}): 盒的端点在四分位数上, 盒的长度为IQR; 中位数标在盒内; 盒外的两条线(胡须) 延伸到最小和最大值\\
 
 盒图可在$O(nlgn)$时间内计算, 依赖于所要求的质量, 近似盒图可在线性或者子线性时间内计算.
 
@@ -402,13 +395,7 @@ Apriori uses breadth-first search and a Hash tree structure to count candidate i
 
 该性质是一种\textbf{反单调性 antimonotone}, 指如果一个集合不能通过测试, 则它的所有超集也都不能通过相同的测试. 称它是反单调的, 因为在不通过测试的意义下, 该性质是单调的.
 
-算法的pseudo code见图\ref{fig.apriori}
-\begin{figure}[htbp]
-  \centering
-  % Requires \usepackage{graphicx}
-  \includegraphics[scale = 0.5]{apriori}\\
-  \caption{Apriori 算法}\label{fig.apriori}
-\end{figure}
+算法的pseudo code见图\href{http://i.imgbox.com/ZKLH7OMB.png}{apriori algo}
 
 \begin{example}
 Let the database of transactions consist of following itemsets:
