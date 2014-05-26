@@ -292,7 +292,7 @@ You can use strace command to trace the execution of any executable. The followi
 If you want to trace multiple system calls use the `-e trace=` option. The following example displays both open and read system calls.  
 `$ strace -e trace=open,read ls /home`
 
-- Save the Trace Execution to a File Using Option `-o`    
+- Save the Trace Execution to a File Using Option `-o`, `-o` best follow the `strace`  
 `$ strace -o output.txt ls`  
 也可以使用> 进行重定向, 但是必须使用`2>`, 而不是默认的`> == 1>`
 
