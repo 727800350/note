@@ -31,6 +31,7 @@ Linking Guile into Programs
 
 # API
 
+## IO
 	(display x)
 	(newline)
 	
@@ -39,9 +40,49 @@ Linking Guile into Programs
 	(define print
   		(lambda (para)
         	(display para)(newline)))
-	
+
+## String
 	(string-append str1 ... strn)
 	(string-length str)
+	(string=? argument)
+
+## List
+	(car list) ;; get the first element
+	(cdr list) ;; get the rest of the list except the first element
+	(cons arg1 arg2) ;; concatenate
+	(append arg list) ;; append arg to list, note the difference between cons and append from the example below
+
+**Demo**
+
+	guile> (define list '(1 2 3))
+	guile> (car list)
+	1
+	guile> (cdr list)
+	(2 3)
+	guile> (cdr '(4))
+	()
+	guile> (cdr '())
+	error: Wrong type (expecting pair): ()
+
+	guile> (cons 0 list)
+	(0 1 2 3)
+	guile> (cons '(7 8) list)
+	((7 8) 1 2 3)
+	guile> (cons 1 2)
+	(1 . 2)
+	guile> (cons 1 2 3)
+	error: Wrong number of arguments to #<primitive-procedure cons>
+	guile> (cons (cons 1 2) 3)
+	((1 . 2) . 3)
+
+	guile> (append '(7 8) list)
+	(7 8 1 2 3)
+
+## File system
+	(delete-file file)
+
+## Other
+	(and arg1 ... argn)
 
 # Data Types, Values and Variables
 **latent typing**  
@@ -86,6 +127,12 @@ In general, however, **value and new-value can be any Scheme expression**.
 	(set! x (+ x 1))
 
 ## Procedures
+The value of the procedure invocation expression is the value of the last evaluated expression
+in the procedure body.
+
+The side effects of calling the procedure are the combination of the
+side effects of the sequence of evaluations of expressions in the procedure body.
+
 One of the great simplifications of Scheme is that a procedure is just 
 another type of value,
 and that procedure values can be passed around and stored in variables in exactly the same
@@ -182,3 +229,25 @@ and procedure invocation expressions, in general, have either values, or side ef
 	
 	(display (t "/home" "/" "eric"))(newline) ;; /home/eric
 从上面的结果我们可以看到, procedure 的改变也没有side effect
+
+# Expressions and Evaluation
+## Evaluating Special Syntactic Expressions
+When a procedure invocation expression is evaluated, the procedure and all the argument
+expressions must be evaluated before the procedure can be invoked.  
+Special syntactic expressions 不遵循这个规定.
+
+Why is this needed? Consider a program fragment that asks the user whether or not to
+delete a file, and then deletes the file if the user answers yes.
+
+	(if (string=? (read-answer "Should I delete this file?") "yes")
+		(delete-file file))
+这里, 如果最外面的if expression 是一个procedure invocation的话, 那么他的参数就必须在它之前执行, 也就是说`(delete-file file)`要执行, 
+如果是这样的话, 就起不到向用户确认删除文件的作用.  
+Therefore `if` must be special syntax, not a procedure. 
+
+Other special syntaxes that we have already met are `define, set!` and `lambda`. 
+define and set! are syntax because they need to know the variable name that is given as the first argument in a define or set!
+expression, not that variable’s value. 
+lambda is syntax because it does not immediately evaluate the expressions that define the procedure body;
+
+## Tail calls
