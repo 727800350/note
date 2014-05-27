@@ -45,3 +45,35 @@ I'd do something like
 	or possibly 
 	for(int i = 0; ss[i]; i++)
 
+<br/>
+[Why does sizeof(x++) not increment x?](http://stackoverflow.com/questions/8225776/why-does-sizeofx-not-increment-x)
+
+	#include <stdio.h>
+	int main(){
+		int x = 5;
+		printf("%d and ", sizeof(x++)); // note 1
+		printf("%d\n", x); // note 2
+		return 0;
+	}
+I expect x to be 6 after executing note 1. However, the output is:  
+`4 and 5`  
+Can anyone explain why x does not increment after note 1?
+
+`sizeof` is a compile-time operator, 
+so at the time of compilation sizeof and its operand get replaced by the result value. 
+The operand is not evaluated (except when it is a variable length array) at all; only the type of the result matters.
+
+	short func(short x) {  // this function never gets called !!
+		printf("%d", x);    // this print never happens
+		return x;
+	}
+	int main(){
+		printf("%d", sizeof(func(3))); // all that matters to sizeof is the return type of the function.
+		return 0;
+	}
+Output: `2`  
+as short occupies 2 bytes on my machine.  
+Changing the return type of the function to double:
+
+	double func(short x) {// rest all same}
+will give 8 as output.}
