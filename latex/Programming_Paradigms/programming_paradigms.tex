@@ -399,8 +399,8 @@ memmove 会检查重叠的区域, 但是执行效率要比memcpy低}
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-rotate}\\
-	\caption{编程范式 rotate}\label{fig.编程范式.rotate}
+	\includegraphics[scale = 0.4]{rotate}\\
+	\caption{编程范式 rotate}\label{fig.rotate}
 \end{figure}
 
 将middle与end之间的移动到前面, 同时将front与middle之间的移动到后面
@@ -421,8 +421,8 @@ void qsort(void *base, int n, int elemSize, int (*cmpfn)(void *, void *))
 \subsection{malloc, realloc, free}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{内存分段}\\
-	\caption{内存分段}\label{fig.内存分段}
+	\includegraphics[scale = 0.4]{memo_segment}\\
+	\caption{内存分段}\label{fig.memo.segment}
 \end{figure}
 
 \begin{lstlisting}[language = C]
@@ -434,13 +434,13 @@ int b;
 读到a的时候, 将a 压入内存中的stack区域
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.7]{stack_push_a}\\
+	\includegraphics[scale = 0.7]{stack_push-a}\\
 	\caption{压a 进入stack之后}\label{fig.stack.push.a}
 \end{figure}
 然后读到b, 再将b 压入stack中, 由于内存中下方的地址是低地址, 所以是从下方压栈, 所以b在a的下方, 也就是说b在低地址, a在高地址
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.7]{stack_push_ab}\\
+	\includegraphics[scale = 0.7]{stack_push-ab}\\
 	\caption{压a再压b 进入stack之后}\label{fig.stack.push.ab}
 \end{figure}
  \bigskip
@@ -452,8 +452,8 @@ int *a = malloc(40 * sizeof(int));
 我们不光得到了160个字节的内存,  我们还得到了这160个字节前面的4 个或者8 个字节(具体是4 个还是8 个取决于具体的机器).
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-malloc}\\
-	\caption{编程范式 malloc}\label{fig.编程范式.malloc}
+	\includegraphics[scale = 0.4]{malloc}\\
+	\caption{编程范式 malloc}\label{fig.malloc}
 \end{figure}
 
 前面的多出来的额外的字节记录了这个申请到的内存的一些信息, 比如大小等等
@@ -465,8 +465,8 @@ int *a = malloc(40 * sizeof(int));
 将堆内存划分成不同的区域, 在每个区域中, 当遇到申请内存的请求时, 分配出固定大小的内存, 而不是按照用户传给的数字的精确值, 这样可以更加快速的分配内存
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-启发式策略}\\
-	\caption{编程范式 启发式策略}\label{fig.编程范式.启发式策略}
+	\includegraphics[scale = 0.4]{heuristic-strategies}\\
+	\caption{编程范式 启发式策略}\label{fig.heuristic-strategies}
 \end{figure}
 
 例如 $malloc(4)$ 发现 $4 < 2^3$, 所以直接在$2^3$ 这个区域分配出$8$ 个子节大小的内存
@@ -479,8 +479,8 @@ handle
 当申请内存的时候, 不返回direct pointer to the data(不是直接指数据的指针), 而是一个距离实际数据有两跳的指针, 也就是说相当于二级指针
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-内存压缩}\\
-	\caption{编程范式 内存压缩}\label{fig.编程范式.内存压缩}
+	\includegraphics[scale = 0.4]{memo_compression}\\
+	\caption{编程范式 内存压缩}\label{fig.memo.compression}
 \end{figure}
 
 这样, 当我们进行内存压缩的时候, 只需要对红线右边的进行改动, 对用户的操作则没有影响
@@ -499,8 +499,8 @@ B();
 \end{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-栈的调用原理}\\
-	\caption{编程范式 栈的调用原理}\label{fig.编程范式.栈的调用原理}
+	\includegraphics[scale = 0.4]{stack_call}\\
+	\caption{编程范式 栈的调用原理}\label{fig.stack.call}
 \end{figure}
 
 每次调用一个函数, 栈指针就向下移动(减去刚刚占用的空间), 然后当调用的函数返回时, 栈指针再向上移动, 回到原来的位置
@@ -537,8 +537,8 @@ s2=s1+1;
 \end{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-汇编-short}\\
-	\caption{编程范式 汇编 short}\label{fig.编程范式.汇编.short}
+	\includegraphics[scale = 0.4]{assembly_short}\\
+	\caption{编程范式 汇编 short}\label{fig.assembly.short}
 \end{figure}
 
 
@@ -562,8 +562,8 @@ for (i=0; i<4; i++){
 \end{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-汇编-array}\\
-	\caption{编程范式 汇编 array}\label{fig.编程范式.汇编.array}
+	\includegraphics[scale = 0.4]{assembly_array}\\
+	\caption{编程范式 汇编 array}\label{fig.assembly.array}
 \end{figure}
 
 \begin{lstlisting}[language = C]
@@ -625,8 +625,8 @@ short *why;
 \end{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-activation-foo}\\
-	\caption{编程范式 activation foo}\label{fig.编程范式.activation.foo}
+	\includegraphics[scale = 0.4]{activation-foo}\\
+	\caption{编程范式 activation foo}\label{fig.activation.foo}
 \end{figure}
 
 
@@ -664,8 +664,8 @@ swap(&x, &y);
 \end{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-汇编-fun}\\
-	\caption{编程范式 汇编 fun}\label{fig.编程范式.汇编.fun}
+	\includegraphics[scale = 0.4]{assembly_fun}\\
+	\caption{编程范式 汇编 fun}\label{fig.assembly.fun}
 \end{figure}
 
 
@@ -693,8 +693,8 @@ RET;		//return
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-汇编-swap}\\
-	\caption{编程范式 汇编 swap}\label{fig.编程范式.汇编.swap}
+	\includegraphics[scale = 0.4]{assembly_swap}\\
+	\caption{编程范式 汇编 swap}\label{fig.assembly.swap}
 \end{figure}
 
 \begin{lstlisting}[language = C]
@@ -847,8 +847,8 @@ int length = strlen((char *)&num, num); //真正的strlen 只有一个参数
 \end{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-错误代码的编译}\\
-	\caption{编程范式 错误代码的编译}\label{fig.编程范式.错误代码的编译}
+	\includegraphics[scale = 0.4]{compile-error-code}\\
+	\caption{编程范式 错误代码的编译}\label{fig.compile-error-code}
 \end{figure}
 
 在链接成功之后, 执行, 然后这是用到的就是真正的strlen, 发现参数只有一个, 而且参数的位置是
@@ -864,8 +864,8 @@ you dereference a bad pointer
 例如对 NULL 指针 进行 * 运算
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-RAM}\\
-	\caption{编程范式 RAM}\label{fig.编程范式.RAM}
+	\includegraphics[scale = 0.4]{RAM}\\
+	\caption{编程范式 RAM}\label{fig.RAM}
 \end{figure}
 
 地址0,1 2, 3, 4不在任何segment 中, 但是操作系统可以识别他们
@@ -893,8 +893,8 @@ return 0;
 \end{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-永真循环}\\
-	\caption{编程范式 永真循环}\label{fig.编程范式.永真循环}
+	\includegraphics[scale = 0.4]{loop_forever}\\
+	\caption{编程范式 永真循环}\label{fig.loop_forever}
 \end{figure}
 
 如图\ref{fig.编程范式.永真循环}中所示, i=1执行之后, i=2, 仍然满足循环条件, 所以继续执行array[2] = 0;\\
@@ -912,8 +912,8 @@ for (i=0;i<=4;i++){
 \end{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-savedPC导致的循环}\\
-	\caption{编程范式 savedPC导致的循环}\label{fig.编程范式.savedPC导致的循环}
+	\includegraphics[scale = 0.4]{savedPC-loop}\\
+	\caption{编程范式 savedPC导致的循环}\label{fig.savedPC-loop}
 \end{figure}
 
 
@@ -961,8 +961,8 @@ printf("%d + %d = %d\n", 4, 5, 9);
 \end{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-printf}\\
-	\caption{编程范式 printf}\label{fig.编程范式.printf}
+	\includegraphics[scale = 0.4]{printf}\\
+	\caption{编程范式 printf}\label{fig.printf}
 \end{figure}
 
 第0 个参数\verb "%d + %d = %d\n"是确定有的, 所以先输出, 当解析到 \%d 的时候, 知道上面肯定有额外的参数, 然后就进行替换; 然后一直进行下去 \\
@@ -1058,8 +1058,8 @@ SemaphoreSignal(lock); //加一操作 atomic ++
 考虑只有2 个agents 的情况
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-多线程-堆栈}\\
-	\caption{编程范式 多线程 堆栈}\label{fig.编程范式.多线程.堆栈}
+	\includegraphics[scale = 0.4]{multi-thread_heap-stack}\\
+	\caption{编程范式 多线程 堆栈}\label{fig.multi-thread.heap-stack}
 \end{figure}
 
 如图\ref{fig.编程范式.多线程.堆栈}中所示, 当一个线程被激活时, 他会获得进程的堆栈的副本, 然后这个线程运行, 然后运行之后, 再将线程的堆栈(共享信息)\\覆盖进程的堆栈中的共享信息, 因为在线程的运行过程中, 会对进行的共享信息进行修改, 所以必须同步到进程.\\
@@ -1138,8 +1138,8 @@ SemaphoreSignal(empty);
 5 个哲学家
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{编程范式-多线程-哲学家}\\
-	\caption{编程范式 多线程 哲学家}\label{fig.编程范式.多线程.哲学家}
+	\includegraphics[scale = 0.4]{multi-thread_philo}\\
+	\caption{编程范式 多线程 哲学家}\label{fig.multi-thread.philo}
 \end{figure}
 
 think, eat, think, eat, think, eat, go to bed;
@@ -1498,8 +1498,8 @@ c 和r 之间最多有4个
 \end{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{Scheme-内存模型}\\
-	\caption{Scheme 内存模型}\label{fig.Scheme.内存模型}
+	\includegraphics[scale = 0.4]{scheme_memo_model}\\
+	\caption{Scheme 内存模型}\label{fig.scheme.memo.model}
 \end{figure}
 
 
@@ -1657,7 +1657,7 @@ power set: a set which contains all of its subsets
 \end{verbatim}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{scheme-permute}\\
+	\includegraphics[scale = 0.4]{scheme_permute}\\
 	\caption{scheme permute}\label{fig.scheme.permute}
 \end{figure}
 
@@ -1689,8 +1689,8 @@ self-type identifying
 \end{verbatim}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{scheme-内存模型2}\\
-	\caption{scheme 内存模型2}\label{fig.scheme.内存模型2}
+	\includegraphics[scale = 0.4]{scheme_memo_model2}\\
+	\caption{scheme 内存模型2}\label{fig.scheme.memo.model2}
 \end{figure}
 
 \section{Lecture 23}
@@ -1705,7 +1705,7 @@ self-type identifying
 \end{verbatim}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{scheme-cons}\\
+	\includegraphics[scale = 0.4]{scheme_cons}\\
 	\caption{scheme cons}\label{fig.scheme.cons}
 \end{figure}
 
