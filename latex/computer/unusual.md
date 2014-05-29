@@ -91,3 +91,138 @@ and 5[a] will evaluate to:
 
 	*(5 + a)
 This is the direct artifact of arrays behaving as pointers.
+
+<br/>
+[`int a[] = {1,2,};` Weird comma allowed. Any particular reason?](http://stackoverflow.com/questions/7043372/int-a-1-2-weird-comma-allowed-any-particular-reason)  
+It makes it easier to generate source code, and also to write code which can be easily extended at a later date. Consider what's required to add an extra entry to:
+
+	int a[] = {
+	   1,
+	   2,
+	   3
+	};
+you have to add the comma to the existing line and add a new line.   
+Compare that with the case where the three already has a comma after it, where you just have to add a line. Likewise if you want to remove a line you can do so without worrying about whether it's the last line or not, and you can reorder lines without fiddling about with commas. Basically it means there's a uniformity in how you treat the lines.
+
+Now think about generating code. Something like (pseudo-code):
+
+	output("int a[] = {");
+	for (int i = 0; i < items.length; i++) {
+	    output("%s, ", items[i]);
+	}
+	output("};");
+No need to worry about whether the current item you're writing out is the first or the last. Much simpler.
+
+It's useful if you do something like this:
+
+	int a[] = {
+	  1,
+	  2,
+	  3, //You can delete this line and it's still valid
+	};
+
+<br/>
+[`int *ptr = (int*)(&a + 1);`](http://stackoverflow.com/questions/15141450/int-ptr-inta-1)  
+
+	#include <stdio.h>
+	int main(void){
+	   int a[5] = { 1, 2, 3, 4, 5 };
+	   int *ptr = (int*)(&a + 1);  // what happen here ?
+	   printf("%d %d\n", *(a + 1), *(ptr - 1));
+	   return 0;
+	}
+I expected the answer to be 1 but 'm getting 5 .. Why ?
+
+在gdb中对上述程序进行调试, 得到:
+
+	(gdb) p a
+	$1 = {1, 2, 3, 4, 5}
+	(gdb) p &a
+	$2 = (int (*)[5]) 0x7fffffffe3d0 // 可以看出`&a` 是一个指向5个元素的数组
+	(gdb) p &a[0]
+	$3 = (int *) 0x7fffffffe3d0
+	(gdb) p &*a
+	$4 = (int *) 0x7fffffffe3d0
+	(gdb) p *a
+	$5 = 1
+
+`a` = address of first element of array: `a[0]` (address of int)  
+`&a` = address of array a,same value with "a", but **type is a 5 element array**,so expression "(&a + 1)" is pointer to next array of array a.  
+`ptr` points to the first element of the next array of array a, whose value is `a+5`.  
+`(ptr - 1)`: pointer to previous int of ptr, that means the pointer of last element of array "a".
+
+<br/>
+[Will the prototype of `a[1][2]` be this: `int **a`?](http://stackoverflow.com/questions/5643753/will-the-prototype-of-a12-be-this-int-a)  
+
+	type **a; (pointer to pointer to type)
+	type *a[n]; (array of n pointers to type)
+	type (*a)[n]; (pointer to **array of n** type)
+	type a[m][n]; (array of m arrays of n type)
+
+Precisely how the expression is evaluated depends on which of these types a actually has.
+
+First `a + 1` is calculated.  
+If a is itself a pointer (either case 1 or case 3), then the value of a is directly loaded.  
+If a is an array (case 2 or case 4), then the address of the first element of a is loaded (which is identical to the address of a itself).
+
+This pointer is now offset by 1 object of the type that it points to.   
+In case 1 and case 2, it would be offset by 1 "pointer to type" object;   
+in case 3 and case 4, it would be offset by 1 "array of n type" object, which is the same as ofsetting by n type objects.
+
+The calculated (offset) pointer is now dereferenced.   
+In cases 1 and 2, the result has type "pointer to type",   
+in cases 3 and 4 the result has type "array of n type".
+
+Next `*(a + 1) + 2` is calculated.   
+As in the first case, if `*(a + 1)` is a pointer, then the value is used directly (this time, cases 1 and 2).   
+If `*(a + 1)` is an array (cases 3 and 4), then the address of the first element of that array is taken.
+
+The resulting pointer (which, at this point, always has type "pointer to type") is now offset by 2 type objects.   
+The final offset pointer is now dereferenced, and the type object is retrieved.
+
+<br/>
+[How do you set, clear and toggle a single bit in C/C++?](http://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit-in-c-c)  
+
+Setting a bit to 1  
+Use the bitwise OR operator (|) to set a bit.
+
+	number |= 1 << x; // 将1 左移x 位
+That will set bit x.
+
+Clearing a bit  
+Use the bitwise AND operator (&) to clear a bit.
+
+	number &= ~(1 << x);
+That will clear bit x. You must invert the bit string with the bitwise NOT operator (~), then AND it.
+
+Toggling a bit, 将第x个(从右往左)二进制位取反  
+The XOR operator (^) can be used to toggle a bit.
+
+	number ^= 1 << x;
+That will toggle bit x.
+
+Checking a bit  
+You didn't ask for this but I might as well add it.
+
+To check a bit, AND it with the bit you want to check:
+
+	bit = number & (1 << x);
+That will put the value of bit x into the variable bit.
+
+Nobody mentioned the Standard C++ Library: std::bitset<N>.  
+Or the boost version: boost::dynamic_bitset.
+
+No need to roll your own:
+
+	#include <bitset>
+	#include <iostream>
+	int main(){
+	    std::bitset<5> x;
+	    x[1] = 1;
+	    x[2] = 0;
+	    // Note x[0-4]  valid
+	    std::cout << x << std::endl;
+	}
+	[Alpha:] > ./a.out
+	00010
+Boost version allows a runtime sized bitset compared with STL compile time sized bitset.
