@@ -17,6 +17,21 @@ so `xargs` breaks the list of arguments into sublists small enough to be accepta
 	find /path -type f -print0 | xargs -0 rm
 本例中xargs将find产生的长串文件列表拆散成多个子串,然后对每个子串调用rm.这样要比如下使用find命令效率高的多
 
+**grep**  
+在directory及其子目录下的c 文件中查找keyword
+
+	grep -R --include="*.c" keyword directory
+
+`-B num` to set how many lines before the match and `-A num` for the number of lines after the match, for example:
+
+	grep -B 3 -A 2 foo README.txt
+
+If you want the same amount of lines before and after you can use `-C num`.
+
+	grep -C 3 foo README.txt
+
+This will show 3 lines before and 3 lines after.
+
 **umask**  
 	
 	[eric@human ~]$ umask 
