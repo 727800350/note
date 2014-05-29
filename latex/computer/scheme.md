@@ -30,7 +30,10 @@ Linking Guile into Programs
 \todo{to be tested}
 
 # API
+## Syntax
+	(if condition action-true action-false)
 
+	(and arg1 ... argn)
 ## IO
 	(display x)
 	(newline)
@@ -82,7 +85,6 @@ Linking Guile into Programs
 	(delete-file file)
 
 ## Other
-	(and arg1 ... argn)
 
 # Data Types, Values and Variables
 **latent typing**  
@@ -251,3 +253,32 @@ expression, not that variable’s value.
 lambda is syntax because it does not immediately evaluate the expressions that define the procedure body;
 
 ## Tail calls
+获取list 中的最后一个元素
+
+	(define my-last
+	  (lambda (lst)
+		(if (null? (cdr lst))
+		  (car lst)
+		  (my-last (cdr lst)))))
+
+	(print (my-last '(1 2 3)))
+
+A proper tail call is only available from certain contexts, namely the following special form positions,
+
+- and — last expression
+- begin — last expression
+- case — last expression in each clause
+- cond — last expression in each clause, and the call to a => procedure is a tail call
+- do — last result expression
+- if — “true” and “false” leg expressions
+- lambda — last expression in body
+- let, let*, letrec, let-syntax, letrec-syntax — last expression in body
+- or — last expression
+
+The following core functions make tail calls,
+
+- apply — tail call to given procedure
+- call-with-current-continuation — tail call to the procedure receiving the new continuation
+- call-with-values — tail call to the values-receiving procedure
+- eval — tail call to evaluate the form
+- string-any, string-every — tail call to predicate on the last character (if that point is reached)
