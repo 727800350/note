@@ -282,3 +282,74 @@ The following core functions make tail calls,
 - call-with-values — tail call to the values-receiving procedure
 - eval — tail call to evaluate the form
 - string-any, string-every — tail call to predicate on the last character (if that point is reached)
+
+# The Concept of Closure
+The concept of closure is the idea that a lambda expression “captures” the variable bindings
+that are in lexical scope at the point where the lambda expression occurs. The procedure
+created by the lambda expression can refer to and mutate the captured bindings, and the
+values of those bindings persist between procedure calls.
+
+“creating a variable” is in fact establishing an association between a
+name, or identifier, that is used by the Scheme program code, and the variable location to
+which that name refers.
+
+A collection of associations between names and locations is called an **environment**. When
+you create a top level variable in a program using define, the name-location association
+for that variable is added to the **top level environment**. The “top level” environment also
+includes name-location associations for all the procedures that are supplied by standard
+Scheme.
+
+It is often useful to create variables that are more limited in their
+scope, typically as part of a procedure body. In Scheme, this is done using the let syntax,
+or one of its modified forms let* and letrec.
+
+## Closure
+Consider a let expression that doesn’t contain any lambdas:
+
+	(let ((s (/ (+ a b c) 2)))
+		(sqrt (* s (- s a) (- s b) (- s c))))
+When the Scheme interpreter evaluates this, it
+
+- creates a new environment with a reference to the environment that was current when it encountered the let
+- creates a variable binding for s in the new environment, with value given by (/ (+ a b c) 2)
+- evaluates the expression in the body of the let in the context of the new local envi- ronment, and remembers the value V
+- forgets the local environment
+- continues evaluating the expression that contained the let, using the value V as the value of the let expression, in the context of the containing environment.
+
+After the `let` expression has been evaluated, the local environment that was created is
+simply forgotten, and there is no longer any way to access the binding that was created in
+this environment. If the same code is evaluated again, it will follow the same steps again,
+creating a second new local environment that has no connection with the first, and then
+forgetting this one as well.
+
+If the **`let` body contains a lambda expression**, however, the local environment is not
+forgotten. Instead, it becomes associated with the procedure that is created by the lambda
+expression, and is reinstated every time that that procedure is called. In detail, this works
+as follows.
+
+- When the Scheme interpreter evaluates a lambda expression, to create a procedure object, it stores the current environment as part of the procedure definition.
+- Then, whenever that procedure is called, the interpreter reinstates the environment that is stored in the procedure definition and evaluates the procedure body within the context of that environment.
+
+The result is that the procedure body is always evaluated in the context of the environ-
+ment that was current when the procedure was created.
+This is what is meant by closure.
+
+## Examples
+**Example 1: A Serial Number Generator**
+
+	(define (make-serial-number-generator)
+		(let ((current-serial-number 0))
+			(lambda ()
+				(set! current-serial-number (+ current-serial-number 1))
+					current-serial-number)))
+	(define entry-sn-generator (make-serial-number-generator))
+
+	(define entry-sn-generator (make-serial-number-generator))
+	(print (entry-sn-generator)) ;; 1
+	(print (entry-sn-generator)) ;; 2
+	
+	(define entry-generator (make-serial-number-generator))
+	(print (entry-generator)) ;; 1
+	(print (entry-generator)) ;; 2
+	(print (entry-generator)) ;; 3
+
