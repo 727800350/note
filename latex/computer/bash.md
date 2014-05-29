@@ -70,6 +70,9 @@ Window->Appearance->Font: 选择Courier New
 Window->Translation->Remote character set: UTF-8  
 之后, 在Session->Saved Sessions 中起一个名字, 然后Save, 下次使用的时候, 直接load, 就可以了
 
+如果要从A远程登录到B, 把A 的公钥追加到 B的 `$HOME/.ssh/authorized_keys` 文件中  
+如果需要putty 使用公钥密钥进行ssh登陆, 需要把A(windows)的密钥使用[puttygen](http://the.earth.li/~sgtatham/putty/latest/x86/puttygen.exe), 转化为putty自己的格式
+
 **PSCP**, the PuTTY Secure Copy client, and it is a command line application
 
 The format for pscp is straight forward:
