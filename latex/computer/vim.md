@@ -223,7 +223,8 @@ If you're currently sitting in the directory you want to index, just run:
 `ctags -R .`
 
 press `Ctrl + ]`, jump to the source  
-press `Ctrl + o` or `Ctrl + t` to climb back
+press `Ctrl + o` or `Ctrl + t` to climb back  
+`C-W C-]` - Open the definition in a horizontal split, 这个动作可以进行多次, 会产生多个窗口(`ctrl+w+j/k`,上下切换;或者`ctrl+w`加上下左右键;还可以通过快速双击`ctrl+w`依次切换窗)
 
 You can also go directly to a tag's definition by entering one of the following in vim's command mode:  
 
