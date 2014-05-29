@@ -77,3 +77,17 @@ Changing the return type of the function to double:
 
 	double func(short x) {// rest all same}
 will give 8 as output.}
+
+<br/>
+[With C arrays, why is it the case that `a[5] == 5[a]`?](http://stackoverflow.com/questions/381542/with-c-arrays-why-is-it-the-case-that-a5-5a)  
+The C standard defines the [] operator as follows:
+
+	a[b] == *(a + b)
+
+Therefore a[5] will evaluate to:
+
+	*(a + 5)
+and 5[a] will evaluate to:
+
+	*(5 + a)
+This is the direct artifact of arrays behaving as pointers.
