@@ -1,3 +1,24 @@
+[运算符](http://www.math.pku.edu.cn/teachers/qiuzy/c/operator.htm)
+
+| 运算符                           | 解释                                 | 结合方式 |
+| -------------------------------- | ---------------------------------- | ---- |
+| () [] -> .                       | 括号(函数等),数组,两种结构成员访问                | 由左向右 |
+| ! ~ ++ -- + - * & (类型) sizeof  | 否定,按位否定,增量,减量,正负号, 间接,取地址,类型转换,求大小 | 由右向左 |
+| * / %                            | 乘,除,取模                             | 由左向右 |
+| + -                              | 加,减                                | 由左向右 |
+| << >>                            | 左移,右移                              | 由左向右 |
+| < <= >= >                        | 小于,小于等于,大于等于,大于                    | 由左向右 |
+| == !=                            | 等于,不等于                             | 由左向右 |
+| &                                | 按位与                                | 由左向右 |
+| ^                                | 按位异或                               | 由左向右 |
+| |                                | 按位或                                | 由左向右 |
+| &&                               | 逻辑与                                | 由左向右 |
+| ||                               | 逻辑或                                | 由左向右 |
+| ? :                              | 条件                                 | 由右向左 |
+| = += -= *= /= &= ^= |= <<= >>=   | 各种赋值                               | 由右向左 |
+| ,                                | 逗号(顺序)                             | 由左向右 |
+|                                  |                                    |      |
+
 # String
 `strcpy(ptr2, ptr1)` is equivalent to `while(*ptr2++ = *ptr1++)`
 where as strdup is equivalent to
@@ -230,3 +251,4 @@ Have not tried
 - `getpwnam()` function returns a pointer to a structure containing the broken-out fields of the record in the **password database** (e.g., the local password file /etc/passwd, NIS, and LDAP) that matches the username name.
 - `getpwuid()` function returns a pointer to a structure containing the broken-out fields of the record in the password database that matches the user ID uid.
 - `chroot` change root directory
+
