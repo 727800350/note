@@ -11,7 +11,7 @@ invoke the interpreter. Applications can add new functions, data types, control 
 and even syntax to Guile, creating a domain-specific language tailored to the task at hand,
 but based on a robust language design.
 
-Since the 2.0 release, Guile’s architecture 
+Since the 2.0 release, Guile's architecture 
 supports compiling any language to its core virtual
 machine bytecode, and Scheme is just one of the supported languages. 
 Other supported languages are 
@@ -32,8 +32,24 @@ Linking Guile into Programs
 # API
 ## Syntax
 	(if condition action-true action-false)
+	(if condition action-true)
+	
+	(cond ((测试) 操作) ... (else 操作))
+	(case (表达式) ((值) 操作))	... (else 操作)))
 
 	(and arg1 ... argn)
+
+	(let ((x 2) (y 4)) (+ x y)))
+
+在Scheme语言中没有循环结构, 不过循环结构可以用递归来很轻松的实现(在Scheme语言中只有通过递归才能实现循环)
+	
+	(define loop
+		(lambda(x y)
+			(if (<= x y)
+				(begin 
+					(display x) (display " ") (set! x (+ x 1)) (loop x y)))))
+	(loop 1 10) ;; print from 1 to 10
+
 ## IO
 	(display x)
 	(newline)
@@ -43,6 +59,76 @@ Linking Guile into Programs
 	(define print
   		(lambda (para)
         	(display para)(newline)))
+
+Scheme语言中也提供了相应的输入输出功能,是在C基础上的一种封装.
+
+**端口**  
+Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指针,也就是Linux中的设备文件,请看下面的操作
+	
+	guile> (current-input-port)
+	#<input: standard input /dev/pts/0> ;当前的输入端口
+	guile> (current-output-port)
+	#<output: standard output /dev/pts/0> ;当前的输出端口
+
+判断是否为输入输出端口,可以用:`input-port?` 和`output-port?`
+
+`open-input-file,open-output-file,close-input-port,close-output-port`这四个过程用来打开和关闭输入输出文件,其中打开文件的参数是文件名字符串,关闭文件的参数是打开的端口.
+
+### 输入
+打开一个输入文件后,返回的是输入端口,可以用read过程来输入文件的内容:
+
+	guile> (define port (open-input-file "readme"))
+	guile> port
+	#<input: readme 4>
+	guile> (read port)
+	GUILE语言
+上面的操作打开了readme文件,并读出了它的第一行内容.
+
+此外还可以直接用read过程来接收键盘输入,如下面的操作:
+
+	guile> (read)  ; 执行后即等待键盘输入
+	12345
+	12345
+	guile> (define x (read))  ; 等待键盘输入并赋值给x
+	12345
+	guile> x
+	12345
+以上为用read来读取键入的数字,还可以输入字符串等其它类型数据:
+
+	guile> (define name (read))
+	tomson
+	guile> name
+	tomson
+	guile> (string? name)
+	#f
+	guile> (symbol? name)
+	#t
+此时输入的tomson是一个符号类型,因为字符串是用引号引起来的,所以出现上面的情况.下面因为用引号了,所以`(string? str)`返回值为`#t`.
+
+	guile> (define str (read))
+	"Johnson"
+	guile> str
+	"Johnson"
+	guile> (string? str)
+	#t
+
+还可以用load过程来直接调用Scheme语言源文件并执行它,格式为:`(load "filename")`,还有`read-char`过程来读单个字符等等.
+
+### 输出
+常用的输出过程是display,还有write,它的格式是
+	
+	(write 对象 端口)
+这里的对象是指字符串等常量或变量,端口是指输出端口或打开的文件.下面的操作过程演示了向输出文件temp中写入字符串"helloworld",并分行的实现.
+	guile> (define port1 (open-output-file "temp"))  ; 打开文件端口赋于port1
+	guile> port1
+	#<output: temp 3> 
+	guile> (output-port? port1)
+	#t                     ; 此时证明port1为输出端口
+	guile> (write "hello world" port1)
+	guile> (close-output-port port1)
+	guile> (exit)               ; 写入数据并关闭退出
+	[root@toymouse test]# more temp          显示文件的内容,达到测试目的
+	"hello world"
 
 ## String
 	(string-append str1 ... strn)
@@ -89,7 +175,7 @@ Linking Guile into Programs
 # Data Types, Values and Variables
 **latent typing**  
 The term latent typing is used to describe a computer language, such as Scheme, for which
-you cannot, in general, simply look at a program’s source code and determine what type
+you cannot, in general, simply look at a program's source code and determine what type
 of data will be associated with a particular variable, or with the result of a particular
 expression.  
 Instead, the types of variables and expressions are only known – in general – at run time.
@@ -107,7 +193,7 @@ In addition, Guile allows applications to define their own data types,
 with the same status as the built-in standard Scheme types.
 
 **all values in Scheme – carry their type with them**.   
-In other words, every value “knows,” at runtime, what kind of value it is, 
+In other words, every value "knows," at runtime, what kind of value it is, 
 a number, a string, a list, whatever.
 
 ### Defining and Setting Variables
@@ -115,10 +201,10 @@ a number, a string, a list, whatever.
 	
 For example(;; 表示注释):
 
-	;; Make a variable ‘x’ with initial numeric value 1.
+	;; Make a variable 'x' with initial numeric value 1.
 	(define x 1)
 	
-	;; Make a variable ‘organization’ with an initial string value.
+	;; Make a variable 'organization' with an initial string value.
 	(define organization "Free Software Foundation")
 	
 	;; change value, new-value can have different data type
@@ -249,7 +335,7 @@ Therefore `if` must be special syntax, not a procedure.
 
 Other special syntaxes that we have already met are `define, set!` and `lambda`. 
 define and set! are syntax because they need to know the variable name that is given as the first argument in a define or set!
-expression, not that variable’s value. 
+expression, not that variable's value. 
 lambda is syntax because it does not immediately evaluate the expressions that define the procedure body;
 
 ## Tail calls
@@ -270,7 +356,7 @@ A proper tail call is only available from certain contexts, namely the following
 - case — last expression in each clause
 - cond — last expression in each clause, and the call to a => procedure is a tail call
 - do — last result expression
-- if — “true” and “false” leg expressions
+- if — "true" and "false" leg expressions
 - lambda — last expression in body
 - let, let*, letrec, let-syntax, letrec-syntax — last expression in body
 - or — last expression
@@ -284,18 +370,18 @@ The following core functions make tail calls,
 - string-any, string-every — tail call to predicate on the last character (if that point is reached)
 
 # The Concept of Closure
-The concept of closure is the idea that a lambda expression “captures” the variable bindings
+The concept of closure is the idea that a lambda expression "captures" the variable bindings
 that are in lexical scope at the point where the lambda expression occurs. The procedure
 created by the lambda expression can refer to and mutate the captured bindings, and the
 values of those bindings persist between procedure calls.
 
-“creating a variable” is in fact establishing an association between a
+"creating a variable" is in fact establishing an association between a
 name, or identifier, that is used by the Scheme program code, and the variable location to
 which that name refers.
 
 A collection of associations between names and locations is called an **environment**. When
 you create a top level variable in a program using define, the name-location association
-for that variable is added to the **top level environment**. The “top level” environment also
+for that variable is added to the **top level environment**. The "top level" environment also
 includes name-location associations for all the procedures that are supplied by standard
 Scheme.
 
@@ -304,7 +390,7 @@ scope, typically as part of a procedure body. In Scheme, this is done using the 
 or one of its modified forms let* and letrec.
 
 ## Closure
-Consider a let expression that doesn’t contain any lambdas:
+Consider a let expression that doesn't contain any lambdas:
 
 	(let ((s (/ (+ a b c) 2)))
 		(sqrt (* s (- s a) (- s b) (- s c))))
