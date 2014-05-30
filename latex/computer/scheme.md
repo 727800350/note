@@ -1,3 +1,5 @@
+Lisp: List Processing
+
 Guile implements Scheme as described in the Revised5Report on the Algorithmic Language
 Scheme (usually known as R5RS), providing clean and general data and control structures.
 Guile goes beyond the rather austere language presented in R5RS, extending it with a
@@ -18,6 +20,11 @@ Other supported languages are
 Emacs Lisp, ECMAScript (commonly known as Javascript) and Brainfuck,
 and work is under discussion for Lua, Ruby and Python.
 
+guile 的启动方式
+
+- -s script arg...
+- -c expr arg... ;; Evaluate expr as Scheme code, and then exit.
+- -l file ;; Load Scheme source code from file, and continue processing the command line.
 
 **guile script**
 
@@ -39,6 +46,7 @@ Linking Guile into Programs
 
 	(and arg1 ... argn)
 
+	(let ((...)...) ...)
 	(let ((x 2) (y 4)) (+ x y)))
 
 在Scheme语言中没有循环结构, 不过循环结构可以用递归来很轻松的实现(在Scheme语言中只有通过递归才能实现循环)
@@ -136,10 +144,24 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 	(string=? argument)
 
 ## List
+构造list的方式举例:
+
+- `(list 1 2 3)`
+- `'(1 2 3)`
+
 	(car list) ;; get the first element
 	(cdr list) ;; get the rest of the list except the first element
 	(cons arg1 arg2) ;; concatenate
 	(append arg list) ;; append arg to list, note the difference between cons and append from the example below
+	(length list) ;; get the length of the list, eg:(length (list 2 3 4)) ;; return 3
+
+	(apply procedure list) ;; 
+
+	map的功能和apply有些相似,它的第一个参数也必需是一个过程,随后的参数必需是多个列表,返回的结果是此过程来操作列表后的值
+	guile> (map + (list 1 2 3) (list 4 5 6))
+	(5 7 9)
+	guile> (map car '((a b)(c d)(e f)))
+	(a c e)
 
 **Demo**
 
