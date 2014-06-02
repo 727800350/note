@@ -2,3 +2,27 @@
 (activate-readline)
 
 (use-modules (ice-9 history))
+
+(define space " ")
+
+;; print a list
+(define print-list
+  (lambda (para)
+	(if (not (list? para))
+	  (begin (display "argument is not a list, exiting...") (quit)))
+	(if (null? para)
+;; 	  no element
+	  (begin (display "No argrument to print out") (newline))
+	  (if (null? (cdr para))
+;; 	  	only one element left
+		(begin (display (car para)) (newline))
+;; 	  	more than one elements
+		(begin (display (car para)) (display space) (print-list (cdr para)))))))
+
+;; print out variable number arguments 
+(define print
+  (lambda (arg . args)
+	(display arg)
+	(if (null? args)
+	  (newline)
+	  (begin (display space) (print-list args)))))
