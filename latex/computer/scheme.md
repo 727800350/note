@@ -25,6 +25,9 @@ guile 的启动方式
 - -s script arg...
 - -c expr arg... ;; Evaluate expr as Scheme code, and then exit.
 - -l file ;; Load Scheme source code from file, and continue processing the command line.
+- -e function ;; Make function the entry point of the script. the return value of `(command-line)` will be the arguments of the function.
+
+退出:`(quit) `或者 `,quit` 或者`,q`
 
 **guile script**
 
@@ -59,6 +62,9 @@ Linking Guile into Programs
 	(loop 1 10) ;; print from 1 to 10
 
 ## IO
+`(command-line)`: 得到a list of strings  
+eg: `./choose 1 4`: `(command-line)` 返回的是`("./choose" "1" "4")`, 然后`cadr` 得到 "1", `caddr`得到"4"
+
 	(display x)
 	(newline)
 	
@@ -142,6 +148,8 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 	(string-append str1 ... strn)
 	(string-length str)
 	(string=? argument)
+	(number->string argument)
+	(string->number argument)
 
 ## List
 构造list的方式举例:
@@ -151,6 +159,8 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 
 	(car list) ;; get the first element
 	(cdr list) ;; get the rest of the list except the first element
+	(cadr list) ;; (car (cdr list))
+	(caddr list) ;; (car (cdr (cdr list)))
 	(cons arg1 arg2) ;; concatenate
 	(append arg list) ;; append arg to list, note the difference between cons and append from the example below
 	(length list) ;; get the length of the list, eg:(length (list 2 3 4)) ;; return 3
@@ -188,6 +198,26 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 
 	guile> (append '(7 8) list)
 	(7 8 1 2 3)
+
+## ?
+
+	(null? arg)
+	(list? arg)
+	(number? arg)
+	(equal? arg) (eq? arg)
+	(integer? arg)
+	(odd? arg)
+	(positive? arg)
+	(negative? arg)
+	(pair? arg)
+
+## Math
+
+	max, min
+	abs
+	reminder, modulo
+	gcd, lcm
+	(complex? arg)
 
 ## File system
 	(delete-file file)
