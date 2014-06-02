@@ -20,6 +20,7 @@ Other supported languages are
 Emacs Lisp, ECMAScript (commonly known as Javascript) and Brainfuck,
 and work is under discussion for Lua, Ruby and Python.
 
+## Start and exit
 guile 的启动方式
 
 - -s script arg...
@@ -27,17 +28,46 @@ guile 的启动方式
 - -l file ;; Load Scheme source code from file, and continue processing the command line.
 - -e function ;; Make function the entry point of the script. the return value of `(command-line)` will be the arguments of the function.
 
-退出:`(quit) `或者 `,quit` 或者`,q`
+退出:`(quit)
 
-**guile script**
+## guile script
 
 	#!/usr/bin/guile -s
 	!#
 	(display "Hello, world!")
 	(newline)
 
-Linking Guile into Programs
-\todo{to be tested}
+当有多个options时:  
+the meta switch `\` allows the Guile programmer to specify an arbitrary
+number of options
+
+	#!/usr/local/bin/guile \
+	-e main -s
+	!#
+
+Start ex:
+
+	guile -e main -s /u/jimb/ex4 foo
+Load the file /u/jimb/ex4, and then call the function main, passing it the list `("/u/jimb/ex4" "foo")`
+
+## Tips
+Guile initialization file: `~/.guile`
+
+To make it easier for you to repeat and vary previously entered expressions, or to edit
+the expression that you’re typing in, Guile can use the GNU Readline library. This is not
+enabled by default because of licensing reasons, but all you need to activate Readline is the
+following pair of lines.
+
+	scheme@(guile-user)> (use-modules (ice-9 readline))
+	scheme@(guile-user)> (activate-readline)
+Put 
+	(use-modules (ice-9 readline))
+	(activate-readline)
+in `~/.guile`
+
+History
+
+	(use-modules (ice-9 history))
 
 # API
 ## Syntax
@@ -63,7 +93,7 @@ Linking Guile into Programs
 
 ## IO
 `(command-line)`: 得到a list of strings  
-eg: `./choose 1 4`: `(command-line)` 返回的是`("./choose" "1" "4")`, 然后`cadr` 得到 "1", `caddr`得到"4"
+eg: `./choose 1 4`: `(command-line)` 返回的是a **list of strings**: `("./choose" "1" "4")`, 然后`cadr` 得到 "1", `caddr`得到"4"
 
 	(display x)
 	(newline)
@@ -149,7 +179,7 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 	(string-length str)
 	(string=? argument)
 	(number->string argument)
-	(string->number argument)
+	(string->number argument) ;; 但是没有string->integer 等
 
 ## List
 构造list的方式举例:
