@@ -115,6 +115,8 @@ func! CompileCode()
             exec "!gnuplot %<.gp"
         elseif &filetype == "python"
             exec "!python %<.py"
+        elseif &filetype == "scheme"
+            exec "!guile %<.scm"
         elseif &filetype == "ruby"
             exec "!ruby %<.rb"
         elseif &filetype == "mp"
