@@ -226,3 +226,11 @@ No need to roll your own:
 	[Alpha:] > ./a.out
 	00010
 Boost version allows a runtime sized bitset compared with STL compile time sized bitset.
+
+<br/>
+**Hello world in C with no semi-colons?**  
+
+	#include <stdio.h>
+	int main(){
+		if(printf("Hello world.\n")){}
+	}
