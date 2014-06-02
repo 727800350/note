@@ -28,7 +28,7 @@ guile 的启动方式
 - -l file ;; Load Scheme source code from file, and continue processing the command line.
 - -e function ;; Make function the entry point of the script. the return value of `(command-line)` will be the arguments of the function.
 
-退出:`(quit)
+退出:`(quit)` or `(exit)`
 
 ## guile script
 
