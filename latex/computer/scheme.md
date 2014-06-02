@@ -13,12 +13,8 @@ invoke the interpreter. Applications can add new functions, data types, control 
 and even syntax to Guile, creating a domain-specific language tailored to the task at hand,
 but based on a robust language design.
 
-Since the 2.0 release, Guile's architecture 
-supports compiling any language to its core virtual
-machine bytecode, and Scheme is just one of the supported languages. 
-Other supported languages are 
-Emacs Lisp, ECMAScript (commonly known as Javascript) and Brainfuck,
-and work is under discussion for Lua, Ruby and Python.
+Since the 2.0, Guile's architecture supports compiling any language to its core virtual machine bytecode, and Scheme is just one of the supported languages. 
+Other supported languages are Emacs Lisp, ECMAScript (commonly known as Javascript) and Brainfuck, and work is under discussion for Lua, Ruby and Python.
 
 ## Start and exit
 guile 的启动方式
@@ -71,6 +67,12 @@ History
 
 # API
 ## Syntax
+- #t: true
+- #f: false  
+It is important to note that `#f` is not equivalent to any other Scheme value. In particular,
+`#f` is not the same as the number 0 (like in C and C++), and not the same as the “empty
+list” (like in some Lisp dialects).
+
 	(if condition action-true action-false)
 	(if condition action-true)
 	
@@ -235,7 +237,14 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 	(list? arg)
 	(number? arg)
 	(equal? arg) (eq? arg)
-	(integer? arg)
+
+	(integer? arg) Return #t if x is an exact or inexact integer number, else return #f.
+Ex:
+
+	(integer? 487) #t
+	(integer? 3.0) #t
+	(integer? -3.4) #f
+
 	(odd? arg)
 	(positive? arg)
 	(negative? arg)
@@ -521,3 +530,7 @@ This is what is meant by closure.
 	(print (entry-generator)) ;; 2
 	(print (entry-generator)) ;; 3
 
+# History
+The Emacs thesis is that it is delightful to create composite
+programs based on an orthogonal kernel written in a low-level language together with a
+powerful, high-level extension language.
