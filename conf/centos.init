@@ -3,10 +3,11 @@ yum install -y sudo git git-svn
 yum remove -y evolution
 yum install -y mutt
 yum update -y firefox
+yum install -y mysql mysql-server mysql-devel
 
 ## chrome
 
 ## project
-## yum install -y libpcap
+## yum install -y libpcap libpcap-devel
 ## yum install -y wireshark ## no gui
 ## yum install -y wireshark-gnome
