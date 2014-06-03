@@ -11,7 +11,8 @@
 # Math
 `$\not\in$`
 
-数学公式中输入中文 可以把中文用`\text{}`或是`\mbox{}`引起来
+数学公式中输入中文 可以把中文用`\text{}`或是`\mbox{}`引起来  
+在`\text{}` 仍然可以使用`$$` 符号进行数学输入
 
 ## 分数
 - `\frac` 自动调整字号,比如在行间公式中小一点,在独立公式则大一点.
@@ -549,6 +550,9 @@ Eg:
 As explained below this specific JPG seems to be incompatible with XeTeX.
 Apparently XeTeX has issues reading the size from the meta-data from the JPG, which somehow leads to the "too-large" error.  
 用一个可以编辑图形的软件打开图形, 然后重新保存图形
+
+**`\dot`的使用**  
+latex 中输入点 不能使用\dot, 而应该直接使用 "."
 
 # Other
 \usepackage{blindtext}
