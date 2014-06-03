@@ -234,3 +234,25 @@ Boost version allows a runtime sized bitset compared with STL compile time sized
 	int main(){
 		if(printf("Hello world.\n")){}
 	}
+
+<br/>
+[fork() branches more than expected?](http://stackoverflow.com/questions/11132868/fork-branches-more-than-expected)  
+	
+	#include <stdio.h>
+	#include <sys/types.h>
+	#include <unistd.h>
+	int main(void){
+	    int i;
+	    for(i = 0; i < 2; i++){
+			fork();
+	        printf(".");
+	    }
+	    return 0;
+	}
+This program outputs 8 dots. How can that be possible? Should not there be 6 dots instead?
+
+at first, there is one process. That creates a second process, both of which print a dot and loop. On their second iteration, each creates another copy, so there are four processes print a dot, and then exit. So we can easily account for six dots, like you expect.
+
+However, **what printf() really does is buffer its output**. So the first dot from when there were only two processes does not appear when written. Those dots remain in the buffer—which is duplicated at fork(). It is not until the process is about to exit that the buffered dot appears. Four processes printing a buffered dot, plus the new one gives 8 dots.
+
+If you wanted to avoid that behavior, call fflush(stdout); after printf().
