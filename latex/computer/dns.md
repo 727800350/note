@@ -27,7 +27,7 @@
 (2) 标志
 
 - QR(query or response): 占1位,0:查询,1:响应
-- opcode: 占4位,0:标准查询,1:反向查询,2:服务器状态查询
+- opcode: 占4位,0:标准查询,1:反向查询,2:服务器状态查询,3: reserved, 4:primary server tells secondary servers to Update DNS, 5:allows resource records to be added, deleted or updated selectively
 - AA(authority answer): 占1位,0:非授权,1:授权回答
 - TC(truncated): 占1位,0:未截断,1:截断
 - RD(Recursive Desire): 占1位,0:非递归,1:递归
