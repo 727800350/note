@@ -330,6 +330,7 @@ Using option -c, strace provides useful statistical report for the execution tra
 	[pid 28772] <... select resumed> )      = 1 (in [3])
 
 # [tcpdump](http://www.danielmiessler.com/study/tcpdump/)
+	sudo tcpdump -i eth1 port 53 -l > dnscap.txt
 TcpDump可以将网络中传送的数据包的"头"完全截获下来提供分析.它支持针对网络层,协议,主机,网络或端口的过滤,并提供and,or,not等逻辑语句来帮助你去掉无用的信息
 
 tcpdump存在于基本的 FreeBSD系统中,由于它需要将网络接口设置为混杂模式,普通用户不能正常执行,但具备root权限的用户可以直接执行它来获取网络上的信息.

@@ -1,3 +1,6 @@
+[DNS 查询统计](http://ns.ustc.edu.cn/dns/log/2014/04/04/2014.04.04.19.20.html)
+
+[DNS报文格式(RFC1035)](http://blog.csdn.net/tigerjibo/article/details/6827736)
 报文结构各个字段的含义及大小参见:
 [DNS Message Header and Question Section Format](http://www.tcpipguide.com/free/t_DNSMessageHeaderandQuestionSectionFormat.htm)
 
@@ -243,6 +246,14 @@ soon afterward.
    name is limited to 255 octets (including the separators).  The zero
    length full name is defined as representing the root of the DNS tree,
    and is typically written and displayed as "."
+
+**DNS Resolvers**  
+DNS resolvers are just DNS clients. They can make two main types of queries: iterative, and recursive. See that section below.
+
+Recursive vs. Iterative Queries
+
+- As mentioned above, recursive queries are queries where the client asks the server to do all the work for it. It sends in its query the RECURSION DESIRED flag, and the DNS server will either honor that or not.
+- Iterative queries are the opposite of recursive queries. When they're used, the server doesn't go find the answer for the client (unless it's on the first question and response), but rather tells the client where to look next. So if the client asks for chat.google.com, it tells the client to check with the .com servers and considers its work done.
 
 # Other
 DNS uses its own unique **encoding** for Unicode characters.   
