@@ -1,3 +1,10 @@
+# Plot Figure
+## 2D
+### ezplot
+
+	ezplot('sin(x)')
+	ezplot('x^2 - y^2 - 1') // 双曲线, 不是z = x^2-y^2-1
+
 ## Function
 Matlab 中数组下标从1开始, 而不是像很多种编程语言一样的从0 开始.
 
