@@ -273,6 +273,7 @@ b) Free the memory after the memset_16aligned has executed.
 	   // answer b) here
 	}
 
+解决这个的思想: 多申请一点内存, 然后将内存向前移动15位(当malloc的返回值)
 **Original answer**
 
 	{
@@ -299,6 +300,10 @@ ptr = (int)((char *)0x601011 + 15) & 0xfffffff0 = 0x601020 & 0xfffffff0 = 0x6010
 - 如果返回的地址是0x60101f, 那么我们申请的内存区域就是[0x60101f, 0x60101f + 1024 +15 -1]  
 ptr = (int)((char *)0x60101f + 15) & 0xfffffff0 = 0x60102e & 0xfffffff0 = 0x601020,  
 那么ptr 所指向的内存的长度就是: 0x60101f + 1024 + 15 - 1 - 0x601020 + 1 = 1024 + 14, 满足要求
+todo: 不是刚好1024, 有点问题
+
+这里使用 0x0f, 是因为要求16Byte aligned, 这样取反之后, 并& 之后, 就可以保证以16进制表示时, 最后一位是0, 也就是整个数是16的倍数.  
+如果是要求8, 那么应该是000111(o07)
 
 **Fixed answer**
 
