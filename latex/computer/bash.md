@@ -125,3 +125,7 @@ secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的�
 `man -f word`: 根据关键字在联机帮助中搜索完全匹配的条目, Equivalent to whatis  
 把man page 转成文本文件,如: `man ls | col -b > ~/Desktop/man_ls.txt`  
 `man -t ls > man_ls.ps && ps2pdf man_ls.ps && rm man_ls.ps`: print
+
+**ubuntu root password**  
+安装完Ubuntu后忽然意识到没有设置root密码. Ubuntu的默认root密码是随机的,即每次开机都有一个新的root密码.  
+设置一个新的固定的root密码的方法: `$sudo passwd`,然后输入当前用户的密码,enter,终端会提示我们输入新的密码并确认,此时的密码就是root新密码
