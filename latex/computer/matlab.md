@@ -52,3 +52,7 @@ solver can be `ode45, ode23, ode15s`
 
 The first thing to try is use `ode45`, then try `ode15s`
 
+## Optimization
+fmincon: Find minimum of constrained nonlinear multivariable function
+
+linprog: Solve linear programming problems
