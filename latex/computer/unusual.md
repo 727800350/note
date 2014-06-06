@@ -256,3 +256,147 @@ at first, there is one process. That creates a second process, both of which pri
 However, **what printf() really does is buffer its output**. So the first dot from when there were only two processes does not appear when written. Those dots remain in the buffer—which is duplicated at fork(). It is not until the process is about to exit that the buffered dot appears. Four processes printing a buffered dot, plus the new one gives 8 dots.
 
 If you wanted to avoid that behavior, call fflush(stdout); after printf().
+
+<br/>
+[Solve the memory alignment in C interview question that stumped me](http://stackoverflow.com/questions/227897/solve-the-memory-alignment-in-c-interview-question-that-stumped-me/)  
+I just finished a test as part of a job interview, and one question stumped me - even using google for reference. I'd like to see what the stackoverflow crew can do with it:
+
+The “memset_16aligned” function requires a 16byte aligned pointer passed to it, or it will crash.  
+a) How would you allocate 1024 bytes of memory, and align it to a 16 byte boundary?  
+b) Free the memory after the memset_16aligned has executed.
+
+	{
+	   void *mem;
+	   void *ptr;
+	   // answer a) here
+	   memset_16aligned(ptr, 0, 1024);
+	   // answer b) here
+	}
+
+**Original answer**
+
+	{
+		void *mem = malloc(1024+16);
+		void *ptr = ((char *)mem+16) & ~ 0x0F;
+		memset_16aligned(ptr, 0, 1024);
+		free(mem);
+	}
+**Fixed answer**
+
+	{
+		void *mem = malloc(1024+15);
+		void *ptr = ((uintptr_t)mem+15) & ~ (uintptr_t)0x0F;
+		memset_16aligned(ptr, 0, 1024);
+		free(mem);
+	}
+Explanation as requested
+
+The first step is to allocate enough spare space, just in case. Since the memory must be **16-byte aligned (meaning that the leading byte address needs to be a multiple of 16)**, adding 16 extra bytes guarantees that we have enough space.  
+Somewhere in the first 16 bytes, there is a 16-byte aligned pointer. 
+(Note that malloc() is supposed to return a pointer that is sufficiently well aligned for any purpose. 
+However, the meaning of 'any' is primarily for things like basic types - long, double, long double, long long. 
+When you are doing more specialized things, like playing with graphics systems, 
+they can need more stringent alignment than the rest of the system - hence questions and answers like this.)
+
+The next step is to convert the void pointer to a char pointer; 
+GCC notwithstanding, you are not supposed to do pointer arithmetic on void pointers (and GCC has warning options to tell you when you abuse it).
+Then add 16 to the start pointer. Suppose malloc() returned you an impossibly badly aligned pointer: 0x800001. Adding the 16 gives 0x800011. 
+Now I want to **round down to the 16-byte boundary - so I want to reset the last 4 bits to 0**. 
+0x0F has the last 4 bits set to one; therefore, ~ 0x0F has all bits set to one except the last four. 
+Anding that with 0x800011 gives 0x800010. You can iterate over the other offsets and see that the same arithmetic works.
+
+The last step, free(), is easy: you always, and only, return to free() a value that one of malloc(), calloc() or realloc() returned to you - 
+anything else is a disaster. You correctly provided mem to hold that value - thank you. The free releases it.
+
+Finally, if you know about the internals of your system's malloc package, you could guess that it might well return 16-byte aligned data 
+(or it might be 8-byte aligned). 
+If it was 16-byte aligned, then you'd not need to dink with the values. 
+However, this is dodgy and non-portable -- other malloc packages have different minimum alignments, 
+and therefore assuming one thing when it does something different would lead to core dumps. Within broad limits, this solution is portable.
+
+Someone else mentioned posix_memalign() as another way to get the aligned memory; 
+that isn't available everywhere, but could often be implemented using this as a basis. 
+Note that it was convenient that the alignment was a power of 2; other alignments are messier.
+
+One more comment - this code does not check that the allocation succeeded.
+
+**Amendment**  
+Windows Programmer pointed out that you can't do bit mask operations on pointers, and, indeed, GCC (3.4.6 and 4.3.1 tested) does complain like that. 
+So, an amended version of the basic code - converted into a main program, follows.
+I've also taken the liberty of **adding just 15 instead of 16**, as has been pointed out. 
+I'm using `uintptr_t` since C99 has been around long enough to be accessible on most platforms. 
+If it wasn't for the use of PRIXPTR in the printf() statements, it would be sufficient to `#include <stdint.h>` instead of using `#include <inttypes.h>`. 
+[This code includes the fix pointed out by C.R., which was reiterating a point first made by Bill K a number of years ago, which I managed to overlook until now.]
+
+	#include <assert.h>
+	#include <inttypes.h>
+	#include <stdio.h>
+	#include <stdlib.h>
+	
+	static void memset_16aligned(void *space, char byte, size_t nbytes){
+	    assert((nbytes & 0x0F) == 0);
+	    assert(((uintptr_t)space & 0x0F) == 0);
+	}
+	
+	int main(void){
+	    void *mem = malloc(1024+15);
+	    void *ptr = (void *)(((uintptr_t)mem+15) & ~ (uintptr_t)0x0F);
+	    printf("0x%08" PRIXPTR ", 0x%08" PRIXPTR "\n", mem, ptr);
+	    memset_16aligned(ptr, 0, 1024);
+	    free(mem);
+	    return(0);
+	}
+
+And here is a marginally more generalized version, which will work for sizes which are a power of 2:
+	
+	#include <assert.h>
+	#include <inttypes.h>
+	#include <stdio.h>
+	#include <stdlib.h>
+	
+	static void memset_16aligned(void *space, char byte, size_t nbytes){
+	    assert((nbytes & 0x0F) == 0);
+	    assert(((uintptr_t)space & 0x0F) == 0);
+	}
+	
+	static void test_mask(size_t align){
+	    uintptr_t mask = ~(uintptr_t)(align - 1);
+	    void *mem = malloc(1024+align-1);
+	    void *ptr = (void *)(((uintptr_t)mem+align-1) & mask);
+	    assert((align & (align - 1)) == 0);
+	    printf("0x%08" PRIXPTR ", 0x%08" PRIXPTR "\n", mem, ptr);
+	    memset_16aligned(ptr, 0, 1024);
+	    free(mem);
+	}
+	
+	int main(void){
+	    test_mask(16);
+	    test_mask(32);
+	    test_mask(64);
+	    test_mask(128);
+	    return(0);
+	}
+To convert `test_mask()` into a general purpose allocation function, 
+the single return value from the allocator would have to encode the release address, as several people have indicated in their answers.
+
+Problems with interviewers
+
+Uri commented: Maybe I am having [a] reading comprehension problem this morning, but if the interview question specifically says: 
+"How would you allocate 1024 bytes of memory" and you clearly allocate more than that. Wouldn't that be an automatic failure from the interviewer?
+
+My response won't fit into a 300-character comment...
+
+It depends, I suppose. I think most people (including me) took the question to mean 
+"How would you allocate a space in which 1024 bytes of data can be stored, and where the base address is a multiple of 16 bytes". 
+If the interviewer really meant how can you allocate 1024 bytes (only) and have it 16-byte aligned, then the options are more limited.
+
+Clearly, one possibility is to allocate 1024 bytes and then give that address the 'alignment treatment'; 
+the problem with that approach is that the actual available space is not properly determinate (the usable space is between 1008 and 1024 bytes, 
+but there wasn't a mechanism available to specify which size), which renders it less than useful.  
+Another possibility is that you are expected to write a full memory allocator and ensure that the 1024-byte block you return is appropriately aligned. 
+If that is the case, you probably end up doing an operation fairly similar to what the proposed solution did, but you hide it inside the allocator.  
+However, if the interviewer expected either of those responses,
+I'd expect them to recognize that this solution answers a closely related question, 
+and then to reframe their question to point the conversation in the correct direction. 
+(Further, if the interviewer got really stroppy, then I wouldn't want the job; 
+if the answer to an insufficiently precise requirement is shot down in flames without correction, then the interviewer is not someone for whom it is safe to work.)
