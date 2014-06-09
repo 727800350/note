@@ -356,25 +356,25 @@ Use `-s0` to get everything, unless you are intentionally capturing less.
 - -r 从指定的文件中读取包(这些包一般通过-w选项产生)
 - -F 从指定的文件中读取**表达式**,忽略其它的表达式
 
-## 表达式
+## 表达式 Berkeley Packet Filter (BPF) syntax
 表达式是一个正则表达式,tcpdump利用它作为过滤报文的条件,如果一个报文满足表
 达式的条件,则这个报文将会被捕获.如果没有给出任何条件,则网络上所有的信息包将会
 被截获.
 
 在表达式中一般如下几种类型的关键字,
 
-- 第一种是**关于类型**的关键字,主要包括*host,net,port*
+- 第一种是**关于类型**的关键字,主要包括*host, net, port, portrange*
 例如 host 210.27.48.2,指明 210.27.48.2是一台主机,
 net 202.0.0.0 指明202.0.0.0是一个网络地址,
 port 23 指明端口号是23.如果没有指定类型,缺省的类型是host.  
 portrange: `tcpdump portrange 21-23`
 
-- 第二种是**确定传输方向**的关键字,主要包括*src , dst ,dst or src, dst and src* ,
+- 第二种是**确定传输方向**的关键字,主要包括*src, dst, src or dst, dst and src* ,
 这些关键字指明了传输的方向.举例说明,src 210.27.48.2 ,指明ip包中源地址是210.27.
 48.2 , dst net 202.0.0.0 指明目的网络地址是202.0.0.0 .如果没有指明方向关键字,则
 缺省是src or dst关键字.
 
-- 第三种是**协议**的关键字,主要包括*fddi,ip ,arp,rarp,tcp,udp*等类型.Fddi指明是在
+- 第三种是**协议**的关键字,主要包括*fddi, ip ,arp, rarp, tcp, udp*等类型.Fddi指明是在
 FDDI(分布式光纤数据接口网络)上的特定的网络协议,实际上它是"ether"的别名,fddi和e
 ther具有类似的源地址和目的地址,所以可以将fddi协议包当作ether的包进行处理和分析.
 其他的几个关键字就是指明了监听的包的协议内容.如果没有指定任何协议,则tcpdump将会
