@@ -268,7 +268,8 @@ On some operating systems, a program cannot be executed outside GDB while you ha
 
 The kill command is also useful if you wish to recompile and relink your program, since on many systems it is impossible to modify an executable file while it is running in a process. In this case, when you next type run, GDB notices that the file has changed, and reads the symbol table again (while trying to preserve your current breakpoint settings).
 
-# strace
+# trace
+## strace
 Strace monitors the system calls and signals of a specific program. It is helpful when you do not have the source code and would like to debug the execution of a program. strace provides you the execution sequence of a binary from start to end.
 
 Each line in the trace contains the system call name, followed by its arguments in parentheses and its return value.
@@ -328,6 +329,94 @@ Using option -c, strace provides useful statistical report for the execution tra
 	[pid 28772] select(4, [3], NULL, NULL, NULL <unfinished ...>
 	[pid 28779] clock_gettime(CLOCK_REALTIME, {1130322148, 939977000}) = 0
 	[pid 28772] <... select resumed> )      = 1 (in [3])
+
+## backtrace
+
+	#include <execinfo.h>
+	int backtrace(void **buffer, int size);
+	char **backtrace_symbols(void *const *buffer, int size);
+	void backtrace_symbols_fd(void *const *buffer, int size, int fd);
+
+backtrace() returns a backtrace for the calling program, in the array
+pointed to by buffer.  A backtrace is the series of currently active
+function calls for the program.  Each item in the array pointed to by
+buffer is of type void *, and is the return address from the
+corresponding stack frame.  
+The size argument specifies the maximum number of addresses that can be stored in buffer.
+
+Given the set of addresses returned by backtrace() in buffer,
+backtrace_symbols() translates the addresses into an array of strings
+that describe the addresses symbolically.  The size argument
+specifies the number of addresses in buffer.
+
+Ex:
+	
+	// gcc -rdynamic backtrace.c
+	#include <execinfo.h>
+	#include <stdio.h>
+	#include <stdlib.h>
+	
+	/* 打印调用栈的最大深度 */
+	#define DUMP_STACK_DEPTH_MAX 16
+	
+	/* 打印调用栈函数 */
+	void dump_trace() {
+	    void *stack_trace[DUMP_STACK_DEPTH_MAX] = {0};
+	    char **stack_strings = NULL;
+	    int stack_depth = 0;
+	    int i = 0;
+	
+	    /* 获取栈中各层调用函数地址 */
+	    stack_depth = backtrace(stack_trace, DUMP_STACK_DEPTH_MAX);
+	    
+	    /* 查找符号表将函数调用地址转换为函数名称 */
+	    stack_strings = (char **)backtrace_symbols(stack_trace, stack_depth);
+	    if (NULL == stack_strings) {
+	        printf(" Memory is not enough while dump Stack Trace! \r\n");
+	        return;
+	    }
+	
+	    /* 打印调用栈 */
+	    printf(" Stack Trace: \r\n");
+	    for (i = 0; i < stack_depth; ++i) {
+	        printf(" [%d] %s \r\n", i, stack_strings[i]);
+	    }
+	
+	    /* 获取函数名称时申请的内存需要自行释放 */
+	    free(stack_strings);
+	    stack_strings = NULL;
+	    return;
+	}
+	
+	/* 测试函数 2 */
+	void test_meloner() {
+	    dump_trace();
+	    return;
+	}
+	
+	/* 测试函数 1 */
+	void test_hutaow() {
+	    test_meloner();
+	    return;
+	}
+	
+	/* 主函数 */
+	int main(int argc, char *argv[]) {
+	    test_hutaow();
+	    return 0;
+	}
+
+Output:
+
+	Stack Trace: 
+	[0] ./a.out(dump_trace+0x50) [0x4008b4] 
+	[1] ./a.out(test_meloner+0xe) [0x400955] 
+	[2] ./a.out(test_hutaow+0xe) [0x400966] 
+	[3] ./a.out(main+0x19) [0x400982] 
+	[4] /lib64/libc.so.6(__libc_start_main+0xfd) [0x3af001ecdd] 
+	[5] ./a.out() [0x4007a9] 
+
+"static" means don't export the symbol...
 
 # [tcpdump](http://www.danielmiessler.com/study/tcpdump/)
 	sudo tcpdump -i eth1 port 53 -l > dnscap.txt
