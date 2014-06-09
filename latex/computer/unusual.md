@@ -1,3 +1,4 @@
+# C/C++
 [adding two numbers without using +](http://stackoverflow.com/questions/11244510/adding-two-numbers-without-using)  
 I have this code which does the trick:
 
@@ -490,3 +491,17 @@ It's even possible that the processor itself has implemented the multiply instru
 Bottom line--don't spend a lot of time worrying about this. 
 If you mean to shift, shift. If you mean to multiply, multiply. 
 Do what is semantically clearest--your coworkers will thank you later. Or, more likely, curse you later if you do otherwise.
+
+# Software Engineering
+[Protecting executable from reverse engineering?](http://stackoverflow.com/questions/6481668/protecting-executable-from-reverse-engineering)  
+
+What Amber said is exactly right. You can make reverse engineering harder, but you can never prevent it. 
+You should never trust "security" that relies on the prevention of reverse engineering.  
+That said, the best anti-reverse-engineering techniques that I've seen focused not on obfuscating the code, 
+but instead on breaking the tools that people usually use to understand how code works. 
+Finding creative ways to break disassemblers, debuggers, etc is both likely to be more effective and also more intellectually satisfying than just generating reams of horrible spaghetti code. 
+This does nothing to block a determined attacker, but it does increase the likelihood that J Random Cracker will wander off and work on something easier instead.
+
+Amber: If you give people a program that they are able to run, then they will also be able to reverse-engineer it given enough time. 
+That is the nature of programs. As soon as the binary is available to someone who wants to decipher it, you cannot prevent eventual reverse-engineering. 
+After all, the computer has to be able to decipher it in order to run it, and a human is simply a slower computer.
