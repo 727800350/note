@@ -424,3 +424,29 @@ I'd expect them to recognize that this solution answers a closely related questi
 and then to reframe their question to point the conversation in the correct direction. 
 (Further, if the interviewer got really stroppy, then I wouldn't want the job; 
 if the answer to an insufficiently precise requirement is shot down in flames without correction, then the interviewer is not someone for whom it is safe to work.)
+
+<br/>
+[How to initialize an array in C](http://stackoverflow.com/questions/201101/how-to-initialize-an-array-in-c)  
+I have a large array in C (not C++ if that makes a difference). I want to initialize all members to the same value. I could swear I once knew a simple way to do this. I could use memset() in my case, but isn't there a way to do this that is built right into the C syntax?
+
+Unless that value is 0 (in which case you can omit some part of the initializer and the corresponding elements will be initialized to 0), there's no easy way.
+
+Don't overlook the obvious solution, though:
+
+	int myArray[10] = { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+Elements with missing values will be initialized to 0:
+
+	int myArray[10] = { 1, 2 }; //initialize to 1,2,0,0,0...
+So this will initialize all elements to 0:
+
+	int myArray[10] = { 0 }; //all elements 0
+In C++, an empty initialization list will also initialize every element to 0:
+
+	int myArray[10] = {}; //all elements 0 in C++
+Remember that objects with static storage duration will initialize to 0 if no initializer is specified:
+
+	static int myArray[10]; //all elements 0
+**And that "0" doesn't necessarily mean "all-bits-zero"**, so using the above is better and more portable than memset(). (Floating point values will be initialized to +0, pointers to null value, etc.)
+
+<br/>
+How dangerous is it to compare floating point values?
