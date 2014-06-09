@@ -472,3 +472,21 @@ Finally, note that if you use this, some special care may be needed near zero, s
 
 	if (fabs(x-y) < K * FLT_EPSILON * fabs(x+y) || fabs(x-y) < FLT_MIN)
 and likewise substitute DBL_MIN if using doubles.
+
+<br/>
+[Is multiplication and division using shift operators in C actually faster?](http://stackoverflow.com/questions/6357038/is-multiplication-and-division-using-shift-operators-in-c-actually-faster)  
+Multiplication and division can be achieved using bit operators, for example
+
+	i*2 = i<<1
+	i*3 = (i<<1) + i;
+	i*10 = (i<<3) + (i<<1)
+and so on.  
+Is it actually faster to use say (i<<3)+(i<<1) to multiply with 10 than using i*10 directly? Is there any sort of input that can't be multiplied or divided in this way?
+
+Short answer: Not likely.  
+Long answer: Your compiler has an optimizer in it that knows how to multiply as quickly as your target processor architecture is capable. 
+Your best bet is to tell the compiler your intent clearly (i.e. `i*2` rather than `i << 1`) and let it decide what the fastest assembly/machine code sequence is. 
+It's even possible that the processor itself has implemented the multiply instruction as a sequence of shifts & adds in microcode.  
+Bottom line--don't spend a lot of time worrying about this. 
+If you mean to shift, shift. If you mean to multiply, multiply. 
+Do what is semantically clearest--your coworkers will thank you later. Or, more likely, curse you later if you do otherwise.
