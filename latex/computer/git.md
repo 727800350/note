@@ -1,3 +1,24 @@
+[git官方教程](http://git-scm.com/book/zh/%E8%B5%B7%E6%AD%A5-%E5%85%B3%E4%BA%8E%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6)
+
+[廖雪峰的git 教程](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001375840202368c74be33fbd884e71b570f2cc3c0d1dcf000)
+
+创建 git 仓库
+
+	mkdir projet
+	cd projet
+	git init
+	touch README.md
+	git add README.md
+	git commit -m "first commit" 
+	git remote add origin git@git.oschina.net:eric_uni/projet.git 
+	git push -u origin master
+
+已有项目?
+
+	cd projet
+	git remote add origin git@git.oschina.net:eric_uni/projet.git 
+	git push -u origin master
+
 # 如何导入外部Git仓库到中国源代码托管平台（Git@OSC）
 
 针对最近有很多网友提问，如何导入外部代码仓库（Github、bitbucket、Google Code等等）到Git@OSC ，给出如下解决方案：
