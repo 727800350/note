@@ -449,4 +449,26 @@ Remember that objects with static storage duration will initialize to 0 if no in
 **And that "0" doesn't necessarily mean "all-bits-zero"**, so using the above is better and more portable than memset(). (Floating point values will be initialized to +0, pointers to null value, etc.)
 
 <br/>
-How dangerous is it to compare floating point values?
+[How dangerous is it to compare floating point values?](http://stackoverflow.com/questions/10334688/how-dangerous-is-it-to-compare-floating-point-values)  
+
+First of all, floating point values are not "random" in their behavior. 
+Exact comparison can and does make sense in plenty of real-world usages. 
+But if you're going to use floating point you need to be aware of how it works. 
+Erring on the side of assuming floating point works like real numbers will get you code that quickly breaks. 
+Erring on the side of assuming floating point results have large random fuzz associated with them (like most of the answers here suggest) will get you code that appears to work at first but ends up having large-magnitude errors and broken corner cases.
+
+First of all, if you want to program with floating point, you should read this:  
+[What Every Computer Scientist Should Know About Floating-Point Arithmetic](http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html)  
+Yes, read all of it. If that's too much of a burden, you should use integers/fixed point for your calculations until you have time to read it.
+
+Edit: In particular, a magnitude-relative epsilon check should look something like:
+
+	if (fabs(x-y) < K * FLT_EPSILON * fabs(x+y))
+Where `FLT_EPSILON` is the constant from float.h (replace it with `DBL_EPSILON` for doubles or `LDBL_EPSILON` for long doubles) 
+and K is a constant you choose such that the accumulated error of your computations is definitely bounded by K units in the last place 
+(and if you're not sure you got the error bound calculation right, make K a few times bigger than what your calculations say it should be).
+
+Finally, note that if you use this, some special care may be needed near zero, since FLT_EPSILON does not make sense for denormals. A quick fix would be to make it:
+
+	if (fabs(x-y) < K * FLT_EPSILON * fabs(x+y) || fabs(x-y) < FLT_MIN)
+and likewise substitute DBL_MIN if using doubles.
