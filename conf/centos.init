@@ -11,3 +11,7 @@ yum install -y mysql mysql-server mysql-devel
 ## yum install -y libpcap libpcap-devel
 ## yum install -y wireshark ## no gui
 ## yum install -y wireshark-gnome
+
+## octave
+yum install hdf5-static ## will install hdf5, hdf5-static and hdf5-devel
+yum install octave
