@@ -1,5 +1,6 @@
 yum install -y gcc gcc-c++ gcc-gfortran gdb
 yum install -y sudo git git-svn
+yum install -y unrar
 yum remove -y evolution
 yum install -y mutt
 yum update -y firefox
@@ -13,5 +14,5 @@ yum install -y mysql mysql-server mysql-devel
 ## yum install -y wireshark-gnome
 
 ## octave
-yum install hdf5-static ## will install hdf5, hdf5-static and hdf5-devel
-yum install octave
+yum install -y hdf5-static ## will install hdf5, hdf5-static and hdf5-devel
+yum install -y octave
