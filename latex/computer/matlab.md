@@ -1,3 +1,8 @@
+保存变量var1, var2 ... 到文件filename.mat 中
+
+	save filename var1 var2 ...
+	load filename
+
 # Plot Figure
 ## 2D
 ### ezplot
