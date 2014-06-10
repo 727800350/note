@@ -310,6 +310,13 @@ Strlnen.c
 	#>ar –rc libstr.a Strlen.o Strnlen.o
 命令执行成功以后，对应的静态库libstr.a已经成功生成。
 
+rc option of ar
+
+- r Insert the files member... into archive (with replacement). This operation differs from q in that any previously existing members are
+deleted if their names match those being added
+- c Create the archive
+
+
 **静态库的使用**:
 假设有下面的文件要使用对应的的静态库:
 编译生成对应的目标文件：
