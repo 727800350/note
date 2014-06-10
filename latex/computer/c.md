@@ -230,6 +230,10 @@ This call does not change the current working directory, so that after the call 
 `mkdir foo; chroot foo; cd ..`  
 So chrooted programs should relinquish root privileges as soon as practical after chrooting
 
+Linux 中的应用程序以以下两种方式之一链接到外部函数:
+
+- 要么在构建时与静态库（ lib*.a）静态地链接，并且将库代码包含在该应用程序的可执行文件里
+- 要么在运行时与共享库（ lib*.so）动态地链接。通过动态链接装入器，将动态库映射进应用程序的可执行内存中。在启动应用程序之前，动态链接装入器将所需的共享目标库映射到应用程序的内存，或者使用系统共享的目标并为应用程序解析所需的外部引用。现在应用程序就可以运行了
 ## 动态链接库
 [添加搜索路径方法步骤](http://blog.sciencenet.cn/blog-402211-745740.html)
 
@@ -247,6 +251,98 @@ ldconfig几个需要注意的地方
 ### [Linux操作系统下动态库的生成及链接方法](http://www.enet.com.cn/article/2007/0731/A20070731751268.shtml)
 Have not tried
 
+## 静态链接库
+静态函数库实际上就是简单的一个普通的目标文件的集合，一般来说习惯用“.a”作为文件的后缀.
+可以用ar这个程序来产生静态函数库文件。Ar 是archiver的缩写.  
+静态函数库现在已经不在像以前用得那么多了，主要是共享函数库与之相比较有很多的优势的原因。慢慢地，大家都喜欢使用共享函数库了。
+不过，在一些场所静态函数库仍然在使用，一来是保持一些与以前某些程序的兼容，二来它描述起来也比较简单。
+
+### Demo
+假设有下面几个文件:String.h, Strlen.c, Strlnen.c
+
+String.h
+
+	#ifndef _STRING_H_
+	#define _STRING_H_
+	int Strlen(char *pStr);
+	int Strnlen(char *pStr, unsigned long ulMaxLen);
+	#endif
+
+Strlen.c
+
+	#include<stdio.h>
+	#include<assert.h>
+	int Strlen(char *pStr){
+	    unsigned long ulLength;
+	    assert(NULL != pStr);
+	    ulLength = 0;
+	    while(*pStr++){
+	        ulLength++;
+	    }
+	    return ulLength;
+	}
+
+Strlnen.c
+
+	#include<stdio.h>
+	#include<assert.h>
+	// 函数StrNlen的实现,获取给定字符串的长度,如果输入字符串的长度大于指定的最大长度,则返回最大长度,否者返回字符串的实际长度
+	int Strnlen(char *pStr, unsigned long ulMaxLen){
+	    unsigned long ulLength;
+	    assert(NULL != pStr);
+	    if(ulMaxLen <= 0){
+	        printf("Wrong Max Length!\n");
+	        return -1;
+	    }
+	    ulLength = 0;
+	    while(*pStr++ && ulLength < ulMaxLen){
+	        ulLength++;
+	    }
+	    return ulLength;
+	}
+
+**生成静态链接库**:
+利用GCC生成对应目标文件：
+
+	#>gcc –c Strlen.c Strnlen.c
+用ar创建一个名字为libstr.a的库文件,并把Strlen.o 和Strnlen.o的内容插入到对应的库文件中.
+
+	#>ar –rc libstr.a Strlen.o Strnlen.o
+命令执行成功以后，对应的静态库libstr.a已经成功生成。
+
+**静态库的使用**:
+假设有下面的文件要使用对应的的静态库:
+编译生成对应的目标文件：
+
+	#>gcc -c -I/home/hcj/dir_of_String.h main.c 
+其中`-I/home/hcj/xxxxxxxx`指定对应的头文件的路径.
+生成可执行文件：
+
+	#>gcc -o main main.o libstr.a 
+	#>./main
+上面的命令要求libstr.a 在当前目录中.
+
+**如果libstr不再当前目录**  
+gcc会在静态库名前加上前缀lib,然后追加扩展名.a得到的静态库文件名来查找静态库文件,
+因此,我们在写需要连接的库时,只写名字就可以,如libstr.a的库,只写:-lstr
+
+	#>gcc -o main -Ldir_of_libstr.a main.o -lstr
+	#>./main
+
+main.c
+
+	// Stirng static library test
+	#include "String.h"   //静态库对应函数的头文件, 当然声明也可以写在main.c文件中, 就不需要引用String.h
+	int main(int argc, char* argv[]){
+	    char str[] = {"hello world"};
+	    unsigned long ulLength = 0;
+	    printf("The string is : %s\n", str);
+	    ulLength = Strlen(str);
+	    printf("The string length is : %d(use Strlen)\n", ulLength);
+	    ulLength = StrNlen(str, 10);
+	    printf("The string length is : %d(use StrNlen)\n", ulLength);
+    	return 0;
+	}
 ## User related
 - `getpwnam()` function returns a pointer to a structure containing the broken-out fields of the record in the **password database** (e.g., the local password file /etc/passwd, NIS, and LDAP) that matches the username name.
 - `getpwuid()` function returns a pointer to a structure containing the broken-out fields of the record in the password database that matches the user ID uid.
