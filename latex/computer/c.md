@@ -230,10 +230,21 @@ This call does not change the current working directory, so that after the call 
 `mkdir foo; chroot foo; cd ..`  
 So chrooted programs should relinquish root privileges as soon as practical after chrooting
 
+# Linux 下的动态与静态库
 Linux 中的应用程序以以下两种方式之一链接到外部函数:
 
 - 要么在构建时与静态库（ lib*.a）静态地链接，并且将库代码包含在该应用程序的可执行文件里
-- 要么在运行时与共享库（ lib*.so）动态地链接。通过动态链接装入器，将动态库映射进应用程序的可执行内存中。在启动应用程序之前，动态链接装入器将所需的共享目标库映射到应用程序的内存，或者使用系统共享的目标并为应用程序解析所需的外部引用。现在应用程序就可以运行了
+- 要么在运行时与共享库（ lib*.so(Shared Object)）动态地链接。通过动态链接装入器，将动态库映射进应用程序的可执行内存中。
+在启动应用程序之前，动态链接装入器将所需的共享目标库映射到应用程序的内存，或者使用系统共享的目标并为应用程序解析所需的外部引用。现在应用程序就可以运行了
+
+`LIBRARY_PATH` is used by gcc before compilation to search for directories containing libraries that need to be linked to your program.
+
+`LD_LIBRARY_PATH` is used by your program to search for directories containing the libraries after it has been successfully compiled and linked.
+
+EDIT: As pointed below, your libraries can be static or shared. 
+If it is static then the code is copied over into your program and you don't need to search for the library after your program is compiled and linked. 
+If your library is shared then it needs to be dynamically linked to your program and that's when `LD_LIBRARY_PATH` comes into play.
+
 ## 动态链接库
 [添加搜索路径方法步骤](http://blog.sciencenet.cn/blog-402211-745740.html)
 
@@ -248,8 +259,58 @@ ldconfig几个需要注意的地方
 4. ldconfig做的这些东西都与运行程序时有关,跟编译时一点关系都没有.编译的时候还是该加-L就得加,不要混淆了.
 5. 总之,就是不管做了什么关于library的变动后,最好都ldconfig一下,不然会出现一些意想不到的结果.不会花太多的时间,但是会省很多的事.
 
-### [Linux操作系统下动态库的生成及链接方法](http://www.enet.com.cn/article/2007/0731/A20070731751268.shtml)
-Have not tried
+### [Demo](http://www.cppblog.com/deane/archive/2014/05/23/165216.html)
+hello.h
+
+	#ifndef HELLO_H_
+	#define HELLO_H_
+	void hello(const char* name);
+	#endif
+
+hello.c
+
+	#include <stdio.h>
+	void hello(const char* name){
+		printf("Hello %s!\n", name);
+	}
+
+main.c
+
+	#include "hello.h"
+	int main(){
+		hello("everyone");
+		return 0;
+	}
+
+**创建动态链接库**  
+
+	gcc -c -fPIC hello.c  // 这个里面的 -fPIC 也是必须的, 否则进行下面的一个步骤会出错
+	gcc -shared -fPIC -o libmyhello.so hello.o
+"PIC"命令行标记告诉GCC产生的代码不要包含对函数和变量具体内存位置的引用,这是因为现在还无法知道使用该消息代码的应用程序会将它连接到哪一段内存地址空间.  
+表示编译为位置独立的代码,不用此选项的话编译后的代码是位置相关的所以动态载入时是通过代码拷贝的方式来满足不同进程的需要,而不能达到真正代码段共享的目的
+
+**使用**  
+	
+	gcc -c main.c
+	gcc -o hello main.o -L. -lmyhello
+	./hello
+
+但是出错
+
+	./hello: error while loading shared libraries: libmyhello.so: cannot open shared object file: No such file or directory
+原因: libmyhello.so 不再系统的动态链接库搜索目录中.  
+需要把他拷贝到/usr/lib或者其他搜索目录中, 之后运行 `ldconfig`.  
+对于这个测试, 可以将这个环境变量设置成当前目录:
+
+	export LD_LIBRARY_PATH=$(pwd)
+	./hello
+我们可以查看hello 依赖了哪些动态链接库:
+
+	[eric@iis computer]$ ldd hello
+    linux-vdso.so.1 =>  (0x00007fffdad30000)
+    libmyhello.so => /home/eric/git/note/latex/computer/libmyhello.so (0x00007f497a5e6000)
+    libc.so.6 => /lib64/libc.so.6 (0x000000382ec00000)
+    /lib64/ld-linux-x86-64.so.2 (0x000000382e400000)
 
 ## 静态链接库
 静态函数库实际上就是简单的一个普通的目标文件的集合，一般来说习惯用“.a”作为文件的后缀.
@@ -350,6 +411,20 @@ main.c
 	    printf("The string length is : %d(use StrNlen)\n", ulLength);
     	return 0;
 	}
+
+## 顺序
+我们回过头看看,发现使用静态库和使用动态库编译成目标程序使用的gcc命令完全一样,
+那当静态库和动态库同名时,gcc命令会使用哪个库文件呢?
+
+	# ls
+	hello.c hello.h hello.o libmyhello.a libmyhello.so main.c
+通过上述最后一条ls命令,可以发现静态库文件libmyhello.a和动态库文件libmyhello.so都已经生成,并都在当前目录中
+	
+	# gcc -o hello main.c -L. -lmyhello
+	# ./hello
+	./hello: error while loading shared libraries: libmyhello.so: cannot open shared object file: No such file or directory
+从程序hello运行的结果中很容易知道,当**静态库和动态库同名时, gcc命令将优先使用动态库**.
+
 ## User related
 - `getpwnam()` function returns a pointer to a structure containing the broken-out fields of the record in the **password database** (e.g., the local password file /etc/passwd, NIS, and LDAP) that matches the username name.
 - `getpwuid()` function returns a pointer to a structure containing the broken-out fields of the record in the password database that matches the user ID uid.
