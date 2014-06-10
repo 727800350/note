@@ -245,6 +245,8 @@ EDIT: As pointed below, your libraries can be static or shared.
 If it is static then the code is copied over into your program and you don't need to search for the library after your program is compiled and linked. 
 If your library is shared then it needs to be dynamically linked to your program and that's when `LD_LIBRARY_PATH` comes into play.
 
+需要打印函数调用堆栈时, 都可以使用 `-rdynamic` 来进行, 经过测试都是可以的
+
 ## 动态链接库
 [添加搜索路径方法步骤](http://blog.sciencenet.cn/blog-402211-745740.html)
 
