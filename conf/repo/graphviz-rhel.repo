@@ -40,8 +40,7 @@ enabled=0
 gpgcheck=0 
 skip_if_unavailable=1
 
-## 	yum list available 'graphviz*'
-## 	yum install 'graphviz*'
+## 	yum install graphviz graphviz-doc perl-GraphViz-Makefile
 
 ## Organization of Binary packages for Fedora Linux
 ## graphviz: The base package providing /usr/bin/dot, /usr/bin/neato, etc.
@@ -50,5 +49,5 @@ skip_if_unavailable=1
 ## graphviz-devel, graphviz-debuginfo, graphviz-rtest: Optional for developers: headers, debugging symbols, regression test scripts and data.
 ## graphviz-gd, graphviz-devil, graphviz_gdk_pixbuf, graphviz-ming, graphviz-webp, graphviz-qt: Optional renderers.
 ## graphviz-guile, graphviz-java, graphviz-lua, graphviz-ocaml, graphviz-perl, graphviz-php, graphviz-python, graphviz-R, graphviz-ruby, graphviz-sharp, graphviz-tcl: Optional language bindings to enable programs in those languages to use the facilities of graphviz.
-## webdot: Optional cgi-bin graph server. Requires graphviz and graphviz-tcl.
+## webdot: Optional cgi-bin graph server. Requires graphviz and graphviz-tcl
 
