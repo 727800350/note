@@ -2,6 +2,28 @@
 
 [廖雪峰的git 教程](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001375840202368c74be33fbd884e71b570f2cc3c0d1dcf000)
 
+## git stash
+Stash the changes in a dirty working directory away
+
+The modifications stashed away by this command can be 
+
+- listed with `git stash list`, 
+- inspected with `git stash show`
+- restored (potentially on top of a different commit) with `git stash apply`. 
+
+Calling git stash without any arguments is equivalent to `git stash save`.
+A stash is by default listed as "WIP on branchname …", but you can give a more descriptive message on the command line when you create one.
+
+The latest stash you created is stored in refs/stash; 
+older stashes are found in the reflog of this reference and can be named using the usual reflog syntax 
+(e.g. stash@{0} is the most recently created stash, stash@{1} is the one before it, stash@{2.hours.ago} is also possible).
+
+- git stash: 备份当前的工作区的内容,从最近的一次提交中读取相关内容,让工作区保证和上次提交的内容一致.同时,将当前的工作区内容保存到Git栈中
+- git stash pop: 从Git栈中读取最近一次保存的内容,恢复工作区的相关内容.由于可能存在多个Stash的内容,所以用栈来管理,pop会从最近的一个stash中读取内容并恢复
+- git stash list: 显示Git栈内的所有备份,可以利用这个列表来决定从那个地方恢复
+- git stash clear: 清空Git栈
+
+## Create repo
 创建 git 仓库
 
 	mkdir projet
