@@ -1,0 +1,54 @@
+[graphviz-stable]
+name=Graphviz - RHEL $releasever - $basearch
+baseurl=http://www.graphviz.org/pub/graphviz/stable/redhat/el$releasever/$basearch/os/
+enabled=1
+gpgcheck=0
+skip_if_unavailable=1
+
+[graphviz-stable-source]
+name=Graphviz - RHEL $releasever - Source
+baseurl=http://www.graphviz.org/pub/graphviz/stable/SRPMS/
+enabled=0
+gpgcheck=0
+skip_if_unavailable=1
+
+[graphviz-stable-debuginfo] 
+name=Graphviz - RHEL - Debug 
+baseurl=http://www.graphviz.org/pub/graphviz/stable/redhat/el$releasever/$basearch/debug/
+enabled=0 
+gpgcheck=0 
+skip_if_unavailable=1
+
+[graphviz-snapshot]
+name=Graphviz - RHEL $releasever - $basearch
+baseurl=http://www.graphviz.org/pub/graphviz/development/redhat/el$releasever/$basearch/os/
+enabled=0
+gpgcheck=0
+skip_if_unavailable=1
+
+[graphviz-snapshot-source]
+name=Graphviz - RHEL $releasever - Source
+baseurl=http://www.graphviz.org/pub/graphviz/development/SRPMS/
+enabled=0
+gpgcheck=0
+skip_if_unavailable=1
+
+[graphviz-snapshot-debuginfo] 
+name=Graphviz - RHEL - Debug 
+baseurl=http://www.graphviz.org/pub/graphviz/development/redhat/el$releasever/$basearch/debug/
+enabled=0 
+gpgcheck=0 
+skip_if_unavailable=1
+
+## 	yum list available 'graphviz*'
+## 	yum install 'graphviz*'
+
+## Organization of Binary packages for Fedora Linux
+## graphviz: The base package providing /usr/bin/dot, /usr/bin/neato, etc.
+## graphviz-x: Optional X11 renderers and commands. Recommended for all desktop installs, but perhaps not for web servers.
+## graphviz-doc, graphviz-graphs: Optional user documentation and examples.
+## graphviz-devel, graphviz-debuginfo, graphviz-rtest: Optional for developers: headers, debugging symbols, regression test scripts and data.
+## graphviz-gd, graphviz-devil, graphviz_gdk_pixbuf, graphviz-ming, graphviz-webp, graphviz-qt: Optional renderers.
+## graphviz-guile, graphviz-java, graphviz-lua, graphviz-ocaml, graphviz-perl, graphviz-php, graphviz-python, graphviz-R, graphviz-ruby, graphviz-sharp, graphviz-tcl: Optional language bindings to enable programs in those languages to use the facilities of graphviz.
+## webdot: Optional cgi-bin graph server. Requires graphviz and graphviz-tcl.
+
