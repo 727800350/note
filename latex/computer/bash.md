@@ -64,6 +64,11 @@ So, when creating a new file, the permission is: `the default - umask = -rw-rw-r
 `-n`: Select only the newest (most recently started) of the matching processes.
 `shell> strace -c -p $(pgrep -n php-cgi)`
 
+**tkgvizmakefile**  
+create Tk graphs from Makefiles
+
+	tkgvizmakefile -f Makefile -T ps -o graph.ps
+
 # 网络
 **putty 中文乱码**  
 Window->Appearance->Font: 选择Courier New  
@@ -129,3 +134,8 @@ secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的�
 **ubuntu root password**  
 安装完Ubuntu后忽然意识到没有设置root密码. Ubuntu的默认root密码是随机的,即每次开机都有一个新的root密码.  
 设置一个新的固定的root密码的方法: `$sudo passwd`,然后输入当前用户的密码,enter,终端会提示我们输入新的密码并确认,此时的密码就是root新密码
+
+**rpm 解包**  
+RPM包括是使用cpio格式打包的,因此可以先转成cpio然后解压,如下所示:
+
+	rpm2cpio xxx.rpm | cpio -div
