@@ -69,6 +69,22 @@ create Tk graphs from Makefiles
 
 	tkgvizmakefile -f Makefile -T ps -o graph.ps
 
+[**pythonbrew**](http://www.pythoner.cn/home/blog/python-version-switch-pythonbrew/)  
+nbrew 是用来管理多版本 python 的利器一枚  
+然后在你的 `~/.bashrc`文件中追加下面这一行，重启终端即可：
+	
+	[[ -s "$HOME/.pythonbrew/etc/bashrc" ]] && source "$HOME/.pythonbrew/etc/bashrc"
+
+- 列出可安装的 python 版本:pythonbrew list --know
+- 安装某个版本的 python: pythonbrew install 2.7.3
+- 删除已安装的某版本的 python: pythonbrew uninstall 2.7.3
+- 列出已安装的 python 版本(当前使用的版本后会用星号标记): pythonbrew list
+- 使用某个版本的 python (仅当前终端窗口有效): pythonbrew use 2.7.3
+- 切换到某个版本的 python (一直有效): pythonbrew switch 2.7.3
+- 清理陈旧的源码目录和档案包: pythonbrew cleanup
+- 升级到pythonbrew到最新版本: pythonbrew update
+- 禁用pythonbrew(即切换回原始环境): pythonbrew off
+
 # 网络
 **putty 中文乱码**  
 Window->Appearance->Font: 选择Courier New  
