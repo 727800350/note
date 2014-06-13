@@ -1,29 +1,38 @@
-yum groupinstall -y "Development Tools"
-yum install -y clang gcc gcc-c++ gcc-gfortran gdb
-yum install -y sudo git git-svn
-yum install -y unrar
-yum remove -y evolution
-yum install -y mutt
-yum update -y firefox
-yum install -y mysql mysql-server mysql-devel
+sudo yum groupinstall -y "Development Tools"
+sudo yum install -y clang gcc gcc-c++ gcc-gfortran gdb
+sudo yum install -y sudo git git-svn
+sudo yum install -y unrar
+sudo yum remove -y evolution
+sudo yum install -y mutt
+sudo yum update -y firefox
+sudo yum install -y mysql mysql-server mysql-devel
 
 ## chrome
+sudo bash ./install_chrome.sh
 
 ## project
-yum install -y libpcap libpcap-devel
-yum install -y wireshark ## no gui
-yum install -y wireshark-gnome
+sudo yum install -y libpcap libpcap-devel
+sudo yum install -y wireshark ## no gui
+sudo yum install -y wireshark-gnome
 ## Berkeley Internet Name Domain (BIND) DNS (Domain Name System)
-yum install -y bind 
+sudo yum install -y bind 
 ## Network exploration tool and security scanner
-yum install -y nmap 
+sudo yum install -y nmap 
 ## A whois client that accepts both traditional and finger-style queries
-yum install -y jwhois 
+sudo yum install -y jwhois 
 
 ## octave
-yum install -y hdf5-static ## will install hdf5, hdf5-static and hdf5-devel
-yum install -y octave
+## will install hdf5, hdf5-static and hdf5-devel
+sudo yum install -y hdf5-static 
+sudo yum install -y octave
 
 ## wine
 ## 第一次使用的时候会要求下载两个软件, .Net and ...
-yum install -y wine
+sudo yum install -y wine
+
+## python
+python ./get-pip.py
+pip install pythonbrew
+## put in $HOME./bashrc, and exit to open a new terminal: 
+	## [[ -s "$HOME/.pythonbrew/etc/bashrc" ]] && source "$HOME/.pythonbrew/etc/bashrc"
+pythonbrew list --know
