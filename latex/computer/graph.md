@@ -61,6 +61,7 @@ right. Thus, skew can be used to turn a box into a parallelogram.
 - distortion shrinks the polygon from top-to-bottom, with negative values causing the bottom
 to be larger than the top. distortion turns a box into a trapezoid.
 
+![node arrtibutes](http://i.imgbox.com/XnxCHvqn.png)
 ### Lables
 the default node label is its name. Edges are unlabeled by
 default. Node and edge labels can be set explicitly using the label attribute
@@ -76,6 +77,10 @@ default. Node and edge labels can be set explicitly using the label attribute
 	## 		struct1 -> struct3;
 	}
 ![label demo](http://i.imgbox.com/9Tp7qlt6.png)
+
+### Edege
+![edge attribute_1](http://i.imgbox.com/hFzMoMdf.png)  
+![edge attribute_2](http://i.imgbox.com/TQpuXgTI.png)  
 
 ## Clusters
 A cluster is a subgraph placed in its own distinct rectangle of the layout. A sub-
