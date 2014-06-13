@@ -79,6 +79,13 @@ default. Node and edge labels can be set explicitly using the label attribute
 ![label demo](http://i.imgbox.com/9Tp7qlt6.png)
 
 ### Edege
+可以设置每条边箭头的方向,用 dir,有 forward(default),back,both,none 四种
+
+	A -> B[dir = both];
+	B -> C[dir = none];
+	C -> D[dir = back];
+	D -> A[dir = forward];
+
 ![edge attribute_1](http://i.imgbox.com/hFzMoMdf.png)  
 ![edge attribute_2](http://i.imgbox.com/TQpuXgTI.png)  
 
