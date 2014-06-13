@@ -11,9 +11,13 @@ yum install -y mysql mysql-server mysql-devel
 ## chrome
 
 ## project
-## yum install -y libpcap libpcap-devel
-## yum install -y wireshark ## no gui
-## yum install -y wireshark-gnome
+yum install -y libpcap libpcap-devel
+yum install -y wireshark ## no gui
+yum install -y wireshark-gnome
+## Berkeley Internet Name Domain (BIND) DNS (Domain Name System)
+yum install -y bind 
+## Network exploration tool and security scanner
+yum install -y nmap 
 
 ## octave
 yum install -y hdf5-static ## will install hdf5, hdf5-static and hdf5-devel
