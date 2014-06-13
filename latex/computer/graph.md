@@ -8,6 +8,9 @@ Because dot makes layouts of directed graphs, all the following examples use dig
 Within a main graph, a subgraph defines a subset of nodes and edges.
 
 	digraph G {
+		label = "Dot demo"; //给这幅图设置名字
+		labelloc = b; //图名字的位置在 bottom,也可以是 t
+		labeljust = l; //图名字的位置在 left,也可以是 r
 		main -> parse -> execute;
 		main -> init;
 		main -> cleanup;
@@ -49,6 +52,33 @@ Other common shapes include box, circle, record and plaintext.
 	}
 ![graph above](http://i.imgbox.com/3rciGviM.png)
 
+### Location
+默认时图中的线都是从上到下的,我们可以将其改为从左到右,在文件的最上层打入
+`rankdir=LR` 就是从左到右,默认是 `TB(top -> bottom)`,也可以是 RL,BT.
+
+当图中时间表之类的东西时,我们会需要点能排在一行(列),这时要用到 rank,用花括
+号把 rank=same,然后把需要并排的点一次输入
+
+	digraph game{
+		label = "Game history"; 
+		labelloc = t;
+		rankdir = LR;
+		{
+			node[shape = plaintext];
+			1995 -> 1996 -> 1997 -> 1998 -> 1999 -> 2000 -> 2001;
+		}
+		{
+			node[shape = box, style = filled];
+			WAR3 -> Xhero -> Footman -> DOTA;
+			WAR3 -> Battleship;
+		}
+		{rank = same; 1996; WAR3;}
+		{rank = same; 1998; Xhero; Battleship;}
+		{rank = same; 1999; Footman;}
+		{rank = same; 2001; DOTA;}
+	}
+![Location](http://i.imgbox.com/JuOdzOH6.png)
+
 ### Node Shapes
 The shape polygon exposes all the polygonal parameters, and is useful for
 creating many shapes that are not predefined. In addition to the parameters regular,
@@ -65,10 +95,14 @@ right. Thus, skew can be used to turn a box into a parallelogram.
 - distortion shrinks the polygon from top-to-bottom, with negative values causing the bottom
 to be larger than the top. distortion turns a box into a trapezoid.
 
+record 和 Mrecord 的区别就是 Mrecord 的角是圆的,Record 就是由衡的和竖的矩形组成的图形
+
 ![node arrtibutes](http://i.imgbox.com/XnxCHvqn.png)
 ### Lables
 the default node label is its name. Edges are unlabeled by
 default. Node and edge labels can be set explicitly using the label attribute
+
+在 label 后用< >而不是" "就能引入 html 语言
 
 	digraph structs {
 			node [shape=record];
