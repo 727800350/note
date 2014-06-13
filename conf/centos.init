@@ -1,4 +1,3 @@
-yum groupinstall -y "Development Libraries"
 yum groupinstall -y "Development Tools"
 yum install -y clang gcc gcc-c++ gcc-gfortran gdb
 yum install -y sudo git git-svn
@@ -18,6 +17,8 @@ yum install -y wireshark-gnome
 yum install -y bind 
 ## Network exploration tool and security scanner
 yum install -y nmap 
+## A whois client that accepts both traditional and finger-style queries
+yum install -y jwhois 
 
 ## octave
 yum install -y hdf5-static ## will install hdf5, hdf5-static and hdf5-devel
