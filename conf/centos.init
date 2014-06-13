@@ -1,4 +1,6 @@
-yum install -y gcc gcc-c++ gcc-gfortran gdb
+yum groupinstall -y "Development Libraries"
+yum groupinstall -y "Development Tools"
+yum install -y clang gcc gcc-c++ gcc-gfortran gdb
 yum install -y sudo git git-svn
 yum install -y unrar
 yum remove -y evolution
@@ -16,3 +18,7 @@ yum install -y mysql mysql-server mysql-devel
 ## octave
 yum install -y hdf5-static ## will install hdf5, hdf5-static and hdf5-devel
 yum install -y octave
+
+## wine
+## 第一次使用的时候会要求下载两个软件, .Net and ...
+yum install -y wine
