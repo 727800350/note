@@ -31,6 +31,7 @@ sudo yum install -y octave
 sudo yum install -y wine
 
 ## python
+yum install -y gnuplot gnuplot-py numpy scipy
 python ./get-pip.py
 pip install pythonbrew
 ## put in $HOME./bashrc, and exit to open a new terminal: 
