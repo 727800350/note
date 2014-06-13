@@ -55,6 +55,10 @@ creating many shapes that are not predefined. In addition to the parameters regu
 peripheries and orientation, mentioned above, polygons are parameter-
 ized by number of sides sides, skew and distortion. 
 
+- Sides 用于设置它的边数
+- peripheries 用于设置多边形的外框的层数
+- regular = true 可以让你的多边形是一个规则的多边形
+- orientation=*, 可以让你的多边形旋转一个角度
 - skew is a floating point number (usually between −1.0 and 1.0) that distorts the shape by slanting
 it from top-to-bottom, with positive values moving the top of the polygon to the
 right. Thus, skew can be used to turn a box into a parallelogram. 
