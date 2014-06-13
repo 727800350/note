@@ -28,3 +28,93 @@ Nodes are drawn, by default, with `shape=ellipse, width=.75, height=.5`
 and labeled by the node name.   
 Other common shapes include box, circle, record and plaintext. 
 
+	digraph G {
+		size = "4,4";
+		main[shape=box];
+		## weight 的值越大, 越出现在中间位置
+		main -> parse[weight=8];
+		parse -> execute;
+		main -> init[style=dotted];
+		main -> cleanup;
+		execute -> {make_string; printf};
+		init -> make_string;
+		## 定义edge的颜色, 影响之后所有edge的颜色
+		edge[color=red];
+		## edge的label 出现在edge 旁边
+		main -> printf[style=bold, label="100 times"];
+		make_string[label="make a\nstring"];
+		## node 的label 显示在node 上面
+		node[shape=box, style=filled, color=".7 .3 1.0"];
+		execute -> compare;
+	}
+![graph above](http://i.imgbox.com/3rciGviM.png)
+
+### Node Shapes
+The shape polygon exposes all the polygonal parameters, and is useful for
+creating many shapes that are not predefined. In addition to the parameters regular,
+peripheries and orientation, mentioned above, polygons are parameter-
+ized by number of sides sides, skew and distortion. 
+
+- skew is a floating point number (usually between −1.0 and 1.0) that distorts the shape by slanting
+it from top-to-bottom, with positive values moving the top of the polygon to the
+right. Thus, skew can be used to turn a box into a parallelogram. 
+- distortion shrinks the polygon from top-to-bottom, with negative values causing the bottom
+to be larger than the top. distortion turns a box into a trapezoid.
+
+### Lables
+the default node label is its name. Edges are unlabeled by
+default. Node and edge labels can be set explicitly using the label attribute
+
+	digraph structs {
+			node [shape=record];
+			struct1 [shape=record,label="<f0> left|<f1> mid\ dle|<f2> right"];
+			struct2 [shape=record,label="<f0> one|<f1> two"];
+			struct3 [shape=record,label="hello\nworld |{ b |{c|<here> d|e}| f}| g | h"];
+			struct1:f1 -> struct2:f0;
+			struct1:f2 -> struct3:here;
+	## 		struct1 -> struct2;
+	## 		struct1 -> struct3;
+	}
+![label demo](http://i.imgbox.com/9Tp7qlt6.png)
+
+## Clusters
+A cluster is a subgraph placed in its own distinct rectangle of the layout. A sub-
+graph is recognized as a cluster when its name has the prefix cluster
+
+Cluster labels appear above the graph by default.
+
+	digraph G {
+			subgraph cluster0 {
+					node [style=filled,color=white];
+					style=filled;
+					color=lightgrey;
+					a0 -> a1 -> a2 -> a3;
+					label = "process #1";
+			}
+			subgraph cluster1 {
+					node [style=filled];
+					b0 -> b1 -> b2 -> b3;
+					label = "process #2";
+					color=blue
+			}
+			start -> a0;
+			start -> b0;
+			a1 -> b3;
+			b2 -> a3;
+			a3 -> a0;
+			a3 -> end;
+			b3 -> end;
+			start [shape=Mdiamond];
+			end [shape=Msquare];
+	}
+![cluser demo](http://i.imgbox.com/WqXrAzIf.png)
+
+## Command line options
+**-Tformat sets the format of the output**
+
+- mp MetaPost output.
+- plain Simple, line-based ASCII format. Appendix B describes this output. An alternate format is plain-ext, which provides port names on the head and tail nodes of edges.
+- png PNG (Portable Network Graphics) output.
+- ps PostScript (EPSF) output.
+- ps2 PostScript (EPSF) output with PDF annotations. It is assumed that this output will be distilled into PDF.
+
