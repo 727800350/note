@@ -33,6 +33,7 @@ Other common shapes include box, circle, record and plaintext.
 
 	digraph G {
 		size = "4,4";
+    	fontsize=14;
 		main[shape=box];
 		## weight 的值越大, 越出现在中间位置
 		main -> parse[weight=8];
