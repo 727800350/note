@@ -49,53 +49,46 @@ Use **msmtp** to send
 
 ## Reading Mail - The Index and Pager
   Similar to many other mail clients, there are two modes in which mail
-  is read in Mutt.  The first is the index of messages in the mailbox,
-  which is called the ``index'' in Mutt.  The second mode is the display
-  of the message contents.  This is called the ``pager.''
+  is read in Mutt.  
+  
+- The first is the index of messages in the mailbox,
+  which is called the **index** in Mutt.  
+- The second mode is the display of the message contents. 
+This is called the **pager**.
 
 ### The Message Index
-  c		  change to a different mailbox
-  D		  delete messages matching a pattern
-  d		  delete the current message
-  l		  show messages matching a pattern
-  o		  change the current sort method
-  O		  reverse sort the mailbox
-  q		  save changes and exit
-  T		  tag messages matching a pattern
-  t		  toggle the tag on a message
-  U		  undelete messages matching a pattern
-  u		  undelete-message
-  v		  view-attachments
-  x		  abort changes and exit
-  <Return>	  display-message
-  <Tab>		  jump to the next new message
-  @		  show the author's full e-mail address
-  $		  save changes to mailbox
-  /		  search
-  ESC /		  search-reverse
-  ^T		  untag messages matching a pattern
+	  c		  change to a different mailbox
+	  D		  delete messages matching a pattern
+	  d		  delete the current message
+	  l		  show messages matching a pattern
+	  o		  change the current sort method
+	  O		  reverse sort the mailbox
+	  q		  save changes and exit
+	  T		  tag messages matching a pattern
+	  t		  toggle the tag on a message
+	  U		  undelete messages matching a pattern
+	  u		  undelete-message
+	  v		  view-attachments
+	  x		  abort changes and exit
+	  <Return>	  display-message
+	  <Tab>		  jump to the next new message
+	  @		  show the author's full e-mail address
+	  $		  save changes to mailbox
+	  /		  search
+	  ESC /		  search-reverse
+	  ^T		  untag messages matching a pattern
 
 #### Status Flags
      D	message is deleted (is marked for deletion)
-
      d	message have attachments marked for deletion
-
      K	contains a PGP public key
-
      N	message is new
-
      O	message is old
-
      P	message is PGP encrypted
-
      r	message has been replied to
-
      S	message is PGP signed, and the signature is succesfully verified
-
      s	message is PGP signed
-
      !	message is flagged
-
      *	message is tagged
 
   Furthermore, the following flags reflect who the message is addressed
@@ -122,24 +115,25 @@ Use **msmtp** to send
 
 ### Miscellaneous Functions
   create-alias (default: a)
+  
   edit (default: e)
-  pipe-message (default: |)
-
+  
+  pipe-message (default: |)  
   Asks for an external Unix command and pipes the current or tagged
   message(s) to it.  The variables ``$pipe_decode'', ``$pipe_split'',
   ``$pipe_sep'' and ``$wait_key'' control the exact behaviour of this
   function.
 
-  shell-escape (default: !) 
+  shell-escape (default: !)  
   Asks for an external Unix command and executes it.
 
 ## Sending Mail
-  m	  compose	  compose a new message
-  r	  reply		  reply to sender
-  g	  group-reply	  reply to all recipients
-  L	  list-reply	  reply to mailing list address
-  f	  forward	  forward message
-  b	  bounce	  bounce (remail) message
+	  m	  compose	  compose a new message
+	  r	  reply		  reply to sender
+	  g	  group-reply	  reply to all recipients
+	  L	  list-reply	  reply to mailing list address
+	  f	  forward	  forward message
+	  b	  bounce	  bounce (remail) message
 
   Bouncing a message sends the message as is to the recipient you specify.  
   Forwarding a message allows you to add comments or modify the message you are forwarding.
@@ -161,31 +155,29 @@ Use **msmtp** to send
 目录`/usr/share/doc/msmtp-1.4.31/scripts/msmtpqueue` 中的脚本,可以在离线状态下编辑邮件并发送(其实保存在`$MAILDIR/.msmtpqueue` 目录下),
 上线时手工运行`msmtp-runqueue.sh`来实现真正的发送
 
-1. msmtp-enqueue.sh
+1. msmtp-enqueue.sh  
    This script will save two files for each mail: one contains the mail, the
    other one contains the command line for msmtp (including options and the
-   recipients). Thus you can use all msmtp options with this script.
-   
+   recipients). Thus you can use all msmtp options with this script.  
    Example (using Mutt):
-     In your Mutt configuration file, replace 
-     set sendmail="/path/to/msmtp [options]"
-     with
-     set sendmail="/path/to/msmtp-enqueue.sh [options]"
-   
+	
+		In your Mutt configuration file, replace 
+	     set sendmail="/path/to/msmtp [options]"
+	     with
+	     set sendmail="/path/to/msmtp-enqueue.sh [options]"  
    This script cannot detect errors in its command line or the msmtp
    configuration file. You won't see error messages before msmtp-runqueue.sh 
-   runs msmtp to send the mails. So test your msmtp configuration before using
-   msmtp-enqueue.sh.
+   runs msmtp to send the mails. So test your msmtp configuration before using msmtp-enqueue.sh.
 
-2. msmtp-runqueue.sh
+2. msmtp-runqueue.sh  
    Run this script when you are online to send all mails in the queue
-   directory.
+   directory.  
    It will use the saved msmtp command line for each mail.
    Mails sent successfully will be deleted from the queue directory.
    Mails whose delivery failed will be left untouched; you may want to edit
    them, delete them by hand or simply run msmtp-runqueue.sh at a later time.
 
-3. msmtp-listqueue.sh
+3. msmtp-listqueue.sh  
    This script lists all the mails in the queue.
 
 # script
