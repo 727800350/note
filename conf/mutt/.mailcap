@@ -1,6 +1,12 @@
 ## User definition for handling non-text MIME types
+## /etc/mime.types; system owned
 image/*; gthumb %s
+
 application/pdf; evince %s
 application/msword; libreoffice %s
 application/vnd.openxmlformats-officedocument.wordprocessingml.document; libreoffice %s
+application/vnd.ms-excel; libreoffice %s
+
+## 下面两个均不能对所有的邮件都正确解码
 text/html; lynx --dump %s; nametemplate=%s.html; copiousoutput
+## text/html; elinks --dump %s; nametemplate=%s.html; copiousoutput
