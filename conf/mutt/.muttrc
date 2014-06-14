@@ -2,6 +2,8 @@ set editor="vi"
 
 #设置邮件发送程序
 set sendmail="/usr/bin/msmtp"
+## wait for 10 seconds before doing it
+set sendmail_wait=10
 
 #建立信箱
 set folder="~/.mail/"
@@ -18,6 +20,8 @@ set record="~/.mail/sent-mail-`date +%Y-%m`"
 mailboxes "=inbox"
 
 my_hdr From: xxx@hotmail.comn
+set signature="~/.signature"
+set sig_dashes=yes
 
 #地址簿
 source ~/.mutt.alias
@@ -67,9 +71,18 @@ set indent_str="> "
 #设置你自己的邮件头
 
 #排序方式
-set sort=score
-#当用 thread 排序方式时, 我们对各个 thread 的相对排序顺序
-set sort_aux=date
+## values: date or date-sent, date-received, from, mailbox-order (unsorted), score, size, subject, threads, to
+## You may optionally use the reverse- prefix to specify reverse sorting order (example: set sort=reverse-date-sent).
+set sort=reverse-date
+## set sort=threads
+#当用 threads 排序方式时, 我们对各个 thread 的相对排序顺序
+set sort_aux=reverse-date
+
+## address (sort alphabetically by email address)
+## alias (sort alphabetically by alias name)
+## unsorted (leave in order specified in .muttrc)
+set sort_alias=alias
+
 #如果翻到最后,再按往下翻也不会翻到下一封信件
 set pager_stop
 
@@ -126,3 +139,8 @@ macro pager G "!getmail -n\n" "Invoke getmail"
 ## 设置删除邮件到trash目录,在trash目录下删除才是真的删除
 folder-hook . 'macro index d "s~/.mail/trash\r"'
 folder-hook ~/.mail/trash 'bind index d delete-message'
+
+## list urls in this mail
+## \c is ctrl
+macro index \cb | urlview\n
+macro pager \cb | urlview\n
