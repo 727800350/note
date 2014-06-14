@@ -143,4 +143,3 @@ folder-hook ~/.mail/trash 'bind index d delete-message'
 ## list urls in this mail
 ## \c is ctrl
 macro index \cb | urlview\n
-macro pager \cb | urlview\n
