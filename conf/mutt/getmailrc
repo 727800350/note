@@ -1,3 +1,4 @@
+## put this file in ~/.getmail/
 [options]
 verbose=1
 real_all=false
