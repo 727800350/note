@@ -3,7 +3,6 @@ sudo yum install -y clang gcc gcc-c++ gcc-gfortran gdb
 sudo yum install -y sudo git git-svn
 sudo yum install -y unrar
 sudo yum remove -y evolution
-sudo yum install -y mutt
 sudo yum update -y firefox
 sudo yum install -y mysql mysql-server mysql-devel
 
@@ -37,3 +36,6 @@ pip install pythonbrew
 ## put in $HOME./bashrc, and exit to open a new terminal: 
 	## [[ -s "$HOME/.pythonbrew/etc/bashrc" ]] && source "$HOME/.pythonbrew/etc/bashrc"
 pythonbrew list --know
+
+## mutt
+sudo yum install -y mutt msmtp getmail procmail lynx elinks
