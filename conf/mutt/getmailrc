@@ -1,0 +1,18 @@
+[options]
+verbose=1
+real_all=false
+message_log=~/.mail/log/getmail.log
+
+[retriever]
+type=SimplePOP3SSLRetriever
+server=pop-mail.outlook.com
+port=995
+username=xxx@hotmail.com
+password=xxx
+
+[destination]
+type=MDA_external
+path=/usr/bin/procmail
+unixfrom=yes
+## type=Maildir
+## path=~/.mail/

@@ -1,0 +1,5 @@
+image/*; gthumb %s
+application/pdf; evince %s
+application/msword; libreoffice %s
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; libreoffice %s
+text/html; lynx --dump %s; nametemplate=%s.html; copiousoutput
