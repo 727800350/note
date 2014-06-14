@@ -1,3 +1,4 @@
+## User definition for handling non-text MIME types
 image/*; gthumb %s
 application/pdf; evince %s
 application/msword; libreoffice %s
