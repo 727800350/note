@@ -79,19 +79,24 @@ $$Buys(X, "computer") \Rightarrow buys (X,"software") [support = 1\%, confidence
 
 \section{认识数据}
 \subsection{属性类型}
-\textbf{标称属性}nominal attribute: 值是一些符号或事物的名称. 每个值代表某种类别, 编码或状态. 又被称为分类的(categorical) 或枚举的(enumeration)
-\textbf{二元属性}binary attribute: 一种标称属性, 两个状态, 通常用0和1 或false, true表示\\
+\begin{description}
+\item[标称属性nominal attribute] 值是一些符号或事物的名称. 每个值代表某种类别, 编码或状态. 又被称为分类的(categorical) 或枚举的(enumeration). 
+		This data is just named rather than numeric, as the term "nominal" indicates. There is no order to it. 
+\item[二元属性binary attribute] 一种标称属性, 两个状态, 通常用0和1 或false, true表示\\
 对称二元属性: 两种状态具有同等价值并且携带相同的权重\\
 非对称二元属性:
-\textbf{序数属性}ordinal attribute: 其可能的值之间具有有意义的序或秩排序ranking, 但是相继值之间的差是未知的\\
+\item[序数属性ordinal attribute] 其可能的值之间具有有意义的序或秩排序ranking, 但是相继值之间的差是未知的\\
 例如, 成绩可以用A+, A, A-, B+ 等划分, 意味着排序, 但是划分值之间的差别未明确
-\textbf{数值属性}numeric attribute: 可度量的量\\
-	区间标度属性interval-scaled: 用相等的单位尺度度量, 可以比较差, 但是没有真正的零点, 例如日期, 我们可以说两个日期相差多少时间, 但是对于0日期, 没有具体的含义\\
+\item[数值属性numeric attribute] 可度量的量\\
+	区间标度属性interval-scaled 用相等的单位尺度度量, 可以比较差, 但是没有真正的零点, 例如日期, 我们可以说两个日期相差多少时间, 但是对于0日期, 没有具体的含义\\
 	比率标度属性ratio-scaled: 具有固定零点的数值属性, 也就是说, 我们可以说一个值是另一个值的倍数(或比率). 此外, 这些值是有序的, 因此可以计算值之间的差, 均值, 中位数和众数\\
 	开氏温标具有绝对零点\par
 标称, 二元和序数属性都是定性的
+\item[离散属性和连续属性] (在文献中, 术语数值属性与连续属性通常可以互换地使用)
+\end{description}
 
-\textbf{离散属性和连续属性}(在文献中, 术语数值属性与连续属性通常可以互换地使用)
+Interval, ratio, and ordinal variables are also referred to as quantitative,   
+while nominal variables are also called qualitative.
 
 \subsection{基本统计描述}
 \textbf{中心趋势度量}: 均值(平均值), 加权平均, 截尾均值, 中列数midrange(最大与最小值的平均值), 中位数(中间值), 众数(最常见的值)\\
@@ -114,11 +119,24 @@ $$Buys(X, "computer") \Rightarrow buys (X,"software") [support = 1\%, confidence
 
 \textbf{五数概括, 盒图和离群点}\\
 识别可疑的离群点的通常规则: 挑选落在第3 个四分位数之上或第1 个四分位数之下至少$1.5 * IQR$ 处的值\par
-五数概括(five-number summary)由中位数$Q_2$, 四分位数$Q_1$, $Q_3$, 最小和最大值, 按次序
-$Minimum, Q_1, median, Q_3, maximum$\par
-盒图(如图\href{http://i.imgbox.com/E7zYvy7e.jpg}{盒图示例}): 盒的端点在四分位数上, 盒的长度为IQR; 中位数标在盒内; 盒外的两条线(胡须) 延伸到最小和最大值\\
+五数概括(five-number summary)由中位数$Q_2$(second quartile or median), 四分位数$Q_1$(first quartile), $Q_3$(third quartile), 最小和最大值. \\
+按次序: $Minimum, Q_1, median, Q_3, maximum$
+
+The five-number summary is a shorthand, and if you're looking at a lot of
+datasets very quickly, it can provide you with a quick feel for what the set looks like.
+
+盒图(如图\href{http://i.imgbox.com/E7zYvy7e.jpg}{盒图示例}): 
+盒的端点在四分位数上, 盒的长度为IQR($IQR = Q_3-Q_1$); 中位数标在盒内; 盒外的两条线(胡须(whiskers)) 延伸到最小和最大值\\
+
+由于现实数据中总是存在各式各样地"脏数据",也称为"离群点(outliers)",于是为了不因这些少数的离群数据导致整体特征的偏移,将这些离群点单独汇出\\
+outliers 判断依据$<Q_1 - 1.5*IQR$ 或者$>Q_3 + 1.5*IQR$
 
 盒图可在$O(nlgn)$时间内计算, 依赖于所要求的质量, 近似盒图可在线性或者子线性时间内计算.
+
+I rarely find boxplots to be useful on their own. If I'm dealing with a single value, I'm
+going to get more information out of a histogram. Boxplots become more valuable when
+you start stacking bunches of them together, a situation where histograms are going to
+be just too busy to be meaningfully examined.
 
 分位数图quantile plot
 直方图histogram或频率直方图frequency histogram\\
@@ -148,7 +166,71 @@ $Minimum, Q_1, median, Q_3, maximum$\par
 	\item 标签云tag cloud
 	\end{itemize}
 \end{itemize}
-	
+
+\subsubsection{Univariate Visualization: Histograms, QQ Plots, Boxplots, and Rank Plots}
+The most basic visualizations are applied to univariate data, which consists of one observed variable per unit measured. 
+Examples of univariate measurements include the number of
+bytes per packet or the number of IP addresses observed over a period.
+
+\textbf{Bar plot}\\
+\href{https://www.idlcoyote.com/cg\_tips/barplot\_2.png}{Bar plot example}
+
+In scientific visualization, bar plots are preferred over pie charts.
+
+\textbf{The Quantile-Quantile (QQ) Plot}\\
+\href{https://onlinecourses.science.psu.edu/stat414/sites/onlinecourses.science.psu.edu.stat414/files/lesson15/plot\_01.gif}{QQ plot example}
+compares the distributions of two variables against each
+other.  
+a two-dimensional plot
+
+\subsubsection{Bivariate Description}
+\textbf{Scatterplots 散点图}\\
+The primary challenge when analyzing scatter‐
+plots is to identify structure among the noise. Common features in a scatterplot are
+clusters, gaps, linear relationships, and outliers
+
+\textbf{Contingency tables列联表}\\
+Contingency tables are the preferred visualization when comparing categorical data
+against categorical data.
+\href{http://upload.wikimedia.org/wikipedia/commons/9/94/Contingency\_table.png}{Contingency table example}
+
+\subsubsection{Multivariate Visualization}
+Most multivariate visualizations are built by taking a bivariate visualization and finding a way
+to add additional information. The most common approaches include colors or changing icons, plotting multiple images, and using animation.
+
+The most basic approach for multivariate visualization is to overlay multiple datasets
+on the same chart, using different tickmarks or colors to indicate the originating dataset.
+
+\bigskip
+When picking the colors or symbols to use, keep the following in mind:
+
+\begin{itemize}
+\item Don't use yellow; it looks too much like white and is often invisible on printouts and monitors.
+\item Choose symbols that are very different from each other. I personally like the open circle, closed circle, triangle, and cross.
+\item Choose colors that are far away from each other on the color wheel: red, green, blue, and black are my preferred choices.
+\item Avoid complex symbols. Many plotting packages offer a variety of asterisk-like figures that are hard to differentiate.
+\item Be consistent with your color and symbol choices, and don't overlap their domains. In other words, don't decide that red is HTTP and triangles are FTP.
+\end{itemize}
+
+\textbf{Trellis plots 格图}\\
+An alternative to plotting multiple sets on the same chart is to use multiple small plots
+next to each other. Commonly called \textbf{trellis plots(格图)}
+
+each pair of variables is a distinct scatterplot. 
+Each scatterplot shows the relationship between the pair. 
+
+\href{http://i.imgbox.com/WvbltL7W.png}{trellis plots example}
+as this example shows it's very easy to quickly identify that volume and articles seem to have some relationship while everything else looks unrelated.
+
+\bigskip
+\textbf{Operationalizing Security Visualization}\\
+avoid flash in favor of expressiveness  
+
+Finally, recognize that operational visualization is intended to be processed quickly and repeatedly. 
+It's not a showcase for innovative graphic representation. The goal of operational visualization should be to express information quickly and clearly. 
+Graphically excessive features like animation, unusual color choices, 
+and the like will increase the time it takes to process the image without contributing information.
+
 \subsection{度量数据的相似性与相异性}
 相似性和相异性都成为紧邻性proximity\\
 数据矩阵和相异性矩阵\\
