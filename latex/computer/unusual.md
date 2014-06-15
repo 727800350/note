@@ -505,3 +505,52 @@ This does nothing to block a determined attacker, but it does increase the likel
 Amber: If you give people a program that they are able to run, then they will also be able to reverse-engineer it given enough time. 
 That is the nature of programs. As soon as the binary is available to someone who wants to decipher it, you cannot prevent eventual reverse-engineering. 
 After all, the computer has to be able to decipher it in order to run it, and a human is simply a slower computer.
+
+<br/>
+[What's the point of const pointers?](http://stackoverflow.com/questions/7715371/whats-the-point-of-const-pointers)
+
+const is a tool which you should use in pursuit of a very important C++ concept:
+
+**Find bugs at compile-time, rather than run-time, by getting the compiler to enforce what you mean.**
+
+Even though it doesn't change the functionality, adding const generates a compiler error when you're doing things you didn't mean to do. 
+Imagine the following typo:
+
+	void foo(int* ptr){
+    	ptr = 0;// oops, I meant *ptr = 0
+	}
+If you use int* const, this would generate a compiler error because you're changing the value to ptr. 
+Adding restrictions via syntax is a good thing in general. Just don't take it too far -- the example you gave is a case where most people don't bother using const.
+
+<br/>
+[In C, do braces act as a stack frame?](http://stackoverflow.com/questions/2759371/in-c-do-braces-act-as-a-stack-frame)  
+If I create a variable within a new set of curly braces, is that variable popped off the stack on the closing brace, or does it hang out until the end of the function? For example:
+
+	void foo() {
+	   int c[100];
+	   {
+	       int d[200];
+	   }
+	   //code that takes a while
+	   return;
+	}
+Will d be taking up memory during the code that takes a while section?
+
+No, braces do not act as a stack frame. In C, braces only denote a naming scope, but nothing gets destroyed when control passes out of it.  
+So, the `d` array, in theory, could consume memory for the entire function. However, the compiler may optimize it away, or share its memory with other local variables if their usage does not overlap.
+
+In C++, an object's destructor gets called at the end of its scope. Whether the memory gets reclaimed is an implementation-specific issue.
+
+<br/>
+[Why declare a struct that only contains an array in C?](http://stackoverflow.com/questions/6966570/why-declare-a-struct-that-only-contains-an-array-in-c)  
+I came across some code containing the following:
+
+	struct ABC {
+	    unsigned long array[MAX];
+	} abc;
+When does it make sense to use a declaration like this?
+
+It allows you to pass the array to a function by value, or get it returned by value from a function.  
+Structs can be passed by value, unlike arrays which decay to a pointer in these contexts.  
+Another advantage is that it abstracts away the size so you don't have to use `[MAX]` all over your code wherever you declare such an object.
+
