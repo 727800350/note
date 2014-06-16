@@ -1,8 +1,8 @@
 # gdb
 
 **Shortcuts**  
-break, delete, run, continue, step, next and print  
-**you need only use the first letter**
+for `break, delete, run, continue, step, next and print`  
+**you need only use the first letter, `b,d,r,c,s,n,and p`**
 
 ## GUI
 ddd: Display Data Debugger
@@ -423,6 +423,20 @@ Output:
 Pass the flag -export-dynamic to the ELF linker, on targets that support it. 
 This instructs the linker to add all symbols, not only used ones, to the dynamic symbol table. 
 This option is needed for some uses of dlopen or to allow obtaining backtraces from within a program.
+
+`-g`是一个编译选项, 即在源代码编译的过程中起作用,让gcc把更多调试信息(也就包括符号信息)收集起来并将存放到最终的可执行文件内  
+
+- 根据调试工具的不同,还能直接选择更有针对性的说明,比如 `-ggdb`  
+- 可以被strip掉  
+- `.symtab`表在程序加载时会被加载器丢弃(not needed by the running process), 因为gdb等调试工具可以直接访问到磁盘上的二进制程序文件
+
+`-rdynamic` 却是一个 连接选项, 它将指示连接器把所有符号(而不仅仅只是程序已使用到的外部符号)都添加到动态符号表(即.dynsym表)里,以便那些通过 dlopen() 或 backtrace() (这一系列函数使用.dynsym表内符号)这样的函数使用  
+
+- 不能被strip掉, 即强制strip将导致程序无法执行
+- backtrace()系列函数作为程序执行的逻辑功能,无法去读取磁盘上的二进制程序文件,因此只能使用`.dynsym`表
+- 其它几个工具可以动态指定查看,比如`nm, objdump`
+
+For more info, please reference [Inside ELF Symbol Tables](https://blogs.oracle.com/ali/entry/inside_elf_symbol_tables)
 
 # [tcpdump](http://www.danielmiessler.com/study/tcpdump/)
 	sudo tcpdump -i eth1 port 53 -l > dnscap.txt
