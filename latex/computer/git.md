@@ -63,6 +63,58 @@ If you want to unstage the file after that:
 
 	git reset
 
+<br/>
+**Using git in two computers, after merging one branch a into master with computer c1, delte the branch a in c1 both locally and remotely,
+switch to computer c2, delelte the branch a locally, and want to delete the branch a remotely in c2, 
+but an error is reported, as the remote branch a has been deleted by computer c1, so what should I do to clean the branch status in computer c2?**
+
+original branch status:
+
+	[eric@iis ntop]$ git branch -a
+	* master
+	  note
+	  remotes/origin/HEAD -> origin/master
+	  remotes/origin/master
+	  remotes/origin/note
+
+delete the branch locally
+
+	[eric@iis ntop]$ git branch -d note
+	Deleted branch note (was fa0da42).
+	[eric@iis ntop]$ git branch -a
+	* master
+	  remotes/origin/HEAD -> origin/master
+	  remotes/origin/master
+  	  remotes/origin/note
+
+clean the remote branch status
+
+	[eric@iis ntop]$ git remote prune origin
+	Pruning origin
+	URL: git@git.oschina.net:eric_uni/ntop.git
+	 * [pruned] origin/note
+	[eric@iis ntop]$ git branch -a
+	* master
+	  remotes/origin/HEAD -> origin/master
+	  remotes/origin/master
+
+query the remote and automatically set the origin/HEAD pointer to the remote's current branch.
+
+	[eric@iis ntop]$ git remote set-head origin -a
+	origin/HEAD set to master
+	[eric@iis ntop]$ git branch -a
+	* master
+	  remotes/origin/HEAD -> origin/master
+	  remotes/origin/master
+
+delete the origin/HEAD symbolic ref
+
+	[eric@iis ntop]$ git remote set-head origin -d
+	[eric@iis ntop]$ git branch -a
+	* master
+	  remotes/origin/master
+Done
+
 # 如何导入外部Git仓库到中国源代码托管平台（Git@OSC）
 
 针对最近有很多网友提问，如何导入外部代码仓库（Github、bitbucket、Google Code等等）到Git@OSC ，给出如下解决方案：
