@@ -41,6 +41,28 @@ older stashes are found in the reflog of this reference and can be named using t
 	git remote add origin git@git.oschina.net:eric_uni/projet.git 
 	git push -u origin master
 
+# FAQ
+**Git: Checkout all files except one**  
+When I do a git status, I see files like this:
+
+	modified:  dir/A/file.txt
+	modified:  dir/B/file.txt
+	modified:  dir/C/file.txt
+	modified:  dir/D/file.txt
+What I want to do is to discard changes to all files EXCEPT for dir/C/file.txt
+
+I want to do something like this:
+
+	git checkout -- dir/!C/file.txt
+
+Answer:
+
+	git add dir/C/file.txt # this file will stay modified and staged
+	git checkout .
+If you want to unstage the file after that:
+
+	git reset
+
 # 如何导入外部Git仓库到中国源代码托管平台（Git@OSC）
 
 针对最近有很多网友提问，如何导入外部代码仓库（Github、bitbucket、Google Code等等）到Git@OSC ，给出如下解决方案：
