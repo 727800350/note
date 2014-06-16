@@ -438,6 +438,88 @@ This option is needed for some uses of dlopen or to allow obtaining backtraces f
 
 For more info, please reference [Inside ELF Symbol Tables](https://blogs.oracle.com/ali/entry/inside_elf_symbol_tables)
 
+### [Name mangling in C++](http://en.wikipedia.org/wiki/Name_mangling#Name_mangling_in_C.2B.2B)
+**Simple example**  
+
+	int  f (void) { return 1; }
+	int  f (int)  { return 0; }
+	void g (void) { int i = f(), j = f(0); }
+These are distinct functions, with no relation to each other apart from the name. 
+If they were natively translated into C with no changes, the result would be an error — C does not permit two functions with the same name. 
+The C++ compiler therefore will **encode the type information** in the symbol name, the result being something resembling:
+
+	int  __f_v (void) { return 1; }
+	int  __f_i (int)  { return 0; }
+	void __g_v (void) { int i = __f_v(), j = __f_i(0); }
+Notice that g() is mangled even though there is no conflict; name mangling applies to all symbols.
+
+**example class**
+
+	namespace wikipedia{
+	   class article{
+	   public:
+	      std::string format (void); 
+	         /* = _ZN9wikipedia7article6formatEv */
+	 
+	      bool print_to (std::ostream&); 
+	         /* = _ZN9wikipedia7article8print_toERSo */
+	 
+	      class wikilink{
+	      public:
+	         wikilink (std::string const& name);
+	            /* = _ZN9wikipedia7article8wikilinkC1ERKSs */
+	      };
+	   };
+	}
+
+All mangled symbols begin with `_Z` (note that an underscore followed by a capital is a reserved identifier in C, so conflict with user identifiers is avoided); 
+for nested names (including both namespaces and classes), this is followed by 
+**N, then a series of <length, id> pairs** (the length being the length of the next identifier), and finally E. 
+For example, `wikipedia::article::format` becomes
+
+	_ZN9wikipedia7article6formatE
+For functions, this is then followed by the type information; as format() is a void function, this is simply v; hence:
+
+	_ZN9wikipedia7article6formatEv
+For print_to, a standard type `std::ostream` (or more properly `std::basic_ostream<char, char_traits<char>>`) is used, 
+which has the special alias So; a reference to this type is therefore RSo, with the complete name for the function being:
+
+	_ZN9wikipedia7article8print_toERSo
+
+### [Backtrace for c++](http://charette.no-ip.com:81/programming/2010-01-25_Backtrace/)
+[example code](http://charette.no-ip.com:81/programming/2010-01-25_Backtrace/2010-01-25_Backtrace.c)
+
+compiled with gcc:
+
+	$ gcc -rdynamic 2010-01-25_Backtrace.c && ./a.out 
+	0: ./a.out(displayBacktrace+0x72) [0x4009d6]
+	1: ./a.out(bar+0x9) [0x400a5c]
+	....
+
+Here is that same example compile with g++:
+
+	$ g++ -rdynamic 2010-01-25_Backtrace.c && ./a.out 
+	0: ./a.out(_Z16displayBacktracev+0x26) [0x4009da]
+	1: ./a.out(_Z3barv+0x9) [0x400a4a]
+	...
+
+With g++, you have at this point is the mangled names.  
+Luckily for us, there is a function that will take a g++ mangled name, and return to us the full prototype including namespace or class if applicable. 
+When combined with the backtrace, this can be a useful feature.
+
+	#include <cxxabi.h>
+	...
+	int status = -1;
+	char *demangledName = abi::__cxa_demangle( "_Z16displayBacktracev", NULL, NULL, &status );
+	if ( status == 0 ){
+		std::cout << demangledName << std::endl;
+	}
+	free( demangledName );
+
+It is important to note that demangledName is a malloc()'d buffer, so remember to free it.  
+Also note the text strings returned from `backtrace_symbols()` cannot be used directly as input to `abi::__cxa_demangle()`. 
+You'll need to parse each backtrace line to extract just the mangled name.
+
 # [tcpdump](http://www.danielmiessler.com/study/tcpdump/)
 	sudo tcpdump -i eth1 port 53 -l > dnscap.txt
 TcpDump可以将网络中传送的数据包的"头"完全截获下来提供分析.它支持针对网络层,协议,主机,网络或端口的过滤,并提供and,or,not等逻辑语句来帮助你去掉无用的信息
