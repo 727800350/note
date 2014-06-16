@@ -424,39 +424,6 @@ Pass the flag -export-dynamic to the ELF linker, on targets that support it.
 This instructs the linker to add all symbols, not only used ones, to the dynamic symbol table. 
 This option is needed for some uses of dlopen or to allow obtaining backtraces from within a program.
 
-[GCC -rdynamic not working with static libraries](http://stackoverflow.com/questions/6054942/gcc-rdynamic-not-working-with-static-libraries)  
-Why is -rdynamic not exporting the symbols in .a files but is exporting the symbols in .o files?
-
-I have an app and a plug-in in a .so file. The main app is linked using a series of object files and one static library, like this:
-
-	CXXFLAGS =      $(CXXFLAGS_COMMON) -rdynamic
-	STATICLIBS =    ../Utilities/Utilities.a
-	...
-
-	all:
-    	$(CXX) $(CXXFLAGS) -o $(SAMPLE) main.o $(STATICLIBS) $(SHAREDLIBS) $(INCLUDES)
-
-(CXX is g++ 4.5.2 on Ubunut, I use mainly -std=c++Ox for compilation)
-
-In this case, the symbols in Utilities.a are not exported (i.e. `objdump -t a.out | grep symbol` is empty).
-
-If I use "ar x" to extract the .o files in the .a and link using only the .o's, then the symbols are exported and found by the plug-ins (that are loaded with dlopen in case you wondered).
-
-I have tried using `-Wl,-export-dynamic` but without success.
-
-I do have a workaround, as mentionned, but I'd still wish to understand what I am missing. Thanks in advance!
-
-Normally, the linker only includes those parts of static archives (.a files) which are referenced.
-
-To force the linker to include the entire contents of a .a file, you can use the `--whole-archive` linker option (so `-Wl,--whole-archive` on the gcc command line).
-
-Note that `-Wl,--whole-archive` is position-sensitive on the command line — it only affects .a files following it on the command line. 
-Its affect may be subsequently turned off using -Wl,--no-whole-archive, if there are further static archives which you don't want to be completely included.
-
-So, for instance, with your command:
-
-	$(CXX) $(CXXFLAGS) -o $(SAMPLE) main.o -Wl,--whole-archive $(STATICLIBS) -Wl,--no-whole-archive $(SHAREDLIBS) $(INCLUDES)
-
 # [tcpdump](http://www.danielmiessler.com/study/tcpdump/)
 	sudo tcpdump -i eth1 port 53 -l > dnscap.txt
 TcpDump可以将网络中传送的数据包的"头"完全截获下来提供分析.它支持针对网络层,协议,主机,网络或端口的过滤,并提供and,or,not等逻辑语句来帮助你去掉无用的信息
