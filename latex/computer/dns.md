@@ -76,6 +76,71 @@
 	    unsigned short int num_rrsup;  /* additional answer number*/
 	};
 
+## Hex representation of DNS packet
+### Result of dig
+
+	[eric@human ~]$ dig www.baidu.com
+	; <<>> DiG 9.8.2rc1-RedHat-9.8.2-0.23.rc1.el6_5.1 <<>> www.baidu.com
+	;; global options: +cmd
+	;; Got answer:
+	;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 1169
+	;; flags: qr rd ra; QUERY: 1, ANSWER: 3, AUTHORITY: 4, ADDITIONAL: 0
+	
+	;; QUESTION SECTION:
+	;www.baidu.com.			IN	A
+	
+	;; ANSWER SECTION:
+	www.baidu.com.		1200	IN	CNAME	www.a.shifen.com.
+	www.a.shifen.com.	600	IN	A	121.14.88.76
+	www.a.shifen.com.	600	IN	A	121.14.89.10
+	
+	;; AUTHORITY SECTION:
+	a.shifen.com.		86411	IN	NS	ns5.a.shifen.com.
+	a.shifen.com.		86411	IN	NS	ns6.a.shifen.com.
+	a.shifen.com.		86411	IN	NS	ns1.a.shifen.com.
+	a.shifen.com.		86411	IN	NS	ns3.a.shifen.com.
+
+### packet decoding
+#### request packet
+
+	4500 003b f8cf 0000 4011 f9ae xxxx xxxx
+	xxxx xxxx 92b8 0035 0027 23ed 0491 0100 ;; 0491=id=1169, 0100=flags, query packet
+	0001 0000 0000 0000 0377 7777 0562 6169 ;; 0001=num_questions, 0000=num_answers, 0000=num_authority, 0000=num_additional
+												**query starts:**
+												0377 7777=3www, 0562 6169=5bai
+	6475 0363 6f6d 0000 0100 01				;; 6475=du, 0363 6f6d 00=3com., 00 01=type A, 00 01=class Internet
+	
+#### response packet
+
+	4500 00be 0016 4000 4011 b1e5 xxxx xxxx
+	xxxx xxxx xxxx 0035 92b8 00aa 0491 8180 ;; 0491=id, 8180=flags=1 0000 0 0 1 1 000 0000, 0491 is the start of the packet
+	0001 0003 0004 0000 0377 7777 0562 6169 ;; 0001=num_questions, 0003=num_answers, 0004=num_authority, 0000=num_additional
+												**query starts:** 
+												0377 7777=3www, 0562 6169=5bai
+	6475 0363 6f6d 0000 0100 01c0 0c00 0500 ;; 6475=du, 0363 6f6d 00=3com., 00 01=type A, 00 01=class Internet
+												**answer 1 starts** 
+												c0 0c=pointer to 0377=3www5baidu3com, 00 05=5=CNAME
+	0100 0004 b000 0f03 7777 7701 6106 7368 ;; 00 01=Internet, 00 0004 b0=1200=ttl, 00 0f=15=data_len, 03 7777 77=3www, 01 61=1a, 06 7368=6sh, 
+	6966 656e c016 c02b 0001 0001 0000 0258 ;; 6966 656e=ifen, c0 is a pointer, 0x16=22 points to 0363=3com
+												len(03 7777 7701 6106 7368 6966 656e c016)=15 bytes
+												**answer 2 starts:** 
+												c02b=points 43 bytes=0377=3www1a6shifen3com , 0001=A 0001=IN, 0000 0258=600=ttl
+	0004 790e 584c c02b 0001 0001 0000 0258 ;; 0004=4=data_len, 79=121 0e=14, 58=88 , 4c=76
+												**answer 3 starts:**
+												c02b=points 43 bytes=0377=3www1a6shifen3com , 0001=A 0001=IN, 0000 0258=600=ttl
+	0004 790e 590a c02f 0002 0001 0001 518b ;; 0004=4=data_len, 79=121 0e=14, 59=89 , 0a=10
+												**authority 1 starts:**
+												c02f=points 47 bytes=016106=1a6shifen3com, 0002=type ns, 0001=class internet, 0001 518b=86411=ttl
+	0006 036e 7335 c02f c02f 0002 0001 0001 ;; 0006=6=data_len, 036e 7335=3ns5 c02f=1a6shifen3com
+												**authority 2 starts:**
+												c02f=points 47 bytes=016106=1a6shifen3com, 0002=type ns, 0001=class internet, 0001 518b=86411=ttl
+	518b 0006 036e 7336 c02f c02f 0002 0001 ;; 0006=6=data_len, 036e 7336=3ns6 c02f=1a6shifen3com
+												**authority 3 starts:**
+												c02f=points 47 bytes=016106=1a6shifen3com, 0002=type ns, 0001=class internet
+	0001 518b 0006 036e 7331 c02f c02f 0002 ;; 0001 518b=86411=ttl, 0006=6=data_len, 036e 7331=3ns1 c02f=1a6shifen3com
+												**authority 4 starts:**
+												c02f=points 47 bytes=016106=1a6shifen3com, 0002=type ns
+	0001 0001 518b 0006 036e 7333 c02f 		;; 0001=class internet, 0001 518b=86411=ttl, 0006=6=data_len, 036e 7333=3ns3 c02f=1a6shifen3com
 
 # [DOMAIN NAMES - CONCEPTS AND FACILITIES](http://www.ietf.org/rfc/rfc1034.txt)
 Each node has a label, which is zero to 63 octets in length.
