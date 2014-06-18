@@ -210,6 +210,9 @@ ICMP 是网络层协议
 # Application Layer
 ## DNS
 DNS 使用TCP和UDP端口53
+
+### [DNS 消息格式](http://www.cnblogs.com/cobbliu/archive/2013/04/02/2996333.html)
+
 [DNS 查询统计](http://ns.ustc.edu.cn/dns/log/2014/04/04/2014.04.04.19.20.html)
 
 [DNS报文格式(RFC1035)](http://blog.csdn.net/tigerjibo/article/details/6827736)
@@ -265,28 +268,35 @@ DNS 使用TCP和UDP端口53
 - 资源数据: 位数不定,依类型而定
 
 ## 数据结构
+[DNS Message Header and Question Section Format](http://www.tcpipguide.com/free/t_DNSMessageHeaderandQuestionSectionFormat.htm)
 
-	/*DNS header*/
-	struct dnshdr
-	{
-	    unsigned short int id;         /* identifier*/
-	
-	    unsigned char  rd:1;           /* recursion desired */
-	    unsigned char  tc:1;           /* truncated message */
-	    unsigned char  aa:1;           /* authoritive answer */
-	    unsigned char  opcode:4;       /* purpose of message */
-	    unsigned char  qr:1;           /* response flag */
-	
-	    unsigned char  rcode:4;        /* response code */
-	    unsigned char  unused:2;       /* unused bits */
-	    unsigned char  pr:1;           /* primary server required (non standard) */
-	    unsigned char  ra:1;           /* recursion available */
-	
-	    unsigned short int que_num;    /* question number*/
-	    unsigned short int rep_num;    /* respones number*/
-	    unsigned short int num_rr;     /* authority answer number*/
-	    unsigned short int num_rrsup;  /* additional answer number*/
-	};
+	// the number after name means the # of bits, eg: flag_qr:1 means the member flag_qr needs 1 bit
+	typedef struct dns_header{
+	  u_int16_t id; // the id of dns query and reply are equal
+	#if defined (WORDS_BIGENDIAN)
+	  u_int16_t flag_qr:1, // 0 for query, 1 for reply
+	            flag_opcode:4, //specifies the type of query, unchanged in the reply
+	            flag_aa:1, // authoritative answer flag
+	            flag_tc:1, // truncation flag
+	            flag_rd:1, //recursion desired, unchanged in the reply
+	            flag_ra:1, //recursion available, indicating whether the server supports it, used for future query
+	            flag_zero:3, // reserved bits
+	            flag_rcode:4; // reponse code, set to zero in query, then changed by the replying server. 0 means no error
+	#else
+	  u_int16_t flag_rcode:4,
+	            flag_zero:3,
+	            flag_ra:1,
+	            flag_rd:1,
+	            flag_tc:1,
+	            flag_aa:1,
+	            flag_opcode:4,
+	            flag_qr:1;
+	#endif
+	  u_int16_t number_questions;
+	  u_int16_t number_answers;
+	  u_int16_t number_authority;
+	  u_int16_t number_additional;
+	} dns_header_t;
 
 ## Hex representation of DNS packet
 ### Result of dig
