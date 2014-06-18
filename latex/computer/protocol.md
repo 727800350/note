@@ -1,3 +1,215 @@
+	datalink header: ip header: TCP header: DNS header: Payload
+								UDP			HTTP
+											...
+
+
+ Below is an excerpt from an email from Guy Harris on the tcpdump-workers mail list when someone asked,   
+ **"How do I get the length of the TCP payload?"** Guy Harris' slightly snipped response (edited by him to
+ speak of the IPv4 header length and TCP data offset without referring
+ to bitfield structure members) is reproduced below:
+ 
+ The Ethernet size is always 14 bytes.
+ 
+ In fact, you *MUSTassume the Ethernet header is 14 bytes, *and*, if 
+ you're using structures, you must use structures where the members 
+ always have the same size on all platforms, because the sizes of the 
+ fields in Ethernet - and IP, and TCP, and... - headers are defined by 
+ the protocol specification, not by the way a particular platform's C 
+ compiler works.)
+ 
+ The IP header size, in bytes, is the value of the IP header length,
+ as extracted from the "ip_vhl" field of "struct sniff_ip" with
+ the "IP_HL()" macro, times 4 ("times 4" because it's in units of
+ 4-byte words).  If that value is less than 20 - i.e., if the value
+ extracted with "IP_HL()" is less than 5 - you have a malformed
+ IP datagram.
+ 
+ The TCP header size, in bytes, is the value of the TCP data offset,
+ as extracted from the "th_offx2" field of "struct sniff_tcp" with
+ the "TH_OFF()" macro, times 4 (for the same reason - 4-byte words).
+ If that value is less than 20 - i.e., if the value extracted with
+ "TH_OFF()" is less than 5 - you have a malformed TCP segment.
+ 
+ So, to find the IP header in an Ethernet packet, look 14 bytes after 
+ the beginning of the packet data.  To find the TCP header, look 
+ "IP_HL(ip)*4" bytes after the beginning of the IP header.  To find the
+ TCP payload, look "TH_OFF(tcp)*4" bytes after the beginning of the TCP
+ header.
+ 
+ To find out how much payload there is:
+ 
+ Take the IP *totallength field - "ip_len" in "struct sniff_ip" 
+ - and, first, check whether it's less than "IP_HL(ip)*4" (after
+ you've checked whether "IP_HL(ip)" is >= 5).  If it is, you have
+ a malformed IP datagram.
+ 
+ Otherwise, subtract "IP_HL(ip)*4" from it; that gives you the length
+ of the TCP segment, including the TCP header.  If that's less than
+ "TH_OFF(tcp)*4" (after you've checked whether "TH_OFF(tcp)" is >= 5),
+ you have a malformed TCP segment.
+ 
+ Otherwise, subtract "TH_OFF(tcp)*4" from it; that gives you the
+ length of the TCP payload.
+ 
+ Note that you also need to make sure that you don't go past the end 
+ of the captured data in the packet - you might, for example, have a 
+ 15-byte Ethernet packet that claims to contain an IP datagram, but if 
+ it's 15 bytes, it has only one byte of Ethernet payload, which is too 
+ small for an IP header.  The length of the captured data is given in 
+ the "caplen" field in the "struct pcap_pkthdr"; it might be less than 
+ the length of the packet, if you're capturing with a snapshot length 
+ other than a value >= the maximum packet size.
+ <end of response>
+
+# 介质访问控制子层
+## Ethernet
+EtherType is a two-octet field in an Ethernet frame. It is used to indicate which protocol is encapsulated in the payload of an Ethernet Frame.
+
+EtherType numbering generally starts from 0x0800. In modern implementations of Ethernet, 
+the field within the Ethernet frame used to describe the EtherType also can be used to represent the size of the payload of the Ethernet Frame.
+
+Ethernet v2 framing considered these octets to represent EtherType 
+while the original IEEE 802.3 framing considered these octets to represent the size of the payload in bytes.
+
+EtherType values be greater than or equal to 1536 (0x0600).   
+That value was chosen because the maximum length (MTU) of the data field of an Ethernet 802.3 frame was 1500 bytes (0x05DC). 
+Thus, values of 1500 (0x05DC) and below for this field indicate that the field is used as the size of the payload of the Ethernet Frame 
+while values of 1536 and above indicate that the field is used to represent EtherType. The interpretation of values 1501–1535, inclusive, is undefined.
+
+[EtherType for some notable protocols](http://en.wikipedia.org/wiki/EtherType)
+
+- 0x0800	Internet Protocol version 4 (IPv4)
+- 0x86DD	Internet Protocol Version 6 (IPv6)
+
+# Internet layer
+## IP v4
+	/usr/include/netinet/ip.h
+	struct iphdr
+	  {
+	#if __BYTE_ORDER == __LITTLE_ENDIAN
+	    unsigned int ihl:4;
+	    unsigned int version:4;
+	#elif __BYTE_ORDER == __BIG_ENDIAN
+	    unsigned int version:4;
+	    unsigned int ihl:4;
+	#else
+	# error	"Please fix <bits/endian.h>"
+	#endif
+	    u_int8_t tos;
+	    u_int16_t tot_len;
+	    u_int16_t id;
+	    u_int16_t frag_off;
+	    u_int8_t ttl;
+	    u_int8_t protocol;
+	    u_int16_t check;
+	    u_int32_t saddr;
+	    u_int32_t daddr;
+	    /*The options start here. */
+	  };
+	
+- Internet Header Length (IHL): (4 bits) is the Internet Header Length (IHL)
+- Total Length: 16-bit field defines the entire packet (fragment) size, including header and data, in bytes.
+
+## IP v6
+
+	/usr/include/netinet/ip6.h
+	struct ip6_hdr{
+	    union{
+		struct ip6_hdrctl{
+		    uint32_t ip6_un1_flow;   /* 4 bits version, 8 bits TC,
+						20 bits flow-ID */
+		    uint16_t ip6_un1_plen;   /* payload length */
+		    uint8_t  ip6_un1_nxt;    /* next header */
+		    uint8_t  ip6_un1_hlim;   /* hop limit */
+		  } ip6_un1;
+		uint8_t ip6_un2_vfc;       /* 4 bits version, top 4 bits tclass */
+	      } ip6_ctlun;
+	    struct in6_addr ip6_src;      /* source address */
+	    struct in6_addr ip6_dst;      /* destination address */
+	  };
+	
+## ICMP
+ICMP 是网络层协议
+
+# Transport layer
+## TCP
+	/usr/include/netinet/tcp.h
+	/*
+	 * TCP header.
+	 * Per RFC 793, September, 1981.
+	 */
+	struct tcphdr{
+	    u_int16_t th_sport;		/* source port */
+	    u_int16_t th_dport;		/* destination port */
+	    tcp_seq th_seq;		/* sequence number */
+	    tcp_seq th_ack;		/* acknowledgement number */
+	#  if __BYTE_ORDER == __LITTLE_ENDIAN
+	    u_int8_t th_x2:4;		/* (unused) */
+	    u_int8_t th_off:4;		/* data offset */
+	#  endif
+	#  if __BYTE_ORDER == __BIG_ENDIAN
+	    u_int8_t th_off:4;		/* data offset */
+	    u_int8_t th_x2:4;		/* (unused) */
+	#  endif
+	    u_int8_t th_flags;
+	#  define TH_FIN	0x01
+	#  define TH_SYN	0x02
+	#  define TH_RST	0x04
+	#  define TH_PUSH	0x08
+	#  define TH_ACK	0x10
+	#  define TH_URG	0x20
+	    u_int16_t th_win;		/* window */
+	    u_int16_t th_sum;		/* checksum */
+	    u_int16_t th_urp;		/* urgent pointer */
+	};
+	
+	|----------------|----------------|-------------
+	|     source     |     dest       |
+	|----------------|----------------|
+	|               seq               |
+	|---------------------------------|
+	|               ack_seq           | 20 Bytes
+	|----|----|------|----------------|
+	|doff|res1|      |     window     |
+	|----|----|------|----------------|
+	|     check      |     urg_ptr    |
+	|----------------|----------------|-------------
+	|             options             | 4 Bytes
+	|---------------------------------|  
+
+- source 16位源端口号
+- dest 16位目的端口号
+- doff(Data offset): TCP header length, 以4 Bytes(32位字)作为单位进行计量
+
+### Flags (9 bits) (aka Control bits)
+- NS (1 bit) – ECN-nonce concealment protection (added to header by RFC 3540).
+- CWR (1 bit) – Congestion Window Reduced (CWR) flag is set by the sending host to indicate that it received a TCP segment with the ECE flag set and had responded in congestion control mechanism (added to header by RFC 3168).
+- ECE (1 bit) – ECN-Echo has a dual role, depending on the value of the SYN flag. It indicates:
+	- If the SYN flag is set (1), that the TCP peer is ECN capable.
+	- If the SYN flag is clear (0), that a packet with Congestion Experienced flag in IP header set is received during normal transmission (added to header by RFC 3168).
+- URG (1 bit) – indicates that the Urgent pointer field is significant
+- ACK (1 bit) – indicates that the Acknowledgment field is significant. All packets after the initial SYN packet sent by the client should have this flag set.
+- PSH (1 bit) – Push function. Asks to push the buffered data to the receiving application.
+- RST (1 bit) – Reset the connection
+- SYN (1 bit) – Synchronize sequence numbers. Only the first packet sent from each end should have this flag set. Some other flags and fields change meaning based on this flag, and some are only valid for when it is set, and others when it is clear.
+- FIN (1 bit) – No more data from sender
+
+## UDP
+
+	/usr/include/netinet/udp.h
+	struct udphdr{
+	  u_int16_t uh_sport;		/* source port */
+	  u_int16_t uh_dport;		/* destination port */
+	  u_int16_t uh_ulen;		/* udp length */
+	  u_int16_t uh_sum;		/* udp checksum */
+	};
+
+- Length: A field that specifies the length in bytes of the UDP header and UDP data.  
+- The minimum length is 8 bytes since that's the length of the header
+
+# Application Layer
+## DNS
+DNS 使用TCP和UDP端口53
 [DNS 查询统计](http://ns.ustc.edu.cn/dns/log/2014/04/04/2014.04.04.19.20.html)
 
 [DNS报文格式(RFC1035)](http://blog.csdn.net/tigerjibo/article/details/6827736)
