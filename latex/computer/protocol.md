@@ -211,26 +211,40 @@ ICMP 是网络层协议
 ## DNS
 DNS 使用TCP和UDP端口53
 
-### [DNS 消息格式](http://www.cnblogs.com/cobbliu/archive/2013/04/02/2996333.html)
+### [DNS报文格式(RFC1035)](http://blog.csdn.net/tigerjibo/article/details/6827736)
 
-[DNS 查询统计](http://ns.ustc.edu.cn/dns/log/2014/04/04/2014.04.04.19.20.html)
+dns请求和应答都是用相同的报文格式,分成5个段(有的报文段在不同的情况下可能为空),如下:
 
-[DNS报文格式(RFC1035)](http://blog.csdn.net/tigerjibo/article/details/6827736)
-报文结构各个字段的含义及大小参见:
-[DNS Message Header and Question Section Format](http://www.tcpipguide.com/free/t_DNSMessageHeaderandQuestionSectionFormat.htm)
+    +---------------------+
+    |        Header       | 报文头
+    +---------------------+
+    |       Question      | 查询的问题
+    +---------------------+
+    |        Answer       | 应答
+    +---------------------+
+    |      Authority      | 授权应答
+    +---------------------+
+    |      Additional     | 附加信息
+    +---------------------+
 
+Header段是必须存在的,它定义了报文是请求还是应答,也定义了其他段是否需要存在,以及是标准查询还是其他.
+
+Question段描述了查询的问题,包括查询类型(QTYPE),查询类(QCLASS),以及查询的域名(QNAME).
+
+剩下的3个段包含相同的格式:一系列可能为空的资源记录(RRs).Answer段包含回答问题的RRs,授权段包含授权域名服务器的RRs,附加段包含和请求相关的,但是不是必须回答的RRs
+
+DNS Header各个字段的含义及大小参见(图中单位为bit):  
 ![dnsheaderformat](http://www.tcpipguide.com/free/diagrams/dnsheaderformat.png)
 
-## ![报文](http://1811.img.pp.sohu.com.cn/images/blog/2012/5/28/15/27/e6055747_138545c4ff8g213.gif)
 ![报文](http://i.imgbox.com/U26Avc6h.gif)
 
 [DNS报文结构](http://zhaotao110.blog.sohu.com/218341780.html)
 
-[DNS报文](http://1862.img.pp.sohu.com.cn/images/blog/2012/5/28/14/11/e6055747_13854174a5fg214.gif)
+![DNS 结构](http://1862.img.pp.sohu.com.cn/images/blog/2012/5/28/14/11/e6055747_13854174a5fg214.gif)
 
-[查询问题](http://1881.img.pp.sohu.com.cn/images/blog/2012/5/28/14/15/e6055747_138541ad28dg214.gif)
+![查询问题](http://1881.img.pp.sohu.com.cn/images/blog/2012/5/28/14/15/e6055747_138541ad28dg214.gif)
 
-[回答,授权,额外](http://1821.img.pp.sohu.com.cn/images/blog/2012/5/28/14/16/e6055747_138541bc6e8g214.gif)
+![回答,授权,额外](http://1821.img.pp.sohu.com.cn/images/blog/2012/5/28/14/16/e6055747_138541bc6e8g214.gif)
 
 ## 字段说明
 
@@ -254,9 +268,30 @@ DNS 使用TCP和UDP端口53
 
 (3) 查询问题
 
-- 查询名: 位数不定,以点为分隔符,分别计数,以0结尾,可用指针压缩,无需填充
+- 查询名: 位数不定,以点为分隔符,分别计数,**以0结尾,可用指针压缩,无需填充**
 - 查询类型: 占16位,A, NS, CNAME, PTR等
 - 查询类: 占16位,通常为1,表示互联网地址
+
+**元信息**  
+这里需要注意的是域名的编码.请求的域名中没有".",域名中的"."被编码为元信息,指示接下来的多少字节是有效信息  
+我要请求www.google.com.hk的A记录  
+其中的QNAME段是:**03** 77 77 77 **06** 67 6f 6f 67 6c 65 **03** 63 6f 6d **02** 68 6b **00**  
+
+	www.google.com.hk
+其中的黑体就是元信息, 03表示后面有三个字符, 06表示后面有6个字符, 00表示结尾
+
+**指针法**  
+为了减小报文,域名系统使用一种压缩方法来消除报文中域名的重复.使用这种方法,后面重复出现的域名或者labels被替换为指向之前出现位置的指针.
+        指针占用2个字节,格式如下:
+
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+    +--+--+--+--+--+--+--+--+--+--+--+-+
+    | 1 1|                OFFSET       |
+    +--+--+--+--+--+--+--+--+--+--+--+-+
+前两个比特位都为1.因为lablels限制为不多于63个字节,所以**label的前两位一定为0**,这样就可以让指针与label进行区分.
+(10 和 01 组合保留,以便日后使用).
+
+**偏移值(OFFSET)表示从报文开始的字节指针.偏移量为0表示ID字段的第一个字节**.
 
 (4) 回答,授权,额外
 
@@ -352,13 +387,16 @@ DNS 使用TCP和UDP端口53
 												c02b=points 43 bytes=0377=3www1a6shifen3com , 0001=A 0001=IN, 0000 0258=600=ttl
 	0004 790e 590a c02f 0002 0001 0001 518b ;; 0004=4=data_len, 79=121 0e=14, 59=89 , 0a=10
 												**authority 1 starts:**
-												c02f=points 47 bytes=016106=1a6shifen3com, 0002=type ns, 0001=class internet, 0001 518b=86411=ttl
+												c02f=points 47 bytes=016106=1a6shifen3com, 
+												0002=type ns, 0001=class internet, 0001 518b=86411=ttl
 	0006 036e 7335 c02f c02f 0002 0001 0001 ;; 0006=6=data_len, 036e 7335=3ns5 c02f=1a6shifen3com
 												**authority 2 starts:**
-												c02f=points 47 bytes=016106=1a6shifen3com, 0002=type ns, 0001=class internet, 0001 518b=86411=ttl
+												c02f=points 47 bytes=016106=1a6shifen3com, 
+												0002=type ns, 0001=class internet, 0001 518b=86411=ttl
 	518b 0006 036e 7336 c02f c02f 0002 0001 ;; 0006=6=data_len, 036e 7336=3ns6 c02f=1a6shifen3com
 												**authority 3 starts:**
-												c02f=points 47 bytes=016106=1a6shifen3com, 0002=type ns, 0001=class internet
+												c02f=points 47 bytes=016106=1a6shifen3com, 
+												0002=type ns, 0001=class internet
 	0001 518b 0006 036e 7331 c02f c02f 0002 ;; 0001 518b=86411=ttl, 0006=6=data_len, 036e 7331=3ns1 c02f=1a6shifen3com
 												**authority 4 starts:**
 												c02f=points 47 bytes=016106=1a6shifen3com, 0002=type ns
