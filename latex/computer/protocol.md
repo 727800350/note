@@ -377,14 +377,15 @@ DNS Header各个字段的含义及大小参见(图中单位为bit):
 	6475 0363 6f6d 0000 0100 01c0 0c00 0500 ;; 6475=du, 0363 6f6d 00=3com., 00 01=type A, 00 01=class Internet
 												**answer 1 starts** 
 												c0 0c=pointer to 0377=3www5baidu3com, 00 05=5=CNAME
-	0100 0004 b000 0f03 7777 7701 6106 7368 ;; 00 01=Internet, 00 0004 b0=1200=ttl, 00 0f=15=data_len, 03 7777 77=3www, 01 61=1a, 06 7368=6sh, 
+	0100 0004 b000 0f03 7777 7701 6106 7368 ;; 00 01=Internet, 00 0004 b0=1200=ttl, 00 0f=15=data_len, 
+												03 7777 77=3www, 01 61=1a, 06 7368=6sh, 
 	6966 656e c016 c02b 0001 0001 0000 0258 ;; 6966 656e=ifen, c0 is a pointer, 0x16=22 points to 0363=3com
 												len(03 7777 7701 6106 7368 6966 656e c016)=15 bytes
 												**answer 2 starts:** 
-												c02b=points 43 bytes=0377=3www1a6shifen3com , 0001=A 0001=IN, 0000 0258=600=ttl
+												c02b=pointer 43 at 0377=3www1a6shifen3com, 0001=A 0001=IN, 0000 0258=600=ttl
 	0004 790e 584c c02b 0001 0001 0000 0258 ;; 0004=4=data_len, 79=121 0e=14, 58=88 , 4c=76
 												**answer 3 starts:**
-												c02b=points 43 bytes=0377=3www1a6shifen3com , 0001=A 0001=IN, 0000 0258=600=ttl
+												c02b=pointer 43 at 0377=3www1a6shifen3com, 0001=A 0001=IN, 0000 0258=600=ttl
 	0004 790e 590a c02f 0002 0001 0001 518b ;; 0004=4=data_len, 79=121 0e=14, 59=89 , 0a=10
 												**authority 1 starts:**
 												c02f=points 47 bytes=016106=1a6shifen3com, 
@@ -400,7 +401,8 @@ DNS Header各个字段的含义及大小参见(图中单位为bit):
 	0001 518b 0006 036e 7331 c02f c02f 0002 ;; 0001 518b=86411=ttl, 0006=6=data_len, 036e 7331=3ns1 c02f=1a6shifen3com
 												**authority 4 starts:**
 												c02f=points 47 bytes=016106=1a6shifen3com, 0002=type ns
-	0001 0001 518b 0006 036e 7333 c02f 		;; 0001=class internet, 0001 518b=86411=ttl, 0006=6=data_len, 036e 7333=3ns3 c02f=1a6shifen3com
+	0001 0001 518b 0006 036e 7333 c02f 		;; 0001=class internet, 0001 518b=86411=ttl, 0006=6=data_len, 036e 7333=3ns3 
+												c02f=1a6shifen3com
 
 # [DOMAIN NAMES - CONCEPTS AND FACILITIES](http://www.ietf.org/rfc/rfc1034.txt)
 Each node has a label, which is zero to 63 octets in length.
