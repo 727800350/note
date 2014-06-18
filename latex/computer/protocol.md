@@ -404,7 +404,7 @@ DNS Header各个字段的含义及大小参见(图中单位为bit):
 	0001 0001 518b 0006 036e 7333 c02f 		;; 0001=class internet, 0001 518b=86411=ttl, 0006=6=data_len, 036e 7333=3ns3 
 												c02f=1a6shifen3com
 
-# [DOMAIN NAMES - CONCEPTS AND FACILITIES](http://www.ietf.org/rfc/rfc1034.txt)
+### [DOMAIN NAMES - CONCEPTS AND FACILITIES](http://www.ietf.org/rfc/rfc1034.txt)
 Each node has a label, which is zero to 63 octets in length.
 
 One label is reserved, and that is the null (i.e., zero length) label used for the root.
@@ -417,7 +417,7 @@ hostname is a special type of domain name which identifies Internet hosts.
 Host name to address mappings were maintained by the Network Information Center (NIC) in a single file (HOSTS.TXT)  
 host names a subset of the usual text representation for domain names.
 
-## Name syntax
+#### Name syntax
 The following syntax will result in fewer problems with many
 applications that use domain names (e.g., mail, TELNET).
 
@@ -438,7 +438,7 @@ applications that use domain names (e.g., mail, TELNET).
 	
 	<digit> ::= any one of the ten digits 0 through 9
 
-## Resource Records
+#### Resource Records
 **A domain name identifies a node**.  Each node has a set of resource
 information, which may be empty.  The set of resource information
 associated with a particular name is composed of separate resource
@@ -498,7 +498,7 @@ Similarly we might see:
 This example shows two addresses for XX.LCS.MIT.EDU, each of a different
 class.
 
-## Queries
+#### Queries
 In the Internet, queries are carried in UDP datagrams or over
 TCP connections.
 
@@ -522,7 +522,7 @@ Because the server assumes that if the requester wants mail exchange
 information, it will probably want the addresses of the mail exchanges
 soon afterward.
 
-# [Clarifications to the DNS Specification](http://www.ietf.org/rfc/rfc2181.txt)
+### [Clarifications to the DNS Specification](http://www.ietf.org/rfc/rfc2181.txt)
 **Server Reply Source Address Selection**  
    Some multi-homed hosts running DNS servers generate a reply using a
    source address that is not the same as the destination address from
@@ -582,7 +582,7 @@ Recursive vs. Iterative Queries
 - As mentioned above, recursive queries are queries where the client asks the server to do all the work for it. It sends in its query the RECURSION DESIRED flag, and the DNS server will either honor that or not.
 - Iterative queries are the opposite of recursive queries. When they're used, the server doesn't go find the answer for the client (unless it's on the first question and response), but rather tells the client where to look next. So if the client asks for chat.google.com, it tells the client to check with the .com servers and considers its work done.
 
-# Other
+### Other
 DNS uses its own unique **encoding** for Unicode characters.   
 For example:  
 `www.á.com`: How the DNS name may appear in, say, a web page  
@@ -590,8 +590,8 @@ For example:
 
 The reason why DNS uses a complicated special encoding for non-ASCII Unicode characters instead of simply using UTF-8 is because RFC1035 section 2.3.1 says that names can only have letters, numbers, and the '-' (hyphen) character. I felt, a decade ago, that it would have been possible to add real UTF-8 support to DNS, but there was too much anxiety that doing so would break unspecified legacy DNS routers, appliances, etc.
 
-# DNS 相关协议
-## NETBIOS
+### DNS 相关协议
+#### NETBIOS
 NETBIOS(Network Basic Input/Output System)协议是由IBM公司开发,主要用于数十台计算机的小型局域网.
 
 该协议是一种在局域网上的程序可以使用的应用程序编程接口(API),为程序提供了请求低级服务的统一的命令集,作用是为了给局域网提供网络以及其他特殊功能.  
@@ -603,7 +603,7 @@ NETBIOS(Network Basic Input/Output System)协议是由IBM公司开发,主要用�
 - 会话服务:可靠的基于连接的通信
 - 数据包服务:不可靠的无连接通信
 
-## LLMNR
+#### LLMNR
 在DNS 服务器不可用时,DNS 客户端计算机可以使用本地链路多播名称解析 (LLMNR—Link-Local Multicast Name Resolution)(也称为多播 DNS 或 mDNS)来解析本地网段上的名称.例如,如果路由器出现故障,从网络上的所有 DNS 服务器切断了子网,则支持 LLMNR 的子网上的客户端可以继续在对等基础上解析名称,直到网络连接还原为止.
 
 LLMNR工作过程
