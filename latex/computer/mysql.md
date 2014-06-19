@@ -284,6 +284,12 @@ Now execute program:
 
     mysql_query(conn, "insert into ... values(...)")
 
+返回值:
+
+- 插入同样的行, 返回值是1, 同时table 保持不变;
+- 删除不存在的行, 返回值为0, 同时table 保持不变;
+- 更新不存在的行, 返回值为0, 同时table 保持不变;
+
 ## Result
     MYSQL_RES *mysql_use_result(MYSQL *mysql)
     MYSQL_RES *mysql_store_result(MYSQL *mysql)
