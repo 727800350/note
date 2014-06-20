@@ -195,6 +195,11 @@ const最经常的用法
 		return 0;
 	}
 
+## const faq
+**C (Linux): warning: assignment discards qualifiers from pointer target type**  
+As the compiler states, you're discarding a qualifier (const in this case) from a pointer upon assignment.  
+This happens when you assign a `char *` the value of a `const char *`.
+
 ## extern
 extern可以置于变量或者函数前,以标示变量或者函数的定义在别的文件中,提示编译器遇到此变量和函数时在其他模块中寻找其定义
 
