@@ -110,6 +110,47 @@ The struct timeval structure represents an elapsed time. It is declared in sys/t
 `time_t time = (time_t)ut_tv.tv_sec;`  
 Should work, but since you're just looking for a difference, there's always the magic of subtraction.
 
+# 关键字
+## const
+const最经常的用法
+
+1. 为了防止传递的函数参数不被修改,在调用函数的形参中用const关键字.
+
+2. `const int *p = &a;` //p是指向**int常量**的指针,因此,不可以通过给指针赋值来改变数组中的数据,例如:
+
+		*p = 10;       /*错误*/
+		*(p + 2) = 1;  /*错误*/
+
+3. `int * const p = a;` //p是**指针常量**,我们知道,指针是指向了一个数组的首地址,那么,它的**位置就不可以改变了**.
+但是你现在应该和第一个表达式比较了,现在的数组并不是常量数组,所以数组的数据是可以改变的,而指针这时候它是不可以移动的,指向数组第一个数据,
+
+4. `const int * const p = a;` //假如前面两种表达式的本质你理解了,这种表达式你来理解根本没有问题,const现在有两个,
+而且一个const的位置是第一种情况的位置,第二个const是第二种情况的位置,所以这表达式的功能就是前两种情况的作用总合.这里不多说
+
+5. **const并不会阻止参数的修改**  
+之所以把这作为一点来谈,就是因为有一些朋友可能会以为在函数参数中用了const就一定不可以改变参数,这实际上是错误的理解,因为,它并不阻止参数的修改,
+下面举个简单的例子来阐述一下,
+
+		void ChangeStr(const char *String){
+			char *Source = (char *)String;
+			while (*Source){
+				*Source = toupper(*Source);
+				Source++;
+			}
+		}
+		int main(void){
+			char str[] = "The C programme";
+			Change(str);
+			printf(str);
+			return 0;
+		}
+上面的程序把字符串中的每个字符都转换成大写字母了.因为`*String`把地址给了`*Source`,而 `*Source`的值的改变编译器并不干涉,可能有的编译器会发出警告之类.
+上面的程序只是为了说明const并不会阻止参数的修改,如果象上面程序那样,个人感觉没什么意义,只会让人容易混乱而已.
+
+## extern
+
+## static
+
 ## define  
 Function macro definitions accept two special operators (`#` and `##`) in the replacement sequence:
 If the operator # is used before a parameter is used in the replacement sequence, that parameter is replaced by a **string literal** (as if it were enclosed between double quotes)
