@@ -147,6 +147,54 @@ const最经常的用法
 上面的程序把字符串中的每个字符都转换成大写字母了.因为`*String`把地址给了`*Source`,而 `*Source`的值的改变编译器并不干涉,可能有的编译器会发出警告之类.
 上面的程序只是为了说明const并不会阻止参数的修改,如果象上面程序那样,个人感觉没什么意义,只会让人容易混乱而已.
 
+### demo
+	#include <stdio.h>
+	#include <string.h>
+	#include <stdlib.h>
+	
+	void print(int *p, int n){
+		while(n){
+			printf("%d, ", *p);
+			p++;
+			n--;
+		}
+	}
+	int main(){
+		int a =10;
+		int b = 5;
+		int c[]={2,3};
+		print(c,2); // output 2, 3
+	
+	// 	p points to a constant integer, so error, even the new value is the same as 10.
+		const int *p =&a;
+		p = &b; // right
+	// 	*p = 10; // error
+		
+	// 	p1 is a constant pointer, so p can not be changed
+		int *const p1 =&a;
+		*p1 = 1 ; // right, we have not changed p1, but changed *p1
+	// 	p1 = &b; // error
+	
+		int *const p2 = c;
+		*p2 = 1;
+		*(p2 + 1) = 4; // right, we did not change p2
+		print(c,2); // output 1, 4
+	// 	p2 ++; // error
+	
+	// 	p3 is a constant pointer, and it points to a constant integer
+		const int * const p3 = &a;
+	// 	p3 = &b; // error
+	// 	*p3 = 1; // error
+		
+	// 	although a is a constant integer, we can still change its value
+		p = &a;
+		int *p4 = (int *)p;
+		*p4 = 1;
+		printf("%d, %d\n", a, *p); // output: 1, 1
+		printf("over\n");
+		return 0;
+	}
+
 ## extern
 
 ## static
