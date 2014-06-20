@@ -23,6 +23,22 @@ older stashes are found in the reflog of this reference and can be named using t
 - git stash list: 显示Git栈内的所有备份,可以利用这个列表来决定从那个地方恢复
 - git stash clear: 清空Git栈
 
+## git tag
+- git tag 列出现有标签的命令非常简单
+- git tag -l 'v1.4.2.*' // 匹配标签
+- git tag -a v1.4 -m 'my version 1.4'  // 含附注标签
+- git show v1.4
+- git push origin v1.5
+- git push origin --tags
+
+Git 使用的标签有两种类型:轻量级的(lightweight)和含附注的(annotated).
+
+- 轻量级标签(-lw)就像是个不会变化的分支,实际上它就是个指向特定提交对象的引用.
+- 含附注标签(-a),实际上是存储在仓库中的一个独立对象,它有自身的校验和信息,包含着标签的名字,电子邮件地址和日期,以及标签说明,
+标签本身也允许使用 GNU Privacy Guard (GPG) 来签署或验证.
+
+一般我们都建议使用含附注型的标签,以便保留相关信息:当然,如果只是临时性加注标签,或者不需要旁注额外信息,用轻量级标签也没问题
+
 ## Create repo
 创建 git 仓库
 
