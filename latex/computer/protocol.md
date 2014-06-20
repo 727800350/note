@@ -194,6 +194,25 @@ ICMP 是网络层协议
 - SYN (1 bit) – Synchronize sequence numbers. Only the first packet sent from each end should have this flag set. Some other flags and fields change meaning based on this flag, and some are only valid for when it is set, and others when it is clear.
 - FIN (1 bit) – No more data from sender
 
+### Hex demo
+TCP header(in hex)=05320017 00000001 000000000 500207FF 00000000  
+since each hex = 4 bits , we need to first split the above hex as such
+	
+	05 32 00 17 00 00 00 01 00 00 00 00 50 02 07 FF 00 00 00 00
+
+Analyse
+
+	source port is 2 bytes take 05 32 = 1330
+	next 2 bytes as destination address 00 17 == 23 (default TCP port)
+	next 4 bytes as sequence number 00 00 00 01 ==1
+	next 4 bytes as ack 00 00 00 00 == 0
+	next 4 bits as haeder length 5 ==5 -- this indicates number of sets of 4 bytes which makes the header lenght = 20bytes..
+	next 6 bits are reserved i.e.0 =0000and 2 bits from hex 0
+	next 6 bits are control bits = remaining 2 bits from hex 0 and 4 bits of 2
+	next 2 bytes indicate the window length 07 FF == 2047 bytes
+	Checksum 2 bytes 00 00 = 0
+	Urgent pointer 2bytes 00 00 =0
+
 ## UDP
 
 	/usr/include/netinet/udp.h
