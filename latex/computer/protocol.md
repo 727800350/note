@@ -132,6 +132,8 @@ while values of 1536 and above indicate that the field is used to represent Ethe
 ICMP 是网络层协议
 
 # Transport layer
+The port number is an unsigned 16-bit integer, so the max is `2^16 -1 = 65535`.
+
 ## TCP
 	/usr/include/netinet/tcp.h
 	/*
