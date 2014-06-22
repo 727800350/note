@@ -6,6 +6,11 @@ sudo yum remove -y evolution
 sudo yum update -y firefox
 sudo yum install -y mysql mysql-server mysql-devel
 
+## phpMyAdmin: Web application to manage MySQL
+## config file /etc/phpMyAdmin/config.inc.php
+## then put php files(need download) into /var/www directory
+sudo yum install -y phpMyAdmin
+
 ## chrome
 sudo bash ./install_chrome.sh
 
