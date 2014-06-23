@@ -115,12 +115,12 @@ func! CompileCode()
             exec "!gnuplot %<.gp"
         elseif &filetype == "python"
             exec "!python %<.py"
-        elseif &filetype == "scheme"
-            exec "!guile %<.scm"
         elseif &filetype == "ruby"
             exec "!ruby %<.rb"
         elseif &filetype == "mp"
             exec "!mpost -tex=latex  %<.mp"
+        elseif &filetype == "dot"
+            exec "!dot -Tps %<.dot -o %<.ps"
         elseif &filetype == "tex"
             exec "!xelatex  %<.tex"
         endif
@@ -146,9 +146,19 @@ func! RunCode()
             exec "!evince %<.mps"
         elseif &filetype == "tex"
             exec "!evince %<.pdf"
+        elseif &filetype == "dot"
+            exec "!evince %<.ps"
         endif
 endfunc
 
+func! Save()
+        exec "w"
+        if &filetype == "dot"
+            exec "!epstopdf %<.ps"
+        elseif &filetype == "mp"
+            exec "!epstopdf %<.mps"
+        endif
+endfunc
 " Ctrl + c 一键保存、编译
 map <c-c> :call CompileCode()<CR>
 imap <c-c> <ESC>:call CompileCode()<CR>
@@ -158,6 +168,11 @@ vmap <c-c> <ESC>:call CompileCode()<CR>
 map <c-r> :call RunCode()<CR>
 imap <c-r> <ESC>:call RunCode()<CR>
 vmap <c-r> <ESC>:call RunCode()<CR>
+
+" Ctrl + s 一键保存
+map <c-s> :call Save()<CR>
+imap <c-s> <ESC>:call Save()<CR>
+vmap <c-s> <ESC>:call Save()<CR>
 " ======= 编译 && 运行 ======= "
 
 "==============================comments===================================
