@@ -109,6 +109,17 @@ The struct timeval structure represents an elapsed time. It is declared in sys/t
 `time_t time = (time_t)ut_tv.tv_sec;`  
 Should work, but since you're just looking for a difference, there's always the magic of subtraction.
 
+# Process
+**`_exit`**  
+The function `_exit()` terminates the calling process "immediately".  Any open file descriptors belonging to the process are closed; any children
+of the process are inherited by process 1, init, and the process’s parent is sent a SIGCHLD signal.  
+The value status is returned to the parent process as the process’s exit status, and can be collected using one of the wait(2) family of  calls
+The  function `_exit()` is like exit(3), **but does not call any functions registered with `atexit(3)` or `on_exit(3)`**.  
+Whether it flushes standard I/O buffers and removes temporary files created with tmpfile(3) is implementation-dependent.  
+On the other hand, `_exit()` does close open file descriptors, and this may cause an unknown delay, waiting for pending output to finish.  
+If the delay is undesired, it may be useful to call functions like `tcflush(3)` before calling `_exit()`.  
+Whether any pending I/O is canceled, and which pending I/O may be canceled upon `_exit()`, is implementation-dependent.
+
 # 关键字
 ## const
 const最经常的用法
