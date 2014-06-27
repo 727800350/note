@@ -89,6 +89,59 @@ dup() uses  the lowest-numbered unused descriptor for the new descriptor.
 dup2() makes newfd be the copy of oldfd, closing newfd first if necessary  
 On success, these system calls return the new descriptor.  On error, -1 is returned, and errno is set appropriately.
 
+
+# [GLib](https://developer.gnome.org/glib/unstable/)
+GLib提供了多种高级的数据结构,如内存块,双向和单向链表,哈希表,动态字符串以及字符串工具(例如词法分析器,字符串切分等),动态数组,平衡二叉树,n-叉树,键值存储,关系和元组etc.
+Glib 还实现了线程相关的函数,多线程编程以及相关的工具,例如原始变量访问,互斥锁,异步队列,安全内存池,消息传递和日志,钩子函数和计时器,同时消息传递还包含了字节序转换和IO channel
+
+GLib由五个库组成:
+
+- GObject – 对象系统，包括类型系统 GType
+- Glib
+- GModule
+- GThread
+- GIO
+
+## [Basic Types](https://developer.gnome.org/glib/stable/glib-Basic-Types.html)
+gboolean: A standard boolean type. Variables of this type should only contain the value TRUE or FALSE
+
+	typedef gint   gboolean;
+	#define FALSE (0)
+	#define TRUE (!FALSE)
+
+gpointer: An untyped pointer. gpointer looks better and is easier to use than void*.
+gconstpointer: An untyped pointer to constant data. The data pointed to should not be changed.
+	
+	typedef void* gpointer;
+	typedef const void *gconstpointer;
+
+gchar: Corresponds to the standard C char type.
+guchar: Corresponds to the standard C unsigned char type.
+
+	typedef char   gchar;
+	typedef unsigned char   guchar;
+
+gint: Corresponds to the standard C int type. Values of this type can range from G_MININT to G_MAXINT.
+guint: Corresponds to the standard C unsigned int type. Values of this type can range from 0 to G_MAXUINT.
+
+	typedef int    gint;
+	typedef unsigned int    guint;
+
+gint8, guint8, gint16, guint16, gint32, guint32, gint64, guint64
+
+## [Gstring](https://developer.gnome.org/glib/unstable/glib-Strings.html)
+
+## [Hash Tables](https://developer.gnome.org/glib/stable/glib-Hash-Tables.html)
+
+## Related
+Other widget toolkits provide low-level functions and implementations of data structures as well, e.g.:
+
+- STL – C++ alternative to GObject
+- Boost – provides some functionality for C++, such as threading primitives, similar to what GLib does for C.[6]
+- wxBase – non-GUI functions of the wxWidgets library
+- The Apache Portable Runtime and Apple Core Foundation have a large functional overlap with GLib, 
+and provide many similar OS-portable threading, network and data structure implementations in C.
+
 # Time
 - `time(NULL)` returns a timestamp in seconds (number of seconds since the epoch)  
 `#include <time.h>`
