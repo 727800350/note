@@ -19,6 +19,9 @@
 | ,                                | 逗号(顺序)                             | 由左向右 |
 
 # String
+`int snprintf(char *str, size_t size, const char *format, ...);`  
+The functions `snprintf()` and `vsnprintf()`  write  **at most size bytes (including the trailing null byte ('\0'))** to str.
+
 ### [字符数组与字符指针](http://blog.csdn.net/qiumm/article/details/5657120)
 	char *str = "This is a pointer to a string.";
 字符指针指向的是一个字符串常量的首地址,即指向字符串的首地址.
