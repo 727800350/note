@@ -105,6 +105,11 @@ GLib由五个库组成:
 - GThread
 - GIO
 
+compile options:
+
+	[eric@human glib]$ pkg-config --cflags --libs glib-2.0
+	-I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include  -lglib-2.0
+
 ## [Basic Types](https://developer.gnome.org/glib/stable/glib-Basic-Types.html)
 gboolean: A standard boolean type. Variables of this type should only contain the value TRUE or FALSE
 
@@ -133,6 +138,35 @@ guint: Corresponds to the standard C unsigned int type. Values of this type can 
 gint8, guint8, gint16, guint16, gint32, guint32, gint64, guint64
 
 ## [Gstring](https://developer.gnome.org/glib/unstable/glib-Strings.html)
+	struct GString {
+	  gchar  *str;
+	  gsize len;
+	  gsize allocated_len;
+	};
+
+	GString * g_string_new(const gchar *init);
+	GString * g_string_new_len(const gchar *init, gssize len);
+
+	GString * g_string_append(GString *string, const gchar *val);
+	GString * g_string_append_c(GString *string, gchar c);
+
+	GString * g_string_prepend(GString *string, const gchar *val);
+	GString * g_string_prepend_c(GString *string, gchar c);
+
+	GString * g_string_insert(GString *string, gssize pos, const gchar *val);
+	GString * g_string_insert_c(GString *string, gssize pos, gchar c);
+
+	GString * g_string_overwrite(GString *string, gsize pos, const gchar *val);
+	GString * g_string_overwrite_len(GString *string, gsize pos, const gchar *val, gssize len);
+
+	GString * g_string_erase(GString *string, gssize pos, gssize len);
+
+	GString * g_string_truncate(GString *string, gsize len); Cuts off the end of the GString, leaving the first len bytes.
+
+	gchar * g_string_free(GString *string, gboolean free_segment);
+	Frees the memory allocated for the GString. 
+	If free_segment is TRUE it also frees the character data. 
+	If it's FALSE, the caller gains ownership of the buffer and must free it after use with g_free().
 
 ## [Hash Tables](https://developer.gnome.org/glib/stable/glib-Hash-Tables.html)
 
