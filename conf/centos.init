@@ -44,3 +44,9 @@ pythonbrew list --know
 
 ## mutt
 sudo yum install -y mutt msmtp getmail procmail lynx elinks
+
+## graphviz, dot
+sudo yum install graphviz
+sudo dot -c  ## configure plugins
+sudo yum install graphviz-gd ## support for png, jpg, jpeg etc
+
