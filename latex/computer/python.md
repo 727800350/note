@@ -59,6 +59,36 @@ The optional argument random is a 0-argument function returning a random float i
 - `math.ceil()`
 
 # Database
+## mysql-connector-python
+install
+
+	pip install --alow-all-external mysql-connector-python
+
+demo
+
+	import mysql.connector
+	conn = mysql.connector.connect(host="localhost", user="test", passwd="123456", db="test", buffered=True)
+	cursor = conn.cursor()
+	cursor.execute("show databases;")
+	r = cursor.fetchone()
+	print r
+	cursor.close()
+	conn.close()
+
+process a query result
+
+	# Using a while-loop
+	cursor.execute("SELECT * FROM employees")
+	row = cursor.fetchone()
+	while row is not None:
+		print(row)
+		row = cursor.fetchone()
+				
+	# Using the cursor as iterator 
+	cursor.execute("SELECT * FROM employees")
+	for row in cursor:
+		print(row)
+
 ## Mysql with MySQLdb module
 [MySQL Python tutorial](http://zetcode.com/db/mysqlpython/)
 
@@ -163,6 +193,17 @@ MySQLdb is a thin Python wrapper around _mysql. It is compatible with the Python
 	finally:    
 	    if con:    
 	        con.close()
+
+# Internet
+## Address
+	import socket
+	import struct
+	>>> socket.ntohl(struct.unpack('I', socket.inet_aton("201.119.123.249"))[0])
+	3380050937L
+	;; 如果用i, 而不是I, 可能会出现负值
+
+	>>> socket.inet_ntoa(struct.pack('I',socket.htonl(980942848 )))
+	'58.120.0.0'
 
 # General
 应该尽量避免使用Python全局变量.  
