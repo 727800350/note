@@ -131,3 +131,18 @@ Beamer 中也定义了各种定理环境，而且默认是用区块环境的样�
 	\begin{theorem}
 	微积分基本公式：$\int_a^b f(x)\mathrm{d}x=F(b)-F(a)$。
 	\end{theorem}
+
+# Note
+note 的显示方式
+
+	\setbeameroption{show notes}
+	\setbeameroption{hide notes}
+	\setbeameroption{show only notes}
+	\setbeameroption{show notes on second screen = left} right, top, bottom
+
+ 插入note
+
+	\note{text}
+	
+	\note[item]<2>{tell joke about plants}
+	\note[item]<2>{make it short}

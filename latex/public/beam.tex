@@ -30,6 +30,10 @@ draw=gray,thick, fill=lightgray}
 
 \usepackage[colorinlistoftodos]{todonotes}
 
+
+%% \setbeameroption{show notes on second screen = left} needs the following package
+\usepackage{pgfpages}
+
 %% code
 %% verbatim 中不能使用\textbf 等格式, alltt可以使用
 \usepackage{alltt}
@@ -211,6 +215,7 @@ draw=gray,thick, fill=lightgray}
 %\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
 
 %\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+
 \setbeamertemplate{itemize item}{$\spadesuit$}
 \setbeamertemplate{itemize subitem}{$\heartsuit$}
 \setbeamertemplate{itemize subsubitem}{$\clubsuit$}
@@ -218,7 +223,10 @@ draw=gray,thick, fill=lightgray}
 \setbeamertemplate{enumerate subitem}{\insertenumlabel.\insertsubenumlabel}
 \setbeamertemplate{enumerate subsubitem}{\insertenumlabel.\insertsubenumlabel.\insertsubsubenumlabel}
 \setbeamertemplate{enumerate mini template}{\insertenumlabel}
-\setbeamercolor{footcolor}{fg=black,bg=red!40} % 设置字体和背景颜色
+
+%% 设置页脚字体和背景颜色
+%% \setbeamercolor{footcolor}{fg=black,bg=red!40}
+
 \setbeamertemplate{footline}{%
   \leavevmode%
   \hbox{%
