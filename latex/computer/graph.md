@@ -188,6 +188,24 @@ Cluster labels appear above the graph by default.
 	}
 ![cluser demo](http://i.imgbox.com/WqXrAzIf.png)
 
+## FAQ
+**Graphviz: how to have sub-graph nodes lined-up in a straight line?**
+
+	digraph git{
+	    subgraph master {
+	        m1 -> m2 -> m3 -> m4 -> m5;
+			m1 -> m5;
+	    }
+	    subgraph branch {
+	        m2 -> b1; // branch from master
+	        b1 -> b2 -> b3;
+	        b3 -> m4; // merge into master
+			b3 -> b1;
+	    }
+		{rankdir=LR; rank=same; m1;m2;m3;m4;m5;}
+		{rankdir=LR; rank=same; b1;b2;b3;}
+	}
+
 ## Command line options
 **-Tformat sets the format of the output**
 
