@@ -35,6 +35,25 @@ Within a main graph, a subgraph defines a subset of nodes and edges.
 Names of all these objects may be C identifiers, numbers, or quoted C
 strings. Quotes protect punctuation and white space.
 
+**Chinese demo**:
+
+- 中文的不支持生成ps, can generate png, jpg, svg
+- 文件需要使用utf-8 编码
+- fc-list :lang=zh
+
+	digraph G{
+		edge [fontname = "FangSong"];
+		node [shape=box, fontname="FangSong" size="20,20"];
+		{
+			start[label="开始"];
+		}
+		node[shape=plaintext, fontname="KaiTi"]
+		{
+			end[label="结束"];
+		}
+		start -> end[label="流程"];
+	}
+
 ## Drawing Attributes
 Nodes are drawn, by default, with `shape=ellipse, width=.75, height=.5`
 and labeled by the node name.   
