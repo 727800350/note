@@ -1,4 +1,13 @@
 # graphviz
+装完graphviz之后, -Tps, eps 等都报错,
+-c configure plugins
+
+	[eric@human ~]$ dot sample.dot 
+	There is no layout engine support for "dot"
+	Perhaps "dot -c" needs to be run (with installer's privileges) to register the plugins?
+	[eric@human ~]$ sudo dot -c
+	[eric@human ~]$ dot -Teps -O sample.dot 
+
 dot accepts input in the DOT language. 
 
 This language describes three kinds of objects: graphs, nodes, and edges. 
