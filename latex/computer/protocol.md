@@ -111,6 +111,15 @@ while values of 1536 and above indicate that the field is used to represent Ethe
 - Total Length: 16-bit field defines the entire packet (fragment) size, including header and data, in bytes.
 
 ## IP v6
+IPv6地址为128位长,但通常写作8组,每组为四个十六进制数的形式.例如:
+	
+	FE80:0000:0000:0000:AAAA:0000:00C2:0002
+**零压缩法**: 如果几个连续段位的值都是0,那么这些0就可以简单的以::来表示,上述地址就可以写成
+	
+	FE80::AAAA:0000:00C2:0002
+这里要注意的是只能简化连续的段位的0,其前后的0都要保留,比如FE80的最后的这个0,不能被简化.
+还有这个只能用一次,在上例中的AAAA后面的0000就不能再次简化.当然也可以在AAAA后面使用::,这样的话前面的12个0就不能压缩了.
+这个限制的目的是为了能准确还原被压缩的0.不然就无法确定每个::代表了多少个0.
 
 	/usr/include/netinet/ip6.h
 	struct ip6_hdr{
