@@ -1,0 +1,75 @@
+//参考文档: <<DOT语言_GUIDE>>
+digraph{
+	//图形方向
+	rankdir=TB;//可以为LR TB BT RL
+
+	label="I Love You"//图名
+	labelloc=t;//可以是b或t
+	labeljust=l;//可以是l或r
+
+	size="50,20"; //图形长宽为50*20inch
+	
+	node[shape=box,color=green];//修改默认参数
+	a->b;
+	b->c[style=dotted];//点状连线
+	a[label="huang ge ming"];//修改显示内容
+	c->{c1,c2}[style=dotted];	//两个子链接
+	c2->c2yy[label="xie ge zhi"];//连线上加内容
+	c2yy[style=dotted,color=red];//修改框体格式
+	
+	//修改连线属性
+	b->b1[dir=both];
+	b->b2[dir=back];
+	b->b3[dir=forward];
+	b->b4[dir=none];
+	
+	//将b1变为多边形,边数为7,层数为5,填充形式
+	b1[shape=polygon,sides=7,peripheries=5,style=filled];
+	
+	//将b2变为平行四边形,斜度1
+	b2[shape=polygon,sides=4,skew=1];
+	
+	//将b3变为多边形,边数为7,层数为5,填充形式.让多边形规则化
+	b3[shape=polygon,sides=7,peripheries=5,style=filled,regular=true];
+	
+	b4->{b4a,b4b};
+	
+	//多层图形 record 直角,Mrecord 圆角
+	b4a[shape=record,label="left|mid\ dle|right"];
+	b4b[shape=Mrecord,label="hello\nworld|{b|{c|<here>d|e}|f}|g|h"];
+	
+	//并行图
+	{
+		//选择线头的出入位置,上北(north)下南(soutch),左西(west)右东(east)
+		e:n->f:s; //n,s,e,w
+		f:se->g:nw; //ne,se,sw,nw
+	}
+	
+	//多格链接,链表图就靠它了
+	{
+		node[shape=record];
+		h1[label="<f0>|<f1>ONE|<f2>"];
+		h2[label="<f0>|<f1>TWO|<f2>"];
+		h3[label="<f0>|<f1>THREE|<f2>"];
+		h1:f1:sw->h2:f1:ne;
+		h2:f1->h3:f1;
+	}
+	
+	//子图
+	//将子图作为一个整体
+	compound=true;
+	subgraph cluster1
+	{
+		node[style=filled, color=grey];
+		label="sub 1";
+		i1->i2;
+	}
+	subgraph cluster2
+	{
+		node[style=filled];
+		label="sub 2";
+		j1->j2;
+	}
+	//子图整体链接
+	i2->j1[ltail=cluster1,lhead=cluster2];
+}

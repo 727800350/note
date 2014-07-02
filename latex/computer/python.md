@@ -29,12 +29,82 @@ list, tuple, 字符串都属于sequence
 The optional argument random is a 0-argument function returning a random float in [0.0, 1.0); by default, this is the function random().
 - `random.sample(sequence, k)`,从指定序列中随机获取指定长度的片断.sample函数不会修改原有序列
 
-# Numeric
+# Data types
+list and dictionary is mutable
+
+two non-scalar type: tuple and string are immutable
+
+### Iterate
+file, list, tuple, dict 的迭代, 可以使用for 来进行统一形式的迭代, 其中dict迭代的是key
+
+	for i in seq:
+	    do_something_to(i)
+实际上是这样工作的:
+
+	fetch = iter(seq)
+	while True:
+		try:
+			i = fetch.next()
+		except StopIteration:
+			break
+		do_something_to(i)
+
+## List
+list 不是线程安全的, dequeue 是线程安全的
+
+要注意列表中的列表不会被打散,如 `a=[1,2], b=[a,3,4]`,结果就是 `b=[[1,2],3,4]`
+
+列表赋值是引用赋值.要想拷贝,必须用切片:`b = a[:]`
+
+list是对所指向对象的一个引用
+list2=list1,那么这两个list指向的是同一个list对象, 当我们改变一个中的元素的时候, 另一个也随之改变
+
+### List API
+- list.append(x)
+- list.extend(L): 将list L中所有member 追加到list中
+- list.insert(i, x)
+- list.remove(x)
+- list.pop(i)
+- list.index(x): Return the index in the list of the first item whose value is x. It is an error if there is no such item.
+- list.count(x): Return the number of times x appears in the list.
+- list.sort(): Sort the items of the list, in place. 会改变原列表.
+- list.reverse(): Reverse the elements of the list, in place. 会改变原列表.
+
+### 列表推导式
+	>>>vec = [ 2, 4, 6] 
+	>>>[ 3* x for x in vec if x>3]  # 大于 3 的元素乘上 3 作为新列表元素 
+	[ 12, 18] 
+	
+	>>>[ ( x, x**2) for x in vec] # 循环变量要是一个 sequence, 而[ x, x* * 2 f or x i n vec] 是错误的 
+	[ ( 2, 4) , ( 4, 16) , ( 6, 36) ] 
+	
+	>>>vec2 = [ 4, 3, - 9] 
+	>>>[ x* y for x in vec for y in vec2] # vec 与 vec2 元素相乘 
+	[ 8, 6, - 18, 16, 12, - 36, 24, 18, - 54] 
+
+## Dict
+定义方式为 `c={'a':1, 'b':2}`
+
+定义和访问时,key必须用引号引起来. 使用{}定义,使用[]访问,即`c['a']`
+
+对字典key 的要求:  
+dictionaries are indexed by keys, which can be any immutable type; strings and numbers can always be keys.
+
+### Dict API
+- `key in d`: Return True if d has a key key, else False.
+- `key not in d`: Equivalent to not key in d
+- `len(d)`
+- `get(key[, default])`: Return the value for key if key is in the dictionary, else default. 
+If default is not given, it defaults to None, so that this method **never raises a KeyError**.
+- `pop(key[, default])`
+- `del d[key]`: Raises a KeyError if key is not in the map
+
+## Numeric
 `int(String)`: convert a string to integer
 
 `divmod(x, y)` which returns a tuple `(x / y, x % y)`
 
-## 小数位数
+### 小数位数
 
 	>>> round(2.675,2)
 	2.6800000000000002
@@ -54,7 +124,7 @@ The optional argument random is a 0-argument function returning a random float i
 	>>> "%.3f" % 3.45
 	'3.450'
 
-## math module
+### math module
 - `math.floor()`
 - `math.ceil()`
 
