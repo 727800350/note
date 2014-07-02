@@ -12,6 +12,12 @@ To specify explicitly that you want a MyISAM table, indicate that with an ENGINE
     CREATE TABLE t (i INT) ENGINE = MYISAM;
 老版本的MySQL使用TYPE而不是ENGINE(例如，TYPE = MYISAM), but ENGINE is the preferred term and TYPE is deprecated.
 
+## insert
+- 当field为not null, 但是没有设置默认值, 插入的时候如果没有为这个field指定值, 那么这个field的位置为空, 什么都不显示
+- 当field为not null, 设置有默认值, 插入的时候如果没有为这个field指定值, 那么这个field的值就为默认值
+- 当field没有设置not null(也就是说可以为null), 也没有设置默认值, 那么插入的时候如果没有为这个field指定值, 那么这个field的值就为null
+- 当field没有设置not null(也就是说可以为null), 设置有默认值, 那么插入的时候如果没有为这个field指定值, 那么这个field的值就为默认值
+
 ## Alter
 	alter table flows add column ip_prot tinyint(4) null default 0;
 
@@ -27,6 +33,43 @@ position 指示从哪里开始查询，如果是0则是从头开始，counter �
 `mysql> SELECT * FROM table LIMIT 95,-1; // 检索记录行 96-last.`
 //如果只给定一个参数, 它表示返回最大的记录行数目:
 `mysql> SELECT * FROM table LIMIT 5;` //检索前 5 个记录行,也就是说，LIMIT n 等价于 LIMIT 0,n。
+
+## index
+在执行CREATE TABLE语句时可以创建索引,也可以单独用CREATE INDEX或ALTER TABLE来为表增加索引
+
+### CREATE INDEX
+CREATE INDEX可对表增加普通索引或UNIQUE索引
+
+	 CREATE INDEX index_name ON table_name (column_list)
+	 CREATE UNIQUE INDEX index_name ON table_name (column_list)
+
+### ALTER TABLE
+ALTER TABLE用来创建普通索引,UNIQUE索引或PRIMARY KEY索引
+
+	ALTER TABLE table_name ADD INDEX index_name (column_list)
+	ALTER TABLE table_name ADD UNIQUE (column_list)
+	ALTER TABLE table_name ADD PRIMARY KEY (column_list)
+
+`column_list` 指出对哪些列进行索引,多列时各列之间用逗号分隔.  
+索引名`index_name`可选,缺省时,MySQL将根据第一个索引列赋一个名称
+
+### 索引类型
+在创建索引时,可以规定索引能否包含重复值,如果不包含,则索引应该创建为PRIMARY KEY或UNIQUE索引,对于单列惟一性索引,这保证单列不包含重复的值;
+对于多列惟一性索引,保证多个值的组合不重复。
+
+PRIMARY KEY索引和UNIQUE索引非常类似.
+事实上,PRIMARY KEY索引仅是一个具有名称PRIMARY的UNIQUE索引.这表示一个表只能包含一个PRIMARY KEY,因为一个表中不可能具有两个同名的索引.
+
+### 删除索引
+可利用ALTER TABLE或DROP INDEX语句来删除索引.类似于CREATE INDEX语句,DROP INDEX可以在ALTER TABLE内部作为一条语句处理,语法如下:
+
+	DROP INDEX index_name ON talbe_name
+	ALTER TABLE table_name DROP INDEX index_name
+	ALTER TABLE table_name DROP PRIMARY KEY
+
+### 查看索引
+	mysql> show index from tblname;
+	mysql> show keys from tblname;
 
 ## [用户管理及权限管理](http://www.libuchao.com/2013/04/06/mysql-user-and-privilege)
 
@@ -58,5 +101,5 @@ MySQL 默认有个root用户,但是这个用户权限太大,一般只在管理�
 `DROP USER username@localhost;`
 
 仔细上面几个命令,可以发现不管是授权,还是撤销授权,都要指定响应的host(即 @ 符号后面的内容),因为以上及格命令实际上都是在操作mysql 数据库中的user表,可以用如下命令查看相应用户及对应的host:  
-S`ELECT User, Host FROM user;`  
+SELECT User, Host FROM user;`  
 当然,这个表中还包含很多其它例如用户密码,权限设置等很多内容,操作时候尤其需要小心.
