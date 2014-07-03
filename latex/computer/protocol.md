@@ -110,6 +110,15 @@ while values of 1536 and above indicate that the field is used to represent Ethe
 - Internet Header Length (IHL): (4 bits) is the Internet Header Length (IHL)
 - Total Length: 16-bit field defines the entire packet (fragment) size, including header and data, in bytes.
 
+**内网IP**:
+
+	10.0.0.0~10.255.255.255, 默认子网掩码:255.0.0.0
+	172.16.0.0~172.31.255.255, 默认子网掩码:255.255.0.0
+	192.168.0.0~192.168.255.255, 默认子网掩码:255.255.255.0
+
+内网是可以上网的.内网需要一台服务器或路由器做网关,通过它来上网  
+做网关的服务器有一个网关（服务器/路由器）的IP地址,其它内网电脑的IP可根据它来随意设置,前提是IP前三个数要跟它一样,第四个可从0-255中任选但要跟服务器的IP不同
+
 ## IP v6
 
 	/usr/include/netinet/ip6.h
