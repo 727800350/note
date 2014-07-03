@@ -195,6 +195,8 @@ The struct timeval structure represents an elapsed time. It is declared in sys/t
 	tv_usec(a fraction of a second), represented as the number of 
 	microseconds. It is always less than one million.
 
+	int gettimeofday(struct timeval *tv, struct timezone *tz);
+
 `time_t` just stores seconds, so  
 `time_t time = (time_t)ut_tv.tv_sec;`  
 Should work, but since you're just looking for a difference, there's always the magic of subtraction.
