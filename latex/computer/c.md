@@ -763,6 +763,8 @@ Those marked * sometimes give too many spurious warnings, so I use them on as-ne
 - `chroot` change root directory
 
 # Object orientation of C
+[Object-Orientation in C](http://stackoverflow.com/questions/415452/object-orientation-in-c)
+
 I would advise against preprocessor (ab)use to try and make C syntax more like that of another more object-oriented language. At the most basic level, you just use plain structs as objects and pass them around by pointers:
 
 	struct monkey{
