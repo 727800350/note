@@ -96,7 +96,9 @@ This does not change the execution context, but allows to examine variables for 
 - list: Print ten more lines.
 
 ## Examining data
-- print expression: Print value of expression. Expression is any valid C expression, can include function calls and arithmetic expressions, all evaluated within current stack frame
+- print expression: Print value of expression. 
+Expression is any valid C expression, can include function calls and arithmetic expressions, all evaluated within current stack frame  
+`set print elements number-of-elements`, Set a limit on how many elements of an array GDB will print, 如果设置为0, 则全部打印
 
 - set variable = expression: Assign value of variable to expression.  You can set any variable in the current scope.  Variables which begin with $ can be used as convenience variables in gdb.
 
