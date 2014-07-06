@@ -25,6 +25,28 @@ Note: This markdown file also contains other resources, but it is mostly from UN
 </script>
 <div id="category"></div>
 
+[Best C/C++ Network Library](http://stackoverflow.com/questions/118945/best-c-c-network-library)  
+Aggregated List of Libraries
+
+- Boost.Asio is really good, though the documentation is scarce.
+- ACE is also good, a bit more mature and has a couple of books to support it.
+- C++ Network Library
+- POCO
+- Qt
+- Raknet
+- ZeroMQ (C++)
+- nanomsg (C Library)
+- Berkeley Sockets
+- libevent
+- Apache APR
+- yield
+- Winsock2(Windows only)
+- wvstreams
+- zeroc
+- libcurl
+
+[C/C++ Web Server Library?](http://stackoverflow.com/questions/175507/c-c-web-server-library)
+
 # TCP
 Note that TCP does not guarantee that the data will be received by the other endpoint, as this is impossible. It delivers data to the other endpoint if possible, and notifies the user (by giving up on retransmissions and breaking the connection) if it is not possible. Therefore, TCP cannot be described as a 100% reliable protocol; it provides **reliable delivery of data or reliable notification of failure.**
 
