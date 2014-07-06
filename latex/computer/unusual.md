@@ -554,3 +554,31 @@ It allows you to pass the array to a function by value, or get it returned by va
 Structs can be passed by value, unlike arrays which decay to a pointer in these contexts.  
 Another advantage is that it abstracts away the size so you don't have to use `[MAX]` all over your code wherever you declare such an object.
 
+<br/>
+Why is "a" != "a" in C?  
+
+	void main(){
+		if("a" == "a")
+			printf("Yes, equal");  
+		else
+			printf("No, not equal");
+	}
+Why is the output No, not equal?
+
+What you are comparing are the two memory addresses for the different strings, which are stored in different locations. Doing so essentially looks like this:
+
+	if(0x00403064 == 0x002D316A){ // Two memory locations
+	    printf("Yes, equal");
+	}
+Use the following code to compare two string values:
+
+	#include <string.h>
+	if(strcmp("a", "a") == 0){
+	    // Equal
+	}
+Additionally, "a" == "a" may indeed return true, depending on your compiler, which may combine equal strings at compile time into one to save space.
+
+When you're comparing two character values (which are not pointers), it is a numeric comparison. For example:
+
+	'a' == 'a' // always true
+
