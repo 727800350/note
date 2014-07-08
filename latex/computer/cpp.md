@@ -637,15 +637,3 @@ To extract the value for an option manually
 ### demo
 [basic demo](https://github.com/ericuni/note/blob/master/demo/boost/program_options.cpp)
 
-run:
-	
-	./a.out --apples 20 --orangs 30
-	./a.out -a 20 -o 30 --name eric
-	./a.out --help
-
-If using parse config file
-
-	## comment: apples_oranges.cfg
-	name=eric
-	apples=10
-	oranges=20

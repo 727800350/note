@@ -2,6 +2,20 @@
 makefile:
 g++ -c option.cpp
 g++ -o a.out option.o -L/usr/local/lib -lboost_program_options
+
+results:
+run:
+	./a.out --apples 20 --orangs 30
+	./a.out -a 20 -o 30 --name eric
+	./a.out --help
+
+If using parse config file
+	## comment: apples_oranges.cfg
+	name=eric
+	apples=10
+	oranges=20
+
+	./a.out
 ************************************************************/
 
 #include <boost/program_options.hpp>
