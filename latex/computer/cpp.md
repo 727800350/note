@@ -583,3 +583,52 @@ Notice how the type that typeid considers for pointers is the pointer type itsel
 可能是我习惯了C#的风格,我比较喜欢把它们都写在类内部,也因为在开发过程中,所使用的编辑器都有一个强大的功能:代码折叠.
 
 当然还有其他原因就是写在类外部,对于每一个函数成员的实现都需要把模板类型作为限定符写一遍,把类名限定符也要写一遍.
+
+# boost
+安装
+
+	tar -xzvf boost_1_54_0.tar.gz
+	cd boost_1_54_0
+	./bootstrap.sh --prefix=/usr/local
+	sudo ./b2 install --with=all
+
+## program_options
+可以`parse_command_line, parse_config_file, parse_environment`
+
+### Basic option configuration
+All of the below options should be added as additional lines in the `desc.add_options()`
+
+	--option
+	("option", "Info message about option")
+
+	--option or -o
+	("option,o", "Info message about option") // can use -o
+
+	-o
+	(",o", "Info message about option") // must use -o
+
+Add an option that has an associated value
+
+	--option <value>
+	("option", po::value<arg_type>(), "Info message about option")
+
+Specify that an option is required, The call to po::notify(vm) will throw if the option is not specified
+
+	("option", po::value<arg_type>()->required(), "required option")
+
+Specify an option that can be specified multiple times
+
+	--option <value1> --option <value2> --option <value3>
+	("option", po::value<std::vector<arg_type> >(), "a list of values")
+
+### Accessing option values
+Have the option set directly into an existing variable
+
+	("option", po::value<arg_type>(&existingVariable), "info message")
+
+Check if an option was passed in the command line
+
+	if(vm.count("option"))
+To extract the value for an option manually
+
+	vm["option"].as<arg_type>()
