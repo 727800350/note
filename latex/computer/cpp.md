@@ -597,6 +597,8 @@ Notice how the type that typeid considers for pointers is the pointer type itsel
 可以`parse_command_line, parse_config_file, parse_environment`
 
 ### Basic option configuration
+`--option value or --option=value`, 等于号前后不能有空格等字符
+
 All of the below options should be added as additional lines in the `desc.add_options()`
 
 	--option
