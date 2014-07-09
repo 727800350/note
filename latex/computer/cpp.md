@@ -396,6 +396,8 @@ dereferenced.
 
 ## typeid
 typeid allows to check the type of an expression:  
+
+string 和 string & 的typeid 是一样的
 	
 	typeid (expression)
 This operator returns a reference to a constant object of type `type_info` that is defined in the standard header file
