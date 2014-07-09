@@ -5,33 +5,40 @@ using namespace std;
 
 class Point{
 public:
-        Point(){
-            cout << "construction" << endl;
-        }
-        Point(const Point& p){
-            cout << "copy construction" << endl;
-        }
-        ~Point(){
-            cout << "destruction" << endl;
-        }
+	Point(){
+		cout << "construction" << endl;
+	}
+	Point(const Point& p){
+		cout << "copy construction" << endl;
+	}
+	~Point(){
+		cout << "destruction" << endl;
+	}
 };
 
 int main(){
-    vector<Point> pointVec;
-    Point a;
-    Point b;
+	vector<Point> pointVec;
+	Point a;
+	Point b;
 
 // 	pointVec.reserve(4);
 
-    pointVec.push_back(a);
-    cout<<pointVec.size()<<std::endl;
-    cout<<pointVec.capacity()<<std::endl;
+	pointVec.push_back(a);
+	cout<<pointVec.size()<<std::endl;
+	cout<<pointVec.capacity()<<std::endl;
 
-    pointVec.push_back(b);
-    cout<<pointVec.size()<<std::endl;
-    cout<<pointVec.capacity()<<std::endl;
+	pointVec.push_back(b);
+	cout<<pointVec.size()<<std::endl;
+	cout<<pointVec.capacity()<<std::endl;
 
-    return 0;
+	// erase the first element
+	pointVec.erase(pointVec.begin());
+
+// 	call swap to truely clear the vector
+// 	vector<Point>().swap(pointVec);
+// 	cout<<pointVec.size()<<std::endl;
+// 	cout<<pointVec.capacity()<<std::endl;
+	return 0;
 }
 
 /*************************************
@@ -66,6 +73,9 @@ pointVec.push_back(b);
 所以共三次copy
 
 一共新建了5个point 对象, 所以一共有5 个 destruction
+第一个destruction 是自动增长, 且copy之后, 原来的vector一份
+接下来的两个destruction 是新的vector 的两个
+最后两个是a和b
 
 ========================================
 加上 pointVec.reserve(4);之后的运行结果
