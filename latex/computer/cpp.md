@@ -639,3 +639,5 @@ To extract the value for an option manually
 ### demo
 [basic demo](https://github.com/ericuni/note/blob/master/demo/boost/program_options.cpp)
 
+[basic demo](../../demo/boost/program_options.cpp)
+
