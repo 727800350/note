@@ -30,6 +30,19 @@ The functions `snprintf()` and `vsnprintf()`  write  **at most size bytes (inclu
 If I stick a `'\0'` into the middle of the allocated memory, does `free()` still work properly?  
 Yes.
 
+## char
+	int main(){
+		char b = 'a';
+		printf("%lu,", sizeof ('a'));
+		printf("%lu", sizeof (b));
+		return 0;
+	}
+
+	OUTPUT: 4,1
+character literals are of type int and not char in C.  
+So `sizeof('a') == sizeof (int)`.  
+Note that in C++, a character literal is of type char and so `sizeof('a') == sizeof(char)`
+
 ## [字符数组与字符指针](http://blog.csdn.net/qiumm/article/details/5657120)
 	char *str = "This is a pointer to a string.";
 字符指针指向的是一个字符串常量的首地址,即指向字符串的首地址.
