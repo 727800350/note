@@ -1,6 +1,9 @@
 cc=clang++
 all: vector-push_back
 
+run:
+	./a.out
+
 vector:
 	$(cc) -g -Wall vector.cpp
 
@@ -9,5 +12,6 @@ vector-push_back:
 
 test:
 	$(cc) -g -Wall test.cpp
-run:
-	./a.out
+
+clean:
+	rm *.o a.out

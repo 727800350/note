@@ -1,6 +1,9 @@
 cc=clang++
 all: container-any
 
+run:
+	./a.out --apples 2 --oranges=40
+
 container-any:
 	 $(cc) -g -Wall -c container-any.cpp
 	 $(cc) -g -Wall -o a.out container-any.o -L/usr/local/lib -lboost_program_options
@@ -11,5 +14,6 @@ program_options:
 
 test:
 	$(cc) -g -Wall test.cpp
-run:
-	./a.out --apples 2 --oranges=40
+
+clean:
+	rm *.o a.out
