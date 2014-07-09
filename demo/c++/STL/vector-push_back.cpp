@@ -21,6 +21,8 @@ int main(){
     Point a;
     Point b;
 
+// 	pointVec.reserve(4);
+
     pointVec.push_back(a);
     cout<<pointVec.size()<<std::endl;
     cout<<pointVec.capacity()<<std::endl;
@@ -49,7 +51,7 @@ destruction
 destruction
 destruction
 
-========================================
++++++++++++++++++++++++++++++++++++++
 分析
 Point a;
 Point b;
@@ -64,4 +66,20 @@ pointVec.push_back(b);
 所以共三次copy
 
 一共新建了5个point 对象, 所以一共有5 个 destruction
+
+========================================
+加上 pointVec.reserve(4);之后的运行结果
+
+construction
+construction
+copy construction
+1
+4
+copy construction
+2
+4
+destruction
+destruction
+destruction
+destruction
 *************************************/
