@@ -598,6 +598,17 @@ Notice how the type that typeid considers for pointers is the pointer type itsel
 
 [vector push_back operation demo](../../demo/c++/STL/vector-push_back.cpp)
 
+### 内存的释放
+由于vector的内存占用空间只增不减,比如你首先分配了10,000个字节,然后erase掉后面9,999个,留下一个有效元素,但是内存占用仍为10,000个(capacity 仍然很大).
+所有内存空间是在vector析构时候才能被系统回收.  
+empty()用来检测容器是否为空的.  
+clear()可以清空所有元素.但是即使clear(),vector所占用的内存空间依然如故,无法保证内存的回收
+
+如果需要空间动态缩小,可以考虑使用deque.  
+如果vector,可以用swap()来帮助你释放内存.具体方法如下:
+
+	vector<Point>().swap(pointVec); //或者pointVec.swap(vector<Point> ())
+
 ## [list](http://www.cplusplus.com/reference/list/list)
 
 # boost
