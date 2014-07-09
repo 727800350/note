@@ -582,3 +582,12 @@ When you're comparing two character values (which are not pointers), it is a num
 
 	'a' == 'a' // always true
 
+<br/>
+	int test();
+
+in a function declaration, no parameter means the function takes an unspecified number of arguments. This is different than 
+	
+	int test(void); 
+which means the function takes no argument.  
+A function declaration with no parameter is the old C style of function declaration; C marks this style as obsolescent and discourages its use. 
+In short, don't use it. In your case, you should use a function declaration with the correct parameter declaration: `int test(void)`
