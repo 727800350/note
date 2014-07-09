@@ -596,6 +596,8 @@ Notice how the type that typeid considers for pointers is the pointer type itsel
 对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针, 
 所以即使原来的object被删除了, vector中的仍然可以正常访问.
 
+`std::vector::back`:  Returns a reference to the last element in the vector.
+
 [vector push_back operation demo](../../demo/c++/STL/vector-push_back.cpp)
 
 ### 内存的释放
