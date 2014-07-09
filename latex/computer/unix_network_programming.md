@@ -945,7 +945,7 @@ Convert IP addresses from a dots-and-number string to a struct in_addr and back
 
 `inet_aton()`: **dots string to a number**. returns non-zero if the address is a valid one, and it returns zero if the address is invalid.  
 `inet_ntoa()`: **number to a dots string**. returns the dots-and-numbers string **in a static buffer that is overwritten with each call to the function**.  
-`inet_addr()` returns the address as an `in_addr_t`, or -1 if there's an error. 
+`inet_addr()` returns the address as an `in_addr_t` an `u_int32_t` value, or -1 if there's an error. 
 
 	struct sockaddr_in antelope;
 	char *some_addr;
