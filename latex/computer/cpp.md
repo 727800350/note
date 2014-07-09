@@ -584,6 +584,22 @@ Notice how the type that typeid considers for pointers is the pointer type itsel
 
 当然还有其他原因就是写在类外部,对于每一个函数成员的实现都需要把模板类型作为限定符写一遍,把类名限定符也要写一遍.
 
+# STL 标准模板库
+- list封装了链表, 以链表形式实现的
+- vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素,从尾部追加
+
+## [vector](http://www.cplusplus.com/reference/vector/vector/)
+在vector中,如果元素是对象的指针,当该vector用erase删除元素时, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
+
+在调用push_back时,都要重新分配一个大一个元素的存储(古国不考虑处于性能考虑而预分配的内存空间),将要push_back的元素拷贝到新分配的内存中.
+
+对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针, 
+所以即使原来的object被删除了, vector中的仍然可以正常访问.
+
+[vector push_back operation demo](../../demo/c++/STL/vector-push_back.cpp)
+
+## [list](http://www.cplusplus.com/reference/list/list)
+
 # boost
 安装
 
