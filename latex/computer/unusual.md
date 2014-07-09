@@ -1,3 +1,6 @@
+It was a philosophy of sharing, openness, decentralization, and getting your hands on machines at any cost to improve the machines, and to improve the world. 
+This Hacker Ethic
+
 # C/C++
 [adding two numbers without using +](http://stackoverflow.com/questions/11244510/adding-two-numbers-without-using)  
 I have this code which does the trick:
