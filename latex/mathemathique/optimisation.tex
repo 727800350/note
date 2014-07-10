@@ -10,4 +10,86 @@
 \tableofcontents
 \newpage
 
+\section{拉格朗日乘数}
+微积分中最常见的问题之一是求一个函数的极大极小值(极值).但是很多时候找到极值函数的显式表达是很困难的,特别是当函数有先决条件或约束时.
+拉格朗日乘数则提供了一个非常便利方法来解决这类问题,而避开显式地引入约束和求解外部变量.
+
+\subsection{Theory}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale = 0.5]{Lagrange_multiplier}\\
+  \caption{Lagrange multiplier}\label{fig.Lagrange.multiplier}
+\end{figure}
+
+先看一个二维的例子:假设有函数:$f(x, y)$,要求其极值(最大值/最小值),且满足条件
+$$ g\left( x,y \right) = c, $$
+c 为常数.对不同$d_n$的值,不难想像出
+
+$$ f \left( x, y \right)=d_n $$
+的等高线, 如图\ref{fig.Lagrange.multiplier}, 
+\href{http://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Lagrange\_multiplier.png/300px-Lagrange\_multiplier.png}{Lagrange multiplier}所示.
+而方程 g 的可行集所构成的线正好是 $g ( x, y ) = c$ .想像我们沿着 $g = c$ 的可行集走,
+因为大部分情况下 f 的等高线和 g 的可行集线不会重合,但在有解的情况下,这两条线会相交.想像此时我们移动 $g = c$ 上的点,因为 f 是连续的方程,
+我们因此能走到$f \left( x, y \right)=d_n$更高或更低的等高线上,也就是说$d_n$可以变大或变小.只有当 $g = c$ 和$f \left( x, y \right)=d_n$相切,也就是说,
+此时,我们正同时沿着 $g = c$ 和$f \left( x, y \right)=d_n$走.这种情况下,会出现极值或鞍点.
+
+用向量的形式来表达的话,我们说相切的性质在此意味着 f 和 g 的切线在某点上平行.此时引入一个未知标量$\lambda$,并求解:
+
+$$ \nabla \Big[f \left(x, y \right) + \lambda \left(g \left(x, y \right) - c \right) \Big] = 0 $$
+且$\lambda \neq 0$.
+
+一旦求出$\lambda$的值,将其套入下式,易求在无约束极值和极值所对应的点.
+
+$$ F \left( x , y \right)  =  f \left( x , y \right) + \lambda \left( g \left( x , y \right) - c \right) $$
+新方程$F(x,y)$在达到极值时与$f(x,y)$相等,因为$F(x,y)$达到极值时$g(x,y)-c$总等于零.
+
+\subsection{Example}
+\begin{example}
+\textbf{求方程的最小值}:
+
+$$ f(x, y) = x^2 y $$
+同时未知数满足
+
+$$ x^2 + y^2 = 1 $$
+因为只有一个未知数的限制条件,我们只需要用一个乘数$\lambda$.
+
+$$
+\begin{aligned}
+		& g (x, y) = x^2 +y^2 -1 \\
+		& \Phi (x, y, \lambda) = f(x,y) + \lambda g(x, y) = x^2 y + \lambda (x^2 + y^2 - 1)
+\end{aligned}
+$$
+将所有$\Phi$方程的偏微分设为零,得到一个方程组,最大值是以下方程组的解中的一个:
+
+$$
+\begin{aligned}
+		& 2 x y + 2 \lambda x = 0 \\
+		& x^2 + 2 \lambda y = 0 \\
+		& x^2 + y^2 -1 = 0
+\end{aligned}
+$$
+求解方程组,结果
+\end{example}
+
+\begin{example}
+\textbf{离散分布的最大熵}:
+
+$$ f(p_1,p_2,\ldots,p_n) = -\sum_{k=1}^n p_k\log_2 p_k.  $$
+所有概率的总和是1,因此我们得到的约束是$g(p)= 1$即
+
+$$ g(p_1,p_2,\ldots,p_n)=\sum_{k=1}^n p_k=1.  $$
+可以使用拉格朗日乘数找到最高熵(概率的函数).对于所有的k 从1到n,要求
+
+$$ \frac{\partial}{\partial p_k}(f+\lambda (g-1))=0, $$
+由此得到
+
+$$ \frac{\partial}{\partial p_k}\left(-\sum_{k=1}^n p_k \log_2 p_k + \lambda (\sum_{k=1}^n p_k - 1) \right) = 0.  $$
+计算出这n个等式的微分,我们得到:
+
+$$ -\left(\frac{1}{\ln 2}+\log_2 p_k \right) + \lambda = 0.  $$
+这说明$p_i$都相等 (因为它们都只是$\lambda$的函数). 解出约束$\sum_k p_k = 1$,得到
+
+$$ p_k = \frac{1}{n}.$$
+因此,使用均匀分布可得到最大熵的值.
+\end{example}
 \end{document}
