@@ -16,6 +16,21 @@
 - /var/log/httpd               /日志文件目录,这里的文件很容易变的很大,需要提供足够的空间
 - /var/www/html                /这里是 CentOS 默认的"首页"目录
 
+# Form 
+	<html>
+	<body>
+		<?php 
+			if(!empty($_POST['name'])){
+				echo "Greetings, {$_POST['name']}, and welcome.";
+			}
+		?>
+		<form action="<?php $PHP_SELF; ?>" method="post">
+			Enter your name: <input type="text" name="name" />
+			<input type="submit" />
+		</form>
+	</body>
+	</html>
+
 # Database
 php 使用mysql有两个方式, 一种是面向过程式的, 一种是面向对象式的, 官方推荐使用面向对象式的.
 
