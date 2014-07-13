@@ -34,6 +34,23 @@ position 指示从哪里开始查询，如果是0则是从头开始，counter �
 //如果只给定一个参数, 它表示返回最大的记录行数目:
 `mysql> SELECT * FROM table LIMIT 5;` //检索前 5 个记录行,也就是说，LIMIT n 等价于 LIMIT 0,n。
 
+**mySQL error: #1248 - Every derived table must have its own alias**  
+如果按照下面的写法会报上面的错误:
+
+	$sql3="SELECT * FROM (
+	SELECT * FROM (
+	SELECT * FROM Pre_Company ORDER BY ID DESC limit $n)
+	ORDER BY ID  ASC limit $display)
+	ORDER BY ID DESC";
+
+需要为子查询指定别名, 如下所示:
+
+	$sql3="SELECT * FROM (
+	SELECT * FROM (
+	SELECT * FROM Pre_Company ORDER BY ID DESC limit $n) as a
+	ORDER BY ID  ASC limit $display) as b 
+	ORDER BY ID DESC";
+
 ## index
 在执行CREATE TABLE语句时可以创建索引,也可以单独用CREATE INDEX或ALTER TABLE来为表增加索引
 
