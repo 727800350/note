@@ -25,3 +25,11 @@ php 使用mysql有两个方式, 一种是面向过程式的, 一种是面向对�
 
 [微软的sqlserver, access, excel 连接](../../demo/php/db/ms.php)
 
+**`$count = $$result->fetch_row()[0]` 错误:   
+PHP Fatal error:  Call to a member function query() on a non-object in xxx.php. 
+
+必须使用:
+
+	$row = $result->fetch_row();
+	$count = $row[0];
+不知道为什么
