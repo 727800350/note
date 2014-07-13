@@ -1,0 +1,69 @@
+% !Mode:: "TeX:UTF-8"
+\documentclass{article}
+\input{../public/package}   %导入需要用到的package
+\input{../public/article}   %导入需要用到的package
+
+\begin{document}
+\title{Models}
+\author{Commun}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{排队模型}
+M/M/1排队模型(M/M/1 model)是一种单一服务器(single-server)的(排队模型),可用作模拟不少系统的运作.
+依据开恩特罗符号必须有下列的条件:
+\begin{itemize}
+\item 到达时间服从泊松分布(Poisson distribution)
+\item 服务时间是指数分布(exponentially distributed)
+\item 只有一部服务器(server)
+\item 队列长度无限制
+\item 可加入队列的人数为无限
+\end{itemize}
+\href{http://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Mm1\_queue.svg/292px-Mm1\_queue.svg.png}{Mm1}
+
+这种模型是一种出生-死亡过程,此随机过程中的每一个状态代表模型中人数的数目.因为模型的队列长度无限且参与人数亦无限,故此状态数目亦为无限.
+例如状态0表示模型闲置,状态1表示模型有一人在接受服务,状态2表示模型有二人(一人正接受服务,一人在等候),
+如此类推. 此模型中,出生率(即加入队列的速率)$\lambda$ 在各状态中均相同,死亡率(即完成服务离开队列的速率)$\mu$亦在各状态中相同(除了状态0,因其不可能有人离开队列).
+
+故此,在任何状态下,只有两种事情可能发生:
+\begin{itemize}
+\item 有人加入队列.如果模型在状态k,它会以速率$\lambda$ 进入状态$k + 1$
+\item 有人离开队列.如果模型在状态k(k不等于0),它会以速率$\mu$进入状态$k ? 1$
+\end{itemize}
+
+\href{http://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/MM1\_queue\_state\_space.svg/605px-MM1\_queue\_state\_space.svg.png}{State space transmission}
+
+由此可见,模型的隐定条件为$\lambda < \mu$.如果死亡率小于出生率,则队列中的平均人数为无限大,故此这种系统没有平衡点.
+
+此模型中有几项数值常被测量,例如:
+\begin{itemize}
+\item 一人在系统中的平均逗留时间
+\item 一人在接受服务前的平均等候时间
+\item 整个系统中的平均人数
+\item 等候队列的平均人数
+\item 一单位时间内系统完成服务人数,即服务速度
+\end{itemize}
+
+稳定状态下的公式
+
+定义 $\scriptstyle \rho \,=\,{\tfrac  {\lambda }{\mu }}$.
+则模型在状态i的机率为
+$$ {\mbox{Prob}}(q=i)=\pi _{i}=(1-\rho )\rho ^{i}.\, $$
+由此,可给出各测量数值的公式:
+整个系统的平均人数N:$\overline N={\frac  {\rho }{1-\rho }}$,
+且其变异(variance)为$\sigma _{N}^{2}={\frac  {\rho }{(1-\rho )^{2}}}$.
+一单位时间内系统完成服务的人数:$\overline N_{S}=\lambda \overline x=\rho$
+在队列中等候服务的人数:$\overline N_{Q}={\frac  {\rho ^{2}}{1-\rho }}$
+一人在系统中的平均逗留(等候＋接受服务)时间:$T={\frac  {1}{\mu -\lambda }}$.
+一人的平均等候时间:$W={\frac  {\overline N_{Q}}{\lambda }}=T-\overline x=T-{\frac  {1}{\mu }}={\frac  {\rho }{\mu -\lambda }}$
+
+\begin{example}
+可用M/M/1模型的例子众多,例如只有一位员工的邮局,只有一队列.客人进来,排队,接受服务,离开.
+如果客人进来的数目符合泊松过程,且服务时间是指数分布,则可用M/M/1模拟,并算出平均队列长度,不同等候时间的机率等.
+
+M/M/1可一般化成为M/M/n模型,使可用时接受服务的人数为大于一.
+历史上,M/M/n模型首先被用来模拟电话系统,因为荷兰工程师Erlang发现客人打电话的速率符合泊松过程,且通话时间是指数分布,
+所以占用通讯线路的数目和等待接线的人数符合M/M/n模型.
+\end{example}
+\end{document}
