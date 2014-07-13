@@ -16,6 +16,20 @@
 - /var/log/httpd               /日志文件目录,这里的文件很容易变的很大,需要提供足够的空间
 - /var/www/html                /这里是 CentOS 默认的"首页"目录
 
+# 习惯
+inc 通常指的是include的简写,表示这个文件被其他(多个)文件引用,当然最好写成 a.inc.php,
+这样的好处一是含义依然明确,而是避免将代码直接被访客下载(这种情况有时很严重,比如密码或者密码加密算法)  
+类似的,还有这样一些常用后缀名:  
+.class.php   类文件  
+.ini.php     配置文件
+
+PHP文件最后空一行的原因是什么?  
+PHP FIG中提及: All PHP files MUST end with a single blank line. -- 来源
+主要有两个理由:
+
+1. 某些工具(特别是比较古老的),如果文件的末尾没有\n或\r,就会忽略最后一行.最后有一个空行,便于判断这个文件传输完整(而不是只传了一半)
+1. 文件的以空行结尾是Unix的惯例
+
 # Form 
 	<html>
 	<body>
@@ -48,3 +62,4 @@ PHP Fatal error:  Call to a member function query() on a non-object in xxx.php.
 	$row = $result->fetch_row();
 	$count = $row[0];
 不知道为什么
+
