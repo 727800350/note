@@ -341,6 +341,23 @@ The `MYSQL_BIND` structure contains the following members for use by application
 	my_bool *error // For output
 
 ## Data type
+### Encoding
+MySQL的默认编码是Latin1,不支持中文
+
+- character_set_client为客户端编码方式,
+- character_set_connection为建立连接使用的编码
+- character_set_database数据库的编码； 
+- character_set_results结果集的编码； 
+- character_set_server数据库服务器的编码； 
+
+只要保证以上四个采用的编码方式一样,就不会出现乱码问题
+
+	show variables like 'character%';
+
+[代码字符集批量转换——GBK<->UTF-8(bash版)](http://xwwplay.blog.163.com/blog/static/131845378201212931250882/)
+
+[gbk<->utf8 bash script](../../bash/gbkTOutf8.sh)
+
 MySQL supports all standard SQL numeric data types.  
 These types include the exact numeric data types (INTEGER, SMALLINT, DECIMAL, and NUMERIC), as well as the approximate numeric data types (FLOAT, REAL, andDOUBLE PRECISION).   
 The keyword INT is a synonym for INTEGER, and the keywords DEC and FIXED are synonyms for DECIMAL. MySQL treats DOUBLE as a synonym for DOUBLE PRECISION (a nonstandard extension). MySQL also treats REAL as a synonym for DOUBLE PRECISION (a nonstandard variation), unless theREAL_AS_FLOAT SQL mode is enabled.

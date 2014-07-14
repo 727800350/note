@@ -111,6 +111,10 @@ The reverse works as well (copy Linux file to Windows)
 **scp**  
 secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的命令有cp,不过cp只是在本机进行拷贝不能跨服务器,而且scp传输是加密的.可能会稍微影响一下速度。
 
+通过scp.exe 将文件从windows 传输到linux, 如果文件名中含有中文, scp.exe 会将中文从默认的gbk编码转换为utf-8
+
+而如果压缩包里含有中文文件名, 从windows 传输到linux下, 解压之后, 中文文件会乱码.
+
 1. 获取远程服务器上的文件
 
 		scp -P 2222 root@www.vpser.net:/root/lnmp0.4.tar.gz /home/lnmp0.4.tar.gz
