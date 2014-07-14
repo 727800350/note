@@ -13,6 +13,10 @@ Write a text file to the screen:
 	type file
 相当于linux的cat.
 
+**进入D盘, `cd D:\` 不管用**  
+
+	d: ENTER
+
 # bat script
 REM [comment]  
 If ECHO is ON, the comment is displayed. Otherwise, it is ignored
