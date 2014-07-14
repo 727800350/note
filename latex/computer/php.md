@@ -51,6 +51,8 @@ PHP FIG中提及: All PHP files MUST end with a single blank line. -- 来源
 	</html>
 
 ## upload files
+[upload file demo](../../demo/php/upload-file.php)
+
 参数含义:
 
 	$_FILES["file"]["name"] - the name of the uploaded file
