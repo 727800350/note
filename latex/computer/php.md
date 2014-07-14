@@ -17,6 +17,11 @@
 - /var/www/html                /这里是 CentOS 默认的"首页"目录
 
 # 习惯
+为了避免关于编码的不必要的麻烦, 将所有文件设置为utf-8编码, 文件名不要含有中文.\\
+[编码转换工具](../../bash/gbkTOutf8.sh)
+
+	header('Content-type: text/html; charset=utf-8');
+
 inc 通常指的是include的简写,表示这个文件被其他(多个)文件引用,当然最好写成 a.inc.php,
 这样的好处一是含义依然明确,而是避免将代码直接被访客下载(这种情况有时很严重,比如密码或者密码加密算法)  
 类似的,还有这样一些常用后缀名:  
@@ -44,6 +49,47 @@ PHP FIG中提及: All PHP files MUST end with a single blank line. -- 来源
 		</form>
 	</body>
 	</html>
+
+## upload files
+Create an Upload-File Form
+
+	<html>
+	<body>
+	<form action="upload_file.php" method="post" enctype="multipart/form-data">
+		<label for="file">Filename:</label>
+		<input type="file" name="file" id="file"><br>
+		<input type="submit" name="submit" value="Submit">
+	</form>
+	</body>
+	</html>
+
+The "upload_file.php" file contains the code for uploading a file:
+
+	<?php
+	if ($_FILES["file"]["error"] > 0){
+		echo "Error: " . $_FILES["file"]["error"] . "<br>";
+	}else{
+		echo "Upload: " . $_FILES["file"]["name"] . "<br>";
+		echo "Type: " . $_FILES["file"]["type"] . "<br>";
+		echo "Size: " . ($_FILES["file"]["size"] / 1024) . " kB<br>";
+		echo "Stored in: " . $_FILES["file"]["tmp_name"];
+		if (file_exists("upload/" . $_FILES["file"]["name"])){
+			 echo $_FILES["file"]["name"] . " already exists. ";
+		}else{
+			// store the file
+			move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $_FILES["file"]["name"]);
+			echo "Stored in: " . "upload/" . $_FILES["file"]["name"];
+		}
+	}
+	?>
+
+参数含义:
+
+	$_FILES["file"]["name"] - the name of the uploaded file
+	$_FILES["file"]["type"] - the type of the uploaded file
+	$_FILES["file"]["size"] - the size in bytes of the uploaded file
+	$_FILES["file"]["tmp_name"] - the name of the temporary copy of the file stored on the server
+	$_FILES["file"]["error"] - the error code resulting from the file upload
 
 # Database
 php 使用mysql有两个方式, 一种是面向过程式的, 一种是面向对象式的, 官方推荐使用面向对象式的.
