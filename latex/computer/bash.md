@@ -143,6 +143,25 @@ secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的�
 `df`: 查看磁盘使用情况  
 于du不同的是,du是面向文件的命令,只计算被文件占用的空间.不计算文件系统metadata 占用的空间.df则是基于文件系统总体来计算,通过文件系统中未分配空间来确定系统中已经分配空间的大小
 
+# OS
+**开机自动启动**  
+例如要开机后自动启动mysql,apache,vsftpd服务,用以下命令即可:
+
+	chkconfig mysqld on
+
+要关闭自动启动的话,把on改为off就行了
+
+	chkconfig mysqld off
+
+不过要注意的是,如果某个服务尚未被添加到chkconfig列表中,则现需要使用–add参数将其添加进去:
+
+	chkconfig –add postfix
+
+如果要查询当前自动启动的服务,可以输入:
+
+	chkconfig –list
+	chkconfig –list httpd
+
 # 杂项
 **man**  
 `man number item`: find item in section number, eg: `man 3 fopen`  
