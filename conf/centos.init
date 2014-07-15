@@ -6,6 +6,10 @@ sudo yum remove -y evolution
 sudo yum update -y firefox
 sudo yum install -y mysql mysql-server mysql-devel
 
+## php
+sudo yum install -y php
+sudo yum install -y php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml php-xmlrpc
+
 ## phpMyAdmin: Web application to manage MySQL
 ## config file /etc/phpMyAdmin/config.inc.php
 ## then put php files(need download) into /var/www directory
