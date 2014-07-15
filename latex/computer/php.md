@@ -17,8 +17,6 @@
 - /var/www/html                /这里是 CentOS 默认的"首页"目录
 
 # 习惯
-var_dump(), print_r(), echo, printf
-
 为了避免关于编码的不必要的麻烦, 将所有文件设置为utf-8编码, 文件名不要含有中文.\\
 [编码转换工具](../../bash/gbkTOutf8.sh)
 
@@ -36,6 +34,25 @@ PHP FIG中提及: All PHP files MUST end with a single blank line. -- 来源
 
 1. 某些工具(特别是比较古老的),如果文件的末尾没有\n或\r,就会忽略最后一行.最后有一个空行,便于判断这个文件传输完整(而不是只传了一半)
 1. 文件的以空行结尾是Unix的惯例
+
+# IO
+## 输出
+在PHP中,有四种方法输出字符串:
+
+- echo结构可以一次输出多个值
+- print()只可以输出一个值
+- printf(), sprintf()可以格式化输出
+- `print_r()`, `var_dump()`可以输出数组,对调试很有好处
+
+echo 是PHP的一个关键字,它没有返回值.在写法上,它可以省略小括号
+
+print 也是PHP的一个关键字,它有返回值,一般返回true,返回false的情况应该没有.在写法上,它和echo一样,可以省略小括号.
+
+printf可以像C语言的printf一样,格式化输出一个字符串.它的格式和C语言差不多,都是以%开头
+
+sprintf和格式转换和printf一样,两者区别在于printf直接输出,而sprintf返回一个格式化后的字符串
+
+`print_r`和`var_dump`都能输出数组和对象,但`print_r`对布尔型的输出不太明显,`var_dump`输出比较详细,一般调试时用得多. 
 
 # Form 
 	<html>
