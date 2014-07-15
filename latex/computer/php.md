@@ -17,6 +17,8 @@
 - /var/www/html                /这里是 CentOS 默认的"首页"目录
 
 # 习惯
+var_dump(), print_r(), echo, printf
+
 为了避免关于编码的不必要的麻烦, 将所有文件设置为utf-8编码, 文件名不要含有中文.\\
 [编码转换工具](../../bash/gbkTOutf8.sh)
 
@@ -70,7 +72,7 @@ php 使用mysql有两个方式, 一种是面向过程式的, 一种是面向对�
 
 [微软的sqlserver, access, excel 连接](../../demo/php/db/ms.php)
 
-**`$count = $$result->fetch_row()[0]` 错误:   
+**`$count = $result->fetch_row()[0]` 错误**:   
 PHP Fatal error:  Call to a member function query() on a non-object in xxx.php. 
 
 必须使用:
