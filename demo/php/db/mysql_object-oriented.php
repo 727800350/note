@@ -1,5 +1,6 @@
 <?php
 // Create connection
+// $mysqli = @new mysqli('localhost', 'fake_user', 'my_password', 'my_db');
 $con = @new mysqli("localhost","test","123456","test");
 
 // Check connection
