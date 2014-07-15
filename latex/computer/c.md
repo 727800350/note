@@ -573,6 +573,17 @@ If your library is shared then it needs to be dynamically linked to your program
 ## 动态链接库
 [添加搜索路径方法步骤](http://blog.sciencenet.cn/blog-402211-745740.html)
 
+可以查看程序执行时调用动态库的过程:
+
+	# ldd hello
+运行结果:
+
+	[pin@localhost 20090505]$ ldd hello
+	linux-gate.so.1 => (0x00110000)
+	libmyhello.so => /usr/lib/libmyhello.so (0x00111000)
+	libc.so.6 => /lib/libc.so.6 (0x00859000)
+	/lib/ld-linux.so.2 (0x0083a000)
+
 修改`/etc/ld.so.conf`,添加路径.  
 在CentOS 6.3下我看到这个文件实际上是包含了`/etc/ld.so.conf.d/`这个目录下的所有`.conf`文件,因此我们可以在这个路径下面创建一个新的文件,其中写上诸如`/usr/local/lib` 等路径,保存退出.  
 切记一定要主动执行命令:`ldconfig`,它会更新记录了系统中有哪些so文件的缓存文件(`/etc /ld.so.cache`)
