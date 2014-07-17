@@ -1,0 +1,103 @@
+% !Mode:: "TeX:UTF-8"
+\documentclass{article}
+\input{../public/package}
+\input{../public/article}
+\begin{document}
+\title{随机过程}
+\author{Common}
+%% \maketitle
+%% \newpage
+%% \tableofcontents
+%% \newpage
+
+一族无穷多个,相互有关的随机变量,这就是随机过程
+
+在概率论中,我们研究了用一个或有限多个随机变量来描述的随机现象.
+然而对有些现象还需要研究它的发展变化过程,这类现象若仅用一个或有限多个随机变量描述它,就不能揭示其全部统计规律性,于是出现了随机过程的理论.
+\begin{example}
+用$X(t)$表示在每天的$t$时刻$t \in [a, b]$的气温.对固定的$t$,
+表示一个随机变量,当取遍$t \in [a,b ]$时,得到一族随机变量$\{X(t); t \in T\}$
+\end{example}
+
+$X(\cdot, \omega)$ 是一个关于参数$t \in T$ 的函数, 通常称为样本函数,或称随机过程的一次实现.\\
+所有样本函数的集合确定一随机过程
+
+随机过程$\{X(t);t \in T\}$ 可能取值的全体所构成的集合称为此随机过程的状态空间,记作$S$.\\
+$S$中的元素称为状态.状态空间可以由复数,实数或更一般的抽象空间构成.
+
+\begin{example}
+抛掷一枚硬币,样本空间为$\Omega = \{T, H\}$ ,借此定义
+$$
+X(t)=
+\left\{
+  \begin{array}{ll}
+   \cos(\pi t) , & \hbox{Head;} \\
+    2t, & \hbox{Tail.}
+  \end{array}
+\right.
+$$
+其中$P(H)=P(T)=1/2$, 则$\{X(t), t \in (-\infty, \infty)\}$是一随机过程.
+
+样本函数为$\cos(\pi t)$和$2t$, 由于样本函数的取值:
+$$\cos(\pi t)\ \in [-1,1], 2t \in (-\infty, \infty)$$
+所以状态空间
+$$S=(-\infty, \infty)$$
+\end{example}
+
+\section{相关函数和协方差函数}
+\href{http://202.117.122.42:9001/xhxt/xhyxt/xuexi/chart9/c\_9\_3\_2\_001.htm}{相关函数和协方差函数}
+
+\textbf{自相关函数(Autocorrelation function)}\\
+自相关函数是描述随机信号$X(k)$在任意两个不同时刻$k_1,k_2$的取值$X(k_1) $和$X(k_2) $之间的相关程度
+$$
+R_X(k_1, k_2)
+= E[X(k_1) X(k_2)]
+= \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} x_1 x_2 f(x_1, x_2, k_1, k_2)dx_1 dx_2
+$$
+$f(x_1, x_2, k_1, k_2)$ 为$X$在$k_1$时刻取$x_1$, $k_2$时刻取$x_2$的概率密度函数.
+
+\textbf{自协方差函数(Autocovariance function)}\\
+同理,自协方差函数是描述随机信号$X(k)$在任意两个不同时刻k1,k2的取值\textbf{起伏变化之间的相关程度}
+$$ C_X(k_1,k_2) = E[(X(k_1) - \mu_X(k_1)) (X(k_2) - \mu_X(k_2))] $$
+$\mu_X(k_1)$ 为$X(k)$在$k_1$时刻的预期值, 然后$(X(k_1) - \mu_X(k_1))$就为$X(k)$在$k_1$时刻的起伏变化.
+
+$$
+\begin{aligned}
+C_X(k_1,k_2)
+& = E[(X(k_1) - \mu_X(k_1)) (X(k_2) - \mu_X(k_2))] \\
+& = E[(X(k_1) X(k_2) - \mu_X(k_1)(X(k_2) - X(k_1)\mu_X(k_2) + \mu_X(k_1) \mu_X(k_2)] \\
+& = E[(X(k_1) X(k_2)] - \mu_X(k_1)E[(X(k_2)] - E[X(k_1)]\mu_X(k_2) + \mu_X(k_1) \mu_X(k_2) \\
+& = E[(X(k_1) X(k_2)] - \mu_X(k_1) \mu_X(k_2) - \mu_X(k_1) \mu_X(k_2) + \mu_X(k_1) \mu_X(k_2) \\
+& = E[(X(k_1) X(k_2)] - \mu_X(k_1) \mu_X(k_2)\\
+& = R_X(k_1, k_2) - \mu_X(k_1) \mu_X(k_2)
+\end{aligned}
+$$
+\textbf{互相关函数(Cross correlation function)}\\
+类似于连续随机信号的情况,两个随机序列 之间的相关程度由互相关函数和互协方差函数描述.两个随机序列的互相关函数为
+$$ R_{XY}(k_1, k_2) = E[X(k_1) Y(k_2)]$$
+
+\textbf{互协方差函数(Cross covariance function)}\\
+两个随机序列 之间的互协方差函数为
+$$ C_{XY}(k_1,k_2) = E[(X(k_1) - \mu_X(k_1)) (Y(k_2) - \mu_Y(k_2))] = R_{XY}(k_1,k_2) - \mu_X(k_1) \mu_Y(k_2) $$
+
+如果两个随机过程 $\{X(t); t \in T\}$ 和 $\{Y(t); t \in T\}$,
+对于任意的两个参数$s,t \in T$, 有 $$ C_{XY}(s,t) = 0 $$
+则称随机过程 $\{X(t); t \in T\}$ 和 $\{Y(t); t \in T\}$是统计不相关的或不相关的.\\
+因为若随机过程 $\{X(t); t \in T\}$ 和 $\{Y(t); t \in T\}$是不相关的, 那么
+$$ E[X(k_1) Y(k_2)] = E[X(k_1)] E[Y(k_2)] $$
+即
+$$R_X(k_1, k_2) = \mu_X(k_1) \mu_X(k_2)$$
+
+有一类重要的随机过程,它处于某种概率平衡状态其主要性质只与变量$X(t)$之间的时间间隔有关而与我们考查的起始点无关, 
+或者说,整个随机过程的统计特性不随时间的推移而变化.这类过程叫做平稳过程.
+
+\begin{example}
+例如,飞机在某一水平高度h上飞行时,由于受到气流的影响,
+实际飞行高度H(t)总是在理论设计高度h水平上下随机波动,此时飞机的实际飞行高度H(t)是一个随机过程,
+显然此过程可看作不随机推移面变化的过程,这个随机过程,我们把它看作是平衡的随机过程
+\end{example}
+
+此外当我们知道一个随机过程是平稳过程时,它应不随时间的推移而变幻无常.
+例如当我们要测定一个电阻的热噪声的统计特性,由于它是平稳过程,因而我们在任何时间进行测试都能得到相同的结果
+
+\end{document}
