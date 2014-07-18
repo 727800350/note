@@ -47,6 +47,12 @@ $$S=(-\infty, \infty)$$
 \section{相关函数和协方差函数}
 \href{http://202.117.122.42:9001/xhxt/xhyxt/xuexi/chart9/c\_9\_3\_2\_001.htm}{相关函数和协方差函数}
 
+相关性是指两个随机变量之间的线性关系,不相关只是说明它们之间不具有线性关系,但是可以有别的关系,所以不一定相互独立.\\
+如果两个随机变量独立,就是说它们之间没有任何关系,自然也不会有线性关系,所以它们不相关.\\
+反过来说如果两个随机变量相关,也就是说它们之间有线性关系,自然不独立.
+
+\href{http://www.cppblog.com/sosi/archive/2010/09/20/127151.html}{随机变量相关与独立的关系}
+
 \textbf{自相关函数(Autocorrelation function)}\\
 自相关函数是描述随机信号$X(k)$在任意两个不同时刻$k_1,k_2$的取值$X(k_1) $和$X(k_2) $之间的相关程度
 $$
@@ -88,6 +94,7 @@ $$ E[X(k_1) Y(k_2)] = E[X(k_1)] E[Y(k_2)] $$
 即
 $$R_X(k_1, k_2) = \mu_X(k_1) \mu_X(k_2)$$
 
+\section{平稳过程}
 有一类重要的随机过程,它处于某种概率平衡状态其主要性质只与变量$X(t)$之间的时间间隔有关而与我们考查的起始点无关, 
 或者说,整个随机过程的统计特性不随时间的推移而变化.这类过程叫做平稳过程.
 
@@ -100,4 +107,63 @@ $$R_X(k_1, k_2) = \mu_X(k_1) \mu_X(k_2)$$
 此外当我们知道一个随机过程是平稳过程时,它应不随时间的推移而变幻无常.
 例如当我们要测定一个电阻的热噪声的统计特性,由于它是平稳过程,因而我们在任何时间进行测试都能得到相同的结果
 
+\section{高斯随机过程}
+\href{http://www.cnblogs.com/tornadomeet/archive/2013/06/14/3135380.html}{机器学习&数据挖掘笔记_10(高斯过程简单理解)}
+
+若随机过程$X(t)$的任意$n$维概率分布都是高斯分布的,则称它为高斯过程或正态过程
+
+高斯过程$X(t)$的$n$维概率密度有:
+$$
+f_X(x_1, x_2, \ldots, x_n; t_1, t_2, \ldots, t_n) = 
+\frac{1}{(2\pi)^{n/2} |C|^{1/2}} \exp[- \frac{(X - M_X)^T C^{-1} (X - M_X)}{2}]
+$$
+
+均值矢量
+$$ M_X = [E[X(t_1)] E[X(t_2)] \ldots E[X(t_n)]]^T = [m_X(t_1) m_X(t_2) \ldots m_X(t_n)]^T $$
+
+C 为协方差矩阵, 其每个元素是各个向量元素之间的协方差.这是从标量随机变量到高维度随机向量的自然推广.\\
+协方差矩阵被定义的第i,j项是如下:
+$$ C_{ij} = \mathrm{cov}(X_i, X_j) = \mathrm{E}\begin{bmatrix} (X_i - \mu_i)(X_j - \mu_j) \end{bmatrix} $$
+
+即:
+$$
+C=\mathrm{E}
+\left[
+ \left(
+ \textbf{X} - \mathrm{E}[\textbf{X}]
+ \right)
+ \left(
+ \textbf{X} - \mathrm{E}[\textbf{X}]
+ \right)^\top
+\right]
+$$
+
+从式中可以看出,高斯随机过程的n维概率分布完全由均值矢量$M_X$与协方差矩阵$C$所确定
+
+\textbf{互不相关 $\leftrightarrow$ 互相独立}
+\begin{theorem}
+如果高斯过程$X(t)$在$n$个不同时刻$t_1, t_2, \ldots, t_n$的状态$X(t_1), X(t_2), \ldots, X(t_n)$两两互不相关,即
+$$
+C_{ij} = C_X(t_i, t_j) = E[(X(t_i) - m_i)(X(t_j - m_j))] = 0, (i \neq j)
+$$
+则这些状态之间也是互相独立的.
+\end{theorem}
+\begin{proof}
+由于$C_{ij} = 0$, 则, 
+$$ C = diag{\sigma^2(t_1), \sigma^2(t_2), \ldots, \sigma^2(t_n)}$$
+代入定义, 并展开得到:
+$$
+\begin{aligned}
+& f_X(x_1, x_2, \ldots, x_n; t_1, t_2, \ldots, t_n) \\
+& = \frac{1}{(2\pi)^{n/2} \sigma(t_1) \cdots \sigma(t_n)} \exp[-\frac{1}{2} \sum_{i=1}^n \frac{(x_i - m(t_i))^2}{\sigma^2(t_i)}]\\
+& = \prod_{i=1}^n \frac{1}{(2\pi)^{n/2} \sigma(t_i)} \exp[-\frac{(x_i - m(t_i))^2}{2 \sigma^2(t_i)}]\\
+& = f_X(x_1; t_1) f_X(x_2; t_2) \cdots f_X(x_n; t_n)\\
+\end{aligned}
+$$
+由互不相关$\rightarrow$互相独立, 反之, 显然成立
+\end{proof}
+
+\textbf{宽平稳$\leftrightarrow$严平稳}
+\begin{theorem}
+\end{theorem}
 \end{document}
