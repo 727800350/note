@@ -12,7 +12,7 @@ sudo yum install -y php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml
 
 ## phpMyAdmin: Web application to manage MySQL
 ## config file /etc/phpMyAdmin/config.inc.php
-## then put php files(need download) into /var/www directory
+## php data file in /usr/share/phpMyAdmin, 将这个目录放在/etc/http/conf/http.conf 允许列表中
 sudo yum install -y phpMyAdmin
 
 ## chrome
