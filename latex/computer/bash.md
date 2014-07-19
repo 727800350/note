@@ -97,6 +97,15 @@ We want the default settings so when asked to enter a file in which to save the 
 	ssh -T git@github.com
 	ssh -T git@git.oschina.net
 
+**putty connection refused error**  
+	
+	sudo service sshd status
+发现SSH: Could not load host key: `/etc/ssh/ssh_host_rsa_key`  
+因为刚安装ssh之后, 这个文件不存在, 我们只是在`$HOME/.ssh` 中产生了key, 而没有在`/etc/ssh`中产生key.  
+解决方法:
+	
+	sudo ssh-keygen -A
+
 **putty 中文乱码**  
 Window->Appearance->Font: 选择Courier New  
 Window->Translation->Remote character set: UTF-8  
