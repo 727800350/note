@@ -86,13 +86,38 @@ nbrew 是用来管理多版本 python 的利器一枚
 - 禁用pythonbrew(即切换回原始环境): pythonbrew off
 
 # 网络
+**ssh**  
+
+	cd ~/.ssh
+	ssh-keygen -t rsa -C "your_email@example.com"
+Creates a new ssh key, using the provided email as a label
+We want the default settings so when asked to enter a file in which to save the key, just press enter.
+把生成的公钥加到github中
+
+	ssh -T git@github.com
+	ssh -T git@git.oschina.net
+
+**putty connection refused error**  
+	
+	sudo service sshd status
+发现SSH: Could not load host key: `/etc/ssh/ssh_host_rsa_key`  
+因为刚安装ssh之后, 这个文件不存在, 我们只是在`$HOME/.ssh` 中产生了key, 而没有在`/etc/ssh`中产生key.  
+解决方法:
+	
+	sudo ssh-keygen -A
+
 **putty 中文乱码**  
 Window->Appearance->Font: 选择Courier New  
 Window->Translation->Remote character set: UTF-8  
 之后, 在Session->Saved Sessions 中起一个名字, 然后Save, 下次使用的时候, 直接load, 就可以了
 
 如果要从A远程登录到B, 把A 的公钥追加到 B的 `$HOME/.ssh/authorized_keys` 文件中  
-如果需要putty 使用公钥密钥进行ssh登陆, 需要把A(windows)的密钥使用[puttygen](http://the.earth.li/~sgtatham/putty/latest/x86/puttygen.exe), 转化为putty自己的格式
+如果需要putty 使用公钥密钥方式登陆, 需要把A(windows)的密钥使用[puttygen](http://the.earth.li/~sgtatham/putty/latest/x86/puttygen.exe), 转化为putty自己的格式
+
+需要修改`~/.ssh`和`~/.ssh/authorized_keys`文件的权限
+	
+	chmod 700 ~/.ssh
+	chmod 600 ~/.ssh/authorized_keys
 
 **PSCP**, the PuTTY Secure Copy client, and it is a command line application
 
