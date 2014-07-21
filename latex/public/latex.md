@@ -8,6 +8,12 @@
 
 \vrule 竖直标尺
 
+# Tricks
+`\def` and `\newcommand`  
+`\def` is a TeX primitive, `\newcommand` is a LaTeX overlay on top of `\def`. The most obvious benefits of `\newcommand` over `\def` are:  
+`\newcommand` checks whether or not the command already exists  
+`\newcommand` allows you to define an optional argument
+
 # Math
 `$\not\in$`
 
