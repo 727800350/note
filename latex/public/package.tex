@@ -177,6 +177,7 @@ draw=gray,thick, fill=lightgray}
 
 
 \newcommand\warning[1]{\red{#1}}
+\newcommand\obey[1]{\thicksim{#1}}
 
 %% 化学
 %% \usepackage[version=3]{mhchem}
@@ -188,6 +189,7 @@ draw=gray,thick, fill=lightgray}
 %Math
 %% Macro
 \def\vecteur#1{(#1_1,~#1_2,~\ldots,~#1_n)}
+\def\vector#1{#1_1,~#1_2,~\ldots,~#1_n}
 %% \def\vecteur#1{\ensuremath{(#1_1,~#1_2,~\ldots,~#1_n)}}
 
 %随机数
@@ -208,6 +210,7 @@ draw=gray,thick, fill=lightgray}
 \newcommand{\ssi}{si et seulement si }
 \newcommand{\infinity}{\infty}
 
+\newcommand{\diag}[1]{\textit{diag}(#1)}
 %定义运算符
 \DeclareMathOperator{\arccot}{arcot}
 \DeclareMathOperator{\arcth}{arcth}
