@@ -8,8 +8,8 @@
 \tableofcontents
 \newpage
 \section{Mesure}
-une tribu ou $\sigma$-algèbre (lire sigma-algèbre) ou plus rarement corps de Borel1 
-sur un ensemble X est un ensemble non vide de parties de X, 
+une tribu ou $\sigma$-algèbre (lire sigma-algèbre) ou plus rarement corps de Borel1
+sur un ensemble X est un ensemble non vide de parties de X,
 stable(closed en anglais) par passage au complémentaire et par union dénombrable (donc aussi par intersection dénombrable).\\
 Les tribus permettent de définir rigoureusement la notion d'ensemble mesurable.
 
@@ -121,12 +121,12 @@ Proof by induction
 \section{Random variable(r.v)}
 \begin{definition}
 Given a prob measure space $(\Omega, A, P)$, a r.v is a function $X: \Omega \rightarrow R$, s.t.
-$$\{\omega \in \Omega: X(\omega) \leq x\} \in A, \forall x \in R$$ 
+$$\{\omega \in \Omega: X(\omega) \leq x\} \in A, \forall x \in R$$
 \end{definition}
 
 Notation:\\
-$$\{X \leq x\} = \{\omega \in \Omega: X(\omega) \leq x\}$$ 
-$$P(X \leq x) = P(\{X \leq x\}) = P(\{\omega \in \Omega: X(\omega) \leq x\})$$ 
+$$\{X \leq x\} = \{\omega \in \Omega: X(\omega) \leq x\}$$
+$$P(X \leq x) = P(\{X \leq x\}) = P(\{\omega \in \Omega: X(\omega) \leq x\})$$
 
 \begin{definition}
 The CDF of a r.v $X$ is $F: R \rightarrow [0,1]$, s.t.
@@ -167,7 +167,7 @@ if $X$ has a density, then $Q = Q_{ac}$
 概率质量函数(probability mass function,简写为pmf)是离散随机变量在各特定取值上的概率.
 
 概率质量函数和概率密度函数(probability density function,简写为pdf)不同之处在于:
-概率质量函数是对离散随机变量定义的,本身代表该值的概率; 
+概率质量函数是对离散随机变量定义的,本身代表该值的概率;
 概率密度函数是对连续随机变量定义的,本身不是概率,只有对连续随机变量的概率密度函数在某区间内进行积分后才是概率.
 
 \subsection{Random vector}
@@ -262,7 +262,7 @@ $$ p(6,4) = \frac{e^{-4} 4^6}{6!} = 0.1042 $$
 \textbf{泊松过程的特点}
 \begin{enumerate}
 \item Les nombres d'occurrences dans des intervalles de temps disjoints sont ind\'ependants
-\item La probabilit\'e d'une occurrence dans un petit intervalle de temps est proportionnelle \`a la longueur de cet intervalle, le coefficient de proportionnalit\'e \'etant$ \lambda$ 
+\item La probabilit\'e d'une occurrence dans un petit intervalle de temps est proportionnelle \`a la longueur de cet intervalle, le coefficient de proportionnalit\'e \'etant$ \lambda$
 \item La probabilit\'e qu'il y ait plus d'une occurrence dans un petit intervalle de temps est n\'egligeable
 \end{enumerate}
 Ces deux derni\`eres conditions forment la propri\'et\'e dite des \textbf{\'ev\'enements rares}.
@@ -312,11 +312,12 @@ A r.v $X \in R^n$ is multivariant Gaussian if any linear combination of its comp
 $$a^T X = \sum_{i=1}^n a_x X_i$$ is Gaussian
 \end{definition}
 
-$X \sicksim N(\mu, C)$ means $X$ is multi-variant Gaussian with $E(X_i) = \mu_i$ and $Cov(X_i, X_j) = C_{ij}$
+$X \obey N(\mu, C)$ means $X$ is multi-variant Gaussian with $E(X_i) = \mu_i$ and $Cov(X_i, X_j) = C_{ij}$
 
 \begin{definition}
-$X \thicksim N(\mu, C)$ is degenerate if $\det{C} = 0$
+$X \obey N(\mu, C)$ is degenerate if $\det{C} = 0$
 \end{definition}
+(这个时候会成为一个放射线)
 
 \href{http://www.ryanzhang.info/wp-content/uploads/2013/07/QQ\%E6\%88\%AA\%E5\%9B\%BE20130706200349.png}{协方差矩阵对多元高斯分布的影响}\\
 上图是5个不同的模型,从左往右依次分析:
@@ -328,26 +329,72 @@ $X \thicksim N(\mu, C)$ is degenerate if $\det{C} = 0$
 \item 通过协方差矩阵,在不改变两个特征的原有偏差的基础上,增加两者之间的负相关性
 \end{enumerate}
 
-\begin{fact}
-(independent compoents) $\vector{X}$ are independent with $X_i \thicksim N(\mu_i, \sigma^2)$ iff $X = (\vector) \thicksim N(\mu, C)$ where
+\begin{theorem}
+(independent compoents) $\vector{X}$ are independent with $X_i \obey N(\mu_i, \sigma^2)$ iff $X = (\vector) \obey N(\mu, C)$ where
 $$\mu = (\vector{\mu}) \hbox{ and } C = \diag{\vector{\sigma^2}}$$
-\end{fact}
+\end{theorem}
 
-\begin{fact}
-If $X \in R^n$ is Gaussian then 
-$X_i, X_j$ are indenpendent iff $Cov(X_i, X_j) = 0$
-\end{fact}
+\warning{$\vector{X}$ each uni Gaussian $\nRightarrow X = (\vector{X})$ is multi Gaussian}\\
+这些components 可以是相关的, 例如下面的counter-example
+\begin{example}
+$X_1 \obey N(0,1)$ and 
+$$
+X_2 = 
+    \left\{
+       \begin{array}{ll}
+          X_1, & |X_1| \leq 1 \\
+          - X_1, & |X_1| > 1
+        \end{array}
+    \right.
+$$
+由于$X_1$是标准正态分布(对称的), 所以画图可以看出$X_2$也是标准高斯分布,\\
+但是$X=(X_1, X_2)$ 不是multi-variant Gaussian.\\
+将$X_1, X_2$画在一个图上\href{http://i.imgbox.com/gmRq7VFK.png}{$X_1, X_2$的图}, 我们可以很清楚的看到向量$X$不是一个二维的高斯分布.
+\end{example}
 
+\begin{theorem}
+If $X \in R^n$ is Gaussian then $X_i, X_j$ are indenpendent iff $Cov(X_i, X_j) = 0$
+\end{theorem}
 \warning{This does not hold for Non-Gaussian}
 
-\warning{$\vector{X}$ each uni Gaussian $\nRightarrow X = (\vector{X})$ is multi Gaussian}
+\begin{theorem}
+A Gaussian random vector(column vector) $X \obey N(\mu, C)$ has a \textbf{density} iff it is non-degenrate(i.e. $\det{C} \neq 0$)
+$$
+f(x) = \frac{1}{(2\pi)^{n/2} \det{C}^{1/2}} \exp[- \frac{(x - \mu)^T C^{-1} (x - \mu)}{2}]
+$$
+\end{theorem}
+我们也可以将PDF写为:
+$$
+f(x) = \frac{1}{\sqrt{\det{2 \pi C}}} \exp[- \frac{(x - \mu)^T C^{-1} (x - \mu)}{2}]
+$$
+我们注意到$\det{C} \neq 0$, 所以$C$ 可逆, 也就是说$C^{-1}$ 存在.
+
+\begin{theorem}
+\textbf{Affine property}\\
+Any affine transformation($f(x) = ax + b$) of a Gaussian is Gaussian. That is if $X \obey N(\mu, C)$, then 
+$$AX+b \obey N(A\mu + b, ACA^T)$$
+$\forall \mu \in R^n, C \in R^{n \times n}, A \in R^{n \times n}, b \in R^n$
+\end{theorem}
+
+\begin{fact}
+\textbf{Construction}\\
+$\vector{X} \obey N(0,1)$ indep $\Rightarrow X \obey N(0, I)$
+$\Rightarrow AX + \mu \obey N(\mu, C)$ where $C = A A^T, \forall \mu \in R^n, A \in R^{n \times n}$
+\end{fact}
+
+\begin{fact}
+\textbf{Sphering, oppsite of construction}\\
+If $C$ is simi-definie positif, then:
+$$Y \obey N(\mu, C) \Rightarrow A^{-1}(Y - \mu) \obey N(0,I)$$
+where $C = A A^T$
+\end{fact}
 
 \subsection{中心极限定理}
 正态分布有一个非常重要的性质:
 在特定条件下,大量统计独立的随机变量的平均值的分布趋于正态分布,这就是中心极限定理.中心极限定理的重要意义在于,根据这一定理的结论,其他概率分布可以用正态分布作为近似.
 
-Le th\'eor\`eme central limite \'etablit la convergence en loi de la somme d'une suite de variables al\'eatoires vers la loi normale. 
-Intuitivement, ce r\'esultat affirme que toute somme de variables al\'eatoires ind\'ependantes et identiquement distribu\'ees tend vers 
+Le th\'eor\`eme central limite \'etablit la convergence en loi de la somme d'une suite de variables al\'eatoires vers la loi normale.
+Intuitivement, ce r\'esultat affirme que toute somme de variables al\'eatoires ind\'ependantes et identiquement distribu\'ees tend vers
 une variable al\'eatoire gaussienne.
 
 Soit $X_1, X_2, \cdots$ une suite de variables al\'eatoires r\'eelles d\'efinies sur le m\^eme espace de probabilit\'e, ind\'ependantes et identiquement distribu\'ees suivant la m\^eme loi $D$. Supposons que l'esp\'erance $\mu$ et l'\'ecart-type $\sigma$ de $D$ existent et soient finis avec $\sigma \neq 0$.
@@ -364,7 +411,7 @@ et
 $$ \mathrm{Z}_n = \frac{\mathrm{S}_n - n \mu}{\sigma \sqrt{n}} = \frac{\overline{\mathrm{X}}_n - \mu}{\sigma/\sqrt{n}}, $$
 de sorte que l'esp\'erance et l'\'ecart-type de $Zn$ valent respectivement $0$ et $1$ : la variable est ainsi dite centr\'ee et r\'eduite.
 
-Le th\'eor\`eme central limite stipule alors que la suite de variables al\'eatoires $Z1, Z2,..., Zn,... $converge en loi vers une variable al\'eatoire $Z$, 
+Le th\'eor\`eme central limite stipule alors que la suite de variables al\'eatoires $Z1, Z2,..., Zn,... $converge en loi vers une variable al\'eatoire $Z$,
 d\'efinie sur le m\^eme espace probabilis\'e, et de loi normale centr\'ee r\'eduite $\mathcal{N} (0, 1)$ lorsque $n$ tend vers l'infini.
 
 参数为$n$和$p$的二项分布,在$n$相当大而且$p$接近$0.5$时近似于正态分布(有的参考书建议仅在$np$与$n(1-p)$至少为5时才能使用这一近似).
@@ -391,17 +438,17 @@ $$ \lim_{x \to \infty} \Pr[X>x+t|X>x] =1$$
 长尾分布是重尾分布中的一个特例.所有的长尾分布都是重尾分布,但反之则不然,也就是说,我们可以找出某一个重尾分布,它不是长尾分布.
 
 \subsection{Loi des grands nombres}
-On consid\`ere une suite $(X_n)_{n\in\N^*}$ de variables al\'eatoires ind\'ependantes d\'efinies sur un m\^eme espace probabilis\'e, 
-ayant m\^eme variance finie et m\^eme esp\'erance not\'ees respectivement $V(X)$ et $E(X)$. 
+On consid\`ere une suite $(X_n)_{n\in\N^*}$ de variables al\'eatoires ind\'ependantes d\'efinies sur un m\^eme espace probabilis\'e,
+ayant m\^eme variance finie et m\^eme esp\'erance not\'ees respectivement $V(X)$ et $E(X)$.
 
-La loi faible des grands nombres stipule que, pour tout r\'eel $\epsilon$ strictement positif, la probabilit\'e que la moyenne empirique 
+La loi faible des grands nombres stipule que, pour tout r\'eel $\epsilon$ strictement positif, la probabilit\'e que la moyenne empirique
 $Y_n \equiv \bar x= \frac{1}{n} \sum_{i=1}^{n} X_i$ s'\'eloigne de l'esp\'erance d'au moins $\epsilon$ tend vers $0$ quand $n$ tend vers l'infini.
 
 \begin{theorem}
 $\forall\varepsilon>0,\quad \lim_{n \to +\infty} \mathbb{P}\left(\left|\frac{X_1+X_2+\cdots+X_n}{n} -E(X)\right| \geqslant \varepsilon\right) = 0$
 \end{theorem}
 
-Autrement dit, $(Y_n)_{n\in\N^*}$ converge en probabilit\'e vers $E(X)$. Ce r\'esultat est tr\`es important en statistique, 
+Autrement dit, $(Y_n)_{n\in\N^*}$ converge en probabilit\'e vers $E(X)$. Ce r\'esultat est tr\`es important en statistique,
 puisqu'il assure que la moyenne empirique est un estimateur convergent de l'esp\'erance.
 
 \section{Estimation}
@@ -426,8 +473,8 @@ Si $\hat \theta$ est l'estimateur de $\theta\,,  \text{Biais}(\hat\theta)\equiv 
 最大似然估计会寻找关于$\theta$的最可能的值(即,在所有可能的$\theta$取值中,寻找一个值使这个采样的"可能性"最大化).
 这种方法正好同一些其他的估计方法不同,如$\theta$的非偏估计,非偏估计未必会输出一个最可能的值,而是会输出一个既不高估也不低估的$\theta$值.
 
-Soit une famille param\'etr\'ee de distributions de probabilit\'es $D_{\theta}$ dont les \'el\'ements sont associ\'es soit 
-\`a une densit\'e de probabilit\'e connue (distribution continue), soit \`a une fonction de masse connue (distribution discr\`ete), not\'ee $f_{\theta}$. 
+Soit une famille param\'etr\'ee de distributions de probabilit\'es $D_{\theta}$ dont les \'el\'ements sont associ\'es soit
+\`a une densit\'e de probabilit\'e connue (distribution continue), soit \`a une fonction de masse connue (distribution discr\`ete), not\'ee $f_{\theta}$.
 On tire un \'echantillon de $n$ valeurs $x_1, x_2, \cdots, x_n$:de la distribution,
 et l'on calcule la densit\'e de probabilit\'e associ\'ee aux donn\'ees observ\'ees
 
@@ -435,27 +482,27 @@ $$ f_\theta(x_1,\dots,x_n \mid \theta).\, $$
 Ceci \'etant une fonction de $\theta$ avec $x_1, \cdots, x_n$ fix\'es, c'est une vraisemblance.
 
 $$ L(\theta) = f_\theta(x_1,\dots,x_n \mid \theta).\, $$
-Lorsque $\theta$ n'est pas observable, la m\'ethode du maximum de vraisemblance utilise les valeurs de $\theta$ qui 
-maximisent $L(\theta)$ estimateur de $\theta$: c'est l'estimateur du maximum de vraisemblance de $\theta$ not\'e $\widehat{\theta}$. 
-Par exemple dans le cas du produit discret, on effectue un tirage de n valeurs, 
+Lorsque $\theta$ n'est pas observable, la m\'ethode du maximum de vraisemblance utilise les valeurs de $\theta$ qui
+maximisent $L(\theta)$ estimateur de $\theta$: c'est l'estimateur du maximum de vraisemblance de $\theta$ not\'e $\widehat{\theta}$.
+Par exemple dans le cas du produit discret, on effectue un tirage de n valeurs,
 il faut donc trouver le param\`etre qui maximise la probabilit\'e d'avoir tir\'e ce tirage.
 
 \bigskip
-On appelle vraisemblance de $\theta$ au vu des observations $(x_1, \ldots,x_i, \ldots, x_n)$ d'un \'echantillon ind\'ependamment et identiquement distribu\'e 
+On appelle vraisemblance de $\theta$ au vu des observations $(x_1, \ldots,x_i, \ldots, x_n)$ d'un \'echantillon ind\'ependamment et identiquement distribu\'e
 selon la loi $\mathcal{D}_\theta$, le nombre :
 $$ L(x_1, \ldots,x_i, \ldots,x_n;\theta) = f(x_1;\theta) \times f(x_2;\theta) \times \ldots \times f(x_n;\theta) = \prod_{i=1}^n f(x_i;\theta) $$
 
-On cherche à trouver le maximum de cette vraisemblance pour que les probabilit\'es des r\'ealisations observ\'ees soient aussi maximum. 
-Ceci est un probl\`eme d'optimisation. 
+On cherche à trouver le maximum de cette vraisemblance pour que les probabilit\'es des r\'ealisations observ\'ees soient aussi maximum.
+Ceci est un probl\`eme d'optimisation.
 
-On utilise g\'en\'eralement le fait que si L est d\'erivable (ce qui n'est pas toujours le cas) et 
-si L admet un maximum global en une valeur $\theta = \hat \theta$, 
+On utilise g\'en\'eralement le fait que si L est d\'erivable (ce qui n'est pas toujours le cas) et
+si L admet un maximum global en une valeur $\theta = \hat \theta$,
 alors la d\'eriv\'ee premi\`ere s'annule en $\theta = \hat \theta $et que la d\'eriv\'ee seconde est n\'egative. \\
-R\'eciproquement, si la d\'eriv\'ee premi\`ere s'annule en $\theta = \hat \theta$ et que la d\'eriv\'ee seconde est n\'egative en $\theta = \hat \theta$, 
+R\'eciproquement, si la d\'eriv\'ee premi\`ere s'annule en $\theta = \hat \theta$ et que la d\'eriv\'ee seconde est n\'egative en $\theta = \hat \theta$,
 alors $\theta = \hat \theta $est un maximum local (et non global) de $L(x_1, \ldots, x_i, \ldots,x_n;\theta)$. \\
-Il est alors n\'ecessaire de v\'erifier qu'il s'agit bien d'un maximum global. 
-La vraisemblance \'etant positive et le logarithme n\'ep\'erien(naturel) une fonction croissante, 
-il est \'equivalent et souvent plus simple de maximiser le logarithme n\'ep\'erien de la vraisemblance. 
+Il est alors n\'ecessaire de v\'erifier qu'il s'agit bien d'un maximum global.
+La vraisemblance \'etant positive et le logarithme n\'ep\'erien(naturel) une fonction croissante,
+il est \'equivalent et souvent plus simple de maximiser le logarithme n\'ep\'erien de la vraisemblance.
 
 Ainsi en pratique:
 
@@ -476,20 +523,20 @@ The likelihood function is defined differently for discrete and continuous proba
 Let $X$ be a random variable with a discrete probability distribution p depending on a parameter $\theta$. Then the function
 
 $$ \mathcal{L}(\theta |x) = p_\theta (x) = P_\theta (X=x), \, $$
-considered as a function of $\theta$, is called the likelihood function (of $\theta$, given the outcome $x$ of $X$). 
+considered as a function of $\theta$, is called the likelihood function (of $\theta$, given the outcome $x$ of $X$).
 
 Sometimes the probability on the value $x$ of $X$ for the parameter value $\theta$ is written as $P(X=x|\theta)$; often written as $\mathbf{P(X=x;\theta)}$ to emphasize that this value is \textbf{not a conditional probability}, because \textbf{$\theta$ is a parameter and not a random variable}.
 
 \textbf{Continuous probability distribution}\\
 Let $X$ be a random variable with a continuous probability distribution with density function $f$ depending on a parameter $\theta$. Then the function
 $$ \mathcal{L}(\theta |x) = f_{\theta} (x), \, $$
-considered as a function of $\theta$, is called the likelihood function (of $\theta$, given the outcome $x$ of $X$). 
+considered as a function of $\theta$, is called the likelihood function (of $\theta$, given the outcome $x$ of $X$).
 
-Sometimes the density function for the value $x$ of $X$ for the parameter value $\theta$ is written as $f(x|\theta)$, 
+Sometimes the density function for the value $x$ of $X$ for the parameter value $\theta$ is written as $f(x|\theta)$,
 but should not be considered as a conditional probability density.
 
-The actual value of a likelihood function bears no meaning. Its use lies in comparing one value with another. 
-For example, one value of the parameter may be more likely than another, given the outcome of the sample. 
+The actual value of a likelihood function bears no meaning. Its use lies in comparing one value with another.
+For example, one value of the parameter may be more likely than another, given the outcome of the sample.
 Or a specific value will be most likely: the maximum likelihood estimate.
 
 \begin{example}
@@ -525,7 +572,7 @@ $$ L(p_H = \theta  \mid \mbox{HHT}) = P(\mbox{HHT}\mid p_H = \theta) =\theta^2(1
 
 \subsection{Borne Cram\'er-Rao}
 la borne Cram\'er-Rao exprime une borne inf\'erieure sur la variance d'un estimateur sans biais, bas\'ee sur l'Information de Fisher.
-Elle \'enonce que l'inverse de l'information de Fisher, $\mathcal{I}(\theta)$, d'un param\`etre $\theta$, 
+Elle \'enonce que l'inverse de l'information de Fisher, $\mathcal{I}(\theta)$, d'un param\`etre $\theta$,
 est une borne inf\'erieure de la variance d'un estimateur sans biais de ce param\`etre (not\'e $\widehat{\theta}$).
 $$
 \mathrm{var} \left(\widehat{\theta}\right)
@@ -538,7 +585,7 @@ $$
 $$
 
 \begin{example}
-Supposons que $X$ est un vecteur al\'eatoire qui suit une loi normale d' esp\'erance connue $\mu$ et de variance inconnue $\sigma^2$. 
+Supposons que $X$ est un vecteur al\'eatoire qui suit une loi normale d' esp\'erance connue $\mu$ et de variance inconnue $\sigma^2$.
 Consid\'erons $T$ l'estimateur de $\sigma^2$:
 
 $$ T=\frac{\sum_{i=1}^n\left(X_i-\mu\right)^2}{n}.  $$
@@ -573,15 +620,15 @@ Dans ce cas, on a donc \'egalit\'e, ce qui montre que l'estimateur est efficace.
 \end{example}
 
 \section{Fisher information}
-The Fisher information is a way of \textbf{measuring the amount of information that an observable random variable $X$ 
+The Fisher information is a way of \textbf{measuring the amount of information that an observable random variable $X$
 carries about an unknown parameter $\theta$ upon which the probability of $X$ depends}.
 
-The probability function for $X$, which is also the likelihood function for $\theta$, is a function $f(X; \theta)$; 
-it is the probability mass (or probability density) of the random variable $X$ conditional on the value of $\theta$. 
+The probability function for $X$, which is also the likelihood function for $\theta$, is a function $f(X; \theta)$;
+it is the probability mass (or probability density) of the random variable $X$ conditional on the value of $\theta$.
 
 The partial derivative with respect to $\theta$ of the natural logarithm of the likelihood function is called the \textbf{score}.\\
-(In statistics, the score, score function, efficient score or informant indicates \textbf{how sensitively a likelihood function $L(\theta; X)$ 
-depends on its parameter $\theta$}. 
+(In statistics, the score, score function, efficient score or informant indicates \textbf{how sensitively a likelihood function $L(\theta; X)$
+depends on its parameter $\theta$}.
 Explicitly, the score for $\theta$ is the gradient of the log-likelihood with respect to $\theta$: $\dfrac{\partial}{\partial\theta} \log L(\theta;X)$.)
 
 Under certain regularity conditions, it can be shown that the first moment of the score (that is, its expected value) is $0$:
@@ -601,14 +648,14 @@ The second moment is called the Fisher information:
 $$
 \mathcal{I}(\theta)=\operatorname{E} \left[\left. \left(\frac{\partial}{\partial\theta} \log f(X;\theta)\right)^2\right|\theta \right] = \int \left(\frac{\partial}{\partial\theta} \log f(x;\theta)\right)^2 f(x; \theta)\; \mathrm{d}x\,,
 $$
-where, for any given value of $\theta$, the expression $E[...|\theta]$ denotes the conditional expectation over values for $X$ with respect to the probability function $f(x; \theta)$ given $\theta$. Note that $0 \leq \mathcal{I}(\theta) < \infty$. 
+where, for any given value of $\theta$, the expression $E[...|\theta]$ denotes the conditional expectation over values for $X$ with respect to the probability function $f(x; \theta)$ given $\theta$. Note that $0 \leq \mathcal{I}(\theta) < \infty$.
 
-A random variable carrying high Fisher information implies that the absolute value of the score is often high. 
+A random variable carrying high Fisher information implies that the absolute value of the score is often high.
 The Fisher information is not a function of a particular observation, as the random variable $X$ has been averaged out.
 
 Since the expectation of the score is zero, the Fisher information is also the variance of the score.
 
-If $\log f(x; \theta)$ is \textbf{twice differentiable with respect to $\theta$}, and under certain regularity conditions, 
+If $\log f(x; \theta)$ is \textbf{twice differentiable with respect to $\theta$}, and under certain regularity conditions,
 then the Fisher information may also be written as[10]
 
 $$ \mathcal{I}(\theta) = - \operatorname{E} \left[\left. \frac{\partial^2}{\partial\theta^2} \log f(X;\theta)\right|\theta \right]\,, $$
@@ -629,15 +676,15 @@ $$
 \operatorname{E} \left[\left. \frac{\frac{\partial^2}{\partial\theta^2} f(X;\theta)}{f(X; \theta)}\right|\theta \right]
 = \cdots
 = \frac{\partial^2}{\partial\theta^2} \int f(x; \theta)\; \mathrm{d}x
-= \frac{\partial^2}{\partial\theta^2} \; 1 
+= \frac{\partial^2}{\partial\theta^2} \; 1
 = 0.
 $$
 Thus, the Fisher information is the negative of the expectation of the second derivative with respect to $\theta$ of the natural logarithm of $f$.
 
 Information is \textbf{additive}, in that the information yielded by two independent experiments is the sum of the information from each experiment separately:
 $$ \mathcal{I}_{X,Y}(\theta) = \mathcal{I}_X(\theta) + \mathcal{I}_Y(\theta) $$
-This result follows from the elementary fact that if random variables are independent, the variance of their sum is the sum of their variances. 
-In particular, the information in a random sample of size $n$ is $n$ times that in a sample of size 1, 
+This result follows from the elementary fact that if random variables are independent, the variance of their sum is the sum of their variances.
+In particular, the information in a random sample of size $n$ is $n$ times that in a sample of size 1,
 when observations are independent and identically distributed.
 
 \section{PCA: Principal component analysis}
@@ -664,8 +711,8 @@ $$ Y_1=X_1cos\theta +X_2sin\theta , $$
 其中$\theta $的选择使得$Var(Y_1)$最大且$Y_1$的相应观测值完全可以反映原二元变量$(X_1,X_2)$的观测值的分布状况. 一般情况下,将$ox_1$轴沿逆时针旋转到观测点具有最大分散性的方向$oy_1$上(观测点在$oy_1$轴上的投影到均值点的距离大于在$ox_1$上投影到均值点的距离),使该方向所含的数据间的差异的信息最多. 同样的,再旋转$ox_2$到$oy_2$. 我们将相应的变量
 $$ Y_1=X_1cos\theta +X_2sin\theta , $$
 $$ Y_2=X_1sin\theta +X_2cos\theta , $$
-分别称为$X_1$和$X_2$的第一和第二主成分. 设想数据在$oy_2$方向上的分散性很小,因而用一元数据便可以反映二元数据的绝大部分信息,即达到了降维的目的. 
-综上所述,主成分分析是研究如何通过少数几个主成分来解释多变量的方差-协方差结构的分析方法,也就是求出少数几个主成分(变量) ,使它们尽可能多地保留原始变量的信息,且彼此不相关. 它是一种变换方法,即把给定的一组变量通过线性变换,转换为一组不相关的变量,在这种变换中,\textbf{保持变量的总方差不变},同时具有最大方差,称为第一主成分,具有次大方差,称为第二主成分. 依次类推. 
+分别称为$X_1$和$X_2$的第一和第二主成分. 设想数据在$oy_2$方向上的分散性很小,因而用一元数据便可以反映二元数据的绝大部分信息,即达到了降维的目的.
+综上所述,主成分分析是研究如何通过少数几个主成分来解释多变量的方差-协方差结构的分析方法,也就是求出少数几个主成分(变量) ,使它们尽可能多地保留原始变量的信息,且彼此不相关. 它是一种变换方法,即把给定的一组变量通过线性变换,转换为一组不相关的变量,在这种变换中,\textbf{保持变量的总方差不变},同时具有最大方差,称为第一主成分,具有次大方差,称为第二主成分. 依次类推.
 
 find application in face recognition and image compression, and is a common technique for finding patterns in data of high dimension.
 
@@ -756,8 +803,8 @@ $$
 s = \sqrt{\dfrac{\sum_{i=1}^n (X_i - \overline{X})^2}{n-1}}
 $$
 \textbf{Why are you using $n-1$ and not $n$?}\\
-Well, the answer is a bit complicated, but in general, if your data set is a sample data set, 
-ie. you have taken a subset of the real-world (like surveying $500$ people about the election) then you must use $n-1$ 
+Well, the answer is a bit complicated, but in general, if your data set is a sample data set,
+ie. you have taken a subset of the real-world (like surveying $500$ people about the election) then you must use $n-1$
 because it turns out that this gives you an answer that is closer to the standard deviation that would result if you had used the entire population, than if you'd used$n$.
 If, however, you are not calculating the standard deviation for a sample, but for an entire population, then you should divide by $n$ instead of $n-1$.\\
 For further information, refer to \href{http://mathcentral.uregina.ca/RR/database/RR.09.95/weston2.html}{when $n$ or $n-1$ in computing the standard deviation}
