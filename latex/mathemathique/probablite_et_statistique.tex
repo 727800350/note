@@ -170,6 +170,30 @@ if $X$ has a density, then $Q = Q_{ac}$
 概率质量函数是对离散随机变量定义的,本身代表该值的概率; 
 概率密度函数是对连续随机变量定义的,本身不是概率,只有对连续随机变量的概率密度函数在某区间内进行积分后才是概率.
 
+\subsection{Random vector}
+\begin{definition}
+Given a prob measure space $(\Omega, A, P)$, a random vector is a (mmeasure) $X: \Omega \rightarrow R^d$, with $d \in {1, 2, \ldots}$
+\end{definition}
+
+\begin{definition}
+A random vector is discret if $X(\Omega)$ is countable.
+\end{definition}
+
+Now we fix $(X,Y) \in R^2$ with $P(x,y) = P(X=x, Y=y)$
+\begin{definition}
+The marginal PMF of X is $P_X(x) = P(X = x)$
+\end{definition}
+我们可以推出: $$P_X(x) = \sum_{y} P(x,y)$$
+
+\subsection{Independent r.v.s}
+\begin{definition}
+$X$ and $Y$ are independent if $P_{X,Y}(x,y) = P_X(x)P_Y(y), \forall x, y$ where $P_X(x)$ is the marginal PDF, $X$ and $Y$ are discret.
+\end{definition}
+
+\begin{definition}
+$X$ and $Y$ are independent if $f_{X,Y}(x,y) = f_X(x)f_Y(y), \forall x, y$ where $f_X(x)$ is the marginal PDF, $X$ and $Y$ have densities.
+\end{definition}
+
 \section{指数分布(Exponential distribution)}
 \label{sec.distribution.exponential}
 一种\textbf{连续概率分布}.指数分布可以用来表示独立随机事件发生的时间间隔,比如旅客进机场的时间间隔,中文维基百科新条目出现的时间间隔等等.
@@ -275,12 +299,48 @@ $$
 \end{proof}
 
 \section{正态分布}
-\textbf{连续概率分布}
-
+\textbf{连续概率分布}\\
 若随机变量X服从一个位置参数为$\mu$ ,尺度参数为$\sigma$ 的概率分布,记为:$X\sim N(\mu ,\sigma ^{2})$
 
 则其概率密度函数为
-$$f(x)=\frac{1}{\sigma {\sqrt  {2\pi }}} e^{{- \dfrac{(x-\mu )^{2}}{2\sigma ^{2}}}}$$
+$$f(x)=\frac{1}{\sqrt{2\pi} \sigma} \exp({- \dfrac{(x-\mu )^{2}}{2\sigma ^{2}}})$$
+
+如果$\sigma = 0$, 那么$X$ is contant and $X = \mu$
+
+\begin{definition}
+A r.v $X \in R^n$ is multivariant Gaussian if any linear combination of its compoents is uni Gaussian, i.e.
+$$a^T X = \sum_{i=1}^n a_x X_i$$ is Gaussian
+\end{definition}
+
+$X \sicksim N(\mu, C)$ means $X$ is multi-variant Gaussian with $E(X_i) = \mu_i$ and $Cov(X_i, X_j) = C_{ij}$
+
+\begin{definition}
+$X \thicksim N(\mu, C)$ is degenerate if $\det{C} = 0$
+\end{definition}
+
+\href{http://www.ryanzhang.info/wp-content/uploads/2013/07/QQ\%E6\%88\%AA\%E5\%9B\%BE20130706200349.png}{协方差矩阵对多元高斯分布的影响}\\
+上图是5个不同的模型,从左往右依次分析:
+\begin{enumerate}
+\item 是一个一般的二元高斯分布模型(independent, 同时expectation 相等)
+\item 通过协方差矩阵,令特征1拥有较小的偏差,同时保持特征2的偏差
+\item 通过协方差矩阵,令特征2拥有较大的偏差,同时保持特征1的偏差
+\item 通过协方差矩阵,在不改变两个特征的原有偏差的基础上,增加两者之间的正相关性
+\item 通过协方差矩阵,在不改变两个特征的原有偏差的基础上,增加两者之间的负相关性
+\end{enumerate}
+
+\begin{fact}
+(independent compoents) $\vector{X}$ are independent with $X_i \thicksim N(\mu_i, \sigma^2)$ iff $X = (\vector) \thicksim N(\mu, C)$ where
+$$\mu = (\vector{\mu}) \hbox{ and } C = \diag{\vector{\sigma^2}}$$
+\end{fact}
+
+\begin{fact}
+If $X \in R^n$ is Gaussian then 
+$X_i, X_j$ are indenpendent iff $Cov(X_i, X_j) = 0$
+\end{fact}
+
+\warning{This does not hold for Non-Gaussian}
+
+\warning{$\vector{X}$ each uni Gaussian $\nRightarrow X = (\vector{X})$ is multi Gaussian}
 
 \subsection{中心极限定理}
 正态分布有一个非常重要的性质:
