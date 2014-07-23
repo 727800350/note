@@ -9,6 +9,24 @@ vector, boost:any, string, string &
 using namespace std;
 
 int main(){
+//	construct a boost::any type variable from std::string
+	boost::any variable(std::string("hello world"));
+	if(typeid(variable) == typeid(boost::any))
+		cout <<"equal"<<endl;
+	else
+		cout << "not equal"<<endl;
+
+	cout << boost::any_cast<std::string>(variable)<<endl;
+	cout <<endl;
+
+	string *sp = boost::any_cast<std::string>(&variable);
+	if(typeid(sp) == typeid(string *))
+		cout <<"equal"<<endl;
+	else
+		cout << "not equal"<<endl;
+	*sp = "change from string pointer";
+	cout << boost::any_cast<std::string>(variable)<<endl;
+
 	std::vector<boost::any> some_values;
 	
 	cout << "demo int" <<endl;
