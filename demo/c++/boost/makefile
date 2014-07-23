@@ -1,8 +1,11 @@
 cc=clang++
-all: container-any
+all: variant
 
 run:
 	./a.out --apples 2 --oranges=40
+
+variant:
+	$(cc) -g -Wall variant.cpp
 
 container-any:
 	 $(cc) -g -Wall -c container-any.cpp
