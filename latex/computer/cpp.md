@@ -676,9 +676,9 @@ Storing any value in a container/variable
 	boost::any variable(std::string("hello world"));
 	string s = boost::any_cast<std::string>(variable);
 
-[boost::any demo](../../../demo/c++/boost/container-any.cpp)
+[boost::any demo](../../demo/c++/boost/container-any.cpp)
 
-[db_wrapper using boost::any](../../../demo/c++/boost/db-wrapper_any.cpp)
+[db_wrapper using boost::any](../../demo/c++/boost/db-wrapper_any.cpp)
 
 ## boost::variant
 C++03 unions can only hold extremely simple types of data called POD (plain old data). 
@@ -693,6 +693,6 @@ it also manages in-place construction/destruction and doesn't even require the C
 	v = "hello";
 	std::cout << v << std::endl;
 
-[boost::variant demo](../../../demo/c++/boost/variant.cpp)
+[boost::variant demo](../../demo/c++/boost/variant.cpp)
 
-[db_wrapper using boost::variant](../../../demo/c++/boost/db-wrapper_variant.cpp)
+[db_wrapper using boost::variant](../../demo/c++/boost/db-wrapper_variant.cpp)
