@@ -49,9 +49,9 @@ This will show 3 lines before and 3 lines after.
 
 在默认权限的属性上,目录与文件是不一样的.由于我们不希望文件具有可执行的权力,默认情况中,文件是没有可执行(x)权限的.因此:  
 
-- 若用户建立为”文件”则默认“没有可执行(x)项目”，即只有rw这两个项目,也就是最大为666分,默认属性如下:
+- 若用户建立为"文件"则默认"没有可执行(x)项目",即只有rw这两个项目,也就是最大为666分,默认属性如下:
 `-rw-rw-rw-`
-- 若用户建立为”目录”,则由于x与是否可以进入此目录有关,因此默认为所有权限均开放,即为777分,默认属性如下:
+- 若用户建立为"目录",则由于x与是否可以进入此目录有关,因此默认为所有权限均开放,即为777分,默认属性如下:
 `drwxrwxrwx`
 
 umask指定的是**该默认值需要减掉的权限**.因为r,w,x分别是4,2,1.  
@@ -71,7 +71,7 @@ create Tk graphs from Makefiles
 
 [**pythonbrew**](http://www.pythoner.cn/home/blog/python-version-switch-pythonbrew/)  
 nbrew 是用来管理多版本 python 的利器一枚  
-然后在你的 `~/.bashrc`文件中追加下面这一行，重启终端即可：
+然后在你的 `~/.bashrc`文件中追加下面这一行,重启终端即可:
 	
 	[[ -s "$HOME/.pythonbrew/etc/bashrc" ]] && source "$HOME/.pythonbrew/etc/bashrc"
 
@@ -134,7 +134,7 @@ The reverse works as well (copy Linux file to Windows)
 	pscp ubuntu@10.0.0.3:/home/ubuntu/Music/music.mp3 c:/
 
 **scp**  
-secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的命令有cp,不过cp只是在本机进行拷贝不能跨服务器,而且scp传输是加密的.可能会稍微影响一下速度。
+secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的命令有cp,不过cp只是在本机进行拷贝不能跨服务器,而且scp传输是加密的.可能会稍微影响一下速度.
 
 通过scp.exe 将文件从windows 传输到linux, 如果文件名中含有中文, scp.exe 会将中文从默认的gbk编码转换为utf-8
 
@@ -143,22 +143,22 @@ secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的�
 1. 获取远程服务器上的文件
 
 		scp -P 2222 root@www.vpser.net:/root/lnmp0.4.tar.gz /home/lnmp0.4.tar.gz
-上端口大写P 为参数，2222 表示更改SSH端口后的端口，如果没有更改SSH端口可以不用添加该参数。 root@www.vpser.net 表示使用root用户登录远程服务器www.vpser.net，:/root/lnmp0.4.tar.gz 表示远程服务器上的文件，最后面的/home/lnmp0.4.tar.gz表示保存在本地上的路径和文件名。
+上端口大写P 为参数,2222 表示更改SSH端口后的端口,如果没有更改SSH端口可以不用添加该参数. root@www.vpser.net 表示使用root用户登录远程服务器www.vpser.net,:/root/lnmp0.4.tar.gz 表示远程服务器上的文件,最后面的/home/lnmp0.4.tar.gz表示保存在本地上的路径和文件名.
 
 2. 获取远程服务器上的目录
 
 		scp -P 2222 -r root@www.vpser.net:/root/lnmp0.4/ /home/lnmp0.4/
-上端口大写P 为参数，2222 表示更改SSH端口后的端口，如果没有更改SSH端口可以不用添加该参数。-r 参数表示递归复制（即复制该目录下面的文件和目录）；root@www.vpser.net 表示使用root用户登录远程服务器www.vpser.net，:/root/lnmp0.4/ 表示远程服务器上的目录，最后面的/home/lnmp0.4/表示保存在本地上的路径。
+上端口大写P 为参数,2222 表示更改SSH端口后的端口,如果没有更改SSH端口可以不用添加该参数.-r 参数表示递归复制(即复制该目录下面的文件和目录),root@www.vpser.net 表示使用root用户登录远程服务器www.vpser.net,:/root/lnmp0.4/ 表示远程服务器上的目录,最后面的/home/lnmp0.4/表示保存在本地上的路径.
 
 3. 将本地文件上传到服务器上
 
 		scp -P 2222 /home/lnmp0.4.tar.gz root@www.vpser.net:/root/lnmp0.4.tar.gz
-上端口大写P 为参数，2222 表示更改SSH端口后的端口，如果没有更改SSH端口可以不用添加该参数。 /home/lnmp0.4.tar.gz表示本地上准备上传文件的路径和文件名。root@www.vpser.net 表示使用root用户登录远程服务器www.vpser.net，:/root/lnmp0.4.tar.gz 表示保存在远程服务器上目录和文件名。
+上端口大写P 为参数,2222 表示更改SSH端口后的端口,如果没有更改SSH端口可以不用添加该参数. /home/lnmp0.4.tar.gz表示本地上准备上传文件的路径和文件名.root@www.vpser.net 表示使用root用户登录远程服务器www.vpser.net,:/root/lnmp0.4.tar.gz 表示保存在远程服务器上目录和文件名.
 
 4. 将本地目录上传到服务器上
 
 		scp -P 2222 -r /home/lnmp0.4/ root@www.vpser.net:/root/lnmp0.4/
-上 端口大写P 为参数，2222 表示更改SSH端口后的端口，如果没有更改SSH端口可以不用添加该参数。-r 参数表示递归复制（即复制该目录下面的文件和目录）；/home/lnmp0.4/表示准备要上传的目录，root@www.vpser.net 表示使用root用户登录远程服务器www.vpser.net，:/root/lnmp0.4/ 表示保存在远程服务器上的目录位置。
+上 端口大写P 为参数,2222 表示更改SSH端口后的端口,如果没有更改SSH端口可以不用添加该参数.-r 参数表示递归复制(即复制该目录下面的文件和目录),/home/lnmp0.4/表示准备要上传的目录,root@www.vpser.net 表示使用root用户登录远程服务器www.vpser.net,:/root/lnmp0.4/ 表示保存在远程服务器上的目录位置.
 
 # File System
 `du`: 查看目录大小  
@@ -203,3 +203,17 @@ secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的�
 RPM包括是使用cpio格式打包的,因此可以先转成cpio然后解压,如下所示:
 
 	rpm2cpio xxx.rpm | cpio -div
+
+# systemd
+**修改默认运行级别**  
+以前Fedora版本中修改运行级别方法为:  
+以root身份登入,编辑`/etc/inittab`文件  
+找到 `id:5:initdefault:`这一行,将默认运行级别5(图形模式)改为3(文本模式),即 `id:3:initdefault:`  
+然后重启
+
+但Fedora15之后使用systemd创建符号链接指向默认运行级别
+
+	rm /etc/systemd/system/default.target
+	ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+	reboot
+
