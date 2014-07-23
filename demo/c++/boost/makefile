@@ -1,8 +1,14 @@
 cc=clang++
-all: variant
+all: db-wrapper_variant
 
 run:
 	./a.out --apples 2 --oranges=40
+
+db-wrapper_any:
+	$(cc) -g -Wall db-wrapper_any.cpp
+
+db-wrapper_variant:
+	$(cc) -g -Wall db-wrapper_variant.cpp
 
 variant:
 	$(cc) -g -Wall variant.cpp
@@ -19,4 +25,4 @@ test:
 	$(cc) -g -Wall test.cpp
 
 clean:
-	rm *.o a.out
+	rm a.out

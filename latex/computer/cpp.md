@@ -670,6 +670,16 @@ To extract the value for an option manually
 ### demo
 [basic demo](../../demo/c++/boost/program_options.cpp)
 
+## boost::any
+Storing any value in a container/variable
+
+	boost::any variable(std::string("hello world"));
+	string s = boost::any_cast<std::string>(variable);
+
+[boost::any demo](../../../demo/c++/boost/container-any.cpp)
+
+[db_wrapper using boost::any](../../../demo/c++/boost/db-wrapper_any.cpp)
+
 ## boost::variant
 C++03 unions can only hold extremely simple types of data called POD (plain old data). 
 So in C++03, you cannot, for example, store `std::string` or `std::vector` in a union.   
@@ -679,5 +689,10 @@ of such types by yourself, call in-place construction/destruction, and remember 
 Boost.Variant library can store any of the types specified at compile time;  
 it also manages in-place construction/destruction and doesn't even require the C++11 standard.
 
+	boost::variant< int, std::string > v;
+	v = "hello";
+	std::cout << v << std::endl;
+
 [boost::variant demo](../../../demo/c++/boost/variant.cpp)
 
+[db_wrapper using boost::variant](../../../demo/c++/boost/db-wrapper_variant.cpp)
