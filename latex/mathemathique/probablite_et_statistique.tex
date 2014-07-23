@@ -330,16 +330,18 @@ $X \obey N(\mu, C)$ is degenerate if $\det{C} = 0$
 \end{enumerate}
 
 \begin{theorem}
-(independent compoents) $\vector{X}$ are independent with $X_i \obey N(\mu_i, \sigma^2)$ iff $X = (\vector) \obey N(\mu, C)$ where
+\textbf{independent compoents}\\
+$\vector{X}$ are independent with $X_i \obey N(\mu_i, \sigma_i^2)$ iff $X = (\vector{X}) \obey N(\mu, C)$ where
 $$\mu = (\vector{\mu}) \hbox{ and } C = \diag{\vector{\sigma^2}}$$
+\label{theorem.gauss.indepent_component}
 \end{theorem}
 
 \warning{$\vector{X}$ each uni Gaussian $\nRightarrow X = (\vector{X})$ is multi Gaussian}\\
 这些components 可以是相关的, 例如下面的counter-example
 \begin{example}
-$X_1 \obey N(0,1)$ and 
+$X_1 \obey N(0,1)$ and
 $$
-X_2 = 
+X_2 =
     \left\{
        \begin{array}{ll}
           X_1, & |X_1| \leq 1 \\
@@ -371,7 +373,7 @@ $$
 
 \begin{theorem}
 \textbf{Affine property}\\
-Any affine transformation($f(x) = ax + b$) of a Gaussian is Gaussian. That is if $X \obey N(\mu, C)$, then 
+Any affine transformation($f(x) = ax + b$) of a Gaussian is Gaussian. That is if $X \obey N(\mu, C)$, then
 $$AX+b \obey N(A\mu + b, ACA^T)$$
 $\forall \mu \in R^n, C \in R^{n \times n}, A \in R^{n \times n}, b \in R^n$
 \end{theorem}
@@ -389,6 +391,138 @@ $$Y \obey N(\mu, C) \Rightarrow A^{-1}(Y - \mu) \obey N(0,I)$$
 where $C = A A^T$
 \end{fact}
 
+\subsection{Geometric intuition for the multivariate Gaussian}
+Let $X \obey N(0,1), C $ the covariance matrix and $\mu \in R^n$
+$$
+C = U P U^T = U P^{1/2} P^{1/2} U^T = (U P^{1/2}) (U P^{1/2})^T =  A A^T
+$$
+$U = (\vector{u})$ matrice orthogonal et $U^T = U^{-1}$, est une \textbf{matrice reflexion ou rotation}.\\
+$P$ martice diagonal et $P = \diag{\vector{\lambda}}$
+
+证明$\lambda_i \geq 0$
+\begin{proof}
+\end{proof}
+
+Let $Y = A X + \mu = U P^{1/2} X + \mu \Rightarrow Y \obey N(\mu, C)$
+
+\href{http://i.imgbox.com/9t3eUww4.png}{几何图形演示从$X$到$AX$再到$AX+\mu$的变化过程}\\
+图中的$\wedge$ 就是这里的矩阵$P$
+
+\subsection{Gaussian marginal and conditionals}
+\begin{theorem}
+$X = (X_1, X_2)^T \in R^2$ Gaussian $\Rightarrow X_1, X_2$ Gaussian
+\end{theorem}
+将多维高斯分布投影到坐标轴上, 仍然是高斯分布.
+\begin{proof}
+$$A = (1, 0) \Rightarrow AX = X_1$$
+$$X \obey N(\mu, C) \Rightarrow AX = X_1 \obey N(A\mu, ACA^T)$$
+\end{proof}
+
+\begin{theorem}
+$X = (X_1, X_2)^T \in R^2$ Gaussian $\Rightarrow (X_1 | X_2 = x_2)$ Gaussian
+\end{theorem}
+
+\bigskip
+Let $X \obey N(\mu, C), a = (1,2,\ldots, k), b = (k+1, \ldots, n), k \in [1,n]$\\
+$$
+X =
+\begin{pmatrix}
+    X_a \\
+    X_b \\
+\end{pmatrix}
+,
+X_a =
+\begin{pmatrix}
+    X_1 \\
+    \vdots \\
+    X_k \\
+\end{pmatrix}
+,
+X_b =
+\begin{pmatrix}
+  X_{k+1} \\
+  \vdots \\
+  X_n \\
+\end{pmatrix}
+,
+\mu =
+\begin{pmatrix}
+  \mu_a \\
+  \mu_b \\
+\end{pmatrix}
+$$
+
+$$
+C =
+\begin{pmatrix}
+  C_{aa} & C_{ab} \\
+  C_{ba} & C_{bb} \\
+\end{pmatrix}
+,
+\
+C_{aa} =
+\begin{pmatrix}
+  C_{11} & \cdots & C_{1k} \\
+  \vdots & \ddots & \vdots \\
+  C_{k1} & \cdots & C_{kk} \\
+\end{pmatrix}
+$$
+\begin{fact}
+\textbf{Marginal property}\\
+$$X_a \obey N(\mu_a, C_{aa})$$
+\end{fact}
+\begin{proof}
+构造一个projection matrix:
+\newcommand\bigzero{\makebox(0,0){\text{\huge0}}}
+$$
+A =
+\begin{bmatrix}
+    1 &  &  &  &  &&\\
+ 	  & 1 &  & \bigzero & &&\\
+      &   & \ddots &  &  &\bigzero& \\
+      & \bigzero & & 1 &  &&\\
+      &   &   & & 1 &&\\
+\end{bmatrix}_{k \times n}
+=
+\begin{bmatrix}
+	I_{k \times k} & 0_{k \times (n-k)}
+\end{bmatrix}
+$$
+
+容易证明: $$AX = {X_a}, A\mu = \mu_a, ACA^T = C_{aa}$$
+$$AX \obey N(A\mu, ACA^T) = N(\mu_a, C_{aa})$$
+\end{proof}
+
+\begin{fact}
+\textbf{Conditional property}\\
+$(X_a|X_b = x_b) \obey N(m, D)$ where
+$$m = \mu_a + C_{ab} C_{bb}^{-1}(x_b - \mu_b)$$
+$$D = C_{aa} - C_{ab} C_{bb}^{-1} C_{ba}$$
+\end{fact}
+
+\begin{theorem}
+If $X \in R^n \obey N(\mu_X, C_X)$, $Y \in R^n \obey N(\mu_Y, C_Y)$
+indep, then
+$$X + Y \obey N(\mu_X + \mu_Y, C_X + C_Y)$$
+\end{theorem}
+\begin{proof}
+当 $n=1$时, $X, Y$ 独立的高斯分布, 所以依据定理\ref{theorem.gauss.indepent_component}, $(X, Y)$ 为二元高斯分布, 根据多元高斯分布的定义(分量的线性组合仍为高斯分布), 所以$X+Y$为高斯分布\\
+for the general case, $a^T (X+Y) = a^T X + a^T Y$
+\end{proof}
+由于$X,Y$相互独立, 所以\\
+$E[X+Y] = E[X] + E[Y]$\\
+由于$Cov(X) = E[XX^T] - E[X] E[X]^T$, (Note: $(E[X])^T = E[X^T]$)
+$$
+\begin{aligned}
+& Cov(X+Y) \\
+& = E[(X+Y)(X+Y)^T] - E[X+Y] E[X+Y]^T \\
+& = E[X X^T + X Y^T + Y X^T + Y Y^T] - (E[X] + E[Y]) (E[X]^T+ E[Y]^T) \\
+& = (E[X X^T] + E[X Y^T] + E[Y X^T] + E[Y Y^T]) - (E[X] E[X]^T + E[X] E[Y]^T + E[Y] E[X]^T + E[Y] E[Y]^T) \\
+& = (E[X X^T] + E[X] E[Y^T] + E[Y] E[X^T] + E[Y Y^T]) - (E[X] E[X]^T + E[X] E[Y]^T + E[Y] E[X]^T + E[Y] E[Y]^T) \\
+& = (E[X X^T] - E[X] E[X]^T) +  (E[Y Y^T] - E[Y] E[Y]^T) \\
+& = Cov(X) + Cov(Y)
+\end{aligned}
+$$
 \subsection{中心极限定理}
 正态分布有一个非常重要的性质:
 在特定条件下,大量统计独立的随机变量的平均值的分布趋于正态分布,这就是中心极限定理.中心极限定理的重要意义在于,根据这一定理的结论,其他概率分布可以用正态分布作为近似.
