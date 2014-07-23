@@ -696,3 +696,8 @@ it also manages in-place construction/destruction and doesn't even require the C
 [boost::variant demo](../../demo/c++/boost/variant.cpp)
 
 [db_wrapper using boost::variant](../../demo/c++/boost/db-wrapper_variant.cpp)
+
+## boost::optional
+Returning a value or flag where there is no value
+
+[boost::variant demo](../../demo/c++/boost/optional.cpp)
