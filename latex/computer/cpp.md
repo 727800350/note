@@ -713,3 +713,21 @@ it also manages in-place construction/destruction and doesn't even require the C
 Returning a value or flag where there is no value
 
 [boost::variant demo](../../demo/c++/boost/optional.cpp)
+
+## boost::array
+Returning an array from a function
+
+	#include <boost/array.hpp>
+	typedef boost::array<char, 4> array4_t; 
+	array4_t& vector_advance(array4_t& val);
+
+The first template parameter of boost::array is the element type, and the second one is the size of an array.   
+boost::array is a fixed-size array; if you need to change the array size at runtime, use std::vector or boost::container::vector instead.  
+The boost::array<> class has no handwritten constructors and all of its members are public, so the compiler will think of it as a POD type.
+
+One of the biggest advantages of boost::array is that it provides exactly the same 
+performance as a normal C array. People from the C++ standard committee also liked it, so 
+it was accepted to the C++11 standard. There is a chance that your STL library already has it 
+(you may try to include the <array> header and check for the availability of std::array<>)
+
+[boost::array demo](../../demo/c++/boost/array.cpp)
