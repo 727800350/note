@@ -209,6 +209,18 @@ the objects of that same class**. Their content is not different from one object
 For example, it may be used for a variable within a class that can contain a counter with the number of objects of
 that class that are currently allocated.
 
+**类成员函数中const的使用**  
+一般放在函数体后,形如:
+	
+	void fun() const;
+如果一个成员函数的不会修改数据成员,那么最好将其声明为const,因为const成员函数中不允许对数据成员进行修改,如果修改,编译器将报错,这大大提高了程序的健壮性  
+(const 的其他用法见[const in c](./c.md))
+
+**const object**  
+const对象不能调用非const函数
+
+上面关于const的示例[const demo](../../demo/c++/const.cpp)
+
 ## Friendship and inheritance
 ### Friend functions
 In principle, private and protected members of a class cannot be accessed from outside the same class in which
