@@ -5,11 +5,12 @@
 \begin{document}
 \title{随机过程}
 \author{Common}
-%% \maketitle
+\maketitle
 %% \newpage
-%% \tableofcontents
-%% \newpage
+\tableofcontents
+\newpage
 
+\section{General introduction}
 一族无穷多个,相互有关的随机变量,这就是随机过程
 
 在概率论中,我们研究了用一个或有限多个随机变量来描述的随机现象.
@@ -44,7 +45,8 @@ $$\cos(\pi t)\ \in [-1,1], 2t \in (-\infty, \infty)$$
 $$S=(-\infty, \infty)$$
 \end{example}
 
-\section{相关函数和协方差函数}
+\section{Metrics}
+\subsection{相关函数和协方差函数}
 \href{http://202.117.122.42:9001/xhxt/xhyxt/xuexi/chart9/c\_9\_3\_2\_001.htm}{相关函数和协方差函数}
 
 相关性是指两个随机变量之间的线性关系,不相关只是说明它们之间不具有线性关系,但是可以有别的关系,所以不一定相互独立.\\
@@ -94,6 +96,20 @@ $$ E[X(k_1) Y(k_2)] = E[X(k_1)] E[Y(k_2)] $$
 即
 $$R_X(k_1, k_2) = \mu_X(k_1) \mu_X(k_2)$$
 
+\subsection{Spectral density}
+The (power) spectrum of a time-series $x(t)$(often, in electrical engineering applications, the voltage amplitude of a signal), 
+describes how the variance of the data $x(t)$ is distributed over the \textbf{frequency components} into which $x(t)$ may be decomposed.
+
+This distribution of the variance may be described either by a measure $\mu $or by a statistical cumulative distribution function 
+$S(f)=$the power contributed by frequencies from $0$ up to $f$. \\
+Then $S$ is called the \textbf{spectral distribution function of $x$}.
+
+Provided $S$ is an absolutely continuous function, then there exists a \textbf{spectral density function(PSD)} $S'$. \\
+In this case, the data or signal is said to possess an absolutely continuous spectrum. 
+
+The nature of the spectrum of a function $x$ gives useful information about the nature of $x$, for example, whether it is periodic or not. 
+The study of the power spectrum is a kind of generalisation of Fourier analysis and applies to functions which do not possess Fourier transforms.
+
 \section{平稳过程}
 有一类重要的随机过程,它处于某种概率平衡状态其主要性质只与变量$X(t)$之间的时间间隔有关而与我们考查的起始点无关, 
 或者说,整个随机过程的统计特性不随时间的推移而变化.这类过程叫做平稳过程.
@@ -108,7 +124,7 @@ $$R_X(k_1, k_2) = \mu_X(k_1) \mu_X(k_2)$$
 例如当我们要测定一个电阻的热噪声的统计特性,由于它是平稳过程,因而我们在任何时间进行测试都能得到相同的结果
 
 \section{高斯随机过程}
-\href{http://www.cnblogs.com/tornadomeet/archive/2013/06/14/3135380.html}{机器学习&数据挖掘笔记_10(高斯过程简单理解)}
+\href{http://www.cnblogs.com/tornadomeet/archive/2013/06/14/3135380.html}{机器学习\&数据挖掘笔记\_10(高斯过程简单理解)}
 
 若随机过程$X(t)$的任意$n$维概率分布都是高斯分布的,则称它为高斯过程或正态过程
 
