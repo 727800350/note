@@ -600,7 +600,7 @@ Notice how the type that typeid considers for pointers is the pointer type itsel
 
 `std::vector::back`:  Returns a reference to the last element in the vector.
 
-[vector push_back operation demo](../../demo/c++/STL/vector-push_back.cpp)
+[vector push_back operation demo](../../demo/c++/stl/vector-push_back.cpp)
 
 ### 内存的释放
 由于vector的内存占用空间只增不减,比如你首先分配了10,000个字节,然后erase掉后面9,999个,留下一个有效元素,但是内存占用仍为10,000个(capacity 仍然很大).
