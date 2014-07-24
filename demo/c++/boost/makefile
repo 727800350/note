@@ -1,8 +1,11 @@
 cc=clang++
-all: optional
+all: array
 
 run:
 	./a.out --apples 2 --oranges=40
+array:
+	$(cc) -g -Wall array.cpp
+
 optional:
 	$(cc) -g -Wall optional.cpp
 
