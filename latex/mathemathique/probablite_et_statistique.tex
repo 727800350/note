@@ -254,6 +254,31 @@ $$
 \label{sec.distribution.poisson}
 \textbf{离散分布}
 
+\begin{example}
+在一个路口统计一个小时经过的车的流量.
+
+设$X$表示一个小时经过这个路口的车辆的数量, 则$X$ 是一个随机变量, 记$E[X] = \lambda$
+$$
+\begin{aligned}
+		&\text{泊松分布}  =  \text{二项分布}\\
+		&\lambda  =  np \\
+		&\lambda \ cars/hour   =  60\ min/hour \times \dfrac{\lambda}{60}\ cars/minute
+\end{aligned}
+$$
+所以依据二项分布:
+$$P(X=k) = C_{60}^k (\dfrac{\lambda}{60})^k (1 - \dfrac{\lambda}{60})^{60 - k}$$
+但是上式成立的前提是\textbf{一分钟的时间粒度之内最多只能有一辆车}, 但是这肯定不符合实际情况.\\
+那么怎么办呢? 我们可以不将一个小时划分为60个分钟, 而是划分为3600个秒, 那么这时:
+$$\lambda\ cars/hour = 3600\ second/hour \times \dfrac{\lambda}{3600}\ cars/second$$
+$$P(X=k) = C_{3600}^k (\dfrac{\lambda}{3600})^k (1 - \dfrac{\lambda}{3600})^{3600 - k}$$
+
+但是, 我们可以继续按照这个逻辑提出质疑, 如果一秒钟之内有多辆车通过呢?\\
+所以, 我们需要\textbf{无限细分},
+$$P(X=k) = \lim_{n \to \infty}C_{n}^k (\dfrac{\lambda}{n})^k (1 - \dfrac{\lambda}{n})^{n - k}$$
+
+通过这个example 我们可以看出泊松分布就是二项分布的极限情况.
+\end{example}
+
 泊松分布适合于描述单位时间内随机事件发生的次数的概率分布.如某一服务设施在一定时间内受到的服务请求的次数,电话交换机接到呼叫的次数,汽车站台的候客人数,机器出现的故障数,自然灾害发生的次数,DNA序列的变异数,放射性原子核的衰变数等等.
 
 \bigskip
