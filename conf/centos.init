@@ -1,5 +1,6 @@
 sudo yum groupinstall -y "Development Tools"
-sudo yum install -y clang gcc gcc-c++ gcc-gfortran gdb
+sudo yum install -y clang gcc gcc-c++ gdb
+sudo yum install -y flex byacc
 sudo yum install -y sudo git git-svn
 sudo yum install -y unrar
 sudo yum remove -y evolution
