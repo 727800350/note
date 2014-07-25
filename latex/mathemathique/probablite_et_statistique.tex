@@ -63,6 +63,18 @@ $$
 $$
 \end{proof}
 
+\begin{example}
+均匀掷骰子, 如果我们只关注骰子1号面出现的时间, 即$C= \{\{1\}\}$, 那么
+$$\sigma(C) = \{ \emptyset, \Omega, \{1\}, \{2,3,4,5,6\} \}$$
+\end{example}
+
+\begin{example}
+当样本空间为实数区间时, Borel algebra是研究中常用的事件域, 一维的Borel algebra定义为:
+\begin{definition}
+包含R(实数集)上所有形如$(-\infty, a]$的最小$\sigma-algebra$, 记为$\mathcal{B} = \sigma((-\infty, a], \forall a \in R)$
+\end{definition}
+\end{example}
+
 \subsection{Measure}
 \begin{definition}
 A measure $\mu$ on $\Omega$ with $\sigma-algebra A$ is a function $\mu: A \rightarrow [0, \infty]$, s.t.
@@ -103,11 +115,13 @@ A \textbf{Borel measure} on $R$ is a measure on $(R, B(R))$
 A \textbf{CDF} is a fonction $F: R \rightarrow R$, such that:
 \begin{enumerate}
 \item $x \leq y \Rightarrow F(x) \leq F(y)$ with $x,y \in R$
-\item $\lim_{x \to a^{+}}F(x) = F(a)$
+\item 右连续的非降函数: $\lim_{x \to a^{+}}F(x) = F(a)$
 \item $\lim_{x \to \infty}F(x) = 1$
 \item $\lim_{x \to -\infty}F(x) = 0$
+\item 概率计算公式: $P(x_1 < X \leq x_2) = F(x_2) - F(x_1),\ P(X=x) = F(x) - F(x^{-})$
 \end{enumerate}
 \end{definition}
+从概率计算公式的后面一个可以看出为什么CDF是右连续的(对于跳跃性的CDF, 画出示意图看一目了然).
 
 \begin{theorem}
 $$F(x) \equiv P((-\infty, x])$$
@@ -121,6 +135,18 @@ If $P(A_1 \cap A_2 \ldots A_{n-1}) > 0$
 $$ P(A_1 \cap A_2 \ldots \cap A_n) = P(A_1) P(A_2 | A_2) P(A_3 | A_1 \cap A_2) \ldots P(A_n | A_1 \cap A_2 \ldots A_{n-1}) $$
 \end{theorem}
 Proof by induction
+
+假设$\{A_i\}$是事件集合里的部份集合,对于任意的$A_i$,贝叶斯定理可用下式表示:
+$$
+P(A_i|B) = \frac{P(B | A_i)\, P(A_i)}{\sum_j P(B|A_j)\,P(A_j)} , \!
+$$
+通常称
+\begin{itemize}
+\item $P(A_i)$ 为\textbf{先验(A priori)概率}, 之所以称为"先验"是因为它不考虑任何B方面的因素
+\item $P(B|A_i)$ 为\textbf{转移(transition)概率}
+\item $P(A_i|B)$ 为\textbf{后验(A postriori)概率}
+\end{itemize}
+$A_i$是$m$个原因事件, $B$是某种结果事件, 贝叶斯公式正是基于结果$B$推测某种起因$A_i$的可能性的方法.
 
 \begin{definition}
 \textbf{Conditional measure} $Q(A) = P(A|B)$ defines a conditional prob measure $Q$ given $B$.
