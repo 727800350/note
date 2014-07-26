@@ -125,6 +125,72 @@ The study of the power spectrum is a kind of generalisation of Fourier analysis 
 
 \section{高斯随机过程}
 \href{http://www.cnblogs.com/tornadomeet/archive/2013/06/14/3135380.html}{机器学习\&数据挖掘笔记\_10(高斯过程简单理解)}
+\begin{definition}
+For any set $S$, a Gaussian process(GP) on $S$ is a set of r.v.s 
+$(Z_t) = (Z_t: t \in S)$ s.t.\\
+$\forall n \in N, \forall \vector{t} \in S, (Z_{t_1}, Z_{t_2}, \ldots, Z_{t_n})$ is mutivariant Gaussian
+\end{definition}
+$(Z_{t_1}, Z_{t_2}, \ldots, Z_{t_n})$ is a finite dimensional distribution.
+
+\begin{example}
+		$S = \{1,2,\ldots, d\}$, $(Z_t) = (Z_{t_1}, Z_{t_2}, \ldots, Z_{t_d})$ is mutivariant Gaussian (a trivial example)
+\end{example}
+
+\begin{example}
+\textbf{random lines}\\
+$S = \R, Z_t = t W, W \in \R \obey N(0,1)$
+$$
+AW = 
+\begin{pmatrix}
+t_1 \\
+\vdots \\
+t_n \\
+\end{pmatrix}
+W
+=
+\begin{pmatrix}
+t_1 W \\
+\vdots \\
+t_n W\\
+\end{pmatrix}
+=
+\begin{pmatrix}
+Z_{t_1} \\
+\vdots \\
+Z_{t_n} \\
+\end{pmatrix}
+\ Gaussian
+$$
+$t\ Z_t$的图像是一个由经过原点的任意条直线组成的图形
+\end{example}
+
+\begin{theorem}
+\textbf{Existence of Gaussian Process}\\
+For any set $S$, any mean fn: $\mu: S \rightarrow \R$ and any covariance fn: $k: S \times S \rightarrow  \R$, there exists a $(Z_t)$ on $S$, s.t.
+$$EZ_t = \mu(t),\ Cov(Z_s, Z_t) = k(s,t)\ \forall s,t \in S$$
+\end{theorem}
+
+\begin{example}
+\textbf{各种GP的示例}
+
+$\alpha, \beta > 0$\\
+使用$t$表示时间, 也就是一个运动过程, $x,y$表示空间位置
+\begin{enumerate}
+\item  Random lines: $S=\R, \mu(x) = 0, k(x,y) = x^T y$; % Linear 
+\item  Random planes: $S=\R^d, \mu(x) = 0, k(x,y) = x^T y$; % Linear 
+\item  Std Brownian motion: $S=[0,\infty), \mu(t) = 0,  k(s,t) = \alpha \min(x,y)$
+\item  Squared exponential $S = \R, \mu(x) = 0, k(x,y) = exp(- \alpha |x-y|^2)$ 
+\item  Squared exponential $S = \R^d, \mu(x) = 0, k(x,y) = exp(- \alpha \norm{x-y}^2)$
+\item  Ornstein-Uhlenbsk: $S=[0,\infty), \mu(t) = 0, k(x,y)  = exp(- \alpha |x-y|)$ like Brownian motion
+\item  Periodic: $S = \R, \mu(x) = 0, k(x,y)  = exp(- \alpha sin(\beta \pi (x-y))^2)$ 
+\item  Symmetric GP(关于直线$x=0$对称): $S =\R, \mu(x) = 0, k(x,y)  = exp(-\alpha \min(|x-y|, |x+y|)^2)$
+\end{enumerate}
+\href{../../demo/math/gaussian_1d.m}{Guassian 1D matlab 模拟程序}
+\end{example}
+
+看\href{http://i.imgbox.com/6XtDDnQs.png}{2D GP俯视图}, 和我们看天气预报的时候看到的weather map, 比如temperature, 非常像, 这也是为什么GP在气象, 地理中应用广泛的一个直观感受.\\
+前面用到的kernel 函数, 基本上都是$x,y$ 相距很近时, exponential 非常大, 也就意味着相关性非常大, 
+正如图\href{http://i.imgbox.com/1OsWR7cU.png}{2D GP}中看到的, 相距很近的点, 颜色非常接近, 而相距很远的点, 颜色差别非常大, 基本上没有关联.
 
 若随机过程$X(t)$的任意$n$维概率分布都是高斯分布的,则称它为高斯过程或正态过程
 
