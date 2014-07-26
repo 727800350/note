@@ -1,0 +1,136 @@
+% !Mode:: "TeX:UTF-8"
+\documentclass{article}
+\input{../public/package}
+\input{../public/article}
+\begin{document}
+\title{Machine Learning}
+\author{}
+\maketitle
+%% \newpage
+\tableofcontents
+\newpage
+\section{K-means Cluestering}
+无监督, greedy algo, a special case of EM algo
+
+Given $D = (\vector{x}), x_i \in R^d$
+
+Intuition: points are near to the center of their cluster
+
+Assume $K$ clusters, with unknown centers $\mu_1, \mu_2, \ldots, \mu_k$
+$$
+L
+= \sum_{j = 1}^k \sum_{i | x_i \in\ cluster\ j}\norm{x_i - \mu_j}^2
+= \sum_{j = 1}^k \sum_i^n a_{ij}\norm{x_i - \mu_j}^2
+$$
+where 
+$$
+a_{ij} =
+\left\{
+  \begin{array}{ll}
+    1, & \si x_i \in\ cluster\ j\\
+    0, & \sinon
+  \end{array}
+\right.
+$$
+We want to choose $a_{ij}$ and $\mu_i$ to minimize $L$.
+
+K-means: try to minimize $L$ with repect to(wrt) $a$ and $\mu$
+\begin{enumerate}
+\item Init $\mu_1, \mu_2, \ldots, \mu_k$
+\item Choose optimal $a$ for fixed $\mu$
+\item Choose optimal $\mu$ for fixed $a$
+\item Repeat 2 and 3 until convergence
+\end{enumerate}
+
+\href{https://www.youtube.com/watch?v=zHbxbb2ye3E}{K-means demo}
+
+For step 2:\\
+对于固定的$\mu$, 也就是说我们知道了所有clusters的centers, 需要将$x_i$分配到这些clusters中, 直觉告诉我们应该\\
+assign $x_i$ to the nearset $\mu_j$. i.e.
+$$
+a_{ij} =
+\left\{
+  \begin{array}{ll}
+  1, & \si j = \arg \min_l \norm{x_i - \mu_l}^2\\
+    0, & \sinon
+  \end{array}
+\right.
+$$
+
+For step 3:\\
+对于固定$a$, 也就是说我们知道了$x_i$都是属于哪个cluster的, 然后需要找出最佳的cluster's center.\\
+首先我们的直觉告诉我们, cluster center应该为属于这个cluster的点的中心, 也就是平均值.
+
+$$
+\begin{aligned}
+\end{aligned}
+L 
+= \sum_{j = 1}^k \sum_i^n a_{ij}\norm{x_i - \mu_j}^2
+= \sum_{j = 1}^k \sum_i^n a_{ij}(x_i - \mu_j)^T (x_i - \mu_j)
+$$
+
+$$
+0 = \grad_{\mu_j}{L} = \sum_i \sum_l a_{ij} \grad{(x_i - \mu_l)^T (x_i - \mu_l)}
+$$
+
+例如: $n=3, k=2, d=2$, 也就是说把3个二维的数据分到两个clusters中.\\
+$x_i = (x_{i1}, x_{i2})^T$
+$\mu_i = (\mu_{i1}, \mu_{i2})^T$
+$a_{ij}$ 表示第$i$个点属于第$j$个cluster.
+
+$$
+\begin{aligned}
+L
+= & \sum_{j = 1}^2 \sum_{i=1}^3 a_{ij}(x_i - \mu_j)^T (x_i - \mu_j) \\
+= &  a_{11}(x_1 - \mu_1)^T (x_1 - \mu_1) + a_{12}(x_1 - \mu_2)^T (x_1 - \mu_2) \\
+& + a_{21}(x_2 - \mu_1)^T (x_2 - \mu_1) + a_{22}(x_2 - \mu_2)^T (x_2 - \mu_2) \\
+& + a_{31}(x_3 - \mu_1)^T (x_3 - \mu_1) + a_{32}(x_3 - \mu_2)^T (x_3 - \mu_2) \\
+\end{aligned}
+$$
+如果我对$\mu_1$求gradient, 那么不含有$\mu_1$(这里就是含有$\mu_2$)的项就为0,
+$$
+\begin{aligned}
+\grad_{\mu_1}{L} 
+& = \sum_{i = 1}^3 a_{i1}\grad{(x_i - \mu_1)^T (x_i - \mu_1)} \\
+& = \sum_{i = 1}^3 a_{i1} \times (-2(x_i - \mu_1)) \\
+& = \sum_{i = 1}^3  -2a_{i1}(x_i - \mu_1) \\
+\end{aligned}
+$$
+上式用到了simulation et optimisation中学到的一个公式:
+$$
+F(x)= \frac{1}{2} \ps{Ax}{x} - \ps{b}{x}
+$$
+\`ou, A une matrice de dimension $n$, sym\'trique d\'efinie positive. 那么
+$$DF(x).h = \ps{Ax - b}{h}$$
+$$\grad{F(x)} = Ax - b$$
+且$F(x)$ est une fontion convexe, 所有有一个minimum
+
+所以
+$$
+\begin{aligned}
+0 = \grad_{\mu_j}{L} 
+&= \sum_i \sum_l a_{il} \grad{(x_i - \mu_l)^T (x_i - \mu_l)} \\
+&= \sum_i a_{ij} \grad{(x_i - \mu_j)^T (x_i - \mu_j)} \\
+&= \sum_i -2a_{ij} (x_i - \mu_j) \\
+&= -2(\sum_i a_{ij}x_i - \mu_j \sum_i a_{ij})
+\end{aligned}
+$$
+
+$$
+\Rightarrow 
+\mu_j = \dfrac{\sum_i a_{ij}x_i}{\sum_i a_{ij}}
+$$
+$\sum_i a_{ij}$  表示属于cluster $j$个点的个数\\
+所以这确实是cluster的重心
+
+为了确认L在这个$\mu_j$取到的是一个minimum, 而不是maximum, 我们求一下二阶导.
+
+$$
+\frac{\partial }{\partial \mu_{jk}} \grad_{\mu_{j} L}
+= 2(\sum_i a_{ij}) e_k
+\Rightarrow 
+\grad^2_{\mu_j} L = 2(\sum_i a_{ij})I > 0
+$$
+所以这是一个minimum, 而不是一个maximum
+
+\end{document}
