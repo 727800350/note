@@ -75,6 +75,23 @@ Examples of discriminative models used in machine learning include:
 \end{itemize}
 
 \section{K-Nearest Neighbor(KNN)}
+Given $((x_1, y_1), (x_2, y_2), \ldots, (x_k, y_k), x_{k+1}, \ldots, x_n), x$\\
+$x_i \in R^d, y_i \in \{0, 1\}$
+
+\textbf{Majority vote of $k$ nearest points}\\
+\href{http://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/KnnClassification.svg/220px-KnnClassification.svg.png}{KNN demo}
+
+$k=1$, 找到最近的1个点\\
+$d(x_i, x_j) = \norm{x_i - x_j}$
+
+$k=3$, 找到最近的3个点, 看label 1多还是label 0多.
+
+Prob interpretation. Fix $k$\\
+$P(y) =$ fraction of points $x_i$ in $N_k(x)$ s.t $y_i = y$\\
+有时也记为$P(y|x, D)$, this is discriminative
+
+How to select parameter $k$?\\
+Cross validation, etc.
 
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
