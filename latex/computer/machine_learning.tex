@@ -42,8 +42,6 @@ K-means: try to minimize $L$ with repect to(wrt) $a$ and $\mu$
 \item Repeat 2 and 3 until convergence
 \end{enumerate}
 
-\href{https://www.youtube.com/watch?v=zHbxbb2ye3E}{K-means demo}
-
 For step 2:\\
 对于固定的$\mu$, 也就是说我们知道了所有clusters的centers, 需要将$x_i$分配到这些clusters中, 直觉告诉我们应该\\
 assign $x_i$ to the nearset $\mu_j$. i.e.
@@ -132,5 +130,17 @@ $$
 \grad^2_{\mu_j} L = 2(\sum_i a_{ij})I > 0
 $$
 所以这是一个minimum, 而不是一个maximum
+
+\href{https://www.youtube.com/watch?v=zHbxbb2ye3E}{K-means demo}
+
+\section{EM(expectation-maximization) algo}
+A class of algos, 
+it's more of an approach to derive an aglo for approximately obtaining (MLE)maximum-likelihood estimation or (MAP)maximum a posteriori estimates of parameters
+when some of the data is missing.
+
+Given: $x = (\vector(x))$\\
+Model: $(X, Z) \obey p_\theta$ for some (unkown) $\theta \in \Theta$
+
+Motivation of EM:
 
 \end{document}
