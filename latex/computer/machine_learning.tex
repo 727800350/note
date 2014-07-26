@@ -9,6 +9,73 @@
 %% \newpage
 \tableofcontents
 \newpage
+\section{Introduction}
+algorithms for inferring unkowns from knows.
+
+\textbf{Applications}
+\begin{itemize}
+\item Spam mail
+\item Handwriting
+\item Google Streetview
+\item Speech Recognition
+\item Netflix, 视频推荐
+\item Navigation of robot
+\item Climate modelling
+\begin{itemize}
+
+\textbf{Classes of ML problems}:
+\begin{itemize}
+\item Supervised: Given $((x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n))$
+	\begin{itemize}
+	\item classification
+	\item regression
+	\end{itemize}
+\item unsupervised: Given $(\vector{x})$, find patterns in the data
+	\begin{itemize}
+	\item Clustering
+	\item density estimation\\
+		Given data comes from a unkown probability distribution
+	\item dimensional reduction\\
+		降维(but perserve the structure)
+	\end{itemize}
+\item Semi-supervised: Given $((x_1, y_1), (x_2, y_2), \ldots, (x_k, y_k), x_{k+1}, \ldots, x_n)$, predict $y_{k+1}, \ldots, y_n$
+\item Active learning
+\item Decision theory
+\item Reinforcement learning\\
+	rewards/losses, maximize lifetime reward
+\end{itemize}
+\href{http://i.imgbox.com/sVuBzaqV.png}{unsupervised ML}
+
+\textbf{Generative Discriminative(区别对待) approaches}\\
+Given $((x_1, y_1), (x_2, y_2), \ldots, (x_k, y_k), x_{k+1}, \ldots, x_n)$\\
+discriminative: $P(y|x)$\\
+geneerative: $P(x,y) = f(x|y)P(y) = P(y|x)f(x)$
+It is called generative, because it use the density distribution $f(x)$ or $f(y)$
+
+Examples of generative models include:
+\begin{itemize}
+\item Gaussian mixture model and other types of mixture model
+\item Hidden Markov model
+\item Probabilistic context-free grammar
+\item Naive Bayes
+\item Averaged one-dependence estimators
+\item Latent Dirichlet allocation
+\item Restricted Boltzmann machine
+\end{itemize}
+
+Examples of discriminative models used in machine learning include:
+\begin{itemize}
+\item Logistic regression, a type of generalized linear regression used for predicting binary or categorical outputs (also known as maximum entropy classifiers)
+\item Linear discriminant analysis
+\item Support vector machines
+\item Boosting (meta-algorithm)
+\item Conditional random fields
+\item Linear regression
+\item Neural networks
+\end{itemize}
+
+\section{K-Nearest Neighbor(KNN)}
+
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
 
