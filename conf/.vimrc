@@ -4,6 +4,10 @@
 map <C-Y> "+y  
 map <C-X> "+x
 map <C-P> "+p
+
+" 原样从剪贴板粘贴到vim中, 而不对粘贴的文字使用auto indent等设置
+set pastetoggle=<F10>
+
 "保存文件并留在插入模式 [插入模式]
 imap jj <ESC>:w<CR>li
 "返回Normal模式 [插入模式]
@@ -233,29 +237,3 @@ function! Uncomment() range
   endif
 endfunction
 
-"===============================Latex ab===============================
-autocmd FileType tex ab var \varepsilon
-autocmd FileType tex ab mod \text{mod}
-autocmd FileType tex ab eps \epsilon
-autocmd FileType tex ab del \delta
-autocmd FileType tex ab Del \Delta
-autocmd FileType tex ab 1frac \frac{d}{dx}
-autocmd FileType tex ab frac \frac{}{}<ESC>2hi
-autocmd FileType tex ab partial \frac{\partial }{\partial}<ESC>10hi
-autocmd FileType tex ab 1int \int_{x_0}^{x_1}F
-autocmd FileType tex ab 2int \int\int_{D}
-autocmd FileType tex ab 2frac \frac{d^2}{dx^2}F
-autocmd FileType tex ab theorem \begin{theorem}<CR>\end{theorem}<ESC>O
-autocmd FileType tex ab example \begin{example}<CR>\end{example}<ESC>O
-autocmd FileType tex ab frame \begin{frame}<CR>\end{frame}<ESC>O
-autocmd FileType tex ab center \begin{center}<CR>\end{center}<ESC>O
-autocmd FileType tex ab itemize \begin{itemize}<CR>\item <CR>\end{itemize}<ESC>O<BACKSPACE><BACKSPACE>
-autocmd FileType tex ab enumerate \begin{enumerate}<CR>\item <CR>\end{enumerate}<ESC>O<BACKSPACE><BACKSPACE>
-autocmd FileType tex ab description \begin{description}<CR>\item <CR>\end{description}<ESC>O<BACKSPACE><BACKSPACE>
-autocmd FileType tex ab corollary \begin{corollary}<CR>\end{corollary}<ESC>O
-autocmd FileType tex ab 1equation \begin{equation}<CR>\end{equation}<ESC>O
-autocmd FileType tex ab split \begin{equation}<CR><TAB>\begin{split}<CR>\end{split}<CR><BACKSPACE>\end{equation}<ESC>kO
-autocmd FileType tex ab case \begin{equation}<CR>\left\{<CR>\begin{array}{ll}<CR>\end{array}<CR>\right.<CR><BACKSPACE><BACKSPACE>\end{equation}<ESC>l2xkkO
-autocmd FileType tex ab eqnarray \begin{eqnarray}<CR>\end{eqnarray}<ESC>O
-
-autocmd FileType md :inoremap * **<ESC>i
