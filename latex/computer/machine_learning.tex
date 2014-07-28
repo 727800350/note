@@ -21,7 +21,7 @@ algorithms for inferring unkowns from knows.
 \item Netflix, 视频推荐
 \item Navigation of robot
 \item Climate modelling
-\begin{itemize}
+\end{itemize}
 
 \textbf{Classes of ML problems}:
 \begin{itemize}
@@ -33,16 +33,13 @@ algorithms for inferring unkowns from knows.
 \item unsupervised: Given $(\vector{x})$, find patterns in the data
 	\begin{itemize}
 	\item Clustering
-	\item density estimation\\
-		Given data comes from a unkown probability distribution
-	\item dimensional reduction\\
-		降维(but perserve the structure)
+	\item density estimation: Given data comes from a unkown probability distribution
+	\item dimensional reduction: 降维(but perserve the structure)
 	\end{itemize}
 \item Semi-supervised: Given $((x_1, y_1), (x_2, y_2), \ldots, (x_k, y_k), x_{k+1}, \ldots, x_n)$, predict $y_{k+1}, \ldots, y_n$
 \item Active learning
 \item Decision theory
-\item Reinforcement learning\\
-	rewards/losses, maximize lifetime reward
+\item Reinforcement learning: rewards/losses, maximize lifetime reward
 \end{itemize}
 \href{http://i.imgbox.com/sVuBzaqV.png}{unsupervised ML}
 
@@ -92,6 +89,77 @@ $P(y) =$ fraction of points $x_i$ in $N_k(x)$ s.t $y_i = y$\\
 
 How to select parameter $k$?\\
 Cross validation, etc.
+
+\section{Tree: CART approach}
+\subsection{Decision Trees(CART Approach)}
+Given $((x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n)), x$\\
+
+\textbf{Binary tree, minimize error in each leaf}.
+
+see note in paper
+
+\subsection{Regression Tree}
+see note in paper
+
+\subsubsection{Growing a regression tree}
+Greedy algo
+
+$x_i \in R^d$
+
+1. First split: choose $j$ and $s$ to minimize the quantity:
+$$
+\min_y (\sum_{i: x_{ij} > s} (y - y_i)^2 + \sum_{i: x_{ij} \leq s} (y - y_i)^2)
+$$
+As the given data is finite, for a choosen $j$, there is only a finite possibilities for $s$, \\
+so we can split the whole region into two regions, we note one of them as $R$.
+
+2. Spliting region $R$: choose $j$ and $s$ to minimize
+$$
+\min_y (\sum_{i: x_{ij} > s \et x_i \in R} (y - y_i)^2 + \sum_{i: x_{ij} \leq s \et x_i \in R} (y - y_i)^2)
+$$
+
+3. Stop when one point
+
+4. only consider splits resulting in regions with $\geq 5$ points in per region
+
+\subsection{classification tree}
+\subsubsection{Growing a classification tree}
+see note in paper
+
+\subsection{Generalization}
+Impurity(不纯, 杂质) measures:
+\begin{itemize}
+\item misclassfication rate
+\item entropy $H_R$
+\item $F_R$: Gini index, $G_R = \sum_{y \in Y} P_R(y)(1 - P_R(y))$
+\end{itemize}
+
+Other issues about this kind of model
+\begin{itemize}
+\item Categorical predictiors
+\item Loss matrix
+\item Missing values, $(x_1, y_1), \ldots, (x_i, y_i)$, and for some $i,j$, $x_{ij}$ is missing, it is noted N/A
+\item Linear combinations
+\item Instability, means sensitive to the data, that is high variance, but we can use aggregation to deal with it.
+\end{itemize}
+
+\section{Bootstrap aggregation(Bagging)}
+Ofen prove the performance
+
+Given $(x_1, y_1), (x_2, y_2), \ldots (x_n, y_n) \obey P \ iid$\\
+Given $x$, predict $y$
+
+我们知道, 如果我们有很多组的given data, 那么, 我们可以在每组数据中, 求得$x$对应的$y$, 然后对这些求得的$y$ 取平均值, 我们有理由确信, 如果given data的组数
+足够多, 计算得到的平均值是很接近与真实值的.\\
+bootstrap 就是类似于这样操作的一种方法.\\
+由于我们知道数据的分布规律, 那么我们可以sampling 多次, 得到多组数据, 如下:\\
+$(x_1^{(1)}, y_1^{(1)}), (x_2^{(1)}, y_2^{(1)}), \ldots (x_n^{(1)}, y_n^{(1)})$ \\
+$(x_1^{(2)}, y_1^{(2)}), (x_2^{(2)}, y_2^{(2)}), \ldots (x_n^{(2)}, y_n^{(2)})$ \\
+$\vdots$\\
+$(x_m^{(m)}, y_m^{(m)}), (x_2^{(m)}, y_2^{(m)}), \ldots (x_n^{(m)}, y_n^{(m)})$ \\
+
+\smallskip
+$EY = y = f(x)$, unbiased estimation
 
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
