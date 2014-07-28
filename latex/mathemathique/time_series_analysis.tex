@@ -1,0 +1,54 @@
+% !Mode:: "TeX:UTF-8"
+\documentclass{article}
+\input{../public/package}
+\input{../public/article}
+\begin{document}
+\title{Time Series Analysis: Forecasting and Control}
+\author{}
+\maketitle
+\tableofcontents
+\newpage
+
+Time Series Analysis: Forecasting and Control
+作者: George E. P. Box / Gwilym M. Jenkins / Gregory C. Reinsel
+\href{http://book.douban.com/subject/4159347/}{豆瓣}
+
+\section{Introduction}
+\subsection{Four important practical problems}
+\begin{enumerate}
+\item{Forecasting Time series}\\
+Forcasts are usually needed by a period known as the \textbf{lead time}(A lead time is the latency (delay)
+between the initiation and execution of a process).
+
+$\hat{z}_t(l)$ forecast function at origin $t$.\\
+$\hat{z}_t(l)$ is the forecast of $z_{t+l}$
+
+\textbf{Assumption}: The time series $z_t$ follows a stochastic model of a known form.
+
+\item{Estimation of Transfer Functions}\\
+eg: the dynamic relationship between between two time series $Y_t$ and $X)t$ can be determined, past values of \textbf{both series} may be used in
+forecasting $Y_t$
+
+\item {Analysis of Effects of Unusual Intervention Events to a System}\\
+intervention events: indicator variable taking only 1 and 0 to indicate(quantitatively) the presence or absence of the event.
+
+\item {Discrete Control Systems}\\
+When we can measure fluctuations in an input variable that can be observed but not changed, it may be possible to make appropriate compensatory changes
+in some other control variable. This is referred to as \textbf{feedforward control}.
+
+Alternatively, we may be able to use the deviation from target or "error signal" of the output characteristic itself to calculate appropriate
+compensatory changes in the control variable. This is called \textbf{feedback control}.
+\end{enumerate}
+
+\subsection{Stochastic Mathematical Models}
+\begin{description}
+\item [backward shift operator $B$] $Bz_t = z_{t-1}$, hence $B^m z_t = z_{t-m}$
+\item [forward shift operator $F$] $Fz_t = z_{t+1}$, $F = B^{-1}$
+\item [backward difference operator $\nabla$] $\nabla z_t = z_t - z_{t-1} = (1-B)z_t$
+\end{description}
+
+\textbf{Linear filter model}\\
+$$z_t = \mu + a_t + \psi_1 a_{t-1} + \psi_2 a_{t-2} + \cdots = \mu + \psi(B) a_t$$
+$\mu$: level of the process, and
+$$\psi(B) = 1 + \psi_1 B + \psi_2 B^2 + \cdots$$
+\end{document}
