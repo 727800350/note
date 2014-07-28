@@ -1,8 +1,12 @@
 cc=clang++
-all: array
+all: tuple
 
 run:
 	./a.out --apples 2 --oranges=40
+
+tuple:
+	$(cc) -g -Wall -std=c++11 tuple.cpp
+
 array:
 	$(cc) -g -Wall array.cpp
 

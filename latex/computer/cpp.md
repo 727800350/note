@@ -731,3 +731,20 @@ it was accepted to the C++11 standard. There is a chance that your STL library a
 (you may try to include the <array> header and check for the availability of std::array<>)
 
 [boost::array demo](../../demo/c++/boost/array.cpp)
+
+## boost::tuple
+[boost::tuple demo](../../demo/c++/boost/tuple.cpp)
+
+	boost::tuple<int, std::string> almost_a_pair(10, "Hello");
+	boost::tuple<int, float, double, int> quad(10, 1.0f, 10.0, 1);
+
+Some readers may wonder why we need a tuple when we can always write our own structures 
+with better names, for example, instead of writing `boost::tuple<int, std::string>`, 
+we can create a structure:
+
+	struct id_name_pair {
+    	int id;
+    	std::string name;
+	};
+Well, this structure is definitely more clear than `boost::tuple<int, std::string>`.  
+But what if this structure is used only twice in the code?
