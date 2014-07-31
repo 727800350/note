@@ -143,10 +143,11 @@ Other issues about this kind of model
 \item Instability, means sensitive to the data, that is high variance, but we can use aggregation to deal with it.
 \end{itemize}
 
-\section{Bootstrap aggregation(Bagging)}
+\section{Bootstrap aggregating(Bagging)}
 Ofen prove the performance
 
-Given $(x_1, y_1), (x_2, y_2), \ldots (x_n, y_n) \obey P \ iid$\\
+\noindent
+Given $(x_1, y_1), (x_2, y_2), \ldots (x_n, y_n) \obey P \ iid(Independent Identically Distributed)$\\
 Given $x$, predict $y$
 
 我们知道, 如果我们有很多组的given data, 那么, 我们可以在每组数据中, 求得$x$对应的$y$, 然后对这些求得的$y$ 取平均值, 我们有理由确信, 如果given data的组数
@@ -159,7 +160,157 @@ $\vdots$\\
 $(x_m^{(m)}, y_m^{(m)}), (x_2^{(m)}, y_2^{(m)}), \ldots (x_n^{(m)}, y_n^{(m)})$ \\
 
 \smallskip
-$EY = y = f(x)$, unbiased estimation
+True value is $y = f(x)$, $y^{(i)}$ is the estimater, $EY$ is the mean of $y^{(i)}$, and if $EY = y$, then $EY$ is an unbiased estimation.
+
+the squared distance from the true value $y$:
+$$E[(Y - y)^2] = E[(Y - EY)^2] = \sigma^2(Y)$$
+
+Aggregation comes in:
+define $Z =\dfrac{1}{m} \sum_{i = 1}^m Y^{(i)}$, then $EZ = y$.
+And the expected loss:
+$$
+E[(Z - y)^2] = E[(Z - EZ)^2] 
+= \sigma^2(Z) 
+= \sigma^2(\dfrac{1}{m} \sum Y^{(i)}) 
+= \frac{1}{m^2} \sigma^2(\sum Y^{(i)})
+= \frac{1}{m^2} \sum \sigma^2(Y^{(i)})
+= \frac{1}{m} \sigma^2(Y)
+$$
+意味着如果取$m \to \infty$, expected loss 将 $\to 0$
+
+用the empirical distribution $\hat{P}$近似$P$, 然后从$\hat{P}$中resampling
+
+\subsection{Bagging for classification}
+\begin{itemize}
+\item classification: majority vote, $C_1, C_2, \ldots, C_m$
+\item regression: estimate probabilities, $P^{(1)}, \ldots, P^{(m)}$, PMF on $y$
+\end{itemize}
+
+\subsection{Random forests}
+Given data set $D = (x_1, y_1), (x_2, y_2), \ldots (x_n, y_n)$
+
+\begin{verbatim}
+for i = 1, ..., B:
+    choose bootstrap sample D_i from D
+    construct tree T_i using D_i, s.t.
+        at each node, choose random subset of features and only consider splitting on those features
+\end{verbatim}
+
+Usage:
+Give $x$, take majority vote for classification, or average estimate probability for regression.
+
+\section{Maximum Likelihood Estimation(MLE)}
+Given data set $D = (\vector{x}$ with $x_i \in R^d$\\
+Assume a set of distributions $\{ P_\theta: \theta \in \Theta \}$ on $R^d$.\\
+Assume $D$ is a sample from random variables $\vector{X} \obey P_\theta$ iid for some $\theta \in \Theta$
+
+Goal: Estimate the true $\theta$ that $D$ comes from.
+\begin{definition}
+$\theta_{mle}$ is a MLE for $\theta$ if $\theta_{MLE} = \arg_{\theta \in \Theta} \max P(D|\theta)$ \\
+where $P(D|\theta) = P(\vector{x} | \theta) = \prod_{i = 1}^n P(x_i|\theta) = \prod_{i=1}^n P(X_i = x_i|\theta)$, 
+and $L(\theta) = P(D|\theta)$ is the likelihood function
+\end{definition}
+
+Pros:
+\begin{itemize}
+\item easy
+\item interpretable
+\item Invariant under reparametrization: $g(\theta_{MLE})$ is a MLE for $g(\theta)$
+\item Asymptotic properties
+\item Consistent(当$n \to infty$, 有很大的概率使得$\theta$取到真值)
+\item Normal
+\item Efficient
+\end{itemize}
+
+Cons:
+\begin{itemize}
+\item point estimation: not representative of uncertanity
+$$P(x|D) \sim P(x|\theta_{MLE})$$
+\item Overfitting: regression example
+\item Wrong objective?(may maximize the wrong objective function)
+\item Existence or uniqueness not guaranteed
+\end{itemize}
+
+\subsection{MLE for univariante Gaussian}
+$X \obey N(\theta, \sigma^2)$ with $\theta \in \R$
+$$P(x|\theta) = \dfrac{1}{\sqrt{2\pi \sigma^2}} \exp(-\dfrac{1}{2\sigma^2}(x-\theta)^2)$$
+$D = (\vector{x}),\ X_i \obey N(\theta, \sigma^2),\ iid$
+$$
+P(D|\theta) 
+= P(\vector{x}| \theta) 
+= \prod_{i=1}^n P(x_i|\theta) 
+= (\dfrac{1}{\sqrt{2\pi \sigma^2}})^n \exp(-\dfrac{1}{2\sigma^2} \sum_{i=1}^n (x_i -\theta)^2)
+$$
+为了方便求导, 我们取对数
+$$
+\log(P(D|\theta)) = -\dfrac{n}{2} \log(2 \pi \sigma^2) - \dfrac{1}{2\sigma^2} \sum_{i=1}^n (x_i - \theta)^2
+$$
+对$\theta$求导, 然后令导数为$0$
+$$
+0 = \dfrac{\partial }{\partial \theta} \log(P(D|\theta)) 
+= \dfrac{1}{\sigma^2} \sum_{i=1}^n (x_i - \theta)
+= \dfrac{1}{\sigma^2} (\sum_{i=1}^n x_i - n \theta)
+\Rightarrow \theta = \dfrac{1}{n} \sum_{i=1}^n x_i
+$$
+求二阶导我们可以验证这确实是一个maximum.
+
+$$\theta_{MLE} = \mean{x} = \dfrac{1}{n} \sum_{i=1}^n x_i$$
+这意味着, sample 的期望的最好估计就是sample的mean.
+
+\subsection{MLE for a PMF on a finite  set}
+$X \obey P,\ X \in \{1,2,\ldots, m\}$\\
+例如掷骰子, $m=6$\\
+$D = (\vector{x}),\ \vector{X} \obey P,\ iid$\\
+$\sum_{i=1}^m P_\theta(i) = 1$\\
+$P(X=i|\theta) = P(i|\theta) = P_\theta(i) = \theta_i$ with $\theta = (\theta_1, \ldots, \theta_m)$\\
+骰子取$i$的概率为$\theta_i$
+
+$$P(x|\theta) = \theta_x= \prod_{j= 1}^m \theta_j^{I(x=j)}$$
+where $I(x=j)$ is a indicator.
+
+$$\theta_{MLE} = \arg_{\theta_i: \sum_{i=1}^m \theta_i =1} \max P(D|\theta)$$
+$$
+\begin{aligned}
+P(D|\theta) 
+& = P(\vector{x}| \theta) \\ 
+& = \prod_{i=1}^n P(x_i|\theta) \\ 
+& = \prod_{i=1}^n \theta_{x_i}\\ 
+& = \prod_{i=1}^n \prod_{j=1}^m \theta_j^{I(x_i = j)}\\ 
+& = \prod_{j=1}^m \prod_{i=1}^n \theta_j^{I(x_i = j)}\\ 
+& = \prod_{j=1}^m \theta_j^{ \sum_{i=1}^n I(x_i = j)}\\ 
+& = \prod_{j=1}^m \theta_j^{n_j}\\ 
+\end{aligned}
+$$
+where $n_j = \#\{i: x_i = j\}$
+
+取对数
+$$ \log(P(D|\theta)) = \sum_{j=1}^m n_j \log(\theta_j) $$
+$$ \dfrac{1}{n} \log(P(D|\theta)) = \sum_{j=1}^m \dfrac{n_j}{n} \log(\theta_j) $$
+令$q_j = \dfrac{n_j}{n} $\\
+由于从data set $D$中, 我们可以count 数字$j$出现的次数, 也就是说$n_j$是已知的,且我们容易发现$\sum_{j=1}^m q_j = 1$
+
+$q$和$\theta$的relative entropy为
+$$D(q||\theta) = \sum_{j=1}^m q_j \log(\dfrac{q_j}{\theta_j})$$
+And we have $D(q||\theta) \geq 0$ 恒成立.
+
+$$
+\dfrac{1}{n} \log(P(D|\theta)) 
+= \sum_{j=1}^m q_j \log(\theta_j)
+= \sum_{j=1}^m q_j \log(\dfrac{\theta_j}{q_j}) + \sum_{j=1}^m q_j \log(q_j)
+= -D(q||\theta) - H(q)
+$$
+
+$$
+\theta_{MLE}
+= \arg_{\theta_i: \sum_{i=1}^m \theta_i =1} \max P(D|\theta)
+= \arg \max \dfrac{1}{n} \log(P(D|\theta))
+= \arg \max D(q||\theta)
+= q
+$$
+And it means:
+$$\theta_{MLE} = q = (\dfrac{n_i}{n}, \dfrac{n_2}{n}, \ldots, \dfrac{n_m}{n})$$
+\textbf{Empirical distribution}\\
+同时, 这也是一个很自然的结果, 例如在掷骰子的时候, 为了估计骰子取到每个值的概率, 我们会将骰子掷很多次, 然后统计每个值出现的次数, 除以总的投掷次数, 就是每个值取到的概率.
 
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
