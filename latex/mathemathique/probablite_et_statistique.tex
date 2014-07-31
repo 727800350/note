@@ -8,13 +8,13 @@
 \tableofcontents
 \newpage
 Probability can be applied to any problem involving uncertainty.\\
-In machine learning, uncertainty comes in many forms: what is the best prediction (or decision) given some data? 
+In machine learning, uncertainty comes in many forms: what is the best prediction (or decision) given some data?
 what is the best model given some data? what measurement should I perform next? etc.
 \section{Mesure}
 \subsection{$\sigma-algebra$}
 une tribu ou $\sigma$-alg\`ebre (lire sigma-alg\`ebre) ou plus rarement corps de Borel1
 sur un ensemble X est \textbf{un ensemble non vide de parties de X},
-\textbf{stable}(closed en anglais) par passage au \textbf{compl\'ementaire} et par \textbf{union d\'enombrable} 
+\textbf{stable}(closed en anglais) par passage au \textbf{compl\'ementaire} et par \textbf{union d\'enombrable}
 (donc aussi par \textbf{intersection d\'enombrable} comme $\cap_{i=1}^{\infty} E_i = \cap(E_i^c)^c = (\cup E_i^c)^c \in A$).\\
 Les tribus permettent de d\'efinir rigoureusement la notion d'\textbf{ensemble mesurable}.
 
@@ -23,7 +23,7 @@ Soit $X$ un ensemble. On appelle tribu (ou $\sigma-algebre$) sur $X$, un ensembl
 \begin{enumerate}
 \item $\mathcal{A} \not=\varnothing$
 \item $\forall A \in \mathcal{A}$ ,  ${}^c A \in\mathcal{A}$  (o\`u ${}^cA$ d\'esigne le compl\'ementaire de $A$ dans $X$).
-\item si $\forall i \in \mathbb{N}$, $A_i \in\mathcal{A}$  alors  $\bigcup_{i\in\mathbb{N} } A_i \in\mathcal{A}$ 
+\item si $\forall i \in \mathbb{N}$, $A_i \in\mathcal{A}$  alors  $\bigcup_{i\in\mathbb{N} } A_i \in\mathcal{A}$
 		(l'union est dite d\'enombrable parce que l'ensemble des indices l'est).
 \end{enumerate}
 \end{definition}
@@ -392,19 +392,19 @@ $X \obey N(\mu, C)$ is degenerate if $\det{C} = 0$
 \end{enumerate}
 
 图4:\\
-valeur propre: 
-$\lambda_1 = 1.5$,\ 
+valeur propre:
+$\lambda_1 = 1.5$,\
 $\lambda_2 = 0.5$\\
 vecteur propre:
-$v_1 = (0.7, 0.7)^T$,\ 
+$v_1 = (0.7, 0.7)^T$,\
 $v_2 = (-0.7, 0.7)^T$
 
 图5:\\
-valeur propre: 
-$\lambda_1 = 1.8$,\ 
+valeur propre:
+$\lambda_1 = 1.8$,\
 $\lambda_2 = 0.2$\\
 vecteur propre:
-$v_1 = (-0.7, 0.7)^T$,\ 
+$v_1 = (-0.7, 0.7)^T$,\
 $v_2 = (-0.7, -0.7)^T$
 
 从这两组数据中, 我们看出vector propre的方向为椭圆的轴向, valeur propre为相应的半轴的大小
@@ -506,7 +506,7 @@ x_1\\
 x_2
 \end{pmatrix}
 =
-\sigma_1 x_1 u_1 + \sigma_2 x_2 u_2 
+\sigma_1 x_1 u_1 + \sigma_2 x_2 u_2
 $$
 考虑到
 $$
@@ -515,13 +515,13 @@ x_1\\
 x_2
 \end{pmatrix}
 =
-1 \times x_1 
+1 \times x_1
 \begin{pmatrix}
 1\\
 0
 \end{pmatrix}
-+ 
-1 \times x_2 
++
+1 \times x_2
 \begin{pmatrix}
 0\\
 1
@@ -958,6 +958,12 @@ wiki: the frist principal component has the largest possible variance.\\
 用covariance matrix 矩阵来讲解的话, 说是最大的eigenvalue 对应的eigenvector所在方向为the most principal component方向\\
 \red{机器学习实战中说, 求得的特征值若为零, 则意味着这些特征值是其他特征的副本, 也就是, 他们可以通过其他特征来表示, 没有理解todo}
 
+Principal component analysis (PCA) is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables into a set of values of linearly uncorrelated variables called principal components.
+
+PCA can be done by eigenvalue decomposition of a data covariance (or correlation) matrix or singular value decomposition of a data matrix, usually after mean centering (and normalizing or using Z-scores) the data matrix for each attribute.
+
+PCA is the simplest of the true eigenvector-based multivariate analyses. Often, its operation can be thought of as revealing the internal structure of the data in a way that best explains the variance in the data.
+
 \subsection{Idea}
 我们以二元变量$X = (X_1, X_2)$为例, 说明主成分分析的思想. 对此二维变量进行了$n$ 次观测, 得到数据$x_i = (x_{i1},x_{i2}) \eqspace (i=1,2,\dots,n))$.假设它们在二维平面x1ox2上的分布如Figure
 \href{http://upload.wikimedia.org/wikipedia/commons/thumb/1/15/GaussianScatterPCA.png/220px-GaussianScatterPCA.png}{PCA idea}
@@ -1014,8 +1020,8 @@ $$Var(Y_i) = Cov(Y_i,Y_i) = l_i^t \Sigma l_i$$
 
 \subsection{求法}
 $\Sigma$ 的特征值及相应的正交单位化向量分别为$\lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_n \geq 0$ and $e_i,e_2,\cdots,e_n$, 则$X$ 的第$i$ 个主成分为
-$$ Y_i = e_i^t \mathrm{X} = e_{i1}X_i + e_{i2}X_2 + \cdots + e_{in}X_n, \eqspace i=1,2,\cdots,n $$
-其中$e_i = (e_{i1}, e_{i2}, \cdots+ e_{in})^t $\\
+$$ Y_i = e_i^t \mathrm{X} = e_{i1}X_1 + e_{i2}X_2 + \cdots + e_{in}X_n, \eqspace i=1,2,\cdots,n $$
+其中$e_i = (e_{i1}, e_{i2}, \cdots, e_{in})^t $\\
 这时易见
 $$
 \left\{
@@ -1056,52 +1062,152 @@ $$
 为了避免不同的物理量的不同量纲对计算的权重的影响, 需要normaliser.\\
 令 $X_i^* = \dfrac{X_i - \mu_i}{\sqrt{\sigma_{ii}}}$, where $\mu_i = E(X_i), \sigma_{ii} = Var(X_i)$
 
-\subsection{样本主成分: 以统计学的方式讲解}
-\subsubsection{Standard Deviation}
+\subsection{Sample(统计学的方式)}
+\subsubsection{Variance(一维)}
 $$
-s = \sqrt{\dfrac{\sum_{i=1}^n (X_i - \overline{X})^2}{n-1}}
+s = \dfrac{1}{n-1} \sum_{i=1}^n (X_i - \overline{X})^2
 $$
+Variance only operate on 1 dimension.
 \textbf{Why are you using $n-1$ and not $n$?}\\
 Well, the answer is a bit complicated, but in general, if your data set is a sample data set,
 ie. you have taken a subset of the real-world (like surveying $500$ people about the election) then you must use $n-1$
-because it turns out that this gives you an answer that is closer to the standard deviation that would result if you had used the entire population, than if you'd used$n$.
+because it turns out that this gives you an answer that is closer to the standard deviation that would result if you had used the entire population, than if you'd used $n$.
 If, however, you are not calculating the standard deviation for a sample, but for an entire population, then you should divide by $n$ instead of $n-1$.\\
-For further information, refer to \href{http://mathcentral.uregina.ca/RR/database/RR.09.95/weston2.html}{when $n$ or $n-1$ in computing the standard deviation}
+For further information, refer to \href{http://mathcentral.uregina.ca/RR/database/RR.09.95/weston2.html}{when $n$ or $n-1$ in computing the standard deviation}. 证明参见\href{http://en.wikipedia.org/wiki/Unbiased\_estimator#Sample\_variance}{wiki Sample Variance}
 
-Standard deviation and variance only operate on 1 dimension.\\
-Covariance is always measured between 2 dimensions. If you calculate the covariance between one dimension and itself, you get the variance
-$$ \operatorname{Var}(X) = \operatorname{E}\left[(X - E(x))^2 \right] = \dfrac{\sum_{i=1}^n (X_i - \overline{X})^2}{n-1} $$
-$$ \operatorname{Cov}(X,Y) = \operatorname{E}{\big[(X - \operatorname{E}[X])(Y - \operatorname{E}[Y])\big]} =  \dfrac{\sum_{i=1}^n (X_i - \overline{X})(Y_i - \overline{Y})}{n-1} $$
+\subsubsection{Covariance Matrix of Random Vector}
+设$X$为一列向量,
+$$ \mathbf{X} = \begin{bmatrix}X_1 \\ \vdots \\ X_n \end{bmatrix} $$
+The definition above is equivalent to the matrix equality
 
-The exact value is not as important as it's sign (ie. positive or negative).
-\begin{itemize}
-\item If the value is positive,then that indicates that both dimensions increase together.
-\item If the value is negative, then as one dimension increases, the other decreases.
-\item In the last case, if the covariance is zero, it indicates that the two dimensions are independent of each other.
-\end{itemize}
-
-\subsubsection{The covariance Matrix}
-the covariance matrix $\Sigma$ is the matrix whose $(i, j)$ entry is the covariance
 $$
-\Sigma_{ij}
-= \mathrm{cov}(X_i, X_j) = \mathrm{E}\begin{bmatrix}
-(X_i - \mu_i)(X_j - \mu_j)
+\Sigma=\mathrm{E}
+\left[
+ \left(
+ \textbf{X} - \mathrm{E}[\textbf{X}]
+ \right)
+ \left(
+ \textbf{X} - \mathrm{E}[\textbf{X}]
+ \right)^{\rm T}
+\right]
+$$
+
+\subsubsection{Covariance Matrix of Sample}
+设有$k$个variable, 然后为了估计它们的值, 我们进行了$n$次测量, 将这$n$次的测量结果记为矩阵$X$, 其中第$i,\ (i \in \{1,2, \ldots, n\})$行表示第$i$次测量的结果(这次测量的$k$个variable组成的一个行向量), $X$的第$j,\ (j \in \{1,2, \ldots, k\})$列表示第$j$个variable 的$n$次测量组成的一个列向量.\\
+$$X = [X_1, X_2, \cdots, X_k]$$
+则第$j$个variable 的测量均值: $\mean{X_j} = \dfrac{1}{n} \sum_{i= 1}^n X_{ij}$, 令
+$$A = [X_1 - \mean{X_1}, X_2 - \mean{X_2}, \cdots, X_k - \mean{X_k}]$$
+记$A_j = X_j - \mean{X_j}$\\
+则矩阵$A$为对样本进行中心化之后的值.
+
+Covariance matrix $\Sigma$
+$$
+\Sigma = \dfrac{1}{n - 1} A^T A
+$$
+
+$$
+A^T A =
+\begin{bmatrix}
+A_1^T \\
+A_2^T \\
+\vdots \\
+A_k^T \\
+\end{bmatrix}
+\begin{bmatrix}
+A_1 & A_2& \cdots & A_k
+\end{bmatrix}
+=
+\begin{bmatrix}
+A_1^T A_1 & A_1^T A_2 & \cdots & A_1^T A_k \\
+A_2^T A_1 & A_2^T A_2 & \cdots & A_2^T A_k \\
+\vdots & \vdots & \ddots & \vdots \\
+A_k^T A_1 & A_k^T A_2 & \cdots & A_k^T A_k \\
 \end{bmatrix}
 $$
-where $\mu_i = \mathrm{E}(X_i)$ is the expected value of the ith entry in the vector X. In other words, we have
 
-$$
-\Sigma
-= \begin{bmatrix}
- \mathrm{E}[(X_1 - \mu_1)(X_1 - \mu_1)] & \mathrm{E}[(X_1 - \mu_1)(X_2 - \mu_2)] & \cdots & \mathrm{E}[(X_1 - \mu_1)(X_n - \mu_n)] \\ \\
- \mathrm{E}[(X_2 - \mu_2)(X_1 - \mu_1)] & \mathrm{E}[(X_2 - \mu_2)(X_2 - \mu_2)] & \cdots & \mathrm{E}[(X_2 - \mu_2)(X_n - \mu_n)] \\ \\
- \vdots & \vdots & \ddots & \vdots \\ \\
- \mathrm{E}[(X_n - \mu_n)(X_1 - \mu_1)] & \mathrm{E}[(X_n - \mu_n)(X_2 - \mu_2)] & \cdots & \mathrm{E}[(X_n - \mu_n)(X_n - \mu_n)]
-\end{bmatrix}.
-$$
-The inverse of this matrix, $\Sigma^{-1}$ is the inverse covariance matrix, also known as the concentration matrix or precision matrix
+\begin{example}
+对$x,y$ 进行了$4$次测量, 结果如下表所示, 求$x,y$的相关性
+\begin{table}[h]
+\begin{tabular}{ll}
+\hline
+$x_i$ & $y_i$ \\
+2.1   & 8     \\
+2.5   & 12    \\ 
+4.0   & 14    \\
+3.6   & 10 \\
+\end{tabular}
+\end{table}
 
-If you ever need to find the eigenvectors of a matrix in a program, just find a maths library that does it all for you.  A useful maths package, called newmat, is available at \href{http://webnz.com/robert/}{newmat}
+矩阵$X$为:
+\begin{verbatim}
+x =
+    2.1000    8.0000
+    2.5000   12.0000
+    4.0000   14.0000
+    3.6000   10.0000
+\end{verbatim}
+\begin{verbatim}
+Octave : A = x - mean(x)
+A =
+  -0.95000  -3.00000
+  -0.55000   1.00000
+   0.95000   3.00000
+   0.55000  -1.00000
+\end{verbatim}
+\begin{verbatim}
+M =  A' * A / (4 - 1)
+M =
+   0.80333   1.53333
+   1.53333   6.66667
+\end{verbatim}
+通过一般的方式(非矩阵方式)运算(参见\href{https://www0.gsb.columbia.edu/premba/analytical/s7/s7\_5.cfm}{$x,y$的相关性}), 我们得到$x,y$之间的covariance也是$1.53$.\\
+Since the covariance is positive, the variables are positively related—they move together in the same direction.\\
+同时, 我们可以求出$var(x)$为: \verb& sum(A(:,1) .^ 2) / 3 = 0.80333 & \\
+$var(y)$为: \verb& sum(A(:,2) .^ 2) / 3 = 6.6667 & \\
+这些值刚好就是协方差矩阵$M$的各个元素
+\begin{verbatim}
+octave: [u,s,v] = svd(M) %% M = u s v^T
+u =
+   0.23862   0.97111
+   0.97111  -0.23862
+
+s =
+   7.04344         0
+         0   0.42656
+
+v =
+   0.23862   0.97111
+   0.97111  -0.23862
+\end{verbatim}
+通过矩阵$s$的两个特征值, 我们可以看到$\lambda_1 \gg \lambda_2$, 根据PCA, 我们可以对$x,y$进行降维, 第一主轴的方向向量为$u_1 = (0.23862, 0.97111)^T$. 用数据对这个方向进行验证:
+$0.23862 / 0.97111 = 0.24572$
+
+\begin{verbatim}
+octave: x(:,1)./x(:,2)
+ans =
+   0.26250
+   0.20833
+   0.28571
+   0.36000
+
+octave: mean(x(:,1)./x(:,2))
+ans =  0.27914
+\end{verbatim}
+各个数据的比值与主轴的方向还是挺接近的.
+%% \begin{verbatim}
+%% \end{verbatim}
+\end{example}
+
+更一般地情况:\\
+If $\mathbf{M}_{\mathbf{X}}$ and $\mathbf{M}_{\mathbf{Y}}$ are centred data matrices of dimension $n$-by-$p$ and $n$-by-$q$ respectively, i.e. with $n$ rows of observations of $p$ and $q$ columns of variables, from which the \textbf{column means have been subtracted}, then, if the column means were estimated from the data, sample covariance matrices $\mathbf{Q}_{\mathbf{X}}$ and $\mathbf{Q}_{\mathbf{XY}}$ can be defined to be
+$$
+\mathbf{Q}_{\mathbf{X}} = \frac{1}{n-1} \mathbf{M}_{\mathbf{X}}^T \mathbf{M}_{\mathbf{X}}, \qquad \mathbf{Q}_{\mathbf{XY}} = \frac{1}{n-1} \mathbf{M}_{\mathbf{X}}^T \mathbf{M}_{\mathbf{Y}}
+$$
+or, if the column means were known a-priori,
+$$
+\mathbf{Q}_{\mathbf{X}} = \frac{1}{n} \mathbf{M}_{\mathbf{X}}^T \mathbf{M}_{\mathbf{X}}, \qquad \mathbf{Q}_{\mathbf{XY}} = \frac{1}{n} \mathbf{M}_{\mathbf{X}}^T \mathbf{M}_{\mathbf{Y}}
+$$
+These empirical sample covariance matrices are the most straightforward and most often used estimators for the correlation matrices, but other estimators also exist, including regularised or shrinkage estimators, which may have better properties.
 
 \subsubsection{PCA 的求解过程}
 \begin{enumerate}
