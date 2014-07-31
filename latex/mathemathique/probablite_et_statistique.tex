@@ -1164,7 +1164,10 @@ M =
 Since the covariance is positive, the variables are positively related—they move together in the same direction.\\
 同时, 我们可以求出$var(x)$为: \verb& sum(A(:,1) .^ 2) / 3 = 0.80333 & \\
 $var(y)$为: \verb& sum(A(:,2) .^ 2) / 3 = 6.6667 & \\
-这些值刚好就是协方差矩阵$M$的各个元素
+这些值刚好就是协方差矩阵$M$的各个元素.\\
+同时, 我们可以求出$x,y$的相关系数:
+$$r_{xy} = \dfrac{Cov(x,y)}{\sqrt{var(x) \var(y)}} = \dfrac{M(1,2)}{\sqrt{M(1,2) M(2,2)}} = \dfrac{1.53}{\sqrt{0.80333 \times 6.6667}} = 0.66$$
+
 \begin{verbatim}
 octave: [u,s,v] = svd(M) %% M = u s v^T
 u =
