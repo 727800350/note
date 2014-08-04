@@ -395,6 +395,72 @@ $$
 取对数, 然后对$\theta_j$求导, 令其为零.具体的推导过程参见
 \href{https://www.youtube.com/watch?v=LcbwmT1OAKo&list=PLD0F06AA0D2E8FFBA&index=29}{youtube (ML 5.3) MLE for an exponential family}
 
+\section{MAP(Max a posteriori)}
+Setup:
+\begin{itemize}
+\item Given $D = (\vector{x}), x_i \in R^d$
+\item Assume a joint dist $P(D, \theta)$, where $\theta$ is a r.v
+\item Goal: choose a good value of $\theta$ for $D$
+\item Choose $\theta_{MAP} = \arg_\theta \max P(\theta | D)$
+\end{itemize}
+在给定数据$D$的情况下, $\theta$得到最可能取值, 注意和MLE的区别.
+$\theta_{MLE} = \arg_\theta \max P(D|\theta)$
+
+Pros:
+\begin{itemize}
+\item Easy interpretable
+\item Avoid overfitting(MLE的一个缺点) - Regularization/Shrinkage
+\item Tends to look like MLE asymptotically($n \to \infty$)
+\end{itemize}
+
+Cons:
+\begin{itemize}
+\item Not invariant under reparametrization, that is to say: $g(\theta_{MLE})$ is a MLE for $g(\theta)$
+\item Point estimation - no repr of uncertainity in $\theta$\\
+	从图\href{http://i.imgbox.com/k292Tu6D.png}{MAP max}中, 我们可以看到, $P(\theta|D)$在$\theta$接近0的位置取到最大值, 但是$\theta$只有很小的概率处于0的附近, 所以在图中这种情况, 我们的最佳选择是右边的一个极值点.
+\item Must assume priori on $\theta$
+\end{itemize}
+
+\subsection{MAP for mean of a univariant Gaussian}
+$D = (\vector{x},\ x_i \in R^d)$\\
+Suppose $\theta$ is a r.v. $\obey N(\mu, 1)$ and $\vector{X}$ is conditionaly indep given $\theta$, 
+and $X_i \obey N(\theta, \sigma^2)$ with $\sigma$ know\\
+i.e: $P(\vector{x}|\theta) = \prod_{i =1}^n P(x_i|\theta)$
+
+
+$$
+\begin{aligned}
+\theta_{MAP} 
+& = \arg_\theta \max P(\theta | D)\\ 
+& = \arg_\theta \max \dfrac{P(D|\theta) P(\theta)}{P(D)}\\ 
+& \text{由于$P(D)$ 不是$\theta$的函数, 所以在$\theta$变化时, $P(D)$是定值}\\ 
+& = \arg_\theta \max P(D|\theta) P(\theta)\\ 
+& = \arg_\theta \max (\log(P(D|\theta)) + \log P(\theta))\\ 
+\end{aligned}
+$$
+对$\theta$求导数, 令之为零, 求得$\theta$, 然后它是最大值点.
+$$
+\begin{aligned}
+0 
+& = \dfrac{\partial}{\partial \theta} (\log(P(D|\theta)) + \log P(\theta))\\
+& = \dfrac{1}{\sigma^2} (\sum x_i - n \theta) + (\mu - \theta)\\
+& = (\dfrac{\sum x_i}{\sigma^2} + \mu) - (\dfrac{n}{\sigma^2} + 1)\theta\\
+\end{aligned}
+$$
+推出
+$$
+\theta 
+= \dfrac{\dfrac{\sum x_i}{\sigma^2} + \mu}{\dfrac{n}{\sigma^2} + 1}
+= \dfrac{\sum x_i + \sigma^2 \mu}{n + \sigma^2}
+= \dfrac{n \dfrac{1}{n} \sum x_i + \sigma^2 \mu}{n + \sigma^2}
+$$
+
+$$ \theta_{MAP} = \dfrac{n}{n + \sigma^2} \mean{x} + \dfrac{\sigma^2}{n + \sigma^2} \mu $$
+convex combination of sample mean and priori mean, and note that: 
+$$\si n \to \infty,\ \theta_{MAP} = \mean{x}$$
+
+$$ \theta_{MLE} = \mean{x} $$
+
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
 
