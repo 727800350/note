@@ -461,6 +461,41 @@ $$\si n \to \infty,\ \theta_{MAP} = \mean{x}$$
 
 $$ \theta_{MLE} = \mean{x} $$
 
+\subsection{Difference between MEL and MAP}
+The concept of Maximum Likelihood (MLE) and Maximum a posteriori (MAP) is confusable. Here is a simple instance descripting the differece between them.
+
+\href{http://jimbozhang.blogspot.com/2008/12/difference-between-map-and-mle.html}{example of MLE and MAP}
+
+Suppose there are three facts:
+\begin{itemize}
+\item If a student was lazy, he has a probility of 0.3 to pass his exam.
+\item If a student works hard, he has a probility of 0.8 to pass exam.
+\item 10 percents students work hard, and 90 percents students were lazy in Tom's school.
+\end{itemize}
+Now Tom has passed his exam, we want to know if Tom was lazy.
+
+by MLE:
+\begin{itemize}
+\item P(pass|lazy) = 0.3
+\item P(pass|hard) = 0.8
+\item P(pass|lazy) < P(pass|hard)
+\end{itemize}
+So, Tom is a working-hard student.
+
+by MAP:
+\begin{itemize}
+\item P(lazy|pass) = P(pass|lazy) * P(lazy) / P(pass) = 0.27/P(pass) 
+\item P(hard|pass) = P(pass|hard) * P(hard) / P(pass) = 0.08/P(pass)
+\item P(lazy|pass) > P(hard|pass)
+\end{itemize}
+So, Tom must be a lazy student.
+
+In a short, \textbf{MLE pay attention to P(result|condition)}, while \textbf{MAP pay attention to P(condition|result)}.\\
+同时, 在这个例子中, 我们可以看到 
+MLE 方法没有使用题目中给出的第三个信息($10\%$ students work hard, and $90\%$ students were lazy in Tom's school), 
+而MAP 方法是使用了这个信息的.\\
+但是不理解为什么使用了这个信息, $90\%$的用功学习, 最后有一个同学通过了考试, 他是lazy的概率竟然还更加大.
+
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
 
