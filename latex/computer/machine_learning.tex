@@ -200,6 +200,12 @@ Usage:
 Give $x$, take majority vote for classification, or average estimate probability for regression.
 
 \section{Maximum Likelihood Estimation(MLE)}
+最大似然估计提供了一种给定观察数据来评估模型参数的方法,即:"模型已定,参数未知".
+简单而言,假设我们要统计全国人口的身高,首先假设这个身高服从服从正态分布,但是该分布的均值与方差未知.我们没有人力与物力去统计全国每个人的身高,
+但是可以通过采样,获取部分人的身高,然后通过最大似然估计来获取上述假设中的正态分布的均值与方差.
+
+最大似然估计中采样需满足一个很重要的假设,就是所有的采样都是独立同分布的
+
 Given data set $D = (\vector{x}$ with $x_i \in R^d$\\
 Assume a set of distributions $\{ P_\theta: \theta \in \Theta \}$ on $R^d$.\\
 Assume $D$ is a sample from random variables $\vector{X} \obey P_\theta$ iid for some $\theta \in \Theta$
@@ -224,8 +230,8 @@ Pros:
 
 Cons:
 \begin{itemize}
-\item point estimation: not representative of uncertanity
-$$P(x|D) \sim P(x|\theta_{MLE})$$
+\item point estimation: not representative of uncertanity\\
+(如果对于未知参数的估计,给出一个确定的值叫做点估计.给出一个区间范围就上置信度,叫做区间估计.)
 \item Overfitting: regression example
 \item Wrong objective?(may maximize the wrong objective function)
 \item Existence or uniqueness not guaranteed
@@ -462,8 +468,13 @@ $$\si n \to \infty,\ \theta_{MAP} = \mean{x}$$
 $$ \theta_{MLE} = \mean{x} $$
 
 \subsection{Difference between MEL and MAP}
-The concept of Maximum Likelihood (MLE) and Maximum a posteriori (MAP) is confusable. Here is a simple instance descripting the differece between them.
+\href{http://blog.163.com/silence\_ellen/blog/static/1761042222014413112444364/}{参数估计--MLE、MAP和贝叶斯估计}
 
+在数据量大的时候,MAP的p(h)小到可以忽略,即"data overwhelms the prior." 也就是说MAP和MLE殊途同归,完全相等.\\
+在数据量小的时候,由于MAP有先验知识,它比MLE更合理.\\
+即便是大数据的情况下,由于数据很稀疏,在某一个范围或一个维度内,数据量其实也不算大,这时候用MAP效果也比MLE好.
+
+\begin{example}
 \href{http://jimbozhang.blogspot.com/2008/12/difference-between-map-and-mle.html}{example of MLE and MAP}
 
 Suppose there are three facts:
@@ -495,6 +506,102 @@ In a short, \textbf{MLE pay attention to P(result|condition)}, while \textbf{MAP
 MLE 方法没有使用题目中给出的第三个信息($10\%$ students work hard, and $90\%$ students were lazy in Tom's school), 
 而MAP 方法是使用了这个信息的.\\
 但是不理解为什么使用了这个信息, $90\%$的用功学习, 最后有一个同学通过了考试, 他是lazy的概率竟然还更加大.
+\end{example}
+
+\section{Bayesian inference}
+\begin{itemize}
+\item Assume a priori dist $P(\theta)$
+\item Bayesian procedures - min expected loss(averaging over $\theta$)
+\item Objective(non-informative prioris) v.s subjective(belief-based priori)
+\end{itemize}
+
+Pros:
+\begin{itemize}
+\item Directly answer questions, eg:$P(99 < \theta < 101)$
+\item Avoid pathologies
+\item Avoid overfitting because using priori
+\item Model selection( Occam's Razor - "when you have two competing theories that make exactly the same predictions, the simpler one is the better.")
+\item Admissible(there is no other procedure which is always better)
+\end{itemize}
+
+Cons:
+\begin{itemize}
+\item Must assume priori, especially in the subjective case
+\item Exact computation can be intractable(通常需要approximation)
+\end{itemize}
+
+Usual Prioris:
+\begin{itemize}
+\item Non-informative priori
+\item Improper priori
+\item Conjugate priori
+\end{itemize}
+
+\begin{definition}
+\end{definition}
+A family $\mathcal{F}$ of priori distributions $P(\theta)$ is \textbf{conjugate} to a likelihood $P(D|\theta)$ 
+if the posterior $P(\theta|D)$ is in $\mathcal{F}$
+
+Ex:
+\begin{itemize}
+\item Beta is conjugate to Bernoulli
+\item Gaussian is conjugate to Gaussian
+\item Any exponential family has a conjugate priori
+\end{itemize}
+
+\subsection{Beta-Bernoulli model}
+多次抛掷硬币的实验:
+
+$\vector{X} \obey Bernoulli(\theta),\ \theta \obey Beta(a,b)$ where $a,b$ are called \textbf{hyper parameters.}
+
+$P(X = 1|\theta) = \theta = \theta^{I(X=1)} (1-\theta)^{I(X=0)},\ 
+P(\theta) = \dfrac{\theta^{a-1}(1-\theta)^{b-1}}{B(a,b)} \propto \theta^{a-1}(1-\theta)^{b-1}$
+
+$D = (\vector{x})$
+
+$$
+\begin{aligned}
+P(\theta | D) 
+& \propto_{\theta} P(D|\theta)P(\theta)\\
+& = P(\theta) \prod_{i=1}^n P(x_i|\theta)\\
+& \propto \theta^{a-1}(1-\theta)^{b-1} \theta^{\sum I(X_i=1)} (1-\theta)^{\sum I(X_i=0)}\\
+& = \theta^{a-1}(1-\theta)^{b-1} \theta^{n_1} (1-\theta)^{n_0}\\
+& = \theta^{a + n_1 - 1} (1-\theta)^{b + n_0 -1}\\
+& \propto Beta(\theta | a + n_1, b + n_0)\\
+\end{aligned}
+$$
+
+$$\Rightarrow P(\theta | D) = Beta(\theta | a + n_1, b + n_0)$$
+$\theta \obey Beta(a,b)$, 所以这里 the family of priori distribution $\mathcal{F} = Beta(a,b)$, 
+而$P(\theta | D) \propto Beta(\theta | a + n_1, b + n_0)$, 所以$\theta|D$ 所满足的distribution 在 $\mathcal{F}$中, 而$X$ 满足的distribution 是 Bernoulli,
+所以 Beta is conjugate to Bernoulli.
+
+查阅资料得到:\\
+$$\si \theta \obey Beta(a,b), \then E\theta = \dfrac{a}{a+b},\ \sigma^2(\theta) = \dfrac{ab}{(a+b)^2(a+b+1)},\ mode = \dfrac{a-1}{a+b-2}$$
+其中mode 表示使得PDF 极大值点.
+
+所以这里:
+$$E[\theta|D] = \dfrac{a + n_1}{a + b + n},\ \sigma^2(\theta|D) = \dfrac{(a + n_1)(b + n_0) }{(a + b + n)^2(a +b + n +1)},\ mode = \dfrac{a + n_1 -1}{a + b + n -2}$$
+where $n = n_1 + n_0$\\
+同时我们可以注意到$E[\theta|D]$也是一个convex combination:
+$$E[\theta|D] = \dfrac{a + n_1}{a + b +n} = \dfrac{a+b}{a+b+n} \dfrac{a}{a+b} + \dfrac{n}{a+b+n} \dfrac{n_1}{n}$$
+
+结合我们之前学过的MLE 和MAP, 我们知道
+\begin{itemize}
+\item $\theta_{MLE} = empirical probability = \dfrac{n_1}{n}$
+\item $\theta_{MAP}$ 为让$P(\theta|D)$最大, 这里刚好就是mode, 也就是$\theta_{MAP} = \dfrac{a+n_1 - 1}{a+b+n-2}$
+\end{itemize}
+
+\textbf{Predictive distribution}:\\
+$$
+\begin{aligned}
+P(X=1|D) 
+& = \int P(X=1|D,\theta) P(\theta|D) \\
+& = \int P(X=1|\theta) P(\theta|D) \\
+& = \int \theta P(\theta|D) \\
+& = E[\theta|D]\\
+\end{aligned}
+$$
 
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
