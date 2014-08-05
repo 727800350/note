@@ -111,6 +111,38 @@ $$
 $-\laplace $ admet une base de fonctions propres $v_k$, $k \in N$,
 orthonormales pour le produit scalaire de $L^2(\Omega)$
 
+\section{Max-plus algebra}
+A max-plus algebra is a \textbf{semiring(demi-anneau):(半环是类似于环但没有加法逆元的代数结构)} over the union of real numbers and
+$\varepsilon = -\infty$, equipped with maximum and addition as the two binary operations.
+
+\textbf{Scalar operations}\\
+Let a and b be real scalars or $\varepsilon$. Then the operations maximum (implied by the max operator  $\oplus$) and addition (plus operator  $\otimes$) for these scalars are defined as
+$$ a \oplus b = \max(a,b) $$
+$$ a \otimes b = a + b $$
+Similar to the conventional algebra, all $\otimes$ - operations have a higher precedence than $\oplus$ - operations.
+
+\textbf{Matrix operations}\\
+$$ [A \oplus B]_{ij} = [A]_{ij} \oplus [B]_{ij} = \max([A]_{ij} , [B]_{ij}) $$
+$$ [A \otimes B]_{ij} = \bigoplus_{k = 1}^p [A]_{ik} \otimes [B]_{kj} = \max([A]_{i1} + [B]_{1j}, \dots, [A]_{ip} + [B]_{pj}) $$
+
+\textbf{Algebra properties}\\
+\begin{itemize}
+\item associativity:
+	\begin{itemize}
+	\item $(a \oplus b) \oplus c = a \oplus (b \oplus c) $
+	\item $(a\otimes b) \otimes c = a \otimes (b \otimes c)$
+	\end{itemize}
+\item commutativity :
+	\begin{itemize}
+	\item $a \oplus b = b \oplus a $
+	\item $a \otimes b = b \otimes a $
+	\end{itemize}
+\item distributivity:
+	\begin{itemize}
+	\item  $(a \oplus b) \otimes c = a \otimes c \oplus b \otimes c $
+	\end{itemize}
+\end{itemize}
+
 \section{SVD}
 \begin{theorem}
 \textbf{Singular value decomposition}\\
@@ -135,7 +167,7 @@ $$\norm{Av_i} = \sqrt{(Av_i)^T Av_i} = \sqrt{v_i^T A^T Av_i} = \sqrt{v_i^T \lamb
 Let $u_i = \dfrac{Av_i}{\sigma_i}$, 那么 $\norm{u_i} = 1$ and $\u_i \in K^m$
 
 $$
-\forall i, j \in \{1,2,\ldots, r\},\ 
+\forall i, j \in \{1,2,\ldots, r\},\
 u_i^T Av_j
 = (\dfrac{Av_i}{\sigma_i})^T Av_j
 = \dfrac{1}{\sigma_i} v_i^T A^T Av_j
@@ -168,7 +200,7 @@ $$
 The $u_i$ are vectors from an $m$-dimensional space, and we only have $r$ of them, so we can pick unit
 vectors $u_{r+1}, \ldots, u_m$ that are pairwise orthogonal, and orthogonal to $u_1,\ldots, u_r$. Similarly we can
 find $v_{r+1}, \ldots, v_n$ such that $v_1,...,v_n$ are pairwise orthogonal unit vectors. We then still have that
-$u_i^T A v_j$ is $\sigma_i$ when $i = j \leq r$ and by a calculation analogous to the above it is 
+$u_i^T A v_j$ is $\sigma_i$ when $i = j \leq r$ and by a calculation analogous to the above it is
 \textbf{zero for all other cases(因为其他的特征值都为0)}.\\
 In matrix form this gives us
 $$
@@ -186,10 +218,10 @@ v_1 & v_2 & \cdots & v_n
 \end{bmatrix}
 =\Sigma
 $$
-where $\Sigma$ is now an $m \times n$ matrix with its first $r$ diagonal entries being the 
+where $\Sigma$ is now an $m \times n$ matrix with its first $r$ diagonal entries being the
 $\sigma_1, \sigma_2, \ldots, \sigma_r$ and zeroes everywhere else.
 
-Defining $U = [u_1, \ldots, u_m]$ and $V = [v_1, \ldots, v_n]$ column vectors. 
+Defining $U = [u_1, \ldots, u_m]$ and $V = [v_1, \ldots, v_n]$ column vectors.
 we now have $U^TAV = \Sigma$\\
 and as orthogonal matrix, $U^{-1} = U^T, V^{-1} = V^T$
 $$ A = U \Sigma V^T $$
@@ -202,8 +234,8 @@ $$ A = U_r \Sigma_r V_r^T $$
 \end{remark}
 
 \begin{remark}
-The $\sigma_1, \ldots, \sigma_r$ which are just the square roots of the eigenvalues of $A A^T$ or ($A^T A$), are called the singular values of A. 
-The columns of $U$, which are just the eigenvectors of $A A^T$, are called \textbf{left singular vectors of $A$}, 
+The $\sigma_1, \ldots, \sigma_r$ which are just the square roots of the eigenvalues of $A A^T$ or ($A^T A$), are called the singular values of A.
+The columns of $U$, which are just the eigenvectors of $A A^T$, are called \textbf{left singular vectors of $A$},
 and the columns of $V$ , which are just the eigenvectors of $A^T A$, are called the \textbf{right singular vectors of $A$}
 \end{remark}
 
