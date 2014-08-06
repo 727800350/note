@@ -1,0 +1,20 @@
+% !Mode:: "TeX:UTF-8"
+\documentclass{article}
+\input{../public/package}
+\input{../public/article}
+\begin{document}
+\title{Math\'ematique}
+\author{Common}
+\maketitle
+\tableofcontents
+\newpage
+\section{Error measure}
+MAPE(Mean absolute percentage error)
+$$ MAPE = \dfrac{1}{n} \sum_{i=1}^n \dfrac{|\estimate{y}_i - y_i|}{y_i} \cdot 100\%$$
+
+MSE(Mean square error)
+$$MSE = \dfrac{1}{n} \sum_{i=1}^n (\estimate{y}_i - y_i)^2$$
+
+RMSE(Root mean square error)
+$$RMSE  = \sqrt{MSE}$$
+\end{document}
