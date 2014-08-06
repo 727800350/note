@@ -51,4 +51,32 @@ compensatory changes in the control variable. This is called \textbf{feedback co
 $$z_t = \mu + a_t + \psi_1 a_{t-1} + \psi_2 a_{t-2} + \cdots = \mu + \psi(B) a_t$$
 $\mu$: level of the process, and
 $$\psi(B) = 1 + \psi_1 B + \psi_2 B^2 + \cdots$$
+
+\section{Simple Exponential Smoothing(SES)}
+Widely used class of procedures for smoothing discrete time series in order to forecast the immediate future.\\
+Simple exponential smoothing model is only good for non-seasonal patterns with approximately zero-trend and for short-term forecasting
+
+Let an observed time series be $\vector{y}$.the simple exponential smoothing equation takes the form of:
+$$\estimate{y}_{i+1} = \alpha y_i + (1 - \alpha) \estimate{y_i} $$
+where $y_i$ is the actual, known series value for time period $i$, $\estimate{y_i}$ is the forecast value of the variable $Y$ for time period $i$.
+$\alpha$ is the smoothing constant.
+
+Rewriting the model to see one of the neat things about the SES model
+$$\estimate{y}_{i+1} - \estimate{y_i} = \alpha (y_i - \estimate{y_i})$$
+可以看到: change in forecasting value is proportionate to the forecast error.\\
+So exponential smoothing forecast is the old forecast plus an adjustment for the error that occurred in the last forecast
+$$
+\begin{aligned}
+\estimate{y}_{i+1}
+& = \alpha y_i + (1 - \alpha) [\alpha y_{i-1} + (1-\alpha)\estimate{y}_{i-1}] = \alpha y_i + \alpha (1 - \alpha) y_{i-1} + (1-\alpha)^2 \estimate{y}_{i-1}\\
+& = \alpha y_i + \alpha (1 - \alpha) y_{i-1} + \alpha (1-\alpha)^2 y_{i-2} + (1-\alpha)^3 \estimate{y}_{i-2} \\
+& = \alpha y_i + \alpha (1 - \alpha) y_{i-1} + \alpha (1-\alpha)^2 y_{i-2} + \alpha (1-\alpha)^3 y_{i-3} + (1-\alpha)^4 \estimate{y}_{i-3} \\
+& \ldots \\
+& = \alpha y_i + \alpha (1 - \alpha) y_{i-1} + \alpha (1-\alpha)^2 y_{i-2} + \cdots + \alpha (1-\alpha)^{i-2} y_2 + \alpha (1-\alpha)^{i-1} y_1 \\
+& = \alpha \sum_{k=0}^{i-1} (1-\alpha)^k y_{i-k}
+\end{aligned}
+$$
+Therefore, $\estimate{y}_{i+1}$ is the weighted moving average of all past observations. \\
+The weights are $\alpha, \alpha(1-\alpha), \alpha(1-\alpha)^2, \ldots $.
+These \textbf{weights decline toward zero in an exponential fashion}.
 \end{document}
