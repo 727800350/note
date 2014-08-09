@@ -14,8 +14,7 @@
 `\newcommand` checks whether or not the command already exists  
 `\newcommand` allows you to define an optional argument
 
-# [Special Characters]
-
+# Special Characters
 ## [french characters](http://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped codes)
 LaTeX command	Sample	Description
 ```
@@ -313,7 +312,10 @@ The width is, of course, the width of the figure.
 [result figure](http://upload.wikimedia.org/wikipedia/commons/d/dc/Latex_example_wrapfig_vspace.png)
 
 ### Subfloats
-	让每个figure的subfigure都重新编号, 而不是整个article 的subfigure的编号是连续的, [ref](http://tex.stackexchange.com/questions/4530/subfigures-in-beamer-documents)
+`\setcounter{subfigure}{0}`
+让每个figure的subfigure都重新编号, 而不是整个article 的subfigure的编号是连续的, 
+[ref](http://tex.stackexchange.com/questions/4530/subfigures-in-beamer-documents)
+
 	\setcounter{subfigure}{0}
 	\begin{figure}
 	        \centering
