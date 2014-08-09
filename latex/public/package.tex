@@ -46,7 +46,8 @@
 %图形
 \usepackage{pstricks}
 \usepackage{graphicx}
-\usepackage{subfigure}
+%% 可以使用H固定图片的位置
+\usepackage{float}
 \usepackage{tikz} %pdf figure
 \usetikzlibrary{positioning}
 \def\pgfsysdriver{pgfsys-dvipdfmx.def}
@@ -58,6 +59,7 @@ minimum width=50pt, minimum height=20pt, inner sep=6pt,
 draw=gray,thick, fill=lightgray}
 }
 \usepackage{ccaption}
+\usepackage{subcaption}
 \usepackage{epstopdf} %convert eps to pdf
 %% bmp, gif not supported
 \DeclareGraphicsExtensions{.eps,.mps,.pdf,.jpg,.png}
@@ -220,6 +222,7 @@ draw=gray,thick, fill=lightgray}
 \DeclareMathOperator{\ch}{ch}
 \DeclareMathOperator{\dth}{th} %\th 已经被定义了
 \DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\var}{var}
 
 \newcommand*\laplace{\mathop{}\!\mathbin\bigtriangleup}
 \newcommand*\dalambert{\mathop{}\!\mathbin\Box}
