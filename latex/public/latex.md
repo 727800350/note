@@ -14,6 +14,31 @@
 `\newcommand` checks whether or not the command already exists  
 `\newcommand` allows you to define an optional argument
 
+# [Special Characters]
+
+## [french characters](http://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped codes)
+LaTeX command	Sample	Description
+```
+\`{o}	ò	grave accent
+\'{o}	ó	acute accent
+\^{o}	ô	circumflex
+\"{o}	ö	umlaut, trema or dieresis
+\H{o}	ő	long Hungarian umlaut (double acute)
+\~{o}	õ	tilde
+\c{c}	ç	cedilla
+\k{a}	ą	ogonek
+\l	ł	barred l (l with stroke)
+\={o}	ō	macron accent (a bar over the letter)
+\b{o}	o	bar under the letter
+\.{o}	ȯ	dot over the letter
+\d{u}	ụ	dot under the letter
+\r{a}	å	ring over the letter (for å there is also the special command \aa)
+\u{o}	ŏ	breve over the letter
+\v{s}	š	caron/hacek ("v") over the letter
+\t{oo}	o͡o	"tie" (inverted u) over the two letters
+\o	ø	slashed o (o with stroke)
+```
+
 # Math
 `$\not\in$`
 
@@ -288,8 +313,8 @@ The width is, of course, the width of the figure.
 [result figure](http://upload.wikimedia.org/wikipedia/commons/d/dc/Latex_example_wrapfig_vspace.png)
 
 ### Subfloats
-subfigure
-
+	让每个figure的subfigure都重新编号, 而不是整个article 的subfigure的编号是连续的, [ref](http://tex.stackexchange.com/questions/4530/subfigures-in-beamer-documents)
+	\setcounter{subfigure}{0}
 	\begin{figure}
 	        \centering
 	        \begin{subfigure}[b]{0.3\textwidth}
