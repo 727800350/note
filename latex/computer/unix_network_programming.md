@@ -734,6 +734,14 @@ wait等待第一个终止的子进程,而waitpid可以通过pid参数指定等�
 1. 当前工作目录
 1. 用户ID和组ID
 
+All threads share a common heap.
+
+Each thread has a private stack, which it can quickly add and remove items from. This makes stack based memory fast, but if you use too much stack memory, as occurs in infinite recursion, you will get a stack overflow.
+
+Since all threads share the same heap, access to the allocator/deallocator must be synchronized. There are various methods and libraries for avoiding allocator contention.
+
+Some languages allow you to create private pools of memory, or individual heaps, which you can assign to a single thread.
+
 不过每个线程拥有各自的
 
 1. 线程ID
@@ -742,6 +750,35 @@ wait等待第一个终止的子进程,而waitpid可以通过pid参数指定等�
 1. errno. [ref](http://learn.akae.cn/media/ch35s02.html). pthread库的函数都是通过返回值返回错误号,虽然每个线程也都有一个errno,但这是为了兼容其它函数接口而提供的,pthread库本身并不使用它. 所以errno 还是看成同一个进程的所有线程共享一个全局的errno.
 1. 信号掩码
 1. 优先级
+
+[Why do threads share the heap space?](http://stackoverflow.com/questions/3318750/why-do-threads-share-the-heap-space)
+
+What do you do when you want to pass data from one thread to another?
+(If you never did that you'd be writing separate programs, not one multi-threaded program.) There are two major approaches:
+
+The approach you seem to take for granted is **shared memory**: except for data that has a compelling reason to be thread-specific
+(such as the stack), all data is accessible to all threads. 
+Basically, there is a shared heap. That gives you **speed**: any time a thread changes some data, other threads can see it. 
+(Limitation: this is not true if the threads are executing on different processors: 
+there the programmer needs to work especially hard to use shared memory correctly and efficiently.) 
+Most major imperative languages, in particular Java and C#, favor this model.
+
+It is possible to have one heap per thread, plus a shared heap. This requires the programmer to decide which data to put where, 
+and that often doesn't mesh well with existing programming languages.
+
+The dual approach is **message passing**: 
+each thread has its own data space; when a thread wants to communicate with another thread it needs to explicitly send a message to the other thread, 
+so as to copy the data from the sender's heap to the recipient's heap. 
+In this setting many communities prefer to call the threads processes. That gives you **safety**: 
+since a thread can't overwrite some other thread's memory on a whim, a lot of bugs are avoided. Another benefit is distribution: 
+you can make your threads run on separate machines without having to change a single line in your program. 
+You can find message passing libraries for most languages but integration tends to be less good. 
+Good languages to understand message passing in are *Erlang* and *JoCaml*.
+
+In fact message passing environments usually use shared memory behind the scene, 
+at least as long as the threads are running on the same machine/processor. 
+This saves a lot of time and memory since passing a message from one thread to another then doesn't require making a copy of the data. 
+But since the shared memory is not exposed to the programmer, its inherent complexity is confined to the language/library implementation.
 
 ## demo
 	/* Includes */
