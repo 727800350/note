@@ -594,3 +594,43 @@ in a function declaration, no parameter means the function takes an unspecified 
 which means the function takes no argument.  
 A function declaration with no parameter is the old C style of function declaration; C marks this style as obsolescent and discourages its use. 
 In short, don't use it. In your case, you should use a function declaration with the correct parameter declaration: `int test(void)`
+
+<br/>
+[What's the use of do while(0) when we define a macro?](http://stackoverflow.com/questions/923822/whats-the-use-of-do-while0-when-we-define-a-macro)
+
+It allows you to group several statements into one macro.  
+Assume you did something like:
+
+	if (foo) 
+	    INIT_LIST_HEAD(bar);
+If the macro was defined without the encapsulating do { ... } while (0);, the above code would expand to
+
+	if (foo)
+	    (bar)->next = (bar);
+	    (bar)->prev = (bar);
+This is clearly not what was intended, as only the first statement will be executed if foo holds. The second statement would be executed regardless of whether foo holds.
+
+<br/>
+[Why does scanf() need “%lf” for doubles, when printf() is okay with just “%f”?](http://stackoverflow.com/questions/210590/why-does-scanf-need-lf-for-doubles-when-printf-is-okay-with-just-f)
+
+	double d;
+	scanf("%lf", &d);
+	printf("%f", d);
+
+Because C will promote floats to doubles for functions that take variable arguments. Pointers aren't promoted to anything, so you should be using %lf, %lg, %le or %la (C99) to read in doubles.
+
+<br/>
+[Should I use printf in my C++ code?](http://stackoverflow.com/questions/2017489/should-i-use-printf-in-my-c-code)
+
+My students, who learn cin and cout first, then learn printf later, overwhelmingly prefer printf (or more usually fprintf). I myself have found the printf model sufficiently readable that I have ported it to other programming languages. So has Olivier Danvy, who has even made it type-safe.  
+Provided you have a compiler that is capable of type-checking calls to printf, I see no reason not to use fprintf and friends in C++.
+
+If you ever hope to i18n your program, stay away from iostreams. The problem is that it can be impossible to properly localize your strings if the sentence is composed of multiple fragments as is done with iostream.
+Besides the issue of message fragments, you also have an issue of ordering. Consider a report that prints a student's name and their grade point average:
+
+	std::cout << name << " has a GPA of " << gpa << std::endl;
+When you translate that to another language, the other language's grammar may need you to show the GPA before the name. AFAIK, iostreams has not way to reorder the interpolated values.  
+If you want the best of both worlds (type safety and being able to i18n), use `Boost.Format`.
+
+<br/>
+
