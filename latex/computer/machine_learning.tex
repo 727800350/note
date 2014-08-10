@@ -603,6 +603,61 @@ P(X=1|D)
 \end{aligned}
 $$
 
+\subsection{Dirichlet Distribution}
+$\theta = (\vector{\theta})$, $\alpha = (\vector{\alpha}) \et \alpha_i > 0$
+$\theta \obey Dir(\alpha) \Rightarrow$ 
+The PDF
+$$ f(\theta) = \frac{1}{\mathrm{B}(\alpha)} \prod_{i=1}^K \theta_i^{\alpha_i - 1} I(\theta \in S) $$
+where
+$$
+\mathrm{B}(\boldsymbol\alpha) 
+= \frac{\prod_{i=1}^n \Gamma(\alpha_i)}{\Gamma(\alpha_0)}
+$$
+and 
+$\alpha_0 = \sum_{i=1}^n \alpha_i$, 
+$S = \{x \in R^n: x_i \geq 0, \sum_{i=1}^n x_i = 1\}$ ($S$ is called probability simplex)
+
+关于这个分布的基本数字特征都可以在
+\href{http://en.wikipedia.org/wiki/Dirichlet\_distribution}{wiki}
+找到.
+
+\textbf{求$\theta$的expectation}
+
+我们会用到$\Gamma$函数的性质: $\Gamma(x+1) = x \Gamma(x)$
+$$
+\begin{aligned}
+E[\theta_1]
+& = \int_S \theta_1 f(\theta) d\theta \\
+& = \int_S \theta_1 \frac{\Gamma(\alpha_0)}{\prod_{i=1}^n \Gamma(\alpha_i)} \prod_{i=1}^n \theta_i^{\alpha_i - 1} d\theta \\
+& = \int_S \frac{\Gamma(\alpha_0)}{\prod_{i=1}^n \Gamma(\alpha_i)} \theta_1^{\alpha_1} \prod_{i=2}^n \theta_i^{\alpha_i - 1} d\theta \\
+\end{aligned}
+$$
+
+令$\beta_1 = \alpha_1 + 1,\et \beta_i =  \alpha_i \si i > 1$, 那么 \\
+$\beta_0 = \sum_{i = 1}^n \beta_i = \sum_{i = 1}^n \alpha_i + 1 = \alpha_0 + 1$ \\
+$\Gamma(\beta_1) = \Gamma(\alpha_1 + 1) = \alpha_1 \Gamma(\alpha_1)$, 
+$\Gamma(\beta_0) = \Gamma(\alpha_0 + 1) = \alpha_0 \Gamma(\alpha_0)$
+
+$$
+\begin{aligned}
+E[\theta_1]
+& = \int_S \frac{\Gamma(\beta_0) / \alpha_0}{\Gamma(\beta_1) / \alpha_1 \prod_{i=2}^n \Gamma(\beta_i)} \theta_1^{\beta_1 - 1} \prod_{i=2}^n \theta_i^{\beta_i - 1} d\theta \\
+& = \dfrac{\alpha_1}{\alpha_0} \int_S \frac{\Gamma(\beta_0)}{\prod_{i=1}^n \Gamma(\beta_i)} \prod_{i=1}^n \theta_i^{\beta_i - 1} d\theta \\
+& = \dfrac{\alpha_1}{\alpha_0} f(\theta)_\beta d\theta \\
+& = \dfrac{\alpha_1}{\alpha_0}
+\end{aligned}
+$$
+最后一步是根据: 对任何distribution来说, PDF的积分为1.
+
+用同样的方法, 我们可以求得其他$\theta_i$的expectation
+
+\subsection{Dirichlet-Categorical model}
+The Dirichlet distribution is the conjugate prior distribution of the categorical distribution
+(a generic discrete probability distribution with a given number of possible outcomes) 
+and multinomial distribution (the distribution over observed counts of each possible category in a set of categorically distributed observations).
+
+\section{Posterior distribution for univariate Gaussian}
+
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
 
