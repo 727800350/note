@@ -537,10 +537,14 @@ Usual Prioris:
 \item Conjugate priori
 \end{itemize}
 
+\subsection{Conjugate Priori}
 \begin{definition}
+In Bayesian probability theory, if the posterior distributions $P(\theta|D)$ are in the same family $\mathcal{F}$ as 
+the prior probability distribution $P(\theta)$, the prior $P(\theta)$ and posterior $P(\theta|D)$ are then called conjugate distributions, 
+and the prior $P(\theta)$ is called a conjugate prior for the likelihood $P(D|\theta)$. ----from wiki
 \end{definition}
-A family $\mathcal{F}$ of priori distributions $P(\theta)$ is \textbf{conjugate} to a likelihood $P(D|\theta)$ 
-if the posterior $P(\theta|D)$ is in $\mathcal{F}$
+
+弄出这么一个东西的好处是: 如果先验概率和后验概率具有同样的形式, 那么在数学计算上会非常方便.
 
 Ex:
 \begin{itemize}
@@ -549,29 +553,43 @@ Ex:
 \item Any exponential family has a conjugate priori
 \end{itemize}
 
+在\href{http://en.wikipedia.org/wiki/Conjugate\_prior\_distribution#Table\_of\_conjugate\_distributions}{wiki}上, 有一个列表.
+
 \subsection{Beta-Bernoulli model}
-多次抛掷硬币的实验:
-
-$\vector{X} \obey Bernoulli(\theta),\ \theta \obey Beta(a,b)$ where $a,b$ are called \textbf{hyper parameters.}
-
-$P(X = 1|\theta) = \theta = \theta^{I(X=1)} (1-\theta)^{I(X=0)},\ 
-P(\theta) = \dfrac{\theta^{a-1}(1-\theta)^{b-1}}{B(a,b)} \propto \theta^{a-1}(1-\theta)^{b-1}$
-
 $D = (\vector{x})$
+
+伯努利分布是一个离散型的随机分布,其中的随机变量只有两类取值,$\set{1,0}$.
+二项分布即重复$n$次的伯努利试验,记为 $X \obey b(n,p)$\\
+多次抛掷硬币的实验就是二项分布
+
+$\vector{X} \obey Bernoulli(\theta)$\\
+$\theta \obey Beta(a,b)$ where $a,b$ are called \textbf{hyper parameters}
+(因为$X$的分布用$\theta$来表示, $\theta$的分布用$a,b$来表示, 所以$a,b$是间接参数).\\
+$P(\theta) = \dfrac{\theta^{a-1}(1-\theta)^{b-1}}{B(a,b)} \propto \theta^{a-1}(1-\theta)^{b-1}$
+
+\noindent
+$P(X = 1|\theta) = \theta = \theta^{I(X=1)}\ (1-\theta)^{I(X=0)}$\\
+$P(X = 0|\theta) = 1 - \theta = \theta^{I(X=1)}\ (1-\theta)^{I(X=0)}$\\
+So $P(X|\theta) = \theta^{I(X=1)}\ (1-\theta)^{I(X=0)}$
+
 
 $$
 \begin{aligned}
 P(\theta | D) 
 & \propto_{\theta} P(D|\theta)P(\theta)\\
 & = P(\theta) \prod_{i=1}^n P(x_i|\theta)\\
-& \propto \theta^{a-1}(1-\theta)^{b-1} \theta^{\sum I(X_i=1)} (1-\theta)^{\sum I(X_i=0)}\\
-& = \theta^{a-1}(1-\theta)^{b-1} \theta^{n_1} (1-\theta)^{n_0}\\
+& \propto \theta^{a-1}(1-\theta)^{b-1} \cdot \prod_{i=1}^n \theta^{I(X_i=1)}\ (1-\theta)^{I(X_i=0)}\\
+& \propto \theta^{a-1}(1-\theta)^{b-1} \cdot \theta^{\sum I(X_i=1)} \cdot (1-\theta)^{\sum I(X_i=0)}\\
+& = \theta^{a-1}(1-\theta)^{b-1} \cdot \theta^{n_1} \cdot (1-\theta)^{n_0}\\
 & = \theta^{a + n_1 - 1} (1-\theta)^{b + n_0 -1}\\
 & \propto Beta(\theta | a + n_1, b + n_0)\\
 \end{aligned}
 $$
 
 $$\Rightarrow P(\theta | D) = Beta(\theta | a + n_1, b + n_0)$$
+这里先验概率密度$P(\theta)$ 与后验概率密度 $P(\theta|D)$ 都是属于Beta 分布族. 而$X$的分布式Bernoulli 分布.\\
+所以根据 conjugate priori 的定义, Bernoulli(同时 Binomial) 分布的conjugate priori 是Beeta 分布
+
 $\theta \obey Beta(a,b)$, 所以这里 the family of priori distribution $\mathcal{F} = Beta(a,b)$, 
 而$P(\theta | D) \propto Beta(\theta | a + n_1, b + n_0)$, 所以$\theta|D$ 所满足的distribution 在 $\mathcal{F}$中, 而$X$ 满足的distribution 是 Bernoulli,
 所以 Beta is conjugate to Bernoulli.
