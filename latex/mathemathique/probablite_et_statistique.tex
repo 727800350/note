@@ -271,6 +271,8 @@ $$
 \label{sec.distribution.poisson}
 \textbf{离散分布}
 
+\href{http://en.wikipedia.org/wiki/Poisson\_distribution}{wiki}
+
 \textbf{泊松过程的特点}
 \begin{enumerate}
 \item Les nombres d'occurrences dans des intervalles de temps disjoints sont ind\'ependants
@@ -320,9 +322,6 @@ P(x,\lambda t)={\frac  {e^{-\lambda t}(\lambda t) ^{x}}{x!}}, \eqspace x=0,1,2,\
 $$
 其中$\lambda$ 是单位时间(或单位面积)内随机事件的平均发生率,单位时间内得到结果的数量.
 
-\href{http://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Poisson\_distribution\_PMF.png/325px-Poisson\_distribution\_PMF.png}{Poisson 概率分布}\label{fig.distribution.poisson}
-
-\href{http://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Poisson\_distribution\_CMF.png/325px-Poisson\_distribution\_CMF.png}{Poisson 累积分布函数}\label{fig.distribution.poisson.pmf}
 
 \begin{example}
 一个试验中在$1 \mu s$ 内通过一计数器的平均辐射粒子数为4 个, 在某$1\mu s$ 中有6 个粒子通过计数器的概率为是多少?\\
@@ -364,13 +363,16 @@ $$
 The probability density function of the \textbf{beta distribution}, for $0 \leq x \leq 1$, and shape parameters $\alpha, \beta > 0$, 
 
 $$
-\begin{align}
+\begin{aligned}
 f(x;\alpha,\beta) & = \mathrm{constant}\cdot x^{\alpha-1}(1-x)^{\beta-1} \\
-& = \frac{x^{\alpha-1}(1-x)^{\beta-1}}{\int_0^1 u^{\alpha-1} (1-u)^{\beta-1}\, du} \\[6pt]
-& = \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}\, x^{\alpha-1}(1-x)^{\beta-1} \\[6pt]
-& = \frac{1}{\Beta(\alpha,\beta)} x^{\alpha-1}(1-x)^{\beta-1}
-\end{align}
+& = \frac{x^{\alpha-1}(1-x)^{\beta-1}}{\int_0^1 u^{\alpha-1} (1-u)^{\beta-1}\, du} \\
+& = \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}\, x^{\alpha-1}(1-x)^{\beta-1} \\
+& = \frac{1}{Beta(\alpha,\beta)} x^{\alpha-1}(1-x)^{\beta-1}
+\end{aligned}
 $$
+
+Beta 分布的概率密度我们把它画成图,会发现它是个百变星君,它可以是凹的,凸的,单调上升的,单调下降的,可以是曲线也可以是直线,
+而均匀分布也是特殊的Beta分布.由于Beta 分布能够拟合如此之多的形状,因此它在统计数据拟合中被广泛使用.
 
 \section{正态分布}
 \textbf{连续概率分布}\\
