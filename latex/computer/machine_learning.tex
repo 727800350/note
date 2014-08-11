@@ -467,8 +467,8 @@ $$\si n \to \infty,\ \theta_{MAP} = \mean{x}$$
 
 $$ \theta_{MLE} = \mean{x} $$
 
-\subsection{Difference between MEL and MAP}
-\href{http://blog.163.com/silence\_ellen/blog/static/1761042222014413112444364/}{参数估计--MLE、MAP和贝叶斯估计}
+\subsection{Difference between MLE and MAP}
+\href{http://blog.163.com/silence\_ellen/blog/static/1761042222014413112444364/}{参数估计--MLE,MAP和贝叶斯估计}
 
 在数据量大的时候,MAP的p(h)小到可以忽略,即"data overwhelms the prior." 也就是说MAP和MLE殊途同归,完全相等.\\
 在数据量小的时候,由于MAP有先验知识,它比MLE更合理.\\
@@ -653,10 +653,96 @@ $$
 
 \subsection{Dirichlet-Categorical model}
 The Dirichlet distribution is the conjugate prior distribution of the categorical distribution
-(a generic discrete probability distribution with a given number of possible outcomes) 
 and multinomial distribution (the distribution over observed counts of each possible category in a set of categorically distributed observations).
 
-\section{Posterior distribution for univariate Gaussian}
+A categorical distribution (also called a "generalized Bernoulli distribution" or, less precisely, a "discrete distribution") 
+is a probability distribution that describes the result of a random event that can take on one of $K$ possible outcomes, 
+with the probability of each outcome separately specified.
+
+\subsection{Posterior distribution for univariate Gaussian}
+这个例子类似于MAP的例子
+
+\section{Naive Bayes}
+Generative model
+\subsection{Naive Bayes Classification}
+Find out the probability of the previously unseen instance belonging to each class, then simply pick the most probable class
+
+Naive Bayes Classification use the naive Bayes assumption
+
+Not necessarily Bayesian
+
+setup: Given $D = ((x^{(1)}, y_1), \ldots, (x^{(n)}, y_n)),\ x^{(i) \in R^d,\ y_i \in \mathcal{Y}}$ with $\mathcal{Y} = \set{1,2,\ldots, m}$
+
+Assume a family of distributions $P_\theta$ s.t.
+$$\forall x \in R^d, y \in \mathcal{Y},\ P_\theta(x,y) = P_\theta(x|y) P_\theta(y) = \prod_{i=1}^d P_\theta(x_i|y) P_\theta(y)$$
+
+Let $(x^{(1)}, y_1), \ldots, (x^{(n)}, y_n) \obey P_\theta,\ iid$ for some $\theta$, that is to say\\
+If $(x,y) \obey P_\theta$, then $X_1, \ldots, X_d$ are independent given $Y$
+
+Goal: for new $x \in R^d$, predict it's $y$\\
+algo: 
+\begin{enumerate}
+\item Estimate $\theta$ from given data $D$
+\item Compute $\estimate{y} = \arg_{y \in \mathcal{Y}} \max P_{\estimate{\theta}}(y|x)$
+\end{enumerate}
+
+$$
+\begin{aligned}
+\estimate{y} 
+& = \arg_{y \in \mathcal{Y}} \max P_{\estimate{\theta}}(y|x) \\
+& = \arg_{y \in \mathcal{Y}} \max \dfrac{P_{\estimate{\theta}} (x,y)}{ P_{\estimate{\theta}}(x) } \\
+& = \arg_{y \in \mathcal{Y}} \max \dfrac{P_{\estimate{\theta}} (x|y) P_{\estimate{\theta}}(y)}{ P_{\estimate{\theta}}(x) } \\
+& = \arg_{y \in \mathcal{Y}} \max P_{\estimate{\theta}} (x|y) P_{\estimate{\theta}}(y) \\
+& = \arg_{y \in \mathcal{Y}} \max \prod_{i=1}^d P_{\estimate{\theta}} (x_i|y) P_{\estimate{\theta}}(y) \\
+\end{aligned}
+$$
+
+\textbf{How to chooose the $P_\theta$?}
+\begin{itemize}
+\item If $X_i \in \set{1,\ldots, N}$, then e.g. $P_\theta(x_i |y) = q(x_i, y)$, PMF
+\item If $X_i \in \set{1, 2, \ldots}$, then e.g. Poisson or Geometric or whatever
+\item If $X_i \in \R$, then e.g. Gaussian or Gamma or whatever
+\end{itemize}
+对于$X=(X_1, \ldots, X_d)$的$d$个维度, 不同的维度还可以采用不同的分布
+
+\textbf{How to estimate $\theta$?}\\
+MLE or MAP(auusming priori on $\theta$)\\
+Another option: "Bayesian" Naive Bayes
+
+\textbf{Why CI(conditional independent)}\\
+$P_\theta(x|y) = \prod_{i=1}^d P_\theta(x_i|y)$\\
+can estimate $\theta$ more accurately with less data.\\
+\textbf{Wrong but simple can be better than correct but complicated.}
+
+\bigskip
+\textbf{Advantages/Disadvantages of Na\"ive Bayes}\\
+Advantages:
+\begin{itemize}
+\item Fast to train (single scan). Fast to classify 
+\item Not sensitive to irrelevant features(样本量足够大的情况下)
+\item Handles real and discrete data
+\item Handles streaming data well
+\end{itemize}
+
+Disadvantages:
+\begin{itemize}
+\item Assumes independence of features
+\end{itemize}
+
+\subsection{Bayesian Naive Bayes}
+Bayesian classifiers use Bayes theorem, which says
+$$P(c_j|d) = \dfrac{P(d|c_j) P(c_j)}{P(d)}$$
+
+\begin{itemize}
+\item $P(c_j|d) = $probability of instance $d$ being in class $c_j$
+\item [] This is what we are trying to compute
+\item $p(d | c_j) =$ probability of generating instance $d$ given class $c_j$,
+\item [] We can imagine that being in class $c_j$, causes you to have feature $d$ with some probability 
+\item $p(c_j) =$ probability of occurrence of class $c_j$, 
+\item [] This is just how frequent the class $c_j$, is in our database
+\item $p(d) =$ probability of instance $d$ occurring
+\item [] This can actually be ignored, since it is the same for all classes
+\end{itemize}
 
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
