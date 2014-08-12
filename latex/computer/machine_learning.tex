@@ -964,10 +964,87 @@ $$ 2 A^T A w = 2 A^T y \Rightarrow w = (A^T A)^{-1} A^T y = A^{\dagger} y $$
 $A^\dagger$ is called \textbf{Pseudo-Inverse} of a Matrix, 
 see \href{https://inst.eecs.berkeley.edu/~ee127a/book/login/def\_pseudo\_inv.html}{dagger matrix}
 
-Intuition: 
+Intuition: \\
 The solution to the least-square problem $\min_x \norm{Ax - y}$, is $x = A^\dagger y$.\\
 That is to say, minimize the distance of $y$ and $Ax$.
 
+\section{Bayesian Linear Regression}
+\begin{itemize}
+\item Why not use MLE? overfitting
+\item Why not use MAP? Not interval estimate
+\item Why Bayesian? Optimize loss fn
+\end{itemize}
+
+\subsection{Posterior for linear regression}
+Setup:$D = ((x_1, y_1), \ldots, (x_n,y_n)),\ x_i \in R^d, y_i \in R$\\
+Model: $\vector{Y}$ indep given $w$, $Y_i \obey N(w^T x_i, a^{-1})$ with $a = \dfrac{1}{\sigma^2}$, and $a$ is called precision.\\
+$w \obey N(0, b^{-1}I),\ b > 0$, $(w = (w_1, \ldots, w_d)^T)$\\
+Assume $a, b$ are knowm. So $\theta = w$
+
+Likelihood:
+$$ P(D|w) \propto \exp(- \dfrac{a}{2} \ps{y - Aw}{y - Aw}) $$
+
+Posteriori:
+\begin{equation}
+\begin{aligned}
+P(w|D) 
+& \propto P(D|w) P(w) \\
+& \propto \exp(- \dfrac{a}{2} \ps{y - Aw}{y - Aw}) \cdot \exp(-\dfrac{1}{2} w^T (b^{-1}I)^{-1} w) \\
+& \propto \exp(- \dfrac{a}{2} \ps{y - Aw}{y - Aw}) \cdot \exp(-\dfrac{b}{2} w^T w) \\
+& \propto \exp(- \dfrac{a}{2} \ps{y - Aw}{y - Aw} -\dfrac{b}{2} w^T w) \\
+\end{aligned}
+\end{equation}
+
+multivairant Gaussian distribution的形式
+$$\propto \exp(-\dfrac{1}{2} (x - \mu)^T C^{-1} (x - \mu))$$
+由于 \lasteq 中exp的里面是一个二次型, 与 multivariant Gaussian distribution的形式一致(具体的推导继续往下看), 所以
+$P(w|D)$是一个 multivairant Gaussian distribution.
+
+\begin{equation}
+a \ps{y - Aw}{y - Aw} + b w^T w = a y^T y - 2aw^TA^Ty + w^T(aA^TA+bI)w
+\end{equation}
+
+由于covariance matrix 是对称且可逆, 所以 precision matrix也是对称且可逆
+$$(x - \mu)^T \Lambda (x - \mu)) = x^T \Lambda x - 2 x^T \Lambda \mu + const$$
+将这个形式与 \lasteq 对比($x$相当于$w$), 得到
+$$ \Lambda = aA^TA + bI $$
+我们容易验证$\Lambda$ 是对称且可逆的(用vecteur propre).
+$$a w^T A^T y = w^T \Lambda \mu \Rightarrow \mu = a \Lambda^{-1} A^T y$$
+所以
+$$P(w|D) = N(w| \mu, \Lambda^{-1})$$
+
+\bigskip
+MAP estimation of $w$: 
+$$w_{MAP} = a \Lambda^{-1} A^T y = a (aA^TA + bI)^{-1}A^Ty = (A^TA + \dfrac{b}{a}I)^{-1} A^T y$$
+
+$\dfrac{b}{a}$ regularization parameter
+
+再上一个section中, 我们求得
+$$w_{MLE} = (A^T A)^{-1} A^T y = A^\dagger y$$
+
+\subsection{Predictive distribution for linear regression}
+Predictive: $P(y|x, D)$
+
+Goal: $P(y|x,D) \propto \int N(w|...) g(y)dw \propto g(y) \propto N(y|...)$
+
+$$
+\begin{aligned}
+P(y|x, D)
+& = \int P(y|x,D,w) P(w|x,D) dw \\
+& = \int P(y|x,w) P(w|D) dw \\
+& = \int N(y|w^Tx, a^{-1}) \cdot N(w|\mu, \Lambda^{-1}) dw \\
+& = \int \exp( - \dfrac{a}{2} (y - w^Tx)^2) \cdot \exp( - \dfrac{1}{2} (w-\mu)^T \Lambda (w - \mu)) dw \\
+& \ldots \\
+& \propto \exp(-\dfrac{\lambda}{2} (y-u)^2) \\
+& = N(y|u, \dfrac{1}{\lambda})
+\end{aligned}
+$$
+
+$$u = \mu^T x$$
+$$\dfrac{1}{\lambda} = \dfrac{1}{a} + x^T \Lambda^{-1} x$$
+
+在上一个subsection中, 我们求得
+$$P(w|D) = N(w| \mu, \Lambda^{-1})$$
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
 
