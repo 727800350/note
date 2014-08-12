@@ -740,7 +740,7 @@ Naive Bayes Classification use the naive Bayes assumption
 
 Not necessarily Bayesian
 
-setup: Given $D = ((x^{(1)}, y_1), \ldots, (x^{(n)}, y_n)),\ x^{(i) \in R^d,\ y_i \in \mathcal{Y}}$ with $\mathcal{Y} = \set{1,2,\ldots, m}$
+setup: Given $D = ((x^{(1)}, y_1), \ldots, (x^{(n)}, y_n)),\ x^{(i)} \in R^d,\ y_i \in \mathcal{Y}$ with $\mathcal{Y} = \set{1,2,\ldots, m}$
 
 Assume a family of distributions $P_\theta$ s.t.
 $$\forall x \in R^d, y \in \mathcal{Y},\ P_\theta(x,y) = P_\theta(x|y) P_\theta(y) = \prod_{i=1}^d P_\theta(x_i|y) P_\theta(y)$$
@@ -812,6 +812,161 @@ $$P(c_j|d) = \dfrac{P(d|c_j) P(c_j)}{P(d)}$$
 \item $p(d) =$ probability of instance $d$ occurring
 \item [] This can actually be ignored, since it is the same for all classes
 \end{itemize}
+
+\section{Linear Regression}
+It's not just lines and planes, there is more.
+
+Linear regression is the "work horse" of statistics and (supervised) machine learning. 
+When augmented with kernels or other forms of basis function expansion, it can model also non-linear relationships. 
+And when the Gaussian output is replaced with a Bernoulli or multinoulli distribution, 
+it can be used for classification, as we will see below. So it pays to study this model in detail.
+
+setup: Given $D = ((x_1, y_1), \ldots, (x_n, y_n)),\ x_i \in R^d,\ y_i \in \R$\\
+Goal: Choose $f: R^d \rightarrow R$ to predict the $y$ for a new $x$
+
+Simple case: $f(x) = w^T x = \sum_{i=1}^d w_i x(i)$ with $w \in R^d$\\
+General case: $f(x) = w^T \varphi(x) = \sum_{i=1}^n w_i \varphi_i(x)$ with $\varphi: R^d \rightarrow R^n$ and $w \in R^n$
+
+They are linear regression, because it's linear for $w$, not necessarily in $x$.\\
+$R^d$ is the original space, $R^n$ is the feature space, so linear regression is linear in the feature space.
+
+$\varphi_i(x)$ is called basic functions.
+
+\begin{example}
+Polynomial\\
+$f(x) = w_i + w_2 x(1) + w_3 x(2) + w_4 x(1)^2 + w_5 x(2)^2 + w_6 x(1)x(2)$\\
+Here, $\varphi(x) = (1, x(1), x(2), x(1)^2, x(2)^2, x(1)x(2))$
+\end{example}
+Other usual basis
+\begin{itemize}
+\item Radial Basis Function
+\item Fourrier Basis
+\item Wavelets: useful in image processing
+\end{itemize}
+
+由于$y = w^T \varphi(x) = w^T z$, 然后我们可以令$z$称为新的$x$, 
+所以为了方便, 之后我们都使用$y = w^T x$来直接表示general case.
+
+Choose Discriminative approach, the conditional distribution $P(y|x)$ 
+instead of generative approach, the joint distribution $P(y,x)$
+
+Assume some family $P_\theta(y|x)$, Estimate $\theta$ using $D$.\\
+Which family should we choose? To make our life easier and 考虑到$y$ 是实数, we choose the Gaussian.
+$$P_\theta(y|x) = N(y| \mu(x), \sigma^2(x))$$ where $\theta = (\mu, \sigma^2)$ with $w \in R^d, \sigma^2 > 0$
+\note{这里的分布应该是$y$的啊, 不理解为什么有$\mu(x), \sigma^2(x)$}
+
+But how we choose $\mu$ and $\sigma^2$?
+\begin{definition}
+\textbf{Gaussian Linear Regression} modles the data $D$ by assuming 
+$$P_\theta(y|x) = N(y| w^T x, \sigma^2)$$ where $\theta = (w, \sigma^2)$ with $w \in R^d, \sigma^2 > 0$
+
+$y = w^T x + \epsilon$ where $\epsilon \obey N(0, \sigma^2)$
+\end{definition}
+
+How to choose $f$? (minimize the expected loss)\\
+choose square loss, $L(y, \estimate{y}) = (y - \estimate{y})^2$
+
+$$
+\begin{aligned}
+\arg_y \min E_\theta(L(Y,y)|X= x)
+& = E_\theta(y|X=x) \\
+& = E_\theta(w^T x + \epsilon | X=x) \\
+& = w^T x + E_\theta(\epsilon | X=x) \\
+& = w^T x + E_\theta(\epsilon) \\
+& = w^T x
+\end{aligned}
+$$
+\note{等式的第一步?}
+So, for Gaussian linear regression, with squared loss, choose $f(x) = w^T x$
+
+But, what is $w$? we do not know $\theta$. That's where estimation comes in, so we need estimate $\theta$
+using MLE, MAP, etc.
+
+\subsection{MLE for Gaussian Lin Reg}
+$Y \obey N(w^T x, \sigma^2)$, assume $\sigma^2$ known, $\theta = w$\\
+$D = ((x_1, y_1), \ldots, (x_n, y_n)),\ x_i \in R^d,\ y_i \in R$\\
+$\vector{Y}$ indep, $Y_i \obey N(w^T x_i, \sigma^2)$
+
+$$\theta_{MLE} = \arg_\theta \max P(D|\theta)$$
+
+$$
+\begin{aligned}
+P(D|\theta)
+& = P(\vector{y}|\vector{x},\theta) \\
+& = \prod_{i=1}^n P(y_i|x_i,\theta) \\
+& = \prod_{i=1}^n \dfrac{1}{\sqrt{2\pi \sigma^2}} \exp(- \dfrac{1}{2\sigma^2}(y_i - w^T x_i)^2) \\
+& = (\dfrac{1}{\sqrt{2\pi \sigma^2}})^n \exp(- \dfrac{1}{2\sigma^2} \sum_{i=1}^n (y_i - w^T x_i)^2) \\
+\end{aligned}
+$$
+$$
+\begin{bmatrix}
+y_1 - w^T x_1 \\
+\vdots \\
+y_n - w^T x_n \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+y_1 \\
+\vdots \\
+y_n \\
+\end{bmatrix}
+-
+\begin{bmatrix}
+w^T x_1 \\
+\vdots \\
+w^T x_n \\
+\end{bmatrix}
+=
+y -
+\begin{bmatrix}
+x_1^T \\
+\vdots \\
+x_n^T \\
+\end{bmatrix}
+w
+= y - A w
+$$
+
+$$
+A = 
+\begin{bmatrix}
+x_1^T \\
+\vdots \\
+x_n^T \\
+\end{bmatrix}
+$$
+$A$ is called \textbf{design matrix}, $n \times d$.
+
+$w \in R^n$
+所以如果写成 $w^T (x_1, \ldots, x_n)$的形式, 
+那么就过就是$1 \times n \cdot n \times n = 1 \times n$, 而$y$是 $n \times 1$
+$$
+\begin{aligned}
+P(D|\theta) 
+& = (\dfrac{1}{\sqrt{2\pi \sigma^2}})^n \exp(- \dfrac{1}{2\sigma^2} (y - Aw)^T (y - Aw)) \\
+& = (\dfrac{1}{\sqrt{2\pi \sigma^2}})^n \exp(- \dfrac{1}{2\sigma^2} \ps{y - Aw}{y - Aw}) \\
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\theta_{MLE} 
+& = \arg_\theta \max P(D|\theta) \\
+& = \arg_w \max (\dfrac{1}{\sqrt{2\pi \sigma^2}})^n \exp(- \dfrac{1}{2\sigma^2} \ps{y - Aw}{y - Aw}) \\
+& = \arg_w \min \ps{y - Aw}{y - Aw} \\
+& = \arg_w \min \ps{Aw}{Aw} - 2\ps{y}{Aw} + \ps{y}{y} \\
+& = \arg_w \min \dfrac{1}{2}\ps{2 A^T A w}{w} - \ps{2 A^T y}{w} \\
+\end{aligned}
+$$
+
+而 $\dfrac{1}{2} \ps{Ax}{x} - \ps{b}{x}$ 在 $Ax = b$处取得最小值. 所以
+$$ 2 A^T A w = 2 A^T y \Rightarrow w = (A^T A)^{-1} A^T y = A^{\dagger} y $$
+$A^\dagger$ is called \textbf{Pseudo-Inverse} of a Matrix, 
+see \href{https://inst.eecs.berkeley.edu/~ee127a/book/login/def\_pseudo\_inv.html}{dagger matrix}
+
+Intuition: 
+The solution to the least-square problem $\min_x \norm{Ax - y}$, is $x = A^\dagger y$.\\
+That is to say, minimize the distance of $y$ and $Ax$.
 
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
