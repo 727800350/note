@@ -1045,6 +1045,26 @@ $$\dfrac{1}{\lambda} = \dfrac{1}{a} + x^T \Lambda^{-1} x$$
 
 在上一个subsection中, 我们求得
 $$P(w|D) = N(w| \mu, \Lambda^{-1})$$
+
+\section{Decision Theory}
+\begin{table}[h]
+\caption{Decision Theory terminology}
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{General}       & \textbf{Estimator}                            & \textbf{Regression/classification} \\ \hline
+Decision rule $\delta$ & Estimator fn $g$                              & Prediction fn $f$                  \\ \hline
+state $s$              & param $\theta$                                & Target value $y$                   \\ \hline
+Data $D$               & Data $D$                                      & Point $x$                          \\ \hline
+Action $a = \delta(D)$ & Estimator/Estimate $\estimate{\theta} = g(D)$ & Prediction $\estimate{y} = f(x)$   \\ \hline
+Loss $L(s,a)$          & Loss $L(\theta, \estimate{\theta})$           & Loss $L(y, \estimate{y})$          \\ \hline
+\end{tabular}
+\end{table}
+
+the state $s$ is unknown, data $D$ is oberservable(aka oberservation), 
+using the data $D$, choose the action $a = \delta(D)$, and the chosen action causes some loss $L(s,a)$.\\
+We want to minimize the loss, ofen to minimize the expectation of loss function.
+
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
 
