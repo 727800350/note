@@ -1065,6 +1065,8 @@ the state $s$ is unknown, data $D$ is oberservable(aka oberservation),
 using the data $D$, choose the action $a = \delta(D)$, and the chosen action causes some loss $L(s,a)$.\\
 We want to minimize the loss, ofen to minimize the expectation of loss function.
 
+\href{http://i.imgbox.com/fzqiKlAF.png}{Baye Risk}
+
 Bayesian: Assume $\pi$\\
 case 1: know $D$. then choose $f(D)$ to minimize $P(\pi, f(D))$\\
 case 2: do not know $D$. choose $f$ to minimize $r(\pi, f)$
@@ -1085,7 +1087,7 @@ $$mse(\estimate{\theta}) = E[(\estimate{\theta} - \theta)^2 | \theta]$$
 \end{definition}
 risk $R(\theta, f)$ with squared loss.
 
-Recall: $bias(\estimate{\theta}) = E[\estiamte{\theta}] - \theta$
+Recall: $bias(\estimate{\theta}) = E[\estimate{\theta}] - \theta$
 
 \begin{proposition}
 $$mse(\estimate{\theta} ) = bias^2(\estimate{\theta} ) + var(\estimate{\theta} )$$
@@ -1126,12 +1128,95 @@ A decision rule $\delta$ is inadmissible if there is another decision rule that 
 \end{definition}
 
 \subsection{Bayesian Decision Theory}
-Bayesian Expected Loss: $\rho(\pi, \delta(D)) = E[L(\theta, \delta{D}) | D]$
+\noindent
+Bayesian Expected Loss: $\rho(\pi, \delta(D)) = E[L(\theta, \delta{D}) | D]$\\
 Bayes Risk: $\rho(\pi, \delta(D)) = E[L(\theta, \delta{D})] = E[E[L(\theta, \delta{D}) | D]] = E[L(\theta, \delta{D})|D] = E[\rho(\pi, \delta(D))]$
 
 Informally:\\
 A generalized Bayes rule is a decision rule $\delta$ minimizing $\rho(\pi, \delta(D))$ for each $D$.\\
 A Bayes rule is a decision rule $\delta$ minimizing $\rho(\pi, \delta)$.
+
+\section{Model(complexity) Selection}
+complexity: flexibility to fit/explain data
+
+\begin{example}
+Lin Reg MLE: $f(x) = w^T \varphi(x)$, $x \in R$\\
+Poly basis: $\varphi_k(x) = x^k$, $\varphi = (\varphi_0, \varphi_1, \ldots, \varphi_B)$\\
+$B = $ complexity paramter, $w$ is not complexity param.\\
+note: there is no clear difference between complexity params and model params.
+\end{example}
+
+$mse = bias^2 + var$\\
+complexity increase, the $bias^2$ decreases and $var$ increases.\\
+complexity decrease, the $bias^2$ increases and $var$ decreases.\\
+之间的关系用图表示如下: \href{http://i.imgbox.com/mk9txD2Z.png}{$bias^2, var$ 与 model complexity的关系}
+
+\subsection{Model Selection Approaches(Bayesian)}
+$m$ index a model in a class of models
+
+Bayesian model averaging (BMA)
+$P(y|x, \theta, m)$, $\theta$ r.v. and $M$ r.v.
+$$
+\begin{aligned}
+P(y|x,D)
+& = \int P(y,|x,D,M) P(m|x,D)dm \eqnote{x一般来时是定值}\\
+& = \int P(y,|x,D,M) P(m|D)dm \\
+& = \int P(y,|x,\theta,M) P(\theta|D,m) d\theta P(m|D)dm \\
+\end{aligned}
+$$
+
+"Type II MAP"
+$$P(y|x,D) \simeq P(y|x,D,m^*)$$ where $m^* \in \arg_m \max P(m|D)$
+
+Type II Maximum Likelihood (a.k.a. ML-II, a.k.a. the evidence approximation, a.k.a. empirical Bayes)
+$$P(y|x,D) \simeq P(y|x,D,m^*)$$ where $m^* \in \arg_m \max P(D|m)$
+
+\subsection{Cross Validation}
+For high dimension, cross validation is not very usefull, as there are many ...
+
+\noindent
+$D = ((x_1, y_1), \ldots, (x_n, y_n))$\\
+model $m \in \set{1,\ldots,c}$\\
+choose $m$ to minimize $\epsilon_m = EL(y, f_m(x))$, with $(x,y) \obey P$ where $P$ is unknown.\\
+
+Test data set: $T = ((x'_1, y'_1), \ldots, (x'_t, y'_t))$\\
+But we do not have test data set, to test, we can use the original data set $D$.
+
+validation: split the data set $D$ into two parts: training set and validation set.
+
+$K$ folds cross-validation
+\begin{itemize}
+\item randomly permute the data set $D$
+\item split the permuted data set $D'$into $K$ folds
+\item do $K$ rounds:
+	\begin{itemize}
+	\item in the first round, fold $1$ is the validation set, we get $\estimate{\epsilon}_m(1)$
+	\item in the second round, fold $2$ is the validation set, we get $\estimate{\epsilon}_m(2)$
+	\item $\ldots$
+	\end{itemize}
+\item $\estimate{\epsilon}_m = \dfrac{1}{K} \sum_{i=1}^K \estimate{\epsilon}_m(i)$
+\item Choose $m^*$ to minimize $\estimate{\epsilon_m}$, and retrain using $m^*$ on all of $D$
+\end{itemize}
+
+Two kinds of cross-validation\\
+1. LOOCV(leave one out corss-validation): $K = n(number of points)$, so each point is a fold.\\
+2. Random subsamples: at each round, choose a random subset as the validation set.
+
+\textbf{How to choose $K$?}\\
+estimator $\estimate{\epsilon}_m^{(k)}$ of $\epsilon$.
+
+$EL(\epsilon,\estimate{\epsilon}_m) = mse(\estimate{\epsilon}_m)$, $mse = bias^2 + var$\\
+$K$ large(e.g. $K=n$), low bias, high variance\\
+$K$ small(e.g. $K=2$), high bias, low variance\\
+$K$ is like the complexity parameter.\\
+Recommended: $K = 10$
+
+\textbf{Other model selection approaches}
+\begin{itemize}
+\item AIC(Akaike info criterion)
+\item BIC(Bayesian info criterion)
+\item MDL(Minimum description length) "Occam's Razor"
+\end{itemize}
 
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
