@@ -1065,6 +1065,74 @@ the state $s$ is unknown, data $D$ is oberservable(aka oberservation),
 using the data $D$, choose the action $a = \delta(D)$, and the chosen action causes some loss $L(s,a)$.\\
 We want to minimize the loss, ofen to minimize the expectation of loss function.
 
+Bayesian: Assume $\pi$\\
+case 1: know $D$. then choose $f(D)$ to minimize $P(\pi, f(D))$\\
+case 2: do not know $D$. choose $f$ to minimize $r(\pi, f)$
+
+Frequentist: introduce a further principle to guide your choice.
+\begin{itemize}
+\item unbiasedness
+\item admissibility
+\item minmax
+\item invariance
+\end{itemize}
+
+\subsection{Bias-Variance Decompotion}
+$$mse = bias^2 + var$$
+\begin{definition}
+The mse of an estimator $\estimate{\theta} = f(D)$ for $\theta$ is:
+$$mse(\estimate{\theta}) = E[(\estimate{\theta} - \theta)^2 | \theta]$$
+\end{definition}
+risk $R(\theta, f)$ with squared loss.
+
+Recall: $bias(\estimate{\theta}) = E[\estiamte{\theta}] - \theta$
+
+\begin{proposition}
+$$mse(\estimate{\theta} ) = bias^2(\estimate{\theta} ) + var(\estimate{\theta} )$$
+\end{proposition}
+\begin{proof}
+let $\mu = E\estimate{\theta} $
+$$
+\begin{aligned}
+E[(\estimate{\theta} - \theta )^2]
+& = E[(\estimate{\theta} - \mu + \mu - \theta )^2] \\
+& = E[(\estimate{\theta} - \mu)^2 +  2 (\estimate{\theta} - \mu) (\mu - \theta) + (\mu - \theta)^2] \\
+& = E[(\estimate{\theta} - \mu)^2] +  2 (E[\estimate{\theta}] - \mu) (\mu - \theta) + E[(\mu - \theta)^2] \\
+& = E[(\estimate{\theta} - \mu)^2] + (\mu - \theta)^2 \\
+& = var(\estimate{\theta}) + bias^2(\estimate{\theta})
+\end{aligned}
+$$
+\end{proof}
+
+\begin{example}
+$X \obey N(\theta, 1)$, $\theta$ non random, unknown, $n=1, D=x$\\
+"Natural" estimate of $\theta$, $\delta(D) = X,\ bias = \text{sample mean},\ var = 1,\ mse = 1$
+"silly" estimate of $\theta$, $\delta(D) = 0,\ bias = \theta,\ var = 0(\text{$\theta$的估计值为定值}),\ mse = \theta^2$
+
+是否有一种方法, 能够将上述两种方法结合起来, a little bias, with reducing varirance?
+\end{example}
+
+\subsection{Inadmissibility}
+Usefull to reject certain estimators
+
+\begin{definition}
+Given decision rules $\delta, \delta'$, we say $\delta$ dominates $\delta'$ 
+if $\forall \theta \in \Theta,\ R(\theta, \delta) \leq R(\theta, \delta')$
+and $\exists \theta \in \Theta,\ R(\theta, \delta) \le R(\theta, \delta')$
+\end{definition}
+
+\begin{definition}
+A decision rule $\delta$ is inadmissible if there is another decision rule that dominates $\delta$, otherwise, $\delta$ is admissible.
+\end{definition}
+
+\subsection{Bayesian Decision Theory}
+Bayesian Expected Loss: $\rho(\pi, \delta(D)) = E[L(\theta, \delta{D}) | D]$
+Bayes Risk: $\rho(\pi, \delta(D)) = E[L(\theta, \delta{D})] = E[E[L(\theta, \delta{D}) | D]] = E[L(\theta, \delta{D})|D] = E[\rho(\pi, \delta(D))]$
+
+Informally:\\
+A generalized Bayes rule is a decision rule $\delta$ minimizing $\rho(\pi, \delta(D))$ for each $D$.\\
+A Bayes rule is a decision rule $\delta$ minimizing $\rho(\pi, \delta)$.
+
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
 
