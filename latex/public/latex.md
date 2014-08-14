@@ -567,12 +567,13 @@ Eg:
 如果使用了hyperref 宏包来生成PDF 文件的书签链接,则还需要在上面的命令后再加上
 `\phantomsection`
 
-# Index
-`\usepackage{makeidx}`
-
-在导言区使用`\makeindex`激活导言
-
+# Commands
+**index**  
+`\usepackage{makeidx}`  
+在导言区使用`\makeindex`激活导言  
 索引的内容通过`\index{key}`
+
+`\cleardoublepage`: ends the current page and causes all figures and tables that have so far appeared in the input to be printed. In a two-sided printing style, it also makes the next page a right-hand (odd-numbered) page, producing a blank page if necessary.
 
 # Error
 **Dimension too large**
