@@ -433,6 +433,7 @@ Suppose $\theta$ is a r.v. $\obey N(\mu, 1)$ and $\vector{X}$ is conditionaly in
 and $X_i \obey N(\theta, \sigma^2)$ with $\sigma$ know\\
 i.e: $P(\vector{x}|\theta) = \prod_{i =1}^n P(x_i|\theta)$
 
+Sometimes, two variables might not be marginally independent. However, they become independent after we observe some third variable
 
 $$
 \begin{aligned}
@@ -1217,6 +1218,60 @@ Recommended: $K = 10$
 \item BIC(Bayesian info criterion)
 \item MDL(Minimum description length) "Occam's Razor"
 \end{itemize}
+
+\section{Directed Graphical Model aka Bayesian networks}
+conditionaly indep digrams
+\begin{itemize}
+\item factorization
+\item notational device
+\item visualization: 1. cond indep properties, 2. inference algos(DP, MCMC)
+\end{itemize}
+
+Why cond indep important?
+tractable inference
+
+\begin{definition}
+Given $X = (\vector{X}) \obey P(pmf \ou pdf)$ and an ordered DAG $G$, we say $X$(or $P$) respects $G$ if
+$$P(\vector{x}) = \prod_{i=1}^n P(x_i|x_{pa(i)})$$
+\end{definition}
+note: $P(x|\emptyset) = P(x)$
+
+\begin{remark}
+This does not imply that any variables are cond dependents.\\
+我们只是推出cond indep
+\end{remark}
+
+\begin{remark}
+我们可以把定义中的$X_i$ 换成vector, 定义仍然有效
+\end{remark}
+
+A complete digraph is a directed graph in which every pair of distinct vertices is connected by a pair of unique edges (one in each direction).
+
+\textbf{Latent variables} (or hidden variables, as opposed to observable variables), are variables that are not directly observed 
+but are rather inferred (through a mathematical model) from other variables that are observed (directly measured)
+
+\subsection{D-seperation}
+The letter \textbf{d} is for dependence.
+
+Let $G$ be a DAG, let $A,B,C$ be disjoint subsets of vertices ($A \cup B \cup C$ is not nec. all of the vertices).
+
+\begin{definition}
+A path(\textbf{not necessairily directed}) between two vertices is \textbf{blocked} wrt(with respect to) $C$ if 
+it passes throuth a vertex $v$ s.t. either\\
+1. the edges are head-tail or tail-tail, and $v \in C$\\
+or\\
+2. the edges are head-to-head and $v \notin C$ and non of the descedents of $v$ are in $C$
+\end{definition}
+
+\begin{definition}
+$A$ and $B$ are d-separated by $C$ if all paths from $A$ to $B$ are blocked w.r.t. $C$
+\end{definition}
+
+\begin{theorem}
+If $A$ and $B$ are d-separated by $C$, then 
+$$A \indep B | C$$
+($A$ and $B$ is conditionaly independent give $C$)
+\end{theorem}
 
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
