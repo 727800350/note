@@ -575,6 +575,12 @@ Eg:
 
 `\cleardoublepage`: ends the current page and causes all figures and tables that have so far appeared in the input to be printed. In a two-sided printing style, it also makes the next page a right-hand (odd-numbered) page, producing a blank page if necessary.
 
+`\todo[inline, color=green!40]{This is an inline comment.}`
+
+`\textsuperscript`  
+For example, let's say I want to write the `$n^{th}$` element, but without the math mode's automatic italicization of the th. And what if I still want the n to be in math mode, but the th outside?  
+`$n$\textsuperscript{th}`
+
 # Error
 **Dimension too large**
 
