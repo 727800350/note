@@ -1273,6 +1273,35 @@ $$A \indep B | C$$
 ($A$ and $B$ is conditionaly independent give $C$)
 \end{theorem}
 
+\section{Markov Models}
+Future indep of past, given present.
+
+temporal data, e.g. weather, finance, language, music, etc.
+
+$D = (\vector{x}),\ \vector{X}$ r.v.s \\
+We make predictions based on models of observed data (machine learning). 
+A simple model is that observations are assumed to be independent and identically distributed (iid) ...\\
+But this assumption is not always the best, fx 
+(1) measurements of weather patterns, 
+(2) daily values of stocks, 
+(3) acoustic features in successive time frames used for speech recognition, 
+(4) the composition of texts, (5) the composition of DNA, or ...
+
+The most recent data tells us more. So
+$$X_t \eqnote{dep} X_{t-1}, X_{t-2}, \ldots, X_{t-m}$$
+Simplest case: $m = 1$
+$$
+\Pr(X_{n+1}=x\mid X_1=x_1, X_2=x_2, \ldots, X_n=x_n) = \Pr(X_{n+1}=x\mid X_n=x_n)
+$$
+
+To make it simple, we assume Discrete time and discrete space(i.e. $X_i$ discrete).
+
+\noindent
+But, we can not expect to perfectly discover complete time state of system.\\
+Answer: There is hidden info.\\
+Model with hidden/latent variables $\rightarrow$ \textbf{HMM}(Hidden Markov Model)
+
+
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
 
