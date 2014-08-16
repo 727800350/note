@@ -1301,6 +1301,217 @@ But, we can not expect to perfectly discover complete time state of system.\\
 Answer: There is hidden info.\\
 Model with hidden/latent variables $\rightarrow$ \textbf{HMM}(Hidden Markov Model)
 
+\subsection{HMM}
+Suppose we want to determine the average annual temperature at a particular location on
+earth over a series of years. To make it interesting, suppose the years we are concerned with
+lie in the distant past, before thermometers were invented. Since we can't go back in time,
+we instead look for indirect evidence of the temperature.
+
+To simplify the problem, we only consider two annual temperatures, "hot" and "cold".
+Suppose that modern evidence indicates that the probability of a hot year followed by another
+hot year is 0.7 and the probability that a cold year is followed by another cold year is 0.6.
+We'll assume that these probabilities held in the distant past as well. The information so far can be summarized as \textbf{transition matrix}
+
+$$
+A = 
+\bordermatrix{
+~ & H & C \cr
+H & 0.7 & 0.3 \cr
+C & 0.4 & 0.6 \cr}
+$$
+where H is "hot" and C is "cold".
+
+Also suppose that current research indicates a \textbf{correlation between the size of tree growth rings and temperature}. 
+For simplicity, we only consider three different tree ring sizes, small, medium and large, or S, M and L, respectively. 
+Finally, suppose that based on available evidence, the probabilistic relationship between annual temperature and tree ring sizes is given by
+\textbf{emission/obervation matrix}
+$$
+B = 
+\bordermatrix{
+~ & S & M & L\cr
+H & 0.1 & 0.4 & 0.5 \cr
+C & 0.7 & 0.2 & 0.1\cr}
+$$
+
+For this system, the state is the average annual temperature—either H or C.\\
+However, the actual states are "hidden" since we can't directly observe the temperature in the past.
+Although we can't observe the state (temperature) in the past, we can observe the size of tree rings.
+
+Suppose that the initial state distribution, denoted by $\pi$ is:
+$$\pi = (0.6 0.4)$$
+也就是说, 在初始时刻, 系统处于H的概率为0.6, 处于C的概率为0.4.
+
+\textbf{The matrices $\pi,A,B$ are row stochastic, meaning that each element is a probability and the elements of each row sum to 1, 
+that is, each row is a probability distribution}.
+
+Notation:\\
+$a_{ij} = P(z_{k+1} = j | z_k = i)$ 从状态$i$ 转移到状态$j$的概率\\
+$b_i(l) = P(x_k = l | z_k = i)$ 在状态$i$的时候, 观察到$l$的概率
+
+\noindent
+$z_i \in \set{1,2,\ldots, m}$ 状态空间\\
+$x_i \in \set{1,2,\ldots, n}$ observable space
+
+An HMM is defined by $A$, $B$ and $\pi$. The HMM is denoted by $\lambda = (A,B,\pi)$
+
+The three problems
+\begin{problem}
+\textbf{Evaluation}\\
+Given the model $\lambda = (A,B,\pi)$ and a sequence of observations $x$, find $P(x|\lambda)$. Here, we
+want to determine the likelihood of the observed sequence $x$, given the model.
+\end{problem}
+
+\begin{problem}
+\textbf{Decoding}\\
+Given $\lambda = (A,B,\pi)$ and an observation sequence $x$, find an optimal state sequence for the underlying Markov process.
+\end{problem}
+
+\begin{problem}
+\textbf{Learning}\\
+Given an observation sequence $x$ and the dimensions, find the model $\lambda = (A,B,\pi)$ that maximizes the probability of $x$.  
+This can be viewed as training a model to best fit the observed data. Alternatively, we can view this as a (discrete) hill climb on the parameter
+space represented by $A,B$ and $\pi$
+\end{problem}
+
+\subsection{Forward-Backward Algo}
+perfect example of DP(dynamic programming) Reuse ealier computations.\\
+\textbf{Find recursion}
+
+Goal: compute $P(z_k, x_{1:k})$
+
+Notation: 
+$x = x_{1:n}$
+$x_{i:j} = (x_i, x_{i+1}, \ldots, x_j)$
+
+我们知道下面的两个式子是成立的.
+$$P(a,b) = P(a|b)P(b)$$
+$$P(a,b|c) = P(a|b,c)P(b|c)$$
+
+$$
+\begin{aligned}
+P(z_k,x)
+& = P(z_k, x_{1:k}, x_{k+1:n}) \\ 
+& = P(x_{k+1:n}|z_k, x_{1:k} ) P(z_k, x_{1:k} ) \\ 
+& = P(x_{k+1:n}|z_k) P(z_k, x_{1:k} ) \\ 
+\end{aligned}
+$$
+
+\subsubsection{Forward algo}
+$$
+\begin{aligned}
+\alpha_k(z_k)
+& = P(z_k, x_{1:k}) \\ 
+& = \sum_{z_{k-1} = 1}^m P(z_k, z_{k-1}, x_{1:k}) \\ 
+& = \sum_{z_{k-1} = 1}^m P(z_k, z_{k-1}, x_{1:k-1}, x_k) \\ 
+& = \sum_{z_{k-1} = 1}^m P(x_k|z_k, z_{k-1}, x_{1:k-1}) P(z_k, z_{k-1}, x_{1:k-1}) \\ 
+& = \sum_{z_{k-1} = 1}^m P(x_k|z_k, z_{k-1}, x_{1:k-1}) P(z_k| z_{k-1}, x_{1:k-1}) P(x_{k-1}, x_{1:k-1}) \\ 
+& = \sum_{z_{k-1} = 1}^m P(x_k|z_k) P(z_k| z_{k-1}) \underbrace{P(x_{k-1}, x_{1:k-1})}_{recursion} \\ 
+& = \sum_{z_{k-1} = 1}^m P(x_k|z_k) P(z_k| z_{k-1}) \alpha_{k-1}(z_{k-1}) \\ 
+\end{aligned}
+$$
+
+$$ \alpha_k(z_k) = \sum_{z_{k-1} = 1}^m P(x_k|z_k) P(z_k| z_{k-1}) \alpha_{k-1}(z_{k-1}), \forall k=2,\ldots, n $$
+
+$$\alpha_1(z_1) = P(x_1, x_1) = P(z_1) P(x_1|z_1)$$
+
+称之为forward, 因为我们对$z_{k-1}$ 求和, 向前回溯.
+
+Computation complexity:\\
+$\Theta(m)$ for each $z_k$, each $k$ \\
+$\Theta(m^2)$ for each $k$ \\
+$\Theta(n m^2)$
+
+Naive approach:
+$$ P(z_k,x) = \sum_{z_1, z_2, \ldots, z_{k-1}, z_{k+1}, \ldots, z_n} P(z, x)$$
+
+$$ 
+P(x) 
+= \sum_{z_{1:n}} P(x,z) 
+= \underbrace{\sum_{z_1} \sum_{z_2} \cdots \sum_{z_n}}_{m^n} P(x,z) 
+$$
+Computation complexity of Naive approach: $\Theta(m^n)$
+
+\subsubsection{Backward algo}
+compute: $P(x_{k+1:n}|z_k)$
+
+$$
+\begin{aligned}
+\beta_k(z_k)
+& = P(x_{k+1:n}|z_k) \\
+& = \sum_{z_{k+1} = 1}^m P(x_{k+1:n}, z_{k+1}|z_k) \\
+& = \sum_{z_{k+1} = 1}^m P(x_{k+1}, x_{k+2:n}, z_{k+1}|z_k) \\
+& = \sum_{z_{k+1} = 1}^m P(x_{k+2:n}|z_{k+1}, z_k, x_{k+1}) P(x_{k+1}, z_{k+1}| z_k) \\
+& = \sum_{z_{k+1} = 1}^m P(x_{k+2:n}|z_{k+1}, z_k, x_{k+1}) P(x_{k+1}| z_{k+1}, z_k) P(z_{k+1}|z_k) \\
+& = \sum_{z_{k+1} = 1}^m P(x_{k+2:n}|z_{k+1}) P(x_{k+1}| z_{k+1}) P(z_{k+1}|z_k) \\
+& = \sum_{z_{k+1} = 1}^m \underbrace{\beta_{k+1}(z_{k+1})}_{recursion} \underbrace{P(x_{k+1}| z_{k+1})}_{emission} \underbrace{P(z_{k+1}|z_k)}_{transition} \\
+\end{aligned}
+$$
+
+$$ \beta_k(z_k) = \sum_{z_{k+1} = 1}^m \beta_{k+1}(z_{k+1}) P(x_{k+1}| z_{k+1}) P(z_{k+1}|z_k), \forall k = 1, \ldots, n-1 $$
+$$\beta_n(z_n) = 1, \forall z_n$$
+
+Computation complexity: $\Theta(n m^2)$
+
+\subsection{Underflow and log-sum-exp}
+有的计算机程序无法表示很小的数, 他们通常把他们当做$0$处理, 但是这样做是不行的.
+
+$$\alpha_k(z_k) = P(z_k, x_{1:k} = \sum_{z_{k-1}} P(x_k | z_k)P(z_k|z_{k-1}) \alpha_{k-1}(z_{k-1})$$
+
+$$\log \alpha_k(z_k) = \log \sum_{z_{k-1}} \exp(\log P(x_k | z_k) + \log P(z_k|z_{k-1}) + \log \alpha_{k-1}(z_{k-1}))$$
+Let $a_i = \log P(x_k | z_k) + \log P(z_k|z_{k-1}) + \log \alpha_{k-1}(z_{k-1})$
+
+\noindent
+所以, 上面的计算变成下面的问题:\\
+Given $a_i, \ldots, a_m$, compute $\log \sum_{i=1}^m e^{a_i}$
+
+Let $b = \max_i a_i$
+$$
+\log \sum_{i=1}^m e^{a_i}
+= \log (e^b \sum_{i=1}^m e^{a_i - b})
+= b + \log \sum_{i=1}^m e^{a_i - b}
+$$
+由于$b$ 是负的, 所以$a_i -b$是将$a_i$加上了一个正数, 是的$e^{a_i- b} > e^{a_i}$, 可以在一定程度上减小underflow的印象
+
+实际上, 我们可以使用$\max_i a_i$来 approximate $\log \sum_{i=1}^m e^{a_i}$
+
+\subsection{Viterbi Algo}
+Find the most prossilbe hidden states
+
+The Viterbi algorithm (computing the MAP sequence of hidden states) for hidden Markov models (HMMs).
+
+\noindent
+Given $x_1, x_2, x_n$, Transition matrix $A$, emmission matrix $B$, initial matrix $\pi$\\
+Goal: compute: $Z^* =\arg_z \max P(z|x)$
+
+\begin{remark}
+If $f(a) \geq 0, \forall a$ and $g(a,b) \geq 0, \forall a,b$, then
+$$\max_{a,b} f(a)g(a,b) = \max_a [f(a) \max_b g(a,b)]$$
+\end{remark}
+
+Notation: 
+$x = x_{1:n}$
+$z = z_{1:n}$
+
+$$\arg_z \max P(z|x) = \arg_z \max P(z,x)$$
+
+$$
+\begin{aligned}
+\mu_k(z_k)
+& = \max_{z_{1:k-1}} P(z_{1:k}, x_{1:k}) \\ 
+& = \max_{z_{1:k-1}} \underbrace{P(x_k|z_k) P(z_k|z_{k-1})}_{f(a)} \underbrace{P(z_{1:k-1}, x_{1:k-1})}_{g(a,b)} \\ 
+& = \max_{z_{k-1}} [P(x_k|z_k) P(z_k|z_{k-1}) \max_{z_{1:k-2}} P(z_{1:k-1}, x_{1:k-1})] \\ 
+& = \max_{z_{k-1}} P(x_k|z_k) P(z_k|z_{k-1}) \mu_{k-1}(z_{k-1})
+\end{aligned}
+$$
+with $a = z_{k-1}$ and $b = z_{1:k-2}$
+
+$$ \mu_k(z_k) = \max_{z_{k-1}} P(x_k|z_k) P(z_k|z_{k-1}) \mu_{k-1}(z_{k-1}), \forall k = 2,\ldots,n $$
+$$ \mu_1(z_1) = P(z_1, x_1) = P(z_1) P(x_1|z_1)$$
+
+$$
+\max_{z_n} \mu_n(z_n)
+= \max_{z_{1:n}} P(x_{1:n}, x_{1:n})
+$$
 
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
