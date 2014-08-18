@@ -1080,6 +1080,58 @@ Frequentist: introduce a further principle to guide your choice.
 \item invariance
 \end{itemize}
 
+\begin{definition}
+The \textbf{Bayesian expected loss} of an action $a$ is
+$$\rho(\pi, a) = E^\pi L(\theta, a) = \int_\Theta L(\theta, a) \pi(a)d\theta$$
+where $\pi(\theta)$ is the the prior density of $\theta$
+\end{definition}
+Note: $E$的上标表示是对这个这个参数进行求期望, 下标表示在求这个期望的时候, 下标可以看做定值.
+
+\begin{definition}
+The \textbf{risk function of a decision rule} $\delta$ is defined by 
+$$R(\theta, \delta) = E_\theta[L(\theta, \delta(X))] = \int_\Omega L(\theta, \delta(x)) f(x|\theta)dx$$
+\end{definition}
+
+\begin{example}
+\label{ex.decision.risk}
+Let $X \obey N(\theta, 1),\ L(\theta, a) = (\theta - a)^2,\ \delta_1(X) = X,\ \delta_2(X) = \dfrac{X}{2}$
+
+Then:
+$$R(\theta, \delta_1) = E_\theta[L(\theta,\delta_1(X))] = E_\theta[L(\theta,X)] = E_\theta[(\theta - X)^2] = var(X) = 1 $$
+
+$$
+\begin{aligned}
+R(\theta, \delta_1) 
+& = E_\theta[L(\theta,\delta_2(X))] \\
+& = E_\theta[L(\theta, \dfrac{X}{2})] \\ 
+& = E_\theta[(\theta - \dfrac{X}{2})^2] \\
+& = E_\theta[(\dfrac{X}{2} - \dfrac{\theta}{2} - \dfrac{\theta}{2})^2] \\
+& = E_\theta[(\dfrac{X}{2} - \dfrac{\theta}{2})^2 - 2 \dfrac{\theta}{2}(\dfrac{X}{2} - \dfrac{\theta}{2}) + \dfrac{\theta^2}{4}] \\
+& = E_\theta[(\dfrac{X}{2} - \dfrac{\theta}{2})^2] - \theta E_\theta[\dfrac{X}{2} - \dfrac{\theta}{2}] + \dfrac{\theta^2}{4} \\
+& = \dfrac{1}{4} var(X) - 0 + \dfrac{\theta^2}{4} \\
+& = \dfrac{1}{4} + \dfrac{\theta^2}{4} \\
+\end{aligned}
+$$
+\end{example}
+\begin{definition}
+The \textbf{Bayes risk of a decision rule} $\delta$ with respect to a prior distribution on $\Theta$ is defined as 
+$$r(\pi, \delta) = E^\pi[R(\theta, \delta)] = \int_\Theta R(\theta, a) \pi(\theta) d\theta$$
+\end{definition}
+
+\begin{example}
+接着上一个例子\ref{ex.decision.risk}.
+Let $\theta \obey N(0, \sigma^2)$
+
+Then
+$$r(\pi, \delta_1) = E^\pi[R(\theta, \delta_1)] = E^\pi[1] = 1$$
+
+$$
+r(\pi, \delta_2) = E^\pi[R(\theta, \delta_2)] = E^\pi[\dfrac{1}{4} + \dfrac{\theta^2}{4}]
+= \dfrac{1}{4} + \dfrac{var(\theta)}{4}
+= \dfrac{1}{4} + \dfrac{\sigma^2}{4}
+$$
+\end{example}
+
 \subsection{Bias-Variance Decompotion}
 $$mse = bias^2 + var$$
 \begin{definition}
@@ -1109,7 +1161,7 @@ $$
 
 \begin{example}
 $X \obey N(\theta, 1)$, $\theta$ non random, unknown, $n=1, D=x$\\
-"Natural" estimate of $\theta$, $\delta(D) = X,\ bias = \text{sample mean},\ var = 1,\ mse = 1$
+"Natural" estimate of $\theta$, $\delta(D) = X,\ bias = \text{sample mean},\ var = 1,\ mse = 1$\\
 "silly" estimate of $\theta$, $\delta(D) = 0,\ bias = \theta,\ var = 0(\text{$\theta$的估计值为定值}),\ mse = \theta^2$
 
 是否有一种方法, 能够将上述两种方法结合起来, a little bias, with reducing varirance?
@@ -1512,6 +1564,9 @@ $$
 \max_{z_n} \mu_n(z_n)
 = \max_{z_{1:n}} P(x_{1:n}, x_{1:n})
 $$
+
+\section{Logistic Regression}
+For classification, not for regression
 
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
