@@ -1694,12 +1694,91 @@ $$
 
 \section{EM(expectation-maximization) algo}
 A class of algos,
-it's more of an approach to derive an aglo for approximately obtaining (MLE)maximum-likelihood estimation or (MAP)maximum a posteriori estimates of parameters
-when some of the data is missing.
+it's more of an approach to derive an aglo for approximately obtaining (MLE)maximum-likelihood estimation or 
+(MAP)maximum a posteriori estimates of parameters when some of the data is missing, for example: HMM.
 
+\noindent
 Given: $x = (\vector(x))$\\
-Model: $(X, Z) \obey p_\theta$ for some (unkown) $\theta \in \Theta$
+Model: $(X, Z) \obey P_\theta$ for some (unkown) $\theta \in \Theta$, here, tipically, $P_\theta \in $ exponential fam.\\
+Goal: $\theta_{MLE} \in \arg_\theta \max P_\theta(x)$. (we can not see $z$, so we max the marginal prob)\\
+Issue: $P_\theta(x) = \sum_z P_\theta(x,z)$ difficult to maximize\\
 
-Motivation of EM:
+Solution Algo: \\
+Initialize $\theta_0 \in \Theta$\\
+For $t = 0,1,2, \ldots$\\
+\quad E-step: $Q(\theta, \theta_t) = E_{\theta_t}[\log P_\theta(X,Z)|X = x]$ \\
+\quad M-step: $\theta_{t+1} \in \arg_\theta \max Q(\theta, \theta_t)$
 
+\noindent
+called E-step, because it is an expectation.\\
+called M-step, because it is a maximization.
+
+Pros:
+\begin{itemize}
+\item $P_{\theta_{t+1}}(x) \geq P_{\theta_t}(x)$
+\item Work well in pratice
+\end{itemize}
+
+Cons:
+\begin{itemize}
+\item Not guaranteed to get $\theta_{MLE}$, possible to get local max
+\item MLE may overfit.(for this, we can change it to MAP)
+\item Convergence can be slow
+\item Specialized to exp fam
+\end{itemize}
+
+Motivation of EMa
+\noindent
+Goal: $\arg_\theta \max P_\theta(x)$\\
+Specialize: $P_\theta(x,z) = e^{g(\theta)^T s(x,z)} \cdot h(x,z) / c(\theta)$\\
+Natural form: $P_\theta(x,z) = e^{\theta^T s(x,z)} \cdot h(x,z) / c(\theta)$
+
+$$P_\theta(x) = \sum_z P_\theta(x,z)$$
+$$
+0 
+= \dfrac{\partial}{\partial \theta_i} \log P_\theta(x) 
+= \dfrac{1}{P_\theta(x)} \dfrac{\partial }{\partial \theta_i} P_\theta(x)
+= \dfrac{1}{P_\theta(x)} \sum_z \dfrac{\partial }{\partial \theta_i} P_\theta(x,z)
+$$
+
+\begin{equation}
+\dfrac{\partial }{\partial \theta_i} P_\theta(x,z)
+= [s_i(x,z) - \dfrac{\partial }{\partial \theta_i} \log c(\theta)] P_\theta(x,z)
+= (s_i(x,z) - E_\theta[s_i(X,Z)]) P_\theta(x,z)
+\end{equation}
+\note{这里把$\log c(\theta)$ 的导数换成期望不理解.}
+
+将上面的结果代入\lasteq 中得到:
+$$
+\begin{aligned}
+0 
+& = \dfrac{1}{P_\theta(x)} \sum_z (s_i(x,z) - E_\theta[s_i(X,Z)]) P_\theta(x,z) \\
+& = \sum_z s_i(x,z)P_\theta(z|x) - E_\theta[s_i(X,Z)] \sum_z P(z|x) \\
+& = \sum_z s_i(x,z)P_\theta(z|x) - E_\theta[s_i(X,Z)] \\
+& = E_\theta[s_i(X,Z)|X=x] - E_\theta[s_i(X,Z)] \\
+\end{aligned}
+$$
+得到:
+$$ E_\theta[s_i(X,Z)|X=x] = E_\theta[s_i(X,Z)] $$
+
+\noindent
+Issue: can not solve analytically for $\theta$\\
+Answers: Iterative Procedure.
+Algo: \\
+Let $\theta_0 \in \Theta$ \\
+For $t = 1,2,3, \ldots$\\
+\quad Solve $E_{\theta_{t-1}}[s_i(X,Z)|X=x] = E_{\theta_t}[s_i(X,Z)]$ for $\theta_t$
+
+$$ Q(\theta, \theta_0) = E_{\theta_0}[\log P_\theta(X,Z)|X=x] $$
+$$P_\theta(x,z) = e^{\theta^T s(x,z)} \cdot h(x,z) / c(\theta)$$
+$$\log P_\theta(x,z) = \theta^T s(x,z) - \log c(\theta) + \log h(x,z)$$
+$$ 
+Q(\theta, \theta_0) 
+= E_{\theta_0}[\log P_\theta(X,Z)|X=x] 
+= \theta^T E_{\theta_0}[s(X,Z)|X=x] - \log c(\theta) + const
+$$
+
+$$ 0 = \dfrac{\partial }{\partial \theta_i} Q = E_{\theta_0}[s_i(X,Z|X=x)] - E_\theta[s_i(X,Z)] $$
+得到:
+$$ E_{\theta_0}[s_i(X,Z)|X=x] = E_\theta[s_i(X,Z)] $$
 \end{document}
