@@ -18,7 +18,12 @@ sudo yum install -y php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml
 sudo yum install -y phpMyAdmin
 
 ## chrome
+### centos 6
 sudo bash ./install_chrome.sh
+### centos 7
+sudo yum install -y libXScrnSaver
+sudo yum install -y redhat-lsb
+sudo rpm -ivh google-chrome-stable_current_x86_64.rpm
 
 ## project
 sudo yum install -y libpcap libpcap-devel
