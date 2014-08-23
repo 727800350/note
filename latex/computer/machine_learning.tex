@@ -1781,4 +1781,28 @@ $$
 $$ 0 = \dfrac{\partial }{\partial \theta_i} Q = E_{\theta_0}[s_i(X,Z|X=x)] - E_\theta[s_i(X,Z)] $$
 得到:
 $$ E_{\theta_0}[s_i(X,Z)|X=x] = E_\theta[s_i(X,Z)] $$
+
+\subsection{Gaussian mixture model}
+$Z \in \set{\vector{e}},\ P(Z = e_k) = \alpha_k$
+
+Given $Z = e_k,\ X \obey N(\mu_k, C_k)$, where $\vector{\mu} \in R^d$ and $\vector{C}$ are $d \times d$ Covariance matrix
+
+$$
+\begin{aligned}
+P(x)
+& = \sum_z P(x|z)P(z) \\
+& = \sum_{k=1}^n P(Z=e_k) P(x|Z = e_k)\\
+& = \sum_{k=1}^n \alpha_k N(x|\mu_k,C_k) \\
+\end{aligned}
+$$
+where $\alpha_k$ are called mixing coefficients.
+
+$$
+P(x,z) = \prod_{k=1}^n \alpha_k^{z_k} N(x|\mu_k, C_k)^{z_k}
+$$
+$z_k$ indicator
+
+$$
+P(Z=e_k|x) = \dfrac{P(x|e_k) P(e_k)}{P(x)} =  \dfrac{\alpha_k N(x|\mu_k,C_k)}{\sum_{k=1}^n \alpha_k N(x|\mu_k,C_k)}
+$$
 \end{document}
