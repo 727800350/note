@@ -160,6 +160,10 @@ secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的�
 		scp -P 2222 -r /home/lnmp0.4/ root@www.vpser.net:/root/lnmp0.4/
 上 端口大写P 为参数,2222 表示更改SSH端口后的端口,如果没有更改SSH端口可以不用添加该参数.-r 参数表示递归复制(即复制该目录下面的文件和目录),/home/lnmp0.4/表示准备要上传的目录,root@www.vpser.net 表示使用root用户登录远程服务器www.vpser.net,:/root/lnmp0.4/ 表示保存在远程服务器上的目录位置.
 
+**hostname centos 7**  
+sudo hostnamectl set-hostname human.earth
+sudo hostnamectl status
+
 # File System
 `du`: 查看目录大小  
 查看某个目录的大小 `/home/master/documents`  
