@@ -6,6 +6,7 @@ sudo yum install -y unrar
 sudo yum remove -y evolution
 sudo yum update -y firefox
 sudo yum install -y mysql mysql-server mysql-devel
+sudo yum install -y glib2 glib2-devel
 
 ## php
 sudo yum install -y php
