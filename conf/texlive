@@ -1,25 +1,12 @@
 ## after texlive installed
 echo please make sure you have installed texlive
 
-echo adding texlive path to profile
-echo >> /etc/profile
-echo '# texlive env' >> /etc/profile
-echo 'export TEXLIVE=/work/program/texlive/2012' >> /etc/profile
-echo 'export PATH=$PATH:$TEXLIVE/bin/x86_64-linux' >> /etc/profile
-echo 'export MANPATH=$MANPATH:$TEXLIVE/texmf/doc/man' >> /etc/profile
-echo 'export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info' >> /etc/profile
-echo >> /etc/profile
-echo texlive path added
-source /etc/profile
+# texlive env
+export TEXLIVE=/home/eric/program/texlive/2012
+export PATH=$PATH:$TEXLIVE/bin/x86_64-linux
+export MANPATH=$MANPATH:$TEXLIVE/texmf/doc/man
+export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info
 
-echo 
-echo replace the tex font configuration
-cp ctex-xecjk-winfonts.def /work/program/texlive/2012/texmf-dist/tex/latex/ctex/fontset/
-echo configuration replaced
-
-## echo 
-## echo copy font from windows to centos
-## cp -rf /media/core/Windows/Fonts /work/program
-## mv Fonts winfont
-## ln -s /work/program/winfont/ /usr/share/fonts/winfonts
-## echo copy over
+sudo ln -s /home/eric/program/winfont/ /usr/share/fonts/winfont
+fc-cache
+fc-list lang=zh
