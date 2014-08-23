@@ -56,3 +56,5 @@ sudo yum install graphviz
 sudo dot -c  ## configure plugins
 sudo yum install graphviz-gd ## support for png, jpg, jpeg etc
 
+## bt
+sudo yum install -y transmission
