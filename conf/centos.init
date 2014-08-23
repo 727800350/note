@@ -39,19 +39,13 @@ sudo yum install -y jwhois
 ## octave
 ## will install hdf5, hdf5-static and hdf5-devel
 sudo yum install -y hdf5-static 
+sudo rpm -ivh epstool-3.08-7.fc21.x86_64.rpm
 sudo yum install -y octave
 
-## wine
-## 第一次使用的时候会要求下载两个软件, .Net and ...
-sudo yum install -y wine
-
 ## python
-yum install -y gnuplot gnuplot-py numpy scipy
-python ./get-pip.py
-pip install pythonbrew
-## put in $HOME./bashrc, and exit to open a new terminal: 
-	## [[ -s "$HOME/.pythonbrew/etc/bashrc" ]] && source "$HOME/.pythonbrew/etc/bashrc"
-pythonbrew list --know
+sudo yum install -y gnuplot numpy scipy
+sudo yum install -y python-pip 
+sudo pip install gnuplot-py
 
 ## mutt
 sudo yum install -y mutt msmtp getmail procmail lynx elinks
