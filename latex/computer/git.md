@@ -133,7 +133,7 @@ delete the origin/HEAD symbolic ref
 	  remotes/origin/master
 Done
 
-** commit 之后发现commit的message有错误**  
+**commit 之后发现commit的message有错误**  
 `git commit --amend`   
 lets you edit the previous commit’s message
 
