@@ -133,6 +133,21 @@ delete the origin/HEAD symbolic ref
 	  remotes/origin/master
 Done
 
+** commit 之后发现commit的message有错误**  
+`git commit --amend`   
+lets you edit the previous commit’s message
+
+**commit 之后想起忘了add 另外一个修改的文件**
+```
+# Edit hello.py and main.py
+git add hello.py
+git commit
+
+# Realize you forgot to add the changes from main.py
+git add main.py
+git commit --amend --no-edit
+```
+
 # 如何导入外部Git仓库到中国源代码托管平台（Git@OSC）
 
 针对最近有很多网友提问，如何导入外部代码仓库（Github、bitbucket、Google Code等等）到Git@OSC ，给出如下解决方案：
