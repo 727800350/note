@@ -191,6 +191,9 @@ sudo hostnamectl status
 	chkconfig –list
 	chkconfig –list httpd
 
+打开terminal的命令方式:  
+`Alt+F2`后在出现"运行应用程序"中输入`x-terminal-emulator`(一般在你输入到`x-term`后系统会自己显示全部)或者输入`gnome-terminal`
+
 # 杂项
 **man**  
 `man number item`: find item in section number, eg: `man 3 fopen`  
