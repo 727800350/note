@@ -291,3 +291,26 @@ pause 0 'no paue'  #此命令功能与print 'no paue' 功能相同
 pause  -1 'Hit  return to continue '
 pause mouse button1  #点击鼠标左键程序继续执行
 pause mouse any "Any key or button will terminate"   #按任意键或点击鼠标程序将继续
+
+# latex
+将gnuplot与latex结合起来使用
+
+文件sin.plt 的内容如下
+```
+set terminal latex size 7cm, 5cm
+set output "sin.tex"  # 生成一个tex文件
+set format xy "$%g$"
+set title 'This is a plot of $y=\sin(x)$'
+set xlabel 'This is the $x$ axis'
+set ylabel 'This is\\the\\$y$ axis'
+plot [0:6.28] [0:1] sin(x)
+```
+在gnuplot 的命令窗口执行 `load sin.plt`, 会生成`sin.tex` 文件.
+
+在latex 中使用下面的代码来插入上面生成的图片
+```
+\begin{figure}
+	\centering
+	\input{sin}
+\end{figure}
+```
