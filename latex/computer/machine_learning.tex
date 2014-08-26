@@ -516,7 +516,11 @@ MLE 方法没有使用题目中给出的第三个信息($10\%$ students work har
 \item Objective(non-informative prioris) v.s subjective(belief-based priori)
 \end{itemize}
 
-Pros:
+\href{http://blog.csdn.net/yangliuy/article/details/8296481}{MLE, MAP and Bayesian estimation}
+
+贝叶斯估计不是点估计, 而是估计出参数的一个分布出来, 包括参数的期望与方差等信息.
+
+\textbf{Pros}:
 \begin{itemize}
 \item Directly answer questions, eg:$P(99 < \theta < 101)$
 \item Avoid pathologies
@@ -525,13 +529,13 @@ Pros:
 \item Admissible(there is no other procedure which is always better)
 \end{itemize}
 
-Cons:
+\textbf{Cons}:
 \begin{itemize}
 \item Must assume priori, especially in the subjective case
 \item Exact computation can be intractable(通常需要approximation)
 \end{itemize}
 
-Usual Prioris:
+\textbf{Usual Prioris}:
 \begin{itemize}
 \item Non-informative priori
 \item Improper priori
