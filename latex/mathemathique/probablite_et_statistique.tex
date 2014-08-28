@@ -270,6 +270,29 @@ $$
 $$
 所以第k次随机事件之后长度为t的时间段内,第$k+1$次随机事件出现的概率等于$1-e^{{-\lambda t}}$,这是指数分布.这还表明了泊松过程的无记忆性.
 
+\subsection{Pareto distribution}
+\href{http://en.wikipedia.org/wiki/Pareto\_distribution}{wiki}
+The Pareto distribution, named after the Italian civil engineer, economist, and sociologist Vilfredo Pareto, is a power law probability distribution that is used in description of social, scientific, geophysical, actuarial, and many other types of observable phenomena.
+
+\begin{definition}
+If X is a random variable with a Pareto (Type I) distribution,[1] then the probability that X is greater than some number x, i.e. the survival function (also called tail function), is given by
+$$
+		\overline{F}(x) = \Pr(X>x) = \begin{cases}
+				\left(\frac{x_\mathrm{m}}{x}\right)^\alpha & x\ge x_\mathrm{m}, \\
+				1 & x < x_\mathrm{m}.
+		\end{cases}
+$$
+where $x_m$ is the (necessarily positive) minimum possible value of $X$, and $\alpha$ is a positive parameter. 
+The Pareto Type I distribution is characterized by a scale parameter $x_m$ and a shape parameter $\alpha$,
+which is known as the tail index. 
+When this distribution is used to model the distribution of wealth, then the parameter $\alpha$ is called the Pareto index.
+\end{definition}
+
+\textbf{PDF}
+$$
+f_X(x)= \begin{cases} \frac{\alpha x_\mathrm{m}^\alpha}{x^{\alpha+1}} & x \ge x_\mathrm{m}, \\ 0 & x < x_\mathrm{m}. \end{cases} 
+$$
+
 \section{Poisson分布}
 \label{sec.distribution.poisson}
 \textbf{离散分布}
