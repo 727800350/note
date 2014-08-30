@@ -82,7 +82,9 @@ path.extname('path')  // 包括那个点, 'path'不用真实存在
 # 模块和包
 ## 模块
 通过 `require` 引入模块, 例如
-```require('./sum.js')```
+```
+require('./sum.js')
+```
 我们可以不写后缀`.js`
 
 模块中的功能(如: 变量, 函数)通过赋值给exports 对象的某个属性提供给调用者使用.
