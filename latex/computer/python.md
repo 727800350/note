@@ -474,4 +474,56 @@ import sys
 sys.path #系统目录
 sys.argv  #可执行文件名是第一个参数
 ```
+# FP
+在函式编程中,最著名的特色就是高序(High Order).简单地说,就是定制一个算法,
+按规则来指定容器中的每一个元素.最常用的 High Order 为:  
 
+- map
+映射,也就是将算法施于每个元素,将返回值合并为一个新的容器.  
+- filter
+过滤,将算法施于每个元素,将返回值为真的元素合并为一个新的容器.  
+- reduce
+合并,将算法(可能携带一个初值)依次施于每个元素,将返回值作为下一步计算的参数之一,与下一个元素再计算,直至最终获得一个总的结果.  
+
+**map**
+`map(f, iterA, iterB, ...) returns a list containing f(iterA[0], iterB[0]), f(iterA[1], iterB[1]), f(iterA[2], iterB[2]), ....`
+函式 map 至少需要两个参数,第一个是一个函式,第二个是传入函式的参数.例如
+```
+def foo(x):
+	return x*x
+print map(foo,range(10))
+```
+
+```
+def foo(x,y):
+	return x+y
+print map(foo,range(10),range(10))
+## 得到[0,2,4,....18]
+```
+
+**filter**
+`filter(predicate, iter)` returns a list that contains all the sequence elements that meet a certain condition, and is similarly duplicated by list comprehensions. 
+A predicate is a function that returns the truth value of some condition; 
+for use with filter(), the predicate must take a single value.
+例如可以用下面的方法得到 100以内的偶数列:
+```
+def foo(x):
+	return x%2==0 
+print filter(foo,range(100))
+```
+
+**reduce**
+`reduce(func, iter, [initial_value])`
+func must be a function that takes two elements and returns a single value. 
+reduce() takes the first two elements A and B returned by the iterator and calculates func(A, B). 
+It then requests the third element, C, calculates func(func(A, B), C), combines this result with the fourth element returned, and continues until the iterable is exhausted. 
+If the iterable returns no values at all, a TypeError exception is raised. 
+If the initial value is supplied, it's used as a starting point and func(initial_value, A) is the first calculation.
+
+**lambda**
+lambda 参数列表: 表达式
+```
+fun=lambda x: x*x-x
+fun(3)  #get 6
+print map(lambda x: x* * 2, range(10)) 
+```
