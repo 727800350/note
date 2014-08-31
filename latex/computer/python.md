@@ -62,6 +62,59 @@ list and dictionary is mutable
 
 two non-scalar type: tuple and string are immutable
 
+## mutable vs immutable
+immutable
+```
+x = something
+func(x)
+print x # prints the same thing 
+```
+
+mutable
+```
+x = something # 
+func(x)
+print x # might print something different, that means func can change the real x
+```
+
+```
+x = something # immutable type 
+y = x 
+print x 
+# some statement that operates on y
+print x # prints the same thing 
+```
+
+```
+x = something # mutable type 
+y = x 
+print x 
+# some statement that operates on y
+print x # might print something different
+```
+
+Python represents all its data as objects.
+Some of these objects like lists and dictionaries are mutable, meaning you can change their content without changing their identity.
+Other objects like integers, floats, strings and tuples ... are objects that can not be changed. An easy way to understand that is if you have a look at an objects ID.
+
+Below you see a string that is immutable. You can not change its content. It will through an error at you, if you try to change it. 
+Also, if we assign new content, a new object is created instead of the contents being modified.
+
+```
+>>> s = "abc"
+>>>id(s) 4702124
+>>> s[0] 'a'
+>>> s[0] = "o"
+Traceback (most recent call last): File "<stdin>", line 1, in <module>TypeError: 'str' object does not support item assignment 
+```
+
+```
+>>> s = "xyz"
+>>>id(s) 4800100
+>>> s += "uvw"
+>>>id(s)4800500
+```
+
 ### Iterate
 file, list, tuple, dict 的迭代, 可以使用for 来进行统一形式的迭代, 其中dict迭代的是key
 
