@@ -1696,6 +1696,19 @@ $$
 
 \href{https://www.youtube.com/watch?v=zHbxbb2ye3E}{K-means demo}
 
+\subsection{k-medoids}
+k-medoid is a classical partitioning technique of clustering that clusters the data set of $n$ objects into $k$ clusters known a priori. 
+A useful tool for determining $k$ is the \textbf{silhouette}.
+
+It is more robust to noise and outliers as compared to k-means because it \textbf{minimizes a sum of pairwise dissimilarities} 
+instead of a sum of squared Euclidean distances.
+
+A medoid can be defined as the object of a cluster, whose average dissimilarity to all the objects in the cluster is minimal i.e. 
+it is a most centrally located point in the cluster.
+
+In contrast to the k-means algorithm, k-medoids chooses datapoints as centers (medoids or exemplars) and 
+works with an arbitrary matrix of distances between datapoints instead of $l_2$.
+
 \section{EM(expectation-maximization) algo}
 A class of algos,
 it's more of an approach to derive an aglo for approximately obtaining (MLE)maximum-likelihood estimation or 
