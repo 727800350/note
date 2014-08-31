@@ -394,3 +394,77 @@ import module as alias
 from module import function #只导入module中的一个函数,使用的时候可以直接使用, 而不需要用 module.function
 from module import *  #导入所有函数
 ```
+
+### os
+```
+import os
+os.listdir(path) #列出当前路径下的文件
+os.getcwd() #get current working directory
+```
+
+下面列出了一些在os模块中比较有用的部分.它们中的大多数都简单明了.
+```
+os.sep可以取出操作系统特定的路径分割符
+linux /
+windows \\
+MacOS :
+os.linesep字符串给出当前平台使用的行终止符.例如,Windows使用'\r\n', Linux使用'\n'而Mac使用'\r'.
+os.name字符串指示你正在使用的平台.比如对于Windows,它是'nt',而对于Linux/ Unix用户,它是'posix'.
+os.getcwd()函数得到当前工作目录,即当前Python脚本工作的目录路径.
+os.getenv()和os.putenv()函数分别用来读取和设置环境变量.
+os.listdir()返回指定目录下的所有文件和目录名.
+os.system()函数用来运行shell命令.
+os.path.split()函数返回一个路径的目录名和文件名.["/dir","file.ext"]
+os.path.splitext() 得到文件的其他部分和后缀, 例如"/dir/file.ext", ["/dir/file",".ext"]
+os.path.getsize(path) Return the size, in bytes, of path. Raise os.error if the file does not exist or is inaccessible.
+```
+
+
+对文件,文件夹的操作需要涉及到os模块和shutil模块.
+创建文件:
+```
+1. os.mknod("test.txt") 创建空文件
+2. open("test.txt",w)           直接打开一个文件,如果文件不存在则创建文件
+```
+创建目录:
+```
+os.mkdir("file")                   创建目录
+```
+复制文件:
+```
+shutil.copyfile("oldfile","newfile")       oldfile和newfile都只能是文件, 不能同名
+shutil.copy("oldfile","newfile")            oldfile只能是文件夹,newfile可以是文件(可以同名, 会覆盖),也可以是目标目录
+shutil.copy2(src, dst)   Similar to shutil.copy(), but metadata is copied as well – in fact, this is just shutil.copy() followed by copystat(). This is similar to the Unix command cp -p.
+```
+复制文件夹:
+```
+shutil.copytree("olddir","newdir")        olddir和newdir都只能是目录,且newdir必须不存在
+```
+重命名文件(目录)
+```
+os.rename("oldname","newname")       文件或目录都是使用这条命令
+```
+移动文件(目录)
+```
+shutil.move("oldpos","newpos")   
+```
+删除文件
+```
+os.remove("file")
+```
+删除目录
+```
+os.rmdir("dir") 只能删除空目录
+shutil.rmtree("dir")    空目录,有内容的目录都可以删
+```
+转换目录
+```
+os.chdir("path")    换路径
+```
+判断目标
+```
+os.path.exists("goal")    判断目标是否存在
+os.path.isdir("goal")     判断目标是否目录
+os.path.isfile("goal")    判断目标是否文件   
+```
+
