@@ -129,6 +129,14 @@ If default is not given, it defaults to None, so that this method **never raises
 
 ## Numeric
 `int(String)`: convert a string to integer
+`float`: 将字符串或者整数转换为浮点数
+`chr`: 将ascii值转换为ascii字符
+`hex`: 将整数转换为十六进制的字符串
+`long`: 转化为长整型
+`oct`: 将整数转化为八进制的字符串
+`ord`: 将ascii字符转化为ascii值
+`str(object)`  转化为字符串
+`len(object)` 长度
 
 `divmod(x, y)` which returns a tuple `(x / y, x % y)`
 
