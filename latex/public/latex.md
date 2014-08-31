@@ -26,7 +26,7 @@ LaTeX command	Sample	Description
 \~{o}	tilde
 \c{c}	cedilla
 \k{a}	ogonek
-\l	?	barred l (l with stroke)
+\l		barred l (l with stroke)
 \={o}	macron accent (a bar over the letter)
 \b{o}	bar under the letter
 \.{o}	dot over the letter
