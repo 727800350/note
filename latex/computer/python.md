@@ -568,6 +568,17 @@ new_a = np.delete(a, index)  #删除index 位置的element
 boolean
 when using NumPy arrays, you can only use & and | as this allows fast comparisons of boolean values.
 
+### scipy
+The optimization and minimization tools that NumPy and SciPy provide are great, but they do not have Markov Chain Monte Carlo (MCMC) capabilities—in other words, Bayesian analysis. 
+There are several popular MCMC Python packages like PyMC, a rich package with many options, and emcee,[12] an affine invariant MCMC ensemble sampler
+(meaning that large scales are not a problem for it).
+
+There are several ways to fit data with a linear regression. In this section we will use `curve_fit`, which is a χ2-based method (in other words, a best-fit method)
+
+[solve funtion](../../demo/python/scipy_solve_function.py)
+
+[interpolation](../../demo/python/scipy_interpolation.py)
+
 # FP
 在函式编程中,最著名的特色就是高序(High Order).简单地说,就是定制一个算法,
 按规则来指定容器中的每一个元素.最常用的 High Order 为:  
