@@ -645,6 +645,15 @@ There are several ways to fit data with a linear regression. In this section we 
 
 [interpolation](../../demo/python/scipy_interpolation.py)
 
+### subprocess
+```
+import subprocess
+uname = "uname"
+arg = "-a"
+print "gatherign info"
+subprocess.call([uname,arg])
+```
+
 # FP
 在函式编程中,最著名的特色就是高序(High Order).简单地说,就是定制一个算法,
 按规则来指定容器中的每一个元素.最常用的 High Order 为:  
