@@ -493,6 +493,81 @@ import sys
 sys.path #系统目录
 sys.argv  #可执行文件名是第一个参数
 ```
+
+### numpy
+data example
+```
+[[ 1., 0., 0.],
+ [ 0., 1., 2.]]
+```
+
+- ndarray.ndim
+number of dimensions
+- ndarray.shape 
+the dimensions of the array, a tuple of integers 
+- ndarray.size
+the total number of elements of the array. This is equal to the product of the elements of shape.
+- ndarray.dtype
+an object describing the type of the elements in the array. One can create or specify dtype using standard Python types. Additionally NumPy provides types of its own. numpy.int32, numpy.int16, and numpy.float64 are some examples.
+- ndarray.itemsize
+the size in bytes of each element of the array. For example, an array of elements of type float64 has itemsize 8 (=64/8), while one of type complex32 has itemsize 4 (=32/8). It is equivalent to ndarray.dtype.itemsize.
+- ndarray.data
+the buffer containing the actual elements of the array. Normally, we won't need to use this attribute because we will access the elements in an array using indexing facilities.
+
+[Array Creation demo](../../demo/python/numpy_array_create.py)
+
+```
+array, zeros, zeros_like, ones, ones_like, empty, empty_like, arange, linspace, rand, randn, fromfunction, fromfile
+numpy.dot and numpy.transpose
+```
+
+The copy method makes a complete copy of the array and its data.
+
+使用数组的方法函数`tofile`可以方便地将数组中数据以二进制的格式写进文件.tofile输出的数据没有格式,因此用numpy.fromfile读回来的时候需要自己格式化数据, 例如修改shape
+[File IO demo](../../demo/python/numpy_file.py)
+
+**loadtxt**
+`numpy.loadtxt(fname, dtype=<type 'float'>, comments='#', delimiter=None, converters=None, skiprows=0,usecols=None, unpack=False, ndmin=0)`
+delimiter : str, optional. By default, this is any whitespace.
+converters : dict, optional
+A dictionary mapping column number to a function that will convert that column to a float. E.g., if column 0 is a date string: converters = {0: datestr2num}. Converters can also be used to provide a default value for missing data (but see also genfromtxt): converters = {3: lambda s:float(s.strip() or 0)}. Default: None.
+
+example.txt file looks like the following
+```
+# XR21 32.789 1
+# XR22 33.091 2
+import numpy as np
+table = np.loadtxt('example.txt',dtype={'names':('ID', 'Result', 'Type'),'formats': ('S4', 'f4', 'i2')})
+print table
+     # [('XR21', 32.78900146484375, 1) ('XR22', 33.090999603271484, 2)]
+print table["ID"]  # ['XR21' 'XR22']
+print table[0]
+```
+
+In NumPy, files can be accessed in binary format using `numpy.save` and `numpy.load`.
+The primary limitation is that the binary format is only readable to other systems that are using NumPy. 
+If you want to read and write files in a more portable format, then `scipy.io` will do the job.
+NumPy to read and write Matlab-supported files (using scipy.io.loadmat and scipy.savemat)
+Last but not least, you can query, read, and write Matrix Market files. These are very commonly used to share matrix data structures that are written in ASCII format. This format is well supported in other languages like C, Fortran, and Matlab, so it is a good format to use due to its universality and user readability. It is also suitable for sparse matrices.
+
+numpy.matrix object Matrix library (numpy.matlib)
+Unlike the ndarray objects, matrix objects can and only will be two dimensional.
+```
+>>> x = np.array([[1, 2], [3, 4]])
+>>> m = np.asmatrix(x)
+```
+
+Index
+```
+numpy.where
+
+numpy.delete
+new_a = np.delete(a, index)  #删除index 位置的element
+```
+
+boolean
+when using NumPy arrays, you can only use & and | as this allows fast comparisons of boolean values.
+
 # FP
 在函式编程中,最著名的特色就是高序(High Order).简单地说,就是定制一个算法,
 按规则来指定容器中的每一个元素.最常用的 High Order 为:  
