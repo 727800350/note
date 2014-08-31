@@ -468,3 +468,10 @@ os.path.isdir("goal")     判断目标是否目录
 os.path.isfile("goal")    判断目标是否文件   
 ```
 
+### sys
+```
+import sys
+sys.path #系统目录
+sys.argv  #可执行文件名是第一个参数
+```
+
