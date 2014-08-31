@@ -386,6 +386,25 @@ a=4
 assert a>0, 'a must be positive'  # do nothing
 assert a<0, 'a must be negative' #输出a must be negative
 ```
+## Help
+```
+help, dir, type, id, hasattr, getattr, callable, isinstance
+```
+
+在python终端输入help()进入帮助终端
+    然后输入"topic" 进行查询
+    之后输入quit退出help
+
+常用自省函式有
+
+- help , help("topic")
+- dir 列出对象的所有属性,
+- type 返回对象的类型,
+- id 返回对象的"唯一序号"
+- hasattr( ) 和 getattr( ) 分别判断对象是否有某个属性及获得某个属性值
+- hasattr (object, "split" )
+- callable() 判断对象是否可以被调用
+- is instance() 可以确认某个变量是否有某种类型 isinstance( a, str ) 
 
 ## 模块
 ```
