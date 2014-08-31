@@ -18,24 +18,24 @@
 ## [french characters](http://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped codes)
 LaTeX command	Sample	Description
 ```
-\`{o}	ò	grave accent
-\'{o}	ó	acute accent
-\^{o}	ô	circumflex
-\"{o}	ö	umlaut, trema or dieresis
-\H{o}	ő	long Hungarian umlaut (double acute)
-\~{o}	õ	tilde
-\c{c}	ç	cedilla
-\k{a}	ą	ogonek
-\l	ł	barred l (l with stroke)
-\={o}	ō	macron accent (a bar over the letter)
-\b{o}	o	bar under the letter
-\.{o}	ȯ	dot over the letter
-\d{u}	ụ	dot under the letter
-\r{a}	å	ring over the letter (for å there is also the special command \aa)
-\u{o}	ŏ	breve over the letter
-\v{s}	š	caron/hacek ("v") over the letter
-\t{oo}	o͡o	"tie" (inverted u) over the two letters
-\o	ø	slashed o (o with stroke)
+\`{o}	grave accent
+\'{o}	acute accent
+\^{o}	circumflex
+\"{o}	umlaut, trema or dieresis
+\H{o}	long Hungarian umlaut (double acute)
+\~{o}	tilde
+\c{c}	cedilla
+\k{a}	ogonek
+\l	?	barred l (l with stroke)
+\={o}	macron accent (a bar over the letter)
+\b{o}	bar under the letter
+\.{o}	dot over the letter
+\d{u}	dot under the letter
+\r{a}	ring over the letter (for ? there is also the special command \aa)
+\u{o}	breve over the letter
+\v{s}	caron/hacek ("v") over the letter
+\t{oo}	"tie" (inverted u) over the two letters
+\o		slashed o (o with stroke)
 ```
 
 # Math

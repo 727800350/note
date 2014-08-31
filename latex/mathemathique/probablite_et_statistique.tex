@@ -243,6 +243,9 @@ $$f(x;\lambda )=\left\{{\begin{matrix}\lambda e^{{-\lambda x}}&,\;x\geq 0,\\0&,\
 $$
 \int_0^{\infty} f(x)dx = 1
 $$
+(如果记不清具体的表达式, 可以这样理解, 由于是指数函数, 为了各个取值的概率和为有限值$1$, 那么指数必然是负数, 设为$-bx$,然后设系数为$a$, 
+然后通过$\int_0^{\infty} a b^{-bx} = 1$可以求得$a=b$)
+
 \href{http://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Exponential\_distribution\_pdf.png/800px-Exponential\_distribution\_pdf.png}{Exponential 概率密度函数}
 	
 \textbf{累积分布函数}\\
@@ -266,6 +269,29 @@ $$
 {\frac  {e^{{-\lambda t}}(\lambda t)^{0}}{0!}}=e^{{-\lambda t}}.
 $$
 所以第k次随机事件之后长度为t的时间段内,第$k+1$次随机事件出现的概率等于$1-e^{{-\lambda t}}$,这是指数分布.这还表明了泊松过程的无记忆性.
+
+\subsection{Pareto distribution}
+\href{http://en.wikipedia.org/wiki/Pareto\_distribution}{wiki}
+The Pareto distribution, named after the Italian civil engineer, economist, and sociologist Vilfredo Pareto, is a power law probability distribution that is used in description of social, scientific, geophysical, actuarial, and many other types of observable phenomena.
+
+\begin{definition}
+If X is a random variable with a Pareto (Type I) distribution,[1] then the probability that X is greater than some number x, i.e. the survival function (also called tail function), is given by
+$$
+		\overline{F}(x) = \Pr(X>x) = \begin{cases}
+				\left(\frac{x_\mathrm{m}}{x}\right)^\alpha & x\ge x_\mathrm{m}, \\
+				1 & x < x_\mathrm{m}.
+		\end{cases}
+$$
+where $x_m$ is the (necessarily positive) minimum possible value of $X$, and $\alpha$ is a positive parameter. 
+The Pareto Type I distribution is characterized by a scale parameter $x_m$ and a shape parameter $\alpha$,
+which is known as the tail index. 
+When this distribution is used to model the distribution of wealth, then the parameter $\alpha$ is called the Pareto index.
+\end{definition}
+
+\textbf{PDF}
+$$
+f_X(x)= \begin{cases} \frac{\alpha x_\mathrm{m}^\alpha}{x^{\alpha+1}} & x \ge x_\mathrm{m}, \\ 0 & x < x_\mathrm{m}. \end{cases} 
+$$
 
 \section{Poisson分布}
 \label{sec.distribution.poisson}
@@ -373,6 +399,11 @@ $$
 
 Beta 分布的概率密度我们把它画成图,会发现它是个百变星君,它可以是凹的,凸的,单调上升的,单调下降的,可以是曲线也可以是直线,
 而均匀分布也是特殊的Beta分布.由于Beta 分布能够拟合如此之多的形状,因此它在统计数据拟合中被广泛使用.
+
+The mode of a Beta distributed random variable X with α, β > 1 is the most likely value of the distribution (corresponding to the peak in the PDF), and is given by the following expression:
+$$ \frac{\alpha - 1}{\alpha + \beta - 2} $$
+
+\href{http://en.wikipedia.org/wiki/Beta\_distribution#Maximum\_likelihood}{Maximum likelihood for Beta distribution}
 
 \section{正态分布}
 \textbf{连续概率分布}\\
@@ -1235,5 +1266,20 @@ These empirical sample covariance matrices are the most straightforward and most
 \item Choosing components and forming a feature vector
 \item Deriving the new data set
 \end{enumerate}
+
+The \textbf{goodness of fit} of a statistical model describes how well it fits a set of observations. 
+Measures of goodness of fit typically summarize the discrepancy between observed values and the values expected under the model in question. Such measures can be used in statistical hypothesis testing, e.g. to test for normality of residuals, to test whether two samples are drawn from identical distributions (see Kolmogorov–Smirnov test), or whether outcome frequencies follow a specified distribution (see Pearson's chi-squared test). In the analysis of variance, one of the components into which the variance is partitioned may be a lack-of-fit sum of squares.
+
+In assessing whether a given distribution is suited to a data-set, the following tests and their underlying measures of fit can be used
+\begin{itemize}
+\item Kolmogorov–Smirnov test;
+\item Cram\'er–von Mises criterion;
+\item Anderson–Darling test;
+\item Shapiro–Wilk test;
+\item Chi Square test;
+\item Akaike information criterion;
+\item Hosmer–Lemeshow test;
+\end{itemize}
+
 \end{document}
 

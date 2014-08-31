@@ -516,7 +516,11 @@ MLE 方法没有使用题目中给出的第三个信息($10\%$ students work har
 \item Objective(non-informative prioris) v.s subjective(belief-based priori)
 \end{itemize}
 
-Pros:
+\href{http://blog.csdn.net/yangliuy/article/details/8296481}{MLE, MAP and Bayesian estimation}
+
+贝叶斯估计不是点估计, 而是估计出参数的一个分布出来, 包括参数的期望与方差等信息.
+
+\textbf{Pros}:
 \begin{itemize}
 \item Directly answer questions, eg:$P(99 < \theta < 101)$
 \item Avoid pathologies
@@ -525,13 +529,13 @@ Pros:
 \item Admissible(there is no other procedure which is always better)
 \end{itemize}
 
-Cons:
+\textbf{Cons}:
 \begin{itemize}
 \item Must assume priori, especially in the subjective case
 \item Exact computation can be intractable(通常需要approximation)
 \end{itemize}
 
-Usual Prioris:
+\textbf{Usual Prioris}:
 \begin{itemize}
 \item Non-informative priori
 \item Improper priori
@@ -1691,6 +1695,19 @@ $$
 所以这是一个minimum, 而不是一个maximum
 
 \href{https://www.youtube.com/watch?v=zHbxbb2ye3E}{K-means demo}
+
+\subsection{k-medoids}
+k-medoid is a classical partitioning technique of clustering that clusters the data set of $n$ objects into $k$ clusters known a priori. 
+A useful tool for determining $k$ is the \textbf{silhouette}.
+
+It is more robust to noise and outliers as compared to k-means because it \textbf{minimizes a sum of pairwise dissimilarities} 
+instead of a sum of squared Euclidean distances.
+
+A medoid can be defined as the object of a cluster, whose average dissimilarity to all the objects in the cluster is minimal i.e. 
+it is a most centrally located point in the cluster.
+
+In contrast to the k-means algorithm, k-medoids chooses datapoints as centers (medoids or exemplars) and 
+works with an arbitrary matrix of distances between datapoints instead of $l_2$.
 
 \section{EM(expectation-maximization) algo}
 A class of algos,
