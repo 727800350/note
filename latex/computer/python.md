@@ -654,6 +654,14 @@ print "gatherign info"
 subprocess.call([uname,arg])
 ```
 
+当需要使用pipe 的demo
+
+	import subprocess as sp
+	ps_process = sp.Popen(["ps", "-A"], stdout = sp.PIPE)
+	grep_process = sp.Popen(["grep", query], stdin = ps_process.stdout, stdout = sp.PIPE)
+	ps_process.stdout.close()  # Allow ps_process to receive a SIGPIPE if grep_process exits.
+	output = grep_process.communicate()[0]
+
 # FP
 在函式编程中,最著名的特色就是高序(High Order).简单地说,就是定制一个算法,
 按规则来指定容器中的每一个元素.最常用的 High Order 为:  
