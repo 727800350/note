@@ -148,6 +148,20 @@ generate
 改变段间距,  
 \renewcommand{\baselinestretch}{1.5}
 
+## 字体大小
+```
+\tiny
+\scriptsize
+\footnotesize
+\small
+\normalsize
+\large
+\Large
+\LARGE
+\huge
+\Huge
+```
+
 ## 长度单位
 point 是个传统印刷业采用的单位,而big point 是Adobe 推出PS 时新定义的单位.em 是个相对单位,比如当前字体是11pt 时,1em 就是11pt.
 
