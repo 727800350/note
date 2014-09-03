@@ -6,7 +6,7 @@ map <C-X> "+x
 map <C-P> "+p
 
 " 原样从剪贴板粘贴到vim中, 而不对粘贴的文字使用auto indent等设置
-set pastetoggle=<F10>
+set pastetoggle=<F9>
 
 "保存文件并留在插入模式 [插入模式]
 imap jj <ESC>:w<CR>li
