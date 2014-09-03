@@ -3,10 +3,10 @@ sudo yum install -y clang gcc gcc-c++ gdb
 sudo yum install -y flex byacc
 sudo yum install -y sudo git git-svn
 sudo yum install -y unrar
-sudo yum remove -y evolution
 sudo yum update -y firefox
 sudo yum install -y mysql mysql-server mysql-devel
 sudo yum install -y glib2 glib2-devel
+sudo yum install -y boost
 
 ## php
 sudo yum install -y php
