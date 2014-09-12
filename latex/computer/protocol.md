@@ -117,7 +117,7 @@ while values of 1536 and above indicate that the field is used to represent Ethe
 	192.168.0.0~192.168.255.255, 默认子网掩码:255.255.255.0
 
 内网是可以上网的.内网需要一台服务器或路由器做网关,通过它来上网  
-做网关的服务器有一个网关（服务器/路由器）的IP地址,其它内网电脑的IP可根据它来随意设置,前提是IP前三个数要跟它一样,第四个可从0-255中任选但要跟服务器的IP不同
+做网关的服务器有一个网关(服务器/路由器)的IP地址,其它内网电脑的IP可根据它来随意设置,前提是IP前三个数要跟它一样,第四个可从0-255中任选但要跟服务器的IP不同
 
 ## IP v6
 IPv6地址为128位长,但通常写作8组,每组为四个十六进制数的形式.例如:
@@ -247,6 +247,9 @@ Analyse
 - The minimum length is 8 bytes since that's the length of the header
 
 # Application Layer
+TCP中80端口为HTTP,表明HTTP仍占据着TCP的主要部分.占据TCP端口号第二位的25端口为SMTP. 443端口为网页浏览端口,主要用于HTTPS服务,4662端口为Emule(电驴)协议的标准端口号.
+对UDP,8000,15000和53端口分别对应着QQ,迅雷和DNS协议
+
 ## DNS
 DNS 使用TCP和UDP端口53
 
