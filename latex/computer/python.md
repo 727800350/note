@@ -211,6 +211,10 @@ If default is not given, it defaults to None, so that this method **never raises
 - `pop(key[, default])`
 - `del d[key]`: Raises a KeyError if key is not in the map
 
+### set
+集合是无序的,不重复的元素集,类似数学中的集合,可进行逻辑运算和算术运算.
+[set demo](../../demo/python/set.py)
+
 ## Numeric
 `int(String)`: convert a string to integer
 `float`: 将字符串或者整数转换为浮点数
