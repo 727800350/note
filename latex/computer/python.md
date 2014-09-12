@@ -3,6 +3,37 @@ sequence在python不是一种特定的类型,而是泛指一系列的类型
 
 list, tuple, 字符串都属于sequence
 
+# 参数
+## 可变长参数
+使用可变长参数的函数, 将其所有参数保存在一个元组里, 在函数中可以使用for循环来处理
+以 `*` 开头定义一个参数即可
+```
+def mylistappend(L,*list):
+    for i in list:
+        L.extend(i)
+    return L
+```
+
+## 参数引用
+在C语言中,可以通知在参数中使用指针已达到改变参数值的作用
+在python中,可以在参数中使用可变对象,如列表和字典来达到改变参数的目的
+```
+传值
+def changevalue(x):
+	x=x**2
+
+传引用
+def changevalue2(x):
+	x[0]=x[0]**2
+```
+
+## global
+```
+def fun(x):
+	global a #说明a是全局变量,可以直接使用, 需要确保在使用之前a 确实是存在的一个全局变量
+	return a+x
+```
+
 # IO
 ## 重定向
 
