@@ -244,75 +244,47 @@ Similarly you can insert vertical stretched space with `\vfill`. It may be usefu
 # Figure
 [Floats,_Figures_and_Captions](http://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions)
 
-| Specifier  | Permission                                                                                                                   |
-|------------|------------------------------------------------------------------------------------------------------------------------------|
-| h          | Place the float here                                                                                                         |
-| t          | Position at the top of the page.                                                                                             |
-| b          | Position at the bottom of the page.                                                                                          |
-| p          | Put on a special page for floats only.                                                                                       |
-| !          | Override internal parameters LaTeX uses for determining "good" float positions.                                              |
-| H          | Places the float at precisely the location in the LaTeX code. Requires the float package. This is somewhat equivalent to h!. |
+h: here, t: top, b: bottom, H: Here
+!:  Override internal parameters LaTeX uses for determining "good" float positions.                                              |
 
 ## Special figure effect
 ### Side captions
-have a caption appear on the side of a float, rather than above or below. The `sidecap` package can be used to place a caption **beside a figure or table**. 
+have a caption appear on the side of a float, rather than above or below. 
 
-The following example demonstrates this for a figure by using a `SCfigure` environment in place of the figure environment.
+`SCfigure` environment
 
+	\usepackage{sidecap}
 	\begin{SCfigure}
-	  \centering
-	  \caption{ ... caption text ... }
-	  \includegraphics[width=0.3\textwidth]%
-	    {Giraff_picture}% picture filename
+	  \includegraphics[width=0.3\textwidth]{Giraff_picture}
 	\end{SCfigure}
 ![Latex_example_sidecap](http://upload.wikimedia.org/wikipedia/commons/5/59/Latex_example_sidecap.png)
 
 ### Lists of figures and tables
-`\caption[short]{long}`, used for the List of Tables or List of Figures.   Typically the short description is for the caption listing, and the long description will be placed beside the figure or table.
+`\caption[short]{long}`, used for the List of Tables or List of Figures.
+Typically the short description is for the caption listing(table of contents for figure or table), 
+and the long description will be placed beside the figure or table.
 
-	\begin{document}
 	\listoffigures
-	\section{Introduction}
 	\begin{figure}[hb]
-	  \centering
 	  \includegraphics[width=4in]{gecko}
 	  \caption[Close up of \textit{Hemidactylus} sp.]
-	   {Close up of \textit{Hemidactylus} sp., which is
-	   part the genus of the gecko family. It is the
-	   second most speciose genus in the family.}
+	   {Close up of \textit{Hemidactylus} sp., which is part the genus of the gecko family. It is the second most speciose genus in the family.}
 	\end{figure}
-	\end{document}
 ![list figure](http://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/LaTeX_figure_caption_with_lof_entry.png/400px-LaTeX_figure_caption_with_lof_entry.png)
 
 ### Wrapping text around figures
-Before you make the choice of including figures with text wrapping in your document, make sure you have considered all the options.  
-For example, you could use a layout with two columns for your documents and have no text-wrapping at all.
-
+```
 \usepackage{wrapfig}
-
 \begin{wrapfigure}[lineheight]{position}{width}
+```
 
-There are overall eight possible positioning targets:
-
-| r | R | right side of the text                               |
-|---|---|------------------------------------------------------|
-| l | L | left side of the text                                |
-| i | I | inside edge–near the binding (in a twoside document) |
-| o | O | outside edge–far from the binding                    |
+**possible positioning targets**:
+r,R: right side of the text
+l,L: left side of the text
+i,I: inside edge–near the binding (in a twoside document)
+o,O: outside edge–far from the binding
 
 The uppercase-character allows the figure to float, while the lowercase version means "exactly here".
-
-The width is, of course, the width of the figure.
-
-	\begin{wrapfigure}{r}{0.5\textwidth}
-	  \begin{center}
-	    \includegraphics[width=0.48\textwidth]{gull}
-	  \end{center}
-	  \caption{A gull}
-	\end{wrapfigure}
-
-![Wrap figure](http://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Latex_example_wrapfig.png/337px-Latex_example_wrapfig.png)
-
 
 	\begin{wrapfigure}{r}{0.5\textwidth}
 	  \vspace{-20pt}
@@ -355,10 +327,7 @@ The width is, of course, the width of the figure.
 	\end{figure}
 [result figure](http://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Latex_example_subfig.png/500px-Latex_example_subfig.png)
 
-Subtable
-
-You will notice that the figure environment is set up as usual. You may also use a table environment for subtables. For each subfloat, you need to use:
-
+## Subtable
 	\begin{table}[<placement specifier>]
 	    \begin{subtable}[<placement specifier>]{<width>}
 	        \centering
@@ -373,22 +342,7 @@ You will notice that the figure environment is set up as usual. You may also use
 	    \end{subtable}
 	\end{table}
 
-## 图形后缀, 目录
-若想省略文件后缀,可在插入图形前使用两个命令.  
-前者指定一个后缀列表,让LATEX 自行查找,  
-后者告诉LATEX 未知后缀的都是EPS.
-
-	\DeclareGraphicsExtensions{.eps,.mps,.pdf,.jpg,.png}
-	\DeclareGraphicsRule{*}{eps}{*}{}
-	图片搜索目录
-	\graphicspath{{figure/}{image/}}
-
-在选择图形驱动时, 已经有一个相应的预设的扩展名集. 举例来说, 如果选择divps作为图形驱动, 那么缺省的会使用下列图形文件扩展名  
-`\DeclareGraphicsExtensions{.eps,.ps,.eps.gz, .eps.Z}`  
-注意 `\includegraphics{file}`不会试图寻找`file`文件, 除非空的扩展名{}已被加入到扩展名列表中  
-例如: `\DeclareGraphicsExtensions{.eps, .ps, {}}`
-
-### 图形格式
+## 图形格式
 png 它是无损压缩格式,jpg是有损
 
 LATEX 支持点阵图形格式JPEG 和PNG,也支持矢量格式EPS 和PDF.  
@@ -398,11 +352,8 @@ LATEX 支持点阵图形格式JPEG 和PNG,也支持矢量格式EPS 和PDF.
 
 - dvips 喜欢PS,所以就爱屋及乌只支持嵌入EPS
 - pdfLATEX 支持JPEG,PNG和PDF,不支持EPS.  
-- LATEX 有两个宏包`epstopdf` 和`pst-pdf` 可以实时地(on the fly)把
-EPS 转换为PDF1.然而前者有安全漏洞,后者用法繁琐,用户最好还是
-用其它软件事先把EPS 转为PDF.
-- dvipdfm 支持JPEG,PNG,PDF,不支持EPS,但是它可以实时
-地调用Ghostscript 把EPS 转为PDF
+- LATEX 有两个宏包`epstopdf` 和`pst-pdf` 可以实时地(on the fly)把EPS 转换为PDF1.然而前者有安全漏洞,后者用法繁琐,用户最好还是用其它软件事先把EPS 转为PDF.
+- dvipdfm 支持JPEG,PNG,PDF,不支持EPS,但是它可以实时 地调用Ghostscript 把EPS 转为PDF
 
 `\usepackage{epstopdf}`  
 但是在使用`\includegraphics`的时候仍然使用: `\includegraphics [width=5cm]{back1.eps}`  
@@ -441,19 +392,11 @@ Files can also be linked using the url or the href commands. You simply have to 
 	\url{run:/path/to/my/file.ext}
 	\href{run:/path/to/my/file.ext}{text displayed}
 
-
 # References
 设置标签是`\label{}`  
 引用标签是`\ref{}`  
 引用标签所在页的页码是`\pageref{}` 命令  
 引用equation `\eqref{}`, 相当于 (\ref{}), `\lasteq`(自定义的)
-
-文档中新增交叉引用后,第一次执行`xelatex` 编译命令时会得到类似下面的警告信息.因为第一次编译只会扫描出有交叉引用的地方,第二次编译才能得到正确结果
-
-	LaTeX Warning: There were undefined references.
-	...
-	LaTeX Warning: Label(s) may have changed. Rerun to get crossreferences
-	right.
 
 ## 参考文献
 
@@ -464,23 +407,15 @@ Files can also be linked using the url or the href commands. You simply have to 
 
 **使用** 
 
-	\cite{item1, item2}
-	%一个地方同时引用item1和item2
+	\cite{item1, item2} %一个地方同时引用item1和item2
 	\cite{item}
 
 **编译步骤**
 
-	xelatex paper.tex
-	bibtex paper.aux
-	xelatex paper.tex
-	xelatex paper.tex
-
-前文中我们提到含有交叉引用的文档需要编译两遍.含有参考文献的文档更麻烦,它需要依次执行`xelatex,bibtex,xelatex,xelatex` 等四次编译:
-
-1. 第一遍`xelatex` 只把条目的关键字写到中间文件`.aux` 中去.
-2. `bibtex` 根据`.aux,.bib,.bst` 生成一个`.bbl` 文件,即参考文献列表.它的内容就是`thebibliography` 环境和一些`\bibtem` 命令.
-3. 第二遍`xelatex` 把交叉引用写到`.aux` 中去.
-4. 第三遍`xelatex` 则在正文中正确地显示引用.
+	xelatex paper.tex ## 只把条目的关键字写到中间文件`.aux` 中去.
+	bibtex paper.aux ## 根据`.aux,.bib,.bst` 生成一个`.bbl` 文件,即参考文献列表
+	xelatex paper.tex ## 把交叉引用写到`.aux` 中去.
+	xelatex paper.tex ## 在正文中正确地显示引用.
 
 **引用的目录问题**
 
@@ -534,17 +469,10 @@ table  of contents depth 也可以用\setcounter 命令来指定目录层次深�
 上述命令将(section)的序号改成大写字母的型式, 如下图所示  
 ![Alph Table of Contents](http://i.imgbox.com/VPal8xXr.jpg)
 
-如果不想让某个章节标题出现在目录中,可以使用以下带* 的命令来
-声明章节.
+如果不想让某个章节标题出现在目录中,可以使用以下带* 的命令来声明章节.
+`\chapter*{...}, \section*{...}, \subsection*{...}`
 
-	\chapter*{...}
-	\section*{...}
-	\subsection*{...}
-
-插图和表格的目录
-
-	\listoffigures
-	\listoftables
+插图和表格的目录 `\listoffigures, \listoftables`
 
 当章节或图表等结构发生变化时,我们需要执行两遍编译命令以获得正确结果.LATEX 之所以设计成这样可能是因为当时的电脑内存容量有限.
 
@@ -570,7 +498,6 @@ Eg:
 
 	\chapter*{结论与展望}\addcontentsline{toc}{chapter}{结论与展望}
 	\section*{结论}\addcontentsline{toc}{section}{结论}
-	\section*{展望}\addcontentsline{toc}{section}{展望}
 
 **\addcontentsline{}{}{} 生成PDF 文件后链接不对**  
 参看CTeX-faq 74 摘录如下:  
@@ -639,11 +566,11 @@ latex 中输入点 不能使用\dot, 而应该直接使用 "."
 	% Back to the UTF-8 encoding.
 	% ...
 
-XETEX默认使用UTF-8 编码，但为了照顾兼容性，可以用参数来控制输入文件的编码，
-而不用更改整个输入文件的编码。
+XETEX默认使用UTF-8 编码,但为了照顾兼容性,可以用参数来控制输入文件的编码,
+而不用更改整个输入文件的编码.
 
-例如本文的tex 源代码用的是GB2312 编码方式，这时只需要在文档的开头加上  
-`\XeTeXinputencoding "GB2312"`，并在`\begin{document}`前面加上  
-`\XeTeXdefaultencoding "UTF8"`（似乎不加也可以）把输入改回`UTF-8`，文档即可正常编译。  
-这样主要是省去了用户调整源文码编码的麻烦，加上常用的WinEdt 编辑器对UTF-8 的支持并不
-好。
+例如本文的tex 源代码用的是GB2312 编码方式,这时只需要在文档的开头加上  
+`\XeTeXinputencoding "GB2312"`,并在`\begin{document}`前面加上  
+`\XeTeXdefaultencoding "UTF8"`(似乎不加也可以)把输入改回`UTF-8`,文档即可正常编译.  
+这样主要是省去了用户调整源文码编码的麻烦,加上常用的WinEdt 编辑器对UTF-8 的支持并不
+好.
