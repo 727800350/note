@@ -21,7 +21,7 @@
 %% \lfoot{\href{mailto:wangchaogo1990@gmail.com}{feedback}}
 %% \cfoot{}
 \rfoot{\thepage}
-\renewcommand{\headrulewidth}{1pt}  %页眉线宽，设为0可以去页眉线
+\renewcommand{\headrulewidth}{1pt}  %页眉线宽,设为0可以去页眉线
 \setlength{\skip\footins}{0.5cm}    %脚注与正文的距离
 \renewcommand{\footnotesize}{}      %设置脚注字体大小
 %% \renewcommand{\footrulewidth}{1pt}  %脚注线的宽度
@@ -79,8 +79,8 @@ draw=gray,thick, fill=lightgray}
 %% 主要字体为Times New Roman和宋体
 %% 模板某些标题需要华文行楷和32号字
 %\setmainfont{Times New Roman}
-%% 不需要设置CJKmainfont，ctex 宏包已经很好的处理了
-%% 不仅设置了粗体为黑体，斜体为楷体，还兼容了winfonts和adobefonts
+%% 不需要设置CJKmainfont,ctex 宏包已经很好的处理了
+%% 不仅设置了粗体为黑体,斜体为楷体,还兼容了winfonts和adobefonts
 %% 直接设置反而会在只有adobefonts的情况下报错
 %\setCJKmainfont{宋体}
 %\setCJKfamilyfont{hwxingkai}{STXingkai}
@@ -128,13 +128,13 @@ draw=gray,thick, fill=lightgray}
     breakatwhitespace=false,
     breaklines=true,
     captionpos=b,
-    frame=single,
-    numbers=left,
+    frame=single, %% Frame: 这个命令能让代码周围显示边框. 它的值可以是 none|leftline|topline|bottomline|lines|single|shadowbox 中的任意一个
+    numbers=left, %% numbers 的值可以是 left, right, none, 分别代表了将行号放在代码的左边, 右边和不显示
     numbersep=5pt,
     showspaces=false,
     showstringspaces=false,
     showtabs=false,
-    stepnumber=1,
+    stepnumber=1, %% 设置每多少行显示一次行号
     rulecolor=\color{black},
     tabsize=2,
     texcl=true,

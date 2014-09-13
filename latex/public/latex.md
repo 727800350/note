@@ -4,10 +4,6 @@
 \today
 \maketitle
 
-\hrule  画一条水平标尺
-
-\vrule 竖直标尺
-
 # Tricks
 `\def` and `\newcommand`  
 `\def` is a TeX primitive, `\newcommand` is a LaTeX overlay on top of `\def`. The most obvious benefits of `\newcommand` over `\def` are:  
@@ -111,20 +107,20 @@ generate:
 pmatrix,bmatrix,Bmatrix,vmatrix和Vmatrix
 
 ## 数学字体
-- \mathrm罗马直立
-- \mathit   罗马斜体
+- \mathrm 罗马直立
+- \mathit 罗马斜体
 - \mathbf 直立粗体
 - \mathcal 花体
 - \mathtt
 - \mathsf
 
-![math font](http://i.imgbox.com/3lpesF5s.jpg)
-
 ![数学注音符号](http://i.imgbox.com/I7RSbdFC.jpg)
 
-`$$n+1 \choose 3$$`  
-generate  
-![C](http://i.imgbox.com/0GUfRPFH.png)
+`$$n+1 \choose 3$$` 生成$C_{n+1}^3$ 的括号形式
+
+**括号**
+`(), [], \{\}, \langle\rangle, \lvert\rvert, \lVert\rVert`
+我们可以在上述分隔符前面加`\big \Big \bigg \Bigg` 等命令来调整
 
 # Space
 ## 行间距和段间距
@@ -244,8 +240,11 @@ Similarly you can insert vertical stretched space with `\vfill`. It may be usefu
 # Figure
 [Floats,_Figures_and_Captions](http://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions)
 
+**图片的位置**
 h: here, t: top, b: bottom, H: Here
 !:  Override internal parameters LaTeX uses for determining "good" float positions.                                              |
+[htp]搭配!可以使latex忽略美学排版
+引入`\usepackage{float}`, 然后`[H]`,注意是大H,可以使图片在指定位置出现
 
 ## Special figure effect
 ### Side captions
@@ -301,6 +300,8 @@ The uppercase-character allows the figure to float, while the lowercase version 
 `\setcounter{subfigure}{0}`
 让每个figure的subfigure都重新编号, 而不是整个article 的subfigure的编号是连续的, 
 [ref](http://tex.stackexchange.com/questions/4530/subfigures-in-beamer-documents)
+
+也可以考虑使用minipage 来达到同样的效果
 
 	\setcounter{subfigure}{0}
 	\begin{figure}
@@ -472,6 +473,10 @@ table  of contents depth 也可以用\setcounter 命令来指定目录层次深�
 如果不想让某个章节标题出现在目录中,可以使用以下带* 的命令来声明章节.
 `\chapter*{...}, \section*{...}, \subsection*{...}`
 
+
+更换掉默认的显示内容
+`renewcommand{\contentsname}{目录}`
+
 插图和表格的目录 `\listoffigures, \listoftables`
 
 当章节或图表等结构发生变化时,我们需要执行两遍编译命令以获得正确结果.LATEX 之所以设计成这样可能是因为当时的电脑内存容量有限.
@@ -521,6 +526,62 @@ Eg:
 `\textsuperscript`  
 For example, let's say I want to write the `$n^{th}$` element, but without the math mode's automatic italicization of the th. And what if I still want the n to be in math mode, but the th outside?  
 `$n$\textsuperscript{th}`
+
+**`\pagenumbering{num_style}`
+Specifies the style of page numbers. Possible values of `num_style' are:
+arabic Arabic numerals roman Lowercase Roman numerals Roman Uppercase Roman numeral alph Lowercase letters Alph Uppercase letters
+应用:可在
+\tableofcontents
+\listoffigures
+\listoftables
+之前用 \pagenumbering{Roman}
+在正文之前再用\pagenumbering{arabic}
+
+**`\setcounter{}{}`
+重新开始页面编号
+`\setcounter{page}{1}`,{1}可以是你需要的任意编号
+
+原样显示
+\beigin{verbatim}...\end{verbatim}
+\verb+...+
+
+代码
+```
+\usepackage{listings}
+\begin{lstlisting}[language=...] Put your code here. \end{lstlisting}
+
+\lstinputlisting[language=Python]{source_filename.py}
+```
+
+```
+\setcounter{page}{1}
+\renewcommand{\thepage}{A\arabicpage}}
+```
+可改变页码的格式为A1,A2,...的型式,直到进行下一次改变为止.
+
+Set noindent for entire file
+`\setlength{\parindent}{0pt}`
+
+\hrule  画一条水平标尺
+\vrule 竖直标尺
+
+**摘录**
+```
+\begin{quote}
+引文两端都缩进
+\end{quote}
+
+\begin{quotation}
+引文两端都缩进且引文的首行继续缩进
+\end{quotation}
+
+\begin{verse}
+引文两端都缩进, 且引文的第二行继续缩进
+\end{verse}
+```
+
+**对齐方式**
+`flushleft, flushright, center` 三个环境
 
 # Error
 **Dimension too large**
