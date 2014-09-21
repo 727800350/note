@@ -47,6 +47,7 @@ sudo yum install -y octave
 sudo yum install -y gnuplot numpy scipy
 sudo yum install -y python-pip 
 sudo pip install gnuplot-py
+sudo pip install xlutils
 
 ## mutt
 sudo yum install -y mutt msmtp getmail procmail lynx elinks
