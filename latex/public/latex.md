@@ -513,6 +513,72 @@ Eg:
 如果使用了hyperref 宏包来生成PDF 文件的书签链接,则还需要在上面的命令后再加上
 `\phantomsection`
 
+# 页眉页脚
+页眉和页脚的样式是由命令 \pagestyle 和 \pagenumbering 来定义的. 
+\pagestyle 命令定义了页眉和页脚的基本内容(如页码出现在哪里),而 \pagenumbering 则定义了页码的显示方式. 
+LATEX 本身包含四种标准的页面样式.
+
+1. empty 没有页眉也没有页脚
+1. plain 没有页眉,页脚包含一个居中的页码
+1. headings 没有页脚,页眉包含章 / 节或者子节的名字和页码
+1. myheadings 没有页脚,页眉包含有页码和用户提供的其他信息
+
+`\pagenumbering{num_style}`
+Specifies the style of page numbers. Possible values of 'num_style' are:
+arabic Arabic numerals roman Lowercase Roman numerals Roman Uppercase Roman numeral alph Lowercase letters Alph Uppercase letters
+\pagestyle 命令便将 \thepage 放在适当的位置
+另外, \pagenumbering 命令同时也将把页码重置为 1
+应用:可在
+\tableofcontents
+\listoffigures
+\listoftables
+之前用 \pagenumbering{Roman}
+在正文之前再用\pagenumbering{arabic}
+
+`\setcounter{}{}`
+重新开始页面编号
+`\setcounter{page}{1}`,{1}可以是你需要的任意编号
+
+第一页显然不需要这些页眉和页脚.在 `\begin{document}` 之后而在\maketitle 命令之前敲入下面的命令来
+去掉页眉和页脚中其他内容而只保留页码: `\thispagestyle{plain}`
+或者如果你什么也不想要的话. `\thispagestyle{empty}`
+
+实际上`\maketitle` 中已经定义了命令 `\thispagestyle{plain}` .因此,如果你坚持要在 `\maketitle` 生成的页面上使用 fancy 的布局,
+你必须在 `\maketitle` 之后马上发出 `\thispagestyle{fancy}` 的指示.
+
+通常,对于 book 或者 report 来说,你可能会把章节的信息反映在页眉上(对于单面打印可能只需要章次的信息),
+以及对于 article 文档类的节和子节(对于单面打印只需要节次的信息). LATEX 使用标记( mark )的机制来记录章节信息
+
+命令 `\leftmark`(高层) 记录了页面上最近一次 `\markboth` 命令左边的参数,
+而 `\rightmark`(底层) 则记录了页面上第一次 `\markboth` 命令右边的参数,或者是页面上第一次 `\markright` 命令的参数 值.如果当前页面没有标记,
+则两者都维持前面的页面中的值保持不变
+
+最后还要提醒你的是, * 形式的 `\chapter` 等命令不会调用标记相关的命令,因此如果你想要在前言中插入页眉或页脚,
+那么你就得自己加入 `\markboth` 命令,因为前言并不会计算入章节号,也不会被列入目录中.  
+```
+\chapter*{Preface\markboth{Preface}{}}
+```
+
+## 双面打印
+```
+E 偶数页 even
+O 奇数页 odd
+L 居左内容
+C 居中内容
+R 居右内容
+H 页眉
+F 页脚
+```
+
+eg:
+```
+%% 在偶数页的左边和奇数页的右边放上底层信息, 例如 section 信息
+\fancyhead[LE,RO]{\slshape \rightmark} 
+%% 在奇数页的左边和偶数页的右边放上高层信息, 例如 chapter 信息
+\fancyhead[LO,RE]{\slshape \leftmark}
+\fancyfoot[C]{\thepage}
+```
+
 # Commands
 **index**  
 `\usepackage{makeidx}`  
@@ -526,20 +592,6 @@ Eg:
 `\textsuperscript`  
 For example, let's say I want to write the `$n^{th}$` element, but without the math mode's automatic italicization of the th. And what if I still want the n to be in math mode, but the th outside?  
 `$n$\textsuperscript{th}`
-
-**`\pagenumbering{num_style}`
-Specifies the style of page numbers. Possible values of `num_style' are:
-arabic Arabic numerals roman Lowercase Roman numerals Roman Uppercase Roman numeral alph Lowercase letters Alph Uppercase letters
-应用:可在
-\tableofcontents
-\listoffigures
-\listoftables
-之前用 \pagenumbering{Roman}
-在正文之前再用\pagenumbering{arabic}
-
-**`\setcounter{}{}`
-重新开始页面编号
-`\setcounter{page}{1}`,{1}可以是你需要的任意编号
 
 原样显示
 \beigin{verbatim}...\end{verbatim}
