@@ -261,7 +261,11 @@ python还允许以负数来访问字符串中字符,负数表示从字符串的�
 - `str.count(sub[, start[, end]])`
 Return the number of non-overlapping occurrences of substring sub in the range [start, end]. Optional arguments start and end are interpreted as in slice notation.
 
-**编码**
+[编码](http://in355hz.iteye.com/blog/1860787)
+因为 Python 认为 16 位的 unicode 才是字符的唯一内码,而大家常用的字符集如 gb2312,gb18030/gbk,utf-8,以及 ascii 都是字符的二进制(字节)编码形式.
+把字符从 unicode 转换成二进制编码,当然是要 encode
+[encoding demo](../../demo/python/encoding.py)
+
 - `str.decode([encoding[, errors]])`
 Decodes the string using the codec registered for encoding. encoding defaults to the default string encoding. errors may be given to set a different error handling scheme. The default is 'strict', meaning that encoding errors raise UnicodeError. Other possible values are 'ignore','replace' and any other name registered via codecs.register_error(), see section Codec Base Classes.
 - `str.encode([encoding[, errors]])`
@@ -679,6 +683,60 @@ There are several ways to fit data with a linear regression. In this section we 
 [solve funtion](../../demo/python/scipy_solve_function.py)
 
 [interpolation](../../demo/python/scipy_interpolation.py)
+
+### xlutils, xlrd, xlwt
+module for excel
+rd: read, wt: write
+
+xlrd: 读取excel 内容
+```
+workbook = xlrd.open_workbook(path)
+sheet = workbook.sheets()[0]
+value = sheet.cell(1,2).value
+```
+[xlrd demo](../../demo/python/excel.py)
+
+xlwt: 创建编辑新的excel
+```
+workbook = xlwt.Workbook()
+sheet = workbook.add_sheet('sheet name')
+sheet.write(0,0,'test')
+workbook.save('demo.xls')
+```
+
+如果对一个单元格重复操作,会引发
+returns error:
+# Exception: Attempt to overwrite cell:
+# sheetname=u'sheet 1' rowx=0 colx=0
+
+所以在打开时加cell_overwrite_ok=True解决
+```
+table = file.add_sheet('sheet name',cell_overwrite_ok=True)
+```
+
+使用style
+```
+style = xlwt.XFStyle() #初始化样式
+font = xlwt.Font() #为样式创建字体
+font.name = 'Times New Roman'
+font.bold = True
+style.font = font #为样式设置字体
+table.write(0, 0, 'some bold Times text', style) # 使用样式
+
+设置日期格式
+style.num_format_str = "mm/dd/yyyy"
+```
+
+如果要编辑现有的excel 表格, 只能采取迂回的策略, 即用xlrd 打开workbook, 然后用xlutils 提供的copy 工具将打开的workbook 复制一份, 被复制的是xlwt格式, 可以进行编辑, 最后再将复制的workbook保存下来.
+
+
+```
+rb = xlrd.open_workbook(path)
+rs = rb.sheets()[0]
+wb = copy(rb)
+ws = wb.get_sheet(0)
+```
+对于excel 03的格式, 可以使用 `rb = xlrd.open_workbook(path, formatting_info = True)`, 这样可以将path的格式保留下来, 但是这个功能在excel 07还没有实现
 
 ### subprocess
 ```
