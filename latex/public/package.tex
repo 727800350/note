@@ -7,42 +7,23 @@
 \setlength\textheight{100.0pt}
 \setlength\textwidth{430.0pt}
 \usepackage{fancyhdr}
-\usepackage{lastpage}
+\usepackage{lastpage} %% \pageref{LastPage} 获取最后一页的页码
 \usepackage{pdfpages}
 \usepackage{layout}
-%\pagestyle{empty}                   %不设置页眉页脚
 \footskip = 20pt
 \pagestyle{fancy}
 \fancyhead{} %clear all fields
-%% \lhead{Page \thepage\ of \pageref{LastPage}}
-%% \chead{}
+%% \newsavebox{\headpic}
+%% \sbox{\headpic}{\includegraphics[height=1cm]{logo}} %设置页眉logo页眉
+%% \lhead{\usebox{\headpic}}
 \rhead{\small\leftmark}
 \fancyfoot{} %clear all fields
-%% \lfoot{\href{mailto:wangchaogo1990@gmail.com}{feedback}}
-%% \cfoot{}
-\rfoot{\thepage}
+\cfoot{\thepage}
 \renewcommand{\headrulewidth}{1pt}  %页眉线宽,设为0可以去页眉线
 \setlength{\skip\footins}{0.5cm}    %脚注与正文的距离
 \renewcommand{\footnotesize}{}      %设置脚注字体大小
 %% \renewcommand{\footrulewidth}{1pt}  %脚注线的宽度
 %===============
-%双线页眉的设置
-%\makeatletter %双线页眉
-%\def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi%
-%\hrule\@height 1.0pt \@width\headwidth\vskip1pt%上面线为1pt粗
-%\hrule\@height 0.5pt\@width\headwidth  %下面0.5pt粗
-%\vskip-2\headrulewidth\vskip-1pt}      %两条线的距离1pt
-%  \vspace{6mm}}     %双线与下面正文之间的垂直间距
-%\makeatother
-%===============
-%\pagestyle{fancy}
-%\fancyhead{} %clear all fields
-%\fancyhead[CE]{ \应\用 \数 \学 }
-%\fancyhead[CO]{{ huangzh: 数学}}
-%\fancyhead[RO]{\thepage} %奇数页眉的右边
-%\fancyhead[LE]{\thepage} %偶数页眉的左边
-%\fancyhead[RE]{\zihao{-5} 2005 c}
-%\fancyfoot[C]{}
 
 %图形
 \usepackage{pstricks}
