@@ -1,10 +1,24 @@
 # switch
 ## cisco
+Cisco交换机提供了几种配置模式或称之为配置视图,各配置模式下所能使用的配置命令各不相同,这几种配置模式如下:
+
+- 普通用户模式:开机直接进入普通用户模式,在该模式下我们只能查询交换机的一些基础信息如版本号show version.提示信息switch>
+- 特权用户模式:在普通用户模式下输入enable 命令即可进入特权用户模式,在该模式下我们可以查看交换机的配置信息和调试信息等等.提示信息switch#
+- 全局配置模式:在特权用户模式下输入configure terminal 命令即可进入全局配置模式,在该模式下主要完成全局参数的配置.提示信息switch(config)#
+- 接口配置模式:在全局配置模式下输入interface interface-list 即可进入接口配置模式.在该模式下主要完成接口参数的配置.提示信息switch(config-if)#
+- VLAN 配置模式:在全局配置模式下输入vlan database 即可进入VLAN 配置模式,该配置模式下可以完成VLAN 的一些相关配置.
+
+思科交换机提供了强有力的帮助功能,在任何模式下均可以使用"?"来查看命令的格式或参数.具体用法如下:
+
+1. 在任何模式下直接键入"?" 查询任何模式下可以使用的所有命令
+2. 在前缀字符后键入"?" 可以查看该视图下以该前缀开头的所有命令,如键入"s?"可以查询所有以字符s开头的所有命令
+3. 命令单词后跟一个空格和一个"" 如"show  ?"用来查看show命令的参数.
+
 [基本命令](http://network.51cto.com/art/200604/25601.htm)
 
 **交换机基本状态**
 ```
-switch: ;ROM状态， 路由器是rommon>
+switch: ;ROM状态, 路由器是rommon>
 hostname> ;用户模式
 hostname# ;特权模式
 hostname(config)# ;全局配置模式
@@ -24,7 +38,7 @@ switch(config-line)#login ;允许登录
 switch(config-line)#password xx ;设置登录口令xx
 switch#exit ;返回命令
 ```
-如果你同时配了enable secret和enable password的时候，后者就失效了，登陆的时候，只需输入enable secret的密码即可
+如果你同时配了enable secret和enable password的时候,后者就失效了,登陆的时候,只需输入enable secret的密码即可
 
 **交换机VLAN(Virtual Local Area Networks)**
 By creating a VLAN you are separating the network. There are some several reasons, 
@@ -78,11 +92,17 @@ switch(config)#no vlan 2 ;删除vlan 2
 VTP(VLAN Trunking Protocol): 是VLAN中继协议,也被称为虚拟局域网干道协议.它是思科私有协议.
 作用是十几台交换机在企业网中,配置VLAN工作量大,可以使用VTP协议,把一台交换机配置成VTP Server, 其余交换机配置成VTP Client,
 这样他们可以自动学习到server 上的VLAN 信息.
+
+交换机的端口工作模式一般可以分为三种:Access,Multi,Trunk.
+trunk: 模式的端口用于交换机与交换机,交换机与路由器,大多用于级联网络设备所以也叫干道模式.
+Access: 多用于接入层也叫接入模式.
+Multi: 在一个线路中承载多个vlan,但不像trunk,它不对承载的数据打标签.主要用于接入支持多vlan的服务器或者一些网络分析设备.现在基本不使用此类接口,在cisco的网络设备中,也基本不支持此类接口了.
+
 ```
 switch(config)#int f0/1 ;进入端口1
 switch(config-if)#switchport access vlan 2 ;当前端口加入vlan 2(先要新建一个vlan 2)
 switch(config-if)#switchport mode trunk ;设置为干线
-switch(config-if)#switchport trunk allowed vlan 1，2 ;设置允许的vlan
+switch(config-if)#switchport trunk allowed vlan 1,2 ;设置允许的vlan
 switch(config-if)#switchport trunk encap dot1q ;设置vlan 中继
 switch(config)#vtp domain name ;建立vtp域
 switch(config)#vtp mode server|client|transparent  ;设置发vtp模式
