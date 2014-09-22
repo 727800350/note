@@ -1,7 +1,8 @@
 # switch
 ## cisco
 [基本命令](http://network.51cto.com/art/200604/25601.htm)
-交换机基本状态
+
+**交换机基本状态**
 ```
 switch: ;ROM状态， 路由器是rommon>
 hostname> ;用户模式
@@ -10,7 +11,7 @@ hostname(config)# ;全局配置模式
 hostname(config-if)# ;接口状态
 ```
 
-交换机口令设置
+**交换机口令设置**
 ```
 switch>enable ;进入特权模式
 switch#config terminal ;进入全局配置模式
@@ -25,7 +26,7 @@ switch#exit ;返回命令
 ```
 如果你同时配了enable secret和enable password的时候，后者就失效了，登陆的时候，只需输入enable secret的密码即可
 
-交换机VLAN(Virtual Local Area Networks)
+**交换机VLAN(Virtual Local Area Networks)**
 By creating a VLAN you are separating the network. There are some several reasons, 
 like separating your production network from a guest network, and separating a test environment from a production network. 
 This all adds security to your network. 
@@ -50,7 +51,7 @@ Switch(config)#exit
 Switch#show vlan  ## 可以看到端口的1 到10 已经在新建的一个vlan 2中
 ```
 
-创建一个自定义名字的vlan
+**创建一个自定义名字的vlan**
 ```
 Switch(config)#interface vlan 3
 Switch(config-if)#exit
@@ -68,12 +69,12 @@ So in the end we have three VLANs on this switch, VLAN 1, VLAN 2, VLAN 3 (NewNam
 If we connected PCs to these three different VLANs none of them would be able to communicate, 
 because each VLAN is like a different network. So you would need to configure a router in order for inter-vlan commutation to work.
 
-删除vlan
+**删除vlan**
 ```
 switch(config)#no vlan 2 ;删除vlan 2
 ```
 
-VTP
+**VTP**
 VTP(VLAN Trunking Protocol): 是VLAN中继协议,也被称为虚拟局域网干道协议.它是思科私有协议.
 作用是十几台交换机在企业网中,配置VLAN工作量大,可以使用VTP协议,把一台交换机配置成VTP Server, 其余交换机配置成VTP Client,
 这样他们可以自动学习到server 上的VLAN 信息.
@@ -90,7 +91,7 @@ Switch(config)#show vtp status ; 查看VTP运行状态
 Switch(config)#show vtp counters ; 查看交换机收到和发出广告的数目
 ```
 
-交换机设置IP地址:
+**交换机设置IP地址**
 确定interface to be configured as a Layer 3 interface, and enter interface configuration mode.
 ```
 interface {{fastethernet | gigabitethernet} interface-id} | {vlan vlan-id} | {port-channel port-channel-number}
@@ -117,7 +118,7 @@ copy running-config startup-config
 
 ```
 
-交换机显示命令:
+**交换机显示命令**
 ```
 switch#write ;保存配置信息
 switch#show vtp ;查看vtp配置信息
@@ -127,15 +128,16 @@ switch#show interface ;查看端口信息
 switch#show int f0/0 ;查看指定端口信息
 ```
 
-端口
+**端口**
 ```
 #sh ip int b 命令查看端口状态
 ```
 
-#sh cdp nei命令查看相邻路由器
+`#sh cdp nei命令查看相邻路由器`
 
 ## Cisco交换机Telnet的配置
 [ref](http://blog.sina.com.cn/s/blog_62449fcf0100hv7b.html)
+
 ```
 configure terminal 
 line vty 0 15 
