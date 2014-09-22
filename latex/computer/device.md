@@ -151,7 +151,7 @@ Configure the number of Telnet sessions (lines), and enter line configuration mo
 There are 16 possible sessions on a command-capable switch. The 0 and 15 mean that you are configuring all 16 possible Telnet sessions.
 
 路由器发生故障或状态发生变化的时候,会发出告警,报错,提示信息.如果是用telnet 命令登录路由器的话,不能直接看到这些信息,需要输入
-# ter mon
+`# ter mon`
 命令后,才能使这些信息显示在MS-DOS窗口上
 
 ## 端口镜像
@@ -172,3 +172,10 @@ copy running-config startup-config ## Optional) Save the configuration in the co
 
 做了镜像端口,连接这个端口就变成单向接收模式了, 也就是说连接这个端口的网卡只能接收数据, 而不能发送数据, 那么主机将无法上网了.
 那,如果想要远程连接抓包怎么办呢?就在这台主机上再加一块网卡就可以上网,也可以远程了.
+
+# router
+网关(Gateway)又称网间连接器,协议转换器. 网关在网络层以上实现网络互连,是最复杂的网络互连设备,仅用于两个高层协议不同的网络互连.
+网关既可以用于广域网互连,也可以用于局域网互连. 网关是一种充当转换重任的计算机系统或设备. 
+在使用不同的通信协议,数据格式或语言,甚至体系结构完全不同的两种系统之间,网关是一个翻译器. 
+与网桥只是简单地传达信息不同,网关对收到的信息要重新打包,以适应目的系统的需求.
+**网关基本上都是路由器**, 如果机器能够ping 通网关,那么一般机器就是可以上网的,如果不能上网, 那么可以尝试ping 一下DNS 服务器
