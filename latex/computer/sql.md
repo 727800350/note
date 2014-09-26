@@ -51,6 +51,17 @@ position 指示从哪里开始查询，如果是0则是从头开始，counter �
 	ORDER BY ID  ASC limit $display) as b 
 	ORDER BY ID DESC";
 
+### Backup
+备份
+```
+$mysqldump -u 用户名 -p 数据库名 > 导出的文件名
+```
+恢复
+```
+mysql>source 导入的文件名
+$mysql -u root -p voice<voice.sql
+```
+
 ## index
 在执行CREATE TABLE语句时可以创建索引,也可以单独用CREATE INDEX或ALTER TABLE来为表增加索引
 
