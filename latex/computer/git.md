@@ -60,6 +60,12 @@ Git 使用的标签有两种类型:轻量级的(lightweight)和含附注的(anno
 	git push -u origin master
 
 # FAQ
+**错误提交了一个commit, 需要把它撤销掉**
+```
+git reset --hard <commit_id>  ##  commit_id 为这个commit 之前的一个commit_id
+git push origin HEAD --force
+```
+
 **Git: Checkout all files except one**  
 When I do a git status, I see files like this:
 
