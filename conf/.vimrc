@@ -205,6 +205,8 @@ function! Comment() range
       let commentString = "%% "
     elseif &filetype == "cmm"
       let commentString = ";; "
+    elseif &filetype == "sql"
+      let commentString = "-- "
     else
       let commentString = "## "
     endif
@@ -229,6 +231,8 @@ function! Uncomment() range
       let commentString = "%% "
     elseif &filetype == "cmm"
       let commentString = ";; "
+    elseif &filetype == "sql"
+      let commentString = "-- "
     else
 "python, bash shell
       let commentString = "## "
