@@ -35,6 +35,12 @@ def fun(x):
 ```
 
 # IO
+print 默认输出的时候会自动换行, 在末尾加一个逗号可以避免换行
+```
+print 'sth',
+sys.stdout.write('sth')  ## 用这个也可以达到同样的效果
+```
+
 ## 重定向
 
 	import sys
