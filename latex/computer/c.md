@@ -100,6 +100,19 @@ By constrast, `strdup` is a Posix function, and it performs **dynamic memory all
 - `strsep, settok` extract token from string
 
 # IO
+
+printf使用的格式字符如下
+
+- d:以十进制输出整型值
+- o:以八进制输出整型值
+- x:以十六进制输出整型值
+- u:以无符号形式输出整型值
+- c:输出一个字符
+- s:输出一个字符串
+- f:输出一个浮点数
+- e:以科学表示法输出浮点数
+- g:输出%f与%e中占用位数较短的一个
+
 - `fopen` opens the file whose name is the string pointed to by path and associates a stream with it.  
 `FILE *fopen(const char *path, const char *mode);`
 - `fdopen` function associates a stream with the existing file descriptor fd  
