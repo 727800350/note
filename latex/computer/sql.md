@@ -13,13 +13,27 @@ To specify explicitly that you want a MyISAM table, indicate that with an ENGINE
 老版本的MySQL使用TYPE而不是ENGINE(例如，TYPE = MYISAM), but ENGINE is the preferred term and TYPE is deprecated.
 
 ## insert
+```
+INSERT INTO table_name VALUES (value1,value2,value3,...);
+
+INSERT INTO table_name (column1,column2,column3,...) VALUES (value1,value2,value3,...);
+```
+
 - 当field为not null, 但是没有设置默认值, 插入的时候如果没有为这个field指定值, 那么这个field的位置为空, 什么都不显示
 - 当field为not null, 设置有默认值, 插入的时候如果没有为这个field指定值, 那么这个field的值就为默认值
 - 当field没有设置not null(也就是说可以为null), 也没有设置默认值, 那么插入的时候如果没有为这个field指定值, 那么这个field的值就为null
 - 当field没有设置not null(也就是说可以为null), 设置有默认值, 那么插入的时候如果没有为这个field指定值, 那么这个field的值就为默认值
 
+## update
+```
+UPDATE table_name SET column1=value1,column2=value2,...  WHERE some_column=some_value;
+```
+如果update 的一条记录在数据库不存在(就是说后面的where语句没有找到record), 不会对数据库产生影响, 同时语句的执行也不会报错.
+
 ## Alter
-	alter table flows add column ip_prot tinyint(4) null default 0;
+```
+alter table flows add column ip_prot tinyint(4) null default 0;
+```
 
 ## Select
 mysql不支持`select top n`的语法,应该用这个替换:  
