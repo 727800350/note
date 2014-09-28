@@ -348,6 +348,14 @@ process a query result
 	for row in cursor:
 		print(row)
 
+Inserting or updating data is also done using the handler structure known as a cursor. 
+When you use a transactional storage engine such as InnoDB (the default in MySQL 5.5 and later), 
+you must commit the data after a sequence of INSERT, DELETE, and UPDATE statements.
+
+[insert demo](/../../demo/python/db_insert.py)
+
+update 也可以像上面的demo 一样使用.
+
 # Internet
 ## Address
 	import socket
