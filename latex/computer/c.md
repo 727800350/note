@@ -21,7 +21,7 @@
 **sizeof**  
 Technically speaking, the C standard only guarantees that `sizeof(char) == 1`, and the rest is up to the implementation.  
 In practice, pointers will be size 2 on a 16-bit system (if you can find one), 4 on a 32-bit system, and 8 on a 64-bit system, 
-but there's nothing to be gained in relying on a given size
+but there is nothing to be gained in relying on a given size
 
 # String
 `int snprintf(char *str, size_t size, const char *format, ...);`  
@@ -203,6 +203,16 @@ gint8, guint8, gint16, guint16, gint32, guint32, gint64, guint64
 	If it's FALSE, the caller gains ownership of the buffer and must free it after use with g_free().
 
 ## [Hash Tables](https://developer.gnome.org/glib/stable/glib-Hash-Tables.html)
+
+## [GSList glib single linked list](https://developer.gnome.org/glib/unstable/glib-Singly-Linked-Lists.html)
+```
+struct GSList {
+  gpointer data;
+  GSList *next;
+};
+typedef void* gpointer;
+```
+[GSList demo](../../demo/c/glib_slist.c)
 
 ## Related
 Other widget toolkits provide low-level functions and implementations of data structures as well, e.g.:
