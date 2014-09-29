@@ -119,6 +119,11 @@ PRIMARY KEY索引和UNIQUE索引非常类似.
 	GRANT ALL PRIVILEGES ON test.* TO 'test'@'localhost' IDENTIFIED BY '123456';
 	FLUSH PRIVILEGES;
 
+将权限给本地用户,且不需要用密码验证
+```
+GRANT ALL PRIVILEGES ON test.* TO ''@'localhost';
+```
+
 MySQL 默认有个root用户,但是这个用户权限太大,一般只在管理数据库时候才用.如果在项目中要连接 MySQL 数据库,则建议新建一个权限较小的用户来连接.
 
 在 MySQL 命令行模式下输入如下命令可以为 MySQL 创建一个新用户:  
