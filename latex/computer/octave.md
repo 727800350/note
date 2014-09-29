@@ -32,6 +32,27 @@ Octave 程序在系统终端执行的时候, 还可以为其添加一些参数. 
 	那么程序的输出为:
 	test, arg1, arg2
 
+## Procedure
+**for循环**
+```
+for var = expression
+  body
+endfor
+```
+
+Within Octave is it also possible to iterate over matrices or cell arrays using the for statement. For example consider
+```
+disp ("Loop over a matrix")
+for i = [1,3;2,4]
+  i
+endfor
+
+disp ("Loop over a cell array")
+for i = {1,"two";"three",4}
+  i
+endfor
+```
+
 # Plot Figure
 plot 命令中的颜色和样式选项 (见 help plot),(† 仅在 Matlab 中存在的选项)
 
@@ -66,7 +87,7 @@ Octave/Gnuplot 没有提供鼠标或者快捷键操作来实现图片的打印�
 	ezplot('sin(x)')
 	ezplot('x^2 - y^2 - 1') // 双曲线, 不是z = x^2-y^2-1
 
-## Function
+# Function
 Matlab 中数组下标从1开始, 而不是像很多种编程语言一样的从0 开始.
 
 	function [y1,...,yN] = myfun(x1,...,xM)
@@ -82,6 +103,10 @@ The name of the file should match the name of the first function in the file.
 		y(3)=a*b
 使用的时候就是`y=f(2,3)`  
 参数也可以使用这种方式
+
+## Math
+var: 求本差
+std: 求标准差
 
 ## Solve Equation
 ### solve
