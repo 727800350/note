@@ -100,43 +100,23 @@ original branch status:
 	  remotes/origin/HEAD -> origin/master
 	  remotes/origin/master
 	  remotes/origin/note
+note branch 是在其他机器上删除的一个分支
 
 delete the branch locally
 
 	[eric@iis ntop]$ git branch -d note
-	Deleted branch note (was fa0da42).
-	[eric@iis ntop]$ git branch -a
-	* master
-	  remotes/origin/HEAD -> origin/master
-	  remotes/origin/master
-  	  remotes/origin/note
 
 clean the remote branch status
 
 	[eric@iis ntop]$ git remote prune origin
-	Pruning origin
-	URL: git@git.oschina.net:eric_uni/ntop.git
-	 * [pruned] origin/note
-	[eric@iis ntop]$ git branch -a
-	* master
-	  remotes/origin/HEAD -> origin/master
-	  remotes/origin/master
 
 query the remote and automatically set the origin/HEAD pointer to the remote's current branch.
 
 	[eric@iis ntop]$ git remote set-head origin -a
-	origin/HEAD set to master
-	[eric@iis ntop]$ git branch -a
-	* master
-	  remotes/origin/HEAD -> origin/master
-	  remotes/origin/master
 
 delete the origin/HEAD symbolic ref
 
 	[eric@iis ntop]$ git remote set-head origin -d
-	[eric@iis ntop]$ git branch -a
-	* master
-	  remotes/origin/master
 Done
 
 **commit 之后发现commit的message有错误**  
