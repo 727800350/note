@@ -254,7 +254,6 @@ TCP中80端口为HTTP,表明HTTP仍占据着TCP的主要部分.占据TCP端口�
 DNS 使用TCP和UDP端口53
 
 ### [DNS报文格式(RFC1035)](http://blog.csdn.net/tigerjibo/article/details/6827736)
-
 dns请求和应答都是用相同的报文格式,分成5个段(有的报文段在不同的情况下可能为空),如下:
 
     +---------------------+
@@ -269,27 +268,23 @@ dns请求和应答都是用相同的报文格式,分成5个段(有的报文段�
     |      Additional     | 附加信息
     +---------------------+
 
-Header段是必须存在的,它定义了报文是请求还是应答,也定义了其他段是否需要存在,以及是标准查询还是其他.
+Header段是必须存在的,它定义了报文是请求还是应答,也定义了其他段是否需要存在,以及是标准查询还是其他.  
+DNS Header各个字段的含义及大小参见(图中单位为bit):  
+![dnsheaderformat](http://www.tcpipguide.com/free/diagrams/dnsheaderformat.png)
 
 Question段描述了查询的问题,包括查询类型(QTYPE),查询类(QCLASS),以及查询的域名(QNAME).
 
 剩下的3个段包含相同的格式:一系列可能为空的资源记录(RRs).Answer段包含回答问题的RRs,授权段包含授权域名服务器的RRs,附加段包含和请求相关的,但是不是必须回答的RRs
 
-DNS Header各个字段的含义及大小参见(图中单位为bit):  
-![dnsheaderformat](http://www.tcpipguide.com/free/diagrams/dnsheaderformat.png)
-
+**一个完整的DNS报文示例**  
 ![报文](http://i.imgbox.com/U26Avc6h.gif)
 
-[DNS报文结构](http://zhaotao110.blog.sohu.com/218341780.html)
-
-![DNS 结构](http://1862.img.pp.sohu.com.cn/images/blog/2012/5/28/14/11/e6055747_13854174a5fg214.gif)
-
-![查询问题](http://1881.img.pp.sohu.com.cn/images/blog/2012/5/28/14/15/e6055747_138541ad28dg214.gif)
-
-![回答,授权,额外](http://1821.img.pp.sohu.com.cn/images/blog/2012/5/28/14/16/e6055747_138541bc6e8g214.gif)
+查询问题, 回答,授权,额外都是同样的格式, 如下图所示
+![DNS 结构](http://i.imgbox.com/MMhFAJa3.png).
+详细信息请参考[DNS报文结构](http://zhaotao110.blog.sohu.com/218341780.html).
+只是对于查询来说, 很多字段都为0, 比如生存时间, 资源数据.
 
 ## 字段说明
-
 (1) DNS报文
 
 - 标识: 占16位,唯一匹配查询和应答
