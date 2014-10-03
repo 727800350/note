@@ -244,7 +244,7 @@ Analyse
 	};
 
 - Length: A field that specifies the length in bytes of the UDP header and UDP data.  
-- The minimum length is 8 bytes since that's the length of the header
+- The minimum length is 8 bytes since that is the length of the header
 
 # Application Layer
 TCP中80端口为HTTP,表明HTTP仍占据着TCP的主要部分.占据TCP端口号第二位的25端口为SMTP. 443端口为网页浏览端口,主要用于HTTPS服务,4662端口为Emule(电驴)协议的标准端口号.
@@ -274,15 +274,20 @@ DNS Header各个字段的含义及大小参见(图中单位为bit):
 
 Question段描述了查询的问题,包括查询类型(QTYPE),查询类(QCLASS),以及查询的域名(QNAME).
 
-剩下的3个段包含相同的格式:一系列可能为空的资源记录(RRs).Answer段包含回答问题的RRs,授权段包含授权域名服务器的RRs,附加段包含和请求相关的,但是不是必须回答的RRs
+剩下的3个段包含相同的格式:
+一系列可能为空的资源记录(RRs), 包括:
+Answer段包含回答问题的RRs,
+授权段包含授权域名服务器的RRs,
+附加段包含和请求相关的,但是不是必须回答的RRs
 
 **一个完整的DNS报文示例**  
 ![报文](http://i.imgbox.com/U26Avc6h.gif)
 
 查询问题, 回答,授权,额外都是同样的格式, 如下图所示
-![DNS 结构](http://i.imgbox.com/MMhFAJa3.png).
+![DNS 结构](http://i.imgbox.com/MMhFAJa3.png)  
 详细信息请参考[DNS报文结构](http://zhaotao110.blog.sohu.com/218341780.html).
-只是对于查询来说, 很多字段都为0, 比如生存时间, 资源数据.
+只是对于查询来说, 很多字段都为0, 比如生存时间, 资源数据.  
+同时, 对于回答的报文, 里面的域名部分(也就是查询报文中的查询问题)仍然保留着.
 
 ## 字段说明
 (1) DNS报文
@@ -298,7 +303,13 @@ Question段描述了查询的问题,包括查询类型(QTYPE),查询类(QCLASS),
 - QR(query or response): 占1位,0:查询,1:响应
 - opcode: 占4位,0:标准查询,1:反向查询,2:服务器状态查询,3: reserved, 4:primary server tells secondary servers to Update DNS, 5:allows resource records to be added, deleted or updated selectively
 - AA(authority answer): 占1位,0:非授权,1:授权回答
-- TC(truncated): 占1位,0:未截断,1:截断
+- TC(truncated): 占1位,0:未截断,1:截断  
+Messages carried by UDP are restricted to 512 bytes (not counting the IP or UDP headers). 
+Longer messages are truncated and the TC bit is set in the header.  
+DNS primarily uses UDP on port number 53 to serve requests. 
+DNS queries consist of a single UDP request from the client followed by a single UDP reply from the server. 
+TCP is used when the response data size exceeds 512 bytes, or for tasks such as zone transfers.  
+Some resolver implementations use TCP for all queries.
 - RD(Recursive Desire): 占1位,0:非递归,1:递归
 - RA(Recursive Available): 占1位,0:不提供递归,1:提供递归
 - rcode: 占4位,0:无差错,3:名字差错...
