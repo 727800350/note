@@ -304,15 +304,20 @@ Answer段包含回答问题的RRs,
 - opcode: 占4位,0:标准查询,1:反向查询,2:服务器状态查询,3: reserved, 4:primary server tells secondary servers to Update DNS, 5:allows resource records to be added, deleted or updated selectively
 - AA(authority answer): 占1位,0:非授权,1:授权回答
 - TC(truncated): 占1位,0:未截断,1:截断  
-Messages carried by UDP are restricted to 512 bytes (not counting the IP or UDP headers). 
-Longer messages are truncated and the TC bit is set in the header.  
-DNS primarily uses UDP on port number 53 to serve requests. 
-DNS queries consist of a single UDP request from the client followed by a single UDP reply from the server. 
-TCP is used when the response data size exceeds 512 bytes, or for tasks such as zone transfers.  
-Some resolver implementations use TCP for all queries.
 - RD(Recursive Desire): 占1位,0:非递归,1:递归
 - RA(Recursive Available): 占1位,0:不提供递归,1:提供递归
 - rcode: 占4位,0:无差错,3:名字差错...
+
+DNS primarily uses UDP on port number 53 to serve requests. 
+Messages carried by UDP are restricted to 512 bytes (not counting the IP or UDP headers). 
+Longer messages are truncated and the TC bit is set in the header.  
+Then TCP is used when the response data size exceeds 512 bytes, or for tasks such as zone transfers.  
+DNS在进行**区域传输**的时候使用TCP协议,其它时候则使用UDP协议;  
+DNS的规范规定了2种类型的DNS服务器,一个叫主DNS服务器,一个叫辅助DNS服务器.  
+在一个区中主DNS服务器从自己本机的数据文件中读取该区的DNS数据信息,而辅助DNS服务器则从区的主DNS服务器中读取该区的DNS数据信息.
+当一个辅助DNS服务器启动时,它需要与主DNS服务器通信,并加载数据信息,这就叫做区传送(zone transfer).  
+辅域名服务器会定时(一般时3小时)向主域名服务器进行查询以便了解数据是否有变动.如有变动,则会执行一次区域传送,进行数据同步.
+区域传送将使用TCP而不是UDP,因为数据同步传送的数据量比一个请求和应答的数据量要多得多.
 
 **[反向查询](http://blog.csdn.net/jackxinxu2100/article/details/8145318)**
 反向解析:通过ip查找域名
