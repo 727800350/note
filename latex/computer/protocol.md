@@ -511,15 +511,15 @@ When we talk about a specific RR, we assume it has the following:
 
 - **owner**           which is the domain name where the RR is found.
 
-- **type**            which is an encoded 16 bit value that specifies the type of the resource in this resource record.  Types refer to abstract resources.  
+- **type**            which is an encoded 16 bit value that specifies the type of the resource in this resource record.  Types refer to abstract resources.完整详细介绍参见[wiki](http://en.wikipedia.org/wiki/List_of_DNS_record_types)  
 	This memo uses the following types:
-	- **A**:            a host address
-	- **CNAME**:        identifies the canonical name of an alias
-	- **HINFO**         identifies the CPU and OS used by a host
-	- **MX**            identifies a mail exchange for the domain.  See [RFC-974 for details.
-	- **NS** 			the authoritative name server for the domain
-	- **PTR** 			a pointer to another part of the domain name space
-	- **SOA** 			identifies the start of a zone of authority
+	- **A**: 1          a host address
+	- **CNAME**: 5      identifies the canonical name of an alias
+	- **HINFO**: 13     identifies the CPU and OS used by a host
+	- **MX**: 15        identifies a mail exchange for the domain.  See [RFC-974 for details.
+	- **NS**: 2 		the authoritative name server for the domain
+	- **PTR**: 12 		a pointer to another part of the domain name space
+	- **SOA**: 6 		identifies the start of a zone of authority
 
 - **class**  which is an encoded 16 bit value which identifies a protocol family or instance of a protocol.  
 	This memo uses the following classes:
@@ -530,7 +530,7 @@ When we talk about a specific RR, we assume it has the following:
 
 - **RDATA**     which is the type and sometimes class dependent data which describes the resource:
 
-	- **A**               For the IN class, a 32 bit IP address For the CH class, a domain name followed by a 16 bit octal Chaos address.
+	- **A**               For the IN class, a 32 bit IP address For the CH class, a domain name followed by a 16 bit octal Chaos address
 	- **CNAME**           a domain name.
 	- **MX**              a 16 bit preference value (lower is better) followed by a host name willing to act as a mail exchange for the owner domain.
 	- **NS**              a host name.
