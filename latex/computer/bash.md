@@ -118,11 +118,7 @@ Window->Translation->Remote character set: UTF-8
 1. 打开[puttygen](http://the.earth.li/~sgtatham/putty/latest/x86/puttygen.exe)
 1. 通过conversions->import key 导入私钥
 1. 点击save private key, 保存到.ssh目录下
-1. 在机器上新建`~/.ssh/authorized_keys`, 并修改`~/.ssh`和`~/.ssh/authorized_keys`文件的权限
-```
-chmod 700 ~/.ssh
-chmod 600 ~/.ssh/authorized_keys
-```
+1. 在机器上新建`~/.ssh/authorized_keys`, 并修改`~/.ssh`和`~/.ssh/authorized_keys`文件的权限: `chmod 700 ~/.ssh` and `chmod 600 ~/.ssh/authorized_keys`
 1. 将putty key generator 界面上的公钥复制到`~/.ssh/authorized_keys`文件中
 1. 打开putty, 在connection->ssh->auth 的private key file for authentication中将上面保存的putty专用的密钥写到这里
 1. over
