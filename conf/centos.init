@@ -18,8 +18,10 @@ sudo yum install -y php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml
 
 ## phpMyAdmin: Web application to manage MySQL
 ## config file /etc/phpMyAdmin/config.inc.php
-## php data file in /usr/share/phpMyAdmin, 这个目录的访问权限的设置在/etc/httpd/conf.d/phyMyAdmin.conf 文件中
-## 为了让局域网内的其他机器能够访问网站, 将防火墙关闭掉, fedora: service firewalld stop, 同时需要setenforce 0(降低selinux的等级)
+## php data file in /usr/share/phpMyAdmin, 访问权限的设置在/etc/httpd/conf.d/phpMyAdmin.conf
+## 为了让局域网内的其他机器能够访问网站, 将防火墙关闭掉, 
+fedora: service firewalld stop; sudo setenforce 0
+centos: service iptables stop; sudo setenforce 0
 sudo yum install -y phpMyAdmin
 
 ## chrome
@@ -48,7 +50,7 @@ cd zlog-latest-stable
 make
 sudo make install
 cd ../
-rm -rf latest-stable zlog-latest-stable
+sudo rm -rf latest-stable zlog-latest-stable
 
 ## octave
 ## will install hdf5, hdf5-static and hdf5-devel
@@ -63,8 +65,8 @@ wget https://pypi.python.org/packages/source/p/pip/pip-1.5.6.tar.gz#md5=01026f87
 tar -xvf pip-1.5.6.tar.gz
 cd pip-1.5.6
 sudo python setup.py install
-rm -rf pip-1.5.6.tar.gz pip-1.5.6
 cd ../
+sudo rm -rf pip-1.5.6.tar.gz pip-1.5.6
 sudo pip install gnuplot-py
 sudo pip install xlutils
 
