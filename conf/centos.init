@@ -41,6 +41,15 @@ sudo yum install -y nmap
 ## A whois client that accepts both traditional and finger-style queries
 sudo yum install -y jwhois 
 
+### zlog
+wget https://codeload.github.com/HardySimpson/zlog/tar.gz/latest-stable
+tar -xvf latest-stable
+cd zlog-latest-stable
+make
+sudo make install
+cd ../
+rm -rf latest-stable zlog-latest-stable
+
 ## octave
 ## will install hdf5, hdf5-static and hdf5-devel
 sudo yum install -y hdf5-static 
@@ -55,6 +64,7 @@ tar -xvf pip-1.5.6.tar.gz
 cd pip-1.5.6
 sudo python setup.py install
 rm -rf pip-1.5.6.tar.gz pip-1.5.6
+cd ../
 sudo pip install gnuplot-py
 sudo pip install xlutils
 
