@@ -1,13 +1,18 @@
 sudo yum groupinstall -y "Development Tools"
+
 wget https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6
 sudo mv RPM-GPG-KEY-EPEL-6 /etc/pki/rpm-gpg
 sudo yum install -y clang gcc gcc-c++ gdb
 sudo yum install -y flex byacc
+
 sudo yum install -y sudo git git-svn
 git config --global user.name "Eric Uni"
 git config --global user.email you@example.com"
+
 sudo yum install -y unrar
+sudo yum install -y mlocate
 sudo yum update -y firefox
+
 sudo yum install -y mysql mysql-server mysql-devel
 sudo yum install -y glib2 glib2-devel
 sudo yum install -y boost
@@ -51,6 +56,15 @@ make
 sudo make install
 cd ../
 sudo rm -rf latest-stable zlog-latest-stable
+
+### local libs
+sudo touch /etc/ld.so.conf.d/local_lib.conf
+sudo touch /etc/ld.so.conf.d/local_lib64.conf
+sudo chown eric:eric /etc/ld.so.conf.d/local_lib.conf /etc/ld.so.conf.d/local_lib64.conf
+echo /usr/local/lib > /etc/ld.so.conf.d/local_lib.conf
+echo /usr/local/lib64 > /etc/ld.so.conf.d/local_lib64.conf
+sudo chown root:root /etc/ld.so.conf.d/local_lib.conf /etc/ld.so.conf.d/local_lib64.conf
+sudo ldconfig
 
 ## octave
 ## will install hdf5, hdf5-static and hdf5-devel
