@@ -2,6 +2,8 @@ sudo yum groupinstall -y "Development Tools"
 sudo yum install -y clang gcc gcc-c++ gdb
 sudo yum install -y flex byacc
 sudo yum install -y sudo git git-svn
+git config --global user.name "Eric Uni"
+git config --global user.email you@example.com"
 sudo yum install -y unrar
 sudo yum update -y firefox
 sudo yum install -y mysql mysql-server mysql-devel
