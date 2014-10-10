@@ -1,4 +1,6 @@
 sudo yum groupinstall -y "Development Tools"
+wget https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6
+sudo mv RPM-GPG-KEY-EPEL-6 /etc/pki/rpm-gpg
 sudo yum install -y clang gcc gcc-c++ gdb
 sudo yum install -y flex byacc
 sudo yum install -y sudo git git-svn
@@ -52,6 +54,7 @@ wget https://pypi.python.org/packages/source/p/pip/pip-1.5.6.tar.gz#md5=01026f87
 tar -xvf pip-1.5.6.tar.gz
 cd pip-1.5.6
 sudo python setup.py install
+rm -rf pip-1.5.6.tar.gz pip-1.5.6
 sudo pip install gnuplot-py
 sudo pip install xlutils
 
