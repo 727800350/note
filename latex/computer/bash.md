@@ -112,12 +112,20 @@ Window->Translation->Remote character set: UTF-8
 之后, 在Session->Saved Sessions 中起一个名字, 然后Save, 下次使用的时候, 直接load, 就可以了
 
 如果要从A远程登录到B, 把A 的公钥追加到 B的 `$HOME/.ssh/authorized_keys` 文件中  
-如果需要putty 使用公钥密钥方式登陆, 需要把A(windows)的密钥使用[puttygen](http://the.earth.li/~sgtatham/putty/latest/x86/puttygen.exe), 转化为putty自己的格式
+但是使用putty 还有一点不同, 具体的操作步骤如下:
 
-需要修改`~/.ssh`和`~/.ssh/authorized_keys`文件的权限
-	
-	chmod 700 ~/.ssh
-	chmod 600 ~/.ssh/authorized_keys
+1. 按照正常的方式在机器A上生成密钥对, id_rsa and id_rsa.pub 两个文件
+1. 打开[puttygen](http://the.earth.li/~sgtatham/putty/latest/x86/puttygen.exe)
+1. 通过conversions->import key 导入私钥
+1. 点击save private key, 保存到.ssh目录下
+1. 在机器上新建`~/.ssh/authorized_keys`, 并修改`~/.ssh`和`~/.ssh/authorized_keys`文件的权限
+```
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+```
+1. 将putty key generator 界面上的公钥复制到`~/.ssh/authorized_keys`文件中
+1. 打开putty, 在connection->ssh->auth 的private key file for authentication中将上面保存的putty专用的密钥写到这里
+1. over
 
 **PSCP**, the PuTTY Secure Copy client, and it is a command line application
 
