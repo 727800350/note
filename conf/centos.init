@@ -46,6 +46,10 @@ sudo yum install -y octave
 ## python
 sudo yum install -y gnuplot numpy scipy
 sudo yum install -y python-pip 
+wget https://pypi.python.org/packages/source/p/pip/pip-1.5.6.tar.gz#md5=01026f87978932060cc86c1dc527903e
+tar -xvf pip-1.5.6.tar.gz
+cd pip-1.5.6
+sudo python setup.py install
 sudo pip install gnuplot-py
 sudo pip install xlutils
 
