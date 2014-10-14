@@ -309,3 +309,33 @@ This triggering on and off can be repeated many times.
   }
 }
 ```
+
+最后附上所有的内置变量
+
+| Variable    | Purpose                                                              | AWK | NAWK | GAWK |
+|-------------|----------------------------------------------------------------------|-----|------|------|
+| FS          | Field separator                                                      | Yes | Yes  | Yes  |
+| NF          | Number of Fields                                                     | Yes | Yes  | Yes  |
+| RS          | Record separator                                                     | Yes | Yes  | Yes  |
+| NR          | Number of input records                                              | Yes | Yes  | Yes  |
+| FILENAME    | Current filename                                                     | Yes | Yes  | Yes  |
+| OFS         | Output field separator                                               | Yes | Yes  | Yes  |
+| ORS         | Output record separator                                              | Yes | Yes  | Yes  |
+| ARGC        | # of arguments                                                       |     | Yes  | Yes  |
+| ARGV        | Array of arguments                                                   |     | Yes  | Yes  |
+| ARGIND      | Index of ARGV of current file                                        |     |      | Yes  |
+| FNR         | Input record number                                                  |     | Yes  | Yes  |
+| OFMT        | Ouput format (default "%.6g")                                        |     | Yes  | Yes  |
+| RSTART      | Index of first character after match()                               |     | Yes  | Yes  |
+| RLENGTH     | Length of string after match()                                       |     | Yes  | Yes  |
+| SUBSEP      | Default separator with multiple subscripts in array (default "\034") |     | Yes  | Yes  |
+| ENVIRON     | Array of environment variables                                       |     |      | Yes  |
+| IGNORECASE  | Ignore case of regular expression                                    |     |      | Yes  |
+| CONVFMT     | conversion format (default: "%.6g")                                  |     |      | Yes  |
+| ERRNO       | Current error after getline failure                                  |     |      | Yes  |
+| FIELDWIDTHS | list of field widths (instead of using FS)                           |     |      | Yes  |
+| BINMODE     | Binary Mode (Windows)                                                |     |      | Yes  |
+| LINT        | Turns --lint mode on/off                                             |     |      | Yes  |
+| PROCINFO    | Array of informaiton about current AWK program                       |     |      | Yes  |
+| RT          | Record terminator                                                    |     |      | Yes  |
+| TEXTDOMAIN  | Text domain (i.e. localization) of current AWK program               |     |      | Yes  |
