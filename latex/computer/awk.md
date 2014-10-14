@@ -151,6 +151,7 @@ exit
 - FS - The Input Field Separator Variable
 "-F": 在command line上指定awk的input field separator, 在脚本中是通过FS这个变量实现的.  
 下面量段代码的功能是相同的, 前者是command line 的形式, 后者是script的形式
+
 ```
 awk -F: '{if ($2 == "") print $1 ": no password!"}' </etc/passwd
 ```
@@ -166,6 +167,7 @@ BEGIN {
 	}
 }
 ```
+
 如果FS中指定的是多个字符组成的字符串, 那么awk会严格匹配.  
 If you change the field separator before you read the line, the change affects what you read. If you change it after you read the line, it will not redefine the variables. You wouldn't want a variable to change on you as a side-effect of another action.
 Note the field separator variable retains its value until it is explicitly changed.
@@ -191,6 +193,8 @@ $2和$3会拼接到一起成为一个field
 
 - NR - The Number of Records Variable, 一行就是一个record
 
+- FNR: contains the number of lines read, but is **reset for each file read**. The NR variable accumulates for all files read.
+
 - RS - The Record Separator Variable
 Normally, AWK reads one line at a time, and breaks up the line into fields.
 You can set the "RS" variable to change AWK's definition of a "line". If you set it to an empty string, then AWK will read the entire file into memory. 
@@ -200,3 +204,108 @@ You can combine this with changing the "FS" variable.
 
 - FILENAME - The Current Filename Variable
 
+## prinf
+The printf is very similar to the C function with the same name, 用法也一样.
+
+同时可以使用输出重定向
+```
+printf("string\n") > "/tmp/file";
+printf("string\n") >> "/tmp/file";
+```
+
+### String Functions
+
+- index(string,search)	AWK, NAWK, GAWK
+- length(string)	AWK, NAWK, GAWK
+- split(string,array,separator)	AWK, NAWK, GAWK
+- substr(string,position)	AWK, NAWK, GAWK
+- substr(string,position,max)	AWK, NAWK, GAWK
+- sub(regex,replacement)	NAWK, GAWK
+- sub(regex,replacement,string)	NAWK, GAWK
+- gsub(regex,replacement)	NAWK, GAWK
+- gsub(regex,replacement,string)	NAWK, GAWK
+- match(string,regex)	NAWK, GAWK, eg:  `regex="[a-zA-Z0-9]+";`
+- tolower(string)	GAWK
+- toupper(string)	GAWK
+- asort(string,[d])	GAWK
+- asorti(string,[d])	GAWK
+- gensub(r,s,h [,t])	GAWK
+- strtonum(string)	GAWK
+
+# 高级功能
+## 高级命令
+**system**
+NAWK has a function system() that can execute any program. It returns the exit status of the program.
+```
+if (system("/bin/rm junk") != 0)
+print "command didn't work";
+```
+The command can be a string, so you can dynamically create commands based on input. 
+Note that the output isn't sent to the NAWK program. You could send it to a file, and open that file for reading. There is another solution, however.
+
+**getline**
+AWK has a command that allows you to force a new line. It doesn't take any arguments. It returns a 1, if successful, a 0 if end-of-file is reached, and a -1 if an error occurs.
+度如下一行
+As a side effect, the line containing the input changes.没有理解这个side effet 是什么意思?
+
+**strftime**: GAWK has a special function for creating strings based on the current time.
+The systime() function returns the current date in seconds. 
+使用起来不是很方便,仅仅是在计算时间差的比较方便
+```
+strftime("%y_%m_%d_%H_%M_%S")
+94_12_25_12_00_00
+```
+
+## 自定义函数
+Finally, NAWK and GAWK support user defined functions.
+
+```
+function error ( message ) {
+    if (FILENAME != "-") {
+        printf("%s: ", FILENAME) > "/dev/tty";
+    }
+    printf("line # %d, %s, line: %s\n", NR, message, $0) >> "/dev/tty";
+}
+```
+
+## AWK patterns
+A pattern or condition is simply an abbreviated test. If the condition is true, the action is performed. All relational tests can be used as a pattern.
+
+### if的省略
+eg: The `head -10` command, which prints the first 10 lines and stops, can be duplicated with
+```
+{if (NR <= 10 ) {print}}
+```
+Changing the if statement to a condition shortens the code:
+```
+NR <= 10 {print}
+```
+
+### 含有regex的简化
+`{if ($0 ~ /special/) {print}}` or more briefly `$0 ~ /special/ {print}` or `/special/ {print}`
+
+### 逻辑运算法
+可以使用逻辑运算符和括号
+AND (&&), OR (||) and NOT (!) operator
+
+### 开始与结束
+```
+/start/,/stop/ {print}
+```
+This form defines, in one line, the condition to turn the action on, and the condition to turn the action off. 
+That is, when a line containing "start" is seen, it is printed. Every line afterwards is also printed, 
+until a line containing "stop" is seen. This one is also printed, but the line after, and all following lines, are not printed.   
+This triggering on and off can be repeated many times.
+```
+{
+  if ($0 ~ /start/) {
+    triggered=1;
+  }
+  if (triggered) {
+     print;
+     if ($0 ~ /stop/) {
+	triggered=0;
+     }
+  }
+}
+```
