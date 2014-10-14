@@ -217,6 +217,8 @@ cron服务器每分钟读取一次/var/crontab/cron目录内的所有文件和/e
 # *  *  *  *  * user-name command to be executed
 ```
 
+特别需要注意的是crontab 下的环境变量$PATH 和普通shell 下的 $PATH 是不一样的, 在crontab下, `$PATH=/usr/bin:/bin`, 所以需要特别注意command 的路径
+
 crontab
 
 - `crontab -l`: The current crontab will be displayed on standard output.
@@ -235,6 +237,9 @@ eg:
 表示在每小时20分和30分时执行
 5. `* 23 * * 2-5 /usr/local/bin/esbbak`
 表示在星期二到星期五每天的23点执行
+
+**kill**
+当给多个进程号的时候, 可以同时杀死多个进行
 
 # 杂项
 **man**  
