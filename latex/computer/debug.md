@@ -678,6 +678,18 @@ Traffic with the 'Evil Bit' Set
 	# tcpdump 'ip[6] & 128 != 0'
 
 
+## wireshark filter
+```
+ip.addr == 10.43.54.65
+is equivalent to 
+ip.src == 10.43.54.65 or ip.dst == 10.43.54.65
+```
+
+Show only SMTP (port 25) and ICMP traffic:
+```
+ tcp.port eq 25 or icmp
+```
+
 # [lsof](http://www.danielmiessler.com/study/lsof/)
 lsof: list open files
 
