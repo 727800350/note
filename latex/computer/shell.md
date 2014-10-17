@@ -199,6 +199,8 @@ test  "string"  string_operator  "string"
     -n   非空串
 
 ### 数值测试
+**数值的运算最好通过awk 来进行, shell 本身只支持整数运算**
+
 两种格式: 
 ```
 "number"  number_operator  "number"
