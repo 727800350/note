@@ -94,3 +94,9 @@ sudo yum install graphviz-gd ## support for png, jpg, jpeg etc
 
 ## bt
 sudo yum install -y transmission
+
+## play music and video
+## 默认的Centos 7不带能够播放MP3和视频文件的解码器支持, 默认repo和后来自己加的源都不带, 需要nux-desktop repo, 先把epel 的repo弄好
+sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-1.el7.nux.noarch.rpm
+sudo yum install -y gstreamer gstreamer-plugins-base gstreamer-plugins-good gstreamer-plugins-bad-free
+
