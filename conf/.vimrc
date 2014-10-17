@@ -127,6 +127,8 @@ func! CompileCode()
             exec "!dot -Tps %<.dot -o %<.ps"
         elseif &filetype == "tex"
             exec "!xelatex  %<.tex"
+        elseif &filetype == "sh"
+            exec "!bash  %<.sh"
         endif
 endfunc
 
