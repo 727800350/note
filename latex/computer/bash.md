@@ -58,12 +58,17 @@ umask指定的是**该默认值需要减掉的权限**.因为r,w,x分别是4,2,1
 所以,当要去掉能写的权限,就是输入2,而如果要去掉能读的权限,也就是4,那么要去掉读与写的权限,也就是6,而要去掉执行与写入的权限,也就是3.  
 So, when creating a new file, the permission is: `the default - umask = -rw-rw-rw- - 0002 = -rw-rw-r--`
 
-# 程序
-**pgrep**  
-`pgrep` looks through the currently running processes and **lists the process IDs** which matches the selection criteria to stdout. All the criteria have to match.  
-`-n`: Select only the newest (most recently started) of the matching processes.
-`shell> strace -c -p $(pgrep -n php-cgi)`
+**column**
+The column utility formats its input into multiple columns.
 
+- -s: Specify a set of characters to be used to delimit columns for the -t option.
+- -t: Determine the number of columns the input contains and create a table.  Columns are delimited with whitespace, by default, or with the characters supplied using the -s option.  Useful for pretty-printing displays.
+
+eg: `mount | column -t`
+
+tac: cat in reverse(以行为单位)
+
+# 程序
 **tkgvizmakefile**  
 create Tk graphs from Makefiles
 
@@ -86,6 +91,12 @@ nbrew 是用来管理多版本 python 的利器一枚
 - 禁用pythonbrew(即切换回原始环境): pythonbrew off
 
 # 网络
+**ss**
+socket statistics (show apps using the Internet)
+
+iftop: visually show network traffic
+
+## 远程主机相关的
 **ssh**  
 
 	cd ~/.ssh
@@ -169,12 +180,23 @@ sudo hostnamectl set-hostname human.earth
 sudo hostnamectl status
 
 # File System
+iotop: i/o stats
+
 `du`: 查看目录大小  
 查看某个目录的大小 `/home/master/documents`  
-查看目录下所有目录的大小并按大小降序排列:`sudo du -sm /etc/* | sort -nr | less`
+查看目录下所有目录的大小并按大小降序排列:`sudo du -sm /etc/* | sort -nr | less`  
+`-h` 以适合于human 的格式显示, 他会自动根据文件大小以KB, MB, GB等来显示大小, `-m`以MB为计量单位
 
 `df`: 查看磁盘使用情况  
 于du不同的是,du是面向文件的命令,只计算被文件占用的空间.不计算文件系统metadata 占用的空间.df则是基于文件系统总体来计算,通过文件系统中未分配空间来确定系统中已经分配空间的大小
+
+**pgrep**  
+`pgrep` looks through the currently running processes and **lists the process IDs** which matches the selection criteria to stdout. All the criteria have to match.  
+`-n`: Select only the newest (most recently started) of the matching processes.
+`shell> strace -c -p $(pgrep -n php-cgi)`
+
+zgrep: grep within compressed files
+zless: look at compressed files
 
 # OS
 **开机自动启动**  
@@ -241,12 +263,14 @@ eg:
 **kill**
 当给多个进程号的时候, 可以同时杀死多个进行
 
+pstree: shows processes in a tree
+
 # 杂项
 **man**  
 `man number item`: find item in section number, eg: `man 3 fopen`  
 `man -k word`: 关键字查找, 查找包含word(命令本身或者解释中) 的command  
 `man -f word`: 根据关键字在联机帮助中搜索完全匹配的条目, Equivalent to whatis  
-把man page 转成文本文件,如: `man ls | col -b > ~/Desktop/man_ls.txt`  
+把man page 转成文本件,如: `man ls | col -b > ~/Desktop/man_ls.txt`  
 `man -t ls > man_ls.ps && ps2pdf man_ls.ps && rm man_ls.ps`: print
 
 **ubuntu root password**  
