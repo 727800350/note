@@ -1,7 +1,12 @@
 sudo yum groupinstall -y "Development Tools"
 
+## repo
 wget https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6
 sudo mv RPM-GPG-KEY-EPEL-6 /etc/pki/rpm-gpg
+
+wget http://apt.sw.be/RPM-GPG-KEY.dag.txt
+sudo mv RPM-GPG-KEY.dag.txt /etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
+
 sudo yum install -y clang gcc gcc-c++ gdb
 sudo yum install -y flex byacc
 
