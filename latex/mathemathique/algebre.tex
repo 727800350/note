@@ -241,4 +241,48 @@ and the columns of $V$ , which are just the eigenvectors of $A^T A$, are called 
 
 Any arbitrary matrix $X$ can be converted to an orthogonal matrix, a diagonal matrix and another orthogonal matrix
 (or a rotation, a stretch and a second rotation)
+
+\section{Elliptic curve 椭圆曲线}
+En mathématiques, une courbe elliptique est un cas particulier de courbe algébrique,
+Contrairement à ce que son nom pourrait laisser croire, l'ellipse n'est pas une courbe elliptique.
+
+L'équation d'une courbe elliptique définie sur le corps des nombres réels peut être mise sous la forme plus simple (dite équation de Weierstrass) :
+$$ y^2 = x^3 + ax + b $$
+où les coefficients a, b sont des nombres réels.
+其是无奇点的,亦即,其图形没有尖点或自相交
+Selon le choix de ces coefficients, les graphes correspondants ont essentiellement deux \href{http://upload.wikimedia.org/wikipedia/commons/d/d0/ECClines-3.svg}{formes possibles}.
+
+Les courbes représentées ont une tangente bien définie en chaque point, n'ont ni point double, ni point de rebroussement.
+Algébriquement, ceci se traduit par le fait que le discriminant de la courbe ne s'annule pas.
+$$ \Delta = -16(4a^3 + 27b^2), $$
+Un discriminant différent de zéro indique une courbe sans singularités (ou encore courbe non-singulière).
+Le facteur -16 peut para\^itre inutile à ce stade mais il intervient dans l'étude plus avancée des courbes elliptiques.
+
+椭圆曲线的"+" 运算
+\href{http://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/ECClines.svg/680px-ECClines.svg.png}{图示}
+
+上面的群可以用代数方式定义.给定域$K$(其中$K$的特征值非$2$或者$3$)上的曲线$E: y^2 = x^3 - px - q$,及非无穷远点$P(x_P,y_P), Q(x_Q, y_Q) \in E$.
+定义$R = P+Q$:
+$$
+\begin{aligned}
+& x_R = s^2 - x_P - x_Q \\
+& y_R = -y_P + s(x_P - x_R)
+\end{aligned}
+$$
+若
+$$
+s =
+\left\{
+  \begin{array}{ll}
+	\frac{y_P - y_Q}{x_P - x_Q} &  \si x_P \ne x_Q \et x_P \neq x_Q \\
+	\frac{3{x_P}^2 - p}{2y_P} & \si P = Q
+  \end{array}
+\right.
+$$
+
+若$x_P = x_Q \et y_P = -y_Q, P+Q = 0$
+
+\begin{theorem}
+L'ensemble des points à coordonnées réelles de la courbe (en incluant le point à l'infini), muni de cette loi de composition, forme un groupe commutatif.
+\end{theorem}
 \end{document}
