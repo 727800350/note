@@ -1,3 +1,11 @@
+## apache 服务配置
+
+如果要访问其他目录,比如`/home/eric/git`, 可以在`/var/www/html` 里面建立软链接.  
+但是会提示"Forbidden 没有权限"  
+原因: Apache wants access to not just the directory I am serving, `/home/eric/git/`, 
+but also every directory above that, namely `/home/eric/`, `/home`, and `/`.
+所以需要把它的上级目录也给与x权限
+
 # 系统调用
 ## 内存管理
 `brk, sbrk`: 内存不够用时通过它来申请新内存
