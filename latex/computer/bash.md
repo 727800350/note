@@ -198,6 +198,36 @@ iotop: i/o stats
 zgrep: grep within compressed files
 zless: look at compressed files
 
+`dd`: 转换和拷贝文件(包括二进制文件)
+参数
+```
+if=filename:输入的文件名
+of=finename:输出的文件名
+bs=bytes:一次读写的字节数,默认是512bytes
+skip=blocks:拷贝前,跳过的输入文件的前blocks块,块的大小有bs决定
+count=blocks:只拷贝输入文件的前blocks块
+```
+例如,现在有一个文件file,大小为116616字节:
+```
+[root]# du -b file  
+116616  file   
+```
+将其分割为两文件file1和file2,那我们就设置每块为1024字节,将file的前60块放入file1,余下的放入file2:
+```
+[root]# dd if=file bs=1024 count=60 skip=0  of=file1
+[root]# dd if=file bs=1024 count=60 skip=60 of=file2
+第二行仍然写上count=60好像不对, 我去掉这个也是可以运行的, 116616/1024=113.88
+```
+然后用cat将两个文件合并为file.bak,要注意文件的顺序:
+```
+[root]# cat file1 file2 > file.bak  
+[root]# md5sum file  
+3ff53f7c30421ace632eefff36148a70  file  
+[root]# md5sum file.bak  
+3ff53f7c30421ace632eefff36148a70  file.bak   
+```
+可以证明两个文件时完全相同的.
+
 # OS
 **开机自动启动**  
 例如要开机后自动启动mysql,apache,vsftpd服务,用以下命令即可:
