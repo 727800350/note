@@ -212,7 +212,9 @@ struct GSList {
 };
 typedef void* gpointer;
 ```
-[GSList demo](../../demo/c/glib_slist.c)
+[GSList demo](../../demo/c/glib_slist.c)  
+glib slist 的循环,最后好还是采用glib本身提供的函数, 而不要自己写, 
+因为我们在使用slist的时候,可以会将append和prepend混合着使用, 所以自己写循环函数会比较麻烦.
 
 ## Related
 Other widget toolkits provide low-level functions and implementations of data structures as well, e.g.:
