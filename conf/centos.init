@@ -7,6 +7,10 @@ sudo mv RPM-GPG-KEY-EPEL-6 /etc/pki/rpm-gpg
 wget http://apt.sw.be/RPM-GPG-KEY.dag.txt
 sudo mv RPM-GPG-KEY.dag.txt /etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
 
+sudo yum-config-manager --add-repo=https://copr.fedoraproject.org/coprs/mosquito/myrepo/repo/epel-7/mosquito-myrepo-epel-7.repo
+
+sudo yum install -y yum-plugin-priorities
+
 sudo yum install -y clang gcc gcc-c++ gdb
 sudo yum install -y flex byacc
 
