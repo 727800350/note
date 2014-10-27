@@ -11,6 +11,17 @@ sudo yum-config-manager --add-repo=https://copr.fedoraproject.org/coprs/mosquito
 
 sudo yum install -y yum-plugin-priorities
 
+## qq
+yum install -y pidgin-lwqq pidgin-sendscreenshot
+## fetion 安装成功, 但是登陆不进去
+
+## youdao dict
+yum --enablerepo=epel-testing install -y openyoudao
+
+## 为知笔记
+yum install -y wiznote
+
+## programming
 sudo yum install -y clang gcc gcc-c++ gdb
 sudo yum install -y flex byacc
 
