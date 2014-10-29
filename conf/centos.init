@@ -11,23 +11,15 @@ sudo yum-config-manager --add-repo=https://copr.fedoraproject.org/coprs/mosquito
 
 sudo yum install -y yum-plugin-priorities
 
-## qq
-yum install -y pidgin-lwqq pidgin-sendscreenshot
-## fetion 安装成功, 但是登陆不进去
-
-## youdao dict
-yum --enablerepo=epel-testing install -y openyoudao
-
-## 为知笔记
-yum install -y wiznote
-
 ## programming
 sudo yum install -y clang gcc gcc-c++ gdb
 sudo yum install -y flex byacc
 
 sudo yum install -y sudo git git-svn
+cd $HOME
+mkdir git
 git config --global user.name "Eric Uni"
-git config --global user.email you@example.com"
+git config --global user.email wangchaogo1990+fedora.lab@gmail.com
 
 sudo yum install -y unrar
 sudo yum install -y mlocate
@@ -45,8 +37,8 @@ sudo yum install -y php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml
 ## config file /etc/phpMyAdmin/config.inc.php
 ## php data file in /usr/share/phpMyAdmin, 访问权限的设置在/etc/httpd/conf.d/phpMyAdmin.conf
 ## 为了让局域网内的其他机器能够访问网站, 将防火墙关闭掉, 
-fedora: service firewalld stop; sudo setenforce 0
-centos: service iptables stop; sudo setenforce 0
+## fedora: service firewalld stop; sudo setenforce 0
+## centos: service iptables stop; sudo setenforce 0
 sudo yum install -y phpMyAdmin
 
 ## chrome
@@ -115,8 +107,12 @@ sudo yum install graphviz-gd ## support for png, jpg, jpeg etc
 ## bt
 sudo yum install -y transmission
 
-## play music and video
 ## 默认的Centos 7不带能够播放MP3和视频文件的解码器支持, 默认repo和后来自己加的源都不带, 需要nux-desktop repo, 先把epel 的repo弄好
 sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-1.el7.nux.noarch.rpm
+
+yum install -y pidgin-lwqq pidgin-sendscreenshot
+## fetion 安装成功, 但是登陆不进去
+yum --enablerepo=epel-testing install -y openyoudao
+yum install -y wiznote
 sudo yum install -y gstreamer gstreamer-plugins-base gstreamer-plugins-good gstreamer-plugins-bad-free
 
