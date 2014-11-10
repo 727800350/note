@@ -201,6 +201,8 @@ The port number is an unsigned 16-bit integer, so the max is `2^16 -1 = 65535`.
 - dest 16位目的端口号
 - doff(Data offset): TCP header length, 以4 Bytes(32位字)作为单位进行计量
 
+TCP flags 的顺序为: `urg, ack, psh, rst, syn, fin`共6个, 但是占用8个bits
+
 ### Flags (9 bits) (aka Control bits)
 - NS (1 bit) – ECN-nonce concealment protection (added to header by RFC 3540).
 - CWR (1 bit) – Congestion Window Reduced (CWR) flag is set by the sending host to indicate that it received a TCP segment with the ECE flag set and had responded in congestion control mechanism (added to header by RFC 3168).
