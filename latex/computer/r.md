@@ -35,7 +35,7 @@ overview of the type of objects representing data
 They can contain any type of object, included lists!
 - matrices or more generally arrays are multi-dimensional generalizations of vectors.
 
-a matrix with 2 lines and 2 columns has for dim the pair of values [2, 2], but its length is 4.
+a matrix with 2 lines and 2 columns has for dim the pair of values `[2, 2]`, but its length is 4.
 
 list objects in memory  
 `ls()`: only the names of objects
@@ -103,6 +103,58 @@ In general any operation on an NA becomes an NA.
 `> Z <- array(1:24, dim=c(3,4,2))` generates a 3 by 4 by 2 array
 
 ## matrix
+
+## factor
+因子提供了一个简单并且紧凑的形式来处理**分类数据(不能进行数字计算)**.
+因子用"水平level"来表示所有可能的取值.
+如果数据集有取值个数固定的名字变量,因子就特别有用.
+
+```
+> g<-c("f","m","f","f","m") 
+> g 
+[1] "f" "m" "f" "f" "m" 
+> g<-factor(g)#因子化 
+> g 
+[1] f m f f m 
+Levels: f m #有几种可选的值
+
+计算每个元素出现的次数,使用table()函数
+> table(g) 
+g 
+f m 
+3 2
+table()函数还可以用于获得多个因子的交叉表
+>  age<-factor(c('adult','adult','adult','adult','juvenile')) 
+> table(age,g)
+age        f m 
+  adult    3 1 
+  juvenile 0 1
+
+计算表的边际(margin)和频率.
+计算边际
+> t<-table(age,g)
+
+#按照年龄查看边际
+> margin.table(t,1) 
+age 
+   adult juvenile 
+       4        1 
+> margin.table(t,2) 
+g 
+f m 
+3 2
+
+计算频率
+> prop.table(t,1)#
+age           f    m 
+  adult    0.75 0.25
+
+#查看整个表的频率 
+> prop.table(t)
+age          f   m 
+  adult    0.6 0.2 
+  juvenile 0.0 0.2
+```
 
 ## mode
 All objects have two intrinsic attributes: mode and length. 
@@ -219,5 +271,6 @@ Arithmetic Operators
 
 `help.start()`: start the help system in browser
 
-The `help.search` command (alternatively ??) allows searching for help in various ways. For example,  
+The `help.search` command (alternatively `??`) allows searching for help in various ways. For example,  
 `> ??solve`
+
