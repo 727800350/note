@@ -129,6 +129,14 @@ Once an object has been created, new components may be added to it simply by giv
 `> e[3] <- 17`  
 now makes e a vector of length 3, (the first two components of which are at this point both NA).
 
+# 流程
+```
+> if (expr_1) expr_2 else expr_3
+> for (name in expr_1) expr_2
+> while (condition) expr
+```
+break, next
+
 # function
 ## math
 Vectors occurring in the same expression need not all be of the same length. 
@@ -193,6 +201,9 @@ $d
 [1] 1 2 3
 
 ```
+
+## 自定义
+`> name <- function(arg_1, arg_2, ...) expression`
 
 # help
 `?command`, `help(command)`, `help("command")`.  
