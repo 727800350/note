@@ -183,6 +183,17 @@ Once an object has been created, new components may be added to it simply by giv
 `> e[3] <- 17`  
 now makes e a vector of length 3, (the first two components of which are at this point both NA).
 
+# IO
+`print(x, ...)`
+
+For more customizable (but cumbersome) printing, see `cat`, `format` or also `write`.   
+For a simple prototypical print method, see `.print.via.format` in package **tools**.
+
+## file
+[data import](http://www.r-tutor.com/r-introduction/data-frame/data-import)
+
+读文件时, 第一行的编号是0
+
 # 流程
 ```
 > if (expr_1) expr_2 else expr_3
@@ -281,7 +292,22 @@ demo
 #### tapply
 
 ## 自定义
-`> name <- function(arg_1, arg_2, ...) expression`
+```
+myfunction <- function(arg1, arg2, ... ){
+	statements
+	return(object)
+}
+```
+例如下面的归一化函数
+```
+autonorm <- function(data){
+	min <- min(data)
+	max <- max(data)
+	for(i in 1:length(data))
+		data[i] <- (data[i] - min)/(max - min)
+	return(data)
+}
+```
 
 # help
 `?command`, `help(command)`, `help("command")`.  
