@@ -79,6 +79,8 @@ apple
     1 
 ```
 
+`as.matrix(vector)`生成的矩阵是一个column matrice
+
 ### Missing values
 In general any operation on an NA becomes an NA.
 `is.na(x)` 进行判断, gives a logical vector of the same size as x with value TRUE if and only if the corresponding element in x is NA
@@ -253,6 +255,30 @@ $d
 [1] 1 2 3
 
 ```
+
+### \*apply
+#### apply
+returns a vector or array or list of values obtained by applying a function to margins of an array or matrix.
+```
+apply(X, MARGIN, FUN, ...)
+X: an array, including a matrix
+for a matrix ‘1’ indicates rows, ‘2’ indicates columns, ‘c(1, 2)’ indicates rows and columns.
+```
+
+demo
+```
+> ma <- matrix(c(1:4, 1, 6:8), nrow = 2)
+> ma
+     [,1] [,2] [,3] [,4]
+[1,]    1    3    1    7
+[2,]    2    4    6    8
+> apply(ma, 1, sum)  ## 对行求和
+[1] 12 20
+> apply(ma, 2, sum)  ## 对列求和
+[1]  3  7  7 15
+```
+
+#### tapply
 
 ## 自定义
 `> name <- function(arg_1, arg_2, ...) expression`
