@@ -471,6 +471,35 @@ fit <- fitted(iris.kknn)
 table(iris.valid$Species, fit)
 ```
 
+# graph
+## save graph
+
+|Format	|	Driver	|	Notes|
+|-------|-----------|--------|
+|JPG	|	jpeg	|	Can be used anywhere, but doesn't resize|
+|PNG	|	png	|	Can be used anywhere, but doesn't resize|
+|WMF	|	win.metafile	|	Windows only; best choice with Word; easily resizable|
+|PDF	|	pdf	|	Best choice with pdflatex; easily resizable|
+|Postscript	|	postscript	|	Best choice with latex and Open Office; easily resizable|
+
+
+So if I wanted to save a jpg file called "rplot.jpg" containing a plot of x and y, I would type the following commands:
+```
+> jpeg('rplot.jpg')
+> plot(x,y)
+> dev.off()
+```
+Another Approach
+```
+> plot(x,y)
+## When you are happy with the way it looks, call dev.copy
+> dev.copy(jpeg,'rplot.jpg')
+> dev.off()
+```
+
+## scatter plot
+[ref](http://www.statmethods.net/graphs/scatterplot.html)
+
 # help
 `?command`, `help(command)`, `help("command")`.  
 The last one must be used to access help with non-conventional characters:
