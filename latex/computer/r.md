@@ -192,7 +192,39 @@ For a simple prototypical print method, see `.print.via.format` in package **too
 ## file
 [data import](http://www.r-tutor.com/r-introduction/data-frame/data-import)
 
-读文件时, 第一行的编号是0
+```
+read.table(file, header = FALSE, sep = "", quote = "\"'")
+read.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", ...)
+```
+
+excel
+```
+> library(gdata)                   # load gdata package 
+> help(read.xls)                   # documentation 
+> mydata = read.xls("mydata.xls")  # read from first sheet
+```
+Alternatively, we can use the function loadWorkbook from the XLConnect package to read the entire workbook, 
+and then load the worksheets with readWorksheet. 
+The XLConnect package requires Java to be pre-installed.
+```
+> library(XLConnect)               # load XLConnect package 
+> wk = loadWorkbook("mydata.xls") 
+> df = readWorksheet(wk, sheet="Sheet1")
+```
+
+**Working Directory**  
+文件不在当前目录时  
+```
+> getwd()              # get current working directory
+```
+You can select a different working directory with the function setwd(), and thus avoid entering the full path of the data files.
+```
+> setwd("<new path>")   # set working directory  
+```
+Note that the forward slash should be used as the path separator even on Windows platform.  
+```
+> setwd("C:/MyDoc")
+```
 
 # 流程
 ```
@@ -248,6 +280,7 @@ order(a) is saying, 'put the third element first when you sort... ',
 whereas rank(a) is saying, 'the first element is the second lowest... '. 
 (Note that they both agree on which element is lowest, etc.; they just present the information differently.)''''
 
+## construct sequence
 ### c
 This is a generic function which combines its arguments.
 
@@ -300,6 +333,30 @@ $d
 [1] 1 2 3
 
 ```
+### sample
+`sample(x, size, replace = FALSE, prob = NULL)`
+replace 表示取样的时候能够重复, 也就是说一个元素可以不可以被多次取到  
+prob 的和可以不为1, 只要保证每个元素非负就可以了
+
+```
+> x <- 1:5
+> sample(x, length(x),replace=T, prob=c(0.1,0.2,0.3,0.25,0.25))
+[1] 3 4 4 2 5
+> replicate(3, sample(x, length(x),replace=F))  ## repalce=FALSE 表示元素不能重复
+     [,1] [,2] [,3]
+[1,]    4    4    4
+[2,]    3    5    2
+[3,]    2    1    5
+[4,]    1    2    1
+[5,]    5    3    3
+> replicate(3, sample(x, length(x),replace=T))
+     [,1] [,2] [,3]
+[1,]    4    2    4
+[2,]    5    3    1
+[3,]    1    2    4
+[4,]    3    4    2
+[5,]    1    1    1
+```
 
 ### \*apply
 #### apply
@@ -342,6 +399,14 @@ autonorm <- function(data){
 	return(data)
 }
 ```
+# model
+`summary` is a generic function used to produce result summaries of the results of various model fitting functions.  
+The function invokes particular ‘methods’ which depend on the ‘class’ of the first argument.
+
+`fitted` is a generic function which extracts fitted values from objects returned by modeling functions.
+All object classes which are returned by model fitting functions should provide a ‘fitted’ method.
+
+`data`: Loads specified data sets, or list the available data sets.
 
 # help
 `?command`, `help(command)`, `help("command")`.  
