@@ -48,6 +48,19 @@ delete objects in memory
 ## vector
 Vectors are the most important type of object in R.
 
+选择特定的元素
+```
+> a <- c(1:5)
+> a>3
+[1] FALSE FALSE FALSE  TRUE  TRUE
+> a[a>3]
+[1] 4 5
+> sum(a[a>3])
+[1] 9
+> sum(a>3)  ## 统计满足条件的元素的个数
+[1] 2
+```
+
 `x[1:10]` selects the first 10 elements of x
 
 `> y <- x[-(1:5)]` gives y all but the first five elements of x
@@ -158,6 +171,20 @@ age          f   m
   juvenile 0.0 0.2
 ```
 
+## list
+```
+> a <- list(1,2, "test")
+> a
+[[1]]
+[1] 1
+
+[[2]]
+[1] 2
+
+[[3]]
+[1] "test"
+```
+
 ## mode
 All objects have two intrinsic attributes: mode and length. 
 The mode is the basic type of the elements of the object; there are four main modes:
@@ -233,6 +260,8 @@ Note that the forward slash should be used as the path separator even on Windows
 > while (condition) expr
 ```
 break, next
+
+`prediction = ifelse(post.yes >= post.no, "Yes", "No")` 类似于C 语言中的`? :`运算符.
 
 # function
 ## math
@@ -407,6 +436,40 @@ The function invokes particular ‘methods’ which depend on the ‘class’ of
 All object classes which are returned by model fitting functions should provide a ‘fitted’ method.
 
 `data`: Loads specified data sets, or list the available data sets.
+
+## install package
+- `install.packages()`会将package安装到默认的目录(.libPaths()指定), 类似于yum, 会自动查找依赖关系
+- `remove.packages()`会将package移除  
+- `update.packages()`: update package
+
+```
+> .libPaths()
+[1] "/usr/lib64/R/library" "/usr/share/R/library"
+```
+
+## K-近邻算法
+用到kknn package
+```
+kknn(formula = formula(train), train, test, na.action = na.omit(),
+k = 7, distance = 2, kernel = "optimal", ykernel = NULL, scale=TRUE,
+contrasts = c( unordered = "contr.dummy", ordered = "contr.ordinal"))
+
+kknn.dist(learn, valid, k = 10, distance = 2)
+```
+demo
+```
+library(kknn)
+data(iris)
+m <- dim(iris)[1]
+val <- sample(1:m, size = round(m/3), replace = FALSE, prob = rep(1/m, m))
+iris.learn <- iris[-val,]
+iris.valid <- iris[val,]
+iris.kknn <- kknn(Species~., iris.learn, iris.valid, distance = 1,
+kernel = "triangular")
+summary(iris.kknn)
+fit <- fitted(iris.kknn)
+table(iris.valid$Species, fit)
+```
 
 # help
 `?command`, `help(command)`, `help("command")`.  
