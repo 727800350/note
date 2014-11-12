@@ -214,6 +214,40 @@ If they are not, the value of the expression is a vector with the same length as
 `> s5 <- rep(x, times=5)` which will put five copies of x end-to-end in s5.  
 `> s6 <- rep(x, each=5)` which repeats each element of x five times before moving on to the next.
 
+### sort
+#### order
+By default, sorting is ASCENDING. Prepend the sorting variable by a minus sign to indicate DESCENDING order. Here are some examples.
+```
+# sorting examples using the mtcars dataset
+attach(mtcars)
+
+# sort by mpg
+newdata <- mtcars[order(mpg),] 
+
+# sort by mpg and cyl
+newdata <- mtcars[order(mpg, cyl),]
+
+#sort by mpg (ascending) and cyl (descending)
+newdata <- mtcars[order(mpg, -cyl),] 
+
+detach(mtcars)
+```
+#### order and rank
+```
+> a <- c(45, 50, 10, 96)
+> order(a)  
+[1] 3 1 2 4
+> rank(a)
+[1] 2 3 1 4
+> a[order(a)]
+[1] 10 45 50 96  
+> sort(a)
+[1] 10 45 50 96  
+```
+order(a) is saying, 'put the third element first when you sort... ', 
+whereas rank(a) is saying, 'the first element is the second lowest... '. 
+(Note that they both agree on which element is lowest, etc.; they just present the information differently.)''''
+
 ### c
 This is a generic function which combines its arguments.
 
