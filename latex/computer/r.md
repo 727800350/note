@@ -19,7 +19,7 @@ n <- 15
 ## namespace
 同一个环境只能存在一个唯一的名字,不同环境可以存在相同名字,R寻找一个名字,
 会站在当前环境沿着search() path(`".GlobalEnv"     "package:base"   "namespace:base"`)往之后的环境中找名字,如果当前名字不符合就依次找后面的环境.  
-可以参见[demo namespace](../../../demo/r/namespace.r)
+可以参见[demo namespace](../../demo/r/namespace.r)
 
 ## object types
 overview of the type of objects representing data
