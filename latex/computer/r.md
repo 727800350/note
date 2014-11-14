@@ -225,6 +225,19 @@ For a simple prototypical print method, see `.print.via.format` in package **too
 ## file
 [data import](http://www.r-tutor.com/r-introduction/data-frame/data-import)
 
+[R数据的导入与导出](http://www.biosino.org/R/R-doc/onepage/R-data_cn.html), 这个比较全面, 包含
+
+- Spreadsheet-like data: 电子表格类似的数据
+- Importing from other statistical systems: 导入其它统计软件的数据
+- Relational databases: 关系数据库
+- Binary files: 二进制文件
+- Connections: 连接
+- Network interfaces: 网络接口
+- Reading Excel spreadsheets: 读取Excel表格文件
+- References: 参考文献
+- Function and variable index: 函数和变量索引
+- Concept index: 概念索引
+
 ```
 read.table(file, header = FALSE, sep = "", quote = "\"'")
 read.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", ...)
