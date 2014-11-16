@@ -115,3 +115,4 @@ yum --enablerepo=epel-testing install -y openyoudao
 yum install -y wiznote
 sudo yum install -y gstreamer gstreamer-plugins-base gstreamer-plugins-good gstreamer-plugins-bad-free
 
+sudo yum install -y R

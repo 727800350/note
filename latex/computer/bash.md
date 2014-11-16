@@ -325,16 +325,16 @@ RPM包括是使用cpio格式打包的,因此可以先转成cpio然后解压,如�
 	ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
 	reboot
 
-**开机自启动**  
+启动
 
 	#systemctl start mysqld.service
 	#systemctl restart mysqld.service
 	
-	设置开机自启动
+	设置开机自启动, 在新版的REHL中使用mariadb
 	#systemctl enable mysqld.service
 	
 	停止开机自启动
 	#systemctl disable mysqld.service
 	
 	#systemctl status mysqld.service
-
+与原来的chkconfig可以兼容, `chkconfig mysqld off`

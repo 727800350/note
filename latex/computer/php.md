@@ -1,3 +1,13 @@
+# php script
+```
+#!/usr/bin/env php
+<?php
+$user = `whoami`;
+echo "Hello $user";
+?>
+```
+通过上面的示例可以看到我们可以在php中写shell 脚本, 将php与shell结合起来使用
+
 **php安装好之后**  
 现在可以在浏览器中打开 http://localhost 或 http://127.0.0.1, 看到 Apache 2 Test Page 页面
 
