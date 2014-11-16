@@ -34,8 +34,7 @@ sudo yum install -y php
 sudo yum install -y php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml php-xmlrpc
 
 ## phpMyAdmin: Web application to manage MySQL
-## config file /etc/phpMyAdmin/config.inc.php
-## php data file in /usr/share/phpMyAdmin, 访问权限的设置在/etc/httpd/conf.d/phpMyAdmin.conf
+## php data file in /usr/share/phpMyAdmin, 访问权限的设置在/etc/httpd/conf.d/phpMyAdmin.conf, Apache 2.4+ uses "Require all granted" instead of "Allow from all"
 ## 为了让局域网内的其他机器能够访问网站, 将防火墙关闭掉, 
 ## fedora: service firewalld stop; sudo setenforce 0
 ## centos: service iptables stop; sudo setenforce 0
