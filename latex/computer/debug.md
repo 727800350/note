@@ -530,7 +530,7 @@ tcpdump存在于基本的 FreeBSD系统中,由于它需要将网络接口设置�
 
 ## A short list of the options mostly used
 
-- -i any : Listen on all interfaces just to see if you're seeing any traffic.
+- -i any : Listen on all interfaces just to see if you're seeing any traffic.** 注意: 当是混杂模式的时候, any 无效**
 - -n : Don't resolve hostnames to avoid DNS lookups
 - -nn : Don't resolve hostnames or port names
 - -X : Show the packet's contents in both hex and ASCII
