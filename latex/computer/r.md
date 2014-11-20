@@ -533,6 +533,44 @@ Another Approach
 ## scatter plot
 [ref](http://www.statmethods.net/graphs/scatterplot.html)
 
+## color
+[color ref](http://research.stowers-institute.org/efg/R/Color/Chart/index.htm)  
+[quick color value ref](http://research.stowers-institute.org/efg/R/Color/Chart/ColorChart.pdf)
+
+`colors()`, or with the British spelling, `colours()`, returns a **vector of 657 color names** in R.
+The names "gray" and "grey" can be spelled either way
+
+Options that specify colors include the following.
+
+- col	Default plotting color. Some functions (e.g. lines) accept a vector of values that are recycled.
+- col.axis	color for axis annotation
+- col.lab	color for x and y labels
+- col.main	color for titles
+- col.sub	color for subtitles
+- fg	plot foreground color (axes, boxes - also sets col= to same)
+- bg	plot background color
+
+You can specify colors in R by index, name, hexadecimal, or RGB.  
+For example `col=1, col="white"`, and `col="#FFFFFF"` are equivalent.
+
+```
+> colors()[c(552,254,26)]
+[1] "red" "green" "blue"
+
+> grep("red",colors())
+[1] 100 372 373 374 375 376 476 503 504 505 506 507 524 525 526 527 528 552 553
+[20] 554 555 556 641 642 643 644 645
+
+> colors()[grep("red",colors())]
+[1] "darkred" "indianred" "indianred1" "indianred2" ...
+
+> col2rgb("yellow")
+[,1]
+red 255
+green 255
+blue 0
+```
+
 # help
 `?command`, `help(command)`, `help("command")`.  
 The last one must be used to access help with non-conventional characters:
