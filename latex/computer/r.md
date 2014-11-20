@@ -322,6 +322,12 @@ Vectors occurring in the same expression need not all be of the same length.
 If they are not, the value of the expression is a vector with the same length as the longest vector which occurs in the expression. 
 **Shorter vectors in the expression are recycled** as often as need be until they match the length of the longest vector.
 
+近似
+
+- ceiling(x)
+- floor(x)
+- round(x, digits = 0)
+
 ### sort
 #### order
 By default, sorting is ASCENDING. Prepend the sorting variable by a minus sign to indicate DESCENDING order. Here are some examples.
@@ -450,6 +456,11 @@ prob 的和可以不为1, 只要保证每个元素非负就可以了
 [3,]    1    2    4
 [4,]    3    4    2
 [5,]    1    1    1
+```
+
+特殊的简化
+```
+sample(x, n)  ## 当length(x) = 1 且 x > 1, 那么这句话就是从序列1:x中取出n个值
 ```
 
 ### rnorm
