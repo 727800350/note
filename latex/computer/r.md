@@ -272,6 +272,20 @@ Note that the forward slash should be used as the path separator even on Windows
 > setwd("C:/MyDoc")
 ```
 
+## database
+dbDriver("MySQL") 的调用会返回一个数据库连接管理对象,然后调用dbConnect打开一个数据库连接,随后会调用泛型函数 dbDisconnect 来关闭这个连接.
+对于,ORACLE和SQLITE系统,分别使用ROracle 或 RSQLite 里面的dbDriver("Oracle") 函数或 dbDriver("SQLite") 函数.
+
+SQL 查询可以通过dbSendQuery或 dbGetQuery 传给数据库管理系统.
+dbGetQuery 传送查询语句, 把结果以数据框形式返回.
+dbSendQuery 传送查询,返回的结果是 继承"DBIResult"的一个子类的对象."DBIResult" 类 可用于取得结果,而且还可以通过调用 dbClearResult 清除结果.
+
+函数 fetch 用于获得查询结果的部分或全部行,并以列表返回. 函数 dbHasCompleted 确定是否所有行已经获得了, 而 dbGetRowCount 返回结果中行的数目.
+
+这些是数据库中读/写/测试/删除表的方便接口. dbReadTable 和 dbWriteTable 实现一个 R 数据框的复制进和复制出数据库, 把数据框的行名字映射到 MySQL 表的 row_names 字段.
+
+[database demo](../../demo/r/db.r)
+
 # 流程
 ```
 > if (expr_1) expr_2 else expr_3
