@@ -309,12 +309,6 @@ Vectors occurring in the same expression need not all be of the same length.
 If they are not, the value of the expression is a vector with the same length as the longest vector which occurs in the expression. 
 **Shorter vectors in the expression are recycled** as often as need be until they match the length of the longest vector.
 
-`seq()` is a more general facility for generating sequences.
-
-`rep()` which can be used for replicating an object in various complicated ways. The simplest form is  
-`> s5 <- rep(x, times=5)` which will put five copies of x end-to-end in s5.  
-`> s6 <- rep(x, each=5)` which repeats each element of x five times before moving on to the next.
-
 ### sort
 #### order
 By default, sorting is ASCENDING. Prepend the sorting variable by a minus sign to indicate DESCENDING order. Here are some examples.
@@ -402,6 +396,24 @@ $d
 [1] 1 2 3
 
 ```
+
+### seq
+`seq()` is a more general facility for generating sequences.
+
+`seq(from = 1, to = 1, by = ((to - from)/(length.out - 1)), length.out = NULL, along.with = NULL, ...)`
+
+typical usage
+```
+seq(from, to)
+seq(from, to, by= ) ## from, from+by, from+2*by...
+seq(from, to, length.out= )  ## equally spaced
+```
+
+### rep
+`rep()` which can be used for replicating an object in various complicated ways. The simplest form is  
+`> s5 <- rep(x, times=5)` which will put five copies of x end-to-end in s5.  
+`> s6 <- rep(x, each=5)` which repeats each element of x five times before moving on to the next.
+
 ### sample
 `sample(x, size, replace = FALSE, prob = NULL)`
 replace 表示取样的时候能够重复, 也就是说一个元素可以不可以被多次取到  
@@ -426,6 +438,11 @@ prob 的和可以不为1, 只要保证每个元素非负就可以了
 [4,]    3    4    2
 [5,]    1    1    1
 ```
+
+### rnorm
+`rnorm(n, mean = 0, sd = 1)`  
+n: number of observations. If ‘length(n) > 1’, the length is taken to be the number required.  
+random generation for the normal distribution with mean equal to ‘mean’ and standard deviation equal to ‘sd’.
 
 ### \*apply
 #### apply
