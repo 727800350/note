@@ -557,6 +557,26 @@ Another Approach
 ## scatter plot
 [ref](http://www.statmethods.net/graphs/scatterplot.html)
 
+## graphical parameters
+One way is to specify these options in through the par( ) function. 
+If you set parameter values here, the changes will be in effect for the rest of the session or until you change them again. 
+The format is `par(optionname=value, optionname=value, ...)`
+```
+# Set a graphical parameter using par()
+par()              # view current settings
+opar <- par()      # make a copy of current settings
+par(col.lab="red") # red x and y labels 
+hist(mtcars$mpg)   # create a plot with these new settings 
+par(opar)          # restore original settings
+```
+A second way to specify graphical parameters is by providing the `optionname=value` pairs directly to a high level plotting function. 
+In this case, the options are only in effect for that specific graph.
+
+```
+# Set a graphical parameter within the plotting function 
+hist(mtcars$mpg, col.lab="red")
+```
+
 ## color
 [color ref](http://research.stowers-institute.org/efg/R/Color/Chart/index.htm)  
 [quick color value ref](http://research.stowers-institute.org/efg/R/Color/Chart/ColorChart.pdf)
@@ -594,6 +614,60 @@ red 255
 green 255
 blue 0
 ```
+
+Create a vector of 'n' contiguous colors, 比如当需要同时使用多种颜色时, 就可以通过这些函数来自动选择.
+```
+rainbow(n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1)
+heat.colors(n, alpha = 1)
+terrain.colors(n, alpha = 1)
+topo.colors(n, alpha = 1)
+cm.colors(n, alpha = 1)
+```
+
+## Plotting Symbols/Chracters
+Use the pch= option to specify symbols to use when plotting points. For symbols 21 through 25, specify border color (col=) and fill color (bg=).
+
+![symbols](http://www.statmethods.net/advgraphs/images/points.png)
+
+plot中默认的pch为1, 也就是"空心圆圈"
+
+- '0:18': S-compatible vector symbols.
+- '19:25': further R vector symbols.
+- '26:31': unused (and ignored).
+- '32:127': ASCII characters.
+
+## lines
+- lty	line type. see the chart below.
+- lwd	line width relative to the default (default=1). 2 is twice as wide.
+
+![line types](http://www.statmethods.net/advgraphs/images/lines.png)
+
+## [Axes and Text](http://www.statmethods.net/advgraphs/axes.html)
+### legend
+```
+legend(location, title, legend, ...)
+```
+ex: `legend("topleft", c('Positive','Negative'), col=seq(2), pch=1, text.col=seq(2))`
+
+- location	There are several ways to indicate the location of the legend.  
+You can give an x,y coordinate for the upper left hand corner of the legend.   
+You can use locator(1), in which case you use the mouse to indicate the location of the legend.   
+You can also use the keywords "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "bottomright", or "center".   
+If you use a keyword, you may want to use `inset=` to specify an amount to move the legend into the graph (as fraction of plot region).
+- title	A character string for the legend title (optional)
+- legend	A character vector with the labels
+- bty for box type
+- bg for background color
+- cex for size, 放大倍数 1=default, 1.5 is 50% larger,
+- text.col for text color
+- Setting horiz=TRUE sets the legend horizontally rather than vertically.
+
+Other options
+
+- If the legend labels colored lines, specify col= and a vector of colors. 
+- If the legend labels point symbols, specify pch= and a vector of point symbols. 
+- If the legend labels line width or line style, use lwd= or lty= and a vector of widths or styles. 
+- To create colored boxes for the legend (common in bar, box, or pie charts), use fill= and a vector of colors.
 
 # help
 `?command`, `help(command)`, `help("command")`.  
