@@ -51,6 +51,19 @@ list objects in memory
 delete objects in memory  
 `rm(x)`, `rm(x,y)` remove the object x and y from memory
 
+**Conversion**
+
+|                 | to one long vector | to matrix           | to data frame        |                         |
+|-----------------|--------------------|---------------------|----------------------|-------------------------|
+| from vector     |                    | c(x,y)              | cbind(x,y), rbind(x,y)| data.frame(x,y)         |
+| from matrix     |                    | as.vector(mymatrix) |                      | as.data.frame(mymatrix) |
+| from data frame |                    |                     | as.matrix(myframe)   |                         |
+
+- cbind() 把矩阵横向合并成一个大矩阵(列方式), 将参数当成列矩阵来处理
+- rbind() 是纵向合并(行方式), 将参数当行矩阵来处理
+
+[cbind and rbind demo](../../demo/r/bind.r)
+
 ## vector
 Vectors are the most important type of object in R.
 
