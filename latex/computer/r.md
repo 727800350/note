@@ -124,7 +124,14 @@ In general any operation on an NA becomes an NA.
 `> Z <- array(1:24, dim=c(3,4,2))` generates a 3 by 4 by 2 array
 
 ## matrix
+```
+> x <- matrix(c(1,2,3,4,5,6), c(2,3))
+> x
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
 
+```
 ## factor
 因子提供了一个简单并且紧凑的形式来处理**分类数据(不能进行数字计算)**.
 因子用"水平level"来表示所有可能的取值.
