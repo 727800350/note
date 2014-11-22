@@ -552,6 +552,11 @@ fit <- fitted(iris.kknn)
 table(iris.valid$Species, fit)
 ```
 
+## svm(support vector machine)
+### e1071
+`classAgreement()` computes several coefficients of agreement between the columns and rows of a 2-way contingency table.  
+diag: Percentage of data points in the main diagonal of `tab`, 也就是分类正确率
+
 # graph
 ## save graph
 
