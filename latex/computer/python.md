@@ -70,7 +70,7 @@ for line in f:
 
 `f.read(size)`   //参数size表示读取的数量,可以省略.如果省略size参数,则表示读取文件所有内容.
 `f.readline()`  读取文件一行的内容
-`f.readlines()`  读取所有的行到数组里面[line1,line2,...lineN].在避免将所有文件内容加载到内存中,这种方法常常使用,便于提高效率.
+`f.readlines()`  读取所有的行到一个数组list里面.在避免将所有文件内容加载到内存中,这种方法常常使用,便于提高效率.
 
 文件中定位
 这个函数的格式如下(单位是bytes):`f.seek(offset, from_what)`
@@ -220,6 +220,17 @@ If default is not given, it defaults to None, so that this method **never raises
 ### set
 集合是无序的,不重复的元素集,类似数学中的集合,可进行逻辑运算和算术运算.
 [set demo](../../demo/python/set.py)
+
+## [heapq](https://docs.python.org/2/library/heapq.html)
+需要 `import heapq`
+
+- heapq.heappush(heap, item)
+- heapq.heappop(heap) 弹出最小元素, 同时这个弹出的元素会从heap中被删除
+- heapq.heappushpop(heap, item): The combined action runs more efficiently than heappush() followed by a separate call to heappop().
+- heapq.heapify(x) Transform list x into a heap, in-place, in linear time.
+- heapq.heapreplace(heap, item): Pop and return the smallest item from the heap, and also push the new item. more efficient than a heappop() followed by heappush() 
+- heapq.nlargest(n, iterable[, key]) Return a list with the n largest elements from the dataset defined by iterable. key, if provided, specifies a function of one argument that is used to extract a comparison key from each element in the iterable: key=str.lower Equivalent to: sorted(iterable, key=key, reverse=True)[:n]
+- heapq.nsmallest(n, iterable[, key])
 
 ## Numeric
 `int(String)`: convert a string to integer
