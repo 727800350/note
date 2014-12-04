@@ -15,7 +15,12 @@ sudo yum install -y yum-plugin-priorities
 sudo yum install -y clang gcc gcc-c++ gdb
 sudo yum install -y flex byacc
 
-sudo yum install -y sudo git git-svn
+## ## 如果系统中自带是vim是vim-minimal, 而不是vim
+## sudo yum remove -y vim-minimal
+## sudo yum install -y sudo ## visudo
+## sudo yum install -y vim
+
+sudo yum install -y sudo git
 cd $HOME
 mkdir git
 git config --global user.name "Eric Uni"
@@ -115,4 +120,15 @@ yum --enablerepo=epel-testing install -y openyoudao
 yum install -y wiznote
 sudo yum install -y gstreamer gstreamer-plugins-base gstreamer-plugins-good gstreamer-plugins-bad-free
 
+## R language
 sudo yum install -y R
+
+## autossh: connect ssh automatically when it dies
+wget http://www.harding.motd.ca/autossh/autossh-1.4d.tgz
+tar -xvf autossh-1.4d.tgz
+cd autossh-1.4d
+./configure
+make
+sudo make install
+rm -rf autossh-1.4d.tgz autossh-1.4d
+
