@@ -1,12 +1,50 @@
-# php script
+# php script for shel
+excute external program
+
+- system() 输出并返回最后一行shell结果
+- exec() 不输出结果，返回最后一行shell结果，所有结果可以保存到一个返回的数组里面
+- passthru() 只调用命令，把命令的运行结果原样地直接输出到标准输出设备上
+
+```
+string system ( string $command [, int &$return_var ] )
+return_var: If the return_var argument is present, then the return status of the executed command will be written to this variable.
+Return Value: Returns the last line of the command output on success, and FALSE on failure.
+
+string exec ( string $command [, array &$output [, int &$return_var ]] )
+output: If the output argument is present, then the specified array will be filled with every line of output from the command. 
+return_var: If the return_var argument is present along with the output argument, then the return status of the executed command will be written to this variable.
+Return Value: The last line from the result of the command.
+
+void passthru ( string $command [, int &$return_var ] )
+```
+
 ```
 #!/usr/bin/env php
 <?php
-$user = `whoami`;
-echo "Hello $user";
+// $v = system('ls -l', $ret); // 输出会被立刻显示出来
+$v = exec('ls -l', $array, $ret);
+var_dump($array);
+echo $ret;
+echo "\n";
+echo $v;
 ?>
 ```
 通过上面的示例可以看到我们可以在php中写shell 脚本, 将php与shell结合起来使用
+
+## 命令传递参数
+```
+#!/usr/bin/env php
+<?php
+$first_name = $argv[1]; 
+$last_name = $argv[2]; 
+printf("Hello, %s %s! How are you today?\n", $first_name, $last_name);
+?>
+```
+运行与输出
+```
+./arg.php Eric Wang
+Hello, Eric Wang! How are you today?
+```
 
 **php安装好之后**  
 现在可以在浏览器中打开 http://localhost 或 http://127.0.0.1, 看到 Apache 2 Test Page 页面
@@ -45,6 +83,8 @@ PHP FIG中提及: All PHP files MUST end with a single blank line. -- 来源
 1. 某些工具(特别是比较古老的),如果文件的末尾没有\n或\r,就会忽略最后一行.最后有一个空行,便于判断这个文件传输完整(而不是只传了一半)
 1. 文件的以空行结尾是Unix的惯例
 
+注释方式和C 语言一样, 单行用`//`, 多行用`/* .... */`
+
 # IO
 ## 输出
 在PHP中,有四种方法输出字符串:
@@ -63,6 +103,30 @@ printf可以像C语言的printf一样,格式化输出一个字符串.它的格�
 sprintf和格式转换和printf一样,两者区别在于printf直接输出,而sprintf返回一个格式化后的字符串
 
 `print_r`和`var_dump`都能输出数组和对象,但`print_r`对布尔型的输出不太明显,`var_dump`输出比较详细,一般调试时用得多. 
+
+# data type
+## map
+A map is a type that associates values to keys. 
+This type is optimized for several different uses; 
+it can be treated as an array, list (vector), hash table (an implementation of a map), dictionary, collection, stack, queue, and probably more. 
+
+### array
+An array in PHP is actually an ordered map. So the key can either be an integer or a string. The value can be of any type.
+
+As array values can be other arrays, trees and multidimensional arrays are also possible.
+```
+$array = array(
+    "foo" => "bar",
+    "bar" => "foo",
+);
+
+$array = [
+    "foo" => "bar",
+    "bar" => "foo",
+];
+var_dump($array);
+```
+[more examples of array](../../demo/php/array.php)
 
 # Form 
 	<html>
