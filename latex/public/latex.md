@@ -329,8 +329,14 @@ The uppercase-character allows the figure to float, while the lowercase version 
 [result figure](http://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Latex_example_subfig.png/500px-Latex_example_subfig.png)
 
 # Table
-\begin{table}[h] \small 
-%此处写字体大小控制命令 \begin{tabular}  \end{tabular} \end{table}
+```
+\begin{table}[h]\small 
+\begin{tabular}
+...
+\end{tabular}
+\end{table}
+```
+`\small` 也可以用在其他地方, 尤其是beamer 中itemzie 等环境中
 
 ## Subtable
 	\begin{table}[<placement specifier>]

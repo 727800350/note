@@ -1,4 +1,4 @@
-# php script for shel
+# php script for shell
 excute external program
 
 - system() 输出并返回最后一行shell结果
