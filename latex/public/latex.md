@@ -328,6 +328,10 @@ The uppercase-character allows the figure to float, while the lowercase version 
 	\end{figure}
 [result figure](http://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Latex_example_subfig.png/500px-Latex_example_subfig.png)
 
+# Table
+\begin{table}[h] \small 
+%此处写字体大小控制命令 \begin{tabular}  \end{tabular} \end{table}
+
 ## Subtable
 	\begin{table}[<placement specifier>]
 	    \begin{subtable}[<placement specifier>]{<width>}
@@ -459,6 +463,11 @@ Using beamer+biblatex you could also write
 |---------------------------|------|------|------|------|------|------|------|--------|------|------|---------|------|-------|--------|--------|-------|
 | 大小                        | 42pt | 36pt | 26pt | 24pt | 22pt | 18pt | 16pt | 15pt   | 14pt | 12pt | 10.5pt  | 9pt  | 7.5pt | 6.5pt  | 5.5pt  | 5pt   |
 | 1.5行距时的 \baselineskip 设置值 | 63pt | 54pt | 39pt | 36pt | 33pt | 27pt | 24pt | 22.5pt | 21pt | 18pt | 15.75pt | 13.5 | 11.25 | 9.75pt | 8.25pt | 7.5pt |
+
+Latex 设置字体大小命令由小到大依次为：
+```
+\tiny, \scriptsize, \footnotesize, \small, \normalsize, \large, \Large, \LARGE, \huge, \Huge
+```
 
 # Table of contents
 `\tableofcontents`
