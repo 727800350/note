@@ -223,6 +223,17 @@ thread-specific breakpoints
 `$gdb 程序名 core.xxx`  
 运行命令: `where`, 即可看到出现段错误的行数了
 
+如果程序的运行需要root 权限, 那么ulimit的设置也应该在root权限下进行.
+
+ulimit 全局配置文件: `/etc/security/limits.conf`
+
+```
+# /etc/security/limits.conf
+# Each line describes a limit for a user in the form:
+# <domain> <type> <item> <value>
+*  soft  core  unlimited
+```
+
 ## Other
 ### Program's environment
 Environment variables conventionally record such things as your user name, your home directory, your terminal type, and your search path for programs to run.
