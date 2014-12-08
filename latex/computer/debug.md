@@ -219,6 +219,8 @@ thread-specific breakpoints
 ## core dump
 [使用gdb和core dump迅速定位段错误](http://my.oschina.net/michaelyuanyuan/blog/68618)
 
+查看资源限制情况: `ulimit -a`
+
 `$ulimit -c unlimited`: 这里就是设置生成的core文件无大小限制  
 `$gdb 程序名 core.xxx`  
 运行命令: `where`, 即可看到出现段错误的行数了
@@ -233,6 +235,12 @@ ulimit 全局配置文件: `/etc/security/limits.conf`
 # <domain> <type> <item> <value>
 *  soft  core  unlimited
 ```
+
+还有就是里面某个线程停住,也没死,这种情况一般就是死锁或者涉及消息接受的超时问题(听人说的,没有遇到过).遇到这种情况,可以使用: 
+```
+gcore pid (调试进程的pid号) 
+```
+手动生成core文件,在使用pstack(linux下好像不好使)查看堆栈的情况.如果都看不出来,就仔细查看代码,看看是不是在 if,return,break,continue这种语句操作是忘记解锁,还有嵌套锁的问题,都需要分析清楚了
 
 ## Other
 ### Program's environment
@@ -316,11 +324,11 @@ If you want to trace multiple system calls use the `-e trace=` option. The follo
 - Print Timestamp for Each Trace Output Line Using Option `-t`  
 `$ strace -t -e open ls /home`  
 Print Relative Time for System Calls Using Option `-r`    
-但是需要注意的是在多任务背景下，CPU随时可能会被切换出去做别的事情，所以相对时间不一定准确，此时最好使用 `-T` 
+但是需要注意的是在多任务背景下,CPU随时可能会被切换出去做别的事情,所以相对时间不一定准确,此时最好使用 `-T` 
 	 $ strace -r ls 
      
 - **Generate Statistics Report** of System Calls Using Option `-c`
-Using option -c, strace provides useful statistical report for the execution trace. The “calls” column in the following output indicated how many times that particular system call was executed.
+Using option -c, strace provides useful statistical report for the execution trace. The "calls" column in the following output indicated how many times that particular system call was executed.
 	
 		$ strace -c ls /home
 		bala
