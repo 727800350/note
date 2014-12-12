@@ -129,6 +129,8 @@ func! CompileCode()
             exec "!xelatex  %<.tex"
         elseif &filetype == "sh"
             exec "!bash  %<.sh"
+        elseif &filetype == "r"
+            exec "!R -f %<.r"
         endif
 endfunc
 
