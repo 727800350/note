@@ -1,5 +1,5 @@
 # graphviz
-è£…å®Œgraphvizä¹‹å, -Tps, eps ç­‰éƒ½æŠ¥é”™,
+×°ÍêgraphvizÖ®ºó, -Tps, eps µÈ¶¼±¨´í,
 -c configure plugins
 
 	[eric@human ~]$ dot sample.dot 
@@ -17,9 +17,9 @@ Because dot makes layouts of directed graphs, all the following examples use dig
 Within a main graph, a subgraph defines a subset of nodes and edges.
 
 	digraph G {
-		label = "Dot demo"; //ç»™è¿™å¹…å›¾è®¾ç½®åå­—
-		labelloc = b; //å›¾åå­—çš„ä½ç½®åœ¨ bottom,ä¹Ÿå¯ä»¥æ˜¯ t
-		labeljust = l; //å›¾åå­—çš„ä½ç½®åœ¨ left,ä¹Ÿå¯ä»¥æ˜¯ r
+		label = "Dot demo"; //¸øÕâ·ùÍ¼ÉèÖÃÃû×Ö
+		labelloc = b; //Í¼Ãû×ÖµÄÎ»ÖÃÔÚ bottom,Ò²¿ÉÒÔÊÇ t
+		labeljust = l; //Í¼Ãû×ÖµÄÎ»ÖÃÔÚ left,Ò²¿ÉÒÔÊÇ r
 		main -> parse -> execute;
 		main -> init;
 		main -> cleanup;
@@ -37,21 +37,21 @@ strings. Quotes protect punctuation and white space.
 
 **Chinese demo**:
 
-- ä¸­æ–‡çš„ä¸æ”¯æŒç”Ÿæˆps, can generate png, jpg, svg
-- æ–‡ä»¶éœ€è¦ä½¿ç”¨utf-8 ç¼–ç 
+- ÖĞÎÄµÄ²»Ö§³ÖÉú³Éps, can generate png, jpg, svg
+- ÎÄ¼şĞèÒªÊ¹ÓÃutf-8 ±àÂë
 - fc-list :lang=zh
 
 	digraph G{
 		edge [fontname = "FangSong"];
 		node [shape=box, fontname="FangSong" size="20,20"];
 		{
-			start[label="å¼€å§‹"];
+			start[label="¿ªÊ¼"];
 		}
 		node[shape=plaintext, fontname="KaiTi"]
 		{
-			end[label="ç»“æŸ"];
+			end[label="½áÊø"];
 		}
-		start -> end[label="æµç¨‹"];
+		start -> end[label="Á÷³Ì"];
 	}
 
 ## Drawing Attributes
@@ -63,30 +63,30 @@ Other common shapes include box, circle, record and plaintext.
 		size = "4,4";
     	fontsize=14;
 		main[shape=box];
-		## weight çš„å€¼è¶Šå¤§, è¶Šå‡ºç°åœ¨ä¸­é—´ä½ç½®
+		## weight µÄÖµÔ½´ó, Ô½³öÏÖÔÚÖĞ¼äÎ»ÖÃ
 		main -> parse[weight=8];
 		parse -> execute;
 		main -> init[style=dotted];
 		main -> cleanup;
 		execute -> {make_string; printf};
 		init -> make_string;
-		## å®šä¹‰edgeçš„é¢œè‰², å½±å“ä¹‹åæ‰€æœ‰edgeçš„é¢œè‰²
+		## ¶¨ÒåedgeµÄÑÕÉ«, Ó°ÏìÖ®ºóËùÓĞedgeµÄÑÕÉ«
 		edge[color=red];
-		## edgeçš„label å‡ºç°åœ¨edge æ—è¾¹
+		## edgeµÄlabel ³öÏÖÔÚedge ÅÔ±ß
 		main -> printf[style=bold, label="100 times"];
 		make_string[label="make a\nstring"];
-		## node çš„label æ˜¾ç¤ºåœ¨node ä¸Šé¢
+		## node µÄlabel ÏÔÊ¾ÔÚnode ÉÏÃæ
 		node[shape=box, style=filled, color=".7 .3 1.0"];
 		execute -> compare;
 	}
 ![graph above](http://i.imgbox.com/3rciGviM.png)
 
 ### Location
-é»˜è®¤æ—¶å›¾ä¸­çš„çº¿éƒ½æ˜¯ä»ä¸Šåˆ°ä¸‹çš„,æˆ‘ä»¬å¯ä»¥å°†å…¶æ”¹ä¸ºä»å·¦åˆ°å³,åœ¨æ–‡ä»¶çš„æœ€ä¸Šå±‚æ‰“å…¥
-`rankdir=LR` å°±æ˜¯ä»å·¦åˆ°å³,é»˜è®¤æ˜¯ `TB(top -> bottom)`,ä¹Ÿå¯ä»¥æ˜¯ RL,BT.
+Ä¬ÈÏÊ±Í¼ÖĞµÄÏß¶¼ÊÇ´ÓÉÏµ½ÏÂµÄ,ÎÒÃÇ¿ÉÒÔ½«Æä¸ÄÎª´Ó×óµ½ÓÒ,ÔÚÎÄ¼şµÄ×îÉÏ²ã´òÈë
+`rankdir=LR` ¾ÍÊÇ´Ó×óµ½ÓÒ,Ä¬ÈÏÊÇ `TB(top -> bottom)`,Ò²¿ÉÒÔÊÇ RL,BT.
 
-å½“å›¾ä¸­æ—¶é—´è¡¨ä¹‹ç±»çš„ä¸œè¥¿æ—¶,æˆ‘ä»¬ä¼šéœ€è¦ç‚¹èƒ½æ’åœ¨ä¸€è¡Œ(åˆ—),è¿™æ—¶è¦ç”¨åˆ° rank,ç”¨èŠ±æ‹¬
-å·æŠŠ rank=same,ç„¶åæŠŠéœ€è¦å¹¶æ’çš„ç‚¹ä¸€æ¬¡è¾“å…¥
+µ±Í¼ÖĞÊ±¼ä±íÖ®ÀàµÄ¶«Î÷Ê±,ÎÒÃÇ»áĞèÒªµãÄÜÅÅÔÚÒ»ĞĞ(ÁĞ),ÕâÊ±ÒªÓÃµ½ rank,ÓÃ»¨À¨
+ºÅ°Ñ rank=same,È»ºó°ÑĞèÒª²¢ÅÅµÄµãÒ»´ÎÊäÈë
 
 	digraph game{
 		label = "Game history"; 
@@ -114,24 +114,24 @@ creating many shapes that are not predefined. In addition to the parameters regu
 peripheries and orientation, mentioned above, polygons are parameter-
 ized by number of sides sides, skew and distortion. 
 
-- Sides ç”¨äºè®¾ç½®å®ƒçš„è¾¹æ•°
-- peripheries ç”¨äºè®¾ç½®å¤šè¾¹å½¢çš„å¤–æ¡†çš„å±‚æ•°
-- regular = true å¯ä»¥è®©ä½ çš„å¤šè¾¹å½¢æ˜¯ä¸€ä¸ªè§„åˆ™çš„å¤šè¾¹å½¢
-- orientation=*, å¯ä»¥è®©ä½ çš„å¤šè¾¹å½¢æ—‹è½¬ä¸€ä¸ªè§’åº¦
-- skew is a floating point number (usually between âˆ’1.0 and 1.0) that distorts the shape by slanting
+- Sides ÓÃÓÚÉèÖÃËüµÄ±ßÊı
+- peripheries ÓÃÓÚÉèÖÃ¶à±ßĞÎµÄÍâ¿òµÄ²ãÊı
+- regular = true ¿ÉÒÔÈÃÄãµÄ¶à±ßĞÎÊÇÒ»¸ö¹æÔòµÄ¶à±ßĞÎ
+- orientation=*, ¿ÉÒÔÈÃÄãµÄ¶à±ßĞÎĞı×ªÒ»¸ö½Ç¶È
+- skew is a floating point number (usually between ?1.0 and 1.0) that distorts the shape by slanting
 it from top-to-bottom, with positive values moving the top of the polygon to the
 right. Thus, skew can be used to turn a box into a parallelogram. 
 - distortion shrinks the polygon from top-to-bottom, with negative values causing the bottom
 to be larger than the top. distortion turns a box into a trapezoid.
 
-record å’Œ Mrecord çš„åŒºåˆ«å°±æ˜¯ Mrecord çš„è§’æ˜¯åœ†çš„,Record å°±æ˜¯ç”±è¡¡çš„å’Œç«–çš„çŸ©å½¢ç»„æˆçš„å›¾å½¢
+record ºÍ Mrecord µÄÇø±ğ¾ÍÊÇ Mrecord µÄ½ÇÊÇÔ²µÄ,Record ¾ÍÊÇÓÉºâµÄºÍÊúµÄ¾ØĞÎ×é³ÉµÄÍ¼ĞÎ
 
 ![node arrtibutes](http://i.imgbox.com/XnxCHvqn.png)
 ### Lables
 the default node label is its name. Edges are unlabeled by
 default. Node and edge labels can be set explicitly using the label attribute
 
-åœ¨ label åç”¨< >è€Œä¸æ˜¯" "å°±èƒ½å¼•å…¥ html è¯­è¨€
+ÔÚ label ºóÓÃ< >¶ø²»ÊÇ" "¾ÍÄÜÒıÈë html ÓïÑÔ
 
 	digraph structs {
 			node [shape=record];
@@ -146,7 +146,7 @@ default. Node and edge labels can be set explicitly using the label attribute
 ![label demo](http://i.imgbox.com/9Tp7qlt6.png)
 
 ### Edege
-å¯ä»¥è®¾ç½®æ¯æ¡è¾¹ç®­å¤´çš„æ–¹å‘,ç”¨ dir,æœ‰ forward(default),back,both,none å››ç§
+¿ÉÒÔÉèÖÃÃ¿Ìõ±ß¼ıÍ·µÄ·½Ïò,ÓÃ dir,ÓĞ forward(default),back,both,none ËÄÖÖ
 
 	A -> B[dir = both];
 	B -> C[dir = none];
