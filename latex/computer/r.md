@@ -328,6 +328,10 @@ If they are not, the value of the expression is a vector with the same length as
 - floor(x)
 - round(x, digits = 0)
 
+### matrix
+- `A %*% B`: 矩阵相乘
+- `t(A)`: 矩阵转置
+
 ### sort
 #### order
 By default, sorting is ASCENDING. Prepend the sorting variable by a minus sign to indicate DESCENDING order. Here are some examples.
@@ -509,7 +513,7 @@ autonorm <- function(data){
 	return(data)
 }
 ```
-# model
+# package and model
 `summary` is a generic function used to produce result summaries of the results of various model fitting functions.  
 The function invokes particular ‘methods’ which depend on the ‘class’ of the first argument.
 
@@ -527,6 +531,9 @@ All object classes which are returned by model fitting functions should provide 
 > .libPaths()
 [1] "/usr/lib64/R/library" "/usr/share/R/library"
 ```
+
+package doc  
+文档中的Value 部分是返回值, 可以通过$来获取, 例如
 
 ## K-近邻算法
 用到kknn package
