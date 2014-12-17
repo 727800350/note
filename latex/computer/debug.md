@@ -1,3 +1,7 @@
+# gcc
+## [mudflap](https://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging)
+The mudflap run time checker was removed in GCC 4.9 and it is superseded by Address Sanitizer.
+
 # gdb
 
 **Shortcuts**  
@@ -34,7 +38,7 @@ ddd runs a number of debuggers under the scenes:
 
 - step count: Run count lines of source
 
-- next: Similar to step, but **doesn't step into subroutines**
+- next: Similar to step, but **does not step into subroutines**
 
 - finish: Run until the current function/method returns
 
@@ -163,7 +167,7 @@ n/f/u三个参数可以一起使用.例如:
 
 On most systems, GDB has no special support for debugging programs which create additional processes using the fork function. When a program forks, GDB will continue to debug the parent process and the child process will run unimpeded. If you have set a breakpoint in any code which the child then executes, the child will get a SIGTRAP signal which (unless it catches the signal) will cause it to terminate.
 
-However, if you want to debug the child process there is a workaround which isn't too painful. Put a call to sleep in the code which the child process executes after the fork.
+However, if you want to debug the child process there is a workaround which is not too painful. Put a call to sleep in the code which the child process executes after the fork.
 
 On some systems, GDB provides support for debugging programs that create additional processes using the fork or vfork functions. Currently, the only platforms with this feature are HP-UX (11.x and later only?) and GNU/Linux (kernel version 2.5.60 and later).
 
@@ -214,7 +218,7 @@ automatic notification of new threads
 
 thread-specific breakpoints  
 - `set print thread-events`, which controls printing of messages on thread start and exit.
-- `set libthread-db-search-path path`, which lets the user specify which libthread_db to use if the default choice isn't compatible with the program.
+- `set libthread-db-search-path path`, which lets the user specify which libthread_db to use if the default choice is not compatible with the program.
 
 ## core dump
 [使用gdb和core dump迅速定位段错误](http://my.oschina.net/michaelyuanyuan/blog/68618)
@@ -242,6 +246,59 @@ gcore pid (调试进程的pid号)
 ```
 手动生成core文件,在使用pstack(linux下好像不好使)查看堆栈的情况.如果都看不出来,就仔细查看代码,看看是不是在 if,return,break,continue这种语句操作是忘记解锁,还有嵌套锁的问题,都需要分析清楚了
 
+## Other
+### Program environment
+Environment variables conventionally record such things as your user name, your home directory, your terminal type, and your search path for programs to run.
+
+`path directory`  
+Add directory to the front of the PATH environment variable (the search path for executables) that will be passed to your program. 
+The value of PATH used by GDB does not change. 
+You may specify several directory names, separated by whitespace or by a system-dependent separator character (`:' on Unix, `;' on MS-DOS and MS-Windows). 
+If directory is already in the path, it is moved to the front, so it is searched sooner. 
+You can use the string `$cwd` to refer to whatever is the current working directory at the time GDB searches the path. 
+If you use `.` instead, it refers to the directory where you executed the path command. 
+GDB replaces `.` in the directory argument (with the current path) before adding directory to the search path.
+
+`show paths`  
+Display the list of search paths for executables (the PATH environment variable).
+
+`show environment [varname]`  
+Print the value of environment variable varname to be given to your program when it starts. If you do not supply varname, print the names and values of all environment variables to be given to your program. You can abbreviate environment as env.
+
+`set environment varname [=value]`  
+Set environment variable varname to value. The value changes for your program only, not for GDB itself. value may be any string; the values of environment variables are just strings, and any interpretation is supplied by your program itself. The value parameter is optional; if it is eliminated, the variable is set to a null value. For example, this command:  
+`set env USER = foo`  
+tells the debugged program, when subsequently run, that its user is named `foo`. (The spaces around `=` are used for clarity here; they are not actually required.)
+
+`unset environment varname`  
+Remove variable varname from the environment to be passed to your program. This is different from `set env varname =`; unset environment removes the variable from the environment, rather than assigning it an empty value.
+
+### input and output
+`info terminal`  
+Displays information recorded by GDB about the terminal modes your program is using.
+
+You can redirect your program input and/or output using shell redirection with the run command. For example,  
+`run > outfile`  
+starts your program, diverting its output to the file `outfile`
+
+### Debugging an already-running process
+`attach process-id`  
+This command attaches to a running process,one that was started outside GDB.
+
+`detach`  
+When you have finished debugging the attached process, you can use the detach command to release it from GDB control.   
+Detaching the process continues its execution. After the detach command, that process and GDB become completely independent once more, and you are ready to attach another process or start one with run. detach does not repeat if you press RET again after executing the command.  
+If you exit GDB or use the run command while you have an attached process, you kill that process. By default, GDB asks for confirmation if you try to do either of these things;
+
+### Killing the child process
+`kill`  
+Kill the child process in which your program is running under GDB.
+This command is useful if you wish to debug a core dump instead of a running process. GDB ignores any core dump file while your program is running.
+
+On some operating systems, a program cannot be executed outside GDB while you have breakpoints set on it inside GDB. You can use the kill command in this situation to permit running your program outside the debugger.
+
+The kill command is also useful if you wish to recompile and relink your program, since on many systems it is impossible to modify an executable file while it is running in a process. In this case, when you next type run, GDB notices that the file has changed, and reads the symbol table again (while trying to preserve your current breakpoint settings).
+
 # valgrind
 Valgrind is a programming tool for memory debugging, memory leak detection, and profiling.
 
@@ -252,7 +309,7 @@ The problems Memcheck can detect and warn about include the following:
 
 - Use of uninitialized memory
 - Reading/writing memory after it has been freed
-- Reading/writing off the end of malloc'd blocks
+- Reading/writing off the end of malloced blocks
 - Memory leaks
 
 [memcheck demo](https://www.ibm.com/developerworks/community/blogs/6e6f6d1b-95c3-46df-8a26-b7efd8ee4b57/entry/detect_memory_leaks_with_memcheck_tool_provided_by_valgrind_part_i8?lang=zh_cn)
@@ -297,52 +354,6 @@ In addition to Memcheck, Valgrind has several other tools:
 
 There are also several externally developed tools available. One such tool is ThreadSanitizer, another detector of race conditions.
 
-## Other
-### Program's environment
-Environment variables conventionally record such things as your user name, your home directory, your terminal type, and your search path for programs to run.
-
-`path directory`  
-Add directory to the front of the PATH environment variable (the search path for executables) that will be passed to your program. The value of PATH used by GDB does not change. You may specify several directory names, separated by whitespace or by a system-dependent separator character (`:' on Unix, `;' on MS-DOS and MS-Windows). If directory is already in the path, it is moved to the front, so it is searched sooner. You can use the string `$cwd' to refer to whatever is the current working directory at the time GDB searches the path. If you use `.' instead, it refers to the directory where you executed the path command. GDB replaces `.' in the directory argument (with the current path) before adding directory to the search path.
-
-`show paths`  
-Display the list of search paths for executables (the PATH environment variable).
-
-`show environment [varname]`  
-Print the value of environment variable varname to be given to your program when it starts. If you do not supply varname, print the names and values of all environment variables to be given to your program. You can abbreviate environment as env.
-
-`set environment varname [=value]`  
-Set environment variable varname to value. The value changes for your program only, not for GDB itself. value may be any string; the values of environment variables are just strings, and any interpretation is supplied by your program itself. The value parameter is optional; if it is eliminated, the variable is set to a null value. For example, this command:  
-`set env USER = foo`  
-tells the debugged program, when subsequently run, that its user is named `foo'. (The spaces around `=' are used for clarity here; they are not actually required.)
-
-`unset environment varname`  
-Remove variable varname from the environment to be passed to your program. This is different from `set env varname ='; unset environment removes the variable from the environment, rather than assigning it an empty value.
-
-### input and output
-`info terminal`  
-Displays information recorded by GDB about the terminal modes your program is using.
-
-You can redirect your program's input and/or output using shell redirection with the run command. For example,  
-`run > outfile`  
-starts your program, diverting its output to the file `outfile`
-
-### Debugging an already-running process
-`attach process-id`  
-This command attaches to a running process,one that was started outside GDB.
-
-`detach`  
-When you have finished debugging the attached process, you can use the detach command to release it from GDB control.   
-Detaching the process continues its execution. After the detach command, that process and GDB become completely independent once more, and you are ready to attach another process or start one with run. detach does not repeat if you press RET again after executing the command.  
-If you exit GDB or use the run command while you have an attached process, you kill that process. By default, GDB asks for confirmation if you try to do either of these things;
-
-### Killing the child process
-`kill`  
-Kill the child process in which your program is running under GDB.
-This command is useful if you wish to debug a core dump instead of a running process. GDB ignores any core dump file while your program is running.
-
-On some operating systems, a program cannot be executed outside GDB while you have breakpoints set on it inside GDB. You can use the kill command in this situation to permit running your program outside the debugger.
-
-The kill command is also useful if you wish to recompile and relink your program, since on many systems it is impossible to modify an executable file while it is running in a process. In this case, when you next type run, GDB notices that the file has changed, and reads the symbol table again (while trying to preserve your current breakpoint settings).
 
 # trace
 ## strace
@@ -493,7 +504,7 @@ Output:
 	[4] /lib64/libc.so.6(__libc_start_main+0xfd) [0x3af001ecdd] 
 	[5] ./a.out() [0x4007a9] 
 
-"static" means don't export the symbol...
+"static" means do not export the symbol...
 
 **-rdynamic**  
 Pass the flag -export-dynamic to the ELF linker, on targets that support it. 
@@ -727,9 +738,9 @@ Show me all SYNCHRONIZE/ACKNOWLEDGE (SYNACK) packets...
 
 	# tcpdump 'tcp[13]=18'
 
-Note: Only the PSH, RST, SYN, and FIN flags are displayed in tcpdump's flag field output. URGs and ACKs are displayed, but they are shown elsewhere in the output rather than in the flags field
+Note: Only the PSH, RST, SYN, and FIN flags are displayed in tcpdump s flag field output. URGs and ACKs are displayed, but they are shown elsewhere in the output rather than in the flags field
 
-tcp[13] looks at offset 13 in the TCP header, the number represents the location within the byte, and the !=0 means that the flag in question is set to 1, i.e. it's on
+tcp[13] looks at offset 13 in the TCP header, the number represents the location within the byte, and the !=0 means that the flag in question is set to 1, i.e. it is on
 
 Capture TCP Flags Using the tcpflags Option...
 
@@ -737,7 +748,7 @@ Capture TCP Flags Using the tcpflags Option...
 
 ### Specialized Traffic
 
-Finally, there are a few quick recipes you'll want to remember for catching specific and specialized traffic, such as IPv6 and malformed/likely-malicious packets.
+Finally, there are a few quick recipes you will want to remember for catching specific and specialized traffic, such as IPv6 and malformed/likely-malicious packets.
 
 IPv6 traffic
 
