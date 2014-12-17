@@ -314,6 +314,31 @@ The problems Memcheck can detect and warn about include the following:
 
 [memcheck demo](https://www.ibm.com/developerworks/community/blogs/6e6f6d1b-95c3-46df-8a26-b7efd8ee4b57/entry/detect_memory_leaks_with_memcheck_tool_provided_by_valgrind_part_i8?lang=zh_cn)
 
+### report error examples
+```
+==25832== Invalid read of size 4
+==25832==
+at 0x8048724: BandMatrix::ReSize(int, int, int) (bogon.cpp:45)
+==25832==
+by 0x80487AF: main (bogon.cpp:66)
+==25832== Address 0xBFFFF74C is not stack’d, malloc’d or free’d
+```
+This message says that the program did an illegal 4-byte read of address 0xBFFFF74C, which, as far as Memcheck
+can tell, is not a valid stack address, nor corresponds to any current heap blocks or recently freed heap blocks. The
+read is happening at line 45 of bogon.cpp, called from line 66 of the same file, etc.
+
+If you want to know how many times each error occurred, run with the -v option. When execution finishes, all the
+reports are printed out, along with, and sorted by, their occurrence counts. This makes it easy to see which errors have
+occurred most frequently.
+
+```
+==26866==    by 0x4E399A9: ??? (in /usr/lib64/libpcap.so.1.5.3)
+==26866==    by 0x4E3DE1D: ??? (in /usr/lib64/libpcap.so.1.5.3)
+```
+The name ??? is used if the file name and/or function name could not be determined from debugging information. 
+If most of the entries have the form ???:??? the program probably wasn’t compiled with -g.
+包括库的函数
+
 ## Scheduling and Multi-Thread Performance 
 Threaded programs are fully supported.  
 Valgrind **serialises execution** so that only one (kernel) thread is running at a time. 
