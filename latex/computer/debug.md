@@ -242,6 +242,61 @@ gcore pid (调试进程的pid号)
 ```
 手动生成core文件,在使用pstack(linux下好像不好使)查看堆栈的情况.如果都看不出来,就仔细查看代码,看看是不是在 if,return,break,continue这种语句操作是忘记解锁,还有嵌套锁的问题,都需要分析清楚了
 
+# valgrind
+Valgrind is a programming tool for memory debugging, memory leak detection, and profiling.
+
+## Memcheck
+The problems Memcheck can detect and warn about include the following:
+
+[Memory debugger](http://en.wikipedia.org/wiki/Memory_debugger)
+
+- Use of uninitialized memory
+- Reading/writing memory after it has been freed
+- Reading/writing off the end of malloc'd blocks
+- Memory leaks
+
+[memcheck demo](https://www.ibm.com/developerworks/community/blogs/6e6f6d1b-95c3-46df-8a26-b7efd8ee4b57/entry/detect_memory_leaks_with_memcheck_tool_provided_by_valgrind_part_i8?lang=zh_cn)
+
+## Scheduling and Multi-Thread Performance 
+Threaded programs are fully supported.  
+Valgrind **serialises execution** so that only one (kernel) thread is running at a time. 
+but it does mean that threaded apps never use more than one CPU simultaneously, even if you have a multiprocessor or multicore machine.
+Valgrind doesn’t schedule the threads itself. It merely ensures that only one thread runs at once, using a simple locking scheme. 
+The actual thread scheduling remains under control of the OS kernel. 
+This is both because Valgrind is serialising the threads, and because the code runs so much slower than normal.  
+if you have some kind of concurrency, critical race, locking, or similar, bugs. 
+In that case you might consider using the tools Helgrind and/or DRD to track them down.
+
+## Handling of Signals
+Valgrind has a fairly complete signal implementation. It should be able to cope with any POSIX-compliant use of signals.
+If you’re using signals in clever ways (for example, catching SIGSEGV, modifying page state and restarting the instruction), you’re probably relying on precise exceptions.
+In this case, you will need to use
+```
+--vex-iropt-register-updates=allregs-at-mem-access
+```
+or
+```
+--vex-iropt-register-updates=allregs-at-each-insn.
+```
+If your program dies as a result of a fatal core-dumping signal, Valgrind will generate its own core file
+(vgcore.NNNNN) containing your program’s state.  
+You may use this core file for post-mortem debugging with GDB or similar.  
+In the unlikely event that Valgrind itself crashes, the operating system will create a core dump in the usual way.
+
+## other tools
+In addition to Memcheck, Valgrind has several other tools:
+
+- None, runs the code in the virtual machine without performing any analysis. Since valgrind itself provides a trace back from a segmentation fault, the none tool provides this traceback at minimal overhead.
+- Massif, a heap profiler. The separate GUI massif-visualizer visualizes output from Massif.
+- Helgrind and DRD, detect **race conditions** in multithreaded code
+- Cachegrind, a cache profiler. The separate GUI KCacheGrind visualizes output from Cachegrind.
+- Callgrind, a callgraph analyzer. KCacheGrind can visualize output from Callgrind as well as Cachegrind.
+- exp-sgcheck (named exp-ptrcheck prior to version 3.7), an experimental tool to find stack and global array overrun errors which Memcheck cannot find. Some code results in false positives from this tool.
+- exp-dhat, dynamic heap analysis tool which analyzes how much memory is allocated and for how long as well as patterns of memory usage.
+- exp-bbv, a performance simulator that extrapolates performance from a small sample set.
+
+There are also several externally developed tools available. One such tool is ThreadSanitizer, another detector of race conditions.
+
 ## Other
 ### Program's environment
 Environment variables conventionally record such things as your user name, your home directory, your terminal type, and your search path for programs to run.

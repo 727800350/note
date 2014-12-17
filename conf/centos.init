@@ -13,6 +13,8 @@ sudo yum install -y yum-plugin-priorities
 
 ## programming
 sudo yum install -y clang gcc gcc-c++ gdb
+sudo yum install -y valgrind
+sudo yum install -y libasan libasan-static
 sudo yum install -y flex byacc
 
 ## ## 如果系统中自带是vim是vim-minimal, 而不是vim
