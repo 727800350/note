@@ -38,9 +38,9 @@ typing two backquotes \`\` returns you to the position where you issued the G co
 `<`  减少缩进, `x<` 表示减少以下 x 行的缩进
 
 # Edit
-Vim高亮显示的那个特殊的`^M`, 是Ctrl+V
-`Shift-v shift-g`  选择当前位置到文章结尾  
-`shfit-v $` 选择当前位置到当前行尾
+- Vim高亮显示的那个特殊的`^M`, 是Ctrl+V
+- `Shift-v shift-g`  选择当前位置到文章结尾  
+- `shfit-v $` 选择当前位置到当前行尾
 
 transposing two letters `xp`, 也就是一个`x`, 然后再`p`
 
