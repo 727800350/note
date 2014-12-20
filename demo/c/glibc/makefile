@@ -5,4 +5,5 @@ LIBS=-lpcap -L/usr/lib64/mysql -lmysqlclient -L/usr/local/lib -lglib-2.0 -lpthre
 all: 
 ## 	clang $(CFLAGS) $(LIBS) gslist.c
 ## 	clang $(CFLAGS) $(LIBS) hashtable_int_str.c
-	clang $(CFLAGS) $(LIBS) hashtable_str_str.c
+	clang $(CFLAGS) $(LIBS) hashtable_uint_str.c
+## 	clang $(CFLAGS) $(LIBS) hashtable_str_str.c
