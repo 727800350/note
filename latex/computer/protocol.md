@@ -4,22 +4,22 @@
 
 
  Below is an excerpt from an email from Guy Harris on the tcpdump-workers mail list when someone asked,   
- **"How do I get the length of the TCP payload?"** Guy Harris' slightly snipped response (edited by him to
+ **"How do I get the length of the TCP payload?"** Guy Harris slightly snipped response (edited by him to
  speak of the IPv4 header length and TCP data offset without referring
  to bitfield structure members) is reproduced below:
  
  The Ethernet size is always 14 bytes.
  
  In fact, you *MUSTassume the Ethernet header is 14 bytes, *and*, if 
- you're using structures, you must use structures where the members 
+ you are using structures, you must use structures where the members 
  always have the same size on all platforms, because the sizes of the 
  fields in Ethernet - and IP, and TCP, and... - headers are defined by 
- the protocol specification, not by the way a particular platform's C 
+ the protocol specification, not by the way a particular platform C 
  compiler works.)
  
  The IP header size, in bytes, is the value of the IP header length,
  as extracted from the "ip_vhl" field of "struct sniff_ip" with
- the "IP_HL()" macro, times 4 ("times 4" because it's in units of
+ the "IP_HL()" macro, times 4 ("times 4" because it is in units of
  4-byte words).  If that value is less than 20 - i.e., if the value
  extracted with "IP_HL()" is less than 5 - you have a malformed
  IP datagram.
@@ -57,7 +57,7 @@
  it's 15 bytes, it has only one byte of Ethernet payload, which is too 
  small for an IP header.  The length of the captured data is given in 
  the "caplen" field in the "struct pcap_pkthdr"; it might be less than 
- the length of the packet, if you're capturing with a snapshot length 
+ the length of the packet, if you are capturing with a snapshot length 
  other than a value >= the maximum packet size.
  <end of response>
 
@@ -570,7 +570,7 @@ For example, a mailer tying to send mail to `Mockapetris@ISI.EDU` might
 ask the resolver for mail information about `ISI.EDU`, resulting in a
 query for `QNAME=ISI.EDU, QTYPE=MX, QCLASS=IN`.  
 
-The response's answer section would be:
+The response answer section would be:
 
     ISI.EDU.        MX      10 VENERA.ISI.EDU.
                     MX      10 VAXA.ISI.EDU.
@@ -590,7 +590,7 @@ soon afterward.
 **Server Reply Source Address Selection**  
    Some multi-homed hosts running DNS servers generate a reply using a
    source address that is not the same as the destination address from
-   the client's request packet.  Such replies will be discarded by the
+   the client request packet.  Such replies will be discarded by the
    client because the source address of the reply does not match that of
    a host to which the client sent the original request.  That is, it
    appears to be an unsolicited response.
@@ -644,7 +644,7 @@ DNS resolvers are just DNS clients. They can make two main types of queries: ite
 Recursive vs. Iterative Queries
 
 - As mentioned above, recursive queries are queries where the client asks the server to do all the work for it. It sends in its query the RECURSION DESIRED flag, and the DNS server will either honor that or not.
-- Iterative queries are the opposite of recursive queries. When they're used, the server doesn't go find the answer for the client (unless it's on the first question and response), but rather tells the client where to look next. So if the client asks for chat.google.com, it tells the client to check with the .com servers and considers its work done.
+- Iterative queries are the opposite of recursive queries. When they are used, the server does not go find the answer for the client (unless it is on the first question and response), but rather tells the client where to look next. So if the client asks for chat.google.com, it tells the client to check with the .com servers and considers its work done.
 
 ### Other
 DNS uses its own unique **encoding** for Unicode characters.   
