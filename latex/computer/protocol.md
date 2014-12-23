@@ -81,6 +81,12 @@ while values of 1536 and above indicate that the field is used to represent Ethe
 - 0x0800	Internet Protocol version 4 (IPv4)
 - 0x86DD	Internet Protocol Version 6 (IPv6)
 
+address family
+```
+#define AF_INET 2
+#define AF_INET6	10	/* IP version 6
+```
+
 # Internet layer
 ## IP v4
 	/usr/include/netinet/ip.h
