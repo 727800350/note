@@ -1,8 +1,11 @@
 % ctex-xecjk-winfonts.def: Windows 的 xeCJK 字体设置，默认为六种中易字体
 % vim:ft=tex
 
-\setCJKmainfont[BoldFont={SimHei},ItalicFont={KaiTi}]
-  {SimSun}
+% /usr/local/texlive/2014/texmf-dist/tex/latex/ctex/fontset/ctex-xecjk-winfonts.def
+% fc-cache to update fonts
+% fc-list to show installed fonts
+
+\setCJKmainfont[BoldFont={SimHei},ItalicFont={KaiTi}]{SimSun}
 \setCJKsansfont{SimHei}
 \setCJKmonofont{FangSong}
 
