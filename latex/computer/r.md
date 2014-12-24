@@ -15,13 +15,31 @@ n <- 15
 在多数场合下, 可以用`=`来代替`<-`  
 或者使用`assign("x", c(10.4, 5.6, 3.1, 6.4, 21.7))`
 
+**R语言的启动**
+
+- R语言启动后会首先查找有无.Rprofile文档,用户可通过编辑.Rprofile文档来自定义R启动环境,该文件可放在工作目录或安装目录中.
+- 之后R会查找在工作目录有无.RData文档,若有的话将自动加载恢复之前的工作内容.
+- 在R中所有的默认输入输出文件都会在工作目录中.getwd() 报告工作目录,setwd() 负责设置工作目录.在win窗口下也可以点击Change Working Directory来更改.
+- Sys.getenv('R_HOME') 会报告R主程序安装目录
+- ?Startup可以得到更多关于R启动时的帮助
+
 # Objects
+R是一种基于对象(Object)的语言,所以你在R语言中接触到的每样东西都是一个对象,一串数值向量是一个对象,一个函数是一个对象,一个图形也是一个对象.
+基于对象的编程(OOP)就是在定义类的基础上,创建与操作对象.
+
+- `attributes()` 获得对象属性
+- `str()`,它能以简洁的方式显示对象的数据结构及其内容
+
 ## namespace
 同一个环境只能存在一个唯一的名字,不同环境可以存在相同名字,R寻找一个名字,
 会站在当前环境沿着search() path(`".GlobalEnv"     "package:base"   "namespace:base"`)往之后的环境中找名字,如果当前名字不符合就依次找后面的环境.  
 可以参见[demo namespace](../../demo/r/namespace.r)
 
 ## object types
+R语言中最为基本的类包括了数值(numeric),逻辑(logical),字符(character),列表(list),
+在此基础上构成了一些复合型的类,包括矩阵(matrix),数组(array),因子(factor),数据框(dataframe).
+除了这些内置的类外还有很多其它的,用户还可以自定义新的类,但所有的类都是建立在这些基本的类之上的
+
 overview of the type of objects representing data
 
 | object                                     | modes                                     | several modes possible in the same object? |
@@ -35,7 +53,7 @@ overview of the type of objects representing data
 | list                                       | numeric, character, complex or logical, function, expression, ... 	 | No  
 
 - A factor is a categorical variable
-- A data frame is a table composed with one or several vectors and/or factors all of the same length but possibly of different modes. 
+- A data frame is a table composed with one or several vectors and/or factors all of the same length but possibly of different modes. dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征
 - A 'ts' is a time series data set and so contains additional attributes such as frequency and dates. 
 - A list a general form of vector in which the various elements need not be of the same type. 
 They can contain any type of object, included lists!
@@ -198,6 +216,8 @@ age          f   m
 ```
 
 ## list
+- unlist: 将list转换为非list格式, 为向量格式
+
 ```
 > a <- list(1,2, "test")
 > a
@@ -209,6 +229,14 @@ age          f   m
 
 [[3]]
 [1] "test"
+```
+## dataframe
+在数据导入R语言后,会以数据框(dataframe)的形式储存.
+dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征.
+
+下面的命令可以让你有机会修改数据并存入到新的变量newdata中:
+```
+newdata=edit(data)
 ```
 
 ## mode
@@ -235,6 +263,130 @@ The **length** is the number of elements of the object.
 Once an object has been created, new components may be added to it simply by giving it an index value outside its previous range.  
 `> e[3] <- 17`  
 now makes e a vector of length 3, (the first two components of which are at this point both NA).
+
+# 常用统计函数运算
+在R语言中经常会用到函数,例如上节中讲到的求样本统计量就需要均值函数(mean)和标准差函数(sd).对于二元数值数据还用到协方差(cov),对于二元分类数据则可以用交叉联列表函数(table).下文讲述在初级统计学中最常用到的三类函数.
+
+## 数据汇总函数
+我们还是以R中自带的iris数据为例,输入head(iris)你可以获得数据的前6个样本及对应的5个变量.取出最后两列数据作为讲解的对象:Species表示花的种类,Petal.Width表示花瓣宽度
+
+下一步我们想计算不同种类花瓣的平均宽度,可以使用tapply函数,
+在计算前先用attach命令将data这个数据框解包以方便直接操作其变量,而不需再用$符号.
+```
+> data = iris[,c(4,5)]
+> names(data)
+[1] "Petal.Width" "Species"
+> tapply(X=Petal.Width, INDEX = Species, FUN=mean)
+Error in tapply(X = Petal.Width, INDEX = Species, FUN = mean) :
+  object 'Species' not found
+> tapply(X=data$Petal.Width, INDEX = data$Species, FUN=mean)
+    setosa versicolor  virginica
+     0.246      1.326      2.026
+> attach(data)
+> tapply(X=Petal.Width, INDEX = Species, FUN=mean)
+    setosa versicolor  virginica
+     0.246      1.326      2.026
+```
+和tapply类似的还有sapply函数,在进一步讲解前初学者还需搞清楚两种数据表现方式,
+即stack(堆叠数据)和unstack(非堆叠数据),上面的data就是一个堆叠数据,每一行表示一个样本.
+而非堆叠数据可以根据unstack函数转换而来
+```
+> data
+  Petal.Width Species
+1         0.2  setosa
+2         0.2  setosa
+...
+52          1.5 versicolor
+53          1.5 versicolor
+54          1.3 versicolor
+...
+146         2.3  virginica
+147         1.9  virginica
+148         2.0  virginica
+...
+
+> data.unstack = uns
+unserialize  unsplit      unstack
+> data.unstack = unstack(data)
+> head(data.unstack)
+  setosa versicolor virginica
+1    0.2        1.4       2.5
+2    0.2        1.5       1.9
+3    0.2        1.5       2.1
+4    0.2        1.3       1.8
+5    0.2        1.5       2.2
+6    0.4        1.3       2.1
+
+> sapply(data.unstack,FUN=mean)
+    setosa versicolor  virginica
+     0.246      1.326      2.026
+```
+结果是一样的,也就是说tapply对应于stack数据,而sapply对应于unstack数据
+
+## 概率计算函数
+如果给定一种概率分布,通常会有四类计算问题:
+
+1. 计算其概率密度density (d)
+1. 计算其概率分布probability(p)
+1. 计算其百分位数quantile (q)
+1. 随机数模拟random (r)
+
+![概率类型](http://1.bp.blogspot.com/-h1-vKZMKEh4/TrfKPr_3QOI/AAAAAAAAAhQ/2Gs77XvCBxI/s400/%25E6%258D%2595%25E8%258E%25B7.JPG)
+
+## 抽样函数
+### sample
+我们想从1到10中随机抽取5个数字,那么这样来做:首先产生一个序列,然后用sample函数进行无放回抽取.
+```
+x=1:10
+sample(x,size=5)
+```
+有放回抽取则是
+```
+sample(x,size=5,replace=T)
+```
+sample函数在建模中经常用来对样本数据进行随机的划分,一部分作为训练数据,另一部分作为检验数据.
+
+`sample(x, size, replace = FALSE, prob = NULL)`
+replace 表示取样的时候能够重复, 也就是说一个元素可以不可以被多次取到  
+prob 的和可以不为1, 只要保证每个元素非负就可以了
+
+```
+> x <- 1:5
+> sample(x, length(x),replace=T, prob=c(0.1,0.2,0.3,0.25,0.25))
+[1] 3 4 4 2 5
+> replicate(3, sample(x, length(x),replace=F))  ## repalce=FALSE 表示元素不能重复
+     [,1] [,2] [,3]
+[1,]    4    4    4
+[2,]    3    5    2
+[3,]    2    1    5
+[4,]    1    2    1
+[5,]    5    3    3
+> replicate(3, sample(x, length(x),replace=T))
+     [,1] [,2] [,3]
+[1,]    4    2    4
+[2,]    5    3    1
+[3,]    1    2    4
+[4,]    3    4    2
+[5,]    1    1    1
+```
+
+特殊的简化
+```
+sample(x, n)  ## 当length(x) = 1 且 x > 1, 那么这句话就是从序列1:x中取出n个值
+```
+
+描述统计是一种从大量数据中压缩提取信息的工具,最常用的就是summary命令
+对于数值变量计算了五个分位点和均值,对于分类变量则计算了频数
+
+# 字符串str
+获取字符串长度:nchar()能够获取字符串的长度,它也支持字符串向量操作.注意它和length()的结果是有区别的.
+字符串粘合:paste()负责将若干个字符串相连结,返回成单独的字符串.其优点在于,就算有的处理对象不是字符型也能自动转为字符型.
+字符串分割:strsplit()负责将字符串按照某种分割形式将其进行划分,它正是paste()的逆操作.
+字符串截取:substr()能对给定的字符串对象取出子集,其参数是子集所处的起始和终止位置.
+字符串替代:gsub()负责搜索字符串的特定表达式,并用新的内容加以替代.
+sub()函数是类似的,但只替代第一个发现结果.
+字符串匹配:grep()负责搜索给定字符串对象中特定表达式 ,并返回其位置索引.
+grepl()函数与之类似,但其后面的"l"则意味着返回的将是逻辑值.
 
 # IO
 `print(x, ...)`
@@ -312,6 +464,8 @@ dbSendQuery 传送查询,返回的结果是 继承"DBIResult"的一个子类的�
 > for (name in expr_1) expr_2
 > while (condition) expr
 ```
+exp 中可以用{}
+
 break, next
 
 `prediction = ifelse(post.yes >= post.no, "Yes", "No")` 类似于C 语言中的`? :`运算符.
@@ -437,48 +591,22 @@ seq(from, to, length.out= )  ## equally spaced
 `> s5 <- rep(x, times=5)` which will put five copies of x end-to-end in s5.  
 `> s6 <- rep(x, each=5)` which repeats each element of x five times before moving on to the next.
 
-### sample
-`sample(x, size, replace = FALSE, prob = NULL)`
-replace 表示取样的时候能够重复, 也就是说一个元素可以不可以被多次取到  
-prob 的和可以不为1, 只要保证每个元素非负就可以了
+### 向量化运算
+和matlab一样,R语言以向量为基本运算对象.
+也就是说,当输入的对象为向量时,对其中的每个元素分别进行处理,然后以向量的形式输出.R语言中基本上所有的数据运算均能允许向量操作.不仅如此,R还包含了许多高效的向量运算函数
 
+所谓apply族函数包括了apply,sapply,lappy,tapply等函数,这些函数在不同的情况下能高效的完成复杂的数据处理任务,但角色定位又有所不同
+
+apply()函数的处理对象是矩阵或数组,它逐行或逐列的处理数据,其输出的结果将是一个向量或是矩阵.
 ```
-> x <- 1:5
-> sample(x, length(x),replace=T, prob=c(0.1,0.2,0.3,0.25,0.25))
-[1] 3 4 4 2 5
-> replicate(3, sample(x, length(x),replace=F))  ## repalce=FALSE 表示元素不能重复
-     [,1] [,2] [,3]
-[1,]    4    4    4
-[2,]    3    5    2
-[3,]    2    1    5
-[4,]    1    2    1
-[5,]    5    3    3
-> replicate(3, sample(x, length(x),replace=T))
-     [,1] [,2] [,3]
-[1,]    4    2    4
-[2,]    5    3    1
-[3,]    1    2    4
-[4,]    3    4    2
-[5,]    1    1    1
+m.data <- matrix(rnorm(100),ncol=10)
+apply(m.data,1,mean) 
 ```
 
-特殊的简化
-```
-sample(x, n)  ## 当length(x) = 1 且 x > 1, 那么这句话就是从序列1:x中取出n个值
-```
-
-### rnorm
-`rnorm(n, mean = 0, sd = 1)`  
-n: number of observations. If ‘length(n) > 1’, the length is taken to be the number required.  
-random generation for the normal distribution with mean equal to ‘mean’ and standard deviation equal to ‘sd’.
-
-### \*apply
-#### apply
-returns a vector or array or list of values obtained by applying a function to margins of an array or matrix.
 ```
 apply(X, MARGIN, FUN, ...)
 X: an array, including a matrix
-for a matrix ‘1’ indicates rows, ‘2’ indicates columns, ‘c(1, 2)’ indicates rows and columns.
+for a matrix '1' indicates rows, '2' indicates columns, 'c(1, 2)' indicates rows and columns.
 ```
 
 demo
@@ -494,7 +622,44 @@ demo
 [1]  3  7  7 15
 ```
 
-#### tapply
+lappy()的处理对象是向量,列表或其它对象,
+它将向量中的每个元素作为参数,输入到处理函数中,最后生成结果的格式为列表.
+
+在R中数据框是一种特殊的列表,所以数据框的列也将作为函数的处理对象.下面的例子即对一个数据框按列来计算中位数与标准差.
+
+```
+f.data <- data.frame(x=rnorm(10),y=runif(10))
+lapply(f.data,FUN=function(x) list(median=median(x),sd=sd(x)))
+```
+
+sapply()可能是使用最为频繁的向量化函数了,它和lappy()是非常相似的,但其输出格式则是较为友好的矩阵格式.
+```
+f.data <- data.frame(x=rnorm(10),y=runif(10))
+sapply(f.data,FUN=function(x) list(median=median(x),sd=sd(x)))
+```
+
+tapply()的功能则又有不同,它是专门用来处理分组数据的,其参数要比sapply多一个.
+
+我们以iris数据集为例,可观察到Species列中存放了三种花的名称,我们的目的是要计算三种花瓣萼片宽度的均值.其输出结果是数组格式.
+```
+attach(iris)
+tapply(Sepal.Width,INDEX=Species,FUN=mean)
+```
+
+与tapply功能非常相似的还有aggregate(),其输出是更为友好的数据框格式.而by()和上面两个函数是同门师兄弟.
+
+另外还有一个非常有用的函数replicate(),它可以将某个函数重复运行N次,常常用来生成较复杂的随机数.
+
+下面的例子即先建立一个函数,模拟扔两个骰子的点数之和,然后重复运行10000次.
+```
+game <- function() {
+    n <- sample(1:6,2,replace=T)
+    return(sum(n))
+}
+replicate(n=10000,game())
+```
+
+最后一个有趣的函数Vectorize(),它能将一个不能进行向量化运算的函数进行转化,使之具备向量化运算功能.
 
 ## 自定义
 ```
@@ -514,11 +679,8 @@ autonorm <- function(data){
 }
 ```
 # package and model
-`summary` is a generic function used to produce result summaries of the results of various model fitting functions.  
-The function invokes particular ‘methods’ which depend on the ‘class’ of the first argument.
-
 `fitted` is a generic function which extracts fitted values from objects returned by modeling functions.
-All object classes which are returned by model fitting functions should provide a ‘fitted’ method.
+All object classes which are returned by model fitting functions should provide a 'fitted' method.
 
 `data`: Loads specified data sets, or list the available data sets.
 
@@ -722,3 +884,17 @@ Arithmetic Operators
 The `help.search` command (alternatively `??`) allows searching for help in various ways. For example,  
 `> ??solve`
 
+# 调试debug
+`stop('your message here.')`
+
+对函数进行调试的重要工具是`browser()`,它可以使我们进入调试模式逐行运行代码.
+在函数中的某一行插入browser()后,在函数执行时会在这一行暂停中断,并显示一个提示符.此时我们可以在提示符后输入任何R语言的交互式命令进行检查调试.
+
+- 输入n则会逐行运行程序,并提示下一行将运行的语句.
+- 输入c会直接跳到下一个中断点.
+- 而输入Q则会直接跟出调试模式.
+
+debug()函数和browser()是相似的,如果你认为某个函数,例如`fx(x)`,有问题的话,使用`debug(fx(x))`即可进入调试模式.
+它本质上是在函数的第一行加入了browser,所以其它提示和命令都是相同的.
+
+其它与程序调试有关的函数还包括:trace(),setBreakpoint(),traceback(),recover()
