@@ -470,7 +470,7 @@ Using beamer+biblatex you could also write
 | 大小                        | 42pt | 36pt | 26pt | 24pt | 22pt | 18pt | 16pt | 15pt   | 14pt | 12pt | 10.5pt  | 9pt  | 7.5pt | 6.5pt  | 5.5pt  | 5pt   |
 | 1.5行距时的 \baselineskip 设置值 | 63pt | 54pt | 39pt | 36pt | 33pt | 27pt | 24pt | 22.5pt | 21pt | 18pt | 15.75pt | 13.5 | 11.25 | 9.75pt | 8.25pt | 7.5pt |
 
-Latex 设置字体大小命令由小到大依次为：
+Latex 设置字体大小命令由小到大依次为:
 ```
 \tiny, \scriptsize, \footnotesize, \small, \normalsize, \large, \Large, \LARGE, \huge, \Huge
 ```
@@ -527,6 +527,30 @@ Eg:
 `\cleardoublepage`.  
 如果使用了hyperref 宏包来生成PDF 文件的书签链接,则还需要在上面的命令后再加上
 `\phantomsection`
+
+用renewcommand定义了命令后怎么恢复原来的命令啊?
+利用原始命令`\let,renew` 之前保存一下,以后再恢复:
+```
+\let\oldfoo\foo
+\renewcommand\foo{new def}
+...
+\let\foo\oldfoo
+```
+在使用book 类型的class 时, chapter 默认会在新的一页开始, 如果要让chapter连续而不分页, 那么我们可以把clearpage 这个命令给关闭掉, 
+但是关闭掉之后, 又出现了另外一个问题, 参考文献部分会出现问题(文献会显示不全), 所以我们就需要在参考文献部分将clearpage的命令恢复
+
+```
+\let\old\clearpage
+\renewcommand\clearpage{}
+正文内容
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{参考文献}
+\nocite{*}
+\bibliography{data/bibs}
+\let\clearpage\old
+\cleardoublepage
+```
 
 # 页眉页脚
 页眉和页脚的样式是由命令 \pagestyle 和 \pagenumbering 来定义的. 
