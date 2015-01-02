@@ -47,6 +47,9 @@ Title, Author, His or Her Affiliation, The Date, Title Graphic
 	\date{Jan. 2012}
 ![\title](http://i.imgbox.com/AYtCSjXh.jpg)
 
+## author
+如果需要在author 中使用tabular 以产生对齐效果, 那么需要把`\author` 命令放在`\begin{document}`之后, 否则 tabular 命令不认
+
 # List
 If you want each item of a list to appear in order, use the `[<+->]` option. (i.e. `\begin{itemize}[<+->]` )
 
