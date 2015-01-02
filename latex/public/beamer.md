@@ -30,7 +30,7 @@ Title, Author, His or Her Affiliation, The Date, Title Graphic
 	\begin{frame}[plain]
 	\titlepage
 	\end{frame}
-	其中的plain 选项表示不显示顶栏侧栏底栏等外部元素。
+	其中的plain 选项表示不显示顶栏侧栏底栏等外部元素.
 
 也可以把信息都放在title中,在title中使用换行
 
@@ -59,6 +59,7 @@ If you want each item of a list to appear in order, use the `[<+->]` option. (i.
 	\end{enumerate}
 
 ## setbeamertemplate
+
 	\setbeamertemplate{itemize items}[样式名]
 	\setbeamertemplate{enumerate items}[样式名]
 
@@ -79,6 +80,7 @@ enumerate
 	\setbeamertemplate{enumerate mini template}{\insertenumlabel}
 
 ## 改变序号
+
 	\begin{enumerate}[step 1]
 	\item good morning...
 	\item good morning....
@@ -93,6 +95,14 @@ enumerate
 	step i good morning
 	step ii good morning
 
+## 溢出
+如果一页溢出,考虑以下解决方法:
+
+1. 减小字体,变成/small, /tiny字体 
+2. 幻灯片写成plain格式: `\begin{frame}[plain]`
+3.  由beamer 自动分页, `\begin{frame}[allowframebreaks]`\\
+有时这种方法给出的自动分页不是很好, 好不如自己手动分页, 这样可以控制在那里断开
+
 # 对齐
 A frame can be assigned a left, center, or right alignment with the
 `flushleft`, `center`, and `flushright` environments.
@@ -103,33 +113,33 @@ A frame can be assigned a left, center, or right alignment with the
 
 # Block
 	\begin{block}{重要内容}
-	2012年12月21日是世界末日。
+	2012年12月21日是世界末日.
 	\end{block}
 ![block](http://i.imgbox.com/e7k6k84Z.jpg)
 
-定制区块环境例如，下面的代码修改了区块环境的样式：  
+定制区块环境例如,下面的代码修改了区块环境的样式:  
 `\setbeamertemplate{blocks}[rounded]`
 
 区块环境用圆角带阴影的矩形来表示`[shadow=true]`
 
 `\setbeamercolor{blocktitle}{fg=yellow,bg=gray!50!black}\setbeamercolor{blockbody}{bg=gray}`
 
-与区块环境类似地还有一个提醒环境(红色)和例子环境。先看看提醒环境。  
+与区块环境类似地还有一个提醒环境(红色)和例子环境.先看看提醒环境.  
 例如下面的代码
 
 	\begin{alertblock}{重要提醒}
-	2012年12月21日是世界末日。
+	2012年12月21日是世界末日.
 	\end{alertblock}
 
 	\begin{exampleblock}{重要例子}
-	2012年12月21日是世界末日。
+	2012年12月21日是世界末日.
 	\end{exampleblock}
 
-Beamer 中也定义了各种定理环境，而且默认是用区块环境的样式来显示的。  
+Beamer 中也定义了各种定理环境,而且默认是用区块环境的样式来显示的.  
 例如下面的代码
 	
 	\begin{theorem}
-	微积分基本公式：$\int_a^b f(x)\mathrm{d}x=F(b)-F(a)$。
+	微积分基本公式:$\int_a^b f(x)\mathrm{d}x=F(b)-F(a)$.
 	\end{theorem}
 
 # Note
