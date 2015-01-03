@@ -10,7 +10,29 @@
 \tableofcontents
 \newpage
 \section{Introduction}
-algorithms for inferring unkowns from knows.
+Algorithms for inferring unkowns from knows.
+
+与机器学习相关的学科: 人工智能, 智能信息处理, 模式识别, 数据挖掘, 计算机视觉, 自然语言处理
+
+模式识别侧重于识别的应用, 机器学习侧重于识别的方法\\
+数据挖掘是机器学习方法在知识获取中的应用\\
+计算机视觉是机器学习方法在图像视频处理中的应用
+
+与机器学习相关的机构,期刊,会议
+\begin{itemize}
+\item IEEE, AAAI, IAPR
+\item IJCAI, AAAI, NIPS, ICML, ICCV, CVPR, ECCV, ICPR, CCML, CCPR
+\item Machine Learning, NeuroComputing, PAMI, PR, PRL, CVIU
+\end{itemize}
+
+评价一个学习算法的优劣最常用的标准有:
+\begin{enumerate}
+\item 预测精度(泛化能力):在精度上,必然是越高越好.预测精度可以使用交叉验证法进行.交叉验证首先将样本等分成n份,取其中n - 1份进行训练,另外 1 份进行测试,
+轮流进行直到这n份都曾被用于测试,然后计算预测准确率的均值.这个过程称为n折交叉验证,常用的有2折, 5折以及10折交叉验证.
+\item 学习与分类速度:速度也是越快越好,有些大规模的学习与分类问题,若速度太慢则很难投入使用.
+\item 可理解性:由于学习系统只是一种辅助手段,最终决策还是用户来做,因此可理解性强的分类器一般更容易被用户接受.
+\end{enumerate}
+实际应用中,分类器一般很难在以上三点同时表现突出,例如 BP 网络分类精度高,分类速度快,但是训练过程慢,可理解性也比较差.
 
 \textbf{Applications}
 \begin{itemize}
@@ -89,6 +111,15 @@ $P(y) =$ fraction of points $x_i$ in $N_k(x)$ s.t $y_i = y$\\
 
 How to select parameter $k$?\\
 Cross validation, etc.
+
+KNN 在计算某个测试点的训练样本距离的计算复杂度为$O(l)$, 因此总的计算复杂度将达到$O(ln^3)$,
+因此 k-NN 在计算一些维数较大的样本数据集的时候,其时间往往是难以忍受的,因此这是 k-NN 的缺点.
+针对 k-NN 的缺点,其弥补的方法,一般有降维法,预建结构法和训练集裁剪法.
+\begin{itemize}
+\item 降维法:缩减特征维度.
+\item 预建结构法:对样本数据建立一个搜索树,在这棵搜索树上,每个样本点都有选择地相互连接,因此减少了迭代次数.
+\item 训练集裁剪法:在训练过程中有选择地消去那些对求解问题来说无用的训练样本.
+\end{itemize}
 
 \section{Tree: CART approach}
 \subsection{Decision Trees(CART Approach)}
@@ -185,6 +216,32 @@ $$
 \item classification: majority vote, $C_1, C_2, \ldots, C_m$
 \item regression: estimate probabilities, $P^{(1)}, \ldots, P^{(m)}$, PMF on $y$
 \end{itemize}
+
+假设有$n$个弱分类器$f(X)$,记集合而成的强分类器为$F(X)$,那么题中三种集成学习算法的数学表述如下.
+
+Bagging
+$$ F(X) = \dfrac{1}{n} \sum_{i=1}^n f_i(X) $$
+Bagging 就是取各个弱分类器的输出均值作为强分类器的输出.
+
+Boosting
+$$ F(X) = \sum_{i=1}^n w_i f_i(X) $$
+Boosting 算法就是在 Bagging 的基础上调整每个弱分类器所占的权重.
+
+Adaboosting
+$$ F(X) = \sum_{i=1}^n w^{*}_i f_i(X) $$
+Adaboosting 算法就是自适应 Boosting 算法的意思,是在 Boosting 的基础上在训练过程中,动态调整每个弱分类器所占的权重$w^*_i$.
+Adaboosting 在刚开始初始化权重为$1/n$ ,然后根据训练中每次迭代各个分类器的错误率计算新的权重.\\
+Boosting 方法对于如下两种情况能够取得较好的预测结果:\\
+(1) 对于观测到的各个样本的识别难度互不相同,Boosting 方法会产生新的概率分布, 使得学习过程更加关注与识别难度较大的样本,\\
+(2) 对于学习算法不稳定的情况,其他的学习算法可能会对训练样本集的改变非常敏感, 导致每次训练产生的分类器有较大差异,而Boosting能够显著降低这类情况的误差.
+
+Discrete Adaboosting
+
+reweight --> choose a new best classifier for now and then reweight again, and ... until converges
+
+理论推导
+
+Real Adaboosting
 
 \subsection{Random forests}
 Given data set $D = (x_1, y_1), (x_2, y_2), \ldots (x_n, y_n)$
@@ -474,6 +531,12 @@ $$ \theta_{MLE} = \mean{x} $$
 在数据量大的时候,MAP的p(h)小到可以忽略,即"data overwhelms the prior." 也就是说MAP和MLE殊途同归,完全相等.\\
 在数据量小的时候,由于MAP有先验知识,它比MLE更合理.\\
 即便是大数据的情况下,由于数据很稀疏,在某一个范围或一个维度内,数据量其实也不算大,这时候用MAP效果也比MLE好.
+
+\noindent
+最大似然估计:把待估的参数看做是确定性的量,只是其取值未知.最佳估计就是使得产生以观测到的样本的概率最大的那个值.
+把待估的参数看做是确定性的量,只是其取值未知.最佳估计就是使得产生以观测到的样本的概率最大的那个值.\\
+MLE: 存在即是合理\\
+贝叶斯估计:把待估计的参数看成是符合某种先验概率分布的随机变量.对样本进行观测的过程,就是把先验概率密度转化为后验概率密度,这样就利用样本的信息修正了对参数的初始估计值.
 
 \begin{example}
 \href{http://jimbozhang.blogspot.com/2008/12/difference-between-map-and-mle.html}{example of MLE and MAP}
@@ -1358,6 +1421,16 @@ Answer: There is hidden info.\\
 Model with hidden/latent variables $\rightarrow$ \textbf{HMM}(Hidden Markov Model)
 
 \subsection{HMM}
+\begin{itemize}
+\item M的状态是不确定或不可见的,只有通过观测序列的随机过程才能表现出来的状态是不确定或不可见的,只有通过观测序列的随机过程才能表现出来
+\item 观察到的事件与状态并不是一一对应,而是通过一组概率分布相联系观察到的事件与状态并不是一一对应,而是通过一组概率分布相联系
+\item HMM 是一个双重随机过程,两个组成部分:
+	\begin{enumerate}
+	\item 马尔可夫链:描述状态的转移,用转移概率概率描述.
+	\item 一般随机过程:描述状态与观察序列间的关系,用 观察值概率描述
+	\end{enumerate}
+\end{itemize}
+
 Suppose we want to determine the average annual temperature at a particular location on
 earth over a series of years. To make it interesting, suppose the years we are concerned with
 lie in the distant past, before thermometers were invented. Since we can't go back in time,
@@ -1719,6 +1792,12 @@ Given: $x = (\vector(x))$\\
 Model: $(X, Z) \obey P_\theta$ for some (unkown) $\theta \in \Theta$, here, tipically, $P_\theta \in $ exponential fam.\\
 Goal: $\theta_{MLE} \in \arg_\theta \max P_\theta(x)$. (we can not see $z$, so we max the marginal prob)\\
 Issue: $P_\theta(x) = \sum_z P_\theta(x,z)$ difficult to maximize\\
+
+期望最大化算法是在统计中被用于寻找,依赖于不可观察的隐性变量的概率模型中参数的最大似然估计或者最大后验估计的算法.\\
+最大期望算法经过两个步骤交替进行计算,\\
+第一步是计算期望(E),利用对隐藏变量的现有估计值,计算其最大似然估计值;\\
+第二步是最大化(M),最大化在 E 步上求得的最大似然值来计算参数的值.M 步上找到的参数估计值被用于下一个 E 步计算中,\\
+这个过程不断交替进行.
 
 Solution Algo: \\
 Initialize $\theta_0 \in \Theta$\\
