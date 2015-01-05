@@ -2,11 +2,19 @@
 %% \usepackage{metalogo}
 %% \usepackage{doc}
 \usepackage{ctex}
-%% \usepackage[english]{babel}
-\usepackage[french]{babel}
+\usepackage[english]{babel}
+%% \usepackage[french]{babel}
+% 汉化
+\renewcommand{\contentsname}{目\qquad 录}
+\renewcommand\listfigurename{插\ 图\ 目\ 录}
+\renewcommand\listtablename{表\ 格\ 目\ 录}
+\renewcommand\bibname{参\ 考\ 文\ 献}
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+
 \usepackage{amsmath, amsthm, amssymb}
 \usepackage{graphicx}
-    
+
 %图形
 \usepackage{pstricks}
 \usepackage{graphicx}
@@ -120,12 +128,18 @@ draw=gray,thick, fill=lightgray}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\Q}{\mathbb{Q}}
 
-\newcommand{\si}{\textrm{ si }}
-\newcommand{\sinon}{\textrm{ si non}}
-\newcommand{\et}{\textrm{ et }}
-\newcommand{\ou}{\textrm{ ou }}
-\newcommand{\non}{\textrm{non }}
-\newcommand{\ssi}{si et seulement si }
+%% \newcommand{\si}{\textrm{ si }}
+%% \newcommand{\sinon}{\textrm{ si non}}
+%% \newcommand{\et}{\textrm{ et }}
+%% \newcommand{\ou}{\textrm{ ou }}
+%% \newcommand{\non}{\textrm{non }}
+%% \newcommand{\ssi}{si et seulement si }
+\newcommand{\si}{\textrm{ if }}
+\newcommand{\sinon}{\textrm{ else }}
+\newcommand{\et}{\textrm{ and }}
+\newcommand{\ou}{\textrm{ or }}
+\newcommand{\non}{\textrm{no }}
+\newcommand{\ssi}{if and only if }
 \newcommand{\infinity}{\infty}
 
 %定义运算符
@@ -211,17 +225,22 @@ draw=gray,thick, fill=lightgray}
 \usefonttheme{professionalfonts}
 \useinnertheme{rectangles}
 
-%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
-%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+%% \setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
 
-%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
 
-\setbeamertemplate{itemize item}{$\heartsuit$}
-\setbeamertemplate{itemize subitem}{$\diamondsuit$}
-\setbeamertemplate{itemize subsubitem}{$\triangleright$}
-%% \setbeamertemplate{itemize item}{$\spadesuit$}
-%% \setbeamertemplate{itemize subitem}{$\heartsuit$}
-%% \setbeamertemplate{itemize subsubitem}{$\clubsuit$}
+%% set the subbody and subsubbody font size
+\setbeamerfont{itemize/enumerate body}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}
+\setbeamerfont{itemize/enumerate subsubbody}{size=\scriptsize}
+
+%% set itemize leading symbol
+\setbeamertemplate{itemize item}{\normalsize \hbox{\donotcoloroutermaths$\blacktriangleright$}}
+\setbeamertemplate{itemize subitem}{\footnotesize \hbox{\donotcoloroutermaths$\diamondsuit$}}
+\setbeamertemplate{itemize subsubitem}{\scriptsize \hbox{\donotcoloroutermaths$\bullet$}}
+
+%% set enumerate leading symbol
 \setbeamertemplate{enumerate item}{\insertenumlabel.}
 \setbeamertemplate{enumerate subitem}{\insertenumlabel.\insertsubenumlabel}
 \setbeamertemplate{enumerate subsubitem}{\insertenumlabel.\insertsubenumlabel.\insertsubsubenumlabel}
@@ -233,8 +252,15 @@ draw=gray,thick, fill=lightgray}
 \setbeamertemplate{footline}{%
   \leavevmode%
   \hbox{%
-    \begin{beamercolorbox}[wd=.126\paperwidth,ht=2.25ex,dp=1ex,right]{footcolor}%
-       \insertframenumber{} / \inserttotalframenumber\hspace*{5ex}
+%%   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+%%     \usebeamerfont{author in head/foot}\insertshortauthor~~(\insertshortinstitute)
+%%   \end{beamercolorbox}%
+%%   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+%%     \usebeamerfont{title in head/foot}\insertshorttitle
+%%   \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.126\paperwidth,ht=2.25ex,dp=2ex,right]{footcolor}%
+%%        \insertframenumber{} / \inserttotalframenumber\hspace*{5ex} %% 当前页码/总页码
+       \insertframenumber{}\hspace*{5ex} %%	只显示当前页码
     \end{beamercolorbox}}%
   \vskip0pt%
 }
