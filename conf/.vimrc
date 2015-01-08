@@ -85,9 +85,9 @@ endif
 ":inoremap < <><ESC>i
 ":inoremap > <C-R>=ClosePair('>')<CR>
 :inoremap " ""<ESC>i
-" :inoremap ' ''<ESC>i
+:inoremap ' ''<ESC>i
 " :inoremap ` ``<ESC>i
-:inoremap $ $$<ESC>i
+" :inoremap $ $$<ESC>i
 function ClosePair(char)
     if getline('.')[col('.') - 1] == a:char
         return "\<Right>"
@@ -127,10 +127,10 @@ func! CompileCode()
             exec "!dot -Tps %<.dot -o %<.ps"
         elseif &filetype == "tex"
             exec "!xelatex  %<.tex"
-        elseif &filetype == "sh"
-            exec "!bash  %<.sh"
         elseif &filetype == "r"
-            exec "!R -f %<.r"
+            exec "!R --no-save -f  %<.r"
+        elseif &filetype == "php"
+            exec "!php -f %<.php"
         endif
 endfunc
 
