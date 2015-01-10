@@ -13,6 +13,7 @@ enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-elrepo.org
 protect=0
+priority=4
 
 [elrepo-testing]
 name=ELRepo.org Community Enterprise Linux Testing Repository - el6
