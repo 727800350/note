@@ -1,8 +1,6 @@
 #!/bin/bash
 # centos 6 init script
 
-sudo yum groupinstall -y "Development Tools"
-
 ## repo
 sudo yum-config-manager --add-repo=https://copr.fedoraproject.org/coprs/mosquito/myrepo/repo/epel-7/mosquito-myrepo-epel-7.repo
 
@@ -28,7 +26,8 @@ sudo cp ${from}/RPM-GPG-KEY-EPEL-6 ${to}
 sudo cp ${from}/RPM-GPG-KEY-rpmforge-dag ${to}
 
 ## programming
-sudo yum install -y clang gcc gcc-c++ gdb
+sudo yum groupinstall -y "Development Tools"
+sudo yum install -y clang gcc gcc-c++ gdb cmake
 sudo yum install -y valgrind
 sudo yum install -y strace
 sudo yum install -y libasan libasan-static
