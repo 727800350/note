@@ -22,6 +22,7 @@ sudo install -Dm 755 "${PWD}"/src/cp /usr/local/bin/acp
 sudo install -Dm 755 "${PWD}"/src/mv /usr/local/bin/amv
 
 printf "Installation succeeded!\n"
+cd ~/git/note/conf
 rm -rf advcp/
 rm advcp.tar.gz
 rm -rf coreutils*
