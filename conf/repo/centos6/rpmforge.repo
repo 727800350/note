@@ -8,7 +8,7 @@ mirrorlist = http://apt.sw.be/redhat/el6/en/mirrors-rpmforge
 enabled = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
 gpgcheck = 1
-priority=3
+priority=5
 
 [rpmforge-extras]
 name = RHEL $releasever - RPMforge.net - extras
@@ -18,7 +18,6 @@ mirrorlist = http://apt.sw.be/redhat/el6/en/mirrors-rpmforge-extras
 enabled = 0
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
 gpgcheck = 1
-priority=3
 
 [rpmforge-testing]
 name = RHEL $releasever - RPMforge.net - testing
@@ -28,4 +27,3 @@ mirrorlist = http://apt.sw.be/redhat/el6/en/mirrors-rpmforge-testing
 enabled = 0
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
 gpgcheck = 1
-priority=3
