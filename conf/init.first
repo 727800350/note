@@ -1,5 +1,7 @@
 #!/bin/bash
 
+## set visudo env
+
 ## repo
 sudo yum install -y yum-plugin-priorities
 sudo yum install -y createrepo
