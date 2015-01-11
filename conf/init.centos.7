@@ -1,11 +1,17 @@
+#!/bin/bash
+# centos 6 init script
+
 sudo yum groupinstall -y "Development Tools"
 
 ## repo
 sudo yum-config-manager --add-repo=https://copr.fedoraproject.org/coprs/mosquito/myrepo/repo/epel-7/mosquito-myrepo-epel-7.repo
 
 sudo yum install -y yum-plugin-priorities
+sudo yum install -y createrepo
+local="/yum/server"
+sudo createrepo $local
 
-from="./repo/centos6"
+from="./repo/centos7"
 to="/etc/yum.repos.d/"
 sudo cp ${from}/CentOS-Base.repo ${to}
 sudo cp ${from}/elrepo.repo ${to}
@@ -28,16 +34,14 @@ sudo yum install -y strace
 sudo yum install -y libasan libasan-static
 sudo yum install -y flex byacc
 
-## ## 如果系统中自带是vim是vim-minimal, 而不是vim
-## sudo yum remove -y vim-minimal
-## sudo yum install -y sudo ## visudo
-## sudo yum install -y vim
-
-sudo yum install -y sudo git
+sudo yum install -y git
+git config --global user.name "Eric Uni"
+git config --global user.email wangchaogo1990+centos.lab@gmail.com
 cd $HOME
 mkdir git
-git config --global user.name "Eric Uni"
-git config --global user.email wangchaogo1990+fedora.lab@gmail.com
+cd git
+git clone git@github.com:ericuni/note.git
+cd $HOME
 
 sudo yum install -y unrar
 sudo yum install -y mlocate
@@ -62,10 +66,7 @@ sudo yum install -y php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml
 ## Apache 需要这个目录的rx权限以及上级目录的x权限
 sudo yum install -y phpMyAdmin
 
-## chrome
-### centos 6
-sudo bash ./install_chrome.sh
-### centos 7
+## chrome centos 7
 sudo yum install -y libXScrnSaver
 sudo yum install -y redhat-lsb
 sudo rpm -ivh google-chrome-stable_current_x86_64.rpm
@@ -116,17 +117,6 @@ cd ../
 sudo rm -rf pip-1.5.6.tar.gz pip-1.5.6
 sudo pip install gnuplot-py
 sudo pip install xlutils
-
-## mutt
-sudo yum install -y mutt msmtp getmail procmail lynx elinks
-
-## graphviz, dot
-sudo yum install graphviz
-sudo dot -c  ## configure plugins
-sudo yum install graphviz-gd ## support for png, jpg, jpeg etc
-
-## bt
-sudo yum install -y transmission
 
 ## 默认的Centos 7不带能够播放MP3和视频文件的解码器支持, 默认repo和后来自己加的源都不带, 需要nux-desktop repo, 先把epel 的repo弄好
 sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-1.el7.nux.noarch.rpm
