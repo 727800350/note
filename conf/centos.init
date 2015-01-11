@@ -134,12 +134,8 @@ sudo yum install -y gstreamer gstreamer-plugins-base gstreamer-plugins-good gstr
 sudo yum install -y R
 sudo yum install -y curl libcurl libcurl-devel
 
-## autossh: connect ssh automatically when it dies
-wget http://www.harding.motd.ca/autossh/autossh-1.4d.tgz
-tar -xvf autossh-1.4d.tgz
-cd autossh-1.4d
-./configure
-make
-sudo make install
-rm -rf autossh-1.4d.tgz autossh-1.4d
+## flash 
+wget http://fpdownload.macromedia.com/get/flashplayer/pdc/11.2.202.425/flash-plugin-11.2.202.425-release.x86_64.rpm
+sudo rpm -ivh flash-plugin-11.2.202.425-release.x86_64.rpm
+rm flash-plugin-11.2.202.425-release.x86_64.rpm
 
