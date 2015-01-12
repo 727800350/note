@@ -42,7 +42,7 @@ sudo yum install -y php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml
 ## centos: service iptables stop; sudo setenforce 0
 ## 当在/var/www/html/ 中创建了一个指向 /home/eric 的symlink, 可能在浏览器中访问时, 提示权限问题
 ## Apache 需要这个目录的rx权限以及上级目录的x权限
-sudo yum install -y phpMyAdmin
+sudo yum install -y PhpMyAdmin
 
 ## project
 sudo yum install -y libpcap libpcap-devel
@@ -65,12 +65,13 @@ cd ../
 sudo rm -rf latest-stable zlog-latest-stable
 
 ### local libs
-sudo touch /etc/ld.so.conf.d/local_lib.conf
-sudo touch /etc/ld.so.conf.d/local_lib64.conf
-sudo chown eric:eric /etc/ld.so.conf.d/local_lib.conf /etc/ld.so.conf.d/local_lib64.conf
-echo /usr/local/lib > /etc/ld.so.conf.d/local_lib.conf
-echo /usr/local/lib64 > /etc/ld.so.conf.d/local_lib64.conf
-sudo chown root:root /etc/ld.so.conf.d/local_lib.conf /etc/ld.so.conf.d/local_lib64.conf
+cd /etc/ld.so.conf.d
+sudo touch local_lib.conf
+sudo touch local_lib64.conf
+sudo chown eric:eric local_lib.conf local_lib64.conf
+echo /usr/local/lib > local_lib.conf
+echo /usr/local/lib64 > local_lib64.conf
+sudo chown root:root local_lib.conf local_lib64.conf
 sudo ldconfig
 
 ## octave
