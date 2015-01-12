@@ -82,7 +82,7 @@ string是一个数组,可以改变数组中保存的内容(但是数组的名字
  		void func(char sa[100],int ia[20],char *p)
 则sa的类型为`char*`,ia的类型为`int*`,p的类型为`char*`, 所以我们看到的`string.h` 中的函数的参数都是 `char *` 或者`const char *`类型的, 而不是 `char []`.
 
-`strcpy(ptr2, ptr1)` is equivalent to `while(*ptr2++ = *ptr1++)`
+`strcpy(ptr2, ptr1)` is equivalent to `while(\*ptr2++ = *ptr1++)`
 where as strdup is equivalent to
 
 	ptr2 = malloc(strlen(ptr1)+1);
@@ -133,7 +133,7 @@ Glib 还实现了线程相关的函数,多线程编程以及相关的工具,例�
 
 GLib由五个库组成:
 
-- GObject – 对象系统，包括类型系统 GType
+- GObject – 对象系统,包括类型系统 GType
 - Glib
 - GModule
 - GThread
@@ -200,7 +200,7 @@ gint8, guint8, gint16, guint16, gint32, guint32, gint64, guint64
 	gchar * g_string_free(GString *string, gboolean free_segment);
 	Frees the memory allocated for the GString. 
 	If free_segment is TRUE it also frees the character data. 
-	If it's FALSE, the caller gains ownership of the buffer and must free it after use with g_free().
+	If it is FALSE, the caller gains ownership of the buffer and must free it after use with g_free().
 
 ## [Hash Tables](https://developer.gnome.org/glib/stable/glib-Hash-Tables.html)
 
@@ -245,13 +245,13 @@ The struct timeval structure represents an elapsed time. It is declared in sys/t
 
 `time_t` just stores seconds, so  
 `time_t time = (time_t)ut_tv.tv_sec;`  
-Should work, but since you're just looking for a difference, there's always the magic of subtraction.
+Should work, but since you are just looking for a difference, there is always the magic of subtraction.
 
 # Process
 **`_exit`**  
 The function `_exit()` terminates the calling process "immediately".  Any open file descriptors belonging to the process are closed; any children
-of the process are inherited by process 1, init, and the process’s parent is sent a SIGCHLD signal.  
-The value status is returned to the parent process as the process’s exit status, and can be collected using one of the wait(2) family of  calls
+of the process are inherited by process 1, init, and the process parent is sent a SIGCHLD signal.  
+The value status is returned to the parent process as the process exit status, and can be collected using one of the wait(2) family of  calls
 The  function `_exit()` is like exit(3), **but does not call any functions registered with `atexit(3)` or `on_exit(3)`**.  
 Whether it flushes standard I/O buffers and removes temporary files created with tmpfile(3) is implementation-dependent.  
 On the other hand, `_exit()` does close open file descriptors, and this may cause an unknown delay, waiting for pending output to finish.  
@@ -345,7 +345,7 @@ const最经常的用法
 
 ## const faq
 **C (Linux): warning: assignment discards qualifiers from pointer target type**  
-As the compiler states, you're discarding a qualifier (const in this case) from a pointer upon assignment.  
+As the compiler states, you are discarding a qualifier (const in this case) from a pointer upon assignment.  
 This happens when you assign a `char *` the value of a `const char *`.
 
 [Why do most C developers use define instead of const?](http://stackoverflow.com/questions/4024318/why-do-most-c-developers-use-define-instead-of-const)  
@@ -579,6 +579,8 @@ This call does not change the current working directory, so that after the call 
 So chrooted programs should relinquish root privileges as soon as practical after chrooting
 
 # Linux 下的动态与静态库
+使用locate命令找到该库的被默认安装的路径,使用方法是先用updatedb更新一下locate命令的索引库,然后"locate libnet.so"查找就可以了
+
 Linux 中的应用程序以以下两种方式之一链接到外部函数:
 
 - 要么在构建时与静态库( lib*.a)静态地链接,并且将库代码包含在该应用程序的可执行文件里
@@ -590,8 +592,8 @@ Linux 中的应用程序以以下两种方式之一链接到外部函数:
 `LD_LIBRARY_PATH` is used by your program to search for directories containing the libraries after it has been successfully compiled and linked.
 
 EDIT: As pointed below, your libraries can be static or shared. 
-If it is static then the code is copied over into your program and you don't need to search for the library after your program is compiled and linked. 
-If your library is shared then it needs to be dynamically linked to your program and that's when `LD_LIBRARY_PATH` comes into play.
+If it is static then the code is copied over into your program and you do not need to search for the library after your program is compiled and linked. 
+If your library is shared then it needs to be dynamically linked to your program and that is when `LD_LIBRARY_PATH` comes into play.
 
 需要打印函数调用堆栈时, 都可以使用 `-rdynamic` 来进行, 经过测试都是可以的
 
@@ -717,7 +719,7 @@ Strlnen.c
 	        return -1;
 	    }
 	    ulLength = 0;
-	    while(*pStr++ && ulLength < ulMaxLen){
+	    while(\*pStr++ && ulLength < ulMaxLen){
 	        ulLength++;
 	    }
 	    return ulLength;
@@ -910,7 +912,7 @@ To get polymorphism (i.e. virtual functions), you use function pointers, and opt
 	}
 
 	int main(void){
-	    /* OK!  We're done with our declarations, now we can finally do some
+	    /* OK!  We are done with our declarations, now we can finally do some
 	       polymorphism in C */
 	    struct derived1 d1;
 	    derived1_init(&d1);
@@ -930,7 +932,7 @@ To get polymorphism (i.e. virtual functions), you use function pointers, and opt
 	    return 0;
 	}
 
-And that's how you do polymorphism in C. It ain't pretty, but it does the job. 
+And that is how you do polymorphism in C. It ai not pretty, but it does the job. 
 There are some sticky issues involving pointer casts between base and derived classes, which are safe as long as 
 **the base class is the first member of the derived class**. 
 Multiple inheritance is much harder - in that case, in order to case between base classes other than the first, 
@@ -938,4 +940,5 @@ you need to manually adjust your pointers based on the proper offsets, which is 
 
 Another (tricky) thing you can do is change the dynamic type of an object at runtime! You just reassign it a new vtable pointer. 
 You can even selectively change some of the virtual functions while keeping others, creating new hybrid types. 
-Just be careful to create a new vtable instead of modifying the global vtable, otherwise you'll accidentally affect all objects of a given type.
+Just be careful to create a new vtable instead of modifying the global vtable, otherwise you will accidentally affect all objects of a given type.
+
