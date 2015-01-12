@@ -1,33 +1,25 @@
-sudo yum groupinstall -y "Development Tools"
+#!/bin/bash
+# centos 6 init script
 
 ## repo
-wget https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6
-sudo mv RPM-GPG-KEY-EPEL-6 /etc/pki/rpm-gpg
-
-wget http://apt.sw.be/RPM-GPG-KEY.dag.txt
-sudo mv RPM-GPG-KEY.dag.txt /etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
-
 sudo yum-config-manager --add-repo=https://copr.fedoraproject.org/coprs/mosquito/myrepo/repo/epel-7/mosquito-myrepo-epel-7.repo
 
-sudo yum install -y yum-plugin-priorities
-
 ## programming
-sudo yum install -y clang gcc gcc-c++ gdb
+sudo yum groupinstall -y "Development Tools"
+sudo yum install -y clang gcc gcc-c++ gdb cmake
 sudo yum install -y valgrind
 sudo yum install -y strace
 sudo yum install -y libasan libasan-static
 sudo yum install -y flex byacc
 
-## ## 如果系统中自带是vim是vim-minimal, 而不是vim
-## sudo yum remove -y vim-minimal
-## sudo yum install -y sudo ## visudo
-## sudo yum install -y vim
-
-sudo yum install -y sudo git
+sudo yum install -y git
+git config --global user.name "Eric Uni"
+git config --global user.email wangchaogo1990+centos.lab@gmail.com
 cd $HOME
 mkdir git
-git config --global user.name "Eric Uni"
-git config --global user.email wangchaogo1990+fedora.lab@gmail.com
+cd git
+git clone git@github.com:ericuni/note.git
+cd $HOME
 
 sudo yum install -y unrar
 sudo yum install -y mlocate
@@ -52,10 +44,7 @@ sudo yum install -y php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml
 ## Apache 需要这个目录的rx权限以及上级目录的x权限
 sudo yum install -y phpMyAdmin
 
-## chrome
-### centos 6
-sudo bash ./install_chrome.sh
-### centos 7
+## chrome centos 7
 sudo yum install -y libXScrnSaver
 sudo yum install -y redhat-lsb
 sudo rpm -ivh google-chrome-stable_current_x86_64.rpm
@@ -107,17 +96,6 @@ sudo rm -rf pip-1.5.6.tar.gz pip-1.5.6
 sudo pip install gnuplot-py
 sudo pip install xlutils
 
-## mutt
-sudo yum install -y mutt msmtp getmail procmail lynx elinks
-
-## graphviz, dot
-sudo yum install graphviz
-sudo dot -c  ## configure plugins
-sudo yum install graphviz-gd ## support for png, jpg, jpeg etc
-
-## bt
-sudo yum install -y transmission
-
 ## 默认的Centos 7不带能够播放MP3和视频文件的解码器支持, 默认repo和后来自己加的源都不带, 需要nux-desktop repo, 先把epel 的repo弄好
 sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-1.el7.nux.noarch.rpm
 
@@ -131,12 +109,8 @@ sudo yum install -y gstreamer gstreamer-plugins-base gstreamer-plugins-good gstr
 sudo yum install -y R
 sudo yum install -y curl libcurl libcurl-devel
 
-## autossh: connect ssh automatically when it dies
-wget http://www.harding.motd.ca/autossh/autossh-1.4d.tgz
-tar -xvf autossh-1.4d.tgz
-cd autossh-1.4d
-./configure
-make
-sudo make install
-rm -rf autossh-1.4d.tgz autossh-1.4d
+## flash 
+wget http://fpdownload.macromedia.com/get/flashplayer/pdc/11.2.202.425/flash-plugin-11.2.202.425-release.x86_64.rpm
+sudo rpm -ivh flash-plugin-11.2.202.425-release.x86_64.rpm
+rm flash-plugin-11.2.202.425-release.x86_64.rpm
 

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+## set visudo env
+
+## repo
+sudo yum install -y yum-plugin-priorities
+sudo yum install -y createrepo
+local="/yum/server"
+sudo createrepo $local
+
+from="./repo/centos6"
+to="/etc/yum.repos.d/"
+sudo cp ${from}/CentOS-Base.repo ${to}
+sudo cp ${from}/elrepo.repo ${to}
+sudo cp ${from}/epel.repo ${to}
+sudo cp ${from}/localyum.repo ${to}
+sudo cp ${from}/mirrors-rpmforge ${to}
+sudo cp ${from}/mirrors-rpmforge-extras ${to}
+sudo cp ${from}/mirrors-rpmforge-testing ${to}
+sudo cp ${from}/rpmforge.repo ${to}
+
+to="/etc/pki/rpm-gpg/"
+sudo cp ${from}/RPM-GPG-KEY-elrepo.org ${to}
+sudo cp ${from}/RPM-GPG-KEY-EPEL-6 ${to}
+sudo cp ${from}/RPM-GPG-KEY-rpmforge-dag ${to}
+

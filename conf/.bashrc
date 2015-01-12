@@ -9,7 +9,7 @@ fi
 # export SYSTEMD_PAGER=
 
 # texlive env
-export TEXLIVE=/home/eric/program/texlive/2012
+export TEXLIVE=/usr/local/texlive/2012/
 export PATH=$PATH:$TEXLIVE/bin/x86_64-linux
 export MANPATH=$MANPATH:$TEXLIVE/texmf/doc/man
 export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info
