@@ -379,6 +379,9 @@ Unsigned: 2^{n bits} - 1
 | BIGINT    | 8       | -9223372036854775808 | 9223372036854775807  |
 |           |         | 0                    | 18446744073709551615 |
 
+tinyint(m): tinyint(1), tinyint(2), tinyint(3)等, The (m) indicates the column display width.  
+It is important to note that it does not affect the accepted range of values for that particular type, i.e. TINYINT(1) still accepts [-128 .. 127].
+
 ### Date and time
 The date and time types for representing temporal values are DATE, TIME, DATETIME, TIMESTAMP, and YEAR.   
 The TIMESTAMP type has special automatic updating behavior.

@@ -1,5 +1,9 @@
 % !Mode:: "TeX:UTF-8"
-\chapter{The New Quantum Universe}
+\documentclass{article}
+\input{../../public/package}
+\input{../../public/article}
+\begin{document}
+\title{The New Quantum Universe}
 [英]安东尼.黑\ 帕特里克.沃尔特斯著, 雷奕安译
 
 这本书的姐妹篇<<爱因斯坦的镜子>>
@@ -154,8 +158,11 @@ laser,light amplification by stimulated emission of radiation
 \subsection{费米子与玻色子}
 Toutes les particules \'el\'ementaires d\'ecouvertes \`a ce jour sont soit des bosons, soit des fermions.\par
 
+les bosons de spin entier ou nul et les fermions de spin demi-entier
+
 un grand nombre de particules : les fermions sont des particules qui ob\'eissent \`a la statistique de Fermi-Dirac alors que les bosons ob\'eissent \`a la statistique de Bose-Einstein.\\
 la loi statistique Fermi-Dirac : quand on \'echange deux fermions, la fonction d'onde changlee de signe.
+
 物质粒子都是由费米子构成,而玻色子则是媒介子
 
 玻色子包括:
@@ -173,7 +180,7 @@ la loi statistique Fermi-Dirac : quand on \'echange deux fermions, la fonction d
 \textbf{宏观的玻色子现象}\\
 实验证实: 费米子数目为偶数的元素, 表现为玻色子; 费米子数目为奇数的元素,服从泡利不相容原理, 表现出像费米子.
 
-la condensation de Bose-Einstein玻色-爱因斯坦凝聚: 是玻色子原子在冷却到绝对零度附近时所呈现出的一种气态的、超流性的物态,几乎全部原子都聚集到能量最低的量子态,
+la condensation de Bose-Einstein玻色-爱因斯坦凝聚: 是玻色子原子在冷却到绝对零度附近时所呈现出的一种气态的,超流性的物态,几乎全部原子都聚集到能量最低的量子态,
 形成一个宏观的量子状态  occupent un unique \'etat quantique de plus basse \'energie (\'etat fondamental)
 
 la population macroscopique d'un mode unique de photon dans un laser
@@ -461,6 +468,189 @@ $$ L_{\_} \ket{\lambda^2,\mu} = \hbar \sqrt{\lambda^2 - \mu^2 + \mu}\ket{\lambda
 \subsection{Spin}
 期末考试的内容考了很多很多的spin 的内容, 但是老师上课讲的不多, 课后看了书, 也没有看懂.
 
+Le spin est le moment cinétique intrinsèque des particules quantiques. Il est donc soumis aux mêmes lois générales qui régissent tout autre moment cinétique quantique, tel que, par exemple, le moment cinétique orbital.
+
+Le spin est donc un opérateur vectoriel hermitien $\hat S$ comportant trois composantes, notées usuellement $\hat{S}_x, \, \hat{S}_y et  \hat{S}_z$ par référence aux trois axes de coordonnées cartésiennes de l'espace physique. Ces composantes sont des observables vérifiant les relations de commutations caractéristiques d'un moment cinétique
+$$ \left[ \, \hat{S}_i \, , \ \hat{S}_j \, \right] \ = \ i \  \hbar \ \epsilon_{ijk} \ \hat{S}_k $$
+où $\epsilon_{ijk}$ est le symbole de Levi-Civita et
+
+$$ \left [\hat S^2, \hat S_i \right ]=0.  $$
+
+Ces relations de commutations impliquent que le principe d'incertitude s'applique aux mesures du spin faites dans les différentes directions de l'espace : on peut en effet mesurer très exactement la norme du vecteur et une projection sur un axe de coordonnées, mais les deux autres projections sur les deux autres axes orthogonaux ne sont plus alors mesurables précisément.
+
+Les valeurs propres des opérateurs $\hat S^2$ et $\hat S_z$ représentent l'ensemble des mesures possibles pour les deux observables, c'est-à-dire respectivement le carré de la norme, et la projection sur un axe z arbitraire dans l'espace.
+
+Pour une particule de nombre quantique de spin $s = 1/2$ comme l'électron, le proton ou le neutron, donc $2s + 1 = 2$: 
+il existe seulement deux états de spin distincts, caractérisés par $m_s = \pm 1/2$.
+
+On note souvent les deux états propres correspondants : $|+\rangle$  et $|-\rangle$, ou encore : $|\uparrow\rangle$  et $|\downarrow\rangle$.
+
+Pauli[réf. souhaitée] a introduit trois matrices $2 × 2$, notées $\hat{\sigma}_i, \ i = x,y,z$ telles que l'opérateur de spin s'écrive :
+
+$$ \hat{S}_i  \ = \ \frac{\hbar}{2} \ \hat{\sigma}_i $$
+Ces trois matrices de Pauli s'écrivent explicitement :
+
+$$
+\hat{\sigma}_x  \ = \  
+\begin{pmatrix} 
+0 & 1 \\ 
+1 & 0 
+\end{pmatrix} ; 
+\quad \hat{\sigma}_y  \ 
+= \  
+\begin{pmatrix} 
+0 & - \ i \\ 
+i & 0 
+\end{pmatrix} ; 
+\quad \hat{\sigma}_z  \ 
+= \  
+\begin{pmatrix} 
+1 & 0 \\ 
+0 & - \ 1 
+\end{pmatrix}
+$$
+Elles satisfont les relations de commutation :
+
+$$ \left[ \, \hat{\sigma}_i \, , \ \hat{\sigma}_j \, \right] \ = \  2 \ i \ \epsilon_{ijk} \ \hat{\sigma}_k $$
+
+nombre quantique
+$n$: nombre quantique principal, 
+c'est le niveau d'\'energie de l'orbitale de l'\'electron
+\begin{figure}[!htbp]
+		\centering
+		\includegraphics[width=0.6\textwidth]{nombre_quantique_1_bohr}
+		\caption{Bohr提出的n}
+		\label{fig.nombre_quantique.n}
+\end{figure}
+
+la dimension de la tache
+\begin{figure}[h!]
+    \centering
+    \subfigure[小]{
+        \label{fig-sub-l}
+        \includegraphics[width=.2\textwidth]{nombre_quantique_n_1}
+    }
+    \hspace{7em} % 水平间隔
+    \subfigure[中]{
+        \label{fig-sub-c}
+        \includegraphics[width=.2\textwidth]{nombre_quantique_n_2}
+    }
+    \hspace{7em} % 水平间隔
+    \subfigure[大]{
+        \label{fig-sub-r}
+        \includegraphics[width=.2\textwidth]{nombre_quantique_n_3}
+    }
+    \caption{n的不同对应于半径大小的不同}
+    \label{fig-sub}
+\end{figure}
+
+$l$: nombre quantique secondaire
+la forme de l'orbitale \`ou se trouve l'\'electron
+Définit des sous-couche électroniques
+\begin{figure}[!htbp]
+		\centering
+		\includegraphics[width=0.6\textwidth]{nombre_quantique_2}
+		\caption{l and m}
+		\label{fig.nombre_quantique.l_m}
+\end{figure}
+
+历史上发现的实验
+\begin{figure}[h!]
+    \centering
+    \subfigure[小]{
+        \label{fig-sub-l}
+		\includegraphics[width=.2\textwidth]{nombre_quantique_effet-zeeman_1}
+    }
+    \hspace{7em} % 水平间隔
+    \subfigure[中]{
+        \label{fig-sub-c}
+		\includegraphics[width=.2\textwidth]{nombre_quantique_effet-zeeman_2}
+    }
+    \caption{n的不同对应于半径大小的不同}
+    \label{fig-sub}
+\end{figure}
+
+Forme de l'orbitale
+\begin{figure}[h!]
+    \centering
+    \subfigure[小]{
+        \label{fig-sub-l}
+        \includegraphics[width=.2\textwidth]{nombre_quantique_l_1}
+    }
+    \hspace{7em} % 水平间隔
+    \subfigure[中]{
+        \label{fig-sub-c}
+        \includegraphics[width=.2\textwidth]{nombre_quantique_l_2}
+    }
+    \hspace{7em} % 水平间隔
+    \subfigure[大]{
+        \label{fig-sub-r}
+        \includegraphics[width=.2\textwidth]{nombre_quantique_l_3}
+    }
+    \caption{n的不同对应于半径大小的不同}
+    \label{fig-sub}
+\end{figure}
+
+$m_l$: nombre quantique magn\'etique
+c'est l'orientation de l'orbitale dans l'espace
+Définit l'orientation de l'orbitale atomique
+
+\begin{figure}[h!]
+    \centering
+    \subfigure[小]{
+        \label{fig-sub-l}
+        \includegraphics[width=.2\textwidth]{nombre_quantique_m_1}
+    }
+    \hspace{7em} % 水平间隔
+    \subfigure[中]{
+        \label{fig-sub-c}
+        \includegraphics[width=.2\textwidth]{nombre_quantique_m_2}
+    }
+    \hspace{7em} % 水平间隔
+    \subfigure[大]{
+        \label{fig-sub-r}
+        \includegraphics[width=.2\textwidth]{nombre_quantique_m_3}
+    }
+    \caption{n的不同对应于半径大小的不同}
+    \label{fig-sub}
+\end{figure}
+
+$m_s$: nombre de spin
+Il définit l'orientation de l'électron dans un champ magnétique
+
+\begin{figure}[!htbp]
+		\centering
+		\includegraphics[width=0.6\textwidth]{nombre_quantique}
+		\caption{l and m}
+		\label{fig.nombre_quantique.l_m}
+\end{figure}
+
+spintronique
+la magnétorésistance geante(GMR)
+application: disque dur
+\begin{figure}[!htbp]
+		\centering
+		\includegraphics[width=0.6\textwidth]{disque_dur}
+		\caption{l and m}
+		\label{fig.nombre_quantique.l_m}
+\end{figure}
+
+Le fer est magn\'etique, le chrome est non-magn\'etique
+\begin{figure}[h!]
+    \centering
+    \subfigure[小]{
+        \label{fig-sub-l}
+		\includegraphics[width=.2\textwidth]{resistance_forte}
+    }
+    \hspace{7em} % 水平间隔
+    \subfigure[中]{
+        \label{fig-sub-c}
+		\includegraphics[width=.2\textwidth]{resistance_faible}
+    }
+    \caption{n的不同对应于半径大小的不同}
+    \label{fig-sub}
+\end{figure}
+
 \section{Approximations}
 \subsection{Th\'eorie de la perturbation ind\'ependante du temps}
 \subsubsection{Corrections du premier ordre d'\'energie propre}
@@ -541,3 +731,4 @@ et par cons\'equent le composant de la correction de premier ordre selon $\scrip
 \begin{equation}
  |n^{(1)}\rangle = \sum_{k \ne n} \frac{\langle k^{(0)}|V|n^{(0)} \rangle}{E_n^{(0)} - E_k^{(0)}} |k^{(0)}\rangle
 \end{equation}
+\end{document}
