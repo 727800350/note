@@ -1,3 +1,9 @@
+Markdown 高亮配置
+
+1. 在[http://www.vim.org/](http://www.vim.org/scripts/script.php?script_id=2882)上下载高亮显示的配置文件
+1. 用vim 打开下载到的文件(windows 下需要打开解压之后的文件)
+1. `:source %`
+
 # Move
 | Movement                            | Commands   |
 |-------------------------------------|------------|
