@@ -585,7 +585,8 @@ Linux 中的应用程序以以下两种方式之一链接到外部函数:
 
 - 要么在构建时与静态库( lib*.a)静态地链接,并且将库代码包含在该应用程序的可执行文件里
 - 要么在运行时与共享库( lib*.so(Shared Object))动态地链接.通过动态链接装入器,将动态库映射进应用程序的可执行内存中.
-在启动应用程序之前,动态链接装入器将所需的共享目标库映射到应用程序的内存,或者使用系统共享的目标并为应用程序解析所需的外部引用.现在应用程序就可以运行了
+在启动应用程序之前,动态链接装入器将所需的共享目标库映射到应用程序的内存,或者使用系统共享的目标并为应用程序解析所需的外部引用.
+然后应用程序就可以运行了
 
 `LIBRARY_PATH` is used by gcc before compilation to search for directories containing libraries that need to be linked to your program.
 
@@ -600,7 +601,7 @@ If your library is shared then it needs to be dynamically linked to your program
 ## 动态链接库
 [添加搜索路径方法步骤](http://blog.sciencenet.cn/blog-402211-745740.html)
 
-可以查看程序执行时调用动态库的过程:
+可以查看程序**执行时**调用动态库的过程:
 
 	# ldd hello
 运行结果:
@@ -611,11 +612,14 @@ If your library is shared then it needs to be dynamically linked to your program
 	libc.so.6 => /lib/libc.so.6 (0x00859000)
 	/lib/ld-linux.so.2 (0x0083a000)
 
+`ld.so.cache` 里面的路径是程序在运行时搜索的路径
+
 修改`/etc/ld.so.conf`,添加路径.  
 在CentOS 6.3下我看到这个文件实际上是包含了`/etc/ld.so.conf.d/`这个目录下的所有`.conf`文件,因此我们可以在这个路径下面创建一个新的文件,其中写上诸如`/usr/local/lib` 等路径,保存退出.  
 切记一定要主动执行命令:`ldconfig`,它会更新记录了系统中有哪些so文件的缓存文件(`/etc /ld.so.cache`)
 
 ldconfig几个需要注意的地方
+
 1. 往/lib和/usr/lib里面加东西,是不用修改/etc/ld.so.conf的,但是完了之后要调一下ldconfig,不然这个library会找不到
 2. `/usr/local/lib` 和 `/usr/local/lib64` 居然不在标准路径之列
 3. 如果想在这两个目录以外放lib,但是又不想在/etc/ld.so.conf中加东西(或者是没有权限加东西).那也可以,就是export一个全局变 量LD_LIBRARY_PATH,然后运行程序的时候就会去这个目录中找library.一般来讲这只是一种临时的解决方案,在没有权限或临时需要的时 候使用.
