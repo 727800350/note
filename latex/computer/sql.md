@@ -76,8 +76,8 @@ ORDER BY ProductModelID ;
 
 having子句与where有相似之处但也有区别,都是设定条件的语句.
 
-1. having只能用在group by之后,对分组后的结果进行筛选(即使用having的前提条件是分组).
-2. where肯定在group by 之前,即也在having之前
+1. having只能用在group?by之后,对分组后的结果进行筛选(即使用having的前提条件是分组).
+2. where肯定在group?by?之前,即也在having之前
 3. where后的条件表达式里不允许使用聚合函数,而having可以
 
 在查询过程中优先级
@@ -87,7 +87,7 @@ where 子句 > 聚合语句(sum,min,max,avg,count) > having子句
 eg:  
 
 1. `select sum(num) as rmb from order where id>10` 只有对id大于10的记录才对进行聚合语句  
-1. `select reportsto as manager, count(*) as reports from employees group by reportsto having count(*) > 4`  
+1. `select reportsto as manager, count(\*) as reports from employees group by reportsto having count(\*) > 4`  
 首先将reportsto相同的group起来, 统计各个group里面成员的个数, 然后再筛选出各个大于4的groups.  
 如果把上面的having换成where则会出错.
 
