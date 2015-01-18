@@ -54,6 +54,8 @@ sudo yum install -y bind
 sudo yum install -y nmap 
 ## A whois client that accepts both traditional and finger-style queries
 sudo yum install -y jwhois 
+## ntopng prerequisite
+sudo yum install -y libxml2-devel sqlite-devel
 
 ### zlog
 wget https://codeload.github.com/HardySimpson/zlog/tar.gz/latest-stable
@@ -83,14 +85,23 @@ sudo yum install -y octave
 ## python
 sudo yum install -y gnuplot numpy scipy
 sudo yum install -y python-pip 
+
 wget https://pypi.python.org/packages/source/p/pip/pip-1.5.6.tar.gz#md5=01026f87978932060cc86c1dc527903e
 tar -xvf pip-1.5.6.tar.gz
 cd pip-1.5.6
 sudo python setup.py install
 cd ../
 sudo rm -rf pip-1.5.6.tar.gz pip-1.5.6
+
 sudo pip install gnuplot-py
 sudo pip install xlutils
+
+wget http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-2.0.2.tar.gz
+tar -xvf mysql-connector-python-2.0.2.tar.gz
+cd mysql-connector-2.0.2
+sudo python setup.py install
+cd ../
+sudo rm -rf mysql-connector-2.0.2/*
 
 ## R language
 sudo yum install -y R
