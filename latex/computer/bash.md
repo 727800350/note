@@ -229,6 +229,9 @@ count=blocks:只拷贝输入文件的前blocks块
 可以证明两个文件时完全相同的.
 
 # OS
+**设置默认的runlevel**
+编辑 `/etc/inittab` 中设置
+
 **开机自动启动**  
 例如要开机后自动启动mysql,apache,vsftpd服务,用以下命令即可:
 
