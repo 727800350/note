@@ -41,20 +41,6 @@ $$
 \textbf{分数维}:描述一条曲线的不规则程度. 一条平滑的曲线的分数维$D=1$, 跟普通的维数一样, 而一条曲线确实不规则, 越是到处有着尖角, 他的分数维就越接近$D=2$, $D=2$ 就是一条非常不规则的曲线, 差不多把一个两维空间都填满了.\\
 利用分型理论可以用计算机生成人造风景, 已经是现代电影制造业的一种标准技巧了.
 
-\section{薛定谔和物质波}
-$$
-E\phi = -\dfrac{\hbar^2}{2m} \frac{d^2 \phi}{dx^2} + V\phi
-$$
-$$
-\lambda = h/p
-$$
-
-\section{原子核模型}
-电子的数目, 或者等价的说, 质子的数目, 决定了不同元素的化学性质.\par
-在通常的温度下, 气体里原子的碰撞一般不足以激发很多的原子, 因为基态与第一激发态之间的能量差很大. 因此在室温下, 大多数原子都处于基态. 基态与任意一个激发态之间的能量差都很大, 相应的光子的频率处于紫外波段, 而不是可见光波段, 因此, 可见光直接穿透很多气体, 而不被吸收. 这就是为什么大多数气体对可见光来说是透明的原因.\par
-\textbf{彭宁离子阱}:他能把电子限制在真空中两块带有负电的金属盘中间. 金属盘周围有磁场, 用来防止电子从阱的旁边溢出. 利用一个带负电的金属叉子可以把电子放置到阱中.
-通过检测例子在阱中的来回震荡阱, 可以确认粒子的存在. 实际做法是让电子一个一个不断逃出阱外, 知道最后只剩下一个电子.
-
 \section{量子隧道效应}
 对时间和能量的测量也存在一个类似的关系
 $$
@@ -91,47 +77,6 @@ $$\eqnote{氘} + \eqnote{氚} \rightarrow \eqnote{氦} + \eqnote{中子}$$
 库伦排斥力会将相互接近的原子核推开, 如果用加速器把氘核加速到比库仑排斥势高的能量, 很容易引发这一核反应, 但是如果用这种方式来大规模产生能量, 经济上是不可行的.\\
 人们提出了另外一个种想法, 把反应原料加热到非常的温度, 以至于这种高热气体或者叫做等离子体里发生的普遍碰撞中, 反应物有足够的动能发生核反应. 但是如何产生所需的高温, 还没有好的办法.
 
-\section{泡利与元素}
-如果我们让另一个氢原子靠近第一个氢原子, 会发生什么呢? \\
-如果两个电子的自旋都向上, 泡利不相容原理将禁止两个氢原子靠近, 因为两个电子的波函数会重叠, 波函数重叠就意味着两个电子会处于同一个量子态.
-如果两个电子的自选方向相反, 他们就可以互相靠近, 并且实际情况是, 两个电子大部分时间都呆在两个氢原子核之间.
-这样就在两个氢原子之间产生了一个束缚力, 形成一个稳定的氢分子. 这种化学键, 也就是两个电子被分子中两个原子共享形成的化学键, 叫做共价键.
-正是泡利不相容原理, 说明了为什么氢原子是化学活泼的, 为什么两个氢原子能够形成一个氢分子$H_2$.
-注意, 同样是泡利不相容原理, 禁止了第三个氢原子与氢分子$H_2$ 再形成共价键, 因为两个能量最低的自旋态已经都被占据了.
-
-下一个最简单的原子是氦, 有两个电子, 都填布在最低的1S能级上, 他们的自旋必须相反.
-因为1S 能级上已经没有地方容纳更多的电子了, 泡利不相容原理将禁止别的电子靠近氦原子, 就像他对氢分子那样,
-因此我们可以预料到氦原子的化学性质很不活泼, 实际上他就是一种惰性气体.
-
-\subsection{金属, 绝缘体与半导体}
-从某种角度来说, 金属可以看成是共价键的一个极端形式, 其中的传到电子被整块金属中所有的原子共享.
-
-\begin{figure}[htbp]
-		\centering
-		\includegraphics[scale = 0.5]{conduction_band}
-		\caption{金属, 绝缘体与半导体的能带}
-		\label{fig.paoli.conduction}
-\end{figure}
-电子热激发对于绝缘体和半导体的导电性质就很关键了.
-假设我们有一中材料, 它的基态是一个完全占据的能带加上一个在它上方的完全空闲的能带.
-如果这两个能带之间的间隙(能隙)很大, 如图\ref{fig.paoli.conduction}所示, 几乎没有电子能够通过碰撞而获得足够的能量跳到上面的能带上.
-因此, 当给这种材料加上一个电压时, 电子所处的能级附近没有空闲的能级让电子获取少量的能量跳过去 --- 因为泡利不允许两个电子占据同一个量子态.
-低的能级已经满了, 高的能带又离得太远, 电子跳不上去. 这就是绝缘体的情形, 在上面的传到能带中, 本质上不存在自由传到电子,因此就无法出现传到电流.
-
-半导体: 它是一种能带结构和绝缘体类似的材料, 但是上下两个能带之间的能隙比绝缘体要小得多. 在常温下, 有显著数目的电子被激发到上面的导带中.
-当加上一个电压之后, 上面的导带已经有比较多的电子, 电子获取外加电场提供的能量, 也有足够的空能级可以利用.下面的能带中也有一些空能级, 也可以参与导电过程.
-这样, 半导体能够相当容易的传到电流, 而且他们的导电性能跟温度有很大的关系.
-
-\subsection{晶体管与微电子}
-我们可以根据需要调节半导体的导电性能, 调节的办法是在半导体中掺入大约百万分之一的适当杂质原子.
-
-锗和硅都有4个价电子, 绝大多数都填入了价带中的$4N$个态中, 把价带几乎占满, 价带上面是几乎全空的导带.
-如果我们引入一个杂质, 比如磷, 磷有$5$个价电子, 那么, 因为只需要4 个电子形成晶格的4 个共价键, 多出来的一个电子很容易离开磷原子, 成为一个导电电子.
-类似的, 如果我们引入的杂质只有3 个价电子, 比如硼, 在晶格中就会却是一个共价键, 这时硼就很容易从价带中俘获一个电子, 在价带中留下一个空穴, 空穴也可以被用来导电.
-
-磷原子在紧靠导带下面形成一个施主态(贡献一个电子的态), 这些电子只需要一个很小的能量就可以跳到导带上. 以这种形式掺杂的半导体叫做$n$型半导体.\par
-硼原子在紧靠导带下面形成一个受主态(接受一个电子的态), 在室温下, 电子很容易被激发到这些态上. 以这种形式掺杂的半导体叫做$p$型半导体.
-
 \section{量子合作和超流体}
 如果两列波之间有一个固定的相位差, 我们就说这两列波相干.\\
 两个不同原子光源发出的光, 不会表现出干涉效应, 我们说他们不相干. 每个光源发出的光都是由很多不同原子发出的, 每个原子发出光子的时刻不一样.
@@ -154,43 +99,6 @@ laser,light amplification by stimulated emission of radiation
 可是, 当用激光来照射这张全息图的时候, 我们就可以看到被拍摄物体的一张完美的三维复制画面.
 而且, 如果你改变观察位置, 从不同角度看这张图, 你能看见图像里各种东西的相对位置, 就像看见了原始被拍摄物体一样.
 特别地, 全息图上从某个角度看被挡住了的物体, 换个角度就可以看到了.
-
-\subsection{费米子与玻色子}
-Toutes les particules \'el\'ementaires d\'ecouvertes \`a ce jour sont soit des bosons, soit des fermions.\par
-
-les bosons de spin entier ou nul et les fermions de spin demi-entier
-
-un grand nombre de particules : les fermions sont des particules qui ob\'eissent \`a la statistique de Fermi-Dirac alors que les bosons ob\'eissent \`a la statistique de Bose-Einstein.\\
-la loi statistique Fermi-Dirac : quand on \'echange deux fermions, la fonction d'onde changlee de signe.
-
-物质粒子都是由费米子构成,而玻色子则是媒介子
-
-玻色子包括:
-\begin{itemize}
-\item 胶子 - 强相互作用的媒介粒子,自旋为1,有8种
-\item 光子 - 电磁相互作用的媒介粒子,自旋为1,只有1种
-\item W 及 Z 玻色子 - 弱相互作用的媒介粒子,自旋为1,有3种
-\item 引力子 - 引力相互作用的媒介粒子,自旋为2,只有1种,尚未被发现
-\item 希格斯玻色子 - 自旋为0,目前只发现1种
-\item 介子 - 由两个费米子-夸克组成的强子.
-\item 由偶数个核子组成的原子核.因为质子和中子都是费米子,故含偶数个核子的原子核是自旋为整数的玻色子.
-\item 声子 - 请参阅固体物理学
-\end{itemize}
-
-\textbf{宏观的玻色子现象}\\
-实验证实: 费米子数目为偶数的元素, 表现为玻色子; 费米子数目为奇数的元素,服从泡利不相容原理, 表现出像费米子.
-
-la condensation de Bose-Einstein玻色-爱因斯坦凝聚: 是玻色子原子在冷却到绝对零度附近时所呈现出的一种气态的,超流性的物态,几乎全部原子都聚集到能量最低的量子态,
-形成一个宏观的量子状态  occupent un unique \'etat quantique de plus basse \'energie (\'etat fondamental)
-
-la population macroscopique d'un mode unique de photon dans un laser
-大量的光子(玻色子)处于同一个量子状态
-
-虹膜输运现象 P123
-
-\textbf{冷原子}\\
-超流体的液氦需要氦原子间有量子协作. 这种类型的波色-爱因斯坦凝聚发生在原子已经处于液态时, 如果是气体, 在凝聚为液滴, 或者冻结为固体之前,
-可不可以发生波色-爱因斯坦凝聚呢? 要产生这种凝聚, 原子之间的距离必须足够大, 以免凝结成液体, 但是距离又不能太大, 以至于无法产生波色-爱因斯坦凝聚.
 
 \section{量子跃迁}
 在物理学中使用复数, 是一种功能强大的工具, 可是, 实验中测量到的量都是让我们放心的"实"数, 与此相反, 薛定谔的波函数可以是复数的, 显然不可能是一个可以直接观测的量.
@@ -281,10 +189,13 @@ Equation de continuit\'e: $\dfrac{\partial \rho(r,t)}{\partial t} = - \grad{j(r,
 Courant de probabilit\'e: $j(r,t) = \dfrac{i\hbar}{2m} (\phi(r,t) \grad_r{\phi^*(r,t)} - \phi^*(r,t) \grad_r{\phi(r,t)}) = \dfrac{\hbar}{m} \Im{(\phi^*(r,t) \grad_r{\phi(r,t)})} $
 
 \section{Equation de Schr\"ondinger}
-推广到三维情况下,方程为:
-$$
-\psi \left({\mathbf r}, t \right) = A \cos \left({\mathbf k} \cdot {\mathbf r} - \omega t + \varphi \right)
-$$
+波动方程是双曲形偏微分方程的最典型代表,其最简形式可表示为:关于位置$x$ 和时间$t$ 的标量函数$u$(代表各点偏离平衡位置的距离)满足:
+$$ \dfrac{\partial^2 u}{\partial t^2} = c^2 \nabla^2u $$
+这里$c$通常是一个固定常数,代表波的传播速率.
+在针对实际问题的波动方程中,一般都将波速表示成可随波的频率变化的量,这种处理对应真实物理世界中的色散现象.此时,$ c$  应该用波的相速度代替:$v_\mathrm{p} = \frac{\omega}{k}$
+
+三维情况下的波动方程为
+$$ \psi \left({\mathbf r}, t \right) = A \cos \left({\mathbf k} \cdot {\mathbf r} - \omega t + \varphi \right) $$
 其中:
 r是三维空间中的位置矢量,
 $\cdot$ 是矢量点积,
@@ -293,83 +204,79 @@ k是波矢.
 $$|{\mathbf k}| = 2\pi/\lambda$$
 波矢的方向是平面波行进的方向.
 
-波动方程是双曲形偏微分方程的最典型代表,其最简形式可表示为:关于位置$x$ 和时间$t$ 的标量函数$u$(代表各点偏离平衡位置的距离)满足:
-$$
-\dfrac{\partial^2 u}{\partial t^2} = c^2 \nabla^2u
-$$
-这里c通常是一个固定常数,代表波的传播速率.
-在针对实际问题的波动方程中,一般都将波速表示成可随波的频率变化的量,这种处理对应真实物理世界中的色散现象.此时,$ c$  应该用波的相速度代替:$v_\mathrm{p} = \frac{\omega}{k}$
+当选取合适的初始时刻时, 可以是的$\varphi = 0$
+因此波动方程可以简化为
+$$ \psi \left({\mathbf r}, t \right) = A \cos \left({\mathbf k} \cdot {\mathbf r} - \omega t \right) $$
+转化为复数方程为
+$$ \psi \left({\mathbf r}, t \right) = A \exp (i ({\mathbf k} \cdot {\mathbf r} - \omega t)) $$
 
-上面的波动方程可以化成下面的形式
+\subsection{建立薛定谔方程}
+\textbf{第一步: 建立自由粒子的波动方程}
 $$
-\left(\nabla^2-\frac{1}{c^2}\frac{\partial^2}{\partial{t}^2}\right)u(\mathbf{r},t)=0.
-$$
-Separation of variables begins by assuming that the wave function $u(r, t)$ is in fact separable:
-$$u(\mathbf{r},t)=A (\mathbf{r}) T(t)$$
-Substituting this form into the wave equation, and then simplifying, we obtain the following equation:
-$$\dfrac{\nabla^2 A}{A} = \dfrac{1}{c^2 T } \dfrac{d^2 T}{d t^2}$$
-Notice the expression on the left-hand side depends only on $r$ , whereas the right-hand expression depends only on $t$.
-As a result, this equation is valid in the general case if and only if both sides of the equation are equal to a constant value.
-From this observation, we obtain two equations, one for $A(r)$ , the other for $T(t)$ :
-$$\dfrac{\nabla^2 A}{A} = -k^2$$
-and
-$$\dfrac{1}{c^2 T } \dfrac{d^2 T}{d t^2} = -k^2$$
-Rearranging the first equation, we obtain the Helmholtz equation:
-$$\nabla^2 A + k^2 A  =  ( \nabla^2 + k^2)  A  =  0$$
-Likewise, after making the substitution
-$$ \omega  \stackrel{\mathrm{def}}{=}  kc $$
-the second equation becomes
-$$\frac{d^2{T}}{d{t}^2} + \omega^2T  =  \left( \dfrac{d^2 }{dt^2 } + \omega^2 \right) T  =  0,$$
-where $k$ is the wave vector and $\omega$ is the angular frequency.\par
-我们可以解出
-$$
-T(t) = \exp^{-i \omega t}
+\begin{aligned}
+\Psi 
+& = A \exp (i ({\mathbf k} \cdot {\mathbf r} - \omega t)) \\
+& = A \exp (\dfrac{i}{\hbar} (\hbar {\mathbf k} \cdot {\mathbf r} - \hbar \omega t)) \\
+& = A \exp (\dfrac{i}{\hbar} ({\mathbf p} \cdot {\mathbf r} - E t)) \\
+\end{aligned}
 $$
 
-回到第一个方程\par
-La longueur d'onde dans le milieu est d\'efinie par $\lambda = 2 \pi/k$. L'\'equation de Helmholtz se r\'e\'ecrit :
+可以求得
+$$ \dfrac{\partial \Psi}{\partial t} = - \dfrac{i}{\hbar} E \Psi $$
+由上式可以得到
+$$E \Psi = i \hbar \dfrac{\partial \Psi}{\partial t}$$
+
+同时把波动方程为粒子的位置求导得到:
+$$
+\dfrac{\partial^2 \Psi}{\partial x^2} 
+= -\dfrac{p_x^2}{\hbar^2} A \exp(\dfrac{i}{\hbar} (p r - E t))
+= -\dfrac{p_x^2}{\hbar^2} \Psi
+$$
 
 $$
-\left( \, \Delta \ + \ \frac{4\pi^2}{\lambda^2} \, \right) \ \psi(\vec{r}) \ = \ 0
+\dfrac{\partial^2 \Psi}{\partial y^2} 
+= -\dfrac{p_y^2}{\hbar^2} A \exp(\dfrac{i}{\hbar} (p r - E t))
+= -\dfrac{p_y^2}{\hbar^2} \Psi
 $$
 
-On utilise alors la relation de de Broglie pour une particule non relativiste, pour laquelle la quantit\'e de mouvement $p = m v$  :
 $$
-\lambda \ = \ \frac{h}{mv} \quad \Longrightarrow \quad \frac{1}{\lambda^2} \ = \ \frac{m^2 \, v^2}{h^2}
-$$
-
-Or, l'\'energie cin\'etique s'\'ecrit pour une particule non relativiste :
-$$
-\frac{1}{2} \, m \, v^2 \ = \ E \ - \ V(\vec{r})
+\dfrac{\partial^2 \Psi}{\partial z^2} 
+= -\dfrac{p_z^2}{\hbar^2} A \exp(\dfrac{i}{\hbar} (p r - E t))
+= -\dfrac{p_z^2}{\hbar^2} \Psi
 $$
 
-d'o\`u l'\'equation de Schr\"odinger stationnaire:
+以上三式相加得到
 $$
-\left[ \, \Delta \ + \ \frac{8\pi^2m}{h^2} \, \left( \, E \ - \ V(\vec{r}) \, \right) \ \right] \ \psi(\vec{r}) \ = \ 0
+\dfrac{\partial^2 \Psi}{\partial x^2} + \dfrac{\partial^2 \Psi}{\partial y^2} + \dfrac{\partial^2 \Psi}{\partial z^2} 
+= \laplace{\Psi}
+= -\dfrac{p^2}{\hbar^2} \Psi
+= -\dfrac{2 m}{\hbar^2} E \Psi
 $$
+(其中$m$为粒子质量, $p^2 = 2mE$)即
+$i \hbar \dfrac{\partial \Psi}{\partial t} = - \dfrac{\hbar^2}{2m} \laplace{\Psi}$
 
-En introduisant le quantum d'action $\hbar = h/2\pi$, on la met sous la forme habituelle :
-$$
-- \ \frac{\hbar^2}{2m} \, \Delta \psi(\vec{r}) \ + \ V(\vec{r}) \, \psi(\vec{r}) \ = \ E \, \psi(\vec{r})
-$$
+\textbf{第二步: 然后将自有粒子的波动方程推广到一般情形}
 
-Il ne reste plus qu'\`a r\'eintroduire le temps t en explicitant la d\'ependance temporelle pour une onde monochromatique, puis en utilisant la relation de Planck-Einstein $E = \hbar \omega$:
+设粒子在势能$V(r,t)$的力场中运动, 则粒子的能量和动量的关系为
+$$ E = \dfrac{p^2}{2m} + V(r,t) $$
+将上式两边乘以波函数$\Psi(r,t)$, 并将相应的算法代入即得到$\Psi(r,t)$所满足的微分方程
+$i \hbar \dfrac{\partial \Psi}{\partial t} = - \dfrac{\hbar^2}{2m} \laplace{\Psi} + V(r,t) \Psi$
 
-$$
-\psi(\vec{r},t) \ = \ \psi(\vec{r}) \ \mathrm{e}^{- \, i \, \omega \, t} \ = \ \psi(\vec{r}) \ \exp \left( - \, \frac{i \, E \, t}{\hbar} \right)
-$$
+\textbf{第三步: 将方程推广到多个粒子组成的系统}
 
-On obtient finalement l'\'equation de Schr\"odinger g\'en\'erale :
-$$
-- \ \frac{\hbar^2}{2m} \, \Delta \psi(\vec{r},t) \ + \ V(\vec{r}) \, \psi(\vec{r},t) \ = \ i \, \hbar \ \frac{\partial \psi(\vec{r},t)}{\partial t}
-$$
+设系统由$N$个粒子组成, 此时
+$$ E = \sum_{i=1}{N} \dfrac{p_i^2}{2m} + V(r_1, r_2, \cdots, r_N, t) $$
+相应的波动方程为
+$i \hbar \dfrac{\partial \Psi}{\partial t} = - \sum_{i=1}^N \dfrac{\hbar^2}{2m_i} \laplace_i{\Psi} + V(r_1, r_2, \cdots, r_N, t) \Psi$
+上述波动方程统称为Schr\"ondinger 方程.
 
+上面\textbf{只是建立了Schr\"ondinger方程, 而不是从数学上将其推导出来}, 其正确性是由方程的应用 -- 在各种情况下由方程得出的结论与实验结果的比较来检验的.
+
+同时, 建立Schr\"ondinger有很多种方法, 除上述传统的物理量换算方法外, 还有力学与光学的类比方法, 变分原理方法, 路径积分方法, 随机量子化方法.
 
 L'\'electron est trait\'e comme une onde $\Psi(r,t)$ se d\'epla\c cant dans un puits de potentiel $V$.
 La densit\'e de probabilit\'e $\rho(r,t)$ qui lui est associ\'ee est d\'efinie par
-$$
-\rho(r,t)= R(r,t)^2 = |\Psi(r,t)|^2=\Psi^*(\mathbf{r},t)\Psi(\mathbf{r},t)\,\!
-$$
+$$ \rho(r,t)= |\Psi(r,t)|^2=\Psi^*(\mathbf{r},t)\Psi(\mathbf{r},t)\,\!  $$
 (probabilit\'e par unit\'e de volume, * indique un complexe conjugu\'e)
 
 \section{Postulats et formalisme de la physique quantique}
@@ -465,20 +372,26 @@ $$
 $$ L_+ \ket{\lambda^2,\mu} = \hbar \sqrt{\lambda^2 - \mu^2 - \mu}\ket{\lambda^2, \mu+1} $$
 $$ L_{\_} \ket{\lambda^2,\mu} = \hbar \sqrt{\lambda^2 - \mu^2 + \mu}\ket{\lambda^2, \mu-1} $$
 
-\subsection{Spin}
+\section{Spin}
 期末考试的内容考了很多很多的spin 的内容, 但是老师上课讲的不多, 课后看了书, 也没有看懂.
 
-Le spin est le moment cinétique intrinsèque des particules quantiques. Il est donc soumis aux mêmes lois générales qui régissent tout autre moment cinétique quantique, tel que, par exemple, le moment cinétique orbital.
+Le spin est le moment cinétique intrinsèque des particules quantiques. 
+Il est donc soumis aux mêmes lois générales qui régissent tout autre moment cinétique quantique, tel que, par exemple, le moment cinétique orbital.
 
-Le spin est donc un opérateur vectoriel hermitien $\hat S$ comportant trois composantes, notées usuellement $\hat{S}_x, \, \hat{S}_y et  \hat{S}_z$ par référence aux trois axes de coordonnées cartésiennes de l'espace physique. Ces composantes sont des observables vérifiant les relations de commutations caractéristiques d'un moment cinétique
+Le spin est donc un opérateur vectoriel hermitien $\hat S$ comportant trois composantes, 
+notées usuellement $\hat{S}_x, \, \hat{S}_y et  \hat{S}_z$ par référence aux trois axes de coordonnées cartésiennes de l'espace physique. 
+Ces composantes sont des observables vérifiant les relations de commutations caractéristiques d'un moment cinétique
 $$ \left[ \, \hat{S}_i \, , \ \hat{S}_j \, \right] \ = \ i \  \hbar \ \epsilon_{ijk} \ \hat{S}_k $$
 où $\epsilon_{ijk}$ est le symbole de Levi-Civita et
 
 $$ \left [\hat S^2, \hat S_i \right ]=0.  $$
 
-Ces relations de commutations impliquent que le principe d'incertitude s'applique aux mesures du spin faites dans les différentes directions de l'espace : on peut en effet mesurer très exactement la norme du vecteur et une projection sur un axe de coordonnées, mais les deux autres projections sur les deux autres axes orthogonaux ne sont plus alors mesurables précisément.
+Ces relations de commutations impliquent que le principe d'incertitude s'applique aux mesures du spin faites dans les différentes directions de l'espace : 
+on peut en effet mesurer très exactement la norme du vecteur et une projection sur un axe de coordonnées, 
+mais les deux autres projections sur les deux autres axes orthogonaux ne sont plus alors mesurables précisément.
 
-Les valeurs propres des opérateurs $\hat S^2$ et $\hat S_z$ représentent l'ensemble des mesures possibles pour les deux observables, c'est-à-dire respectivement le carré de la norme, et la projection sur un axe z arbitraire dans l'espace.
+Les valeurs propres des opérateurs $\hat S^2$ et $\hat S_z$ représentent l'ensemble des mesures possibles pour les deux observables, 
+c'est-à-dire respectivement le carré de la norme, et la projection sur un axe z arbitraire dans l'espace.
 
 Pour une particule de nombre quantique de spin $s = 1/2$ comme l'électron, le proton ou le neutron, donc $2s + 1 = 2$: 
 il existe seulement deux états de spin distincts, caractérisés par $m_s = \pm 1/2$.
@@ -512,6 +425,43 @@ $$
 Elles satisfont les relations de commutation :
 
 $$ \left[ \, \hat{\sigma}_i \, , \ \hat{\sigma}_j \, \right] \ = \  2 \ i \ \epsilon_{ijk} \ \hat{\sigma}_k $$
+
+\subsection{费米子与玻色子}
+Toutes les particules \'el\'ementaires d\'ecouvertes \`a ce jour sont soit des bosons, soit des fermions.\par
+
+les bosons de spin entier ou nul et les fermions de spin demi-entier
+
+un grand nombre de particules : les fermions sont des particules qui ob\'eissent \`a la statistique de Fermi-Dirac alors que les bosons ob\'eissent \`a la statistique de Bose-Einstein.\\
+la loi statistique Fermi-Dirac : quand on \'echange deux fermions, la fonction d'onde changlee de signe.
+
+物质粒子都是由费米子构成,而玻色子则是媒介子
+
+玻色子包括:
+\begin{itemize}
+\item 胶子 - 强相互作用的媒介粒子,自旋为1,有8种
+\item 光子 - 电磁相互作用的媒介粒子,自旋为1,只有1种
+\item W 及 Z 玻色子 - 弱相互作用的媒介粒子,自旋为1,有3种
+\item 引力子 - 引力相互作用的媒介粒子,自旋为2,只有1种,尚未被发现
+\item 希格斯玻色子 - 自旋为0,目前只发现1种
+\item 介子 - 由两个费米子-夸克组成的强子.
+\item 由偶数个核子组成的原子核.因为质子和中子都是费米子,故含偶数个核子的原子核是自旋为整数的玻色子.
+\item 声子 - 请参阅固体物理学
+\end{itemize}
+
+\textbf{宏观的玻色子现象}\\
+实验证实: 费米子数目为偶数的元素, 表现为玻色子; 费米子数目为奇数的元素,服从泡利不相容原理, 表现出像费米子.
+
+la condensation de Bose-Einstein玻色-爱因斯坦凝聚: 是玻色子原子在冷却到绝对零度附近时所呈现出的一种气态的,超流性的物态,几乎全部原子都聚集到能量最低的量子态,
+形成一个宏观的量子状态  occupent un unique \'etat quantique de plus basse \'energie (\'etat fondamental)
+
+la population macroscopique d'un mode unique de photon dans un laser
+大量的光子(玻色子)处于同一个量子状态
+
+虹膜输运现象 P123
+
+\textbf{冷原子}\\
+超流体的液氦需要氦原子间有量子协作. 这种类型的波色-爱因斯坦凝聚发生在原子已经处于液态时, 如果是气体, 在凝聚为液滴, 或者冻结为固体之前,
+可不可以发生波色-爱因斯坦凝聚呢? 要产生这种凝聚, 原子之间的距离必须足够大, 以免凝结成液体, 但是距离又不能太大, 以至于无法产生波色-爱因斯坦凝聚.
 
 \subsection{nombre quantique}
 $n$: nombre quantique principal, \\
@@ -650,6 +600,47 @@ Le fer est magn\'etique, le chrome est non-magn\'etique
     \caption{$m_l$的不同, 意味着排列方向的不同, 在disque dur中存储数据的应用}
     \label{fig-sub}
 \end{figure}
+
+\subsection{泡利与元素}
+如果我们让另一个氢原子靠近第一个氢原子, 会发生什么呢? \\
+如果两个电子的自旋都向上, 泡利不相容原理将禁止两个氢原子靠近, 因为两个电子的波函数会重叠, 波函数重叠就意味着两个电子会处于同一个量子态.
+如果两个电子的自选方向相反, 他们就可以互相靠近, 并且实际情况是, 两个电子大部分时间都呆在两个氢原子核之间.
+这样就在两个氢原子之间产生了一个束缚力, 形成一个稳定的氢分子. 这种化学键, 也就是两个电子被分子中两个原子共享形成的化学键, 叫做共价键.
+正是泡利不相容原理, 说明了为什么氢原子是化学活泼的, 为什么两个氢原子能够形成一个氢分子$H_2$.
+注意, 同样是泡利不相容原理, 禁止了第三个氢原子与氢分子$H_2$ 再形成共价键, 因为两个能量最低的自旋态已经都被占据了.
+
+下一个最简单的原子是氦, 有两个电子, 都填布在最低的1S能级上, 他们的自旋必须相反.
+因为1S 能级上已经没有地方容纳更多的电子了, 泡利不相容原理将禁止别的电子靠近氦原子, 就像他对氢分子那样,
+因此我们可以预料到氦原子的化学性质很不活泼, 实际上他就是一种惰性气体.
+
+\subsubsection{金属, 绝缘体与半导体}
+从某种角度来说, 金属可以看成是共价键的一个极端形式, 其中的传到电子被整块金属中所有的原子共享.
+
+\begin{figure}[htbp]
+		\centering
+		\includegraphics[scale = 0.5]{conduction_band}
+		\caption{金属, 绝缘体与半导体的能带}
+		\label{fig.paoli.conduction}
+\end{figure}
+电子热激发对于绝缘体和半导体的导电性质就很关键了.
+假设我们有一中材料, 它的基态是一个完全占据的能带加上一个在它上方的完全空闲的能带.
+如果这两个能带之间的间隙(能隙)很大, 如图\ref{fig.paoli.conduction}所示, 几乎没有电子能够通过碰撞而获得足够的能量跳到上面的能带上.
+因此, 当给这种材料加上一个电压时, 电子所处的能级附近没有空闲的能级让电子获取少量的能量跳过去 --- 因为泡利不允许两个电子占据同一个量子态.
+低的能级已经满了, 高的能带又离得太远, 电子跳不上去. 这就是绝缘体的情形, 在上面的传到能带中, 本质上不存在自由传到电子,因此就无法出现传到电流.
+
+半导体: 它是一种能带结构和绝缘体类似的材料, 但是上下两个能带之间的能隙比绝缘体要小得多. 在常温下, 有显著数目的电子被激发到上面的导带中.
+当加上一个电压之后, 上面的导带已经有比较多的电子, 电子获取外加电场提供的能量, 也有足够的空能级可以利用.下面的能带中也有一些空能级, 也可以参与导电过程.
+这样, 半导体能够相当容易的传到电流, 而且他们的导电性能跟温度有很大的关系.
+
+\subsubsection{晶体管与微电子}
+我们可以根据需要调节半导体的导电性能, 调节的办法是在半导体中掺入大约百万分之一的适当杂质原子.
+
+锗和硅都有4个价电子, 绝大多数都填入了价带中的$4N$个态中, 把价带几乎占满, 价带上面是几乎全空的导带.
+如果我们引入一个杂质, 比如磷, 磷有$5$个价电子, 那么, 因为只需要4 个电子形成晶格的4 个共价键, 多出来的一个电子很容易离开磷原子, 成为一个导电电子.
+类似的, 如果我们引入的杂质只有3 个价电子, 比如硼, 在晶格中就会却是一个共价键, 这时硼就很容易从价带中俘获一个电子, 在价带中留下一个空穴, 空穴也可以被用来导电.
+
+磷原子在紧靠导带下面形成一个施主态(贡献一个电子的态), 这些电子只需要一个很小的能量就可以跳到导带上. 以这种形式掺杂的半导体叫做$n$型半导体.\par
+硼原子在紧靠导带下面形成一个受主态(接受一个电子的态), 在室温下, 电子很容易被激发到这些态上. 以这种形式掺杂的半导体叫做$p$型半导体.
 
 \section{Approximations}
 \subsection{Th\'eorie de la perturbation ind\'ependante du temps}
