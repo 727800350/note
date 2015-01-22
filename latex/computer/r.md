@@ -394,6 +394,14 @@ grepl()函数与之类似,但其后面的"l"则意味着返回的将是逻辑值
 For more customizable (but cumbersome) printing, see `cat`, `format` or also `write`.   
 For a simple prototypical print method, see `.print.via.format` in package **tools**.
 
+重定向输出
+```
+sink("文件名", append = FALSE, split = FALSE)
+sink()   #取消显示到文件
+```
+使用参数append=TRUE可以将文本追加到文件后  
+参数split=TRUE可将输出同时发送到屏幕和输出文件中
+
 ## file
 [data import](http://www.r-tutor.com/r-introduction/data-frame/data-import)
 
