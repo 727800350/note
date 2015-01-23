@@ -187,10 +187,6 @@ apple
 
 `as.matrix(vector)`生成的矩阵是一个column matrice
 
-### Missing values
-In general any operation on an NA becomes an NA.
-`is.na(x)` 进行判断, gives a logical vector of the same size as x with value TRUE if and only if the corresponding element in x is NA
-
 ## array
 ```
 > z <- c(1:24)
@@ -523,6 +519,7 @@ now makes e a vector of length 3, (the first two components of which are at this
 transform data between wide and long formats
 
 [What makes data wide or long?](../../demo/r/reshape2.r)
+
 It is easier to record their data in wide format, but it is easy to process in long format
 
 reshape2 is based around two key functions: melt and cast:
