@@ -316,6 +316,118 @@ books <- data.frame(
 newdata=edit(data)
 ```
 
+## date and time
+Part of the difficulty with time data types is that R prints them out in a way that is different from how it stores them internally. 
+This can make type conversions tricky, and you have to be careful and test your operations to insure that R is doing what you think it is doing.
+
+### Time
+the POSIXct and POSIXlt data types: 两种不同的表示时间的方式
+
+POSIXct: # seconds since the start of January 1, 1970. 
+Negative numbers represent the number of seconds before this time, 
+and positive numbers represent the number of seconds afterwards.
+
+POSIXlt a vector, and the entries in the vector have the following meanings:
+
+- sec 0–61: seconds.
+- min 0–59: minutes.
+- hour 0–23: hours.
+- mday 1–31: day of the month
+- mon 0–11: months after the first of the year.
+- year years since 1900.
+- wday 0–6 day of the week, starting on Sunday.
+- yday 0–365: day of the year.
+- isdst Daylight Saving Time flag. Positive if in force, zero if not, negative if unknown.
+- zone (Optional.) The abbreviation for the time zone in force at that time: "" if unknown (but "" might also be used for UTC).
+- gmtoff (Optional.) The offset in seconds from GMT: positive values are East of the meridian. Usually NA if unknown, but 0 could mean unknown.
+
+Sys.time():  get the current time
+as.POSIXct and as.POSIXlt convert the time value into the different formats.
+strftime command is used to take a time data type and convert it to a string
+```
+timeString <-  strftime(t,"%Y-%m-%d %H:%M:%S")
+```
+strptime command is used to take a string and convert it into a form that R can use for calculations
+```
+time <- strptime("2014-01-23 14:28:21", "%Y-%m-%d %H:%M:%S")
+```
+
+### Date
+The difference is that the date data type keeps track of numbers of days rather than seconds. 
+You can cast a string into a date type using the `as.Date` function. The `as.Date` function takes the same arguments as the time data types discussed above.
+```
+> theDates <- c("1 jan 2012","1 jan 2013","1 jan 2014")
+> dateFields <- as.Date(theDates,"%d %b %Y")
+> typeof(dateFields)
+[1] "double"
+> dateFields
+[1] "2012-01-01" "2013-01-01" "2014-01-01"
+
+> infamy <- as.Date(-179,origin="1942-06-04")
+```
+
+### Time Operations
+```
+> earlier <- strptime("2000-01-01 00:00:00","%Y-%m-%d %H:%M:%S")
+> later <- strptime("2000-01-01 00:00:20","%Y-%m-%d %H:%M:%S")
+> later-earlier
+Time difference of 20 secs
+> as.double(later-earlier)
+[1] 20
+
+> earlier <- strptime("2000-01-01 00:00:00","%Y-%m-%d %H:%M:%S")
+> later <- strptime("2000-01-01 01:00:00","%Y-%m-%d %H:%M:%S")
+> later-earlier
+Time difference of 1 hours
+> as.double(later-earlier)
+[1] 1
+
+> up <- as.Date("1961-08-13")
+> down <- as.Date("1989-11-9")
+> down-up
+Time difference of 10315 days
+```
+以上说明时间直接作差的结果取决于差值的大小.
+使用`difftime`可以避免这个问题
+
+```
+> earlier <- strptime("2000-01-01 00:00:00","%Y-%m-%d %H:%M:%S")
+> later <- strptime("2000-01-01 01:00:00","%Y-%m-%d %H:%M:%S")
+> difftime(later,earlier)
+Time difference of 1 hours
+> difftime(later,earlier,units="secs")
+Time difference of 3600 secs
+```
+
+difftime 的另外一种用法
+```
+> diff <- as.difftime("00:30:00","%H:%M:%S",units="hour")
+> diff
+Time difference of 0.5 hours
+> Sys.time()
+[1] "2014-01-23 16:45:39 EST"
+> Sys.time()+diff
+[1] "2014-01-23 17:15:41 EST"
+```
+
+The last thing to mention is that once a time stamp is cast into one of R’s internal formats comparisons can be made in a natural way.
+
+```
+> diff <- as.difftime("00:30:00","%H:%M:%S",units="hour")
+> now <- Sys.time()
+> later <- now + diff
+> now
+[1] "2014-01-23 16:47:48 EST"
+> later
+[1] "2014-01-23 17:17:48 EST"
+>
+> if(now < later)
+  {
+     cat("there you go\n")
+  }
+there you go
+```
+
 ## mode
 All objects have two intrinsic attributes: mode and length. 
 The mode is the basic type of the elements of the object; there are four main modes:
