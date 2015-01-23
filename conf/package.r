@@ -5,6 +5,7 @@ install.packages("clusterGeneration")
 install.packages("devtools")
 install.packages("scales")
 install.packages("reshape")
+install.packages("reshape2")
 
 ## machine learning
 ## 	 k-Nearest Neighbors
@@ -25,3 +26,6 @@ install.packages("RMySQL")
 
 ## need at first sudo yum install -y curl libcurl libcurl-devel
 install.packages("RCurl")
+
+## graphics
+install.packages("ggplot2")
