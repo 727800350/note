@@ -41,6 +41,8 @@ For method="gam", be sure to load the mgcv package. For method="rml", load the M
 
 - xlim,ylim	Two-element numeric vectors giving the minimum and maximum values for the horizontal and vertical axes, respectively
 
+[ggplot2 demo](../../demo/r/ggplot2.r)
+
 [ggplot2 tutoraial](https://github.com/echen/ggplot2-tutorial/blob/master/README.md)
 [Graphics with ggplot2](http://www.statmethods.net/advgraphs/ggplot2.html)
 

@@ -271,6 +271,26 @@ Once an object has been created, new components may be added to it simply by giv
 `> e[3] <- 17`  
 now makes e a vector of length 3, (the first two components of which are at this point both NA).
 
+## reshape2
+[An Introduction to reshape2](http://seananderson.ca/2013/10/19/reshape.html)
+
+transform data between wide and long formats
+
+[What makes data wide or long?](../../demo/r/reshape2.r)
+It is easier to record their data in wide format, but it is easy to process in long format
+
+reshape2 is based around two key functions: melt and cast:
+
+- melt takes wide-format data and melts it into long-format data.
+- cast takes long-format data and casts it into wide-format data.
+
+In reshape2 there are multiple cast functions. Since you will most commonly work with data.frame objects, we’ll explore the dcast function. 
+(There is also acast to return a vector, matrix, or array.)
+
+dcast uses a formula to describe the shape of the data. The arguments on the left refer to the ID variables and the arguments on the right refer to the measured variables.
+
+[reshape demo](../../demo/r/reshape2.r)
+
 # 常用统计函数运算
 在R语言中经常会用到函数,例如上节中讲到的求样本统计量就需要均值函数(mean)和标准差函数(sd).对于二元数值数据还用到协方差(cov),对于二元分类数据则可以用交叉联列表函数(table).下文讲述在初级统计学中最常用到的三类函数.
 
