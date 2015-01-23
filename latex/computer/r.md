@@ -223,6 +223,10 @@ age          f   m
 ## data.frame
 在数据导入R语言后,会以数据框(dataframe)的形式储存.
 dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征.
+```
+mydata <- data.frame(col1, col2, col3, ...)
+```
+例如
 
 ```
 books <- data.frame(
@@ -284,7 +288,7 @@ reshape2 is based around two key functions: melt and cast:
 - melt takes wide-format data and melts it into long-format data.
 - cast takes long-format data and casts it into wide-format data.
 
-In reshape2 there are multiple cast functions. Since you will most commonly work with data.frame objects, we’ll explore the dcast function. 
+In reshape2 there are multiple cast functions. Since you will most commonly work with data.frame objects, we'll explore the dcast function. 
 (There is also acast to return a vector, matrix, or array.)
 
 dcast uses a formula to describe the shape of the data. The arguments on the left refer to the ID variables and the arguments on the right refer to the measured variables.
@@ -935,3 +939,63 @@ debug()函数和browser()是相似的,如果你认为某个函数,例如`fx(x)`,
 它本质上是在函数的第一行加入了browser,所以其它提示和命令都是相同的.
 
 其它与程序调试有关的函数还包括:trace(),setBreakpoint(),traceback(),recover()
+
+# 处理大数据集  
+由于R在内存中存储对象, 往往会受限于可用的内存量. 举例来说, 在服役了5的2G 内存的Winodws PC上, 可以轻松地处理含有1000万个元素的数据集(100个变量 * 100 000个观测).
+在一台4G内存的iMac上, 可以不费力的处理含有上亿个元素的数据.  
+但是也要考虑到两个问题, 数据集的大小和要应用的统计方法. R 可以处理GB级别到TB级别数据分析问题, 但需要专门的手段.
+
+Memory limits will depend primarily on the R build (32 versus 64-bit) and for 32-bit Windows, on the  OS version involved. 
+Error messages starting with  `cannot allocate vector of size`  typically indicate a failure to obtain sufficient contiguous memory, 
+while error messages starting with  `cannot allocate vector of length` indicate that an address limit has been exceeded. 
+When working with large datasets, try to use a 64-bit build if at all possible. 
+For all builds, the number of elements in a vector is limited to 2,147,483,647 (see  ?Memory for more information).
+There are three issues to consider when working with large datasets: 
+
+- (a) efficient programming to speed execution, 
+- (b) storing data externally to limit memory issues, and 
+- (c) using specialized statistical routines designed to efficiently analyze massive amounts of data. We will briefly consider each.
+
+## Efficient programming
+There are a number of programming tips that improve performance when working with large datasets.
+
+- Vectorize calculations when possible. Use R's built-in functions for manipulating vectors, matrices, and lists (for example, s apply , lappy , and mapply ) and avoid loops ( for and  while ) when feasible.
+- Use matrices rather than data frames (they have less overhead).
+- When using the  read.table()  family of functions to input external data into data frames, specify the  colClasses  and  nrows options explicitly, set  comment.  
+char = "" , and specify  "NULL" for columns that aren't needed. This will decrease memory usage and speed up processing considerably. 
+When reading external data into a matrix, use the  scan() function instead.
+- Test programs on subsets of the data, in order to optimize code and remove bugs, before attempting a run on the full dataset.
+- Delete temporary objects and objects that are no longer needed. 
+The call rm(list=ls())  will remove all objects from memory, providing a clean slate.  Specific objects can be removed with  rm( object )  .
+- Use the function . ls.objects() described in Jeromy Anglim's blog entry "Memory Management in R: A Few Tips and Tricks" (jeromyanglim.blogspot.com), 
+to list all workspace objects sorted by size ( MB ). This function will help you find and deal with memory hogs.
+- Profile your programs to see how much time is being spent in each function.  
+You can accomplish this with the  Rprof()  and  summaryRprof() functions. The system.time()  function can also help. 
+The  profr  and  prooftools packages provide functions that can help in analyzing profiling output.
+- The  Rcpp package can be used to transfer R objects to C++ functions and back when more optimized subroutines are needed.
+With large datasets, increasing code efficiency will only get you so far. 
+When bumping up against memory limits, you can also store our data externally and use specialized analysis routines.
+
+## Storing data outside of RAM
+There are several packages available for storing data outside of R's main memory. 
+The strategy involves storing data in external databases or in binary flat files on disk, and then accessing portions as they are needed. 
+
+- ff Provides data structures that are stored on disk but behave as if they were in RAM.
+- bigmemory Supports the creation, storage, access, and manipulation of massive matrices. Matrices are allocated to shared memory and memory mapped files.
+- filehash Implements a simple key-value database where character string keys are associated with data values stored on disk.
+- ncdf , ncdf 4  Provides an interface to Unidata netCDF data files.
+- RODBC , RMySQL , ROracle , RPostgreSQL , RSQ Lite Each provides access to external relational database management systems.
+
+## Analytic packages for large datasets
+R provides several packages for the analysis of large datasets:
+
+- The  biglm  and  speedglm packages fit linear and generalized linear models to large datasets in a memory efficient manner. 
+This offers  lm()  and  glm()  type functionality when dealing with massive datasets.
+- Several packages offer analytic functions for working with the massive matrices produced by the  bigmemory package . 
+The  biganalytics package offers k-means clustering, column statistics, and a wrapper to  biglm . 
+The  bigtabulate package provides  table()  ,  split()  , and  tapply() functionality and the bigalgebra package provides advanced linear algebra functions.
+- The  biglars package offers least-angle regression, lasso, and stepwise regression for datasets that are too large to be held in memory, when used in conjunction with the  ff package .
+- The  Brobdingnag package can be used to manipulate large numbers (numbers larger than 2^1024).
+Working with datasets in the gigabyte to terabyte range can be challenging in any language. 
+For more information on the methods available within R, see the CRAN Task View: High-Performance and Parallel Computing with R (cran.r-project.org/web/views/).
+
