@@ -2,11 +2,6 @@
 At this point you will be asked whether you want to save the data from your R session.
 Data which is saved will be available in future R sessions.
 
-**Executing commands from or diverting output to a file**
-`> source("commands.R")` 读取文件并执行  
-`> sink("record.lis")` will divert all subsequent output from the console to an external file, record.lis.   
-The command `> sink()` restores it to the console once again.
-
 **assign operator**
 ```
 n <- 15
@@ -393,6 +388,8 @@ grepl()函数与之类似,但其后面的"l"则意味着返回的将是逻辑值
 
 For more customizable (but cumbersome) printing, see `cat`, `format` or also `write`.   
 For a simple prototypical print method, see `.print.via.format` in package **tools**.
+
+`source("commands.R")` 读取文件并执行  
 
 重定向输出
 ```
