@@ -1,15 +1,3 @@
-`> q()`
-At this point you will be asked whether you want to save the data from your R session.
-Data which is saved will be available in future R sessions.
-
-**assign operator**
-```
-n <- 15
-15 -> n
-```
-在多数场合下, 可以用`=`来代替`<-`  
-或者使用`assign("x", c(10.4, 5.6, 3.1, 6.4, 21.7))`
-
 **R语言的启动**
 
 - R语言启动后会首先查找有无.Rprofile文档,用户可通过编辑.Rprofile文档来自定义R启动环境,该文件可放在工作目录或安装目录中.
@@ -17,6 +5,13 @@ n <- 15
 - 在R中所有的默认输入输出文件都会在工作目录中.getwd() 报告工作目录,setwd() 负责设置工作目录.在win窗口下也可以点击Change Working Directory来更改.
 - Sys.getenv('R_HOME') 会报告R主程序安装目录
 - ?Startup可以得到更多关于R启动时的帮助
+
+退出
+`> q()`
+At this point you will be asked whether you want to save the data from your R session.
+Data which is saved will be available in future R sessions.
+
+注释: R 语言里面没有像C 语言那样的多行注释
 
 # Objects
 R是一种基于对象(Object)的语言,所以你在R语言中接触到的每样东西都是一个对象,一串数值向量是一个对象,一个函数是一个对象,一个图形也是一个对象.
@@ -225,9 +220,26 @@ age          f   m
 [[3]]
 [1] "test"
 ```
-## dataframe
+## data.frame
 在数据导入R语言后,会以数据框(dataframe)的形式储存.
 dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征.
+
+```
+books <- data.frame(
+    title = c("harry potter", "war and peace", "lord of the rings"), # column named "title"
+    author = c("rowling", "tolstoy", "tolkien"),
+    num_pages = c("350", "875", "500")
+)
+
+> books
+              title  author num_pages
+1      harry potter rowling       350
+2     war and peace tolstoy       875
+3 lord of the rings tolkien       500
+```
+
+如果在像数据库那样, 获得的都是一个个的record(具有不同数据类型的fields), 然后想把很多的records组成一个data.frame, 
+现在我能想到的方法就是用list来存储一个record, 然后用rbind 函数将这个list 放到data.frame里面.(循环实现将所以的records放入data.frame中)
 
 下面的命令可以让你有机会修改数据并存入到新的变量newdata中:
 ```
