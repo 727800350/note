@@ -20,6 +20,72 @@ R是一种基于对象(Object)的语言,所以你在R语言中接触到的每样
 - `attributes()` 获得对象属性
 - `str()`,它能以简洁的方式显示对象的数据结构及其内容
 
+## NA
+Missing values are represented by the symbol NA (not available).   
+Impossible values (e.g., dividing by zero) are represented by the symbol NaN (not a number).   
+R uses the same symbol for character and numeric data.对于factor 用 <NA> 表示, 但是仍然可以使用is.na(f)进行检测
+
+Testing for Missing Values  
+对于一般的数据类型使用`is.na` 进行检测, 而对于data.frame 需要使用complete.cases 进行检测(注意complete.cases输出中为TRUE表示这个record 是完整的)
+```
+## numeric
+y <- c(1,2,3,NA)
+is.na(y) # returns a vector (F F F T)
+
+## charactor
+ch <- c("test", " ", "", NA)
+is.na(ch) # return FALSE FALSE FALSE  TRUE
+
+## factor
+head(flows$app_name)
+[1] MICROSOFT-DS MICROSOFT-DS <NA> <NA> <NA> <NA>
+Levels: DOMAIN FTP HTTP MICROSOFT-DS NETBIOS-NS SMTP
+is.na(head(flows$app_name))
+[1] FALSE FALSE  TRUE  TRUE  TRUE  TRUE
+
+## data.frame
+head(flows[,c('app_name', 'srcaddr')])
+##       app_name      srcaddr
+## 1 MICROSOFT-DS 10.68.106.21
+## 2 MICROSOFT-DS  10.231.2.89
+## 3         <NA> 10.192.24.50
+## 4         <NA>    10.1.17.1
+## 5         <NA>   10.2.88.12
+## 6         <NA>    10.1.17.1
+is.na(head(flows[,c('app_name', 'srcaddr')]))
+##   app_name srcaddr
+## 1    FALSE   FALSE
+## 2    FALSE   FALSE
+## 3     TRUE   FALSE
+## 4     TRUE   FALSE
+## 5     TRUE   FALSE
+## 6     TRUE   FALSE
+complete.cases(head(flows[,c('app_name', 'srcaddr')]))
+[1]  TRUE  TRUE FALSE FALSE FALSE FALSE
+!complete.cases(head(flows[,c('app_name', 'srcaddr')]))
+[1] FALSE FALSE  TRUE  TRUE  TRUE  TRUE
+```
+
+Recoding Values to Missing
+```
+# recode 99 to missing for variable v1
+mydata$v1[mydata$v1==99] <- NA
+```
+
+Excluding Missing Values from Analyses
+Arithmetic functions on missing values yield missing values.
+```
+x <- c(1,2,NA,3)
+mean(x) # returns NA
+mean(x, na.rm=TRUE) # returns 2
+```
+
+The function na.omit() returns the object with listwise deletion of missing values.
+```
+# create new dataset without missing data 
+newdata <- na.omit(mydata)
+```
+
 ## namespace
 同一个环境只能存在一个唯一的名字,不同环境可以存在相同名字,R寻找一个名字,
 会站在当前环境沿着search() path(`".GlobalEnv"     "package:base"   "namespace:base"`)往之后的环境中找名字,如果当前名字不符合就依次找后面的环境.  
