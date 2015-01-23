@@ -316,7 +316,7 @@ books <- data.frame(
 newdata=edit(data)
 ```
 
-## date and time
+## [date and time](http://www.cyclismo.org/tutorial/R/time.html)
 Part of the difficulty with time data types is that R prints them out in a way that is different from how it stores them internally. 
 This can make type conversions tricky, and you have to be careful and test your operations to insure that R is doing what you think it is doing.
 
@@ -410,7 +410,7 @@ Time difference of 0.5 hours
 [1] "2014-01-23 17:15:41 EST"
 ```
 
-The last thing to mention is that once a time stamp is cast into one of R’s internal formats comparisons can be made in a natural way.
+The last thing to mention is that once a time stamp is cast into one of R's internal formats comparisons can be made in a natural way.
 
 ```
 > diff <- as.difftime("00:30:00","%H:%M:%S",units="hour")
@@ -428,13 +428,41 @@ The last thing to mention is that once a time stamp is cast into one of R’s in
 there you go
 ```
 
-## mode
+## class, mode and typeof
 All objects have two intrinsic attributes: mode and length. 
+
 The mode is the basic type of the elements of the object; there are four main modes:
 **numeric, character, complex , and logical** (FALSE or TRUE). 
 Other modes exist but they do not represent data, for instance function or expression. 
 The **length** is the number of elements of the object. 
-`mode(x)`, `length(x)`
+
+```
+>f <- gl(2,5)
+>f 
+ [1] 1 1 1 1 1 2 2 2 2 2
+Levels: 1 2
+> class(f)   #查看变量的类,显示为因子
+[1] "factor"
+> mode(f)  #查看数据大类,显示为数值型
+[1] "numeric"
+> typeof(f)  #查看数据细类,显示为整数型
+[1] "integer"
+> storage.mode(f)
+[1] "integer"
+```
+
+The class() is used to define/identify what "type" an object is from the point of view of object-oriented programming in R. So for
+```
+> x <- 1:3
+> class(x)
+[1] "integer"
+```
+typeof() gives the "type" of object from R's point of view,   
+whilst mode() gives the "type" of object from the point of view of Becker, Chambers Wilks (1988). 
+The latter may be more compatible with other S implementations according to the R Language Definition manual.
+
+'mode' is a mutually exclusive classification of objects according to their basic structure.  
+'class' is a property assigned to an object that determines how generic functions operate with it. It is not a mutually exclusive classification.
 
 ```
 > z <- 0:9
