@@ -352,16 +352,47 @@ strptime command is used to take a string and convert it into a form that R can 
 time <- strptime("2014-01-23 14:28:21", "%Y-%m-%d %H:%M:%S")
 ```
 
+从系统与字符串转换来的时间类型是不一样的
+```
+> now <- Sys.time()
+> now
+[1] "2015-01-23 22:47:11 CST"
+> class(now)
+[1] "POSIXct" "POSIXt"
+> mode(now)
+[1] "numeric"
+> typeof(now)
+[1] "double"
+
+> t <- strptime("2005-06-24 10:05:35","%Y-%m-%d %H:%M:%S")
+> class(t)
+[1] "POSIXlt" "POSIXt"
+> mode(t)
+[1] "list"
+> typeof(t)
+[1] "list"
+
+## 但是还是可以直接作差的
+> now - t
+Time difference of 3500.529 days
+> difftime(now, t)
+Time difference of 3500.529 days
+```
+
 ### Date
 The difference is that the date data type keeps track of numbers of days rather than seconds. 
 You can cast a string into a date type using the `as.Date` function. The `as.Date` function takes the same arguments as the time data types discussed above.
 ```
 > theDates <- c("1 jan 2012","1 jan 2013","1 jan 2014")
-> dateFields <- as.Date(theDates,"%d %b %Y")
-> typeof(dateFields)
-[1] "double"
-> dateFields
+> d <- as.Date(theDates,"%d %b %Y")
+> d 
 [1] "2012-01-01" "2013-01-01" "2014-01-01"
+> class(d)
+[1] "Date"
+> mode(d)
+[1] "numeric"
+> typeof(d)
+[1] "double"
 
 > infamy <- as.Date(-179,origin="1942-06-04")
 ```
@@ -389,7 +420,12 @@ Time difference of 10315 days
 ```
 以上说明时间直接作差的结果取决于差值的大小.
 使用`difftime`可以避免这个问题
+```
+difftime(time1, time2, 'arg')
+```
+arg should be one of "auto", "secs", "mins", "hours", "days", "weeks"
 
+例子
 ```
 > earlier <- strptime("2000-01-01 00:00:00","%Y-%m-%d %H:%M:%S")
 > later <- strptime("2000-01-01 01:00:00","%Y-%m-%d %H:%M:%S")
