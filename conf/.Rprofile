@@ -5,7 +5,7 @@ local({r <- getOption("repos")
 
 ## Every R session starts with excuting the .First function
 .First <- function(){
-	source(".Rfun.r")
+	source("/home/eric/.Rfun.r")
 	cat("\nWelcome at ", date(),"\n")
 }
 
