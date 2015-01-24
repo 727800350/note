@@ -698,6 +698,7 @@ trim: trim=.1 - trim means by dropping the top and bottom trim fraction
 aggregate
 
 ```
+> vars <- c("mpg", "hp", "wt")
 > aggregate(mtcars[vars], by = list(am=mtcars$am), mean)
   am      mpg       hp       wt
 1  0 17.14737 160.2632 3.768895
@@ -712,11 +713,13 @@ aggregate
 要返回多值, 可以使用by 函数
 ```
 by(data, INDICES, FUN)
+## Apply a Function to a Data Frame Split by Factors
 ```
 ex:
 ```
 dstats <- function(x)(c(mean=mean(x), sd=sd(x)))
 by(mtcars[vars], mtcars$am, dstats)
+## 以am为分组, 对mtcars中的vars三个列作用dstats函数
 ```
 
 doBy
@@ -759,54 +762,88 @@ margin.table, prop.table, addmargins 可以自然地推广到高于二维的情�
 ftable 可以以一种紧凑而吸引人的方式输出多维列联表
 
 ## 数据汇总函数
-我们还是以R中自带的iris数据为例,输入head(iris)你可以获得数据的前6个样本及对应的5个变量.
-取出最后两列数据作为讲解的对象:Species表示花的种类,Petal.Width表示花瓣宽度
+apply族函数包括了apply,sapply,lappy,tapply等函数,这些函数在不同的情况下能高效的完成复杂的数据处理任务,但角色定位又有所不同
 
-下一步我们想计算不同种类花瓣的平均宽度,可以使用tapply函数,
-```
-> data = iris[,c(4,5)]
-> names(data)
-[1] "Petal.Width" "Species"
-> attach(data)
-> tapply(X=Petal.Width, INDEX = Species, FUN=mean)
-    setosa versicolor  virginica
-     0.246      1.326      2.026
-```
-和tapply类似的还有sapply函数,在进一步讲解前初学者还需搞清楚两种数据表现方式,
-即stack(堆叠数据)和unstack(非堆叠数据),上面的data就是一个堆叠数据,每一行表示一个样本.
-而非堆叠数据可以根据unstack函数转换而来
-```
-> data
-  Petal.Width Species
-1         0.2  setosa
-2         0.2  setosa
-...
-52          1.5 versicolor
-53          1.5 versicolor
-54          1.3 versicolor
-...
-146         2.3  virginica
-147         1.9  virginica
-148         2.0  virginica
-...
+[A brief introduction to "apply" in R](https://nsaunders.wordpress.com/2010/08/20/a-brief-introduction-to-apply-in-r/)
 
-> data.unstack = uns
-unserialize  unsplit      unstack
-> data.unstack = unstack(data)
-> head(data.unstack)
-  setosa versicolor virginica
-1    0.2        1.4       2.5
-2    0.2        1.5       1.9
-3    0.2        1.5       2.1
-4    0.2        1.3       1.8
-5    0.2        1.5       2.2
-6    0.4        1.3       2.1
-
-> sapply(data.unstack,FUN=mean)
-    setosa versicolor  virginica
-     0.246      1.326      2.026
+apply()可将任意函数应用到矩阵,数组或者数据框的任何维度上,
+它逐行或逐列的处理数据,其输出的结果将是一个向量或是矩阵.
 ```
-结果是一样的,也就是说tapply对应于stack数据,而sapply对应于unstack数据
+apply(x, MARGIN, FUN,...)
+```
+x 是数据对象, 
+margin 是维度的下标(margin = 1 表示行, margin = 2表示列, margin = c(1,2)表示每个格), 
+fun是函数, 
+而 ... 则包括了任何想传递给fun的参数
+
+```
+m.data <- matrix(rnorm(100),ncol=10)
+apply(m.data,1,mean)  ## 对行求平均值
+apply(m.data,2,mean)  ## 对列求平均值
+apply(iris[,1:4], 2, mean) ## 由于iris 有些列不是numeric, 不能求mean
+```
+
+lappy() 与sapply 的处理对象是向量,列表或其它对象,
+lapply returns a list of the same length as X, each element of which is the result of applying FUN to the corresponding element of X.
+```
+# create a list with 2 elements
+l <- list(a = 1:10, b = 11:20)
+l
+$a
+ [1]  1  2  3  4  5  6  7  8  9 10
+$b
+ [1] 11 12 13 14 15 16 17 18 19 20
+
+# the mean of the values in each element
+lapply(l, mean)
+$a
+[1] 5.5
+$b
+[1] 15.5
+ 
+# the sum of the values in each element
+lapply(l, sum)
+$a
+[1] 55
+$b
+[1] 155
+```
+
+sapply is a user-friendly version of lapply by default returning a vector or matrix if appropriate.
+```
+> sapply(l, mean)
+   a    b
+ 5.5 15.5
+> mode(lapply(l,mean))
+[1] "list"
+> mode(sapply(l,mean))
+[1] "numeric"
+```
+
+在R中数据框是一种特殊的列表,所以数据框的列也将作为函数的处理对象.下面的例子即对一个数据框按列来计算中位数与标准差.
+```
+f.data <- data.frame(x=rnorm(10),y=runif(10))
+lapply(f.data,FUN=function(x) list(median=median(x),sd=sd(x)))
+```
+
+sapply()可能是使用最为频繁的向量化函数了,它和lappy()是非常相似的,但其输出格式则是较为友好的矩阵格式.
+```
+f.data <- data.frame(x=rnorm(10),y=runif(10))
+sapply(f.data,FUN=function(x) list(median=median(x),sd=sd(x)))
+```
+
+tapply()的功能则又有不同,它是专门用来处理分组数据的.
+Apply a function to each cell of a ragged array, that is to each (non-empty) group of values given by a unique combination of the levels of certain factors.
+
+我们以iris数据集为例,可观察到Species列中存放了三种花的名称,我们的目的是要计算三种花瓣萼片宽度的均值.其输出结果是数组格式.
+```
+attach(iris)
+# mean petal length by species
+tapply(iris$Petal.Length, Species, mean)
+    setosa versicolor  virginica 
+     1.462      4.260      5.552
+```
+与tapply功能非常相似的还有aggregate(),其输出是更为友好的数据框格式.而by()和上面两个函数是同门师兄弟.
 
 ## 概率计算函数
 如果给定一种概率分布,通常会有四类计算问题:
@@ -818,10 +855,42 @@ unserialize  unsplit      unstack
 
 ![概率类型](http://1.bp.blogspot.com/-h1-vKZMKEh4/TrfKPr_3QOI/AAAAAAAAAhQ/2Gs77XvCBxI/s400/%25E6%258D%2595%25E8%258E%25B7.JPG)
 
+另外还有一个非常有用的函数replicate(),它可以将某个函数重复运行N次,常常用来生成较复杂的随机数.  
+下面的例子即先建立一个函数,模拟扔两个骰子的点数之和,然后重复运行10000次.
+```
+game <- function() {
+    n <- sample(1:6,2,replace=T)
+    return(sum(n))
+}
+replicate(n=10000,game())
+```
+
 # 字符串str
 - 获取字符串长度:nchar()能够获取字符串的长度,它也支持字符串向量操作.注意它和length()的结果是有区别的.
 - 字符串粘合:paste()负责将若干个字符串相连结,返回成单独的字符串.其优点在于,就算有的处理对象不是字符型也能自动转为字符型.
 - 字符串分割:strsplit()负责将字符串按照某种分割形式将其进行划分,它正是paste()的逆操作.
+- 字符串选取[: 在用strsplit之后, 得到一个字符串的list, 可以用[ 来进行选取操作
+```
+> str <- "this is a test"
+> str
+[1] "this is a test"
+> r <- strsplit(str, " ") ## "this" "is"   "a"    "test"
+> length(r)  ## 不知道为什么length 是1 
+[1] 1
+> mode(r)
+[1] "list"
+> sapply(r,"[",1)
+[1] "this"
+> r[1]
+[[1]]
+[1] "this" "is"   "a"    "test"
+> r[1,]
+Error in r[1, ] : incorrect number of dimensions
+> r[,1]
+Error in r[, 1] : incorrect number of dimensions
+> dim(r)
+NULL
+```
 - 字符串截取:substr()能对给定的字符串对象取出子集,其参数是子集所处的起始和终止位置.
 - 字符串替代:gsub()负责搜索字符串的特定表达式,并用新的内容加以替代.
 - sub()函数是类似的,但只替代第一个发现结果.
@@ -1040,76 +1109,6 @@ seq(from, to, length.out= )  ## equally spaced
 `rep()` which can be used for replicating an object in various complicated ways. The simplest form is  
 `> s5 <- rep(x, times=5)` which will put five copies of x end-to-end in s5.  
 `> s6 <- rep(x, each=5)` which repeats each element of x five times before moving on to the next.
-
-### 向量化运算
-和matlab一样,R语言以向量为基本运算对象.
-也就是说,当输入的对象为向量时,对其中的每个元素分别进行处理,然后以向量的形式输出.R语言中基本上所有的数据运算均能允许向量操作.不仅如此,R还包含了许多高效的向量运算函数
-
-所谓apply族函数包括了apply,sapply,lappy,tapply等函数,这些函数在不同的情况下能高效的完成复杂的数据处理任务,但角色定位又有所不同
-
-apply()函数的处理对象是矩阵或数组,它逐行或逐列的处理数据,其输出的结果将是一个向量或是矩阵.
-```
-m.data <- matrix(rnorm(100),ncol=10)
-apply(m.data,1,mean) 
-```
-
-```
-apply(X, MARGIN, FUN, ...)
-X: an array, including a matrix
-for a matrix '1' indicates rows, '2' indicates columns, 'c(1, 2)' indicates rows and columns.
-```
-
-demo
-```
-> ma <- matrix(c(1:4, 1, 6:8), nrow = 2)
-> ma
-     [,1] [,2] [,3] [,4]
-[1,]    1    3    1    7
-[2,]    2    4    6    8
-> apply(ma, 1, sum)  ## 对行求和
-[1] 12 20
-> apply(ma, 2, sum)  ## 对列求和
-[1]  3  7  7 15
-```
-
-lappy()的处理对象是向量,列表或其它对象,
-它将向量中的每个元素作为参数,输入到处理函数中,最后生成结果的格式为列表.
-
-在R中数据框是一种特殊的列表,所以数据框的列也将作为函数的处理对象.下面的例子即对一个数据框按列来计算中位数与标准差.
-
-```
-f.data <- data.frame(x=rnorm(10),y=runif(10))
-lapply(f.data,FUN=function(x) list(median=median(x),sd=sd(x)))
-```
-
-sapply()可能是使用最为频繁的向量化函数了,它和lappy()是非常相似的,但其输出格式则是较为友好的矩阵格式.
-```
-f.data <- data.frame(x=rnorm(10),y=runif(10))
-sapply(f.data,FUN=function(x) list(median=median(x),sd=sd(x)))
-```
-
-tapply()的功能则又有不同,它是专门用来处理分组数据的,其参数要比sapply多一个.
-
-我们以iris数据集为例,可观察到Species列中存放了三种花的名称,我们的目的是要计算三种花瓣萼片宽度的均值.其输出结果是数组格式.
-```
-attach(iris)
-tapply(Sepal.Width,INDEX=Species,FUN=mean)
-```
-
-与tapply功能非常相似的还有aggregate(),其输出是更为友好的数据框格式.而by()和上面两个函数是同门师兄弟.
-
-另外还有一个非常有用的函数replicate(),它可以将某个函数重复运行N次,常常用来生成较复杂的随机数.
-
-下面的例子即先建立一个函数,模拟扔两个骰子的点数之和,然后重复运行10000次.
-```
-game <- function() {
-    n <- sample(1:6,2,replace=T)
-    return(sum(n))
-}
-replicate(n=10000,game())
-```
-
-最后一个有趣的函数Vectorize(),它能将一个不能进行向量化运算的函数进行转化,使之具备向量化运算功能.
 
 ## 自定义
 ```
