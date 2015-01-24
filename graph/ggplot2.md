@@ -21,6 +21,14 @@ Leland Wilkinson的著作在理论上改善了这种状况,他提出了一套图
 因此在ggplot2中,从一幅条形图过渡到饼图,只需要加极少量的代码,把坐标系换一下就可以了.
 如果我们用纸笔模型,则可以想象,这完全是不同的两幅图,一幅图里面要画的是矩形,另一幅图要画扇形.
 
+## ggplot2
+图形语法
+一张统计图形就是从数据到几何对象(geometric object, 缩写为geom, 包括点, 线, 条形等)的图形属性(aesthetic attributes, 缩写为aes, 包括颜色, 形状, 大小等)的一个映射.
+此外, 图形中还可能包含数据的统计变换(statistical transformation, 缩写为stats),
+最后绘制在某个特性的坐标系(coordinate system, 缩写为coord)中, 
+而分面(facet, 指将绘图窗口划分为若干个子窗口)则可以用来生成数据不同子集的图形.
+总而言之, 一个统计图形就是由上述这些独立的图形部件所组成的.
+
 ## qplot
 ```
 qplot(x, y, data=, color=, shape=, size=, alpha=, geom=, method=, formula=, facets=, xlim=, ylim= xlab=, ylab=, main=, sub=)
