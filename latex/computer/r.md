@@ -679,23 +679,18 @@ I'm reasonably sure both these operations are better performed by plyr.
 - better development practices like namespaces and tests.
 
 # 常用统计函数运算
-在R语言中经常会用到函数,例如上节中讲到的求样本统计量就需要均值函数(mean)和标准差函数(sd).对于二元数值数据还用到协方差(cov),对于二元分类数据则可以用交叉联列表函数(table).下文讲述在初级统计学中最常用到的三类函数.
+在R语言中经常会用到函数,例如上节中讲到的求样本统计量就需要均值函数(mean)和标准差函数(sd).对于二元数值数据还用到协方差(cov),对于二元分类数据则可以用交叉联列表函数(table).
+下文讲述在初级统计学中最常用到的三类函数.
 
 ## 数据汇总函数
-我们还是以R中自带的iris数据为例,输入head(iris)你可以获得数据的前6个样本及对应的5个变量.取出最后两列数据作为讲解的对象:Species表示花的种类,Petal.Width表示花瓣宽度
+我们还是以R中自带的iris数据为例,输入head(iris)你可以获得数据的前6个样本及对应的5个变量.
+取出最后两列数据作为讲解的对象:Species表示花的种类,Petal.Width表示花瓣宽度
 
 下一步我们想计算不同种类花瓣的平均宽度,可以使用tapply函数,
-在计算前先用attach命令将data这个数据框解包以方便直接操作其变量,而不需再用$符号.
 ```
 > data = iris[,c(4,5)]
 > names(data)
 [1] "Petal.Width" "Species"
-> tapply(X=Petal.Width, INDEX = Species, FUN=mean)
-Error in tapply(X = Petal.Width, INDEX = Species, FUN = mean) :
-  object 'Species' not found
-> tapply(X=data$Petal.Width, INDEX = data$Species, FUN=mean)
-    setosa versicolor  virginica
-     0.246      1.326      2.026
 > attach(data)
 > tapply(X=Petal.Width, INDEX = Species, FUN=mean)
     setosa versicolor  virginica
@@ -748,14 +743,14 @@ unserialize  unsplit      unstack
 ![概率类型](http://1.bp.blogspot.com/-h1-vKZMKEh4/TrfKPr_3QOI/AAAAAAAAAhQ/2Gs77XvCBxI/s400/%25E6%258D%2595%25E8%258E%25B7.JPG)
 
 # 字符串str
-获取字符串长度:nchar()能够获取字符串的长度,它也支持字符串向量操作.注意它和length()的结果是有区别的.
-字符串粘合:paste()负责将若干个字符串相连结,返回成单独的字符串.其优点在于,就算有的处理对象不是字符型也能自动转为字符型.
-字符串分割:strsplit()负责将字符串按照某种分割形式将其进行划分,它正是paste()的逆操作.
-字符串截取:substr()能对给定的字符串对象取出子集,其参数是子集所处的起始和终止位置.
-字符串替代:gsub()负责搜索字符串的特定表达式,并用新的内容加以替代.
-sub()函数是类似的,但只替代第一个发现结果.
-字符串匹配:grep()负责搜索给定字符串对象中特定表达式 ,并返回其位置索引.
-grepl()函数与之类似,但其后面的"l"则意味着返回的将是逻辑值.
+- 获取字符串长度:nchar()能够获取字符串的长度,它也支持字符串向量操作.注意它和length()的结果是有区别的.
+- 字符串粘合:paste()负责将若干个字符串相连结,返回成单独的字符串.其优点在于,就算有的处理对象不是字符型也能自动转为字符型.
+- 字符串分割:strsplit()负责将字符串按照某种分割形式将其进行划分,它正是paste()的逆操作.
+- 字符串截取:substr()能对给定的字符串对象取出子集,其参数是子集所处的起始和终止位置.
+- 字符串替代:gsub()负责搜索字符串的特定表达式,并用新的内容加以替代.
+- sub()函数是类似的,但只替代第一个发现结果.
+- 字符串匹配:grep()负责搜索给定字符串对象中特定表达式 ,并返回其位置索引.
+- grepl()函数与之类似,但其后面的"l"则意味着返回的将是逻辑值.
 
 # IO
 `print(x, ...)`
