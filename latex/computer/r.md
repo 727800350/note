@@ -228,43 +228,6 @@ apple
 > g 
 [1] f m f f m 
 Levels: f m #有几种可选的值
-
-计算每个元素出现的次数,使用table()函数
-> table(g) 
-g 
-f m 
-3 2
-table()函数还可以用于获得多个因子的交叉表
->  age<-factor(c('adult','adult','adult','adult','juvenile')) 
-> table(age,g)
-age        f m 
-  adult    3 1 
-  juvenile 0 1
-
-计算表的边际(margin)和频率.
-计算边际
-> t<-table(age,g)
-
-#按照年龄查看边际
-> margin.table(t,1) 
-age 
-   adult juvenile 
-       4        1 
-> margin.table(t,2) 
-g 
-f m 
-3 2
-
-计算频率
-> prop.table(t,1)#
-age           f    m 
-  adult    0.75 0.25
-
-#查看整个表的频率 
-> prop.table(t)
-age          f   m 
-  adult    0.6 0.2 
-  juvenile 0.0 0.2
 ```
 
 ## list
@@ -681,6 +644,119 @@ I'm reasonably sure both these operations are better performed by plyr.
 # 常用统计函数运算
 在R语言中经常会用到函数,例如上节中讲到的求样本统计量就需要均值函数(mean)和标准差函数(sd).对于二元数值数据还用到协方差(cov),对于二元分类数据则可以用交叉联列表函数(table).
 下文讲述在初级统计学中最常用到的三类函数.
+
+## 描述性统计分析
+**偏度(Skew)**衡量实数随机变量概率分布的不对称性.
+偏度的值可以为正,可以为负或者甚至是无法定义.
+偏度分为两种:
+
+- 负偏态或左偏态:左侧的尾部更长,分布的主体集中在右侧.
+- 正偏态或右偏态:右侧的尾部更长,分布的主体集中在左侧.
+- 如果分布对称,那么平均值=中位数,偏度为零(此外,如果分布为单峰分布,那麽平均值=中位数=众数).
+
+![偏度](http://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Negative_and_positive_skew_diagrams_%28English%29.svg/400px-Negative_and_positive_skew_diagrams_%28English%29.svg.png)
+
+**峰度(Kurtosis)**衡量实数随机变量概率分布的峰态.
+峰度高就意味着方差增大是由低频度的大于或小于平均值的极端差值引起的.
+表征概率密度分布曲线在平均值处峰值高低的特征数.直观看来,峰度反映了尾部的厚度
+
+基础包中summary
+
+Hmisc包中的describe
+变量和观察的数量, 缺失值和唯一值的数量, 平均值, 分位数以及5个最大的值和最小的值
+
+pastecs 中的stat.desc
+```
+stat.desc(x, basic=TRUE, desc=TRUE, norm=FALSE, p=0.95)
+x: a data frame or a time series
+
+basic: do we have to return basic statistics (by default, it is TRUE)? 
+	These are: the number of values (nbr.val), the number of null values (nbr.null), the number of missing values (nbr.na), the minimal value (min), the maximal value (max), the range (range, that is, max-min) and the sum of all non-missing values (sum)
+
+desc: do we have to return various descriptive statistics (by
+          default, it is TRUE)? These are: the median (median), the
+          mean (mean), the standard error on the mean (SE.mean), the
+          confidence interval of the mean (CI.mean) at the 'p' level,
+          the variance (var), the standard deviation (std.dev) and the
+          variation coefficient (coef.var) defined as the standard
+          deviation divided by the mean
+
+norm: do we have to return normal distribution statistics (by default, it is FALSE)? 
+	the skewness coefficient g1 (skewness), its significant criterium (skew.2SE, that is, g1/2.SEg1; if skew.2SE > 1, then skewness is significantly different than zero), kurtosis coefficient g2 (kurtosis), its significant criterium (kurt.2SE, same remark than for skew.2SE), the statistic of a Shapiro-Wilk test of normality (normtest.W) and its associated probability (normtest.p)
+
+p: 置信区间
+```
+
+psych中的describe
+```
+describe(x, na.rm = TRUE, interp=FALSE,skew = TRUE, ranges = TRUE,trim=.1, type=3,check=TRUE,fast=NULL)
+describeData(x,head=4,tail=4)
+trim: trim=.1 - trim means by dropping the top and bottom trim fraction
+```
+
+## 分组计算描述性统计量
+aggregate
+
+```
+> aggregate(mtcars[vars], by = list(am=mtcars$am), mean)
+  am      mpg       hp       wt
+1  0 17.14737 160.2632 3.768895
+2  1 24.39231 126.8462 2.411000
+
+> aggregate(mtcars[vars], by = list(am=mtcars$am), sd)
+  am      mpg       hp        wt
+1  0 3.833966 53.90820 0.7774001
+2  1 6.166504 84.06232 0.6169816
+```
+遗憾的是, aggregate 仅允许每次调用mean, sd 这样的单值返回函数.
+要返回多值, 可以使用by 函数
+```
+by(data, INDICES, FUN)
+```
+ex:
+```
+dstats <- function(x)(c(mean=mean(x), sd=sd(x)))
+by(mtcars[vars], mtcars$am, dstats)
+```
+
+doBy
+```
+summaryBy(formula, data = data.frame, FUN = function
+```
+ex
+```
+library(doBy)
+summaryBy(mpg + hp + wt ~ am, data = mtcars, FUN = mystats)
+```
+
+还可以通过reshape包
+```
+library(reshape)
+dstats <- function(x) (c(n = length(x), mean = mean(x), sd = sd(x)))
+dfm <- melt(mtcars, measure.vars = c("mpg", "hp", "wt"), id.vars = c("am", "cyl"))
+## 只取出c("mpg", "hp", "wt")三列
+cast(dfm, am + cyl + variable ~ ., dstats)
+```
+
+## 频数表与列联表
+- table(var1, var2, ...varN) 使用N个类别变量(因子)创建一个N维列联表
+- Xtabs(formula, data) 根据一个公式和一个矩阵或数据框创建一个列联表
+- prop.table(table, margins) 依据margins定义的边界将表中条目表示为分数形式
+- Margin.table(table, margins) 依据margins定义的边界计算表中条目的和
+- Addmargins(table, margins) 将概述边margins(默认是求和结果)放入表中
+- ftable(table) 创建一个紧凑的平铺式列联表
+
+[一维列联表](../../demo/r/table.r)
+### 二维列联表
+```
+mytable <- table(A,B)
+mytable <- xtabs(~A+B, data = mydata)
+```
+[二维列联表](../../demo/r/table.r)
+
+table和xtabs 都可以基于三个或者更多个的类型变量生成多维列联表.  
+margin.table, prop.table, addmargins 可以自然地推广到高于二维的情况.  
+ftable 可以以一种紧凑而吸引人的方式输出多维列联表
 
 ## 数据汇总函数
 我们还是以R中自带的iris数据为例,输入head(iris)你可以获得数据的前6个样本及对应的5个变量.
