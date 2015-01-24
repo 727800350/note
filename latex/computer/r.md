@@ -513,10 +513,126 @@ Once an object has been created, new components may be added to it simply by giv
 `> e[3] <- 17`  
 now makes e a vector of length 3, (the first two components of which are at this point both NA).
 
-## reshape2
-[An Introduction to reshape2](http://seananderson.ca/2013/10/19/reshape.html)
+# 基本数据管理
+## 创建新变量
+```
+x1 <- c(2, 2, 6, 4)
+x2 <- c(3, 4, 2, 8)
+mydata <- data.frame(x1,x2)
 
-transform data between wide and long formats
+## 第一种方式
+mydata$sumx <- mydata$x1 + mydata$x2
+mydata$meanx <- (mydata$x1 + mydata$x2)/2
+
+## 第二种方式
+attach(mydata)
+mydata$sumx <- x1 + x2
+mydata$meanx <- (x1 + x2)/2
+detach(mydata)
+
+## 第三种方式
+mydata <- transform(mydata, 
+	sumx = x1 + x2, 
+	meanx = (x1 + x2)/2)
+## 注意, 其中的 = 不能换成 <-
+```
+
+## 数据集取子集
+Dropping variables
+```
+myvars <- names(leadership) %in% c("q3", "q4")
+newdata <- leadership[!myvars]
+
+newdata <- leadership[c(-7, -8)]
+```
+
+Selecting observations
+```
+newdata <- leadership[which(leadership$gender == "M" & leadership$age > 30), ]
+
+attach(leadership)
+newdata <- leadership[which(gender == "M" & age > 30), ]
+detach(leadership)
+```
+
+Selecting observations based on dates
+```
+leadership$date <- as.Date(leadership$date, "%m/%d/%y")
+startdate <- as.Date("2009-01-01")
+enddate <- as.Date("2009-10-31")
+newdata <- leadership[leadership$date >= startdate & leadership$date <= enddate, ]
+```
+
+Using the subset() function
+```
+## 选择所有age >= 35 或者 age <24的行, 保留了fields q1 到 q4
+newdata <- subset(leadership, age >= 35 | age < 24, select = c(q1, q2, q3, q4))
+## 选择所有满足条件的行, 保留了gender 到 q4之前所有的fields(包括两者)
+newdata <- subset(leadership, gender == "M" & age > 25, select = gender:q4)
+```
+
+随机抽样 sample
+```
+## 随机抽取大小为3的样本
+mysample <- leadership[sample(1:nrow(leadership), 3, replace=FALSE), ]
+```
+
+我们想从1到10中随机抽取5个数字,那么这样来做:首先产生一个序列,然后用sample函数进行无放回抽取.
+```
+x=1:10
+sample(x,size=5)
+```
+有放回抽取则是
+```
+sample(x,size=5,replace=T)
+```
+sample函数在建模中经常用来对样本数据进行随机的划分,一部分作为训练数据,另一部分作为检验数据.
+
+`sample(x, size, replace = FALSE, prob = NULL)`
+replace 表示取样的时候能够重复, 也就是说一个元素可以不可以被多次取到  
+prob 的和可以不为1, 只要保证每个元素非负就可以了
+
+```
+> x <- 1:5
+> sample(x, length(x),replace=T, prob=c(0.1,0.2,0.3,0.25,0.25))
+[1] 3 4 4 2 5
+> replicate(3, sample(x, length(x),replace=F))  ## repalce=FALSE 表示元素不能重复
+     [,1] [,2] [,3]
+[1,]    4    4    4
+[2,]    3    5    2
+[3,]    2    1    5
+[4,]    1    2    1
+[5,]    5    3    3
+> replicate(3, sample(x, length(x),replace=T))
+     [,1] [,2] [,3]
+[1,]    4    2    4
+[2,]    5    3    1
+[3,]    1    2    4
+[4,]    3    4    2
+[5,]    1    1    1
+```
+
+特殊的简化
+```
+sample(x, n)  ## 当length(x) = 1 且 x > 1, 那么这句话就是从序列1:x中取出n个值
+```
+
+描述统计是一种从大量数据中压缩提取信息的工具,最常用的就是summary命令
+对于数值变量计算了五个分位点和均值,对于分类变量则计算了频数
+
+## 使用sql 操作data.frame
+```
+library(sqldf)
+
+newdf <- sqldf("select * from mtcars where carb=1 order by mpg", row.names = TRUE)
+## 参数row.names = TRUE 将原始数据框中的行名延续到新的数据框中
+
+newdf <- sqldf("select avg(mpg) as avg_mpg, avg(disp) as avg_disp, gear from mtcars where cyl in (4, 6) group by gear")
+```
+
+## reshape2
+### transform data between wide and long formats
+[An Introduction to reshape2](http://seananderson.ca/2013/10/19/reshape.html)
 
 [What makes data wide or long?](../../demo/r/reshape2.r)
 
@@ -533,6 +649,34 @@ In reshape2 there are multiple cast functions. Since you will most commonly work
 dcast uses a formula to describe the shape of the data. The arguments on the left refer to the ID variables and the arguments on the right refer to the measured variables.
 
 [reshape demo](../../demo/r/reshape2.r)
+
+### 变量的重命名
+```
+names(dataframe)[index] <- "newname"
+
+## 通过reshape 重命名
+library(reshape)
+rename(dataframe, c(oldname = "newname", oldname = "newname", ...))
+```
+
+Reshape2 is a reboot of the reshape package. 
+It's been over five years since the first release of the package, and in that time I've learned a tremendous amount about R programming, and how to work with data in R. 
+Reshape2 uses that knowledge to make a new package for reshaping data that is much more focussed and much much faster.
+
+This version improves speed at the cost of functionality, so I have renamed it to reshape2 to avoid causing problems for existing users. 
+Based on user feedback I may reintroduce some of these features.
+
+What's new in reshape2:
+
+- considerably faster and more memory efficient thanks to a much better underlying algorithm that uses the power and speed of subsetting to the fullest extent, 
+in most cases only making a single copy of the data.
+- cast is replaced by two functions depending on the output type:  dcast produces data frames, and acast produces matrices/arrays.
+- multidimensional margins are now possible: grand_row and  grand_col have been dropped: now the name of the margin refers to the variable that has its value set to (all).
+- some features have been removed such as the | cast operator, and the ability to return multiple values from an aggregation function. 
+I'm reasonably sure both these operations are better performed by plyr.
+- a new cast syntax which allows you to reshape based on functions
+- of variables (based on the same underlying syntax as plyr):
+- better development practices like namespaces and tests.
 
 # 常用统计函数运算
 在R语言中经常会用到函数,例如上节中讲到的求样本统计量就需要均值函数(mean)和标准差函数(sd).对于二元数值数据还用到协方差(cov),对于二元分类数据则可以用交叉联列表函数(table).下文讲述在初级统计学中最常用到的三类函数.
@@ -602,51 +746,6 @@ unserialize  unsplit      unstack
 1. 随机数模拟random (r)
 
 ![概率类型](http://1.bp.blogspot.com/-h1-vKZMKEh4/TrfKPr_3QOI/AAAAAAAAAhQ/2Gs77XvCBxI/s400/%25E6%258D%2595%25E8%258E%25B7.JPG)
-
-## 抽样函数
-### sample
-我们想从1到10中随机抽取5个数字,那么这样来做:首先产生一个序列,然后用sample函数进行无放回抽取.
-```
-x=1:10
-sample(x,size=5)
-```
-有放回抽取则是
-```
-sample(x,size=5,replace=T)
-```
-sample函数在建模中经常用来对样本数据进行随机的划分,一部分作为训练数据,另一部分作为检验数据.
-
-`sample(x, size, replace = FALSE, prob = NULL)`
-replace 表示取样的时候能够重复, 也就是说一个元素可以不可以被多次取到  
-prob 的和可以不为1, 只要保证每个元素非负就可以了
-
-```
-> x <- 1:5
-> sample(x, length(x),replace=T, prob=c(0.1,0.2,0.3,0.25,0.25))
-[1] 3 4 4 2 5
-> replicate(3, sample(x, length(x),replace=F))  ## repalce=FALSE 表示元素不能重复
-     [,1] [,2] [,3]
-[1,]    4    4    4
-[2,]    3    5    2
-[3,]    2    1    5
-[4,]    1    2    1
-[5,]    5    3    3
-> replicate(3, sample(x, length(x),replace=T))
-     [,1] [,2] [,3]
-[1,]    4    2    4
-[2,]    5    3    1
-[3,]    1    2    4
-[4,]    3    4    2
-[5,]    1    1    1
-```
-
-特殊的简化
-```
-sample(x, n)  ## 当length(x) = 1 且 x > 1, 那么这句话就是从序列1:x中取出n个值
-```
-
-描述统计是一种从大量数据中压缩提取信息的工具,最常用的就是summary命令
-对于数值变量计算了五个分位点和均值,对于分类变量则计算了频数
 
 # 字符串str
 获取字符串长度:nchar()能够获取字符串的长度,它也支持字符串向量操作.注意它和length()的结果是有区别的.
