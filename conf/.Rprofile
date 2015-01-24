@@ -5,6 +5,7 @@ local({r <- getOption("repos")
 
 ## Every R session starts with excuting the .First function
 .First <- function(){
+	source("/home/eric/.Rfun.r")
 	cat("\nWelcome at ", date(),"\n")
 }
 
@@ -12,3 +13,4 @@ local({r <- getOption("repos")
 .Last <- function(){
 	cat("\nGoodbye at ", date(),"\n")
 }
+
