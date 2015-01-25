@@ -606,12 +606,24 @@ reshape2 is based around two key functions: melt and cast:
 - melt takes wide-format data and melts it into long-format data.
 - cast takes long-format data and casts it into wide-format data.
 
-In reshape2 there are multiple cast functions. Since you will most commonly work with data.frame objects, we'll explore the dcast function. 
+In reshape2 there are multiple cast functions. Since you will most commonly work with data.frame objects, we will explore the dcast function. 
 (There is also acast to return a vector, matrix, or array.)
 
 dcast uses a formula to describe the shape of the data. The arguments on the left refer to the ID variables and the arguments on the right refer to the measured variables.
 
 [reshape demo](../../demo/r/reshape2.r)
+
+**melt 错误提示**  
+Warning message:
+attributes are not identical across measure variables; they will be dropped 
+This warning is basically telling you that variables that you are trying to put in the "value" column (the measure variables) are different types 
+(some may be character, others may be factors, others may be numeric). 
+@MrFlick suggestion to treat those columns as keys even if they might not be would solve that problem.
+
+**cast 错误提示**  
+Aggregation function missing: defaulting to length
+This warning is a warning that you usually get when the combination of IDs is not unique. 
+you would need to add another column to make the ID variables unique to avoid having dcast automatically use length as its fun.aggregate function.
 
 ### 变量的重命名
 ```
@@ -623,7 +635,7 @@ rename(dataframe, c(oldname = "newname", oldname = "newname", ...))
 ```
 
 Reshape2 is a reboot of the reshape package. 
-It's been over five years since the first release of the package, and in that time I've learned a tremendous amount about R programming, and how to work with data in R. 
+It is been over five years since the first release of the package, and in that time I have learned a tremendous amount about R programming, and how to work with data in R. 
 Reshape2 uses that knowledge to make a new package for reshaping data that is much more focussed and much much faster.
 
 This version improves speed at the cost of functionality, so I have renamed it to reshape2 to avoid causing problems for existing users. 
