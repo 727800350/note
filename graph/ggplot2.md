@@ -72,6 +72,38 @@ For method="gam", be sure to load the mgcv package. For method="rml", load the M
 
 [Graphics with ggplot2](http://www.statmethods.net/advgraphs/ggplot2.html)
 
+## 将多图绘制到一页
+ggplot2在生成一页多图方面,有个facet,分面的命令,可以自动根据分组,每组对应一幅图出来.
+但是,如果是不同类型的图,想拼到一起,就比较麻烦了.
+在这里,Hiu给大家提供两种方法.
+
+第一种,使用grid包的viewport功能.
+```
+library(ggplot2)
+#generate two ggplot2 objects.
+a <- qplot(TMPRSS4, ECADHERIN, data=spear)
+b <- qplot(TMPRSS4, ECADHERIN, data=spear, geom="jitter")
+
+library(grid)
+#generate a new page, or erase the current one.
+grid.newpage()
+#maintain a Viewport tree, which describe the regions and coordinate systems.
+pushViewport(viewport(layout=grid.layout(1,2)))
+#print them into the Viewport, or the page.
+print(a, vp=viewport(layout.pos.row=1,layout.pos.col=1))
+print(b, vp=viewport(layout.pos.row=1,layout.pos.col=2))
+```
+
+第二种,使用一个新包,叫做gridExtra.
+```
+library(gridExtra)
+a <- qplot(TMPRSS4, ECADHERIN, data=spear)
+b <- qplot(TMPRSS4, ECADHERIN, data=spear, geom="jitter")
+grid.arrange(a,b,ncol=2)
+```
+于是,我们就得到了二合一的图片.
+当然你也可以按照你的意愿随意控制图的位置.
+
 Customizing ggplot2 Graphs
 ```
 library(ggplot2)
