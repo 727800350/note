@@ -245,6 +245,9 @@ Levels: f m #有几种可选的值
 [[3]]
 [1] "test"
 ```
+
+[如何高效的append an element to a list in R](http://stackoverflow.com/questions/17046336/here-we-go-again-append-an-element-to-a-list-in-r)
+
 ## data.frame
 在数据导入R语言后,会以数据框(dataframe)的形式储存.
 dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征.
@@ -736,7 +739,7 @@ by(mtcars[vars], mtcars$am, dstats)
 
 doBy
 ```
-summaryBy(formula, data = data.frame, FUN = function
+summaryBy(formula, data = data.frame, FUN = function)
 ```
 ex
 ```
