@@ -34,6 +34,7 @@ install.packages("RCurl") ## General network (HTTP/FTP/...) client interface for
 
 ## graphics
 install.packages("ggplot2") ## An implementation of the Grammar of Graphics
+install.packages("gridExtra") ## functions in Grid graphics
 
 ## latex
 install.packages("multcomp") ## Simultaneous Inference in General Parametric Models
