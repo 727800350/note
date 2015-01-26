@@ -22,49 +22,89 @@ Leland Wilkinson的著作在理论上改善了这种状况,他提出了一套图
 如果我们用纸笔模型,则可以想象,这完全是不同的两幅图,一幅图里面要画的是矩形,另一幅图要画扇形.
 
 ## ggplot2
-图形语法
+**图形语法**  
 一张统计图形就是从数据到几何对象(geometric object, 缩写为geom, 包括点, 线, 条形等)的图形属性(aesthetic attributes, 缩写为aes, 包括颜色, 形状, 大小等)的一个映射.
 此外, 图形中还可能包含数据的统计变换(statistical transformation, 缩写为stats),
 最后绘制在某个特性的坐标系(coordinate system, 缩写为coord)中, 
 而分面(facet, 指将绘图窗口划分为若干个子窗口)则可以用来生成数据不同子集的图形.
 总而言之, 一个统计图形就是由上述这些独立的图形部件所组成的.
 
+- 最基础的部分是想要可视化的**数据(data)**, 以及一系列将数据中的变量对应到图形属性的**映射(mapping)**
+- **几何对象(geom)**: 代表你在图中实际看到的图形元素, 如点, 线, 多边形等
+- **统计变换(stats)**: 是对数据进行的某种汇总. 例如将数据分组计数以创建直方图, 或将一个二维的关系用线性模型来进行解释
+- **标度(scale)**: 将数据的取值映射到图形控件, 例如用颜色, 大小或形状来表示不同的取值. 展现标度的常见做法是绘制图例和坐标轴---他们实际上是图形到数据的一个映射, 使读者可以从图中读取原始的数据.
+- **坐标系(coord)**: 描述了数据是如何映射到图形所在的平面的, 它同时提供了看图所需的坐标轴和网格线. 通常使用笛卡尔坐标系, 但也用极坐标系和地图投影
+- **分面(facet)**: 描述了如何将数据分解为各个子集, 记忆如何对子集作图并联合进行展示. 分面也叫做条件作图或网格作图
+
 ## qplot
 ```
-qplot(x, y, data=, color=, shape=, size=, alpha=, geom=, method=, formula=, facets=, xlim=, ylim= xlab=, ylab=, main=, sub=)
+qplot(x, y, data=, color=, shape=, size=, alpha=, geom=, method=, formula=, facets=, 
+		xlim=, ylim= xlab=, ylab=, main=, sub=)
 ```
-- x, y	Specifies the variables placed on the horizontal and vertical axis. 
+**x, y**  
+Specifies the variables placed on the horizontal and vertical axis. 
 For univariate plots (for example, histograms), omit y
 
-- data	Specifies a data frame
+**data**  
+Specifies a data frame
 
-- color, shape, size, fill	Associates the levels of variable with symbol color, shape, or size.   
+**color, shape, size, fill**  
+Associates the levels of variable with symbol color, shape, or size.   
 For line plots, color associates levels of a variable with line color.   
-shape 必须是离散的, color 可以是连续的, 也可以是离散的
-For density and box plots, fill associates fill colors with a variable(用color来填充)., 例如[ggplotdensity.png](http://www.statmethods.net/advgraphs/images/ggplotdensity.png)  
+shape 必须是离散的, color 可以是连续的, 也可以是离散的, size 适合连续量
+除了可以自动指定颜色外, 也可以手动指定, eg: `color = I("red"), size = I(2)`
+For density and box plots, fill associates fill colors with a variable(用color来填充)., 例如
+[ggplotdensity.png](http://www.statmethods.net/advgraphs/images/ggplotdensity.png)  
 Legends are drawn automatically.
 
-- alpha	Alpha transparency for overlapping elements expressed as a fraction between 0 (complete transparency) and 1 (complete opacity)
+**alpha**  
+transparency for overlapping elements expressed as a fraction between 0 (complete transparency) and 1 (complete opacity)
 
-- facets	Creates a trellis(格子) graph by specifying conditioning variables.   
+**facets**  
+Creates a trellis(格子) graph by specifying conditioning variables.   
 Its value is expressed as rowvar ~ colvar. 
 To create trellis graphs based on a single conditioning variable, use rowvar~. or .~colvar)
 
-- geom	Specifies the geometric objects that define the graph type.   
-The geom option is expressed as a character vector with one or more entries. geom values include "point", "smooth", "boxplot", "line", "histogram", "density", "bar", and "jitter".
+**geom**  
+Specifies the geometric objects that define the graph type.   
+The geom option is expressed as a character vector with one or more entries.   
+geom values include:
 
-- main, sub	Character vectors specifying the title and subtitle
+- "point"(散点图), 
+- "smooth"(拟合曲线), 
+- "boxplot"(箱线图), 
+- "path" 和 "line"(数据点之间绘制连线): line 只能创建从左到右的连线, 而path图可以使任意的方向
+- "histogram"(直方图)
+- "freqpoly"(频率多边形)
+- "density"(密度曲线)
+- "bar"(条形图)
+- "jitter".
 
-- method, formula	If geom="smooth", a loess fit line and confidence limits are added by default. 
+`geom=c('point','smooth')`: 将多个几何对象组成一个向量传递给geom, 几何对象会按照指定的顺序进行堆叠
+
+**main, sub**  
+Character vectors specifying the title and subtitle
+
+**method, formula**  
+If geom="smooth", a **loess fit line** and **confidence limits** are added by default.   
+se = FALSE 可以去掉 confidence limits  
+曲线的平滑程度由span参数控制, 0(很不平滑) 到 1(很平滑)  
+当n较小时, loess是默认选项, 但是loess复杂度是O(n^2), 对于大数据不适用.
 When the number of observations is greater than 1,000, a more efficient smoothing algorithm is employed. 
+
 Methods include "lm" for regression, "gam" for generalized additive models, and "rlm" for robust regression. 
-The formula parameter gives the form of the fit. 
-For example, to add simple linear regression lines, you would specify geom="smooth", method="lm", formula=y~x. Changing the formula to y~poly(x,2) would produce a quadratic fit. Note that the formula uses the letters x and y, not the names of the variables. 
-For method="gam", be sure to load the mgcv package. For method="rml", load the MASS package.
+The formula parameter gives the form of the fit.   
+For example, to add simple linear regression lines, you would specify `geom="smooth", method="lm", formula=y~x`. 
+Changing the formula to `y~poly(x,2)` would produce a quadratic fit.   
+Note that the formula uses the letters x and y, not the names of the variables.   
+For `method="gam"`, be sure to load the mgcv package. For `method="rml"`, load the MASS package.
 
-- xlab, ylab	Character vectors specifying horizontal and vertical axis labels
+**xlab, ylab**  
+Character vectors specifying horizontal and vertical axis labels
 
-- xlim,ylim	Two-element numeric vectors giving the minimum and maximum values for the horizontal and vertical axes, respectively
+**xlim,ylim**  
+Two-element numeric vectors giving the minimum and maximum values for the horizontal and vertical axes, respectively  
+eg: `xlim = c(0,15)`
 
 [ggplot2 demo](../demo/r/ggplot2.r)
 
