@@ -216,6 +216,8 @@
 		return 0;
 	}
 
+当用statement时, insert 中字段的顺序需要和statement中的字段顺序保持一致.
+
 ## Excute 
 
 多个文件时
