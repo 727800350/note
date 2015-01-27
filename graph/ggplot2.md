@@ -72,20 +72,46 @@ geom values include:
 
 - "point"(散点图), 
 - "smooth"(拟合曲线), 
-- "boxplot"(箱线图), 
 - "path" 和 "line"(数据点之间绘制连线): line 只能创建从左到右的连线, 而path图可以使任意的方向
 - "histogram"(直方图)
 - "freqpoly"(频率多边形)
 - "density"(密度曲线)
 - "bar"(条形图)
-- "jitter".
+- "boxplot"(箱线图), 
+- "jitter"(扰动点图)
 
 `geom=c('point','smooth')`: 将多个几何对象组成一个向量传递给geom, 几何对象会按照指定的顺序进行堆叠
 
 **main, sub**  
 Character vectors specifying the title and subtitle
 
+If the text argument to one of the text-drawing functions (text, mtext, axis, legend) in R is an expression, 
+the argument is interpreted as a mathematical expression and the output will be formatted according to TeX-like rules. 
+Expressions can also be used for titles, subtitles and x- and y-axis labels (but not for axis labels on persp plots).
+
+`?plotmath`
+
 **method, formula**  
+在图中添加平滑曲线
+
+**xlab, ylab**  
+Character vectors specifying horizontal and vertical axis labels
+
+**xlim,ylim**  
+Two-element numeric vectors giving the minimum and maximum values for the horizontal and vertical axes, respectively  
+eg: `xlim = c(0,15)`
+
+**log**  
+一个字符向量, 说明哪一个坐标轴应该取对数.
+例如, `log = "x"` 表示对 x 轴取对数, `log = "xy"` 表示对x轴和y轴都取对数
+
+[ggplot2 demo](../demo/r/ggplot2.r)
+
+[ggplot2 tutoraial](https://github.com/echen/ggplot2-tutorial/blob/master/README.md)
+
+[Graphics with ggplot2](http://www.statmethods.net/advgraphs/ggplot2.html)
+
+### 平滑曲线
 If geom="smooth", a **loess fit line** and **confidence limits** are added by default.   
 se = FALSE 可以去掉 confidence limits  
 曲线的平滑程度由span参数控制, 0(很不平滑) 到 1(很平滑)  
@@ -99,18 +125,125 @@ Changing the formula to `y~poly(x,2)` would produce a quadratic fit.
 Note that the formula uses the letters x and y, not the names of the variables.   
 For `method="gam"`, be sure to load the mgcv package. For `method="rml"`, load the MASS package.
 
-**xlab, ylab**  
-Character vectors specifying horizontal and vertical axis labels
+```
+library(ggplot2)
+head(diamonds)
+##   carat       cut color clarity depth table price    x    y    z
+## 1  0.23     Ideal     E     SI2  61.5    55   326 3.95 3.98 2.43
+## 2  0.21   Premium     E     SI1  59.8    61   326 3.89 3.84 2.31
+## 3  0.23      Good     E     VS1  56.9    65   327 4.05 4.07 2.31
+## 4  0.29   Premium     I     VS2  62.4    58   334 4.20 4.23 2.63
+## 5  0.31      Good     J     SI2  63.3    58   335 4.34 4.35 2.75
+## 6  0.24 Very Good     J    VVS2  62.8    57   336 3.94 3.96 2.48
 
-**xlim,ylim**  
-Two-element numeric vectors giving the minimum and maximum values for the horizontal and vertical axes, respectively  
-eg: `xlim = c(0,15)`
+nrow(diamonds)
+## [1] 53940
 
-[ggplot2 demo](../demo/r/ggplot2.r)
+set.seed(1410)
+dsmall <- diamonds[sample(nrow(diamonds),100),]
 
-[ggplot2 tutoraial](https://github.com/echen/ggplot2-tutorial/blob/master/README.md)
+qplot(carat, price, data = dsmall, geom=c('point','smooth'))
+qplot(carat, price, data = dsmall, geom=c('point','smooth'),se=FALSE)
 
-[Graphics with ggplot2](http://www.statmethods.net/advgraphs/ggplot2.html)
+qplot(carat, price, data = dsmall, geom=c('point','smooth'),se=FALSE)
+
+library(mgcv)
+qplot(carat, price, data = dsmall, geom=c('point','smooth'), method = 'gam', formula = y ~ s(x))
+qplot(carat, price, data = dsmall, geom=c('point','smooth'), method = 'gam', formula = y ~ s(x, bs = "cs"))
+## method = 'gam', formula = y ~ s(x, bs = "cs") 是数据量超过1000时默认的选项
+```
+
+### 箱线图与扰动点图
+一个分类变量和一个或多个连续变量, 想知道连续变量会如何随着分类变量的变化而变化
+
+箱线图  
+用了5个数字对分布进行概括
+```
+qplot(color, price/carat, data=diamonds, geom = "boxplot")
+```
+![boxplot](http://i.imgbox.com/kWos4O2E.png)
+
+![boxplot](http://imgbox.com/kWos4O2E)
+
+扰动点图  
+扰动点图把所有点都绘制在图形中
+```
+qplot(color, price/carat, data=diamonds, geom = "jitter")
+```
+![jitter](http://i.imgbox.com/GLkp5p6R.png)
+
+扰动图可以像散点图那样对点的属性(大小, 颜色, 形状等)进行设置
+
+```
+qplot(color, price/carat, data=diamonds, geom = "jitter", alpha=I(0.1))
+```
+![jitter alpha](http://i.imgbox.com/QajYxjdO.png)
+
+
+### 直方图与密度曲线图
+直方图  
+binwidth: 设定组距来调整平滑度  
+breaks:切分位置也可以通过breaks 显示的设定  
+在直方图中, 当组距较大时, 图形能反应数据的总体特征; 当组距较小时, 能能显示出更多的细节.
+
+绘制直方图和密度曲线对平滑程度进行实验非常重要.
+
+### 条形图
+
+```
+qplot(color, data = diamonds, geom = "bar")
+nrow(diamonds[diamonds$color == "J",])
+## [1] 2808
+nrow(diamonds[diamonds$color == "F",])
+## [1] 9542
+```
+![bar](http://i.imgbox.com/Ks90NwGZ.png)
+
+使用weight, 对连续变量进行分组求和, 这里是将carat 对color分组求和
+```
+qplot(color, data = diamonds, geom = "bar", weight= carat)
+sum(diamonds$carat[diamonds$color == "H"])
+## [1] 7571.58
+```
+![bar weight](http://i.imgbox.com/miTsdwvy.png)
+
+### 时间序列中的线条图和路径图
+
+- 线条图: 将点从左到右进行连接
+- 路线图: 按照点在数据集中的顺序对其进行连接
+
+线条图的x轴一般是时间, 它展示了单个变量随时间变化的情况.  
+路径图则展示了两个变量随时间联动的情况, 时间反映在点的顺序上
+
+```
+qplot(date, unemploy / pop, data = economics, geom = "line")
+```
+
+可以将两个时间序列花在同一张图中, 又尽管我们可以用散点图来表示失业率和失业时间长度之间的关系, 但是我们并不能看出变量随时间变化的情况.
+对此, 解决的办法是将临近时点的散点连接起来, 形成一张**路径图**
+```
+year <- function(x){as.POSIXlt(x)$year + 1900}
+qplot(unemploy / pop, uempmed, data = economics, geom = c("path"), color = year(date))
+```
+
+### 分面
+将数据分隔为若干个子集, 然后创建一个图形的矩阵, 将每一个子集绘制到图形矩阵的窗格中.
+所有图形子集采用相同的图形类型, 并进行了一定的设计, 使得他们之间更方面的进行比较.
+
+`row_var ~ col_var`: 行变量 列变量  
+如果想指定一行或一列, 可以使用 . 作为占位符, 例如 `row_var ~ .` 表示一个单列多行的图形矩阵
+
+```
+qplot(carat, data = diamonds, facets = color ~ ., geom = "histogram", binwidth = 0.1, xlim = c(0,3))
+```
+![facet](http://i.imgbox.com/Cdcs8zUF.png)
+
+`.. density ..` 是一个新的语法, 将密度而不是频数映射到y 轴
+```
+qplot(carat,..density.., data = diamonds, facets = color ~ ., geom = "histogram", binwidth = 0.1, xlim = c(0,3))
+```
+![facet density](http://i.imgbox.com/XneB5Y95.png)
+
 
 ## 将多图绘制到一页
 ggplot2在生成一页多图方面,有个facet,分面的命令,可以自动根据分组,每组对应一幅图出来.
