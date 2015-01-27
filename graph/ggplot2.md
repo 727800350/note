@@ -1,4 +1,4 @@
-## R中绘图系统的介绍
+# R中绘图系统的介绍
 ggplot2:elegant graphics for data analysis 一书是ggplot软件包2的系统介绍,包括其语法结构的详细介绍以及绘图实例,也包括了plyr,reshape等包的强大的数据处理能力,是数据分析和统计图形的优秀著作.
 
 R的基础图形系统基本上是一个"纸笔模型",即:一块画布摆在面前,你可以在这里画几个点,在那里画几条线,指哪儿画哪儿.
@@ -21,9 +21,9 @@ Leland Wilkinson的著作在理论上改善了这种状况,他提出了一套图
 因此在ggplot2中,从一幅条形图过渡到饼图,只需要加极少量的代码,把坐标系换一下就可以了.
 如果我们用纸笔模型,则可以想象,这完全是不同的两幅图,一幅图里面要画的是矩形,另一幅图要画扇形.
 
-## ggplot2
-**图形语法**  
-一张统计图形就是从数据到几何对象(geometric object, 缩写为geom, 包括点, 线, 条形等)的图形属性(aesthetic attributes, 缩写为aes, 包括颜色, 形状, 大小等)的一个映射.
+## ggplot2 绘图概述
+一张统计图形就是从数据到几何对象(geometric object, 缩写为geom, 包括点, 线, 条形等)的图形属性(aesthetic attributes, 缩写为aes, 
+包括颜色, 形状, 大小等)的一个映射.
 此外, 图形中还可能包含数据的统计变换(statistical transformation, 缩写为stats),
 最后绘制在某个特性的坐标系(coordinate system, 缩写为coord)中, 
 而分面(facet, 指将绘图窗口划分为若干个子窗口)则可以用来生成数据不同子集的图形.
@@ -50,7 +50,7 @@ Leland Wilkinson的著作在理论上改善了这种状况,他提出了一套图
 - save() 把图像的缓存副本保存到磁盘; 这样可以保存图像的完整副本(包括图形中的数据), 可以调用load()来重现该图  
 `save(p, file = "plot.rdata")`
 
-## qplot
+# qplot
 ```
 qplot(x, y, data=, color=, shape=, size=, alpha=, geom=, method=, formula=, facets=, 
 		xlim=, ylim= xlab=, ylab=, main=, sub=)
@@ -125,7 +125,7 @@ eg: `xlim = c(0,15)`
 
 [Graphics with ggplot2](http://www.statmethods.net/advgraphs/ggplot2.html)
 
-### 平滑曲线
+## 平滑曲线
 If geom="smooth", a **loess fit line** and **confidence limits** are added by default.   
 se = FALSE 可以去掉 confidence limits  
 曲线的平滑程度由span参数控制, 0(很不平滑) 到 1(很平滑)  
@@ -167,7 +167,7 @@ qplot(carat, price, data = dsmall, geom=c('point','smooth'), method = 'gam', for
 ## method = 'gam', formula = y ~ s(x, bs = "cs") 是数据量超过1000时默认的选项
 ```
 
-### 箱线图与扰动点图
+## 箱线图与扰动点图
 一个分类变量和一个或多个连续变量, 想知道连续变量会如何随着分类变量的变化而变化
 
 箱线图  
@@ -191,7 +191,7 @@ qplot(color, price/carat, data=diamonds, geom = "jitter", alpha=I(0.1))
 ![jitter alpha](http://i.imgbox.com/QajYxjdO.png)
 
 
-### 直方图与密度曲线图
+## 直方图与密度曲线图
 直方图  
 binwidth: 设定组距来调整平滑度  
 breaks:切分位置也可以通过breaks 显示的设定  
@@ -199,7 +199,7 @@ breaks:切分位置也可以通过breaks 显示的设定
 
 绘制直方图和密度曲线对平滑程度进行实验非常重要.
 
-### 条形图
+## 条形图
 
 ```
 qplot(color, data = diamonds, geom = "bar")
@@ -218,7 +218,7 @@ sum(diamonds$carat[diamonds$color == "H"])
 ```
 ![bar weight](http://i.imgbox.com/miTsdwvy.png)
 
-### 时间序列中的线条图和路径图
+## 时间序列中的线条图和路径图
 
 - 线条图: 将点从左到右进行连接
 - 路线图: 按照点在数据集中的顺序对其进行连接
@@ -237,7 +237,7 @@ year <- function(x){as.POSIXlt(x)$year + 1900}
 qplot(unemploy / pop, uempmed, data = economics, geom = c("path"), color = year(date))
 ```
 
-### 分面
+## 分面
 将数据分隔为若干个子集, 然后创建一个图形的矩阵, 将每一个子集绘制到图形矩阵的窗格中.
 所有图形子集采用相同的图形类型, 并进行了一定的设计, 使得他们之间更方面的进行比较.
 
@@ -299,3 +299,53 @@ p <- p + theme_bw()
 # Large brown bold italics labels and legend placed at top of plot
 p <- p + theme(axis.title=element_text(face="bold.italic", size="12", color="brown"), legend.position="top")
 ```
+
+# 用图层构建图像
+qplot()的局限性在于它只能用一个数据集合一组图形属性映射, 解决这个问题的办法就是利用图层.
+每个图层可以有自己的数据集合图形属性映射, 附加的数据元素可通过图层添加到图形中.
+
+一个图层的由5 个部分组成:
+
+1. 数据, 必须是一个data frame, 在绘图结束后可以被修改
+1. 一组图形属性映射
+1. 几何对象
+1. 统计变换
+1. 位置调整, 通过调整元素位置来避免图形重合
+
+## 创建绘图对象
+参数**映射**的设定方法与前面讲过的qplot()非常相似, 只需要将图形属性和变量名放到函数`aes()`里面即可. 例如
+```
+## 设定一组默认参数, x 为 carat, y 为price, color 为 cut
+p <- ggplot(diamonds, aes(carat, price, color = cut))
+```
+这个图形在加上图层之前无法显示, 因此现在什么也看不到
+
+## 图层
+最简易的图层莫过于指设定一个几何对象
+```
+p <- p + layer(geom = "point")
+```
+现在可以显示, 得到一个散点图
+
+该图层使用了默认的数据集合图形属性映射, 并且只使用了另外两个可选参数的默认值: 统计变换和位置调整.
+
+图层的完整形式
+```
+layer(geom, geom_params, stat, stat_params, data, mapping, position)
+```
+
+组距为2, 红色的直方图
+```
+p <- p + layer(
+geom = "bar",
+geom_params = list(fill = "red"),
+stat = "bin",
+stat_params = list(binwidth = 2)
+)
+p
+```
+
+`geom_histogram(binwidth = 2, fill = "red")` 生成与上面完全一样的图层.  
+这就是快捷函数, 因为**每一个几何对象都对应着一个默认的统计变换和位置参数, 而每一个统计变换都对应着一个默认的几何对象参数**, 所以对于一个图层, 
+我们只需要设定stat或geom 参数即可.
+
