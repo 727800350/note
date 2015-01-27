@@ -226,22 +226,23 @@ Other widget toolkits provide low-level functions and implementations of data st
 and provide many similar OS-portable threading, network and data structure implementations in C.
 
 # Time
-- `time(NULL)` returns a timestamp in seconds (number of seconds since the epoch)  
+- `time(NULL)` returns the time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds  
 `#include <time.h>`
--` times(struct tms *buf)` stores the current process times in the struct tms that buf points to  
+- `times(struct tms *buf)` stores the current process times in the struct tms that buf points to  
 `#include <sys/times.h>`
 
 **struct timeval**  
-The struct timeval structure represents an elapsed time. It is declared in sys/time.h and has the following members:
-
-	struct timeval{
-    	long int tv_sec; // the number of whole seconds of elapsed time.
-    	long int tv_usec; // the rest of the elapsed time 
-	}
-	tv_usec(a fraction of a second), represented as the number of 
-	microseconds. It is always less than one million.
-
-	int gettimeofday(struct timeval *tv, struct timezone *tz);
+The struct timeval structure represents an elapsed time. 
+It is declared in sys/time.h and has the following members:
+```
+struct timeval{
+	// the number of whole seconds of elapsed time since the Epoch((00:00:00 UTC, January 1, 1970)
+   	long int tv_sec; 
+	// microseconds 微秒, 百万分之一秒
+   	long int tv_usec; 
+}
+int gettimeofday(struct timeval *tv, struct timezone *tz);
+```
 
 `time_t` just stores seconds, so  
 `time_t time = (time_t)ut_tv.tv_sec;`  
