@@ -13,3 +13,7 @@ mystats <- function(x, na.omit = TRUE){
 ## 	return(c(n = n, mean = m, sd = s, skew = skew, kurt = kurt))
 	return(c(mean = m, sd = s, skew = skew, kurt = kurt))
 }
+
+a4.w <- 8.27
+a4.h <- 11.69
+

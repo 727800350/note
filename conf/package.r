@@ -2,6 +2,8 @@
 
 install.packages("ElemStatLearn") ## for the book: "The Elements of Statistical Learning, Data Mining, Inference, and Prediction"
 install.packages("devtools") ## Tools to Make Developing R Packages Easier
+install.packages("magrittr") ## A Forward-Pipe Operator for R
+install.packages("knitr") ## A General-Purpose Package for Dynamic Report Generation in R
 
 install.packages("scales") ## Scale functions for graphics
 install.packages("reshape") ## Flexibly reshape data
