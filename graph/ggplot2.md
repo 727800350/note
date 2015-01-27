@@ -36,6 +36,20 @@ Leland Wilkinson的著作在理论上改善了这种状况,他提出了一套图
 - **坐标系(coord)**: 描述了数据是如何映射到图形所在的平面的, 它同时提供了看图所需的坐标轴和网格线. 通常使用笛卡尔坐标系, 但也用极坐标系和地图投影
 - **分面(facet)**: 描述了如何将数据分解为各个子集, 记忆如何对子集作图并联合进行展示. 分面也叫做条件作图或网格作图
 
+绘图有两种方式:
+
+1. 一种是一步到位, 即利用qplot
+1. 另一种是逐层叠加式, 即利用ggplot()函数和图层叠加逐步作图.
+
+当我们得到一个图形对象时, 可以对它进行如下处理.
+
+- 用print() 将其打印到屏幕上. 在交互操作时, print 会自动被调用, 但是在循环或函数里, 我们需要手动输入print
+- 用ggsave()将其保存在磁盘上  
+`ggsave("plot.png", width=5, height=5)`
+- summary() 简单查看其结构
+- save() 把图像的缓存副本保存到磁盘; 这样可以保存图像的完整副本(包括图形中的数据), 可以调用load()来重现该图  
+`save(p, file = "plot.rdata")`
+
 ## qplot
 ```
 qplot(x, y, data=, color=, shape=, size=, alpha=, geom=, method=, formula=, facets=, 
@@ -163,10 +177,7 @@ qplot(color, price/carat, data=diamonds, geom = "boxplot")
 ```
 ![boxplot](http://i.imgbox.com/kWos4O2E.png)
 
-![boxplot](http://imgbox.com/kWos4O2E)
-
 扰动点图  
-扰动点图把所有点都绘制在图形中
 ```
 qplot(color, price/carat, data=diamonds, geom = "jitter")
 ```
