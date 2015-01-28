@@ -1,0 +1,31 @@
+{
+	"mysql": {
+		"server": 	"localhost",
+		"database": "test",
+		"user":		"test",
+		"password": "123456",
+		"port": 	0
+	},
+
+	"timeout": 300, // time out in seconds
+
+	"ips": 
+	[
+		// private ip address of class A
+		{
+			"start": "0.0.0.10", // -> 10.0.0.0 -> 167772160
+			"end": "255.255.255.10" // -> 10.255.255.255 -> 184549375
+		},
+		// private ip address of class B
+		{
+			"start": "0.0.16.172", // -> 172.16.0.0 -> 2886729728
+			"end": "255.255.31.172" // -> 172.31.255.255 -> 2887778303
+		},
+		// private ip address of class C
+		{
+			"start": "0.0.168.192", // -> 192.168.0.0 -> 3232235520
+			"end": "255.255.168.192"  // -> 192.168.255.255 -> 3232301055
+		}
+	]
+}
+
