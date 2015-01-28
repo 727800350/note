@@ -315,6 +315,18 @@ RPM包括是使用cpio格式打包的,因此可以先转成cpio然后解压,如�
 
 	rpm2cpio xxx.rpm | cpio -div
 
+# 软件管理
+提示错误: `There are unfinished transactions remaining. You might consider running yum-complete-transaction first to finish them.`
+```
+sudo yum install yum-utils
+
+## 如果想继续完成上次未完成的
+sudo yum-complete-transaction
+
+## 如果想将上次未完成的清理掉
+sudo yum-complete-transaction --cleanup-only
+```
+
 # systemd
 **修改默认运行级别**  
 以前Fedora版本中修改运行级别方法为:  
