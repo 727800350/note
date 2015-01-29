@@ -605,6 +605,7 @@ sample(x, n)  ## 当length(x) = 1 且 x > 1, 那么这句话就是从序列1:x�
 对于数值变量计算了五个分位点和均值,对于分类变量则计算了频数
 
 ## 使用sql 操作data.frame
+使用sqldf的前提是本地有数据库服务, 因为sqldf 会调用本地的数据库来执行语句
 ```
 library(sqldf)
 
