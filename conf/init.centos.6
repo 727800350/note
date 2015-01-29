@@ -44,7 +44,7 @@ sudo yum install -y php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml
 ## Apache 2.4+ uses "Require all granted" instead of "Allow from all"
 ## 为了让局域网内的其他机器能够访问网站, 将防火墙关闭掉, 
 ## fedora: service firewalld stop; sudo setenforce 0
-## centos: service iptables stop; sudo setenforce 0
+## centos: service iptables stop; sudo setenforce 0; enforce 的默认值在/etc/selinux/config, permissive = 0, enforcing = 1
 ## 当在/var/www/html/ 中创建了一个指向 /home/eric 的symlink, 可能在浏览器中访问时, 提示权限问题
 ## Apache 需要这个目录的rx权限以及上级目录的x权限
 sudo yum install -y PhpMyAdmin
