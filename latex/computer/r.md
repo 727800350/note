@@ -27,6 +27,24 @@ R uses the same symbol for character and numeric data.对于factor 用 <NA> 表�
 
 Testing for Missing Values  
 对于一般的数据类型使用`is.na` 进行检测, 而对于data.frame 需要使用complete.cases 进行检测(注意complete.cases输出中为TRUE表示这个record 是完整的)
+
+测试函数
+```
+is.finite(x)
+is.infinite(x)
+is.nan(x)
+is.na(x)
+```
+几个特殊例子
+```
+pi / 0 ## = Inf a non-zero number divided by zero creates infinity
+0 / 0  ## =  NaN
+
+1/0 + 1/0 # Inf
+1/0 - 1/0 # NaN, infinity - infinity 的结果不定, 所以是NaN
+```
+
+不同类型NA的判断
 ```
 ## numeric
 y <- c(1,2,3,NA)
