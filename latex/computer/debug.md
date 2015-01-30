@@ -321,7 +321,7 @@ The problems Memcheck can detect and warn about include the following:
 at 0x8048724: BandMatrix::ReSize(int, int, int) (bogon.cpp:45)
 ==25832==
 by 0x80487AF: main (bogon.cpp:66)
-==25832== Address 0xBFFFF74C is not stack’d, malloc’d or free’d
+==25832== Address 0xBFFFF74C is not stack'd, malloc'd or free'd
 ```
 This message says that the program did an illegal 4-byte read of address 0xBFFFF74C, which, as far as Memcheck
 can tell, is not a valid stack address, nor corresponds to any current heap blocks or recently freed heap blocks. The
@@ -336,14 +336,14 @@ occurred most frequently.
 ==26866==    by 0x4E3DE1D: ??? (in /usr/lib64/libpcap.so.1.5.3)
 ```
 The name ??? is used if the file name and/or function name could not be determined from debugging information. 
-If most of the entries have the form ???:??? the program probably wasn’t compiled with -g.
+If most of the entries have the form ???:??? the program probably wasn't compiled with -g.
 包括库的函数
 
 ## Scheduling and Multi-Thread Performance 
 Threaded programs are fully supported.  
 Valgrind **serialises execution** so that only one (kernel) thread is running at a time. 
 but it does mean that threaded apps never use more than one CPU simultaneously, even if you have a multiprocessor or multicore machine.
-Valgrind doesn’t schedule the threads itself. It merely ensures that only one thread runs at once, using a simple locking scheme. 
+Valgrind doesn't schedule the threads itself. It merely ensures that only one thread runs at once, using a simple locking scheme. 
 The actual thread scheduling remains under control of the OS kernel. 
 This is both because Valgrind is serialising the threads, and because the code runs so much slower than normal.  
 if you have some kind of concurrency, critical race, locking, or similar, bugs. 
@@ -351,7 +351,7 @@ In that case you might consider using the tools Helgrind and/or DRD to track the
 
 ## Handling of Signals
 Valgrind has a fairly complete signal implementation. It should be able to cope with any POSIX-compliant use of signals.
-If you’re using signals in clever ways (for example, catching SIGSEGV, modifying page state and restarting the instruction), you’re probably relying on precise exceptions.
+If you're using signals in clever ways (for example, catching SIGSEGV, modifying page state and restarting the instruction), you're probably relying on precise exceptions.
 In this case, you will need to use
 ```
 --vex-iropt-register-updates=allregs-at-mem-access
@@ -361,7 +361,7 @@ or
 --vex-iropt-register-updates=allregs-at-each-insn.
 ```
 If your program dies as a result of a fatal core-dumping signal, Valgrind will generate its own core file
-(vgcore.NNNNN) containing your program’s state.  
+(vgcore.NNNNN) containing your program's state.  
 You may use this core file for post-mortem debugging with GDB or similar.  
 In the unlikely event that Valgrind itself crashes, the operating system will create a core dump in the usual way.
 
@@ -390,7 +390,7 @@ Each line in the trace contains the system call name, followed by its arguments 
 You can use strace command to trace the execution of any executable. The following example shows the output of strace for the Linux ls command.
 
 		$  strace ls
-		execve("/bin/ls", ["ls"], [/* 21 vars */]) = 0
+		execve("/bin/ls", ["ls"], [/* 21 vars \*/]) = 0
 		brk(0)                                  = 0x8c31000
 		access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
 		mmap2(NULL, 8192, PROT_READ, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb78c7000
@@ -452,7 +452,7 @@ Using option -c, strace provides useful statistical report for the execution tra
 backtrace() returns a backtrace for the calling program, in the array
 pointed to by buffer.  A backtrace is the series of currently active
 function calls for the program.  Each item in the array pointed to by
-buffer is of type void *, and is the return address from the
+buffer is of type void \*, and is the return address from the
 corresponding stack frame.  
 The size argument specifies the maximum number of addresses that can be stored in buffer.
 
@@ -656,6 +656,9 @@ Use `-s0` to get everything, unless you are intentionally capturing less.
 - -l 使标准输出变为缓冲行形式, 可以将数据重定向  
 如`tcpdump -l >tcpcap.txt`将得到的数据存入tcpcap.txt文件中
 - -w 直接将包写入文件中,并不分析和打印出来, 将来可以用`-r`或其他软件如Wireshark, Snort, etc读取
+- -C file_size: Before  writing  a  raw  packet  to  a  savefile,  check  whether the file is currently larger than file_size and, if so, close the current savefile and open a new one.   
+Savefiles  after  the  first savefile  will  have the name specified with the -w flag, with a number after it, starting at 1 and continuing upward.  
+The units of file_size are millions of bytes (1,000,000  bytes,  not  1,048,576 bytes).
 - -r 从指定的文件中读取包(这些包一般通过-w选项产生)
 - -F 从指定的文件中读取**表达式**,忽略其它的表达式
 
@@ -788,6 +791,7 @@ Traffic with the 'Evil Bit' Set
 	# tcpdump 'ip[6] & 128 != 0'
 
 
+# wireshark
 ## wireshark filter
 ```
 ip.addr == 10.43.54.65
@@ -799,6 +803,108 @@ Show only SMTP (port 25) and ICMP traffic:
 ```
  tcp.port eq 25 or icmp
 ```
+
+## process pcap file
+[Linux下如何过滤,分割以及合并 pcap 文件](http://linux.cn/article-4762-1.html)
+
+[Editcap Guide: 11 Examples To Handle Network Packet Dumps Effectively](http://www.thegeekstuff.com/2009/02/editcap-guide-11-examples-to-handle-network-packet-dumps-effectively/)
+
+### 文件过滤
+individual packet numbers separated by whitespace and/or ranges of packet numbers can be specified as start-end,
+By default the selected packets with those numbers will **not** be written to the capture file.
+
+editcap can automatically detects the compressed capture file formats. Currently it supports for the gzip format.
+
+The output_dump file will contain all packets except the first 10 packets.
+```
+editcap -v input_dump output_dump 1-10
+```
+
+If the -r flag is specified, the whole packet selection is reversed; in that case only the selected packets will be written to the capture file.
+```
+但是editcap 也许要将完整的pcap都读过一遍才生成最终的前100个packets
+editcap -r input.pcap output.pcap 1-100
+
+The output_dump file will contain first 10 packets and packets from 100 and 200.
+editcap -r  -v input_dump output_dump 1-10  100-200
+editcap -r -v input_dump.gz output_dump 1-10 100-200
+```
+
+Extract packets between a specific timeperiod using option -A and -B
+```
+editcap -v -A "2009-02-11 11:26:30" -B "2009-02-11 11:27:00"  input_dump output_dump
+```
+
+Remove duplicate packets from the output_dump file using option -d
+```
+editcap -v -d input_dump output_dump
+```
+
+使用 "-D < dup-window >" (dup-window可以看成是对比的窗口大小,仅与此范围内的包进行对比)选项可以提取出重复包.
+每个包都依次与它之前的 < dup-window > -1 个包对比长度与MD5值,如果有匹配的则丢弃.
+```
+editcap -D 10 input.pcap output.pcap
+```
+也可以将 < dup-window > 定义成时间间隔.使用"-w < dup-time-window >"选项,对比< dup-time-window > 时间内到达的包.
+```
+editcap -w 0.5 input.pcap output.pcap 
+```
+
+Remove certain bytes from the bottom of all packets using option -C
+
+This example removes 10 bytes from every packets and writes into the output file. 
+```
+# editcap -C 10 input_dump output
+```
+
+Truncate the packets to the specific length using option -s  
+Produces the ouptut_dump file with packets length limited to 100. 
+This can be very helpful under lot of situations. 
+For example, you can use this method if you want to get only the IP layer of all the packets and does not require other layer.
+```
+editcap -s 100 -v -A "2009-02-11 11:26:30" -B "2009-02-11 11:27:00"  input_dump.gz output
+```
+
+### 文件分割
+Divide the single dump into multiple file and each contains specified number of packets.
+```
+# editcap -v -c 1000 input_dump output
+```
+
+以时间间隔分割 pcap 文件
+```
+editcap -i <seconds-per-file> <input-pcap-file> <output-prefix> 
+```
+
+### 文件合并 mergecap
+当合并多个文件时,mergecap 默认将内部的数据包以时间先后来排序.
+```
+mergecap -w output.pcap input.pcap input2.pcap [input3.pcap . . .]
+```
+
+如果要忽略时间戳,仅仅想以命令行中的顺序来合并文件,那么使用 -a 选项即可.  
+例如,下列命令会将 input.pcap 文件的内容写入到 output.pcap, 并且将 input2.pcap 的内容追加在后面.
+```
+mergecap -a -w output.pcap input.pcap input2.pcap 
+```
+
+### 其它
+Change packet's timestamp (reduce or advance) using option -t
+To advances the timestamp of packets to one hour.
+```
+# editcap -t 3600 input_dump output_dump
+```
+
+To reduces the timestamp of packets to 30 minutes,
+```
+# editcap -t -1800 input_dump output_dump
+```
+
+By default the encapsulation type of the dump file is ether. The example below, translates the capture file into ieee-802-11-bsd format
+```
+editcap -v -T  ieee-802-11-radiotap input_dump output_dump
+```
+
 
 # [lsof](http://www.danielmiessler.com/study/lsof/)
 lsof: list open files
