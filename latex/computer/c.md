@@ -820,6 +820,37 @@ main.c
 	./hello: error while loading shared libraries: libmyhello.so: cannot open shared object file: No such file or directory
 从程序hello运行的结果中很容易知道,当**静态库和动态库同名时, gcc命令将优先使用动态库**.
 
+# 高级
+## volatile 
+volatile 影响编译器编译的结果, volatile 变量是随时可能发生变化的,每次使用时都需要去内存里重新读取它的值,与volatile变量有关的运算,不要进行编译优化,以免出错.
+(VC++ 在产生release版可执行码时会进行编译优化,加volatile关键字的变量有关的运算,将不进行编译优化).
+```
+volatile int i=10;
+int j = i;
+...
+int k = i;
+```
+volatile 告诉编译器i是随时可能发生变化的,每次使用它的时候必须从i的地址中读取,因而编译器生成的可执行码会重新从i的地址读取数据放在k中.  
+而优化做法是,由于编译器发现两次从i读数据的代码之间的代码没有对i进行过操作,它会自动把上次读的数据放在k中.而不是重新从i里面读.
+这样以来,如果i是一个寄存器变量或者表示一个端口数据就容易出错,所以说volatile可以保证对特殊地址的稳定访问,不会出错.
+
+建议使用volatile变量的场所
+
+1. 并行设备的硬件寄存器
+2. 一个中断服务子程序中会访问到的非自动变量（全局变量）
+3. 多线程应用中被几个任务共享的变量
+ 
+## sig_atomic_t
+sig_atomic_t: 当把变量声明为该类型是,则会保证该变量在使用或赋值时, 无论是在32位还是64位的机器上都能保证操作是原子的, 它会根据机器的类型自动适应.
+
+通常情况下,int类型的变量通常是原子访问的,也可以认为 sig_atomic_t就是int类型的数据,因为对这些变量要求一条指令完成,所以sig_atomic_t不可能是结构体,只会是数字类型.
+在linux里这样定义:
+```
+typedef int __sig_atomic_t;
+```
+另外gnu c的文档也说比int短的类型通常也是具有原子性的,例如short类型.
+同时,指针(地址)类型也一定是原子性的. 该类型在所有gnu c库支持的系统和支持posix的系统中都有定义.
+
 # GCC
 ## Useful GCC flags for C
 Those marked * sometimes give too many spurious warnings, so I use them on as-needed basis.
