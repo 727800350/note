@@ -1,3 +1,6 @@
+强数据类型 `/usr/include/sys/types.h`  
+`u_int32_t, int32_t, u_int8_t, ...`
+
 [运算符](http://www.math.pku.edu.cn/teachers/qiuzy/c/operator.htm)
 
 | 运算符                           | 解释                                 | 结合方式 |
