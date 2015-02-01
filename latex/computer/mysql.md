@@ -320,27 +320,36 @@ I would rather use the "query" method for all these calls:
 
 ## 多线程
 ```
-my_bool mysql_thread_init(void)
-must be called early within each created thread to initialize thread-specific variables. 
-However, you may not necessarily need to invoke it explicitly: 
-mysql_init(), mysql_library_init(), mysql_server_init(), and mysql_connect().  If you invoke any of those functions, mysql_thread_init() will be called for you.
+int mysql_library_init(int argc, char **argv, char **groups)
+Zero for success. Nonzero if an error occurred
 
-return Zero for success. Nonzero if an error occurred.
+mysql_library_init(0, NULL, NULL);
+```
+Call [this function](http://dev.mysql.com/doc/refman/5.0/en/mysql-library-init.html) 
+to initialize the MySQL library before you call any other MySQL function.
+尤其是在多线程的程序中. 在创建多线程之前要调用这个函数, 
+在单线程的程序中, 可以省略掉, 因为 mysql_init 等函数会自动调用这个函数
 
+```
 void mysql_library_end(void)
+```
 finalizes the MySQL library. 
 Call it when you are done using the library (for example, after disconnecting from the server).
 
-void mysql_thread_end(void)
-This function needs to be called before calling pthread_exit() to free memory allocated by mysql_thread_init().
-mysql_thread_end() is not invoked automatically by the client library. It must be called explicitly to avoid a memory leak.
-
+```
 my_bool mysql_thread_init(void)
-must be called early within each created thread to initialize thread-specific variables. 
-However, you may not necessarily need to invoke it explicitly: 
-mysql_init(), mysql_library_init(), mysql_server_init(), and mysql_connect(). If you invoke any of those functions, mysql_thread_init() will be called for you.
 return Zero for success. Nonzero if an error occurred.
 ```
+must be called early within each created thread to initialize thread-specific variables. 
+However, you may not necessarily need to invoke it explicitly: 
+mysql_init(), mysql_library_init(), mysql_server_init(), and mysql_connect(), 
+If you invoke any of those functions, mysql_thread_init() will be called for you.
+
+```
+void mysql_thread_end(void)
+```
+This function needs to be called before calling pthread_exit() to free memory allocated by mysql_thread_init().
+mysql_thread_end() is not invoked automatically by the client library. It must be called explicitly to avoid a memory leak.
 
 [multi thread demo](../../demo/c/db/multi_thread.c)
 
