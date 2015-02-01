@@ -648,7 +648,7 @@ tcpdump存在于基本的 FreeBSD系统中,由于它需要将网络接口设置�
 - -v, -vv, -vvv : Increase the amount of packet information you get back, 比普通的多了个TTL和服务类型等
 - -c : Only get x number of packets and then stop
 - -S : Print absolute sequence numbers
-- -s : Define the snaplength (size) of the capture in bytes.  
+- -s : Define the snaplength (size) of the capture in **bytes**.  
 Use `-s0` to get everything, unless you are intentionally capturing less.
 - -e : Get the ethernet header as well
 - -b 在网络层上选择协议,包括ip,arp,rarp,ipx都是这一层的.  
@@ -658,9 +658,14 @@ Use `-s0` to get everything, unless you are intentionally capturing less.
 - -w 直接将包写入文件中,并不分析和打印出来, 将来可以用`-r`或其他软件如Wireshark, Snort, etc读取
 - -C file_size: Before  writing  a  raw  packet  to  a  savefile,  check  whether the file is currently larger than file_size and, if so, close the current savefile and open a new one.   
 Savefiles  after  the  first savefile  will  have the name specified with the -w flag, with a number after it, starting at 1 and continuing upward.  
-The units of file_size are millions of bytes (1,000,000  bytes,  not  1,048,576 bytes).
+**The units of file_size are millions of bytes (1,000,000  bytes,  not  1,048,576 bytes).**
 - -r 从指定的文件中读取包(这些包一般通过-w选项产生)
 - -F 从指定的文件中读取**表达式**,忽略其它的表达式
+
+可以利用tcpdump 来对pcap 进行分割, 同时还可以只保留每个包的前面特定数目的字节, 以减少文件大小
+```
+tcpdump -r input.pcap -s 96 -C 1000 -w ouput
+```
 
 ## 表达式 Berkeley Packet Filter (BPF) syntax
 表达式是一个正则表达式,tcpdump利用它作为过滤报文的条件,如果一个报文满足表
