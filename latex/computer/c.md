@@ -1,3 +1,6 @@
+强数据类型 `/usr/include/sys/types.h`  
+`u_int32_t, int32_t, u_int8_t, ...`
+
 [运算符](http://www.math.pku.edu.cn/teachers/qiuzy/c/operator.htm)
 
 | 运算符                           | 解释                                 | 结合方式 |
@@ -226,21 +229,48 @@ Other widget toolkits provide low-level functions and implementations of data st
 and provide many similar OS-portable threading, network and data structure implementations in C.
 
 # Time
-- `time(NULL)` returns the time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds  
-`#include <time.h>`
-- `times(struct tms *buf)` stores the current process times in the struct tms that buf points to  
-`#include <sys/times.h>`
-
-**struct timeval**  
-The struct timeval structure represents an elapsed time. 
-It is declared in sys/time.h and has the following members:
 ```
+#include <time.h>
+time_t time(time_t *t);
+```
+returns the time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds  
+If t is non-NULL, the return value is also stored in the memory pointed to by t.
+
+```
+#include <time.h>
+#ifndef _TM_DEFINED
+struct tm {
+	int tm_sec; /* 秒–取值区间为[0,59] */
+	int tm_min; /* 分 - 取值区间为[0,59] */
+	int tm_hour; /* 时 - 取值区间为[0,23] */
+	int tm_mday; /* 一个月中的日期 - 取值区间为[1,31] */
+	int tm_mon; /* 月份（从一月开始，0代表一月） - 取值区间为[0,11] */
+	int tm_year; /* 年份，其值从1900开始 */
+	int tm_wday; /* 星期–取值区间为[0,6]，其中0代表星期天，1代表星期一，以此类推 */
+	int tm_yday; /* 从每年的1月1日开始的天数–取值区间为[0,365]，其中0代表1月1日，1代表1月2日，以此类推 */
+	int tm_isdst; /* 夏令时标识符，实行夏令时的时候，tm_isdst为正。不实行夏令时的进候，tm_isdst为0；不了解情况时，tm_isdst()为负。*/
+	long int tm_gmtoff; /*指定了日期变更线东面时区中UTC东部时区正秒数或UTC西部时区的负秒数*/
+	const char *tm_zone; /*当前时区的名字(与环境变量TZ有关)*/
+};
+#define _TM_DEFINED
+#endif
+```
+gmtime()和localtime()可以将time()获得的日历时间time_t结构体转换成tm结构体.  
+其中gmtime()函数是将日历时间转化为世界标准时间(即格林尼治时间0,并返回一个tm结构体来保存这个时间,
+而localtime()函数是将日历时间转化为本地时间.
+
+[conversion demo](../../demo/c/time.c) 里面还有将时间转化为mysql 的格式的
+
+The struct timeval structure represents an elapsed time. 
+```
+#include <sys/time.h>
 struct timeval{
 	// the number of whole seconds of elapsed time since the Epoch((00:00:00 UTC, January 1, 1970)
    	long int tv_sec; 
 	// microseconds 微秒, 百万分之一秒
    	long int tv_usec; 
 }
+
 int gettimeofday(struct timeval *tv, struct timezone *tz);
 ```
 
@@ -792,6 +822,37 @@ main.c
 	# ./hello
 	./hello: error while loading shared libraries: libmyhello.so: cannot open shared object file: No such file or directory
 从程序hello运行的结果中很容易知道,当**静态库和动态库同名时, gcc命令将优先使用动态库**.
+
+# 高级
+## volatile 
+volatile 影响编译器编译的结果, volatile 变量是随时可能发生变化的,每次使用时都需要去内存里重新读取它的值,与volatile变量有关的运算,不要进行编译优化,以免出错.
+(VC++ 在产生release版可执行码时会进行编译优化,加volatile关键字的变量有关的运算,将不进行编译优化).
+```
+volatile int i=10;
+int j = i;
+...
+int k = i;
+```
+volatile 告诉编译器i是随时可能发生变化的,每次使用它的时候必须从i的地址中读取,因而编译器生成的可执行码会重新从i的地址读取数据放在k中.  
+而优化做法是,由于编译器发现两次从i读数据的代码之间的代码没有对i进行过操作,它会自动把上次读的数据放在k中.而不是重新从i里面读.
+这样以来,如果i是一个寄存器变量或者表示一个端口数据就容易出错,所以说volatile可以保证对特殊地址的稳定访问,不会出错.
+
+建议使用volatile变量的场所
+
+1. 并行设备的硬件寄存器
+2. 一个中断服务子程序中会访问到的非自动变量（全局变量）
+3. 多线程应用中被几个任务共享的变量
+ 
+## sig_atomic_t
+sig_atomic_t: 当把变量声明为该类型是,则会保证该变量在使用或赋值时, 无论是在32位还是64位的机器上都能保证操作是原子的, 它会根据机器的类型自动适应.
+
+通常情况下,int类型的变量通常是原子访问的,也可以认为 sig_atomic_t就是int类型的数据,因为对这些变量要求一条指令完成,所以sig_atomic_t不可能是结构体,只会是数字类型.
+在linux里这样定义:
+```
+typedef int __sig_atomic_t;
+```
+另外gnu c的文档也说比int短的类型通常也是具有原子性的,例如short类型.
+同时,指针(地址)类型也一定是原子性的. 该类型在所有gnu c库支持的系统和支持posix的系统中都有定义.
 
 # GCC
 ## Useful GCC flags for C

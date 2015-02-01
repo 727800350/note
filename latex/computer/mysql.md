@@ -436,17 +436,14 @@ timestamp存储的是从Unix 纪元(格林威治时间 1970 年 1 月 1 日 00:0
 	  MYSQL_BIND  bind[3];
 	  MYSQL_STMT  *stmt;
 	
-	  strmov(query, "INSERT INTO test_table(date_field, time_field, \
-	                               timestamp_field) VALUES(?,?,?");
+	  strmov(query, "INSERT INTO test_table(date_field, time_field, timestamp_field) VALUES(?,?,?");
 	
 	  stmt = mysql_stmt_init(mysql);
-	  if (!stmt)
-	  {
+	  if (!stmt){
 	    fprintf(stderr, " mysql_stmt_init(), out of memory\n");
 	    exit(0);
 	  }
-	  if (mysql_stmt_prepare(mysql, query, strlen(query)))
-	  {
+	  if (mysql_stmt_prepare(mysql, query, strlen(query))){
 	    fprintf(stderr, "\n mysql_stmt_prepare(), INSERT failed");
 	    fprintf(stderr, "\n %s", mysql_stmt_error(stmt));
 	    exit(0);
@@ -475,22 +472,3 @@ timestamp存储的是从Unix 纪元(格林威治时间 1970 年 1 月 1 日 00:0
 	  mysql_stmt_execute(stmt);
 	  ..
   
-[struct tm 的结构](http://man7.org/linux/man-pages/man3/ctime.3.html)
-
-     struct tm {
-               int tm_sec;    /* Seconds (0-60) */
-               int tm_min;    /* Minutes (0-59) */
-               int tm_hour;   /* Hours (0-23) */
-               int tm_mday;   /* Day of the month (1-31) */
-               int tm_mon;    /* Month (0-11) */
-               int tm_year;   /* Year - 1900 */
-               int tm_wday;   /* Day of the week (0-6, Sunday = 0) */
-               int tm_yday;   /* Day in the year (0-365, 1 Jan = 0) */
-               int tm_isdst;  /* Daylight saving time */
-           };
-
-    char *ctime(const time_t *timep);
-    char *ctime_r(const time_t *timep, char *buf);
-
-    struct tm *gmtime(const time_t *timep);
-    struct tm *gmtime_r(const time_t *timep, struct tm *result);
