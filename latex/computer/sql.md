@@ -200,6 +200,13 @@ MySQL 默认有个root用户,但是这个用户权限太大,一般只在管理�
 另外每当调整权限后,通常需要执行以下语句刷新权限:  
 `FLUSH PRIVILEGES;`
 
+查看权限
+```
+show grants for 'test'@'%';
+
+select * from mysql.user where user='test'
+```
+
 删除刚才创建的用户:  
 `DROP USER username@localhost;`
 
