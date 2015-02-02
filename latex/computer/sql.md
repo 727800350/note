@@ -2,6 +2,23 @@
 登陆:
 `mysql -u test -p db_name`
 
+## 查看
+```
+mysql> show index from t1;
+
+mysql> show create table t1;
+
+下面两者效果一样
+mysql> desc t1;
+mysql> show columns from t1;
+显示comment 与 privilege
+mysql> show full columns from t1;
+
+mysql> show triggers;
+mysql> show triggers from db1;
+mysql> show triggers like 'test1';
+```
+
 ## Create
 ### Storage
 `MyISAM` is the default storage engine. It is based on the older (and no longer available) ISAM storage engine but **has many useful extensions**.  
@@ -36,6 +53,20 @@ alter table flows add column ip_prot tinyint(4) null default 0;
 ```
 
 ## Select
+mysql中提供了一个G标志,放到sql语句后,可以使一行的每个列打印到单独的行.
+对于列数比较多, 屏幕不够宽时很好用.  
+这样的显示效果与MYSQL命令的-E参数是一样的. 使用-E参数后,结果集默认以列的方式显示
+```
+mysql> select * from t_goods \G  
+*************************** 1. row ***************************  
+         id: 1  
+ goods_name: MYSQL5  
+   quantity: 50  
+   add_date: 2012-12-12  
+description: A book that has been read but is in good condition. See the seller’s listing for full details and description of any imperfections.   
+1 row in set (0.00 sec)
+```
+
 mysql不支持`select top n`的语法,应该用这个替换:  
 `select * from tablename order by orderfield desc/asc limit position, counter;`
 position 指示从哪里开始查询，如果是0则是从头开始，counter 表示查询的个数
@@ -213,3 +244,54 @@ select * from mysql.user where user='test'
 仔细上面几个命令,可以发现不管是授权,还是撤销授权,都要指定响应的host(即 @ 符号后面的内容),因为以上及格命令实际上都是在操作mysql 数据库中的user表,可以用如下命令查看相应用户及对应的host:  
 SELECT User, Host FROM user;`  
 当然,这个表中还包含很多其它例如用户密码,权限设置等很多内容,操作时候尤其需要小心.
+
+## trigger
+```
+mysql> help create trigger
+Name: 'CREATE TRIGGER'
+Description:
+Syntax:
+CREATE
+    [DEFINER = { user | CURRENT_USER }]
+    TRIGGER trigger_name
+    trigger_time trigger_event
+    ON tbl_name FOR EACH ROW
+    trigger_body
+
+trigger_time: { BEFORE | AFTER }
+trigger_event: { INSERT | UPDATE | DELETE }
+```
+FOR EACH ROW表示任何一条记录上的操作满足触发事件都会触发该触发器  
+当trigger body是多句sql语句时, 需要使用BEGIN END
+
+插入的record 用new 代指, 删除的record 用old代指, 具体见[trigger demo](../../demo/sql/trigger.sql)
+
+```
+mysql> CREATE TRIGGER trig1 AFTER INSERT
+    -> ON work FOR EACH ROW
+    -> INSERT INTO time VALUES(NOW());
+```
+上面创建了一个名为trig1的触发器，一旦在work中有插入动作，就会自动往time表里插入当前时间
+
+tips:一般情况下,mysql默认是以; 作为结束执行语句,与触发器中需要的分行起冲突, 
+为解决此问题可用DELIMITER,如:`DELIMITER ||`,可以将结束符号变成||当触发器创建完成后,可以用`DELIMITER ;`来将结束符号变成;
+```
+mysql> DELIMITER ||
+mysql> CREATE TRIGGER trig2 BEFORE DELETE
+    -> ON work FOR EACH ROW
+    -> BEGIN
+    -> INSERT INTO time VALUES(NOW());
+    -> INSERT INTO time VALUES(NOW());
+    -> END
+    -> ||
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> DELIMITER ;
+```
+
+删除触发器
+```
+mysql> DROP TRIGGER trig1;
+```
+
+
