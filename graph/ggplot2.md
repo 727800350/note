@@ -242,7 +242,9 @@ qplot(unemploy / pop, uempmed, data = economics, geom = c("path"), color = year(
 所有图形子集采用相同的图形类型, 并进行了一定的设计, 使得他们之间更方面的进行比较.
 
 `row_var ~ col_var`: 行变量 列变量  
-如果想指定一行或一列, 可以使用 . 作为占位符, 例如 `row_var ~ .` 表示一个单列多行的图形矩阵
+如果想指定一行或一列, 可以使用 . 作为占位符, 
+例如 `row_var ~ .` 表示一个单列多行的图形矩阵
+例如 `. ~ col_var` 表示一个单行多列的图形矩阵
 
 ```
 qplot(carat, data = diamonds, facets = color ~ ., geom = "histogram", binwidth = 0.1, xlim = c(0,3))
@@ -291,7 +293,8 @@ grid.arrange(a,b,ncol=2)
 Customizing ggplot2 Graphs
 ```
 library(ggplot2)
-p <- qplot(hp, mpg, data=mtcars, shape=am, color=am, facets=gear~cyl, main="Scatterplots of MPG vs. Horsepower", xlab="Horsepower", ylab="Miles per Gallon")
+p <- qplot(hp, mpg, data=mtcars, shape=am, color=am, facets=gear~cyl, 
+	main="Scatterplots of MPG vs. Horsepower", xlab="Horsepower", ylab="Miles per Gallon")
 
 # White background and black grid lines
 p <- p + theme_bw()
@@ -349,3 +352,89 @@ p
 这就是快捷函数, 因为**每一个几何对象都对应着一个默认的统计变换和位置参数, 而每一个统计变换都对应着一个默认的几何对象参数**, 所以对于一个图层, 
 我们只需要设定stat或geom 参数即可.
 
+# 工具箱
+## 基本图形类型
+数据准备
+```
+df <- data.frame(x = c(3,1,5), y = c(2,4,6), label = c("a", "b", "c"))
+df
+##   x y label
+## 1 3 2     a
+## 2 1 4     b
+## 3 5 6     c
+p <- ggplot(df, aes(x,y)) + xlab(NULL) + ylab(NULL)
+```
+散点图
+```
+p + geom_point() + labs(title = "geom point")
+```
+
+条形图
+```
+p + geom_bar(stat="identity") + labs(title = "geom_bar(stat=\"identity\")")
+```
+![bar identity](http://i.imgbox.com/K7asxCBB.png)
+
+```
+p + geom_bar() + labs(title = "geom_bar()")
+Error : Mapping a variable to y and also using stat="bin".
+  With stat="bin", it will attempt to set the y value to the count of cases in each group.
+  This can result in unexpected behavior and will not be allowed in a future version of ggplot2.
+  If you want y to represent counts of cases, use stat="bin" and don't map a variable to y.
+  If you want y to represent values in the data, use stat="identity".
+  See ?geom_bar for examples. (Defunct; last used in version 0.9.2)
+q <- ggplot(df, aes(x)) + xlab(NULL) + ylab(NULL)
+q + geom_bar(stat="bin") + labs(title = "geom_bar(stat=\"bin\")")
+```
+![bar bin](http://i.imgbox.com/TgdZDMiu.png)
+
+线条图
+```
+p + geom_line() + labs(title = "geom_line")
+```
+从图中可以明显的看出线条是由图中的点从左到右进行连接的
+![line](http://i.imgbox.com/7pdUnV34.png)
+
+路径图
+```
+p + geom_path() + labs(title = "geom_path")
+```
+![path](http://i.imgbox.com/3PIbjRQw.png)
+从图中可以明显的看出路径是按照点在df 中出现的顺序进行连接的
+
+面积图
+```
+p + geom_area() + labs(title = "geom_area")
+```
+![area](http://i.imgbox.com/zvZNiVIy.png)
+
+含标签的散点图  
+可以通过图形属性angle 控制文本的旋转
+```
+p + geom_text(aes(label = label)) + labs(title = "geom_text")
+```
+![text](http://i.imgbox.com/t9QdlbNq.png)
+
+多边形图  
+绘制填充后的路径
+```
+p + geom_polygon() + labs(title = "geom_polygon")
+```
+![polygon](http://i.imgbox.com/LGxs2xwr.png)
+
+瓦片图  
+用来绘制色深图(image plot)或水平图(level plot).
+```
+p + geom_tile() + labs(title = "geom_tile")
+```
+![tile](http://i.imgbox.com/NFiHgXve.png)
+
+## 展示数据分布
+基本的数据: `depth_dist <- ggplot(diamonds, aes(depth))`
+加上直方图几何对象: `depth_dist + geom_histogram()`[figure](http://imgbox.com/n8oJgh17)  
+设置组距: `depth_dist + geom_histogram(binwidth = 0.1)`[figure](http://imgbox.com/8LmIEbI5)  
+放大细节: `depth_dist + geom_histogram(binwidth = 0.1) + scale_x_continuous(limits = c(55,70))`[figure](http://imgbox.com/0k1c4LIv)  
+设置标题: `depth_dist + geom_histogram(binwidth = 0.1) + scale_x_continuous(limits = c(55,70)) + labs(title = "histogram of depth with binwidth = 0.1")`[figure](http://imgbox.com/bXEJHgP3)  
+应用分面: `depth_dist + geom_histogram(binwidth = 0.1) + scale_x_continuous(limits = c(55,70)) + labs(title = "histogram of depth with binwidth = 0.1") + facet_grid(cut ~ .)`[figure](http://imgbox.com/awV1nNWM)  
+
+## 处理遮盖
