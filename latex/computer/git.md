@@ -6,6 +6,18 @@
 
 在日常的git操作中,git checkout,是我们的常用命令,既可以是某一个具体的commit hash值,也可以是某个分支名称, 还可以是tag名称
 
+## git cherry-pick. 
+What git cherry-pick does, basically, is take a commit from somewhere else, and "play it back" wherever you are right now. 
+Because this introduces the same change with a different parent, Git builds a new commit with a different ID.
+
+实际问题: 在本地 master 分支上做了一个commit(38361a68138140827b31b72f8bbfd88b3705d77a), 如何把它放到本地 old_cc 分支上?
+```
+$ git checkout old_cc
+$ git cherry-pick 38361a68138140827b31b72f8bbfd88b3705d77a
+如果顺利, 就会正常commit
+如果出现冲突, 像解决git merge 一样解决就行了
+```
+
 ## git stash
 Stash the changes in a dirty working directory away
 
@@ -77,7 +89,8 @@ git push origin :refs/tags/tag_name
 	git push -u origin master
 
 # FAQ
-**错误提交了一个commit, 需要把它撤销掉**
+**错误提交了一个commit, 需要把它撤销掉**  
+但是这个好像只针对于刚提交就意识到了错误
 ```
 git reset --hard <commit_id>  ##  commit_id 为这个commit 之前的一个commit_id
 git push origin HEAD --force
