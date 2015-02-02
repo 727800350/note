@@ -20,6 +20,12 @@ AFTER INSERT ON tab1_1
 FOR EACH ROW 
 	insert into tab2(tab2_id) values(new.tab1_id);
 
+DROP TRIGGER IF EXISTS t_afterdelete_on_tab1_1;
+CREATE TRIGGER t_afterdelete_on_tab1_1
+AFTER DELETE ON tab1_1
+FOR EACH ROW
+      delete from tab2 where tab2_id=old.tab1_id;
+
 DROP TABLE IF EXISTS tab1_2;
 CREATE TABLE tab1_2(
     tab1_id varchar(11)
