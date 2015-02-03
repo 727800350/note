@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <time.h>
+#include <sys/time.h>
 #include <mysql.h>
 
 int main(void){
@@ -11,8 +12,15 @@ int main(void){
 // 	software time
 	dt=localtime(&lt);
 	printf("localtime: %d-%d-%d %d:%d:%d\n", dt->tm_year + 1900, dt->tm_mon + 1, dt->tm_mday, dt->tm_hour, dt->tm_min, dt->tm_sec);
+// 	mysql from_unixtime is equal to localtime
 
 // 	hardware time
+	dt=gmtime(&lt);
+	printf("gmtime: %d-%d-%d %d:%d:%d\n", dt->tm_year + 1900, dt->tm_mon + 1, dt->tm_mday, dt->tm_hour, dt->tm_min, dt->tm_sec);
+
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	lt = tv.tv_sec;
 	dt=gmtime(&lt);
 	printf("gmtime: %d-%d-%d %d:%d:%d\n", dt->tm_year + 1900, dt->tm_mon + 1, dt->tm_mday, dt->tm_hour, dt->tm_min, dt->tm_sec);
 
