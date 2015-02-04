@@ -20,14 +20,44 @@ mysql> show triggers like 'test1';
 ```
 
 ## Create
-### Storage
+### Mysql 的存储引擎,myisam和innodb的区别
 `MyISAM` is the default storage engine. It is based on the older (and no longer available) ISAM storage engine but **has many useful extensions**.  
-Each MyISAM table is stored on disk in **three files**. The files have names that begin with the table name and have an extension to indicate the file type.  
-An `.frm` file stores the table format. The data file has an `.MYD (MYData)` extension. The index file has an `.MYI (MYIndex)` extension.  
-To specify explicitly that you want a MyISAM table, indicate that with an ENGINE table option:
+```
+CREATE TABLE t(
+	i INT)ENGINE = MYISAM;
+```
 
-    CREATE TABLE t (i INT) ENGINE = MYISAM;
-老版本的MySQL使用TYPE而不是ENGINE(例如，TYPE = MYISAM), but ENGINE is the preferred term and TYPE is deprecated.
+MyISAM 是非事务的存储引擎.   
+InnoDB是支持事务的存储引擎.
+
+innodb的引擎比较适合于插入和更新操作比较多的应用   
+而MyISAM 则适合用于频繁查询的应用
+
+MyISAM类型不支持事务处理等高级处理,而InnoDB类型支持.   
+MyISAM类型的表强调的是性能,其执行数度比InnoDB类型更快,但是不提供事务支持,而InnoDB提供事务支持已经外部键等高级数据库功能.  
+综述,就可以根据数据表不同的用处是用不同的存储类型.而且MyISAM是文件存储的,可以进行直接在不同操作系统间拷贝使用.
+
+InnoDB:  
+InnoDB 给 MySQL 提供了具有事务(commit),回滚(rollback)和崩溃修复能力(crash recovery capabilities)的事务安全(transaction-safe (ACID compliant))型表.
+InnoDB 提供了行锁(locking on row level),提供与 Oracle 类型一致的不加锁读取(non-locking read in SELECTs).这些特性均提高了多用户并发操作的性能表现.
+在InnoDB表中不需要扩大锁定(lock escalation),因为 InnoDB 的列锁定(row level locks)适宜非常小的空间.
+InnoDB 是 MySQL 上第一个提供外键约束(FOREIGN KEY constraints)的表引擎.InnoDB 的设计目标是处理大容量数据库系统,它的 CPU 利用率是其它基于磁盘的关系数据库引擎所不能比的.
+在技术上,InnoDB 是一套放在 MySQL 后台的完整数据库系统,InnoDB 在主内存中建立其专用的缓冲池用于高速缓冲数据和索引. 
+InnoDB 把数据和索引存放在表空间里,可能包含多个文件,这与其它的不一样,举例来说,在 MyISAM 中,表被存放在单独的文件中.InnoDB 表的大小只受限于操作系统的文件大小,一般为 2 GB.
+InnoDB所有的表都保存在同一个数据文件 ibdata1 中(也可能是多个文件,或者是独立的表空间文件),相对来说比较不好备份,可以拷贝文件或用navicat for mysql.
+
+MyISAM  
+每张MyISAM 表被存放在三个文件 :frm 文件存放表格定义. 数据文件是MYD (MYData), 索引文件是MYI(MYIndex) 引伸.   
+因为MyISAM相对简单所以在效率上要优于InnoDB,小型应用使用MyISAM是不错的选择.   
+MyISAM表是保存成文件的形式,在跨平台的数据转移中使用MyISAM存储会省去不少的麻烦
+
+以下是一些细节和具体实现的差别:
+
+1. InnoDB不支持FULLTEXT类型的索引.
+2. InnoDB 中不保存表的具体行数,也就是说,执行select count(\*) from table时,InnoDB要扫描一遍整个表来计算有多少行,但是MyISAM只要简单的读出保存好的行数即可.注意的是,当count(\*)语句包含 where条件时,两种表的操作是一样的.
+3. 对于AUTO_INCREMENT类型的字段,InnoDB中必须包含只有该字段的索引,但是在MyISAM表中,可以和其他字段一起建立联合索引.
+4. DELETE FROM table时,InnoDB不会重新建立表,而是一行一行的删除.
+5. LOAD TABLE FROM MASTER操作对InnoDB是不起作用的,解决方法是首先把InnoDB表改成MyISAM表,导入数据后再改成InnoDB表,但是对于使用的额外的InnoDB特性(例如外键)的表不适用.
 
 ## insert
 ```
@@ -63,21 +93,21 @@ mysql> select * from t_goods \G
  goods_name: MYSQL5  
    quantity: 50  
    add_date: 2012-12-12  
-description: A book that has been read but is in good condition. See the seller’s listing for full details and description of any imperfections.   
+description: A book that has been read but is in good condition. See the seller's listing for full details and description of any imperfections.   
 1 row in set (0.00 sec)
 ```
 
 mysql不支持`select top n`的语法,应该用这个替换:  
 `select * from tablename order by orderfield desc/asc limit position, counter;`
-position 指示从哪里开始查询，如果是0则是从头开始，counter 表示查询的个数
+position 指示从哪里开始查询,如果是0则是从头开始,counter 表示查询的个数
 
-取前15条记录：
+取前15条记录:
 `select * from tablename order by orderfield desc/asc limit 0,15`
 
-//为了检索从某一个偏移量到记录集的结束所有的记录行，可以指定第二个参数为 -1：
+//为了检索从某一个偏移量到记录集的结束所有的记录行,可以指定第二个参数为 -1:
 `mysql> SELECT * FROM table LIMIT 95,-1; // 检索记录行 96-last.`
 //如果只给定一个参数, 它表示返回最大的记录行数目:
-`mysql> SELECT * FROM table LIMIT 5;` //检索前 5 个记录行,也就是说，LIMIT n 等价于 LIMIT 0,n。
+`mysql> SELECT * FROM table LIMIT 5;` //检索前 5 个记录行,也就是说,LIMIT n 等价于 LIMIT 0,n.
 
 **mySQL error: #1248 - Every derived table must have its own alias**  
 如果按照下面的写法会报上面的错误:
@@ -184,7 +214,7 @@ ALTER TABLE用来创建普通索引,UNIQUE索引或PRIMARY KEY索引
 
 ### 索引类型
 在创建索引时,可以规定索引能否包含重复值,如果不包含,则索引应该创建为PRIMARY KEY或UNIQUE索引,对于单列惟一性索引,这保证单列不包含重复的值;
-对于多列惟一性索引,保证多个值的组合不重复。
+对于多列惟一性索引,保证多个值的组合不重复.
 
 PRIMARY KEY索引和UNIQUE索引非常类似.
 事实上,PRIMARY KEY索引仅是一个具有名称PRIMARY的UNIQUE索引.这表示一个表只能包含一个PRIMARY KEY,因为一个表中不可能具有两个同名的索引.
@@ -271,7 +301,7 @@ mysql> CREATE TRIGGER trig1 AFTER INSERT
     -> ON work FOR EACH ROW
     -> INSERT INTO time VALUES(NOW());
 ```
-上面创建了一个名为trig1的触发器，一旦在work中有插入动作，就会自动往time表里插入当前时间
+上面创建了一个名为trig1的触发器,一旦在work中有插入动作,就会自动往time表里插入当前时间
 
 tips:一般情况下,mysql默认是以; 作为结束执行语句,与触发器中需要的分行起冲突, 
 为解决此问题可用DELIMITER,如:`DELIMITER ||`,可以将结束符号变成||当触发器创建完成后,可以用`DELIMITER ;`来将结束符号变成;
