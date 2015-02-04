@@ -307,6 +307,16 @@ supplier_id	supplier_name	order_date
 <null>	<null>	2013/08/14
 ```
 
+##### 选取 (A - B) \CUP (B - A)
+![set of records unique to Table A and Table B](http://blog.codinghorror.com/content/images/uploads/2007/10/6a0120a85dcdae970b012877702769970c-pi.png)
+```
+SELECT * FROM TableA
+FULL OUTER JOIN TableB
+ON TableA.name = TableB.name
+WHERE TableA.id IS null
+OR TableB.id IS null
+```
+
 mysql 不支持full outer join, 但是可以使用left join 和right join来模拟.
 ```
 SELECT * FROM t1
