@@ -228,6 +228,21 @@ count=blocks:只拷贝输入文件的前blocks块
 ```
 可以证明两个文件时完全相同的.
 
+**tar and gzip**
+```
+for GNU tar:   gtar cvzf file.tar.gz filenames
+for any tar:   tar cvf -  filenames | gzip > file.tar.gz
+```
+
+can get better compression by compressing all members at once:
+```
+cat file1 file2 | gzip > foo.gz
+```
+compresses better than
+```
+gzip -c file1 file2 > foo.gz
+```
+
 # OS
 **设置默认的runlevel**
 编辑 `/etc/inittab` 中设置
