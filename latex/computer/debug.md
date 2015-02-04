@@ -815,6 +815,25 @@ Show only SMTP (port 25) and ICMP traffic:
 
 [Editcap Guide: 11 Examples To Handle Network Packet Dumps Effectively](http://www.thegeekstuff.com/2009/02/editcap-guide-11-examples-to-handle-network-packet-dumps-effectively/)
 
+capinfos - Prints information about capture files.  
+If no options are specified, Capinfos will report all statistics available in "long" format.
+```
+$ capinfos lotsapackets.cap
+File name:           lotsapackets.cap
+File type:           Wireshark/tcpdump/... - libpcap
+File encapsulation:  Ethernet
+Number of packets:   260778
+File size:           267802612 bytes
+Data size:           263630140 bytes
+Capture duration:    204 seconds
+Start time:          Mon Apr  4 22:31:52 2011
+End time:            Mon Apr  4 22:35:16 2011
+Data byte rate:      1290166.92 bytes/sec
+Data bit rate:       10321335.37 bits/sec
+Average packet size: 1010.94 bytes
+Average packet rate: 1276.21 packets/sec
+```
+
 ### 文件过滤
 individual packet numbers separated by whitespace and/or ranges of packet numbers can be specified as start-end,
 By default the selected packets with those numbers will **not** be written to the capture file.
@@ -869,6 +888,21 @@ This can be very helpful under lot of situations.
 For example, you can use this method if you want to get only the IP layer of all the packets and does not require other layer.
 ```
 editcap -s 100 -v -A "2009-02-11 11:26:30" -B "2009-02-11 11:27:00"  input_dump.gz output
+```
+
+Extract all DNS traffic from our large capture file
+```
+tshark -r lotsapackets.cap -R dns -w dns.cap
+```
+Filters can be mixed and matched just like in Wireshark. The example below matches all DNS traffic and all traffic sent to or from TCP port 80.
+```
+tshark -r lotsapackets.cap -R "dns or tcp.port==80" -w web.cap
+```
+
+[查看DNS query 和 response 包](http://stackoverflow.com/questions/20892222/how-to-extract-dns-records-from-cap-files)
+```
+tshark -nr dns.pcap -T fields -e dns.qry.name -e dns.resp.addr | sort | uniq -c
+tshark -nr dns.pcap -R dns -V
 ```
 
 ### 文件分割
