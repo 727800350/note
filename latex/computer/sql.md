@@ -169,6 +169,10 @@ order by avg(s_score) desc
 ```
 
 ### JOIN
+[sql joins](http://www.techonthenet.com/sql/joins.php)
+
+[A Visual Explanation of SQL Joins](http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/)
+
 There are 4 different types of SQL joins:
 
 - SQL INNER JOIN (or sometimes called simple join)
