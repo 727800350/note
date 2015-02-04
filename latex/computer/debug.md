@@ -662,10 +662,11 @@ Savefiles  after  the  first savefile  will  have the name specified with the -w
 - -r 从指定的文件中读取包(这些包一般通过-w选项产生)
 - -F 从指定的文件中读取**表达式**,忽略其它的表达式
 
-可以利用tcpdump 来对pcap 进行分割, 同时还可以只保留每个包的前面特定数目的字节, 以减少文件大小
+可以利用tcpdump 来对pcap 进行分割, 以减少单个文件的大小
 ```
-tcpdump -r input.pcap -s 96 -C 1000 -w ouput
+tcpdump -r input.pcap -C 1000 -w ouput
 ```
+但是当tcpdump 从文件读, 而不是从网卡时, -s 选项无效.
 
 ## 表达式 Berkeley Packet Filter (BPF) syntax
 表达式是一个正则表达式,tcpdump利用它作为过滤报文的条件,如果一个报文满足表
