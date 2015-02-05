@@ -129,6 +129,14 @@ dup() uses  the lowest-numbered unused descriptor for the new descriptor.
 dup2() makes newfd be the copy of oldfd, closing newfd first if necessary  
 On success, these system calls return the new descriptor.  On error, -1 is returned, and errno is set appropriately.
 
+# apr
+install
+```
+./configure --prefix=/usr/local/apr --enable-debug --enable-profile --enable-threads --enable-other-child
+```
+安装完之后, 进入到test 目录, 进行测试, 看时候安装成功
+
+[apr hash](http://apr.apache.org/docs/apr/1.4/group__apr__hash.html)
 
 # [GLib](https://developer.gnome.org/glib/unstable/)
 GLib提供了多种高级的数据结构,如内存块,双向和单向链表,哈希表,动态字符串以及字符串工具(例如词法分析器,字符串切分等),动态数组,平衡二叉树,n-叉树,键值存储,关系和元组etc.
