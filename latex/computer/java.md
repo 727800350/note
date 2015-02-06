@@ -64,10 +64,11 @@ Maven帮助我们自动化项目构建过程,具体来说包括项目的清理,�
 
 pom.xml 文件中个条目的解释
 
-- groupId :  创建项目的小组的唯一标示.
+- modelVersion: POM model version (always 4.0.0).
+- groupId:  创建项目的小组的唯一标示. Group or organization that the project belongs to. Often expressed as an inverted domain name
 - artifactId:  该产品id.会作为产生的jar/war包名的一部分.它和version一起构成输出包的包名.
 - Version: 产品版本
-- Packaging: 打包的类型
+- Packaging: 打包的类型, 默认是jar, 可以设置为war
 - Name: 项目名称,用于maven产生的文档中.
 - url:指定项目站点,通常用于maven产生的文档中. 
 - description:描述此项目,通常用于maven产生的文档中.
@@ -83,6 +84,49 @@ pom.xml 文件中个条目的解释
 此外,我们还注意到,<dependency>下有一个<scope>test</scope>.它设定了jar包的作用域,这里指junit包仅在测试时使用.在正式打包的时候,并不会引入到工程中.
 如果去掉这行代码,那么Maven会采用默认的compile范围,那么无论在测试或者打包时,该jar包都会被工程引用,生成的包中会含有junit. 
 
+如果在运行jar 包时, 出现类似于下面的错误, 可能是由于jar 不可执行造成的
+```
+[eric@alien spring-demo]$ java -cp target/gs-maven-0.1.0.jar hello.Application
+Exception in thread "main" java.lang.NoClassDefFoundError: org/springframework/context/ApplicationContext
+        at java.lang.Class.getDeclaredMethods0(Native Method)
+        at java.lang.Class.privateGetDeclaredMethods(Class.java:2570)
+        at java.lang.Class.getMethod0(Class.java:2813)
+        at java.lang.Class.getMethod(Class.java:1663)
+        at sun.launcher.LauncherHelper.getMainMethod(LauncherHelper.java:494)
+        at sun.launcher.LauncherHelper.checkAndLoadMain(LauncherHelper.java:486)
+Caused by: java.lang.ClassNotFoundException: org.springframework.context.ApplicationContext
+        at java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+        at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:425)
+        at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:358)
+        ... 6 more
+```
+需要借助maven-shade-plugin 来生成可执行的jar 包.
+```
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-shade-plugin</artifactId>
+  <version>1.2.1</version>
+  <executions>
+    <execution>
+      <phase>package</phase>
+      <goals>
+        <goal>shade</goal>
+      </goals>
+      <configuration>
+      <transformers>
+        <transformer implementation=”org.apache.maven.plugins.shade.resource.ManifestResourceTransformer”>
+          <mainClass>package_path_to_mainclass.mainclass</mainClass>
+        </transformer>
+      </transformers>
+    </configuration>
+  </executions>
+</plugin>
+```
+
 ## Maven Phases
 Although hardly a comprehensive list, these are the most common default lifecycle phases executed.
 
@@ -94,7 +138,7 @@ Although hardly a comprehensive list, these are the most common default lifecycl
 - verify: run any checks to verify the package is valid and meets quality criteria
 - install: install the package into the local repository, for use as a dependency in other projects locally
 - deploy: done in an integration or release environment, copies the final package to the remote repository for sharing with other developers and projects.
-- clean: cleans up artifacts created by prior builds
+- clean: cleans up artifacts created by prior builds, 会删除target 目录
 - site: generates site documentation for this project
 mvn eclipse:eclipse 生成 Eclipse 项目文件及包引用定义,注意,需确保定义Classpath Variables: M2_REPO,指向本地maven类库目录.
 
