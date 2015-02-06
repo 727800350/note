@@ -333,7 +333,11 @@ RIGHT JOIN t2 ON t1.id = t2.id
 ### Backup
 备份
 ```
+备份整个数据库
 $mysqldump -u 用户名 -p 数据库名 > 导出的文件名
+
+备份一个表
+$mysqldump -u 用户名 -p 数据库名 表名 > 导出的文件名
 ```
 恢复
 ```
