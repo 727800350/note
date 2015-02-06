@@ -1,3 +1,6 @@
+# Java
+[环境变量配置](http://jingyan.baidu.com/article/f96699bb8b38e0894e3c1bef.html)
+
 # Spring
 
 
@@ -7,6 +10,8 @@ Maven是一个优秀的项目构建工具.
 Maven帮助我们自动化项目构建过程,具体来说包括项目的清理,编译,测试,生成测试报告,打包和部署.
 只需要输入很简洁的命令,就能实现这些构建过程.比如输入`mvn clean compile` ,就能完成项目的清理和编译.
 同时,Maven提供jar包的依赖管理
+
+[Maven的安装](http://blog.csdn.net/zhangbaidu555/article/details/12955639)
 
 ## [命令行创建Maven项目](http://my.oschina.net/u/1162561/blog/145869)
 1. 打开命令行, 输入 `mvn archetype:generate`
@@ -19,7 +24,7 @@ Maven帮助我们自动化项目构建过程,具体来说包括项目的清理,�
 1. `mvn compile` 进行编译
 1. `mvn test` 进行测试
 1. `mvn package` 打包, 会在target 的文件夹生成一个`test-1.0-SNAPSHOT.jar` 的文件, 也就是artifactId-version.jar 的命名方式
-1. `java -cp target/test-1.0-SNAPSHOT.jar com.eric.test.App` 就会运行jar 包中的 com.eric.test package下的App(App 是默认创建的含有Main函数的类)
+1. `java -cp target/test-1.0-SNAPSHOT.jar com.eric.test.App` 就会运行jar 包中的 com.eric.test package下的App(App 是默认创建的含有Main函数的类), 输出为 `Hello World!`
 
 ![生成的目录结构](http://i.imgbox.com/OkX8oksm.png)
 
@@ -101,3 +106,6 @@ An interesting thing to note is that phases and goals may be executed in sequenc
 mvn clean dependency:copy-dependencies package
 ```
 This command will clean the project, copy dependencies, and package the project (executing all phases up to package, of course).
+
+# MyEclipse
+[MyEclipse10.0中的Maven配置](http://blog.csdn.net/zhangbaidu555/article/details/12955639)
