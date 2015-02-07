@@ -20,6 +20,8 @@ mysql> show triggers like 'test1';
 ```
 
 ## Create
+MySQL默认情况下指定字段为NULL修饰符
+
 ## Data Type
 ### date time
 datetime 之间作差可能会出错.
@@ -356,6 +358,9 @@ $mysql -u root -p voice<voice.sql
 
 ## index
 在执行CREATE TABLE语句时可以创建索引,也可以单独用CREATE INDEX或ALTER TABLE来为表增加索引
+```
+INDEX index_name(`field`),
+```
 
 ### CREATE INDEX
 CREATE INDEX可对表增加普通索引或UNIQUE索引
