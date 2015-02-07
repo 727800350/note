@@ -20,6 +20,15 @@ mysql> show triggers like 'test1';
 ```
 
 ## Create
+## Data Type
+### date time
+datetime 之间作差可能会出错.
+碰到过一个错误, 在作差, 秒向分借位时, 借的是100 而不是60.
+
+### str
+- length()
+- char_length()
+
 ### 复制表数据到新表
 MySQL复制表结构及数据到新表
 ```
