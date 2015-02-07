@@ -373,6 +373,33 @@ you must commit the data after a sequence of INSERT, DELETE, and UPDATE statemen
 
 update 也可以像上面的demo 一样使用.
 
+bind 的使用
+```
+add_user = """INSERT INTO DB.tbluser 
+              (username, department, startyear, currentpos, link) 
+              VALUES (%s, %s, %s, %s, %s)"""
+```
+
+当需要插入mysql 中的`null` 时, 在python 中将变量赋值为 `None`.
+
+transaction
+```
+cnx.start_transaction(consistent_snapshot=bool, isolation_level=level, readonly=access_mode)
+
+con.start_trsansaction()
+cursor.execute(sql)
+con.commit()
+cursor.close()
+con.close()
+```
+The default consistent_snapshot value is False. If the value is True, Connector/Python sends WITH CONSISTENT SNAPSHOT with the statement. 
+MySQL ignores this for isolation levels for which that option does not apply.
+
+The default isolation_level value is None, and permitted values are 'READ UNCOMMITTED', 'READ COMMITTED', 'REPEATABLE READ', and 'SERIALIZABLE'. 
+If the isolation_level value is None, no isolation level is sent, so the default level applies.
+
+The readonly argument can be True to start the transaction in READ ONLY mode or False to start it in READ WRITE mode. 
+
 # Internet
 ## Address
 	import socket

@@ -20,6 +20,8 @@ mysql> show triggers like 'test1';
 ```
 
 ## Create
+MySQL默认情况下指定字段为NULL修饰符
+
 ### 复制表数据到新表
 MySQL复制表结构及数据到新表
 ```
