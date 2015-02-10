@@ -2,7 +2,56 @@
 [环境变量配置](http://jingyan.baidu.com/article/f96699bb8b38e0894e3c1bef.html)
 
 # Spring
+entity(model) --- service --- DAO -- DAOImplementation
+解析xml 文件: jdom, dom4j
 
+Spring在读取xml配置文件中的bean的时候采用的是反射机制, 读取的jvm的.class文件(采用classLoader), 然后再用调用类的方法.
+
+动态装配
+
+IoC: Inversion of Control 控制反转(交给容器控制)  
+DI: Dependency Injection 依赖注入  
+Dependency Injection is merely one concrete example of Inversion of Control.
+
+AOP: Aspect Oriented Programming
+
+The Spring Framework
+
+- **Core Container** consists of the Core, Beans, Context, and Expression Language modules
+	- Core module provides the fundamental parts of the framework, including the IoC and Dependency Injection features
+	- The Context module builds on the solid base provided by the Core and Beans modules
+- **Data Access/Integration** layer consists of the JDBC, ORM, OXM, JMS and Transaction modules
+	- The ORM module provides integration layers for popular object-relational mapping APIs, including JPA, JDO, Hibernate, and iBatis
+- **Web layer** consists of the Web, Web-Servlet, Web-Struts, and Web-Portlet modules
+	- The Web-Servlet module  contains  Spring's  model-view-controller  (MVC) implementation for web applications
+- Few other important modules like AOP, Aspects, Instrumentation, Web and Test modules
+
+Bean Configuration file(an XML file) acts as cement that glues the beans ie. classes together. 
+This file needs to be created **under the src directory**.
+
+The Spring container is at the core of the Spring Framework. 
+The container will create the objects, wire them together, configure them, and manage their complete lifecycle from creation till destruction. 
+The Spring container uses dependency injection (DI) to manage the components that make up an application.
+
+The container 通过读取配置文件中的metadata来进行上面提到的各种操作.
+The configuration metadata can be represented either by XML, Java annotations, or Java code.
+
+The Spring IoC container makes use of Java POJO(Plain Old Java Object) classes and configuration metadata to produce a fully configured and executable system or application.
+
+两种container:
+
+1. Spring BeanFactory Container  
+	- This is the simplest container providing basic support for DI and defined by the `org.springframework.beans.factory.BeanFactory` interface.
+	- The most commonly used BeanFactory implementation is the XmlBeanFactoryclass.
+1. Spring ApplicationContext Container  
+	- This container adds more enterprise-specific functionality such as the ability to resolve textual messages from a properties file and 
+		the ability to publish application events to interested event listeners. This container is defined by the `org.springframework.context.ApplicationContext` interface
+	- The most commonly used ApplicationContext implementations are
+		1. FileSystemXmlApplicationContext: 使用xml 文件的绝对路径
+		1. ClassPathXmlApplicationContext: xml 文件在classpath的路径里面
+		1. WebXmlApplicationContext: Web Application
+
+由于ApplicationContext container 包括 BeanFactory container 的所有功能, 因此一般建议使用ApplicationContext container, 除非是在内存等资源有限的情况或者对性能要求比较高的情况下(例如Mobile).
 
 # Maven
 Maven是一个优秀的项目构建工具.
