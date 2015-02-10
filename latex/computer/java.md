@@ -1,6 +1,39 @@
 # Java
 [环境变量配置](http://jingyan.baidu.com/article/f96699bb8b38e0894e3c1bef.html)
 
+## Cast
+First, you must understand, that by casting you are not actually changing the object itself, you are just labeling it differently.
+
+[Cast ex](../../demo/java/Cast.java)
+
+![Cast example](http://uploads.codecall.net/monthly_05_2014/post-27003-0-90059300-1399049433.jpg)
+
+For example, if you create a Cat and upcast it to Animal, then the object doesn't stop from being a Cat. 
+It's still a Cat, but it's just treated as any other Animal and it's Cat properties are **hidden**(数据还是在实实在在的在那里, 只是无法访问) until it's downcasted to a Cat again.
+```
+Mammal m = (Mammal)new Cat();
+```
+is equal to
+```
+Mammal m = new Cat();
+```
+Upcasting 是自动进行的.
+
+m 具有cat类型的数据, 但是m 是一个Mammal 类的实例.
+也就是说 `m.f_cat();` 不能编译通过, `((Cat) m).f_cat()` 编译通过且运行正常.
+
+But downcasting must always be done manually.
+```
+Mammal m = new Mammal();
+Cat c = (Cat)m;
+```
+Such code passes compiling, but throws "java.lang.ClassCastException: Mammal cannot be cast to Cat" exception during running, 
+because it is trying to cast a Mammal, which is not a Cat, to a Cat.
+
+Variables can hold instance of objects that are equal or are hierarchically below them. 
+For example Cat c; can hold instances of Cat and anything that is extended from a Cat. Animal can hold Animal, Mammal, etc..  
+Remember, that instances will always be upcasted to the variable level.
+
 # Spring
 entity(model) --- service --- DAO -- DAOImplementation
 解析xml 文件: jdom, dom4j
@@ -167,7 +200,7 @@ Caused by: java.lang.ClassNotFoundException: org.springframework.context.Applica
       </goals>
       <configuration>
       <transformers>
-        <transformer implementation=”org.apache.maven.plugins.shade.resource.ManifestResourceTransformer”>
+        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
           <mainClass>package_path_to_mainclass.mainclass</mainClass>
         </transformer>
       </transformers>
