@@ -34,6 +34,35 @@ Variables can hold instance of objects that are equal or are hierarchically belo
 For example Cat c; can hold instances of Cat and anything that is extended from a Cat. Animal can hold Animal, Mammal, etc..  
 Remember, that instances will always be upcasted to the variable level.
 
+## Data Type
+### Array与ArrayList的主要区别
+1. 精辟阐述: 可以将 ArrayList想象成一种"会自动扩增容量的Array".
+
+1. Array():最高效,但是其容量固定且无法动态改变, ArrayList: 容量可动态增长,但牺牲效率,
+
+1. Java中一切皆对象,Array也是对象.不论你所使用得Array型别为何, Array名称本身实际上是个reference,指向heap之内得某个实际对象.这个对象可经由"Array初始化语法"被自动产生,也可以以new表达式手动产生.
+
+1. Array可做为函数返回值,因为它本身是对象的reference
+
+1. 对象数组与基本类型数组在运用上几乎一模一样,唯一差别在于,前者持有得是reference,后者直接持有基本型别之值,
+
+1. 容器所持有的其实是一个个reference指向Object,进而才能存储任意型别.当然这不包括基本型别,因为基本型别并不继承自任何classes.
+
+1. 面对Array,我们可以直接持有基本型别数值的Array(例如:`int [] num;`),也可以持有reference(指向对象)的Array, 但是容器类仅能持有reference(指向对象),若要将基本型别置于容器内,需要使用wrapper类.
+但是wrapper类使用起来可能不很容易上手,此外,primitives Array的效率比起"容纳基本型别之外覆类(的reference)"的容器好太多了. 
+当然,如果你的操作对象是基本型别,而且需要在空间不足时自动扩增容量,Array便不适合,此时就得使用外覆类的容器了.
+
+1. 某些情况下,容器类即使没有转型至原来的型别,仍然可以运作无误.有一种情况尤其特别:编译器对String class提供了一些额外的支持,使它可以平滑运作.
+
+1. 对数组的一些基本操作,像排序,搜索与比较等是很常见的.因此在Java中提供了Arrays类协助这几个操作:sort(),binarySearch(),equals(),fill(),asList().
+不过Arrays类没有提供删除方法,而ArrayList中有remove()方法,不知道是否是不需要在Array中做删除等操作的原因(因为此时应该使用链表).
+
+1. ArrayList的使用也很简单:产生ArrayList,利用add()将对象置入,利用get(i)配合索引值将它们取出.这一切就和Array的使用方式完全相同,只不过少了`[]`而已.
+
+1. 类型识别: ArrayList存入对象时,抛弃类型信息,所有对象屏蔽为Object,编译时不检查类型,但是运行时会报错.
+
+1. ArrayList可以存任何Object,如String等.
+
 # Spring
 entity(model) --- service --- DAO -- DAOImplementation
 解析xml 文件: jdom, dom4j
