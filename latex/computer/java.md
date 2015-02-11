@@ -339,7 +339,39 @@ Aspects are implemented using regular classes along with XML based configuration
 @AspectJ refers to a style of declaring aspects as regular Java classes annotated with Java 5 annotations
 
 ## Spring JDBC Framework
+Spring JDBC provides several approaches and correspondingly different classes to interface with the database.
+the most popular approach which makes use of JdbcTemplateclass of the framework
 
+Instances of the JdbcTemplate class are threadsafe once configured. So you can configure a single instance of a JdbcTemplate and then safely inject this shared reference into multiple DAOs.
+
+DAO: Data Access Object
+
+DataSource 一个抽象接口
+因为拿到connection 的方法很多, 所以需要一个抽象接口
+dbcp: database connection pool
+```
+<bean id="dataSource" destroy-method="close" class="org.apache.commons.dhcp.BasicDataSource">
+	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+	<property name="url" value="jdbc:mysql://localhost:3306/db"/>
+	<property name="username" value="root"/>
+	<property name="password" value="password"/>
+</bean>
+```
+在上面是把数据库的参数直接写到了Beans.xml 的配置文件中, 我们还可以通过下面占位符的方式, 把数据库的连接参数单独放在一个文件中.
+```
+<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<property name="locations">
+		<value>classpath:jdbc.properties</value>
+	</property>
+</bean>
+在classpath 的目录下有一个jdbc.properties的文件
+<bean id="dataSource" destroy-method="close" class="org.apache.commons.dhcp.BasicDataSource">
+	<property name="driverClassName" value="${jdbc.driverClassName}$"/>
+	<property name="url" value="${jdbc.driverClassName}$"/>
+	<property name="username" value="${jdbc.username}$"/>
+	<property name="password" value="${jdbc.password}$"/>
+</bean>
+```
 
 # Maven
 Maven是一个优秀的项目构建工具.
