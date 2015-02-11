@@ -71,10 +71,6 @@ Spring在读取xml配置文件中的bean的时候采用的是反射机制, 读�
 
 动态装配
 
-IoC: Inversion of Control 控制反转(交给容器控制)  
-DI: Dependency Injection 依赖注入  
-Dependency Injection is merely one concrete example of Inversion of Control.
-
 AOP: Aspect Oriented Programming
 
 The Spring Framework
@@ -114,6 +110,156 @@ The Spring IoC container makes use of Java POJO(Plain Old Java Object) classes a
 		1. WebXmlApplicationContext: Web Application
 
 由于ApplicationContext container 包括 BeanFactory container 的所有功能, 因此一般建议使用ApplicationContext container, 除非是在内存等资源有限的情况或者对性能要求比较高的情况下(例如Mobile).
+
+## Spring Bean
+Spring Bean Properties
+
+- class This attribute is mandatory and specify the bean class to be used to create the bean.
+- name This attribute specifies the bean identifier uniquely. In XML-based configuration metadata, you use the id and/or name attributes to specify the bean identifier(s).
+- scope(`scope = ""`) This attribute specifies the scope of the objects created from a particular bean definition
+- constructor-arg This is used to inject the dependencies and will be discussed in next chapters.
+- properties This is used to inject the dependencies
+- autowiring mode This is used to inject the dependencies
+- lazy-initialization mode(`lazy-init = "true"` A lazy-initialized bean tells the IoC container to create a bean instance when it is first requested, rather than at startup.
+- initialization method(`init-method = ""`) A callback to be called just after all necessary properties on the bean have been set by the container.
+- destruction method(`destroy-method = ""`) A callback to be used when the container containing the bean is destroyed.
+
+Scope 的可选项:
+
+- singleton This scopes the bean definition to a single instance per Spring IoC container (default) 只存在一个
+- prototype This scopes a single bean definition to have any number of object instances, 每次需要的时候都会创建一个新的
+- request This scopes a bean definition to an HTTP request. Only valid in the context of a web-aware Spring ApplicationContext.
+- session This scopes a bean definition to an HTTP session. Only valid in the context of a web-aware Spring ApplicationContext.
+- global-session This scopes a bean definition to a global HTTP session. Only valid in the context of a web-aware Spring ApplicationContext.
+
+当beans 的init 和destroy 方法都一样时, 可以在beans的层级统一设置
+```
+<beans default-init-method ="init" default-destroy-method ="destroy" >
+	<bean id ="..."  class ="..." ></bean>
+</beans>
+```
+
+Post processor
+postProcessBeforeInitialization: 在初始化一个bean 之前调用的方法
+postProcessAfterInitialization: 在初始化一个bean 之后调用的方法.
+和之前的init-method, destroy-method 的顺序为: postProcessorBeforeInitialization -> Bean 的创建 -> init-method -> postProcessorAfterInitialization -> destroy-method -> Bean的销毁
+
+Bean 的定义也可以有继承, 只需要在`<bean parent = "pid"></bean>` 中指定parent的id 就可以了.
+还可以定义bean template
+
+## Dependency Injection
+IoC: Inversion of Control 控制反转(交给容器控制)  
+DI: Dependency Injection 依赖注入  
+Dependency Injection is merely one concrete example of Inversion of Control.
+
+Dependency Injection (or sometime called wiring) helps in gluing these classes together and same time keeping them independent.
+
+Consider you have an application which has a text editor component and you want to provide spell checking. Your standard code would look something like this:
+```
+public class TextEditor {
+	private SpellChecker spellChecker;
+	public TextEditor() {
+		spellChecker = new SpellChecker();
+	}
+}
+```
+What we've done here is create a dependency between the TextEditor and the SpellChecker. 
+In an inversion of control scenario we would instead do something like this:
+```
+public class TextEditor {
+	private SpellChecker spellChecker;
+	public TextEditor(SpellChecker spellChecker) {
+		this.spellChecker = spellChecker;
+	}
+}
+```
+这里, 我们在创建一个texteditor 的时候将spellchecker 作为一个参数传进去, 就可以解决上面实现中依赖问题, 从而得到了很大的灵活性.
+在Spring Framework 中, 这种工作时通过一个xml 文件来进行配置的.
+Here, we have removed the total control from TextEditor and kept it somewhere else (ie. XML
+configuration file) and the dependency ( ie. class SpellChecker) is being injected into the class TextEditor through a Class Constructor.
+
+DI exists in two major variants 
+
+1. Constructor-based dependency injection  
+Constructor-based DI is accomplished when the container invokes a class constructor with a number of arguments, each representing a dependency on other class.
+2. Setter-based dependency injection  
+Setter-based DI is accomplished by the container calling setter methods on your beans after invoking a no-argument constructor or no-argument static factory method to instantiate your bean.
+
+You can mix both, Constructor-based and Setter-based DI but it is a good rule of thumb to use
+constructor arguments for mandatory dependencies and setters for optional dependencies.
+
+### Constructor-based dependency injection  
+TextEditor 的构造函数
+```
+public TextEditor(SpellChecker spellChecker) {
+		System.out.println("Inside TextEditor constructor.");
+		this.spellChecker = spellChecker;
+}
+```
+Beans.xml 中将两者关联起来, spellChecker 作为textEditor的构造函数的参数.
+```
+<bean id ="textEditor"  class ="com.tutorialspoint.TextEditor" > <constructor-arg ref ="spellChecker" /> </bean>
+<bean id ="spellChecker"  class ="com.tutorialspoint.SpellChecker" > </bean>
+```
+当构造函数需要多个参数时, constructor-arg 的顺序要与构造函数中参数的顺序一致.
+
+### Setter-based Dependency Injection
+TextEditor 中设置spellChecker 的方法
+```
+public void setSpellChecker(SpellChecker spellChecker) {
+	System.out.println("Inside SetTextEditor");
+	this.spellChecker = spellChecker;
+}
+```
+Beans.xml 将两者关联起来, 通过setter 来设置参数, 而不是构造函数.
+```
+<bean id ="textEditor"  class ="com.tutorialspoint.TextEditor" >
+<property name="spellChecker" ref="spellChecker" />
+</bean>
+
+<bean id ="spellChecker"  class ="com.tutorialspoint.SpellChecker" >
+</bean>
+```
+in case you are passing a reference to an object, you need to use ref attribute of <property> tag and 
+if you are passing a value directly then you should use value attribute
+
+除了可以按照上面的方法进行设置外, 还可以通过inner bean的方式进行设置(直接将ref 的 bean 写到property 里面).
+```
+<bean id ="textEditor"  class ="com.tutorialspoint.TextEditor" >
+	<property name="spellChecker">
+		<bean id ="spellChecker"  class ="com.tutorialspoint.SpellChecker" />
+	</property>
+</bean>
+```
+
+### Spring Injecting Collection
+
+- <list>  This helps in wiring ie injecting a list of values, allowing duplicates.
+- <set>  This helps in wiring a set of values but without any duplicates.
+- <map> This can be used to inject a collection of name-value pairs where name and value can be of any type.
+- <props> This can be used to inject a collection of name-value pairs where the name and value are both Strings.
+
+```
+<property name="addressList" >
+	<list>
+		<value> INDIA </value>
+		<value> Pakistan </value>
+		<value> USA </value>
+		<value> USA </value>
+	</list>
+</property>
+
+<property name="addressList" >
+	<list>
+		<ref bean="address1" />
+		<ref bean="address2" />
+		<value> Pakistan </value>
+	</list>
+</property>
+```
+
+empty string: `<property name="email" value="" />`  
+null value: `<property name="email" ><null/></property>`
 
 # Maven
 Maven是一个优秀的项目构建工具.
