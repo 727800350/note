@@ -261,6 +261,46 @@ if you are passing a value directly then you should use value attribute
 empty string: `<property name="email" value="" />`  
 null value: `<property name="email" ><null/></property>`
 
+Spring Annotation Based Configuration  
+Annotation injection is performed before XML injection, 
+thus the latter configuration will override the former for properties wired through both approaches
+
+Spring Java Based Configuration
+
+## Event Handling in Spring
+1. ContextRefreshedEvent  
+This event is published when the ApplicationContext is either initialized or refreshed.
+This can also be raised using the refresh() method on the ConfigurableApplicationContext interface.
+2. ContextStartedEvent  
+This event is published when the ApplicationContext is started using the start() method on theConfigurableApplicationContext interface. 
+You can poll your database or you can re/start any stopped application after receiving this event.
+3. ContextStoppedEvent  
+This event is published when the ApplicationContext is stopped using the stop() method on theConfigurableApplicationContext interface. 
+You can do required housekeep work after receiving this event.
+4. ContextClosedEvent  
+This event is published when the ApplicationContext is closed using the close() method on theConfigurableApplicationContext interface. 
+A closed context reaches its end of life; it cannot be refreshed or restarted.
+5. RequestHandledEvent  
+This is a web-specific event telling all beans that an HTTP request has been serviced.
+
+Spring's event handling is single-threaded so if an event is published, until and unless all the receivers get the message, the processes are blocked and the flow will not continue.
+
+To listen a context event, a bean should implement the ApplicationListener interface which has just one method `onApplicationEvent()`.
+
+```
+public class CStartEventHandler implements ApplicationListener<ContextStartedEvent>{
+	public void onApplicationEvent(ContextStartedEvent event) {
+		System.out.println("ContextStartedEvent Received");
+	}
+}
+
+public class CStopEventHandler implements ApplicationListener<ContextStopedEvent>{
+	public void onApplicationEvent(ContextStartedEvent event) {
+		System.out.println("ContextStopedEvent Received");
+	}
+}
+```
+
 # Maven
 Maven是一个优秀的项目构建工具.
 
