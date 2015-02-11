@@ -132,6 +132,8 @@ Scope 的可选项:
 - session This scopes a bean definition to an HTTP session. Only valid in the context of a web-aware Spring ApplicationContext.
 - global-session This scopes a bean definition to a global HTTP session. Only valid in the context of a web-aware Spring ApplicationContext.
 
+prototype 不要和init-method, destroymethod 一起使用, applicationcontext 不会监控prototype的lifecycle.
+
 当beans 的init 和destroy 方法都一样时, 可以在beans的层级统一设置
 ```
 <beans default-init-method ="init" default-destroy-method ="destroy" >
@@ -261,9 +263,16 @@ if you are passing a value directly then you should use value attribute
 empty string: `<property name="email" value="" />`  
 null value: `<property name="email" ><null/></property>`
 
+autowire 自动装配
+
 Spring Annotation Based Configuration  
 Annotation injection is performed before XML injection, 
 thus the latter configuration will override the former for properties wired through both approaches
+
+annotation 默认是关闭的, 需要在Beans.xml 加入下面的内容来开启
+```
+<context: annotation-config>
+```
 
 Spring Java Based Configuration
 
@@ -300,6 +309,37 @@ public class CStopEventHandler implements ApplicationListener<ContextStopedEvent
 	}
 }
 ```
+
+## AOP 面向切面编程
+Aspect Oriented Programming entails breaking down program logic into distinct parts called so-called concerns. 
+The functions that span multiple points of an application are called cross-cutting concerns and these cross-cutting concerns are conceptually separate from the application's business logic. 
+There are various common good examples of aspects like logging, auditing, declarative transactions, security, and caching etc.
+
+Spring AOP module provides interceptors to intercept an application, for example, when a method is executed, you can add extra functionality before or after the method execution.
+
+通过AOP, 我们可以在不改变原有的代码情况下, 而增加业务逻辑.
+
+动态代理
+
+AOP 里面的概念
+
+- JointPoint: 连接点
+- PointCut: JointPoint集合
+- Aspect: 切面
+- Advice: 可以简单的理解成 @Before, @AfterReturning @AfterThrowing @After @Around (before and after)
+- Introduction An introduction allows you to add new methods or attributes to existing classes.
+- Target: 被代理对象, 把我们的逻辑织入到哪个对象上面去
+- Weaving: 织布 Weaving is the process of linking aspects with other application types or objects to create an advised object. This can be done at compile time, load time, or at runtime
+
+AOP 的两种实现方式
+
+1. XML Schema based   
+Aspects are implemented using regular classes along with XML based configuration.
+1. @AspectJ based  
+@AspectJ refers to a style of declaring aspects as regular Java classes annotated with Java 5 annotations
+
+## Spring JDBC Framework
+
 
 # Maven
 Maven是一个优秀的项目构建工具.
