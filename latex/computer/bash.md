@@ -251,6 +251,20 @@ eg:
 5. `* 23 * * 2-5 /usr/local/bin/esbbak`
 表示在星期二到星期五每天的23点执行
 
+nohup命令:
+如果你正在运行一个进程,而且你觉得在退出帐户时该进程还不会结束,那么可以使用nohup命令.该命令可以在你退出帐户/关闭终端之后继续运行相应的进程.nohup就是不挂断的意思( no hang up).
+该命令的一般形式为:`nohup command &`  
+如果使用nohup命令提交作业,那么在缺省情况下该作业的所有输出都被重定向到一个名为nohup.out的文件中,除非另外指定了输出文件:
+```
+nohup command > myout.file 2>&1 &
+```
+在上面的例子中,0 – stdin (standard input),1 – stdout (standard output),2 – stderr (standard error) ,
+2>&1是将标准错误(2)重定向到标准输出(&1),标准输出(&1)再被重定向输入到myout.file文件中.
+使用 jobs 查看任务.
+使用 fg %n　关闭.
+
+有两个常用的ftp工具ncftpget和ncftpput,可以实现ftp上传和下载,我们可以利用nohup命令在后台实现文件的上传和下载.
+
 **time**  
 1. 实际时间(real time): 从command命令行开始执行到运行终止的消逝时间
 2. 用户CPU时间(user CPU time): 命令执行完成花费的用户CPU时间,即命令在用户态中执行时间总和
