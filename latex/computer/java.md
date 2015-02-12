@@ -69,6 +69,71 @@ Remember, that instances will always be upcasted to the variable level.
 
 测试完成后, 要恢复现场. 例如测试数据库的插入方法, 测试之后, 需要把插入的测试数据删除掉.
 
+# Servlet
+request:浏览器---> web服务器----> Java应用程序服务器
+response:顺序反过来
+
+在ASP中,微软把asp程序服务器捆绑在web服务器IIS(Internet information service)中  
+Java应用程序服务器(web容器):jackarta tomcat,bea WebLogic  
+http web服务器:IIS,Apache  
+tomcat内建的有web服务器,但是这个内建的服务器功能比较弱小
+
+MIME:multipurpose Internet mail extensions: 就是设定某种扩展名的文件用一种特定的应用程序来打开的方式类型
+
+字符流:
+```
+Printwriter writer=response.getwriter();
+writer.println(string);
+```
+
+字节流:
+```
+servletOutputStream out=response.getOutputStream();
+out.write(bytes);
+```
+
+重定向是在客户端完成的,一般浏览器的地址栏会改变,
+而请求分派是在服务器端完成的,url不变,且一般分派到另外一个servlet或者jsp
+
+如果想把某项信息出现在servlet生成的网页上,比如admin的Email:
+
+1. 可以将这项信息写在servlet的代码中,但是hardcode不好
+2. 将这项信息写在web.xml的配置文件中,然后再servlet的代码中调用这个配置信息
+3. 如果这项信息经常改变,让servlet从一个数据库中读取这个数据(因为如果还是把这个信息放在配置文件中,那么就需要经常重新部署这个应用,这在实际的生产中是不允许的)
+
+servletconfig中的初始化参数只是针对于一个servlet的,
+而servletcontext(逻辑上更应该叫做Appcontext)的初始化参数,是针对于整个web应用的,这个应用中所有的servlet,jsp等都可以访问servletcontext的初始化参数.
+
+每个JVM的每个web应用有一个servletcontext(分布式应用,一致性问题)
+每个JVM的每个servlet都有一个servletconfig,  
+(一个JVM 可以含有多个web 应用, 而每个web 应用又可以含有多个servlet)
+
+一个httpsession只能出现在一个JVM上,当一个用户的请求被指派到另外一个JVM上时,这个用户的session会迁移到相应的JVM上
+
+一个写得好的servlet,你不会看到任何实例变量或者至少看不到非final变量
+因为servlet的所有线程都可以处理实例变量,所以你无法保证你用的实例变量不被同一个servlet的其他线程修改
+doGet方法不是线程安全的,因为可能出现多个线程同时访问一个servlet的doget方法,但是init方法是线程安全的,web容器能够保证只有一个请求可以访问这个函数,因为servlet只被初始化一次.
+
+- 类变量:类中独立于方法之外的变量,用static修饰
+- 实例变量:类中独立于方法之外的变量,不用static修饰
+- 局部变量:类的方法中的变量
+- final:常量
+
+- forward()永久性的移交任务
+- include()请求别人完成工作,然后再由发送者继续工作
+
+对于服务器来说,你的IP地址就是路由器的地址
+
+序列化serialization:将对象的状态信息转换为可以存储或传输的形式的过程.在序列化期间,对象将其当前状态写入到临时或持久性存储区.以后,可以通过从存储区中读取或反序列化对象的状态,重新创建该对象.
+
+- scriplet: `<%       %>`
+- 指令: `<%@         %>`
+- 表达式: `<%=       %>`
+
+`<%@ page import="foo.*,java.util.*"  %>`   // import 是page的一个属性
+
+表达式会成为`out.print()`的参数,`<%= code %>`等价于`<%out.print(code);%>`
+
 # Spring
 entity(model) --- service --- DAO -- DAOImplementation
 解析xml 文件: jdom, dom4j
