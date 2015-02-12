@@ -515,8 +515,21 @@ dbcp: database connection pool
 </bean>
 ```
 
-# 架构
+# mybatis
+MyBatis is a first class persistence framework with support for custom SQL, stored procedures and advanced mappings. 
+MyBatis eliminates almost all of the JDBC code and manual setting of parameters and retrieval of results. 
+MyBatis can use simple XML or Annotations for configuration and map primitives, Map interfaces and Java POJOs (Plain Old Java Objects) to database records.
 
+mybatis-x.x.x.jar
+```
+<dependency>
+<groupId>org.mybatis</groupId>
+<artifactId>mybatis</artifactId>
+<version>x.x.x</version>
+</dependency>
+```
+
+# 架构
 用户注册的例子
 ```
 client --- jsp --- UserManager --- UserManagerImpl --- User --- UserDAO --- UserDAOImpl --- DB
