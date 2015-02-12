@@ -63,6 +63,12 @@ Remember, that instances will always be upcasted to the variable level.
 
 1. ArrayList可以存任何Object,如String等.
 
+## Junit Test
+对于Web 项目, 通过Junit Test, 可以不必把项目部署到tomcat 上就可以对业务逻辑进行测试.
+而且, 实际的项目开发, 业务逻辑和前段展现, 很可能不是同一个人进行, 所以进行业务逻辑的测试时不应该依赖于前端.
+
+测试完成后, 要恢复现场. 例如测试数据库的插入方法, 测试之后, 需要把插入的测试数据删除掉.
+
 # Spring
 entity(model) --- service --- DAO -- DAOImplementation
 解析xml 文件: jdom, dom4j
@@ -371,6 +377,20 @@ dbcp: database connection pool
 	<property name="username" value="${jdbc.username}$"/>
 	<property name="password" value="${jdbc.password}$"/>
 </bean>
+```
+
+# 架构
+
+用户注册的例子
+```
+client --- jsp --- UserManager --- UserManagerImpl --- User --- UserDAO --- UserDAOImpl --- DB
+```
+在这里, jsp 里包含了view, 和 control的功能.  
+我们可以将strut 2 加进来, 实现control的功能;  
+把spring 加进来实现model 的功能, 把UserManager 交给Spring 管理;  
+把hibernate加到UserDAOImpl 和 DB 之间, 用来隔绝具体的数据库.
+```
+client --- jsp --- struts 2 filter --- Action --- view:jsp --- UserManager --- UserManagerImpl --- User --- UserDAO --- UserDAOImpl --- DB
 ```
 
 # Maven
