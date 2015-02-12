@@ -88,6 +88,56 @@ git push origin :refs/tags/tag_name
 	git remote add origin git@git.oschina.net:eric_uni/projet.git 
 	git push -u origin master
 
+Git Stripspace
+
+- 去掉行尾空白符
+- 多个空行压缩成一行
+- 必要时在文件末尾增加一个空行
+- 使用此命令时必须传入一个文件,像这样:
+```
+$ git stripspace < README.md
+```
+
+提交空的改动
+```
+git commit -m "Big-ass commit" --allow-empty
+```
+这样做在如下几种情况下是有意义的:
+
+- 标记一批工作或一个新功能的开始.
+- 记录你对项目进行了跟代码无关的改动.
+- 跟使用你仓库的其他人交流.
+- 作为仓库的第一次提交,因为第一次提交日后是不能被rebase的: git commit -m "init repo" --allow-empty.
+
+在任意diff页面的URL后加上?w=1,可以去掉那些只是空白字符的变化,使你能更专注于代码的变化
+在diff或者file页面的URL后面加上?ts=4,这样当显示tab字符的长度时就会是4个空格的长度,不再是默认的8个空格.ts后面的数字还可以根据你个人的偏好进行修改.不过,在在Gists页面和raw file页面不起作用
+查看某个用户的所有提交历史,只需在commits页面URL后加上?author=username.
+
+当你点击某个仓库的分支(Branches)选项卡时
+```
+https://github.com/{user}/{repo}/branches
+```
+你会看到一个包含所有未合并的分支的列表.
+
+有的时候我们需要将多个分支与一个非主分支(master)进行对比,此时可以通过在URL后加入要比较的分支名来实现:
+```
+https://github.com/{user}/{repo}/branches/{branch}
+```
+可以在URL后加上?merged=1来查看已经合并了的分支.
+
+如果我们想要比较两个分支,可以像下面一样修改URL:
+```
+https://github.com/user/repo/compare/{range}
+其中{range} = master...4-1-stable
+```
+例如:
+```
+https://github.com/rails/rails/compare/master...4-1-stable
+https://github.com/rails/rails/compare/master@{1.day.ago}...master
+https://github.com/rails/rails/compare/master@{2014-10-04}...master
+这样你就能查看master分支上一段时间或者指定日期内的改动.
+```
+
 # FAQ
 **错误提交了一个commit, 需要把它撤销掉**  
 但是这个好像只针对于刚提交就意识到了错误
