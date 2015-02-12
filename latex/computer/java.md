@@ -1,6 +1,77 @@
 # Java
 [环境变量配置](http://jingyan.baidu.com/article/f96699bb8b38e0894e3c1bef.html)
 
+## Data Types
+注意: Integer 是一个wrapper类, 而不是 primitive, int 才是primitive
+
+## 变量的初始化
+```
+void f(){
+	int i;
+	i++; // Error -- i not initialized
+}
+```
+你会得到一个提示内容为i 可能没被初始化的错误消息. 当然, 编译器可能已经为i 赋予了一个默认值,但是没被初始化的局部变量有可能是程序员的一个错误,而默认值恰恰掩盖了这个错误. 强制程序员赋予初始值极有可能捕获程序缺陷.
+
+不过假如 primitives 是类的 field,情况会有些不同. 类的每一个 primitive 都被确保得到一个初始值. 下面的程序验证了这一点.
+```
+public class InitialValues {
+	boolean t;
+	char c;
+	byte b;
+	short s;
+	int i;
+	long l;
+	float f;
+	double d;
+	InitialValues reference;
+	
+	void print(){
+		System.out.println("Data type initial value");
+	}
+	
+	public static void main(String[] args) {
+		InitialValues iv = new InitialValues();
+		iv.print();
+	}
+}
+```
+通过在调试界面看到, primitives 变量都被默认初始化为0, reference 被默认初始化为null.
+
+如果你想为一个变量赋予初始值,具体该怎么做呢? 
+一种直接的方式就是当你在类里定义变量的时候就简单明了地为它赋值.(注意 C++不允许你这么初始化值,尽管一些 C++新手总要想当然地这么做.)
+```
+boolean bool = true;
+char ch = 'x';
+byte b = 47;
+short s = 0xff;
+int i = 999;
+long lng = 1;
+float f = 3.14f;
+double d = 3.14159
+Depth d = new Depth();
+```
+
+在一个类里,初始化的顺序由变量在类里被定义的顺序来决定. 变量的定义可能散落在类的各个地方并且与方法的定义交织在一起,但是变量初始化后,方法才可以被调用—甚至是constructor.
+
+### 数组的初始化
+下面的两种方式都可以
+```
+int [ ] a1;
+int a1[] ;
+```
+编译器不允许你在这个时候告诉它数组有多大. 这使我们回忆起有关"引用"的问题. 到现在你所拥有的只是一个指向数组的引用(你已经为那个引用分配了足够的存贮空间),但是还没有为数组对象本身赋予空间.  
+要给数组创造存贮空间,你必须编写一个初始化表达式. 对于数组,初始化可以在你的代码的任何地方出现,但是你也可以使用一种特殊的初始化表达式,
+这种表达式必须在数组被创建的地方执行. 此类特殊的初始化由一组被花括号包围的值构成. 在这种情况下,存贮空间的分配(相当于使用 new)由编译器来负责. 举个例子:
+```
+int [ ] a1 = {1, 2, 3, 4, 5 };
+```
+对象数组
+```
+Object [] obs = new Object[]{new Integer(47), new Float(3.14), new Double(11.11)};
+Object [] obs = new Object[]{"one", "two", "three"};
+```
+
 ## Cast
 First, you must understand, that by casting you are not actually changing the object itself, you are just labeling it differently.
 
@@ -8,8 +79,8 @@ First, you must understand, that by casting you are not actually changing the ob
 
 ![Cast example](http://uploads.codecall.net/monthly_05_2014/post-27003-0-90059300-1399049433.jpg)
 
-For example, if you create a Cat and upcast it to Animal, then the object doesn't stop from being a Cat. 
-It's still a Cat, but it's just treated as any other Animal and it's Cat properties are **hidden**(数据还是在实实在在的在那里, 只是无法访问) until it's downcasted to a Cat again.
+For example, if you create a Cat and upcast it to Animal, then the object doesnot stop from being a Cat. 
+It is still a Cat, but it is just treated as any other Animal and it is Cat properties are **hidden**(数据还是在实实在在的在那里, 只是无法访问) until it is downcasted to a Cat again.
 ```
 Mammal m = (Mammal)new Cat();
 ```
