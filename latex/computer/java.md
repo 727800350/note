@@ -2,7 +2,102 @@
 [环境变量配置](http://jingyan.baidu.com/article/f96699bb8b38e0894e3c1bef.html)
 
 ## Data Types
-注意: Integer 是一个wrapper类, 而不是 primitive, int 才是primitive
+基本数据类型只有8个, byte, short, int, log, float, double, char, boolean;  
+除了基本类型(primitive type)和枚举类型(enumeration type), 剩下的都是引用类型.
+
+但是为了将基本数据类型当成对象操作, Java 为每一个基本数据类型都引入了对应的包装类型(Wrapper Class), 从JDK1.5 开始, 引入了自动的装箱/拆箱机制, 使得二者可以相互转换.  
+Boolean, Character, Byte, Short, Integer, Long, Float, Double
+
+```
+switch(expr)
+```
+expr 可以是byte, short, char, int, enum, String, 但是不能是long
+
+`float f = 3.4` 编译错误.  
+3.4 是双精度数, 将double 类型复制到float, 需要强制转换, 或者写成`float f = 3.4F`
+
+```
+short s1 = 1;
+s1 = s1 + 1; // 编译出错, 1 是int 类型, s1 + 1 也是int 类型, 因此需要强制转换
+
+short s1 = 1;
+s1 += 1; // 正确, 隐含的强制转换
+```
+
+装箱与拆箱
+```
+Integer a = new Integer(3);
+Integer b = 3;
+int c = 3;
+System.out.println(a == b); // false, 因为没有引用同一个对象
+System.out.println(a == c); // true, a 自动拆箱成int 类型, 再和c 进行比较
+System.out.println(b == c);
+```
+
+数组有length 属性, String 有length()方法.
+但是在Javascript中, 获得字符串的长度也是通过length 属性得到的.
+
+### 引用类型
+如果两个对象, x.equals(y) == true, 那么它们的hashCode 一定相同.(hashCode 的规定就是这样的).
+
+String 是final 类, 不可以被继承.  
+对String类型的最好重用方式是关联(has a)而不是继承(is a)
+
+String 是只读字符串.
+
+```
+String a = "Programming";
+String b = new String("Programming");
+String c = "Program" + "ming";
+System.out.println(a == b); // false
+System.out.println(a == c); // true, 可能因为a 和c 都是字面量, 不知道这么解释对不对
+System.out.println(a.equals(b)); // true
+System.out.println(a.equals(c)); // true
+System.out.println(a.intern() == b.intern()); //true
+```
+- `String.equals`: true if and only if the argument is not null and is a String object that represents the same sequence of characters as this object.
+- `a.intern() == t.intern()` is true if and only if `s.equals(t)` is true
+
+### 存储区
+
+- 通常我们定义一个基本类型数据类型的变量, 一个对象的引用, 还有就是函数调用的现场保存都使用内存中的栈空间
+- 而通过new 关键字和构造器创建的对象放在堆空间.
+- 程序中的字面量(literal) 如直接书写的100, "hello" 和常量都是放在静态存储区中.
+
+栈空间操作最快但是也是很小, 通常大量的对象都是放在堆空间, 整个内存包括硬盘上的虚拟内存都可以被当成堆空间来使用
+
+```
+String str = new String("hello");
+```
+上面的语句中str 放在栈中, 用new 创建的字符串对象放在堆中, 而"hello" 这个字面量放在静态存储区.
+
+### Array与ArrayList的主要区别
+1. 精辟阐述: 可以将 ArrayList想象成一种"会自动扩增容量的Array".
+
+1. Array():最高效,但是其容量固定且无法动态改变, ArrayList: 容量可动态增长,但牺牲效率,
+
+1. Java中一切皆对象,Array也是对象.不论你所使用得Array型别为何, Array名称本身实际上是个reference,指向heap之内得某个实际对象.这个对象可经由"Array初始化语法"被自动产生,也可以以new表达式手动产生.
+
+1. Array可做为函数返回值,因为它本身是对象的reference
+
+1. 对象数组与基本类型数组在运用上几乎一模一样,唯一差别在于,前者持有得是reference,后者直接持有基本型别之值,
+
+1. 容器所持有的其实是一个个reference指向Object,进而才能存储任意型别.当然这不包括基本型别,因为基本型别并不继承自任何classes.
+
+1. 面对Array,我们可以直接持有基本型别数值的Array(例如:`int [] num;`),也可以持有reference(指向对象)的Array, 但是容器类仅能持有reference(指向对象),若要将基本型别置于容器内,需要使用wrapper类.
+但是wrapper类使用起来可能不很容易上手,此外,primitives Array的效率比起"容纳基本型别之外覆类(的reference)"的容器好太多了. 
+当然,如果你的操作对象是基本型别,而且需要在空间不足时自动扩增容量,Array便不适合,此时就得使用外覆类的容器了.
+
+1. 某些情况下,容器类即使没有转型至原来的型别,仍然可以运作无误.有一种情况尤其特别:编译器对String class提供了一些额外的支持,使它可以平滑运作.
+
+1. 对数组的一些基本操作,像排序,搜索与比较等是很常见的.因此在Java中提供了Arrays类协助这几个操作:sort(),binarySearch(),equals(),fill(),asList().
+不过Arrays类没有提供删除方法,而ArrayList中有remove()方法,不知道是否是不需要在Array中做删除等操作的原因(因为此时应该使用链表).
+
+1. ArrayList的使用也很简单:产生ArrayList,利用add()将对象置入,利用get(i)配合索引值将它们取出.这一切就和Array的使用方式完全相同,只不过少了`[]`而已.
+
+1. 类型识别: ArrayList存入对象时,抛弃类型信息,所有对象屏蔽为Object,编译时不检查类型,但是运行时会报错.
+
+1. ArrayList可以存任何Object,如String等.
 
 ## 变量的初始化
 ```
@@ -72,6 +167,16 @@ Object [] obs = new Object[]{new Integer(47), new Float(3.14), new Double(11.11)
 Object [] obs = new Object[]{"one", "two", "three"};
 ```
 
+## Class
+重载(Overload) 和 重写(Override)的区别:
+
+- 两者都是实现多态的方式, 重载是编译时的多态, 重写是运行时的多态
+- 重载发生在一个类中, 同名的方法如果有不同的参数(类型或者个数)不同, 则为重载. 因为在编译时就可以看到参数的不同, 因而是编译时的多态.
+- 重写是发生在子类和父类之间, 重写要求子类被重写方法与父类被重写方法有相同的返回类型(重载对返回类型没有特殊要求), 不能比父类被重写方法声明更多的异常(里氏代换原则).
+
+重载的方法能够根据返回类型进行区分?  
+不能, 因为有时我们调用函数对函数的返回类型是不关心的. 只写 f(), 这时, 我们判断不出.
+
 ## Cast
 First, you must understand, that by casting you are not actually changing the object itself, you are just labeling it differently.
 
@@ -105,34 +210,11 @@ Variables can hold instance of objects that are equal or are hierarchically belo
 For example Cat c; can hold instances of Cat and anything that is extended from a Cat. Animal can hold Animal, Mammal, etc..  
 Remember, that instances will always be upcasted to the variable level.
 
-## Data Type
-### Array与ArrayList的主要区别
-1. 精辟阐述: 可以将 ArrayList想象成一种"会自动扩增容量的Array".
-
-1. Array():最高效,但是其容量固定且无法动态改变, ArrayList: 容量可动态增长,但牺牲效率,
-
-1. Java中一切皆对象,Array也是对象.不论你所使用得Array型别为何, Array名称本身实际上是个reference,指向heap之内得某个实际对象.这个对象可经由"Array初始化语法"被自动产生,也可以以new表达式手动产生.
-
-1. Array可做为函数返回值,因为它本身是对象的reference
-
-1. 对象数组与基本类型数组在运用上几乎一模一样,唯一差别在于,前者持有得是reference,后者直接持有基本型别之值,
-
-1. 容器所持有的其实是一个个reference指向Object,进而才能存储任意型别.当然这不包括基本型别,因为基本型别并不继承自任何classes.
-
-1. 面对Array,我们可以直接持有基本型别数值的Array(例如:`int [] num;`),也可以持有reference(指向对象)的Array, 但是容器类仅能持有reference(指向对象),若要将基本型别置于容器内,需要使用wrapper类.
-但是wrapper类使用起来可能不很容易上手,此外,primitives Array的效率比起"容纳基本型别之外覆类(的reference)"的容器好太多了. 
-当然,如果你的操作对象是基本型别,而且需要在空间不足时自动扩增容量,Array便不适合,此时就得使用外覆类的容器了.
-
-1. 某些情况下,容器类即使没有转型至原来的型别,仍然可以运作无误.有一种情况尤其特别:编译器对String class提供了一些额外的支持,使它可以平滑运作.
-
-1. 对数组的一些基本操作,像排序,搜索与比较等是很常见的.因此在Java中提供了Arrays类协助这几个操作:sort(),binarySearch(),equals(),fill(),asList().
-不过Arrays类没有提供删除方法,而ArrayList中有remove()方法,不知道是否是不需要在Array中做删除等操作的原因(因为此时应该使用链表).
-
-1. ArrayList的使用也很简单:产生ArrayList,利用add()将对象置入,利用get(i)配合索引值将它们取出.这一切就和Array的使用方式完全相同,只不过少了`[]`而已.
-
-1. 类型识别: ArrayList存入对象时,抛弃类型信息,所有对象屏蔽为Object,编译时不检查类型,但是运行时会报错.
-
-1. ArrayList可以存任何Object,如String等.
+```
+Math.round(11.5) = 12
+Math.round(-11.5) = 11
+```
+Math.round 都是通过 + 0.5 然后向下取整
 
 ## Junit Test
 对于Web 项目, 通过Junit Test, 可以不必把项目部署到tomcat 上就可以对业务逻辑进行测试.
