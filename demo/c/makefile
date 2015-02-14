@@ -7,5 +7,7 @@ LIBS=-lmysqlclient_r -lapr-1
 
 time:
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(LIBS) time.c
+io:
+	$(CC) fread_fwrite.c
 clean:
 	rm a.out
