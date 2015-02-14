@@ -13,6 +13,13 @@ switch(expr)
 ```
 expr 可以是byte, short, char, int, enum, String, 但是不能是long
 
+char 型变量中能不能存贮一个中文汉字?为什么?  
+答:char类型可以存储一个中文汉字,因为Java中使用的编码是Unicode(不选择任何特定的编码,直接使用字符在字符集中的编号,这是统一的唯一方法),
+一个char类型占2个字节(16bit)(todo, Java 中sizeof?),所以放一个中文是没问题的.  
+补充:使用Unicode意味着字符在JVM内部和外部有不同的表现形式,在JVM内部都是Unicode,当这个字符被从JVM内部转移到外部时(例如存入文件系统中),需要进行编码转换.
+所以Java中有字节流和字符流,以及在字符流和字节流之间进行转换的转换流,如InputStreamReader和OutputStreamReader,这两个类是字节流和字符流之间的适配器类,承担了编码转换的任务,
+对于C程序员来说,要完成这样的编码转换恐怕要依赖于union(联合体/共用体)共享内存的特征来实现了.
+
 `float f = 3.4` 编译错误.  
 3.4 是双精度数, 将double 类型复制到float, 需要强制转换, 或者写成`float f = 3.4F`
 
@@ -45,6 +52,15 @@ String 是final 类, 不可以被继承.
 
 String 是只读字符串.
 
+String和StringBuilder,StringBuffer的区别?  
+答:Java 平台提供了两种类型的字符串:String和StringBuffer/StringBuilder,它们可以储存和操作字符串.
+其中String是只读字符串,也就意味着String引用的字符串内容是不能被改变的.
+而StringBuffer和StringBuilder类表示的字符串对象可以直接进行修改.
+StringBuilder是JDK 1.5中引入的,它和StringBuffer的方法完全相同,区别在于它是在单线程环境下使用的,因为它的所有方面都没有被synchronized修饰,因此它的效率也比StringBuffer略高.
+
+补充1:有一个面试题问:有没有哪种情况用+做字符串连接比调用StringBuffer/StringBuilder对象的append方法性能更好?  
+如果连接后得到的字符串在静态存储区中是早已存在的,那么用+做字符串连接是优于StringBuffer/StringBuilder的append方法的
+
 ```
 String a = "Programming";
 String b = new String("Programming");
@@ -58,6 +74,15 @@ System.out.println(a.intern() == b.intern()); //true
 - `String.equals`: true if and only if the argument is not null and is a String object that represents the same sequence of characters as this object.
 - `a.intern() == t.intern()` is true if and only if `s.equals(t)` is true
 
+如何实现对象克隆?  
+答:有两种方式:
+
+1. 实现Cloneable接口并重写Object类中的clone()方法,
+2. 实现Serializable接口,通过对象的序列化和反序列化实现克隆,可以实现真正的深度克隆,代码如下.
+
+注意:基于序列化和反序列化实现的克隆不仅仅是深度克隆,更重要的是通过泛型限定,可以检查出要克隆的对象是否支持序列化,这项检查是编译器完成的,不是在运行时抛出异常,
+这种是方案明显优于使用Object类的clone方法克隆对象.
+
 ### 存储区
 
 - 通常我们定义一个基本类型数据类型的变量, 一个对象的引用, 还有就是函数调用的现场保存都使用内存中的栈空间
@@ -69,7 +94,8 @@ System.out.println(a.intern() == b.intern()); //true
 ```
 String str = new String("hello");
 ```
-上面的语句中str 放在栈中, 用new 创建的字符串对象放在堆中, 而"hello" 这个字面量放在静态存储区.
+上面的语句中str 放在栈中, 用new 创建的字符串对象放在堆中, 而"hello" 这个字面量放在静态存储区.  
+创建了2个String object.一个是静态存储区的"hello", 一个是用new创建的.
 
 ### Array与ArrayList的主要区别
 1. 精辟阐述: 可以将 ArrayList想象成一种"会自动扩增容量的Array".
@@ -168,6 +194,20 @@ Object [] obs = new Object[]{"one", "two", "three"};
 ```
 
 ## Class
+
+作用域    当前类  同包 子类 其他
+--------|--------|----|-----|----
+public  |      √| √ |  √ |  √
+protected|  √   |√  |  √ |  ×
+default  | √    | √ | ×  |  ×
+private  | √    |  ×| ×  |  ×
+
+类的成员不写访问修饰时默认为default.默认对于同一个包中的其他类相当于公开(public),对于不是同一个包中的其他类相当于私有(private).
+受保护(protected)对子类相当于公开,对不是同一包中的没有父子关系的类相当于私有.
+
+一个".java"源文件中是否可以包含多个类(不是内部类)?有什么限制?  
+答:可以,但一个源文件中最多只能有一个公开类(public class)而且文件名必须和公开类的类名完全保持一致.
+
 重载(Overload) 和 重写(Override)的区别:
 
 - 两者都是实现多态的方式, 重载是编译时的多态, 重写是运行时的多态
@@ -176,6 +216,89 @@ Object [] obs = new Object[]{"one", "two", "three"};
 
 重载的方法能够根据返回类型进行区分?  
 不能, 因为有时我们调用函数对函数的返回类型是不关心的. 只写 f(), 这时, 我们判断不出.
+
+构造器(constructor)是否可被重写(override)?  
+答:构造器不能被继承,因此不能被重写,但可以被重载.
+
+### static
+创建对象时构造器的调用顺序是:先初始化静态成员,然后调用父类构造器,再初始化非静态成员,最后调用自身构造器.
+```
+class A{  
+    static{  
+        System.out.print("1");  
+    }  
+  
+    public A(){  
+        System.out.print("2");  
+    }  
+}  
+  
+class B extends A{  
+    static{  
+        System.out.print("a");  
+    }  
+  
+    public B(){  
+        System.out.print("b");  
+    }  
+}  
+  
+public class Hello{  
+    public static void main(String[] args){  
+        A ab = new B();  
+        ab = new B();  
+    }  
+}
+```
+执行结果: `1a2b2b`.  
+最后的2b 是 `ab = new B()` 时产生的. static的代码只执行一次, 因此只有一个1a
+
+是否可以从一个静态(static)方法内部发出对非静态(non-static)方法的调用?  
+答:不可以,静态方法只能访问静态成员,因为非静态方法的调用要先创建对象,因此在调用静态方法时可能对象并没有被初始化.
+
+静态嵌套类(Static Nested Class)和内部类(Inner Class)的不同?  
+答:Static Nested Class是被声明为静态(static)的内部类,它可以不依赖于外部类实例被实例化.
+而通常的内部类需要在外部类实例化后才能实例化,其语法看起来挺诡异的.
+
+Anonymous Inner Class(匿名内部类)是否可以继承其它类?是否可以实现接口?  
+答:可以继承其他类或实现其他接口,在Swing编程中常用此方式来实现事件监听和回调.
+
+内部类可以引用它的包含类(外部类)的成员吗?有没有什么限制?  
+答:一个内部类对象可以访问创建它的外部类对象的成员,包括私有成员.
+
+### 抽象与接口
+抽象类(abstract class)和接口(interface)有什么异同?  
+答:抽象类和接口都不能够实例化,但可以定义抽象类和接口类型的引用.一个类如果继承了某个抽象类或者实现了某个接口都需要对其中的抽象方法全部进行实现,否则该类仍然需要被声明为抽象类.
+接口比抽象类更加抽象,因为抽象类中可以定义构造器,可以有抽象方法和具体方法,而接口中不能定义构造器而且其中的方法全部都是抽象方法.
+抽象类中的成员可以是private,默认,protected,public的,而接口中的成员全都是public的.
+抽象类中可以定义成员变量,而接口中定义的成员变量实际上都是常量.有抽象方法的类必须被声明为抽象类,而抽象类未必要有抽象方法.
+
+抽象的(abstract)方法是否可同时是静态的(static),是否可同时是本地方法(native),是否可同时被synchronized修饰?  
+答:都不能.  
+抽象方法需要子类重写,而静态的方法是无法被重写的,因此二者是矛盾的.  
+本地方法是由本地代码(如C代码)实现的方法,而抽象方法是没有实现的,也是矛盾的.  
+synchronized和方法的实现细节有关,抽象方法不涉及实现细节,因此也是相互矛盾的.
+
+接口是否可继承(extends)接口? 抽象类是否可实现(implements)接口? 抽象类是否可继承具体类(concrete class)?  
+答:接口可以继承接口.抽象类可以实现(implements)接口,抽象类可继承具体类,但前提是具体类必须有明确的构造函数.
+
+描述一下JVM 加载class文件的原理机制?  
+答:JVM 中类的装载是由类加载器(ClassLoader) 和它的子类来实现的,Java中的类加载器是一个重要的Java 运行时系统组件,它负责在运行时查找和装入类文件中的类.  
+补充:
+
+1. 由于Java的跨平台性,经过编译的Java源程序并不是一个可执行程序,而是一个或多个类文件.
+当Java程序需要使用某个类时,JVM会确保这个类已经被加载,连接(验证,准备和解析)和初始化.
+类的加载是指把类的.class文件中的数据读入到内存中,通常是创建一个字节数组读入.class文件,然后产生与所加载类对应的Class对象.
+加载完成后,Class对象还不完整,所以此时的类还不可用.当类被加载后就进入连接阶段,这一阶段包括验证,准备(为静态变量分配内存并设置默认的初始值)和解析(将符号引用替换为直接引用)三个步骤.
+最后JVM对类进行初始化,包括:1如果类存在直接的父类并且这个类还没有被初始化,那么就先初始化父类,2如果类中存在初始化语句,就依次执行这些初始化语句.
+
+2. 类的加载是由类加载器完成的,类加载器包括:根加载器(BootStrap),扩展加载器(Extension),系统加载器(System)和用户自定义类加载器(java.lang.ClassLoader的子类).
+从JDK 1.2开始,类加载过程采取了父亲委托机制(PDM).PDM更好的保证了Java平台的安全性,在该机制中,JVM自带的Bootstrap是根加载器,其他的加载器都有且仅有一个父类加载器.
+类的加载首先请求父类加载器加载,父类加载器无能为力时才由其子类加载器自行加载.JVM不会向Java程序提供对Bootstrap的引用.下面是关于几个类加载器的说明:
+
+- Bootstrap:一般用本地代码实现,负责加载JVM基础核心类库(rt.jar),
+- Extension:从java.ext.dirs系统属性所指定的目录中加载类库,它的父加载器是Bootstrap,
+- System:又叫应用类加载器,其父类是Extension.它是应用最广泛的类加载器.它从环境变量classpath或者系统属性java.class.path所指定的目录中记载类,是用户自定义加载器的默认父加载器.
 
 ## Cast
 First, you must understand, that by casting you are not actually changing the object itself, you are just labeling it differently.
@@ -216,11 +339,30 @@ Math.round(-11.5) = 11
 ```
 Math.round 都是通过 + 0.5 然后向下取整
 
+## GC
+Java 中会存在内存泄漏吗,请简单描述.  
+答:理论上Java因为有垃圾回收机制(GC)不会存在内存泄露问题(这也是Java被广泛使用于服务器端编程的一个重要原因),
+然而在实际开发中,可能会存在**无用但可达**的对象,这些对象不能被GC回收也会发生内存泄露.
+一个例子就是Hibernate的Session(一级缓存)中的对象属于持久态,垃圾回收器是不会回收这些对象的,然而这些对象中可能存在无用的垃圾对象.下面的例子也展示了Java中发生内存泄露的情况:  
+[内存泄露的demo](../../demo/java/MyStack.java)  
+上面的代码实现了一个栈(先进后出(FILO))结构,乍看之下似乎没有什么明显的问题,它甚至可以通过你编写的各种单元测试.
+然而其中的pop方法却存在内存泄露的问题,当我们用pop方法弹出栈中的对象时,该对象不会被当作垃圾回收,即使使用栈的程序不再引用这些对象,因为栈内部维护着对这些对象的**过期引用(obsolete reference)**.
+在支持垃圾回收的语言中,内存泄露是很隐蔽的,这种内存泄露其实就是无意识的对象保持.
+如果一个对象引用被无意识的保留起来了,那么垃圾回收器不会处理这个对象,也不会处理该对象引用的其他对象,
+即使这样的对象只有少数几个,也可能会导致很多的对象被排除在垃圾回收之外,从而对性能造成重大影响,极端情况下会引发Disk Paging(物理内存与硬盘的虚拟内存交换数据),甚至造成OutOfMemoryError.
+
 ## Junit Test
 对于Web 项目, 通过Junit Test, 可以不必把项目部署到tomcat 上就可以对业务逻辑进行测试.
 而且, 实际的项目开发, 业务逻辑和前段展现, 很可能不是同一个人进行, 所以进行业务逻辑的测试时不应该依赖于前端.
 
 测试完成后, 要恢复现场. 例如测试数据库的插入方法, 测试之后, 需要把插入的测试数据删除掉.
+
+# 关键字
+谈谈final, finally, finalize的区别
+
+- final 用于声明属性,方法和类,分别表示**属性不可变,方法不可覆盖,类不可继承**.
+- finally是异常处理语句结构的一部分,表示总是执行.
+- finalize是Object类的一个方法,在垃圾收集器执行的时候会调用被回收对象的此方法,可以覆盖此方法提供垃圾收集时的其他资源回收,例如关闭文件等.
 
 # Servlet
 request:浏览器---> web服务器----> Java应用程序服务器
@@ -305,7 +447,7 @@ The Spring Framework
 - **Data Access/Integration** layer consists of the JDBC, ORM, OXM, JMS and Transaction modules
 	- The ORM module provides integration layers for popular object-relational mapping APIs, including JPA, JDO, Hibernate, and iBatis
 - **Web layer** consists of the Web, Web-Servlet, Web-Struts, and Web-Portlet modules
-	- The Web-Servlet module  contains  Spring's  model-view-controller  (MVC) implementation for web applications
+	- The Web-Servlet module  contains  Spring  model-view-controller  (MVC) implementation for web applications
 - Few other important modules like AOP, Aspects, Instrumentation, Web and Test modules
 
 Bean Configuration file(an XML file) acts as cement that glues the beans ie. classes together. 
@@ -389,7 +531,7 @@ public class TextEditor {
 	}
 }
 ```
-What we've done here is create a dependency between the TextEditor and the SpellChecker. 
+What we have done here is create a dependency between the TextEditor and the SpellChecker. 
 In an inversion of control scenario we would instead do something like this:
 ```
 public class TextEditor {
@@ -516,7 +658,7 @@ A closed context reaches its end of life; it cannot be refreshed or restarted.
 5. RequestHandledEvent  
 This is a web-specific event telling all beans that an HTTP request has been serviced.
 
-Spring's event handling is single-threaded so if an event is published, until and unless all the receivers get the message, the processes are blocked and the flow will not continue.
+Spring event handling is single-threaded so if an event is published, until and unless all the receivers get the message, the processes are blocked and the flow will not continue.
 
 To listen a context event, a bean should implement the ApplicationListener interface which has just one method `onApplicationEvent()`.
 
@@ -536,7 +678,7 @@ public class CStopEventHandler implements ApplicationListener<ContextStopedEvent
 
 ## AOP 面向切面编程
 Aspect Oriented Programming entails breaking down program logic into distinct parts called so-called concerns. 
-The functions that span multiple points of an application are called cross-cutting concerns and these cross-cutting concerns are conceptually separate from the application's business logic. 
+The functions that span multiple points of an application are called cross-cutting concerns and these cross-cutting concerns are conceptually separate from the application business logic. 
 There are various common good examples of aspects like logging, auditing, declarative transactions, security, and caching etc.
 
 Spring AOP module provides interceptors to intercept an application, for example, when a method is executed, you can add extra functionality before or after the method execution.
