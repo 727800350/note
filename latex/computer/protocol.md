@@ -271,6 +271,8 @@ Analyse
 
 ## UDP
 
+	CFLAGS+=-D_BSD_SOURCE
+
 	/usr/include/netinet/udp.h
 	struct udphdr{
 	  u_int16_t uh_sport;		/* source port */
