@@ -16,16 +16,18 @@ CFLAGS=-pthread -g -Wall -I/usr/include/mysql -I/usr/local/apr/include/apr-1 -m6
 CPPFLAGS=-I$(srcdir) 
 LIBS=-lmysqlclient_r -lapr-1
 
-TARGETS=time
+CFLAGS+=-D_BSD_SOURCE ## use uh_sport for udp header
+
+TARGETS=time io
 all: $(TARGETS)
 
 TIME=time.o
 time: $(TIME)
-	$(CC) $(LDFLAGS) -rdynamic -o a.out $(TIME) $(LIBS)
+	$(CC) $(LDFLAGS) -rdynamic -o $@ $(TIME) $(LIBS)
 
 IO=fread_fwrite.o
 io: $(IO)
-	$(CC) $(LDFLAGS) -rdynamic -o a.out $(IO) $(LIBS)
+	$(CC) $(LDFLAGS) -rdynamic -o $@ $(IO) $(LIBS)
 
 clean:
-	rm a.out *.o
+	rm time io
