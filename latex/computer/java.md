@@ -373,8 +373,48 @@ Java应用程序服务器(web容器):jackarta tomcat,bea WebLogic
 http web服务器:IIS,Apache  
 tomcat内建的有web服务器,但是这个内建的服务器功能比较弱小
 
+## Tomcat
+tomcat目录结构
+
+- bin: 存放各种平台下启动和关闭Tomcat的脚本文件.
+- common: 在common目录下的lib目录,存放Tomcat服务器和所有web应用都能访问的JAR.
+- shared: 在shared目录下的lib目录,存放所有web应用能访问的,但Tomcat不能访问的JAR.
+- server: 在server/webapps目录中,存放Tomcat自带的两个APP-admin和manager应用,来管理Tomcat-web服务用的.
+- work: Tomcat把各种由jsp生成的servlet文件放在这个目录下.
+- temp: Tomcat运行时候存放临时文件用的.
+- logs: 存放Tomcat的日志文件
+- webapps: web应用的发布目录,把 java开发的web站点或war文件放入这个目录下就可以通过tomcat服务器访问了.
+- conf: Tomcat的各种配置文件,最重要的是 server.xml. 
+
+Tomcat配置文件
+
+- conf/server.xml	服务器的主配置文件  
+一个<Server>包含一个或多个<Service>, 一个<Service>包含唯一一个< Engine>和一个或多个<Connector>,
+多个 <Connector>共享一个<Engine>, 一个<Engine>包含多个<Host>,
+每个 <Host>定义一个虚拟主机,包含一个或多个web应用<Context>, <Context>元素是代表一个在虚拟主机上运行的Web应用.
+
+- conf/web.xml	定义所有Web应用的配置(缺省的Servlet定义和MIME类型定义)
+
+- conf/tomcat-user.xml  定义了tomcat用户的信息(用于权限与安全)
+
+
+Web Application的概念
+```
+Web Application Name
+	WEB-INF
+		web.xml: 该web app的配置文件
+		lib: 该web app用到的库文件
+		classes: 存放编译好的servlet
+	META-INF: 存放该web app的上下文信息,符合J2EE标准
+```
+Web Application可以直接放在webapp下面. 也可以通过配置文件指定到其他目录 <host>里面
+```
+<Context path="/虚拟路径名" docBase="目录位置" debug="0" reloadable="true"/>
+```
+
 MIME:multipurpose Internet mail extensions: 就是设定某种扩展名的文件用一种特定的应用程序来打开的方式类型
 
+## IO
 字符流:
 ```
 Printwriter writer=response.getwriter();
@@ -386,6 +426,122 @@ writer.println(string);
 servletOutputStream out=response.getOutputStream();
 out.write(bytes);
 ```
+
+## Servlet的生命周期
+生命全过程:
+
+- 加载 ClassLoader 
+- 实例化 new 
+- 初始化 init(ServletConfig)
+- 处理请求 service doGet doPost
+- 退出服务 destroy()
+
+只有一个对象
+API中的过程:init()//只执行一次, 第一次初始化的时候
+```
+public void init(ServletConfig config) throws ServletException
+```
+service()
+```
+public void service(ServletRequest req, ServletResponse res) throws ServletException, java.io.IOException
+```
+destroy()//webapp 退出的时候
+```
+public void destroy() 
+```
+
+Servlet的多线程机制 
+
+Servlet体系结构是建立在Java多线程机制之上的,它的生命周期是由Web容器负责的.
+
+当客户端第一次请求某个Servlet时,Servlet 容器将会根据web.xml配置文件实例化这个Servlet类.当有新的客户端请求该Servlet时,一般不会再实例化该Servlet类,也就是有 多个线程在使用这个实例.
+
+Servlet容器会自动使用线程池等技术来支持系统的运行
+
+
+## Servlet编程接口
+
+GenericServlet是所有Servlet的鼻祖,
+用于HTTP的Servlet编程都通过继承 `javax.servlet.http.HttpServlet` 实现
+
+请求处理方法:(分别对应http协议的7种请求)
+
+- doGet: 响应Get请求,常用
+- doPost: 响应Post请求,常用
+- doPut: 用于http1.1协议
+- doDelete: 用于http1.1协议
+- doHead: 仅响应Get请求的头部
+- doOptions: 用于http1.1协议
+- doTrace: 用于http1.1协议
+
+实例的个数:在非分布的情况下,通常一个Servlet在服务器中有一个实例
+
+```
+public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
+```
+
+## cookie
+- Cookie以"名-值"对的形式保存数据
+- 只能拿自己webapp写入的东西
+- 一个servlet/jsp设置的cookies能够被同一个路径下面或者子路径下面的servlet/jsp读到 (路径 = URL)(路径 != 真实文件路径)
+
+set cookie
+```
+Cookie cookie = new Cookie(name,value);
+response.addCookie(cookie);
+```
+
+get cookie
+```
+Cookie[] cookies = request.getCookies();
+PrintWriter out = response.getWriter();
+for(Cookie cookie in cookies){
+	 out.println("<TR>\n" + "<TD>" + cookie.getName() + "</TD>\n" + " <TD>" + cookie.getValue() + "</TD></TR>\n");
+}
+```
+
+Web上保持状态的手段:cookie session application persistence
+
+## session
+- 在某段时间一连串客户端与服务器端的"交易" 
+- 在Jsp/Servlet中,如果浏览器不支持Cookie,可以通过URL重写来实现,就是将一些额外数据追加到表示会话的每个URL末尾,服务器在该标示符与其存储的有关的该会话的数据之间建立关联.
+	如hello.jsp?jsessionid=1234
+- 可以通过程序来终止一个会话.如果客户端在一定时间内没有操作,服务器会自动终止会话.
+- 通过HttpSession来读写Session
+
+规则
+
+- 如果浏览器支持Cookie, 创建Session的时候会把SessionID保存在Cookie里
+- 如果不支持Cookie, 必须自己编程使用URL重写的方式实现Session
+
+获得session
+
+- getRequestedSessionId():返回随客户端请求到来的会话ID.可能与当前的会话ID相同,也可能不同.
+- getSession(boolean isNew):如果会话已经存在,则返回一个HttpSession,如果不存在并且isNew为true,则会新建一个HttpSession
+
+HttpSession的常用方法
+
+- getAttributeNames()/getAttribute()
+- getCreateTime()
+- getId()
+- getMaxInactiveInterval()
+- invalidate()
+- isNew()
+- setAttribute()
+- setMaxInactivateInterval()
+
+## Application
+- 用于保存整个WebApplication的生命周期内都可以访问的数据
+- 在API中表现为ServletContext
+- 通过HttpServlet的getServletContext方法可以拿到, `ServletContext application = this.getServletContext();`
+- 通过ServletContext的 get / setAttribute方法取得/设置相关属性
+
+## Servlet中的请求转发
+- RequestDispatcher接口对象允许将请求转发到其他服务器资源
+- 通过RequestDispatcher的forward(HttpServletRequest,HttpServletResponse)方法可以将请求转发
+- 通过ServletContext的getRequestDispatcher(String url)方法来获得RequestDispatcher对象,并且指定转发的目标url资源
+- 可以通过HttpServletRequest的setAttribute(String name,String value)来设置需要传递的参数,然后在代理servlet中就可以使用HttpServerRequest的getAttribute(String name)来获得对应的值
 
 重定向是在客户端完成的,一般浏览器的地址栏会改变,
 而请求分派是在服务器端完成的,url不变,且一般分派到另外一个servlet或者jsp
@@ -421,13 +577,67 @@ doGet方法不是线程安全的,因为可能出现多个线程同时访问一�
 
 序列化serialization:将对象的状态信息转换为可以存储或传输的形式的过程.在序列化期间,对象将其当前状态写入到临时或持久性存储区.以后,可以通过从存储区中读取或反序列化对象的状态,重新创建该对象.
 
-- scriplet: `<%       %>`
-- 指令: `<%@         %>`
-- 表达式: `<%=       %>`
+# JSP
+JSP---Java Server Pages, 拥有servlet的特性与优点(本身就是一个servlet),  可以直接在HTML中内嵌JSP代码  
+JSP程序由JSP Engine先将它转换成Servlet代码,接着将它编译成类文件载入执行, 只有当客户端第一次请求JSP时,才需要将其转换,编译
 
-`<%@ page import="foo.*,java.util.*"  %>`   // import 是page的一个属性
+JSP传统语法
+
+- Declaration
+- Scriptlet `<%程序代码区%>`, 可以放入任何的Java程序代码
+- Expression `<%=       %>`:  =后面必须是字符串变量或者可以被转换成字符串的表达式, 不需要以;结束, 只有一行
+- Comment
+- Directives `<%@Directive 属性="属性值"%>`: Directive(编译指令)相当于在编译期间的命令, 常见的Directive: page include taglib
+- Action动作指令, Action(动作指令)在运行期间的命令, 常见的:
+	- jsp:useBean
+		- jsp:setProperty
+		- jsp:getProperty
+	- jsp:include
+	- jsp:forward
+	- jsp:param
+```
+<jsp:forward page="urlSpec">
+	<jsp:param name="paramName" value="paramValue"/>
+</jsp:forward>
+```
+	- jsp:plugin
+	- 嵌入applet
+- 内置对象
+
+JSTL
+
+JSF
+
+
+JSP的内置对象
+
+- out: Out内置对象是一个缓冲的输出流,用来给客户端返回信息.它是`javax.servlet.jsp.JspWriter`的一个实例
+- request: request内置对象表示的是调用JSP页面的请求.通常,request对象是`javax.servlet.http.HttpServletRequest`接口的一个实例, 典型应用:通过`request.getParameter("paramName")`
+- response: 表示的是返回给客户端的响应, 是`javax.servlethttp.HttpServletResponse`接口的一个实例, 经常用于设置HTTP标题,添加cookie,设置响应内容的类型和状态,发送HTTP重定向和编码URL
+- pageContext  用的很少
+- session: `<% @page session="true"%>`(默认)--表示session功能已经在jsp页面中启动
+- application
+- config  用的很少
+- exception
+- Page 用的很少
 
 表达式会成为`out.print()`的参数,`<%= code %>`等价于`<%out.print(code);%>`
+
+## Servlet和JSP的通信
+从JSP调用Servlet可用<jsp:forward>请求信息自动传递到Servlet, 
+```
+<jsp:forward page="/servlet/servletfile"/>
+```
+或者通过sendRedirect
+```
+response.sendRedirect("../servlet/ShowParameters?a=b");
+```
+
+从Servlet调用JSP使用 RequestDispatcher接口的forward(req, res)方法
+```
+getServletConfig().getServletContext().getRequestDispatcher("/ServletUseJsp.jsp").forward(req, resp);
+```
+或者通过sendRedirect
 
 # Spring
 entity(model) --- service --- DAO -- DAOImplementation
