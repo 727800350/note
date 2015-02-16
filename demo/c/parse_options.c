@@ -41,6 +41,7 @@
 	printf ("aflag = %d, bflag = %d, num = %d, str = %s\n", aflag, bflag, num, str);
 	printf("optind = %d\n", optind);
 
+// 	in the following for loop, the value of optind does not change
 	for (index = optind; index < argc; index++){
 		printf ("Non-option argument %s\n", argv[index]);
  	}
