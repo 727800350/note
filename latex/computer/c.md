@@ -1,6 +1,9 @@
 强数据类型 `/usr/include/sys/types.h`  
 `u_int32_t, int32_t, u_int8_t, ...`
 
+指针数组: `int *ptr_array[10]`, 每个元组都是指针, 共10个元素.  
+数组指针: `int (\*)array_ptr[10]`, 指向一个10个元素数组的指针.
+
 [运算符](http://www.math.pku.edu.cn/teachers/qiuzy/c/operator.htm)
 
 | 运算符                           | 解释                                 | 结合方式 |
@@ -101,6 +104,7 @@ By constrast, `strdup` is a Posix function, and it performs **dynamic memory all
 - `strchr` 查找字符串
 - `strcasecmp, strncasecmp` compare two strings ignoring case
 - `strsep, settok` extract token from string
+- `atoi, atol, atoll, atof, strtol, strtoul, strtoll, strtoull` 字符串转换为数字 
 
 # IO
 
