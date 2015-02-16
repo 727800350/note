@@ -16,7 +16,7 @@ CFLAGS=-pthread -g -Wall -I/usr/include/mysql -I/usr/local/apr/include/apr-1 -m6
 CPPFLAGS=-I$(srcdir) 
 LIBS=-lmysqlclient_r -lapr-1
 
-TARGETS=time
+TARGETS=option
 all: $(TARGETS)
 
 TIME=time.o
@@ -26,6 +26,10 @@ time: $(TIME)
 IO=fread_fwrite.o
 io: $(IO)
 	$(CC) $(LDFLAGS) -rdynamic -o a.out $(IO) $(LIBS)
+
+OPTION=parse_options.o
+option: $(OPTION)
+	$(CC) $(LDFLAGS) -rdynamic -o a.out $(OPTION) $(LIBS)
 
 clean:
 	rm a.out *.o
