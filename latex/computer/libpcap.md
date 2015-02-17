@@ -46,13 +46,24 @@ delay us 微秒 1 * 10^{-6} second
 输出long 用 %ld
 
 ```
+#include <pcap/pcap.h>
 const u_char *pcap_next(pcap_t *p, struct pcap_pkthdr *h);
 ```
 read the next packet (by calling `pcap_dispatch()` with a cnt of 1) and 
 returns a `u_char` pointer to the data in that packet.   
 The `pcap_pkthdr` structure pointed to by h is filled in with the appropriate values for the packet.  
-也就是说`pcap_next` 读到下一个packet, 然后这个packet 的信息(比如获得的时间, 长度caplen and len)被填充到`pcap_pkthdr *h` 中, 而真正的数据部分是在返回值中.
+也就是说`pcap_next` 读到下一个packet, 然后这个packet 的信息(比如获得的时间, 长度caplen and len)被填充到`pcap_pkthdr *h` 中, 而真正的数据部分是在返回值中.  
+**attention**:
+The packet  data  is  not  to  be freed by the caller, and is not guaranteed to be valid after the next call to pcap_next_ex(), pcap_next(), pcap_loop(), or pcap_dispatch(); 
+if the code needs it to remain valid, it must make a copy of it. 
 
+```
+#include <pcap/pcap.h>
+typedef void (*pcap_handler)(u_char *user, const struct pcap_pkthdr *h, const u_char *bytes);
+
+int pcap_loop(pcap_t *p, int cnt, pcap_handler callback, u_char *user);
+int pcap_dispatch(pcap_t *p, int cnt, pcap_handler callback, u_char *user);
+```
 
 20分钟的数据 1.9GB 176W packets
 
