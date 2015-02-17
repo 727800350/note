@@ -1,5 +1,5 @@
 强数据类型 `/usr/include/sys/types.h`  
-`u_int32_t, int32_t, u_int8_t, ...`
+`u_int64_t, int64_t, u_int32_t, int32_t, u_int16_t, int16_t, u_int8_t, int8_t ...`
 
 指针数组: `int *ptr_array[10]`, 每个元组都是指针, 共10个元素.  
 数组指针: `int (\*)array_ptr[10]`, 指向一个10个元素数组的指针.
