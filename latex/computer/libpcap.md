@@ -57,6 +57,9 @@ The `pcap_pkthdr` structure pointed to by h is filled in with the appropriate va
 The packet  data  is  not  to  be freed by the caller, and is not guaranteed to be valid after the next call to pcap_next_ex(), pcap_next(), pcap_loop(), or pcap_dispatch(); 
 if the code needs it to remain valid, it must make a copy of it. 
 
+each time the returned pkt value is the same, meaning that libpcap library use a fiexed buffer to store the packet content.  
+and when reading from a pcap file, when the EOF is reached, the returned value is NULL, so NULL could be used to test this event.
+
 ```
 #include <pcap/pcap.h>
 typedef void (*pcap_handler)(u_char *user, const struct pcap_pkthdr *h, const u_char *bytes);
