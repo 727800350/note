@@ -104,7 +104,7 @@ mysql> select * from t_goods \G
  goods_name: MYSQL5  
    quantity: 50  
    add_date: 2012-12-12  
-description: A book that has been read but is in good condition. See the seller's listing for full details and description of any imperfections.   
+description: A book that has been read but is in good condition. See the seller listing for full details and description of any imperfections.   
 1 row in set (0.00 sec)
 ```
 
@@ -409,6 +409,40 @@ PRIMARY KEY索引和UNIQUE索引非常类似.
 ### 查看索引
 	mysql> show index from tblname;
 	mysql> show keys from tblname;
+
+## Cast Functions and Operators
+- BINARY	Cast a string to a binary string
+- `CAST(expr AS type)` Cast a value as a certain type
+- CONVERT()	Cast a value as a certain type
+
+The BINARY operator casts the string following it to a binary string. This is an easy way to force a column comparison to be done byte by byte rather than character by character.
+```
+mysql> SELECT 'a' = 'A';
+        -> 1
+mysql> SELECT BINARY 'a' = 'A';
+        -> 0
+mysql> SELECT 'a' = 'a ';
+        -> 1
+mysql> SELECT BINARY 'a' = 'a ';
+        -> 0
+```
+
+`BINARY str` is shorthand for `CAST(str AS BINARY)`.
+```
+CONVERT(expr,type), CONVERT(expr USING transcoding_name)
+```
+The CONVERT() and CAST() functions take an expression of any type and produce a result value of a specified type. 
+
+The type for the result can be one of the following values:
+
+- BINARY[(N)]
+- CHAR[(N)]
+- DATE
+- DATETIME
+- DECIMAL[(M[,D])]
+- SIGNED [INTEGER]
+- TIME
+- UNSIGNED [INTEGER] 
 
 ## [用户管理及权限管理](http://www.libuchao.com/2013/04/06/mysql-user-and-privilege)
 
