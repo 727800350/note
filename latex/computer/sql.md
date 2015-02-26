@@ -76,7 +76,21 @@ UPDATE table_name SET column1=value1,column2=value2,...  WHERE some_column=some_
 
 ## Alter
 ```
+ALTER TABLE table_name ADD column_name datatype
 alter table flows add column ip_prot tinyint(4) null default 0;
+
+ALTER TABLE table_name DROP COLUMN column_name
+```
+
+要改变表中列的数据类型
+```
+ALTER TABLE table_name ALTER COLUMN column_name datatype
+```
+
+Rename
+```
+ALTER TABLE table_name CHANGE old_col_name new_col_name column_definition
+ALTER TABLE table_name RENAME TO new_table_name;
 ```
 
 ## Select
