@@ -84,7 +84,7 @@ ALTER TABLE table_name DROP COLUMN column_name
 
 要改变表中列的数据类型
 ```
-ALTER TABLE table_name ALTER COLUMN column_name datatype
+ALTER TABLE table_name MODIFY COLUMN column_name datatype
 ```
 
 Rename
