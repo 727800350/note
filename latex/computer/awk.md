@@ -219,7 +219,11 @@ printf("string\n") >> "/tmp/file";
 - index(string,search)	AWK, NAWK, GAWK
 - length(string)	AWK, NAWK, GAWK
 - split(string,array,separator)	AWK, NAWK, GAWK
-- substr(string,position)	AWK, NAWK, GAWK
+```
+set time = 12:34:56
+set hms = `echo $time | awk '{split($0,a,":" ); print a[1], a[2], a[3]}'` # = 12 34 56
+```
+- substr(string,position)	AWK, NAWK, GAWK, 第一个字母的下标为1, 而不是0
 - substr(string,position,max)	AWK, NAWK, GAWK
 - sub(regex,replacement)	NAWK, GAWK
 - sub(regex,replacement,string)	NAWK, GAWK
