@@ -106,7 +106,7 @@ Binary Operators
 Regular Expressions
 
 - ~	Matches
-- !~	Doesn't match
+- !~	Does not match
 
 A value of 0 is false, while anything else is true. Undefined variables has the value of 0.
 
@@ -169,7 +169,8 @@ BEGIN {
 ```
 
 如果FS中指定的是多个字符组成的字符串, 那么awk会严格匹配.  
-If you change the field separator before you read the line, the change affects what you read. If you change it after you read the line, it will not redefine the variables. You wouldn't want a variable to change on you as a side-effect of another action.
+If you change the field separator before you read the line, the change affects what you read. 
+If you change it after you read the line, it will not redefine the variables. You would not want a variable to change on you as a side-effect of another action.
 Note the field separator variable retains its value until it is explicitly changed.
 ```
 #!/bin/awk -f
@@ -197,7 +198,7 @@ $2和$3会拼接到一起成为一个field
 
 - RS - The Record Separator Variable
 Normally, AWK reads one line at a time, and breaks up the line into fields.
-You can set the "RS" variable to change AWK's definition of a "line". If you set it to an empty string, then AWK will read the entire file into memory. 
+You can set the "RS" variable to change AWK definition of a "line". If you set it to an empty string, then AWK will read the entire file into memory. 
 You can combine this with changing the "FS" variable.
 
 - ORS - The Output Record Separator Variable
@@ -238,13 +239,13 @@ printf("string\n") >> "/tmp/file";
 NAWK has a function system() that can execute any program. It returns the exit status of the program.
 ```
 if (system("/bin/rm junk") != 0)
-print "command didn't work";
+print "command did not work";
 ```
 The command can be a string, so you can dynamically create commands based on input. 
-Note that the output isn't sent to the NAWK program. You could send it to a file, and open that file for reading. There is another solution, however.
+Note that the output is not sent to the NAWK program. You could send it to a file, and open that file for reading. There is another solution, however.
 
 **getline**
-AWK has a command that allows you to force a new line. It doesn't take any arguments. It returns a 1, if successful, a 0 if end-of-file is reached, and a -1 if an error occurs.
+AWK has a command that allows you to force a new line. It does not take any arguments. It returns a 1, if successful, a 0 if end-of-file is reached, and a -1 if an error occurs.
 度如下一行
 As a side effect, the line containing the input changes.没有理解这个side effet 是什么意思?
 
