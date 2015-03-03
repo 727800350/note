@@ -186,6 +186,11 @@ compresses better than
 gzip -c file1 file2 > foo.gz
 ```
 
+将foo.tar.gz 解压到/to 目录
+```
+tar -xvf foo.tar.gz -C /to
+```
+
 # OS
 **设置默认的runlevel**
 编辑 `/etc/inittab` 中设置
