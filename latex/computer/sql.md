@@ -92,6 +92,9 @@ Rename
 ALTER TABLE table_name CHANGE old_col_name new_col_name column_definition
 ALTER TABLE table_name RENAME TO new_table_name;
 ```
+在改变表的名字时, 有时会遇到下面的错误, 
+`ERROR 7 (HY000): Error on rename of './directory/flows_label.MYI' to './directory/labels.MYI' (Errcode: 13)`  
+是由于权限的问题, 对于用户自己创建的目录, 需要把目录的owner 改为`mysql:mysql`
 
 ## Select
 mysql中提供了一个G标志,放到sql语句后,可以使一行的每个列打印到单独的行.
