@@ -666,6 +666,31 @@ sys.path #系统目录
 sys.argv  #可执行文件名是第一个参数
 ```
 
+### time
+`import time`
+
+`time.time()`用ticks计时单位返回从12:00am, January 1, 1970(epoch) 开始的记录的当前操作系统时间
+
+上述也就是struct_time元组.这种结构具有如下属性:
+```
+序号	属性	值
+0	tm_year	2008
+1	tm_mon	1 到 12
+2	tm_mday	1 到 31
+3	tm_hour	0 到 23
+4	tm_min	0 到 59
+5	tm_sec	0 到 61 (60或61 是闰秒)
+6	tm_wday	0到6 (0是周一)
+7	tm_yday	1 到 366(儒略历)
+8	tm_isdst	-1, 0, 1, -1是决定是否为夏令时的旗帜
+```
+
+`time.localtime(time.time())` 将秒数转化为struct_time 形式的时间
+
+`time.asctime(time.localtime(time.time()))` 获取格式化的时间
+
+`import calendar` 日历处理模块
+
 ### numpy
 data example
 ```
@@ -684,7 +709,7 @@ an object describing the type of the elements in the array. One can create or sp
 - ndarray.itemsize
 the size in bytes of each element of the array. For example, an array of elements of type float64 has itemsize 8 (=64/8), while one of type complex32 has itemsize 4 (=32/8). It is equivalent to ndarray.dtype.itemsize.
 - ndarray.data
-the buffer containing the actual elements of the array. Normally, we won't need to use this attribute because we will access the elements in an array using indexing facilities.
+the buffer containing the actual elements of the array. Normally, we will not need to use this attribute because we will access the elements in an array using indexing facilities.
 
 [Array Creation demo](../../demo/python/numpy_array_create.py)
 
