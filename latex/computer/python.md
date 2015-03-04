@@ -571,6 +571,21 @@ from module import function #只导入module中的一个函数,使用的时候�
 from module import *  #导入所有函数
 ```
 
+### 包管理工具[PIP](http://lesliezhu.github.io/public/2014-11-08-pip.html)
+```
+$ pip search SomePackage
+$ pip install SomePackage
+$ pip show SomePackage ## 可以查看软件版本
+$ pip list --outdated
+$ pip install --upgrade SomePackage
+$ pip uninstall SomePackage
+```
+
+查看具体的安装文件
+```
+$ pip show --files SomePackage
+```
+
 ### os
 ```
 import os
