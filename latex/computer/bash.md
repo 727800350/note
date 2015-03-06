@@ -289,6 +289,7 @@ nohup command > myout.file 2>&1 &
 有两个常用的ftp工具ncftpget和ncftpput,可以实现ftp上传和下载,我们可以利用nohup命令在后台实现文件的上传和下载.
 
 **time**  
+
 1. 实际时间(real time): 从command命令行开始执行到运行终止的消逝时间
 2. 用户CPU时间(user CPU time): 命令执行完成花费的用户CPU时间,即命令在用户态中执行时间总和
 3. 系统CPU时间(system CPU time): 命令执行完成花费的系统CPU时间,即命令在核心态中执行时间总和
