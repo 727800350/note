@@ -213,6 +213,24 @@ chkconfig –add postfix
 chkconfig –list
 chkconfig –list httpd
 
+临时设置环境变量
+
+1. 直接用export命令:
+```
+#export PATH=$PATH:/home/xyz/Tesseract/bintesseract可执行文件目录
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH://home/xyz/Tesseract/lib其依赖库lept的路径
+#export TESSDATA_PREFIX=/home/xyz/Tesseract/share其依赖的训练数据文件所在路径
+```
+查看是否已经设好，可用命令export查看: `# export 或者#echo $PATH`
+
+1. 若crontab后台运行程序,也可在sh脚本进行临时设置
+```
+#! /bin/sh
+#export PATH=$PATH:/home/xyz/Tesseract/bintesseract可执行文件目录
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH://home/xyz/Tesseract/lib其依赖库lept的路径
+#export TESSDATA_PREFIX=/home/xyz/Tesseract/share其依赖的训练数据文件所在路径
+```
+
 打开terminal的命令方式:  
 `Alt+F2`后在出现"运行应用程序"中输入`x-terminal-emulator`(一般在你输入到`x-term`后系统会自己显示全部)或者输入`gnome-terminal`
 
