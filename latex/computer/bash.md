@@ -213,6 +213,24 @@ chkconfig –add postfix
 chkconfig –list
 chkconfig –list httpd
 
+临时设置环境变量
+
+1. 直接用export命令:
+```
+#export PATH=$PATH:/home/xyz/Tesseract/bintesseract可执行文件目录
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH://home/xyz/Tesseract/lib其依赖库lept的路径
+#export TESSDATA_PREFIX=/home/xyz/Tesseract/share其依赖的训练数据文件所在路径
+```
+查看是否已经设好，可用命令export查看: `# export 或者#echo $PATH`
+
+1. 若crontab后台运行程序,也可在sh脚本进行临时设置
+```
+#! /bin/sh
+#export PATH=$PATH:/home/xyz/Tesseract/bintesseract可执行文件目录
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH://home/xyz/Tesseract/lib其依赖库lept的路径
+#export TESSDATA_PREFIX=/home/xyz/Tesseract/share其依赖的训练数据文件所在路径
+```
+
 打开terminal的命令方式:  
 `Alt+F2`后在出现"运行应用程序"中输入`x-terminal-emulator`(一般在你输入到`x-term`后系统会自己显示全部)或者输入`gnome-terminal`
 
@@ -271,6 +289,7 @@ nohup command > myout.file 2>&1 &
 有两个常用的ftp工具ncftpget和ncftpput,可以实现ftp上传和下载,我们可以利用nohup命令在后台实现文件的上传和下载.
 
 **time**  
+
 1. 实际时间(real time): 从command命令行开始执行到运行终止的消逝时间
 2. 用户CPU时间(user CPU time): 命令执行完成花费的用户CPU时间,即命令在用户态中执行时间总和
 3. 系统CPU时间(system CPU time): 命令执行完成花费的系统CPU时间,即命令在核心态中执行时间总和
