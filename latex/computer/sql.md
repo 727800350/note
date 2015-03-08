@@ -74,6 +74,11 @@ UPDATE table_name SET column1=value1,column2=value2,...  WHERE some_column=some_
 ```
 如果update 的一条记录在数据库不存在(就是说后面的where语句没有找到record), 不会对数据库产生影响, 同时语句的执行也不会报错.
 
+两个表update
+```
+update a set age = (select age from b where b.name = a.name)
+```
+
 ## Alter
 ```
 ALTER TABLE table_name ADD column_name datatype
