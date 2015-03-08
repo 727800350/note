@@ -49,6 +49,8 @@ sys.stdout.write('sth')  ## 用这个也可以达到同样的效果
 	print .....
 	out.close()
 
+记住,如果你还想在控制台打印一些东西的话,最好先将原始的控制台对象引用保存下来,向文件中打印之后再恢复 sys.stdout
+
 输出到文件
 
 	out = open("out.txt","w")  //w is write, a+ 追加
