@@ -2,6 +2,10 @@
 登陆:
 `mysql -u test -p db_name`
 
+mysql的配置文件: `/etc/my.cnf`.  
+mysql server 自己带有一些示例配置文件: `rpm -ql mysql-server | grep cnf`, 得到的结果有`my-huge.cnf, my-innodb-heavy-4G.cnf, my-large.cnf, my-medium.cnf, my-small.cnf`,   
+将这些文件复制为`/etc/my.cnf`, 就可以修改mysql的默认配置, 对于现在的硬件配置, 使用`my-huge.cnf`就可以.
+
 ## 查看
 ```
 mysql> show index from t1;
