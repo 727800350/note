@@ -390,7 +390,6 @@ CREATE INDEX可对表增加普通索引或UNIQUE索引
 	 CREATE INDEX index_name ON table_name (column_list)
 	 CREATE UNIQUE INDEX index_name ON table_name (column_list)
 
-### ALTER TABLE
 ALTER TABLE用来创建普通索引,UNIQUE索引或PRIMARY KEY索引
 
 	ALTER TABLE table_name ADD INDEX index_name (column_list)
@@ -417,6 +416,46 @@ PRIMARY KEY索引和UNIQUE索引非常类似.
 ### 查看索引
 	mysql> show index from tblname;
 	mysql> show keys from tblname;
+
+### [性能调优](http://blog.csdn.net/xtdhqdhq/article/details/17582779)
+如果我们的查询where条件只有一个,我们完全可以用单列索引,这样的查询速度较快,索引也比较瘦身.
+如果我们的业务场景是需要经常查询多个组合列,**不要试图分别基于单个列建立多个单列索引(因为虽然有多个单列索引,但是MySQL只能用到其中的那个它认为似乎最有效率的单列索引)**.
+这是因为当SQL语句所查询的列,全部都出现在复合索引中时,此时由于只需要查询索引块即可获得所有数据,当然比使用多个单列索引要快得多.下面以实际例子说明:
+```
+CREATE TABLE people(
+peopleid SMALLINT NOT NULL AUTO_INCREMENT, 
+firstname CHAR(50)　NOT NULL, 
+lastname CHAR(50) NOT NULL, 
+age SMALLINT NOT NULL, 
+townid SMALLINT NOT　NULL, 
+PRIMARY KEY (peopleid)
+);
+```
+例如,我们可能需要查找姓名为Mike Sullivan,年龄17岁用户的peopleid
+```
+SELECT peopleid FROM people WHERE firstname="Mike" AND lastname="Sullivan" AND age=17;
+```
+由于我们不想让MySQL每次执行查询就去扫描整个表,这里需要考虑运用索引.
+
+首先,我们可以考虑在单个列上创建索引,比如firstname,lastname或者age列.
+如果我们创建firstname列的索引(`ALTER TABLE people ADD INDEX firstname (firstname);`),
+MySQL将通过这个索引迅速把搜索范围限制到那些firstname="Mike"的记录,然后再在这个"中间结果集"上进行其他条件的搜索.
+由于建立了firstname列的索引,与执行表的完全扫描相比,MySQL的效率提高了很多,
+但我们要求MySQL扫描的记录数量仍旧远远超过了实际所需要的.虽然我们可以删除firstname列上的索引,再创建lastname或者age列的索引,但总地看来,不论在哪个列上创建索引搜索效率仍旧相似.
+为了提高搜索效率,我们需要考虑运用多列索引.
+如果为firstname,lastname和age这三个列创建一个多列索引,MySQL只需一次检索就能够找出正确的结果!下面是创建这个多列索引的SQL命令:
+```
+ALTER TABLE people ADD INDEX fname_lname_age (firstname,lastname,age);
+```
+由于索引文件以B+树格式保存,MySQL能够立即转到合适的firstname,然后再转到合适的lastname,最后转到合适的age.在没有扫描数据文件任何一个记录的情况下,MySQL就正确地找出了搜索的目标记录!
+
+那么,如果在firstname,lastname,age这三个列上分别创建单列索引,效果是否和创建一个firstname,lastname,age的多列索引一样呢?答案是否定的,两者完全不同.
+当我们执行查询的时候,MySQL只能使用一个索引.**如果你有三个单列的索引,MySQL会试图选择一个限制最严格的索引**.
+但是,即使是限制最严格的单列索引,它的限制能力也肯定远远低于firstname,lastname,age这三个列上的多列索引.
+
+注意:
+继续考虑前面的例子,现在我们有一个firstname,lastname,age列上的多列索引,我们称这个索引为fname_lname_age.
+它相当于我们创建了(firstname,lastname,age),(firstname,lastname)以及(firstname)这些列组合上的索引.
 
 ## Cast Functions and Operators
 - BINARY	Cast a string to a binary string
