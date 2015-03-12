@@ -75,26 +75,28 @@ int main() {
 	/* Bind the data for all 3 parameters */
 	memset(bind, 0, sizeof(bind));
 
+	int i = 0;
 	/* INTEGER PARAM */
-	/* This is a number type, so there is no need
-	   to specify buffer_length */
-	bind[0].buffer_type = MYSQL_TYPE_LONG;
-	bind[0].buffer = (char *) &int_data;
-	bind[0].is_null = 0;
-	bind[0].length = 0;
+	/* This is a number type, so there is no need to specify buffer_length */
+	bind[i].buffer_type = MYSQL_TYPE_LONG;
+	bind[i].buffer = (char *) &int_data;
+	bind[i].is_null = 0;
+	bind[i].length = 0;
 
+	i ++;
 	/* STRING PARAM */
-	bind[1].buffer_type = MYSQL_TYPE_STRING;
-	bind[1].buffer = (char *)str_data;
-	bind[1].buffer_length = STRING_SIZE;
-	bind[1].is_null = 0;
-	bind[1].length = &str_length;
+	bind[i].buffer_type = MYSQL_TYPE_STRING;
+	bind[i].buffer = (char *)str_data;
+	bind[i].buffer_length = STRING_SIZE;
+	bind[i].is_null = 0;
+	bind[i].length = &str_length;
 
+	i ++;
 	/* SMALLINT PARAM */
-	bind[2].buffer_type = MYSQL_TYPE_SHORT;
-	bind[2].buffer = (char *)&small_data;
-	bind[2].is_null = &is_null;
-	bind[2].length = 0;
+	bind[i].buffer_type = MYSQL_TYPE_SHORT;
+	bind[i].buffer = (char *)&small_data;
+	bind[i].is_null = &is_null;
+	bind[i].length = 0;
 
 	/* Bind the buffers */
 	if (mysql_stmt_bind_param(stmt, bind)) {
