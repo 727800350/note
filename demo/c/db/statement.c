@@ -79,12 +79,13 @@ int main() {
 	/* INTEGER PARAM */
 	/* This is a number type, so there is no need to specify buffer_length */
 	bind[i].buffer_type = MYSQL_TYPE_LONG;
-	bind[i].buffer = (char *) &int_data;
+	bind[i].buffer = (char *)&int_data;
 	bind[i].is_null = 0;
 	bind[i].length = 0;
 
 	i ++;
 	/* STRING PARAM */
+	/* Pay attention to the bind[i].buffer = (char *)str_data */
 	bind[i].buffer_type = MYSQL_TYPE_STRING;
 	bind[i].buffer = (char *)str_data;
 	bind[i].buffer_length = STRING_SIZE;
