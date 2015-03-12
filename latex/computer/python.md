@@ -35,11 +35,13 @@ import copy
 new_list = copy.copy(existing_list)
 ```
 
-有些时候,你希望对象中的属性也被复制,可以使用deepcopy方法:
+有些时候,你希望对象中的属性也被复制, 尤其是当有list 等对象时,可以使用deepcopy方法:
 ```
 import copy
 new_list_of_dicts = copy.deepcopy(existing_list_of_dicts)
 ```
+[demo](../../demo/python/copy_deepcopy.py)
+
 
 ## global
 ```
