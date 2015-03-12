@@ -27,6 +27,20 @@ def changevalue2(x):
 	x[0]=x[0]**2
 ```
 
+在Python中,无论你把对象做为参数传递,做为函数返回值,都是引用传递的.  
+你想复制一个对象.  
+标准库中的copy模块提供了两个方法来实现拷贝.一个方法是copy,它返回和参数包含内容一样的对象.
+```
+import copy
+new_list = copy.copy(existing_list)
+```
+
+有些时候,你希望对象中的属性也被复制,可以使用deepcopy方法:
+```
+import copy
+new_list_of_dicts = copy.deepcopy(existing_list_of_dicts)
+```
+
 ## global
 ```
 def fun(x):
