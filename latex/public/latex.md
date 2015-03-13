@@ -103,6 +103,35 @@ generate:
 
 [Avoid eqnarray](https://tug.org/pracjourn/2006-4/madsen/madsen.pdf)
 
+公式中对齐
+
+```
+\begin{equation}  fst_a(A)\triangleq 
+\left\{
+      \begin{aligned}
+			 &\varnothing & if\ a \notin\Sigma(A)\\
+             &hitter(A_m) & if\ m=min\{n \in \uppercase\expandafter{\romannumeral2^A|a \in \Sigma(A_n)}\land\Sigma(hitter(A_m))=a\}\\  
+             &target(A_m) & if\ m=min\{n \in \uppercase\expandafter{\romannumeral2^A|a \in \Sigma(A_n)}\land\Sigma(target(A_m))=a\}\\  
+           \end{aligned}
+\right.  
+\end{equation}  
+```
+\href{http://i.imgbox.com/JGSKOgTs.png}{result}
+
+
+```
+\begin{equation}  fst_a(A)\triangleq 
+\left\{
+      \begin{aligned}
+             &\varnothing & if & \ a \notin\Sigma(A)\\
+             &hitter(A_m) & if & \ m=min\{n \in \uppercase\expandafter{\romannumeral2^A|a \in \Sigma(A_n)}\land\Sigma(hitter(A_m))=a\}\\  
+             &target(A_m) & if & \ m=min\{n \in \uppercase\expandafter{\romannumeral2^A|a \in \Sigma(A_n)}\land\Sigma(target(A_m))=a\}\\  
+           \end{aligned}
+\right.  
+\end{equation}  
+```
+\href{http://i.imgbox.com/mcWpxQK9.png}{将if放在单独一格的result}
+
 ## Matrix
 pmatrix,bmatrix,Bmatrix,vmatrix和Vmatrix
 
