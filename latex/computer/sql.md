@@ -41,11 +41,10 @@ MySQL复制表结构及数据到新表
 CREATE TABLE 新表 SELECT * FROM 旧表
 ```
 
-只复制表结构到新表
+只复制表结构到新表, 即:让WHERE条件不成立.  
 ```
 CREATE TABLE 新表 SELECT * FROM 旧表 WHERE 1=2
 ```
-即:让WHERE条件不成立.  
 方法二:(低版本的mysql不支持,mysql4.0.25 不支持,mysql5已经支持了)
 ```
 CREATE TABLE 新表 LIKE 旧表
@@ -81,6 +80,10 @@ UPDATE table_name SET column1=value1,column2=value2,...  WHERE some_column=some_
 两个表update
 ```
 update a set age = (select age from b where b.name = a.name)
+```
+上面的update, 用到了子查询, 当数据量大的时候, 效率非常低, 使用下面的update, 效率会高很多, 尤其是在建立有合适的索引时.
+```
+update a, b set a.age = b.age where a.name = b.name
 ```
 
 ## Alter
@@ -160,8 +163,8 @@ ORDER BY ProductModelID ;
 
 having子句与where有相似之处但也有区别,都是设定条件的语句.
 
-1. having只能用在group?by之后,对分组后的结果进行筛选(即使用having的前提条件是分组).
-2. where肯定在group?by?之前,即也在having之前
+1. **having只能用在group by之后,对分组后的结果进行筛选**(即使用having的前提条件是分组).
+2. where肯定在group by 之前,即也在having之前
 3. where后的条件表达式里不允许使用聚合函数,而having可以
 
 在查询过程中优先级
@@ -660,35 +663,35 @@ CREATE TABLE t(
 	i INT)ENGINE = MYISAM;
 ```
 
-MyISAM 是非事务的存储引擎.   
-InnoDB是支持事务的存储引擎.
-
-innodb的引擎比较适合于插入和更新操作比较多的应用   
-而MyISAM 则适合用于频繁查询的应用
-
-MyISAM类型不支持事务处理等高级处理,而InnoDB类型支持.   
-MyISAM类型的表强调的是性能,其执行数度比InnoDB类型更快,但是不提供事务支持,而InnoDB提供事务支持已经外部键等高级数据库功能.  
-综述,就可以根据数据表不同的用处是用不同的存储类型.而且MyISAM是文件存储的,可以进行直接在不同操作系统间拷贝使用.
+1. **MyISAM 则适合用于频繁查询**的应用, innodb的引擎比较适合于插入和更新操作比较多的应用
+1. MyISAM类型不支持事务处理等高级处理, 也不支持外键,而InnoDB类型支持事务, 回滚, 外键和崩溃恢复能力等高级数据库功能(ACID: Atomicity, Consistency, Isolation, Durability)
+1. MyISAM类型的表强调的是性能,其执行数度比InnoDB类型更快
+1. MyISAM是文件存储的,可以进行直接在不同操作系统间拷贝使用
+1. InnoDB不支持FULLTEXT类型的索引
+1. InnoDB 中不保存表的具体行数,也就是说,执行`select count(\*) from table`时,InnoDB要扫描一遍整个表来计算有多少行,但是MyISAM只要简单的读出保存好的行数即可.
+注意的是,当count(\*)语句包含 where条件时,两种表的操作是一样的.
+1. 对于AUTO_INCREMENT类型的字段,InnoDB中必须包含只有该字段的索引,但是在MyISAM表中,可以和其他字段一起建立联合索引.
+1. MyISAM 提供表锁, 而InnoDB提供行锁(locking on row level),提供与 Oracle 类型一致的不加锁读取(non-locking read in SELECTs). 
+但是InnoDB表的行锁也不是绝对的,如果在执行一个SQL语句时MySQL不能确定要扫描的范围,InnoDB表同样会锁全表,例如`update table set num=1 where name like "%aaa%"`
+1. MyISAM将数据与索引放在单独的文件中, 而InnoDB 把数据和索引存都放在表空间同一个数据文件(可能是多个实体文件)里.
+1. DELETE FROM table时,InnoDB不会重新建立表,而是一行一行的删除.
+1. LOAD TABLE FROM MASTER操作对InnoDB是不起作用的,解决方法是首先把InnoDB表改成MyISAM表,导入数据后再改成InnoDB表,但是对于使用的额外的InnoDB特性(例如外键)的表不适用.
 
 InnoDB:  
-InnoDB 给 MySQL 提供了具有事务(commit),回滚(rollback)和崩溃修复能力(crash recovery capabilities)的事务安全(transaction-safe (ACID compliant))型表.
-InnoDB 提供了行锁(locking on row level),提供与 Oracle 类型一致的不加锁读取(non-locking read in SELECTs).这些特性均提高了多用户并发操作的性能表现.
-在InnoDB表中不需要扩大锁定(lock escalation),因为 InnoDB 的列锁定(row level locks)适宜非常小的空间.
 InnoDB 是 MySQL 上第一个提供外键约束(FOREIGN KEY constraints)的表引擎.InnoDB 的设计目标是处理大容量数据库系统,它的 CPU 利用率是其它基于磁盘的关系数据库引擎所不能比的.
 在技术上,InnoDB 是一套放在 MySQL 后台的完整数据库系统,InnoDB 在主内存中建立其专用的缓冲池用于高速缓冲数据和索引. 
-InnoDB 把数据和索引存放在表空间里,可能包含多个文件,这与其它的不一样,举例来说,在 MyISAM 中,表被存放在单独的文件中.InnoDB 表的大小只受限于操作系统的文件大小,一般为 2 GB.
-InnoDB所有的表都保存在同一个数据文件 ibdata1 中(也可能是多个文件,或者是独立的表空间文件),相对来说比较不好备份,可以拷贝文件或用navicat for mysql.
 
 MyISAM  
 每张MyISAM 表被存放在三个文件 :frm 文件存放表格定义. 数据文件是MYD (MYData), 索引文件是MYI(MYIndex) 引伸.   
 因为MyISAM相对简单所以在效率上要优于InnoDB,小型应用使用MyISAM是不错的选择.   
 MyISAM表是保存成文件的形式,在跨平台的数据转移中使用MyISAM存储会省去不少的麻烦
 
-以下是一些细节和具体实现的差别:
-
-1. InnoDB不支持FULLTEXT类型的索引.
-2. InnoDB 中不保存表的具体行数,也就是说,执行select count(\*) from table时,InnoDB要扫描一遍整个表来计算有多少行,但是MyISAM只要简单的读出保存好的行数即可.注意的是,当count(\*)语句包含 where条件时,两种表的操作是一样的.
-3. 对于AUTO_INCREMENT类型的字段,InnoDB中必须包含只有该字段的索引,但是在MyISAM表中,可以和其他字段一起建立联合索引.
-4. DELETE FROM table时,InnoDB不会重新建立表,而是一行一行的删除.
-5. LOAD TABLE FROM MASTER操作对InnoDB是不起作用的,解决方法是首先把InnoDB表改成MyISAM表,导入数据后再改成InnoDB表,但是对于使用的额外的InnoDB特性(例如外键)的表不适用.
+**anto_increment 机制不同**  
+InnoDB 如果你为一个表指定AUTO_INCREMENT列,在数据词典里的InnoDB表句柄包含一个名为自动增长计数器的计数器,它被用在为该列赋新值.
+自动增长计数器仅被存储在主内存中,而不是存在磁盘上  
+MyISAM 每表一个AUTO_INCREMEN列的内部处理.
+MyISAM为INSERT和UPDATE操作自动更新这一列.这使得AUTO_INCREMENT列更快(至少10%).
+在序列顶的值被删除之后就不能再利用.(当AUTO_INCREMENT列被定义为多列索引的最后一列,可以出现重使用从序列顶部删除的值的情况).
+AUTO_INCREMENT值可用ALTER TABLE或myisamch来重置.
+对于AUTO_INCREMENT类型的字段,InnoDB中必须包含只有该字段的索引,但是在MyISAM表中,可以和其他字段一起建立联合索引,更好和更快的auto_increment处理.
 
