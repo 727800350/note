@@ -41,16 +41,18 @@ box/.style={rectangle, rounded corners=6pt,
 minimum width=50pt, minimum height=20pt, inner sep=6pt,
 draw=gray,thick, fill=lightgray}
 }
-\usepackage{ccaption}
-\usepackage{subfigure}
+\usepackage{caption}
+\usepackage[format=hang,singlelinecheck=0,font={sf,small},labelfont=bf]{subfig}
+\usepackage[noabbrev]{cleveref}
+\captionsetup[subfigure]{subrefformat=simple,labelformat=simple,listofformat=subsimple}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+
 \usepackage{epstopdf} %convert eps to pdf
-%% bmp, gif not supported
-\DeclareGraphicsExtensions{.eps,.mps,.pdf,.jpg,.png}
+\DeclareGraphicsExtensions{.eps,.mps,.pdf,.jpg,.png} %% bmp, gif not supported
 \DeclareGraphicsRule{*}{eps}{*}{}
 \graphicspath{{figure/}{../figure/}}
 
 \usepackage[colorinlistoftodos]{todonotes}
-
 
 %尺寸
 \usepackage[top=2.54cm, bottom=2.54cm, left=3.18cm, right=3.18cm]{geometry} % ms word
@@ -108,7 +110,7 @@ draw=gray,thick, fill=lightgray}
     columns=flexible,
     breakatwhitespace=false,
     breaklines=true,
-    captionpos=b,
+    captionpos=tt,
     frame=single, %% Frame: 这个命令能让代码周围显示边框. 它的值可以是 none|leftline|topline|bottomline|lines|single|shadowbox 中的任意一个
     numbers=left, %% numbers 的值可以是 left, right, none, 分别代表了将行号放在代码的左边, 右边和不显示
     numbersep=5pt,
