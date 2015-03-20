@@ -325,6 +325,15 @@ The uppercase-character allows the figure to float, while the lowercase version 
 	\end{wrapfigure}
 [result figure](http://upload.wikimedia.org/wikipedia/commons/d/dc/Latex_example_wrapfig_vspace.png)
 
+## subfloat
+```
+\usepackage{subfig}
+\subfloat[list entry][sub-caption]{\label{sub-label}body}
+body 可以为figure, 也可以是table
+```
+Normally, if a caption is present, it is also included on the List-of-Floats page.
+However, if a second optional argument is present, than the first one controls what is on the List-of-Floats page and the second is the caption text
+
 # Table
 ```
 \begin{table}[h]\small 
