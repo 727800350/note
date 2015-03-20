@@ -16,7 +16,7 @@ CFLAGS=-pthread -g -Wall -I/usr/include/mysql -I/usr/local/apr/include/apr-1 -m6
 CPPFLAGS=-I$(srcdir) 
 LIBS=-lmysqlclient_r -lapr-1
 
-TARGETS=option
+TARGETS=struct
 all: $(TARGETS)
 
 TIME=time.o
@@ -30,6 +30,10 @@ io: $(IO)
 OPTION=parse_options.o
 option: $(OPTION)
 	$(CC) $(LDFLAGS) -rdynamic -o a.out $(OPTION) $(LIBS)
+
+STRUCT=struct.o
+struct: $(STRUCT)
+	$(CC) $(LDFLAGS) -rdynamic -o a.out $(STRUCT) $(LIBS)
 
 clean:
 	rm a.out *.o
