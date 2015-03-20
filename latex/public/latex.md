@@ -325,38 +325,6 @@ The uppercase-character allows the figure to float, while the lowercase version 
 	\end{wrapfigure}
 [result figure](http://upload.wikimedia.org/wikipedia/commons/d/dc/Latex_example_wrapfig_vspace.png)
 
-### Subfloats
-`\setcounter{subfigure}{0}`
-让每个figure的subfigure都重新编号, 而不是整个article 的subfigure的编号是连续的, 
-[ref](http://tex.stackexchange.com/questions/4530/subfigures-in-beamer-documents)
-
-也可以考虑使用minipage 来达到同样的效果
-
-	\setcounter{subfigure}{0}
-	\begin{figure}
-	        \centering
-	        \begin{subfigure}[b]{0.3\textwidth}
-	                \includegraphics[width=\textwidth]{gull}
-	                \caption{A gull}
-	                \label{fig:gull}
-	        \end{subfigure}%
-	        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-	          %(or a blank line to force the subfigure onto a new line)
-	        \begin{subfigure}[b]{0.3\textwidth}
-	                \includegraphics[width=\textwidth]{tiger}
-	                \caption{A tiger}
-	                \label{fig:tiger}
-	        \end{subfigure}
-	        ~ 
-	        \begin{subfigure}[b]{0.3\textwidth}
-	                \includegraphics[width=\textwidth]{mouse}
-	                \caption{A mouse}
-	                \label{fig:mouse}
-	        \end{subfigure}
-	        \caption{Pictures of animals}\label{fig:animals}
-	\end{figure}
-[result figure](http://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Latex_example_subfig.png/500px-Latex_example_subfig.png)
-
 # Table
 ```
 \begin{table}[h]\small 
