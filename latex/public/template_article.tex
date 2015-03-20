@@ -14,13 +14,19 @@
 
 \begin{figure}
 \centering
-\subfloat[text]{\label{fig.a}\includegraphics{file1.eps}}\qquad
-\subfloat[text]{\label{fig.b}\includegraphics{file2.eps}}\\
-\subfloat[text]{\label{fig.c}\includegraphics{file3.eps}}\qquad
-\subfloat[text]{\label{fig.d}\includegraphics{file4.eps}}
-\caption{\protect\subref{fig.a} to \subref{fig.b} are plotted against height, and \protect\subref{fig.c} to \protect\subref{fig.d} against pressure}
+\includegraphics[width=0.3\textwidth]{ex}
+\caption{caption}
+\label{fig.label}
 \end{figure}
 
+\begin{figure}
+\centering
+\subfloat[text]{\label{fig.a}\includegraphics[width = 0.4\textwidth]{ex}}\qquad
+\subfloat[text]{\label{fig.b}\includegraphics[width = 0.4\textwidth]{ex}}\\
+\subfloat[text]{\label{fig.c}\includegraphics[width = 0.45\textwidth]{ex}}\qquad
+\subfloat[text]{\label{fig.d}\includegraphics[width = 0.45\textwidth]{ex}}
+\caption{\protect\subref{fig.a} to \protect\subref{fig.b} are plotted against height, and \protect\subref{fig.c} to \protect\subref{fig.d} against pressure}
+\end{figure}
 Now I refer to the figure \subref*{fig.d}. And use cref: \cref{fig.d}
 
 \end{document}
