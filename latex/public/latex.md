@@ -634,6 +634,17 @@ eg:
 
 `\todo[inline, color=green!40]{This is an inline comment.}`
 
+根据条件进行不同的设置
+```
+\newif\ifdirector
+\directorfalse %I set the conditional to false
+\ifdirector
+ I write something for the director.
+\else
+ I write something for common people.
+\fi
+```
+
 `\textsuperscript`  
 For example, let's say I want to write the `$n^{th}$` element, but without the math mode's automatic italicization of the th. And what if I still want the n to be in math mode, but the th outside?  
 `$n$\textsuperscript{th}`
