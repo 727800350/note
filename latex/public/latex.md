@@ -637,9 +637,10 @@ For example, let's say I want to write the `$n^{th}$` element, but without the m
 ```
 \usepackage{listings}
 \begin{lstlisting}[language=...] Put your code here. \end{lstlisting}
-
 \lstinputlisting[language=Python]{source_filename.py}
+\lstinputlisting[language=Python, float, caption = Add Fake Source Dependencies, firstnumber=91, firstline=91, lastline=95]{source_filename.py}
 ```
+Python 的注释只能使用一个#, 而不能使用两个##, 否则会报错.
 
 ```
 \setcounter{page}{1}
