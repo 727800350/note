@@ -636,15 +636,14 @@ dcast uses a formula to describe the shape of the data. The arguments on the lef
 [reshape demo](../../demo/r/reshape2.r)
 
 **melt 错误提示**  
-Warning message:
-attributes are not identical across measure variables; they will be dropped 
+Warning message: attributes are not identical across measure variables; they will be dropped  
 This warning is basically telling you that variables that you are trying to put in the "value" column (the measure variables) are different types 
-(some may be character, others may be factors, others may be numeric). 
+(some may be character, others may be factors, others may be numeric).  
 @MrFlick suggestion to treat those columns as keys even if they might not be would solve that problem.
 
 **cast 错误提示**  
-Aggregation function missing: defaulting to length
-This warning is a warning that you usually get when the combination of IDs is not unique. 
+Aggregation function missing: defaulting to length  
+This warning is a warning that you usually get when the combination of IDs is not unique.  
 you would need to add another column to make the ID variables unique to avoid having dcast automatically use length as its fun.aggregate function.
 
 ### 变量的重命名

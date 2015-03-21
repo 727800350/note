@@ -81,8 +81,8 @@ Basic
 - Ctrl right: go to next tab
 - Ctrl left: go to previous tab
 - Ctrl Alt Left Arrow: move the tab to left
-- Ctrl 0: go to tab0
 - Ctrl 1: go to tab1
+- Ctrl 2: go to tab2
 
 快捷功能
 
