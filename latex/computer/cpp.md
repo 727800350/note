@@ -37,32 +37,7 @@ In both cases the array of characters myword is declared with a size of 6 elemen
 that compose the word "Hello" plus a final null character ('\0') which specifies the end of the sequence and that,
 in the second case, when using double quotes (") it is appended automatically.
 
-**Pointers to functions**  
-
-	// pointer to functions
-	#include <iostream>
-	using namespace std;
-
-	int addition (int a, int b){ 
-		return (a+b);
-	}
-	int subtraction (int a, int b){ 
-		return (a-b);
-	}
-	int operation (int x, int y, int (*functocall)(int,int)){
-		int g;
-		g = (*functocall)(x,y);
-		return (g);
-	}
-	
-	int main (){
-		int m,n;
-		int (*minus)(int,int) = subtraction;
-		m = operation (7, 5, addition);
-		n = operation (20, m, minus);
-		cout <<n;
-		return 0;
-	}
+[**Pointers to functions**](../../demo/c++/pointer_function.cpp)  
 
 # Memory
 	pointer = new type
@@ -91,29 +66,7 @@ them acquire:
 
 **By default, all members of a class are private.**
 
-	// classes example
-	#include <iostream>
-	using namespace std;
-	class CRectangle {
-		int x, y;
-	public:
-		CRectangle (int,int);
-		~CRectangle ();
-		void set_values (int,int);
-		int area () {return (x*y);}
-	};
-	
-	void CRectangle::set_values (int a, int b) {
-		x = a;
-		y = b;
-	}
-
-	int main () {
-		CRectangle rect;
-		rect.set_values (3,4);
-		cout << "area: " << rect.area();
-		return 0;
-	}
+[class demo](../../demo/c++/class_demo.cpp)
 
 **Constructors**  
 Objects generally need to initialize variables or assign dynamic memory during their process of creation to become
@@ -125,76 +78,10 @@ name but different types or number of parameters.
 The use of destructors is especially suitable when an object assigns dynamic memory during its lifetime and at the
 moment of being destroyed we want to release the memory that the object was allocated.
 
-	// example on constructors and destructors
-	#include <iostream>
-	using namespace std;
-	
-	class CRectangle {
-		int *width, *height;
-	public:
-		CRectangle (int,int);
-		~CRectangle ();
-		int area () {return (*width * *height);}
-	};
-
-	CRectangle::CRectangle (int a, int b) {
-		width = new int;
-		height = new int;
-		*width = a;
-		*height = b;
-	}
-
-	CRectangle::~CRectangle () {
-		delete width;
-		delete height;
-	}
-
-	int main () {
-		CRectangle rect (3,4), rectb (5,6);
-		cout << "rect area: " << rect.area() << endl;
-		cout << "rectb area: " << rectb.area() << endl;
-		return 0;
-	}
+[class construnctor and destructor](../../demo/c++/class_constructor_destructor.cpp)
 
 ## Overloading operators
-	// vectors: overloading operators example
-	#include <iostream>
-	using namespace std;
-	
-	class CVector {
-	public:
-		int x,y;
-		CVector () {};
-		CVector (int,int);
-		CVector operator + (CVector);
-	};
-
-	CVector::CVector (int a, int b) {
-		x = a;
-		y = b;
-	}
-
-	CVector CVector::operator+ (CVector param) {
-		CVector temp;
-		temp.x = x + param.x;
-		temp.y = y + param.y;
-		return (temp);
-	}
-
-	int main () {
-		CVector a (3,1);
-		CVector b (1,2);
-		CVector c;
-		c = a + b;
-		cout << c.x << "," << c.y;
-		return 0;
-	}
-
-Usage
-
-	c = a + b;
-	c = a.operator+ (b);
-Both expressions are equivalent.
+[class overload operator](../../demo/c++/class_overload_operator.cpp)
 
 **keyword this**  
 The keyword this represents a pointer to the object whose member function is being executed. It is a pointer to
@@ -226,77 +113,13 @@ const对象不能调用非const函数
 In principle, private and protected members of a class cannot be accessed from outside the same class in which
 they are declared. However, this rule does not affect friends.
 
-	// friend functions
-	#include <iostream>
-	using namespace std;
-
-	class CRectangle {
-		int width, height;
-	public:
-		void set_values (int, int);
-		int area () {return (width * height);}
-		friend CRectangle duplicate (CRectangle);
-	};
-
-	void CRectangle::set_values (int a, int b) {
-		width = a;
-		height = b;
-	}
-
-	CRectangle duplicate (CRectangle rectparam)	{
-		CRectangle rectres;
-		rectres.width = rectparam.width*2;
-		rectres.height = rectparam.height*2;
-		return (rectres);
-	}
-
-	int main () {
-		CRectangle rect, rectb;
-		rect.set_values (2,3);
-		rectb = duplicate (rect);
-		cout << rectb.area();
-		return 0;
-	}
+[friend function](../../demo/c++/friend_function.cpp)
 
 ### Friend classes
 Just as we have the possibility to define a friend function, we can also define a class as friend of another one,
 granting that first class access to the protected and private members of the second one.
 
-	// friend class
-	#include <iostream>
-	using namespace std;
-	
-	// make class csquare visible to crectangle
-	class CSquare;
-	
-	class CRectangle {
-		int width, height;
-	public:
-		int area ()	{return (width * height);}
-		void convert (CSquare a);
-	};
-	
-	class CSquare {
-	private:
-		int side;
-	public:
-		void set_side (int a) {side=a;}
-		friend class CRectangle;
-	};
-	
-	void CRectangle::convert (CSquare a) {
-		width = a.side;
-		height = a.side;
-	}
-
-	int main () {
-		CSquare sqr;
-		CRectangle rect;
-		sqr.set_side(4);
-		rect.convert(sqr);
-		cout << rect.area();
-		return 0;
-	}
+[friend class](../../demo/c++/friend_class.cpp)
 
 In this example, we have declared CRectangle as a friend of `CSquare` so that CRectangle member functions could
 have access to the protected and private members of `CSquare`, more concretely to `CSquare::side`, which describes the side width of the square.
