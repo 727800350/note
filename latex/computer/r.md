@@ -141,7 +141,13 @@ list objects in memory
 `ls.str()`: display some details
 
 delete objects in memory  
-`rm(x)`, `rm(x,y)` remove the object x and y from memory
+`rm(x)`, `rm(x,y)` remove the object x and y from memory  
+`rm(list=ls())` remove all objects
+
+save objects to File System  
+`save(x, file = 'x.RData')` 保存一个对象x 到文件 x.RData 中,  
+`load('x.RData')`, 将文件 x.RData 中的对象加载到内存中, 这里也就是x 对象.  
+`save.image()` is just a short-cut for 'save my current workspace', i.e., `save(list = ls(all = TRUE), file = ".RData")`.
 
 **Conversion**
 
