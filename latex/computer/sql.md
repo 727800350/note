@@ -32,8 +32,19 @@ MySQL默认情况下指定字段为NULL修饰符
 
 ## Data Type
 ### date time
-datetime 之间作差可能会出错.
-碰到过一个错误, 在作差, 秒向分借位时, 借的是100 而不是60.
+[时间差](http://blog.csdn.net/yzsind/article/details/8831429)
+
+datetime 直接之间作差得到结果不是时间意义上的作差.
+实际是mysql的时间相减是做了一个隐式转换操作,将时间转换为整数,但并不是用unix_timestamp转换,而是直接把年月日时分秒拼起来,
+如2013-04-21 16:59:33 直接转换为20130421165933,由于时间不是十进制,所以最后得到的结果没有意义,这也是导致出现坑爹的结果.
+
+要得到正确的时间相减秒值,有以下3种方法:
+
+1. `time_to_sec(timediff(t2, t1))`, timediff 得到的结果是一个时间格式
+2. `timestampdiff(second, t1, t2)`
+3. `unix_timestamp(t2) - unix_timestamp(t1)`
+
+时间位移: `ADDTIME('2014-05-26 18:26:21', '0:0:2')` 求后2秒的时间.
 
 ### str
 - length()

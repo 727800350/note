@@ -35,7 +35,7 @@ by either one of these two methods:
 	char myword [] = "Hello";
 In both cases the array of characters myword is declared with a size of 6 elements of type char: the 5 characters
 that compose the word "Hello" plus a final null character ('\0') which specifies the end of the sequence and that,
-in the second case, when using double quotes (") it is appended automatically.
+in the second case, when using double quotes, '\0' is appended automatically.
 
 [**Pointers to functions**](../../demo/c++/pointer_function.cpp)  
 
@@ -60,9 +60,9 @@ private, public or protected.
 These specifiers modify the access rights that the members following
 them acquire:
 
-- *private* members of a class are accessible only from within other members of the same class or from their friends.
-- *protected* members are accessible from members of their same class and from their friends, but also from members of their derived classes.
-- *public* members are accessible from anywhere where the object is visible.
+- *private* members of a class are accessible only from within other members of **the same class** or from their **friends**.
+- *protected* members are accessible from members of their **same class** and from their **friends**, but also from members of their **derived classes**.
+- *public* members are accessible from **anywhere** where the object is visible.
 
 **By default, all members of a class are private.**
 
@@ -125,14 +125,32 @@ In this example, we have declared CRectangle as a friend of `CSquare` so that CR
 have access to the protected and private members of `CSquare`, more concretely to `CSquare::side`, which describes the side width of the square.
 
 ### Inheritance between classes
-Classes that are derived from others inherit all the accessible members of the base class. That means that if a base
-class includes a member A and we derive it to another class with another member called B, the derived class will
-contain both members A and B.
+派生类的声明:
+```
+class 派生类名:继承方式 基类名1, 继承方式 基类名2,...,继承方式 基类名n
+{
+    派生类成员声明;
+};
+```
+继承方式规定了如何访问基类继承的成员.继承方式有public, private, protected.
+如果不显示给出继承方式,默认为private继承.
+继承方式指定了派生类成员以及类外对象对于从基类继承来的成员的访问权限.
 
-`class derived_class_name: public base_class_name`
-
-The public access specifier may be replaced by any one of the other access specifiers protected
-and private.
+- 公有继承  
+基类的公有和保护成员的访问属性在派生类中不变,而**基类的私有成员不可访问**.
+即基类的公有成员和保护成员被继承到派生类中仍作为派生类的公有成员和保护成员.派生类的其他成员可以直接访问它们.
+无论派生类的成员还是派生类的对象都无法访问基类的私有成员.
+ 
+- 私有继承  
+**基类中的公有成员和保护成员都以私有成员身份出现在派生类中**,而基类的私有成员在派生类中不可访问.
+基类的公有成员和保护成员被继承后作为派生类的私有成员,派生类的其他成员可以直接访问它们,但是在类外部通过派生类的对象无法访问.
+无论是派生类的成员还是通过派生类的对象,都无法访问从基类继承的私有成员.
+通过多次私有继承后,对于基类的成员都会成为不可访问.因此私有继承比较少用.
+ 
+- 保护继承  
+**基类的公有成员和私有成员都以保护成员的身份出现在派生类中**,而基类的私有成员不可访问.
+派生类的其他成员可以直接访问从基类继承来的公有和保护成员,但是类外部通过派生类的对象无法访问它们.
+无论派生类的成员还是派生类的对象,都无法访问基类的私有成员.
 
 权限的分配
 

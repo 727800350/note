@@ -141,7 +141,13 @@ list objects in memory
 `ls.str()`: display some details
 
 delete objects in memory  
-`rm(x)`, `rm(x,y)` remove the object x and y from memory
+`rm(x)`, `rm(x,y)` remove the object x and y from memory  
+`rm(list=ls())` remove all objects
+
+save objects to File System  
+`save(x, file = 'x.RData')` 保存一个对象x 到文件 x.RData 中,  
+`load('x.RData')`, 将文件 x.RData 中的对象加载到内存中, 这里也就是x 对象.  
+`save.image()` is just a short-cut for 'save my current workspace', i.e., `save(list = ls(all = TRUE), file = ".RData")`.
 
 **Conversion**
 
@@ -636,15 +642,14 @@ dcast uses a formula to describe the shape of the data. The arguments on the lef
 [reshape demo](../../demo/r/reshape2.r)
 
 **melt 错误提示**  
-Warning message:
-attributes are not identical across measure variables; they will be dropped 
+Warning message: attributes are not identical across measure variables; they will be dropped  
 This warning is basically telling you that variables that you are trying to put in the "value" column (the measure variables) are different types 
-(some may be character, others may be factors, others may be numeric). 
+(some may be character, others may be factors, others may be numeric).  
 @MrFlick suggestion to treat those columns as keys even if they might not be would solve that problem.
 
 **cast 错误提示**  
-Aggregation function missing: defaulting to length
-This warning is a warning that you usually get when the combination of IDs is not unique. 
+Aggregation function missing: defaulting to length  
+This warning is a warning that you usually get when the combination of IDs is not unique.  
 you would need to add another column to make the ID variables unique to avoid having dcast automatically use length as its fun.aggregate function.
 
 ### 变量的重命名
