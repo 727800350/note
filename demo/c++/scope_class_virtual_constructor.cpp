@@ -6,6 +6,7 @@ class B0{
 public:
     B0(int n){
         nV = n;
+		cout << "constructing B0" << endl;
     }
     int nV;
     void fun(){
@@ -15,19 +16,25 @@ public:
 
 class B1:virtual public B0{
 public:
-    B1(int a):B0(a){ }
+    B1(int a):B0(a){ 
+		cout << "constructing B1" << endl;
+	}
     int nV1;
 };
 
 class B2:virtual public B0{
 public:
-    B2(int a):B0(a){ }
+    B2(int a):B0(a){
+		cout << "constructing B2" << endl;
+	}
     int nV2;
 };
 
 class D1:public B1, public B2{
 public:
-    D1(int a):B0(a), B1(a), B2(a) { }
+    D1(int a):B0(a), B1(a), B2(a){
+		cout << "constructing D1" << endl;
+	}
     int nVd;
     void fund(){
         cout<<"member of D1"<<endl;
@@ -41,3 +48,13 @@ int main(){
 
     return 0; 
 }
+
+/**
+ * output:
+ *
+ * constructing B0
+ * constructing B1
+ * constructing B2
+ * constructing D1
+ * member of B0 2
+**/
