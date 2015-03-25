@@ -11,7 +11,34 @@
 At this point you will be asked whether you want to save the data from your R session.
 Data which is saved will be available in future R sessions.
 
-注释: R 语言里面没有像C 语言那样的多行注释
+注意: 
+
+1. R 语言里面没有像C 语言那样的多行注释
+1. R 中时没有续行符的, 所以要注意[换行的问题](http://yihui.name/en/2007/12/be-careful-with-the-value-returned-in-r-functions/).
+```
+f1 = function() {
+    1 + 1
+}
+f1() # of course 2
+
+f2 = function() {
+   1
+   + 1
+}
+f2() # returns 1
+
+f3 = function() {
+   return(1
+   + 1)
+}
+f3() # 2; use return() if you want break lines, or
+
+f4 = function() {
+   1 +
+   1
+}
+f4() # 2; do not put '+' in the beginning, as '+1==1'
+```
 
 # Objects
 R是一种基于对象(Object)的语言,所以你在R语言中接触到的每样东西都是一个对象,一串数值向量是一个对象,一个函数是一个对象,一个图形也是一个对象.
