@@ -114,6 +114,23 @@ char a 和int b一起占用8个字节, float c 占8个字节, double d 占8个�
 对于将short e 移动到前面的A, 输出40.  
 char a , short e, int b一起占用8个字节, float c 占8个字节, double d 占8个字节, int *pa, char *pc 各占8个字节.
 
+```
+public class Test{
+        static int a[] = new int[10];
+        public static void main(String args[]){
+                System.out.println(a[10]);
+        }
+}
+```
+上面的java 代码编译时正确, 但是运行时将产生错误, 提示index out of range.
+
+现通过X计算F和G, F和G均为32位有符号整数, F = X/2, G = (X >> 1), 发现 F!= G, 这说明
+
+1. 编译错误
+1. X 是奇数
+1. X 是负数
+1. F - G = 1
+
 # 框架
 在MVC模式中, 进行业务流程/状态的处理以及业务规则的制定的是()
 
