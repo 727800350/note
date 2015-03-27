@@ -124,7 +124,7 @@ granting that first class access to the protected and private members of the sec
 In this example, we have declared CRectangle as a friend of `CSquare` so that CRectangle member functions could
 have access to the protected and private members of `CSquare`, more concretely to `CSquare::side`, which describes the side width of the square.
 
-### Inheritance between classes
+### [Inheritance between classes](http://www.cnblogs.com/fzhe/archive/2012/12/25/2832250.html)
 派生类的声明:
 ```
 class 派生类名:继承方式 基类名1, 继承方式 基类名2,...,继承方式 基类名n

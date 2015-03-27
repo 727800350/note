@@ -11,6 +11,8 @@
 At this point you will be asked whether you want to save the data from your R session.
 Data which is saved will be available in future R sessions.
 
+执行r的脚本文件: `R -f file.r`
+
 注意: 
 
 1. R 语言里面没有像C 语言那样的多行注释
