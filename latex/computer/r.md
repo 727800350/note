@@ -1003,6 +1003,10 @@ read.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, c
 ```
 
 excel
+第一个建议就是尽量避免这样做!
+如果你可以访问Excel,把你的Excel数据 用制表符分隔或逗号分隔的格式导出,然后用 read.delim 或 read.csv 导入R.(在采用逗号作为小数点的欧洲大陆本地系统里面,你可能需要用 read.delim2 或 read.csv2.) 
+导出一个DIF文件然后用read.DIF 读入是另外一种可能性.
+
 ```
 > library(gdata)                   # load gdata package 
 > help(read.xls)                   # documentation 
@@ -1435,15 +1439,15 @@ There are three issues to consider when working with large datasets:
 ## Efficient programming
 There are a number of programming tips that improve performance when working with large datasets.
 
-- Vectorize calculations when possible. Use R's built-in functions for manipulating vectors, matrices, and lists (for example, s apply , lappy , and mapply ) and avoid loops ( for and  while ) when feasible.
+- Vectorize calculations when possible. Use R built-in functions for manipulating vectors, matrices, and lists (for example, s apply , lappy , and mapply ) and avoid loops ( for and  while ) when feasible.
 - Use matrices rather than data frames (they have less overhead).
 - When using the  read.table()  family of functions to input external data into data frames, specify the  colClasses  and  nrows options explicitly, set  comment.  
-char = "" , and specify  "NULL" for columns that aren't needed. This will decrease memory usage and speed up processing considerably. 
+char = "" , and specify  "NULL" for columns that are not needed. This will decrease memory usage and speed up processing considerably. 
 When reading external data into a matrix, use the  scan() function instead.
 - Test programs on subsets of the data, in order to optimize code and remove bugs, before attempting a run on the full dataset.
 - Delete temporary objects and objects that are no longer needed. 
 The call rm(list=ls())  will remove all objects from memory, providing a clean slate.  Specific objects can be removed with  rm( object )  .
-- Use the function . ls.objects() described in Jeromy Anglim's blog entry "Memory Management in R: A Few Tips and Tricks" (jeromyanglim.blogspot.com), 
+- Use the function . ls.objects() described in Jeromy Anglim blog entry "Memory Management in R: A Few Tips and Tricks" (jeromyanglim.blogspot.com), 
 to list all workspace objects sorted by size ( MB ). This function will help you find and deal with memory hogs.
 - Profile your programs to see how much time is being spent in each function.  
 You can accomplish this with the  Rprof()  and  summaryRprof() functions. The system.time()  function can also help. 
@@ -1453,7 +1457,7 @@ With large datasets, increasing code efficiency will only get you so far.
 When bumping up against memory limits, you can also store our data externally and use specialized analysis routines.
 
 ## Storing data outside of RAM
-There are several packages available for storing data outside of R's main memory. 
+There are several packages available for storing data outside of R main memory. 
 The strategy involves storing data in external databases or in binary flat files on disk, and then accessing portions as they are needed. 
 
 - ff Provides data structures that are stored on disk but behave as if they were in RAM.
