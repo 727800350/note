@@ -1,4 +1,5 @@
 ## sudo R --no-save -f soft.r
+source("http://www.bioconductor.org/biocLite.R")
 
 install.packages("ElemStatLearn") ## for the book: "The Elements of Statistical Learning, Data Mining, Inference, and Prediction"
 install.packages("devtools") ## Tools to Make Developing R Packages Easier
@@ -15,6 +16,7 @@ install.packages("pastecs") ## Package for Analysis of Space-Time Ecological Ser
 install.packages("psych") ## Procedures for Psychological, Psychometric, and Personality Research
 install.packages("doBy") ## Groupwise statistics, LSmeans, linear contrasts, utilities
 install.packages("vcd")  ## Visualizing Categorical Data
+biocLite("PerfMeas") ## Performance Measures for ranking and classification tasks
 
 ## machine learning
 install.packages("kknn") ## k-Nearest Neighbors
