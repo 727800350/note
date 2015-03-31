@@ -234,22 +234,17 @@ tar -xvf foo.tar.gz -C /to
 编辑 `/etc/inittab` 中设置
 
 **开机自动启动**  
-例如要开机后自动启动mysql,apache,vsftpd服务,用以下命令即可:
+例如要开机后自动启动mysql,apache,vsftpd服务,用以下命令即可: `chkconfig mysqld on`
 
-chkconfig mysqld on
+要关闭自动启动的话,把on改为off就行了: `chkconfig mysqld off`
 
-要关闭自动启动的话,把on改为off就行了
-
-chkconfig mysqld off
-
-不过要注意的是,如果某个服务尚未被添加到chkconfig列表中,则现需要使用–add参数将其添加进去:
-
-chkconfig –add postfix
+不过要注意的是,如果某个服务尚未被添加到chkconfig列表中,则现需要使用–add参数将其添加进去: `chkconfig –add postfix`
 
 如果要查询当前自动启动的服务,可以输入:
-
+```
 chkconfig –list
 chkconfig –list httpd
+```
 
 临时设置环境变量
 
