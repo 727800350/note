@@ -712,14 +712,14 @@ Reshape2 uses that knowledge to make a new package for reshaping data that is mu
 This version improves speed at the cost of functionality, so I have renamed it to reshape2 to avoid causing problems for existing users. 
 Based on user feedback I may reintroduce some of these features.
 
-What's new in reshape2:
+What is new in reshape2:
 
 - considerably faster and more memory efficient thanks to a much better underlying algorithm that uses the power and speed of subsetting to the fullest extent, 
 in most cases only making a single copy of the data.
 - cast is replaced by two functions depending on the output type:  dcast produces data frames, and acast produces matrices/arrays.
 - multidimensional margins are now possible: grand_row and  grand_col have been dropped: now the name of the margin refers to the variable that has its value set to (all).
 - some features have been removed such as the | cast operator, and the ability to return multiple values from an aggregation function. 
-I'm reasonably sure both these operations are better performed by plyr.
+I am reasonably sure both these operations are better performed by plyr.
 - a new cast syntax which allows you to reshape based on functions
 - of variables (based on the same underlying syntax as plyr):
 - better development practices like namespaces and tests.
@@ -727,6 +727,11 @@ I'm reasonably sure both these operations are better performed by plyr.
 # 常用统计函数运算
 在R语言中经常会用到函数,例如上节中讲到的求样本统计量就需要均值函数(mean)和标准差函数(sd).对于二元数值数据还用到协方差(cov),对于二元分类数据则可以用交叉联列表函数(table).
 下文讲述在初级统计学中最常用到的三类函数.
+
+比如, 对于某个数据集, 使用with 可以省去写data$var1, data$var2 这样的重复性修饰.
+```
+with(iris, c(mean(Sepal.Length), sum(Sepal.Length)))
+```
 
 ## 描述性统计分析
 **偏度(Skew)**衡量实数随机变量概率分布的不对称性.
@@ -791,6 +796,9 @@ aggregate
   am      mpg       hp        wt
 1  0 3.833966 53.90820 0.7774001
 2  1 6.166504 84.06232 0.6169816
+
+用count = 1, 在利用sum 函数聚合后, 可以求出by 变量的出现次数.
+> aggregate(c(mtcars[vars], count=1), by = list(am=mtcars$am), sum)
 ```
 遗憾的是, aggregate 仅允许每次调用mean, sd 这样的单值返回函数.
 要返回多值, 可以使用by 函数
