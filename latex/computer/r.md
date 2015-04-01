@@ -1004,6 +1004,28 @@ sink()   #取消显示到文件
 使用参数append=TRUE可以将文本追加到文件后  
 参数split=TRUE可将输出同时发送到屏幕和输出文件中
 
+- 'write' is a wrapper for 'cat', which gives further details on the format used.
+- 'save' for writing any R objects, 
+- 'write.table' for data frames, and 
+- 'scan' for reading data.
+
+```
+write.table(x, file = "", append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE, qmethod = c("escape", "double"), fileEncoding = "")
+write.csv(...)
+write.csv2(...)
+```
+
+- quote: a logical value ('TRUE' or 'FALSE') or a numeric vector.  
+If 'TRUE', any character or factor columns will be surrounded by double quotes.  
+If a numeric vector, its elements are taken as the indices of columns to quote.  In both cases, row and column names are quoted if they are written.  
+If 'FALSE', nothing is quoted.
+- sep: the field separator string. Values within each row of x are separated by this string.
+- eol: end of line
+- na: the string to use for missing values in the data
+- dec: the string to use for decimal points in numeric or complex columns: must be a single character.
+- row.names: either a logical value indicating whether the row names of x are to be written along with x, or a character vector of row names to be written.
+- col.names: either a logical value indicating whether the column names of x are to be written along with x, or a character vector of column names to be written. 
+
 ## file
 [data import](http://www.r-tutor.com/r-introduction/data-frame/data-import)
 
