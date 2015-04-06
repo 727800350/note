@@ -37,5 +37,7 @@ scope_class_virtual:
 scope_class_virtual_constructor:
 	$(cc) -g -Wall scope_class_virtual_constructor.cpp
 
+freelist:
+	$(cc) -g -Wall freelist.cpp
 clean:
 	rm a.out
