@@ -1541,3 +1541,19 @@ The  bigtabulate package provides  table()  ,  split()  , and  tapply() function
 Working with datasets in the gigabyte to terabyte range can be challenging in any language. 
 For more information on the methods available within R, see the CRAN Task View: High-Performance and Parallel Computing with R (cran.r-project.org/web/views/).
 
+# Writing R Extensions
+A package consists of a subdirectory containing a file 'DESCRIPTION' and the subdirectories 'R', 'data', 'demo', 'exec', 'inst', 'man', 'po', 'src', and 'tests' (some of which can be missing).
+The package subdirectory may also contain files 'INDEX', 'NAMESPACE', 'configure', 'cleanup', 'LICENSE', 'LICENCE', and 'COPYING'. 
+Other files such as 'README', 'NEWS' or 'ChangeLog' will be ignored by R, but may be useful to end-users.
+
+'package.skeleton' automates some of the setup for a new source package.  
+It creates directories, saves functions, data, and R code files to appropriate places, and creates skeleton help files and a 'Read-and-delete-me' file describing further steps in packaging.
+
+制作package 的步骤[ref](http://blog.fens.me/r-build-package/):
+
+1. 生成骨架: `package.skeleton(name="package-name", code_files="./sayHello.R")`
+1. 打包: `R CMD build package-name`
+1. 安装: `R CMD INSTALL package-name_version.tar.gz`
+1. 卸载: 进入sudo R环境, `remove.package("package-name")`
+1. 如果要提交R包和CRAN,必须要执行check检查.如果有任何的error和warning都将不被通过: `R CMD check package-name_version.tar.gz`
+
