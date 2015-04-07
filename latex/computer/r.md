@@ -275,6 +275,18 @@ apple
 
 `as.matrix(vector)`生成的矩阵是一个column matrice
 
+logical vectors
+
+- any: Given a set of logical vectors, is at least one of the values true?
+- all: Given a set of logical vectors, are all of the values true?
+```
+> x <- c(1:5)
+> y <- c(2:4)
+> x %in% y [1] FALSE  TRUE  TRUE  TRUE FALSE
+> all(x %in% y) [1] FALSE
+> any(x %in% y) [1] TRUE
+```
+
 ## array
 ```
 > z <- c(1:24)
