@@ -1154,6 +1154,15 @@ break, next
 `prediction = ifelse(post.yes >= post.no, "Yes", "No")` 类似于C 语言中的`? :`运算符.
 
 # function
+函数调用会产生所谓的 call stack,这个结构也就产生了 environment 的树状结构.
+我们可以用 sys.* 函数访问这个 call stack, 如 
+
+- sys.call() 返回当前(或者通过 which 参数表示更上几个层次的)函数,
+- sys.frame() 返回当前 environment 的 frame,
+- sys.function() 返回的是当前函数,
+- sys.parent(0) 返回的是上级 environment,
+- 对应还有复数版本,比如 sys.functions() 就是获得调用栈里面所有函数.
+
 ## math
 Vectors occurring in the same expression need not all be of the same length. 
 If they are not, the value of the expression is a vector with the same length as the longest vector which occurs in the expression. 
@@ -1586,4 +1595,59 @@ It creates directories, saves functions, data, and R code files to appropriate p
 1. 安装: `R CMD INSTALL package-name_version.tar.gz`
 1. 卸载: 进入sudo R环境, `remove.package("package-name")`
 1. 如果要提交R包和CRAN,必须要执行check检查.如果有任何的error和warning都将不被通过: `R CMD check package-name_version.tar.gz`
+
+## DESCRIPTION
+- Package: 包的名字
+- Version: 版本(介绍语义版本命名法,主要.次要.补丁:http://semver.org/,让版本号变得有意义,除非你是Knuth,用pi做版本号)
+- Date: 日期
+- Title: 标题
+- Description: 描述(详细说明)
+- Author: 作者(可以多人)
+- Maintainer: 维护者(一个人,可以不同于作者,**必须要有邮箱**)
+- 依赖关系
+	- Depends 加载这个包会依赖加载进来的包
+	- Imports 只是导入命名空间,不直接加载(被导入的包中的函数对用户不直接可见)
+	- Suggests 推荐安装的包,通常不涉及到本包的核心功能,但如果有这些包的话,本包会更强大
+- License: 许可证(发布到CRAN的包必须用开源许可证,不限于GPL)
+- URL: 网址
+- BugReports: Bug报告地址
+- R源文件列表(指定用哪些R代码来创建本包)
+
+## 其他目录
+data文件夹放R数据,扩展名为rda,通常可以用save()函数生成.  
+对每一个数据,都必须有相应的Rd文档,它可以通过roxygen生成
+
+demo文件夹里可以放一些演示,这些演示文件将来可以用demo()函数来调用
+
+inst文件夹下的所有文件都会被原封不动复制到安装包的路径下,这个文件夹下可以放任意文件,但有一个例外是doc,它用来放R包的手册(Vignette),后文详述
+
+## NAMESPACE
+命名空间(NAMESPACE)是R包管理包内对象的一个途径,它可以控制哪些R对象是对用户可见的,哪些对象是从别的包导入(import),哪些对象从本包导出(export).
+
+为什么要有这么个玩意儿存在?主要是为了更好管理你的一堆对象.写R包时,有时候可能会遇到某些函数只是为了另外的函数的代码更短而从中抽象,独立出来的.
+这些小函数仅仅供你自己使用,对用户没什么帮助,他们不需要看见这些函数,
+这样你就可以在包的根目录下创建一个NAMESPACE文件,里面写上export(函数名)来导出那些需要对用户可见的函数.
+自R 2.14.0开始,命名空间是R包的强制组成部分,所有的包必须有命名空间,如果没有的话,R会自动创建.
+
+Imports,这里设置的包通常是你只需要其部分功能的包,
+例如我只想在我的包中使用foo包中的bar()函数,NAMESPACE中则需要写`importFrom(foo, bar)`,
+在自己的包的源代码中则可以直接调用bar()函数,R会从NAMESPACE看出这个bar()对象是从哪里来的.
+
+### S3泛型函数
+S3泛型函数的核心思想是基于对象的类去匹配函数
+S3函数可以用UseMethod()去定义,然后**函数.类名**就是具体的子函数,
+例如hello()这个函数([ref](https://github.com/yihui/rmini/blob/master/R/S3.R))有两个子函数hello.default()和hello.character(),分别对应它的默认方法以及对字符对象应用的方法.
+```
+library(rmini)
+hello(1) ## hello, numeric
+hello("a") ## Hi! I love characters!
+hello(structure(1, class = "world")) ## hello, world
+```
+
+## 嵌入其它语言
+R可以与其它语言沟通,常见的如C和Fortran.  
+其它语言的源代码都放在src文件夹底下(ex: [reverse.c](https://github.com/yihui/rmini/blob/master/src/reverse.c)).
+这个c文件将来在R CMD INSTALL过程中会被编译成一个动态链接库,供R调用.
+R函数(ex: [reverse()](https://github.com/yihui/rmini/blob/master/R/C.R))中我们使用`.C()`调用前面提到的C函数.  
+注意这里在调用之前我们必须告诉R加载编译好的动态链接库,所以我们在NAMESPACE文件中生成相应的useDynLib()命令,当R包加载的时候,动态链接库也会被加载.
 
