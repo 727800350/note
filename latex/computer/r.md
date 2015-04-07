@@ -208,6 +208,24 @@ save objects to File System
 
 [cbind and rbind demo](../../demo/r/bind.r)
 
+类型的判断,**[is 与 inherits](http://stackoverflow.com/questions/27923345/whats-the-difference-between-is-and-inherits)**
+```
+class(letters) ## [1] "character"
+is(letters, "character") ## [1] TRUE
+inherits(letters, "character") ## [1] TRUE
+```
+Is there a preference for which one I should use, and do they ever return different values?
+
+Use inherits, but be careful with numbers and S4 classes.
+
+The most obvious place where the two functions differ is when checking if integers are numeric.
+```
+class(1L) ## [1] "integer"
+is.numeric(1L) ## [1] TRUE
+is(1L, "numeric") ## [1] TRUE
+inherits(1L, "numeric") ## [1] FALSE
+```
+
 ## vector
 Vectors are the most important type of object in R.
 
