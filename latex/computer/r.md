@@ -133,6 +133,23 @@ The function na.omit() returns the object with listwise deletion of missing valu
 newdata <- na.omit(mydata)
 ```
 
+**rearrange columns of a data frame**  
+[ref](http://stackoverflow.com/questions/3369959/moving-columns-within-a-data-frame-without-retyping/18540144#18540144).
+use functio [moveme](../../demo/r/moveme.r)
+Usage is simple. Try these out:
+```
+moveme(names(df), "g first")
+moveme(names(df), "g first; a last; e before c")
+```
+Of course, using it to reorder the columns in your data.frame is straightforward:
+```
+df[moveme(names(df), "g first")]
+```
+And for data.tables (moves by reference, no copy) :
+```
+setcolorder(dt, moveme(names(dt), "g first"))
+```
+
 ## namespace
 同一个环境只能存在一个唯一的名字,不同环境可以存在相同名字,R寻找一个名字,
 会站在当前环境沿着search() path(`".GlobalEnv"     "package:base"   "namespace:base"`)往之后的环境中找名字,如果当前名字不符合就依次找后面的环境.  
