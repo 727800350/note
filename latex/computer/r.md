@@ -1163,6 +1163,25 @@ break, next
 - sys.parent(0) 返回的是上级 environment,
 - 对应还有复数版本,比如 sys.functions() 就是获得调用栈里面所有函数.
 
+## Default arguments and lazy evaluation in R
+[ref](http://www.johndcook.com/blog/2008/10/16/default-arguments-and-lazy-evaluation-in-r/)
+
+In C++, default function arguments must be constants, but in R they can be much more general. For example, consider this R function definition.
+```
+f <- function(a, b=log(a)) { a*b }
+```
+If f is called with two arguments, it returns their product. 
+If f is called with one argument, the second argument defaults to the logarithm of the first. That is convenient, but it gets more surprising. Look at this variation.
+```
+f <- function(a, b=c) {c = log(a); a*b}
+```
+Now the default argument is a variable that does not exist until the body of the function executes! 
+If f is called with one argument, the R interpreter chugs along until it gets to the last line of the function and says 
+"Hmm. What is b? Let me go back and see. Oh, the default value of b is c, and now I know what c is."
+
+This behavior is called lazy evaluation. 
+Expressions are not evaluated unless and until they are needed. It is a common feature of functional programming languages.
+
 ## math
 Vectors occurring in the same expression need not all be of the same length. 
 If they are not, the value of the expression is a vector with the same length as the longest vector which occurs in the expression. 
@@ -1585,6 +1604,22 @@ A package consists of a subdirectory containing a file 'DESCRIPTION' and the sub
 The package subdirectory may also contain files 'INDEX', 'NAMESPACE', 'configure', 'cleanup', 'LICENSE', 'LICENCE', and 'COPYING'. 
 Other files such as 'README', 'NEWS' or 'ChangeLog' will be ignored by R, but may be useful to end-users.
 
+一个最简单的包结构如下(括号中为相应解释):
+```
+pkg (包的名字,请使用一个有意义的名字,不要照抄这里的pkg三个字母)
+|
+|--DESCRIPTION (描述文件,包括包名,版本号,标题,描述,依赖关系等)
+|--R (函数源文件)
+	|--function1.R
+	|--function2.R
+	|--...
+|--man (帮助文档)
+	|--function1.Rd
+	|--function2.Rd
+	|--...
+|--...
+```
+
 'package.skeleton' automates some of the setup for a new source package.  
 It creates directories, saves functions, data, and R code files to appropriate places, and creates skeleton help files and a 'Read-and-delete-me' file describing further steps in packaging.
 
@@ -1637,6 +1672,12 @@ Imports,这里设置的包通常是你只需要其部分功能的包,
 S3泛型函数的核心思想是基于对象的类去匹配函数
 S3函数可以用UseMethod()去定义,然后**函数.类名**就是具体的子函数,
 例如hello()这个函数([ref](https://github.com/yihui/rmini/blob/master/R/S3.R))有两个子函数hello.default()和hello.character(),分别对应它的默认方法以及对字符对象应用的方法.
+NAMESPACE 中写
+```
+S3method(hello, character)
+S3method(hello, default)
+```
+使用
 ```
 library(rmini)
 hello(1) ## hello, numeric
