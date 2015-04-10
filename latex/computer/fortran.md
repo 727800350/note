@@ -19,8 +19,8 @@ fortran **不区分大小写**, 不管是程序关键字还是变量
 - 第7 ~ 72 个字符, Fortran 程序代码的编写区域
 - 第73 个字符之后: 不使用, 超出的部分会被忽略, 有的编译器会发出错误警告
 
-```
 前面空6个空格
+```fortran
       program main
       write(*,*) "hello"
       write(*,*) 
@@ -28,8 +28,10 @@ fortran **不区分大小写**, 不管是程序关键字还是变量
 100   write(*,*) "hello"
 10    stop
       end
+```
 
 前面空8个空格
+```fortran
         program main
         write(*,*) 
 CC 		用于续行的1 只能放在第6 个字符位置处
