@@ -1703,17 +1703,11 @@ R函数(ex: [reverse()](https://github.com/yihui/rmini/blob/master/R/C.R))中我
 3. Each file containing C code to be called by R should include the `R.h` header file.
 If you are using special functions (e.g. distribution functions), you need to include the `Rmath.h` header file.
 1. When compiling your C code, you use R to do the compilation rather than call the C compiler directly.
-```
-R CMD SHLIB foo.c
-```
-This command produces a file called foo.so, 与下面的命令是等价的
-```
-R CMD SHLIB -o foo.so foo.c
-```
+Use `R CMD SHLIB foo.c` or `R CMD SHLIB -o foo.so foo.c`
 1. load the library, `> dyn.load('foo.so')`
 
-[demo C](../../demo/R/hello.c)  
-[demo R](../../demo/R/hello.r)
+[demo C](../../demo/r/hello.c)  
+[demo R](../../demo/r/hello.r)
 
 在R中定义的函数是可以和C中的函数用一样的名字
 
