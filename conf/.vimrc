@@ -122,13 +122,13 @@ func! CompileCode()
         elseif &filetype == "ruby"
             exec "!ruby %<.rb"
         elseif &filetype == "mp"
-            exec "!mpost -tex=latex  %<.mp"
+            exec "!mpost -tex=latex %<.mp"
         elseif &filetype == "dot"
             exec "!dot -Tps %<.dot -o %<.ps"
         elseif &filetype == "tex"
             exec "!xelatex  %<.tex"
         elseif &filetype == "r"
-            exec "!R --no-save -f  %<.r"
+            exec "!R --no-save -f %<.r"
         elseif &filetype == "php"
             exec "!php -f %<.php"
         endif
@@ -211,6 +211,8 @@ function! Comment() range
       let commentString = ";; "
     elseif &filetype == "sql"
       let commentString = "-- "
+    elseif &filetype == "fortran"
+      let commentString = "CC "
     else
       let commentString = "## "
     endif
@@ -237,6 +239,8 @@ function! Uncomment() range
       let commentString = ";; "
     elseif &filetype == "sql"
       let commentString = "-- "
+    elseif &filetype == "fortran"
+      let commentString = "CC "
     else
 "python, bash shell
       let commentString = "## "
