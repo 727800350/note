@@ -173,7 +173,8 @@ overview of the type of objects representing data
 | list                                       | numeric, character, complex or logical, function, expression, ... 	 | No  
 
 - A factor is a categorical variable
-- A data frame is a table composed with one or several vectors and/or factors all of the same length but possibly of different modes. dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征
+- A data frame is a table composed with one or several vectors and/or factors all of the same length but possibly of different modes. 
+dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征
 - A 'ts' is a time series data set and so contains additional attributes such as frequency and dates. 
 - A list a general form of vector in which the various elements need not be of the same type. 
 They can contain any type of object, included lists!
@@ -329,6 +330,8 @@ logical vectors
 [1] f m f f m 
 Levels: f m #有几种可选的值
 ```
+
+`levels(factor)`: 获取不同的levels, 返回类型为character 的数据类型
 
 ## list
 - unlist: 将list转换为非list格式, 为向量格式
@@ -1040,6 +1043,8 @@ NULL
 
 For more customizable (but cumbersome) printing, see `cat`, `format` or also `write`.   
 For a simple prototypical print method, see `.print.via.format` in package **tools**.
+
+`cat(x, y, ...)`: 可以输出多个变量, eg: `cat("x = ", x, "\n")`
 
 `source("commands.R")` 读取文件并执行  
 
