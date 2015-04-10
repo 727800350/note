@@ -1697,3 +1697,50 @@ R可以与其它语言沟通,常见的如C和Fortran.
 R函数(ex: [reverse()](https://github.com/yihui/rmini/blob/master/R/C.R))中我们使用`.C()`调用前面提到的C函数.  
 注意这里在调用之前我们必须告诉R加载编译好的动态链接库,所以我们在NAMESPACE文件中生成相应的useDynLib()命令,当R包加载的时候,动态链接库也会被加载.
 
+## C interface
+1. C functions called by R must all return void, which means they need to return the results of the computation in their arguments.
+2. All arguments passed to the C function are passed by reference, which means we pass a pointer to a number or array.
+3. Each file containing C code to be called by R should include the `R.h` header file.
+If you are using special functions (e.g. distribution functions), you need to include the `Rmath.h` header file.
+1. When compiling your C code, you use R to do the compilation rather than call the C compiler directly.
+```
+R CMD SHLIB foo.c
+```
+This command produces a file called foo.so, 与下面的命令是等价的
+```
+R CMD SHLIB -o foo.so foo.c
+```
+1. load the library, `> dyn.load('foo.so')`
+
+[demo C](../../demo/R/hello.c)  
+[demo R](../../demo/R/hello.r)
+
+在R中定义的函数是可以和C中的函数用一样的名字
+
+Notice that we convert n to integer type using as.integer and 
+in the C function we have set n to be of type int * (remember that variables are always passed as pointers when using .C)
+
+.C returns a list containing the (possibly modified) arguments which were passed into your C function.
+
+Another ex:
+```
+cconv.c
+*s is the result
+void cconv(int *l, double *x, int *n, double *s){
+	double *y = x + (*n - *l), *z = x + *l, *u = x;
+	while ( u < y)
+		*s += *u++ * *z++;
+}
+
+rconv.r
+rconv <- function(lag,x) {
+	.C("cconv", as.integer(lag), as.double(x), as.integer(length(x)), as.double(0.0))[[4]]
+}
+```
+The .C function returns a list with all its arguments, we only need the last (fourth) argument.  
+In this case we did not name the last argument but extracted it using a numeric index.
+
+R has many matrix manipulation routines that are highly optimized.
+所以要尽量避免在C里面操作矩阵, 但是如果确实需要的话, 
+it is important to remember that matrices are represented as just very long vectors (of length nrows * ncols) in C.
+
