@@ -1716,6 +1716,9 @@ in the C function we have set n to be of type int * (remember that variables are
 
 .C returns a list containing the (possibly modified) arguments which were passed into your C function.
 
+输出用, Rprintf.
+Rprintf is exactly like the standard printf function in C except that Rprintf sends its output to the R console so that you can see it when running R.
+
 Another ex:
 ```
 cconv.c
