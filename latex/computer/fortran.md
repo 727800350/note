@@ -63,6 +63,44 @@ end
 - `write(*, *)`: 第一个* 表示输出的位置为默认值(也就是标准输出), 第二个* 则代表不特别设置输出格式.
 - `print *,"string"`: * 表示不限定输出格式, print 只能输出到stdout
 
+## File
+**打开文件**
+```
+open(UNIT = number, FILE = filename, FROM = '...', STATUS = '...', ACCESS = '...')
+```
+- number 必须是一个正整数, 可以使用变量或常量来赋值.
+number 最好避开1,2,5,6(因为2,6 是默认的输出位置, 1,5 是默认的输入位置)
+- FROM = 'formated'(表示文本文件, 默认值) or 'unformated'(二进制文件)
+- STATUS = 'NEW' or 'OLD' or 'REPLACE' or 'UNKNOWN'(编译器自定义, 通常取replace 的效果, default value)
+- ACCESS = 'SEQUENTIEL'(顺序读取, 默认值) or 'DIRECT'(读写文件的操作可以任意指定位置)
+
+以下是fortran 90 添加的功能
+
+- POSITION = 'ASIS'(通常是文件开头, 默认值) or 'REWIND'(打开文件时, 移动到文件开头) or 'APPEND'(移动到文件末尾)
+
+**关闭文件**
+```
+close(unit = number, status = string)
+```
+status = 'keep' or 'delete' 文件关闭后是保存还是删除这个文件
+
+**查询文件的状态 inquire**
+```
+inquire(UNIT = number, FILE = filename, IOSTAT = stat, ERR = label, EXIST = exist, OPENED = opened, NUMBER = number, NAMED = named, 
+		ACCESS = access, FROM = from, FORMATTED = formatted, UNFORMATTED = unfomatted)
+```
+- unit: 根据文件代号查询
+- file: 根据文件名字查询
+- iostat: >0, 读取操作发生错误; = 0, 正常; < 0, 到达文件末尾
+- exist: 检查文件是否存在, logical
+- opened: 检查文件是否打开
+- number: 由文件名查询这个文件的代号
+- named: 查询文件是否取了名字
+
+在使用open 命令打开文件的前后, 都可以通过inquire 命令来查询文件目前的状态.
+
+[检查文件是否存在的demo](../../demo/fortran/file_exist.f90)
+
 # 数据类型 data type
 [ref](https://docs.oracle.com/cd/E19205-01/821-0391/aevmb/index.html)
 
