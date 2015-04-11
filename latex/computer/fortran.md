@@ -147,6 +147,9 @@ stop
 end
 ```
 
+## 全局变量 global variable
+[全局变量 demo](../../demo/fortran/global.f90)
+
 ## 数组 array
 定义:
 ```
