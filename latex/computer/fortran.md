@@ -86,8 +86,9 @@ status = 'keep' or 'delete' 文件关闭后是保存还是删除这个文件
 
 **查询文件的状态 inquire**
 ```
-inquire(UNIT = number, FILE = filename, IOSTAT = stat, ERR = label, EXIST = exist, OPENED = opened, NUMBER = number, NAMED = named, 
-		ACCESS = access, FROM = from, FORMATTED = formatted, UNFORMATTED = unfomatted)
+inquire(UNIT = number, FILE = filename, IOSTAT = stat, ERR = label, EXIST = exist, OPENED = opened, 
+		NUMBER = number, NAMED = named, ACCESS = access, FROM = from, 
+		FORMATTED = formatted, UNFORMATTED = unfomatted)
 ```
 - unit: 根据文件代号查询
 - file: 根据文件名字查询
