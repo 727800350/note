@@ -109,6 +109,57 @@ end
 ```
 
 ## 数组 array
+定义:
+```
+类型说明 [::] 数组名([下标下界:]下标上界[,…])[,…]
+```
+当维说明符省略下标下界时,默认所在维的下标从1开始
+```fortran
+REAL :: A(1:2,2:4)
+INTEGER B(10)
+```
+
+或者:
+```
+DIMENSION [::] 数组名([下标下界:]下标上界[,…])[,…]
+[类型说明 [::] 数组名[,…]]
+```
+```fortran
+DIMENSION :: A(10), B(2:11)
+INTEGER :: A
+```
+
+数组赋值
+```
+数组名 = (/取值列表/)
+```
+其中,取值列表可以是标量,隐式DO循环或者任意秩的数组.  
+取值列表中所有数值的类型都应该相同,数值之间以逗号分隔.  
+如果取值列表中出现了数组,则它的值是按**列元素优先**的规则来赋给目标数组变量.
+
+数组构造器的标识"(/"和"/)"在书写时要注意,括弧和撇号之间不能有空格.
+
+下面来看一些实例
+```fortran
+MN = (/1, 3, 5, 7, 9/)         	! 标量表示
+AB = (/B(2,1:5),B(3:7,7:9)/)   	! 数组表示
+CC = (/(I, I=1,4)/)				! 隐DO循环
+DE = (/10,A(2:7),(I,I=1,4),7/)	! 混合表示
+```
+
+**fortran 与 C 等对数组存储方式的不同**  
+FORTRAN is different from languages such as C and Pascal in the way that it stores two-dimensional arrays in memory. 
+Although array elements are referenced in row major notation, i.e., (row, column), just as in C or Pascal, 
+FORTRAN stores two-dimensional arrays as one-dimensional **column arrays**. 
+
+For example, in C, a two-dimensional array with 2 rows and 3 columns will be stored in memory in the following sequence:
+```
+(1,1),(1,2),(1,3),(2,1),(2,2),(2,3)
+```
+However, FORTRAN will store the same array in the following sequence:
+```
+(1,1),(2,1),(1,2),(2,2),(1,3),(2,3)
+```
 
 ## 指针
 [demo](../../demo/fortran/pointer.f90)
