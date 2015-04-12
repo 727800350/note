@@ -257,9 +257,22 @@ end do
 ```
 
 ```fortran
+do label i = from, to, step
+	...
+label continue
+```
+label continue 才是 fortran 77 的标准中的.
+
+Many Fortran 77 compilers allow do-loops to be closed by the enddo statement. 
+The advantage of this is that the statement label can then be omitted since it is assumed that an enddo closes the nearest previous do statement.
+The enddo construct is widely used, but it is not a part of ANSI Fortran 77. 
+
+```fortran
 do while(condition)
 	...
 end do
 ```
+
+[loop demo](../../demo/fortran/loop.f90)
 
 # 函数 function
