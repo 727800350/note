@@ -131,6 +131,8 @@ func! CompileCode()
             exec "!R --no-save -f %<.r"
         elseif &filetype == "php"
             exec "!php -f %<.php"
+        elseif &filetype == "fortran"
+            exec "!gfortran -g -Wall %<.f90" | exec "!./a.out"
         endif
 endfunc
 
@@ -156,6 +158,8 @@ func! RunCode()
             exec "!evince %<.pdf"
         elseif &filetype == "dot"
             exec "!evince %<.ps"
+        elseif &filetype == "fortran"
+            exec "!./a.out"
         endif
 endfunc
 
@@ -212,7 +216,7 @@ function! Comment() range
     elseif &filetype == "sql"
       let commentString = "-- "
     elseif &filetype == "fortran"
-      let commentString = "CC "
+      let commentString = "!! "
     else
       let commentString = "## "
     endif
@@ -240,7 +244,7 @@ function! Uncomment() range
     elseif &filetype == "sql"
       let commentString = "-- "
     elseif &filetype == "fortran"
-      let commentString = "CC "
+      let commentString = "!! "
     else
 "python, bash shell
       let commentString = "## "
