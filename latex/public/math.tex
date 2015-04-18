@@ -1,0 +1,77 @@
+%% 化学
+%% \usepackage[version=3]{mhchem}
+%% example: Ammonium sulphate is \ce{(NH4)2SO4}.
+
+%% Macro
+\def\vecteur#1{(#1_1,~#1_2,~\ldots,~#1_n)}
+\def\vector#1{#1_1,~#1_2,~\ldots,~#1_n}
+%% \def\vecteur#1{\ensuremath{(#1_1,~#1_2,~\ldots,~#1_n)}}
+
+%随机数
+%\usepackage[first=0,last=9]{lcg}
+%\newcommand{\ra}{\rand0.\arabic{rand}}
+
+\newcommand{\R}{\mathbb{R}}   %the real number set
+%% \newcommand{\C}{\mathbb{C}} %xelatex says \C has already been used.
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\newcommand{\si}{\textrm{\ if }}
+%% \newcommand{\si}{\textrm{\ si }}
+\newcommand{\sinon}{\textrm{ si non}}
+\newcommand{\then}{\textrm{ then }}
+\newcommand{\et}{\textrm{\ et }}
+\newcommand{\ou}{\textrm{ ou }}
+\newcommand{\non}{\textrm{non }}
+\newcommand{\ssi}{si et seulement si }
+\newcommand{\infinity}{\infty}
+
+\newcommand{\diag}[1]{\textit{diag}(#1)}
+%定义运算符
+\DeclareMathOperator{\arccot}{arcot}
+\DeclareMathOperator{\arcth}{arcth}
+\DeclareMathOperator{\arcsh}{arcsh}
+\DeclareMathOperator{\arch}{arch}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\dth}{th} %\th 已经被定义了
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\var}{var}
+
+\newcommand*\laplace{\mathop{}\!\mathbin\bigtriangleup}
+\newcommand*\dalambert{\mathop{}\!\mathbin\Box}
+\newcommand{\grad}[1]{\nabla #1}
+\newcommand{\gradien}[1]{\nabla #1}
+\newcommand{\divergence}[1]{\nabla \cdot #1}
+\newcommand{\rotationnel}[1]{\nabla \times #1}
+\newcommand{\rot}[1]{\nabla \times #1}
+\newcommand{\mean}[1]{\overline{#1}}
+\newcommand{\estimate}[1]{\hat{#1}}
+\newcommand{\indep}{\!\perp\!\!\!\perp}
+\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
+\newcommand{\set}[1]{\{#1\}}
+\newcommand{\stcomp}[1]{\overline{#1}} % set complement
+
+\usepackage{xspace}
+%produit scalaire
+\newcommand{\ps}[2]{\ensuremath{\langle #1 , #2\rangle}\xspace}
+
+%use \lasteq to reference the last equation
+\newcommand\lasteq{(\theequation)\ }
+\newcommand{\eqspace}{\hspace{0.5cm}}
+\newcommand{\norm}[1]{\left\Vert #1\right\Vert}
+%% insert text in math mode being treated as normal text
+\newcommand{\eqnote}[1]{\text{ #1 }}
+%% generate a fraction but without the line
+\newcommand\mytop[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
+
+%% 特殊符号
+%% \usepackage{pifont}
+%% \ding{number}, 通过number 来调用不同的符号
+
+%% quantique operators
+\newcommand\ket[1]{|#1\rangle}
+\newcommand\bra[1]{\langle #1|}
+\newcommand\braket[3]{\langle#1|#2|#3\rangle}
+

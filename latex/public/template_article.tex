@@ -1,7 +1,9 @@
 % !Mode:: "TeX:UTF-8"
 \documentclass{article}
-\input{../../note/latex/public/package}
-\input{../../note/latex/public/article}
+%% \input{../../note/latex/public/package}
+%% \input{../../note/latex/public/article}
+\input{./package}
+\input{./article}
 \begin{document}
 \title{}
 \author{}
@@ -9,5 +11,22 @@
 \newpage
 \tableofcontents
 \newpage
+
+\begin{figure}
+\centering
+\includegraphics[width=0.3\textwidth]{ex}
+\caption{caption}
+\label{fig.label}
+\end{figure}
+
+\begin{figure}
+\centering
+\subfloat[text]{\label{fig.a}\includegraphics[width = 0.4\textwidth]{ex}}\qquad
+\subfloat[text]{\label{fig.b}\includegraphics[width = 0.4\textwidth]{ex}}\\
+\subfloat[text]{\label{fig.c}\includegraphics[width = 0.45\textwidth]{ex}}\qquad
+\subfloat[text]{\label{fig.d}\includegraphics[width = 0.45\textwidth]{ex}}
+\caption{\protect\subref{fig.a} to \protect\subref{fig.b} are plotted against height, and \protect\subref{fig.c} to \protect\subref{fig.d} against pressure}
+\end{figure}
+Now I refer to the figure \subref*{fig.d}. And use cref: \cref{fig.d}
 
 \end{document}

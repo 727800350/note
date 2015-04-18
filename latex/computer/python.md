@@ -27,6 +27,22 @@ def changevalue2(x):
 	x[0]=x[0]**2
 ```
 
+在Python中,无论你把对象做为参数传递,做为函数返回值,都是引用传递的.  
+你想复制一个对象.  
+标准库中的copy模块提供了两个方法来实现拷贝.一个方法是copy,它返回和参数包含内容一样的对象.
+```
+import copy
+new_list = copy.copy(existing_list)
+```
+
+有些时候,你希望对象中的属性也被复制, 尤其是当有list 等对象时,可以使用deepcopy方法:
+```
+import copy
+new_list_of_dicts = copy.deepcopy(existing_list_of_dicts)
+```
+[demo](../../demo/python/copy_deepcopy.py)
+
+
 ## global
 ```
 def fun(x):
@@ -87,7 +103,7 @@ f.read(1) // read 'd'
 ```
 # random 随机数生成
 - `random.random()`用于生成一个0到1的随机符点数: 0 <= n < 1.0
--  `random.uniform(a, b)`,指定范围内的随机符点数. 如果a > b,则生成的随机数n: a <= n <= b.如果 a <b, 则 b <= n <= a.
+- `random.uniform(a, b)`,指定范围内的随机符点数. 如果a > b,则生成的随机数n: a <= n <= b.如果 a <b, 则 b <= n <= a.
 - `random.randint(a, b)`,指定范围内的整数, 生成的随机数n: a <= n <= b
 - `random.randrange([start], stop[, step])`,从指定范围内,按指定基数递增的集合中 获取一个随机数  
 如:random.randrange(10, 100, 2),结果相当于从[10, 12, 14, 16, ... 96, 98]序列中获取一个随机数.random.randrange(10, 100, 2)在结果上与 random.choice(range(10, 100, 2) 等效.
@@ -104,9 +120,8 @@ print list #原有序列并没有改变
 ```
 
 # Data types
-list and dictionary is mutable
-
-two non-scalar type: tuple and string are immutable
+- **list and dictionary is mutable**
+- two non-scalar type: **tuple and string are immutable**
 
 ## mutable vs immutable
 immutable
@@ -175,6 +190,7 @@ file, list, tuple, dict 的迭代, 可以使用for 来进行统一形式的迭�
 		except StopIteration:
 			break
 		do_something_to(i)
+在使用`for x in seq`结构循环中, 不能改变seq, 否则会出现不可预知的问题.
 
 ## List
 list 不是线程安全的, dequeue 是线程安全的

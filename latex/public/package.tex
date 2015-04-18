@@ -4,111 +4,73 @@
 \usepackage{amsmath, amsthm, amssymb}
 
 %%%%%%%%%% header & footer %%%%%%%%%%
-\setlength\textheight{100.0pt}
-\setlength\textwidth{430.0pt}
-\usepackage{fancyhdr}
-\usepackage{lastpage} %% \pageref{LastPage} 获取最后一页的页码
-\usepackage{pdfpages}
-\usepackage{layout}
-\footskip = 20pt
-\pagestyle{fancy}
-\fancyhead{} %clear all fields
-%% \newsavebox{\headpic}
-%% \sbox{\headpic}{\includegraphics[height=1cm]{logo}} %设置页眉logo页眉
-%% \lhead{\usebox{\headpic}}
-\rhead{\small\leftmark}
-\fancyfoot{} %clear all fields
-\cfoot{\thepage}
-\renewcommand{\headrulewidth}{1pt}  %页眉线宽,设为0可以去页眉线
-\setlength{\skip\footins}{0.5cm}    %脚注与正文的距离
-\renewcommand{\footnotesize}{}      %设置脚注字体大小
-%% \renewcommand{\footrulewidth}{1pt}  %脚注线的宽度
-%===============
+\newif\ifheader
+\headerfalse
+\ifheader
+	\setlength\textheight{100.0pt}
+	\setlength\textwidth{430.0pt}
+	\usepackage{fancyhdr}
+	\usepackage{lastpage} %% \pageref{LastPage} 获取最后一页的页码
+	\usepackage{pdfpages}
+	\usepackage{layout}
+	\footskip = 20pt
+	\pagestyle{fancy}
+	\fancyhead{} %clear all fields
+%% 	\newsavebox{\headpic}
+%% 	\sbox{\headpic}{\includegraphics[height=1cm]{logo}} %设置页眉logo页眉
+%% 	\lhead{\usebox{\headpic}}
+	\rhead{\small\leftmark}
+	\fancyfoot{} %clear all fields
+	\cfoot{\thepage}
+	\renewcommand{\headrulewidth}{1pt}  %页眉线宽,设为0可以去页眉线
+	\setlength{\skip\footins}{0.5cm}    %脚注与正文的距离
+	\renewcommand{\footnotesize}{}      %设置脚注字体大小
+\fi
 
 %图形
-\usepackage{pstricks}
 \usepackage{graphicx}
-\usepackage{wrapfig}
-%% 可以使用H固定图片的位置
-\usepackage{float}
-\usepackage{tikz} %pdf figure
-\usetikzlibrary{positioning}
-\def\pgfsysdriver{pgfsys-dvipdfmx.def}
-\pgfsetxvec{\pgfpoint{10pt}{0}}
-\pgfsetyvec{\pgfpoint{0}{10pt}}
-\tikzset{
-box/.style={rectangle, rounded corners=6pt,
-minimum width=50pt, minimum height=20pt, inner sep=6pt,
-draw=gray,thick, fill=lightgray}
-}
-\usepackage{ccaption}
-\usepackage{subfigure}
+\usepackage{float} %% 可以使用H固定图片的位置
+\usepackage{caption}
+\usepackage[format=hang,singlelinecheck=0,font={sf,small},labelfont=bf]{subfig}
+\usepackage[noabbrev]{cleveref}
+\captionsetup[subfigure]{subrefformat=simple,labelformat=simple,listofformat=subsimple}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+
 \usepackage{epstopdf} %convert eps to pdf
-%% bmp, gif not supported
-\DeclareGraphicsExtensions{.eps,.mps,.pdf,.jpg,.png}
+\DeclareGraphicsExtensions{.eps,.mps,.pdf,.jpg,.png} %% bmp, gif not supported
 \DeclareGraphicsRule{*}{eps}{*}{}
 \graphicspath{{figure/}{../figure/}}
 
-\usepackage[colorinlistoftodos]{todonotes}
+%% \usepackage{pstricks} %% a set of macros that allow the inclusion of PostScript drawings directly inside TeX or LaTeX code
+%% \usepackage{wrapfig} %% Wrapping text around figures
 
+%表格
+%allow the use of \toprule, \midrule, and \bottomrule
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{longtable}
+\usepackage{supertabular}
+
+\usepackage[colorinlistoftodos]{todonotes}
 
 %尺寸
 \usepackage[top=2.54cm, bottom=2.54cm, left=3.18cm, right=3.18cm]{geometry} % ms word
 %% \usepackage[a4paper]{geometry}
 %\usepackage[top=0.2cm, bottom=0.2cm, left=0cm, right=0cm,paperwidth=9cm,paperheight=11.7cm]{geometry} % kindle
-%字体
-%% 主要字体为Times New Roman和宋体
-%% 模板某些标题需要华文行楷和32号字
-%\setmainfont{Times New Roman}
-%% 不需要设置CJKmainfont,ctex 宏包已经很好的处理了
-%% 不仅设置了粗体为黑体,斜体为楷体,还兼容了winfonts和adobefonts
-%% 直接设置反而会在只有adobefonts的情况下报错
-%\setCJKmainfont{宋体}
-%\setCJKfamilyfont{hwxingkai}{STXingkai}
-%\newcommand{\hwxingkai}{\CJKfamily{hwxingkai}}
-%\newcommand{\xiaochuhao}{\fontsize{32pt}{\baselineskip}\selectfont}
-
-
-\newcommand{\song}{\CJKfamily{song}} %宋体
-\newcommand{\fs}{\CJKfamily{fs}} %仿宋体
-\newcommand{\kai}{\CJKfamily{kai}} %楷体
-\newcommand{\hei}{\CJKfamily{hei}} %黑体
-\newcommand{\li}{\CJKfamily{li}} %隶书
-\newcommand{\you}{\CJKfamily{you}} %幼圆
-
-% 一号, 1.4 倍行距
-\newcommand{\yihao}{\fontsize{26pt}{36pt}\selectfont}
-% 二号, 1.25倍行距
-\newcommand{\erhao}{\fontsize{22pt}{28pt}\selectfont}
-% 小二, 单倍行距
-\newcommand{\xiaoer}{\fontsize{18pt}{18pt}\selectfont}
-% 三号, 1.5倍行距
-\newcommand{\sanhao}{\fontsize{16pt}{24pt}\selectfont}
-% 小三, 1.5倍行距
-\newcommand{\xiaosan}{\fontsize{15pt}{22pt}\selectfont}
-% 四号, 1.5 倍行距
-\newcommand{\sihao}{\fontsize{14pt}{21pt}\selectfont}
-% 半小四, 1.5倍行距
-\newcommand{\banxiaosi}{\fontsize{13pt}{19.5pt}\selectfont}
-% 小四, 1.5倍行距
-\newcommand{\xiaosi}{\fontsize{12pt}{18pt}\selectfont}
-% 大五号, 单倍行距
-\newcommand{\dawuhao}{\fontsize{11pt}{11pt}\selectfont}
-% 五号, 单倍行距
-\newcommand{\wuhao}{\fontsize{10.5pt}{15.75pt}\selectfont}
 
 %% code
 %% verbatim 中不能使用\textbf 等格式, alltt可以使用
-\usepackage{alltt}
+%% \usepackage{alltt}
 
 \usepackage{listings}
 \lstset{
     backgroundcolor=\color{white},
-%%     basicstyle=\wuhao\ttfamily,
     columns=flexible,
     breakatwhitespace=false,
     breaklines=true,
-    captionpos=b,
+    captionpos=tt,
     frame=single, %% Frame: 这个命令能让代码周围显示边框. 它的值可以是 none|leftline|topline|bottomline|lines|single|shadowbox 中的任意一个
     numbers=left, %% numbers 的值可以是 left, right, none, 分别代表了将行号放在代码的左边, 右边和不显示
     numbersep=5pt,
@@ -134,19 +96,10 @@ draw=gray,thick, fill=lightgray}
 \newcommand{\fun}[1]{\textit{#1}}
 
 %% hyper reference
-%% 使用hyperref包,section,subsection,subsubsection命名中使用中文出现问题
-%% 编译通不过, 加了CJKbookmarks=true 之后可以使用中文
+%% 使用hyperref包,section,subsection,subsubsection命名中使用中文出现问题, 编译通不过, 加了CJKbookmarks=true 之后可以使用中文
 \usepackage[colorlinks,linkcolor=blue,anchorcolor=red,citecolor=green,CJKbookmarks=true]{hyperref}
-\bibliographystyle{plain} % 参考文献格式
 
-%表格
-%allow the use of \toprule, \midrule, and \bottomrule
-\usepackage{booktabs}
-\usepackage{tabularx}
-\usepackage{multirow}
-\usepackage{colortbl}
-\usepackage{longtable}
-\usepackage{supertabular}
+\bibliographystyle{plain} % 参考文献格式
 
 %\usepackage{dirtree}  %目录结构图
 
@@ -167,84 +120,6 @@ draw=gray,thick, fill=lightgray}
 \newcommand\warning[1]{\red{#1}}
 \newcommand\obey[1]{\thicksim{#1}}
 
-%% 化学
-%% \usepackage[version=3]{mhchem}
-%% ex: Ammonium sulphate is \ce{(NH4)2SO4}.
-
-\usepackage{fixltx2e}
+%% \usepackage{fixltx2e}
 %% 默认情况下只能使用\textsuperscript,加了这个package之后可以使用\textsubscript
-
-%Math
-%% Macro
-\def\vecteur#1{(#1_1,~#1_2,~\ldots,~#1_n)}
-\def\vector#1{#1_1,~#1_2,~\ldots,~#1_n}
-%% \def\vecteur#1{\ensuremath{(#1_1,~#1_2,~\ldots,~#1_n)}}
-
-%随机数
-%\usepackage[first=0,last=9]{lcg}
-%\newcommand{\ra}{\rand0.\arabic{rand}}
-
-\newcommand{\R}{\mathbb{R}}   %the real number set
-%% \newcommand{\C}{\mathbb{C}} %xelatex says \C has already been used.
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\Q}{\mathbb{Q}}
-
-\newcommand{\si}{\textrm{\ if }}
-%% \newcommand{\si}{\textrm{\ si }}
-\newcommand{\sinon}{\textrm{ si non}}
-\newcommand{\then}{\textrm{ then }}
-\newcommand{\et}{\textrm{\ et }}
-\newcommand{\ou}{\textrm{ ou }}
-\newcommand{\non}{\textrm{non }}
-\newcommand{\ssi}{si et seulement si }
-\newcommand{\infinity}{\infty}
-
-\newcommand{\diag}[1]{\textit{diag}(#1)}
-%定义运算符
-\DeclareMathOperator{\arccot}{arcot}
-\DeclareMathOperator{\arcth}{arcth}
-\DeclareMathOperator{\arcsh}{arcsh}
-\DeclareMathOperator{\arch}{arch}
-\DeclareMathOperator{\ch}{ch}
-\DeclareMathOperator{\dth}{th} %\th 已经被定义了
-\DeclareMathOperator{\sh}{sh}
-\DeclareMathOperator{\var}{var}
-
-\newcommand*\laplace{\mathop{}\!\mathbin\bigtriangleup}
-\newcommand*\dalambert{\mathop{}\!\mathbin\Box}
-\newcommand{\grad}[1]{\nabla #1}
-\newcommand{\gradien}[1]{\nabla #1}
-\newcommand{\divergence}[1]{\nabla \cdot #1}
-\newcommand{\rotationnel}[1]{\nabla \times #1}
-\newcommand{\rot}[1]{\nabla \times #1}
-\newcommand{\mean}[1]{\overline{#1}}
-\newcommand{\estimate}[1]{\hat{#1}}
-\newcommand{\indep}{\!\perp\!\!\!\perp}
-\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
-
-\newcommand{\set}[1]{\{#1\}}
-\newcommand{\stcomp}[1]{\overline{#1}} % set complement
-
-\usepackage{xspace}
-%produit scalaire
-\newcommand{\ps}[2]{\ensuremath{\langle #1 , #2\rangle}\xspace}
-
-%use \lasteq to reference the last equation
-\newcommand\lasteq{(\theequation)\ }
-\newcommand{\eqspace}{\hspace{0.5cm}}
-\newcommand{\norm}[1]{\left\Vert #1\right\Vert}
-%% insert text in math mode being treated as normal text
-\newcommand{\eqnote}[1]{\text{ #1 }}
-%% generate a fraction but without the line
-\newcommand\mytop[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
-
-%% 特殊符号
-%% \usepackage{pifont}
-%% \ding{number}, 通过number 来调用不同的符号
-
-%% quantique operators
-\newcommand\ket[1]{|#1\rangle}
-\newcommand\bra[1]{\langle #1|}
-\newcommand\braket[3]{\langle#1|#2|#3\rangle}
 

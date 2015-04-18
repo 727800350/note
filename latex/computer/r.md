@@ -11,7 +11,36 @@
 At this point you will be asked whether you want to save the data from your R session.
 Data which is saved will be available in future R sessions.
 
-注释: R 语言里面没有像C 语言那样的多行注释
+执行r的脚本文件: `R -f file.r`
+
+注意: 
+
+1. R 语言里面没有像C 语言那样的多行注释
+1. R 中时没有续行符的, 所以要注意[换行的问题](http://yihui.name/en/2007/12/be-careful-with-the-value-returned-in-r-functions/).
+```
+f1 = function() {
+    1 + 1
+}
+f1() # of course 2
+
+f2 = function() {
+   1
+   + 1
+}
+f2() # returns 1
+
+f3 = function() {
+   return(1
+   + 1)
+}
+f3() # 2; use return() if you want break lines, or
+
+f4 = function() {
+   1 +
+   1
+}
+f4() # 2; do not put '+' in the beginning, as '+1==1'
+```
 
 # Objects
 R是一种基于对象(Object)的语言,所以你在R语言中接触到的每样东西都是一个对象,一串数值向量是一个对象,一个函数是一个对象,一个图形也是一个对象.
@@ -104,6 +133,23 @@ The function na.omit() returns the object with listwise deletion of missing valu
 newdata <- na.omit(mydata)
 ```
 
+**rearrange columns of a data frame**  
+[ref](http://stackoverflow.com/questions/3369959/moving-columns-within-a-data-frame-without-retyping/18540144#18540144).
+use functio [moveme](../../demo/r/moveme.r)
+Usage is simple. Try these out:
+```
+moveme(names(df), "g first")
+moveme(names(df), "g first; a last; e before c")
+```
+Of course, using it to reorder the columns in your data.frame is straightforward:
+```
+df[moveme(names(df), "g first")]
+```
+And for data.tables (moves by reference, no copy) :
+```
+setcolorder(dt, moveme(names(dt), "g first"))
+```
+
 ## namespace
 同一个环境只能存在一个唯一的名字,不同环境可以存在相同名字,R寻找一个名字,
 会站在当前环境沿着search() path(`".GlobalEnv"     "package:base"   "namespace:base"`)往之后的环境中找名字,如果当前名字不符合就依次找后面的环境.  
@@ -127,7 +173,8 @@ overview of the type of objects representing data
 | list                                       | numeric, character, complex or logical, function, expression, ... 	 | No  
 
 - A factor is a categorical variable
-- A data frame is a table composed with one or several vectors and/or factors all of the same length but possibly of different modes. dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征
+- A data frame is a table composed with one or several vectors and/or factors all of the same length but possibly of different modes. 
+dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征
 - A 'ts' is a time series data set and so contains additional attributes such as frequency and dates. 
 - A list a general form of vector in which the various elements need not be of the same type. 
 They can contain any type of object, included lists!
@@ -141,7 +188,13 @@ list objects in memory
 `ls.str()`: display some details
 
 delete objects in memory  
-`rm(x)`, `rm(x,y)` remove the object x and y from memory
+`rm(x)`, `rm(x,y)` remove the object x and y from memory  
+`rm(list=ls())` remove all objects
+
+save objects to File System  
+`save(x, file = 'x.RData')` 保存一个对象x 到文件 x.RData 中,  
+`load('x.RData')`, 将文件 x.RData 中的对象加载到内存中, 这里也就是x 对象.  
+`save.image()` is just a short-cut for 'save my current workspace', i.e., `save(list = ls(all = TRUE), file = ".RData")`.
 
 **Conversion**
 
@@ -155,6 +208,24 @@ delete objects in memory
 - rbind() 是纵向合并(行方式), 将参数当行矩阵来处理
 
 [cbind and rbind demo](../../demo/r/bind.r)
+
+类型的判断,**[is 与 inherits](http://stackoverflow.com/questions/27923345/whats-the-difference-between-is-and-inherits)**
+```
+class(letters) ## [1] "character"
+is(letters, "character") ## [1] TRUE
+inherits(letters, "character") ## [1] TRUE
+```
+Is there a preference for which one I should use, and do they ever return different values?
+
+Use inherits, but be careful with numbers and S4 classes.
+
+The most obvious place where the two functions differ is when checking if integers are numeric.
+```
+class(1L) ## [1] "integer"
+is.numeric(1L) ## [1] TRUE
+is(1L, "numeric") ## [1] TRUE
+inherits(1L, "numeric") ## [1] FALSE
+```
 
 ## vector
 Vectors are the most important type of object in R.
@@ -205,6 +276,18 @@ apple
 
 `as.matrix(vector)`生成的矩阵是一个column matrice
 
+logical vectors
+
+- any: Given a set of logical vectors, is at least one of the values true?
+- all: Given a set of logical vectors, are all of the values true?
+```
+> x <- c(1:5)
+> y <- c(2:4)
+> x %in% y [1] FALSE  TRUE  TRUE  TRUE FALSE
+> all(x %in% y) [1] FALSE
+> any(x %in% y) [1] TRUE
+```
+
 ## array
 ```
 > z <- c(1:24)
@@ -248,6 +331,8 @@ apple
 Levels: f m #有几种可选的值
 ```
 
+`levels(factor)`: 获取不同的levels, 返回类型为character 的数据类型
+
 ## list
 - unlist: 将list转换为非list格式, 为向量格式
 
@@ -265,6 +350,21 @@ Levels: f m #有几种可选的值
 ```
 
 [如何高效的append an element to a list in R](http://stackoverflow.com/questions/17046336/here-we-go-again-append-an-element-to-a-list-in-r)
+
+## hash
+在Python中有这样一个神通广大的数据类型,它叫Dictionary.
+而长久以来在R中想要实现类似的Hash存储只能依靠environment类型,用起来非常不友好.
+hash它对environment进行了封装,使用户可以很方便的利用Hash表进行存储.
+
+其中有几个地方需要特别注意的:
+
+1. Hash表的Key必须为字符类型的,而且不能是空字符串
+1. 引用传递.在R中environment和hash对象只存在一份全局拷贝,因此如果在函数内改变它的值将会影响到外部访问的结果.如果需要复制hash对象,需调用它的copy方法
+1. 内存释放.通过rm销毁hash对象时,其占用的内存不会自动释放,因此需在rm前调用clear,以防内存泄露
+
+[hash 与 list 性能比较](http://equation85.github.io/blog/hash-table-for-r/)
+
+[hash demo](../../demo/r/hash_demo.r)
 
 ## data.frame
 在数据导入R语言后,会以数据框(dataframe)的形式储存.
@@ -636,15 +736,14 @@ dcast uses a formula to describe the shape of the data. The arguments on the lef
 [reshape demo](../../demo/r/reshape2.r)
 
 **melt 错误提示**  
-Warning message:
-attributes are not identical across measure variables; they will be dropped 
+Warning message: attributes are not identical across measure variables; they will be dropped  
 This warning is basically telling you that variables that you are trying to put in the "value" column (the measure variables) are different types 
-(some may be character, others may be factors, others may be numeric). 
+(some may be character, others may be factors, others may be numeric).  
 @MrFlick suggestion to treat those columns as keys even if they might not be would solve that problem.
 
 **cast 错误提示**  
-Aggregation function missing: defaulting to length
-This warning is a warning that you usually get when the combination of IDs is not unique. 
+Aggregation function missing: defaulting to length  
+This warning is a warning that you usually get when the combination of IDs is not unique.  
 you would need to add another column to make the ID variables unique to avoid having dcast automatically use length as its fun.aggregate function.
 
 ### 变量的重命名
@@ -663,14 +762,14 @@ Reshape2 uses that knowledge to make a new package for reshaping data that is mu
 This version improves speed at the cost of functionality, so I have renamed it to reshape2 to avoid causing problems for existing users. 
 Based on user feedback I may reintroduce some of these features.
 
-What's new in reshape2:
+What is new in reshape2:
 
 - considerably faster and more memory efficient thanks to a much better underlying algorithm that uses the power and speed of subsetting to the fullest extent, 
 in most cases only making a single copy of the data.
 - cast is replaced by two functions depending on the output type:  dcast produces data frames, and acast produces matrices/arrays.
 - multidimensional margins are now possible: grand_row and  grand_col have been dropped: now the name of the margin refers to the variable that has its value set to (all).
 - some features have been removed such as the | cast operator, and the ability to return multiple values from an aggregation function. 
-I'm reasonably sure both these operations are better performed by plyr.
+I am reasonably sure both these operations are better performed by plyr.
 - a new cast syntax which allows you to reshape based on functions
 - of variables (based on the same underlying syntax as plyr):
 - better development practices like namespaces and tests.
@@ -678,6 +777,11 @@ I'm reasonably sure both these operations are better performed by plyr.
 # 常用统计函数运算
 在R语言中经常会用到函数,例如上节中讲到的求样本统计量就需要均值函数(mean)和标准差函数(sd).对于二元数值数据还用到协方差(cov),对于二元分类数据则可以用交叉联列表函数(table).
 下文讲述在初级统计学中最常用到的三类函数.
+
+比如, 对于某个数据集, 使用with 可以省去写data$var1, data$var2 这样的重复性修饰.
+```
+with(iris, c(mean(Sepal.Length), sum(Sepal.Length)))
+```
 
 ## 描述性统计分析
 **偏度(Skew)**衡量实数随机变量概率分布的不对称性.
@@ -742,6 +846,9 @@ aggregate
   am      mpg       hp        wt
 1  0 3.833966 53.90820 0.7774001
 2  1 6.166504 84.06232 0.6169816
+
+用count = 1, 在利用sum 函数聚合后, 可以求出by 变量的出现次数.
+> aggregate(c(mtcars[vars], count=1), by = list(am=mtcars$am), sum)
 ```
 遗憾的是, aggregate 仅允许每次调用mean, sd 这样的单值返回函数.
 要返回多值, 可以使用by 函数
@@ -937,6 +1044,8 @@ NULL
 For more customizable (but cumbersome) printing, see `cat`, `format` or also `write`.   
 For a simple prototypical print method, see `.print.via.format` in package **tools**.
 
+`cat(x, y, ...)`: 可以输出多个变量, eg: `cat("x = ", x, "\n")`
+
 `source("commands.R")` 读取文件并执行  
 
 重定向输出
@@ -946,6 +1055,28 @@ sink()   #取消显示到文件
 ```
 使用参数append=TRUE可以将文本追加到文件后  
 参数split=TRUE可将输出同时发送到屏幕和输出文件中
+
+- 'write' is a wrapper for 'cat', which gives further details on the format used.
+- 'save' for writing any R objects, 
+- 'write.table' for data frames, and 
+- 'scan' for reading data.
+
+```
+write.table(x, file = "", append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE, qmethod = c("escape", "double"), fileEncoding = "")
+write.csv(...)
+write.csv2(...)
+```
+
+- quote: a logical value ('TRUE' or 'FALSE') or a numeric vector.  
+If 'TRUE', any character or factor columns will be surrounded by double quotes.  
+If a numeric vector, its elements are taken as the indices of columns to quote.  In both cases, row and column names are quoted if they are written.  
+If 'FALSE', nothing is quoted.
+- sep: the field separator string. Values within each row of x are separated by this string.
+- eol: end of line
+- na: the string to use for missing values in the data
+- dec: the string to use for decimal points in numeric or complex columns: must be a single character.
+- row.names: either a logical value indicating whether the row names of x are to be written along with x, or a character vector of row names to be written.
+- col.names: either a logical value indicating whether the column names of x are to be written along with x, or a character vector of column names to be written. 
 
 ## file
 [data import](http://www.r-tutor.com/r-introduction/data-frame/data-import)
@@ -969,6 +1100,10 @@ read.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, c
 ```
 
 excel
+第一个建议就是尽量避免这样做!
+如果你可以访问Excel,把你的Excel数据 用制表符分隔或逗号分隔的格式导出,然后用 read.delim 或 read.csv 导入R.(在采用逗号作为小数点的欧洲大陆本地系统里面,你可能需要用 read.delim2 或 read.csv2.) 
+导出一个DIF文件然后用read.DIF 读入是另外一种可能性.
+
 ```
 > library(gdata)                   # load gdata package 
 > help(read.xls)                   # documentation 
@@ -1024,6 +1159,34 @@ break, next
 `prediction = ifelse(post.yes >= post.no, "Yes", "No")` 类似于C 语言中的`? :`运算符.
 
 # function
+函数调用会产生所谓的 call stack,这个结构也就产生了 environment 的树状结构.
+我们可以用 sys.* 函数访问这个 call stack, 如 
+
+- sys.call() 返回当前(或者通过 which 参数表示更上几个层次的)函数,
+- sys.frame() 返回当前 environment 的 frame,
+- sys.function() 返回的是当前函数,
+- sys.parent(0) 返回的是上级 environment,
+- 对应还有复数版本,比如 sys.functions() 就是获得调用栈里面所有函数.
+
+## Default arguments and lazy evaluation in R
+[ref](http://www.johndcook.com/blog/2008/10/16/default-arguments-and-lazy-evaluation-in-r/)
+
+In C++, default function arguments must be constants, but in R they can be much more general. For example, consider this R function definition.
+```
+f <- function(a, b=log(a)) { a*b }
+```
+If f is called with two arguments, it returns their product. 
+If f is called with one argument, the second argument defaults to the logarithm of the first. That is convenient, but it gets more surprising. Look at this variation.
+```
+f <- function(a, b=c) {c = log(a); a*b}
+```
+Now the default argument is a variable that does not exist until the body of the function executes! 
+If f is called with one argument, the R interpreter chugs along until it gets to the last line of the function and says 
+"Hmm. What is b? Let me go back and see. Oh, the default value of b is c, and now I know what c is."
+
+This behavior is called lazy evaluation. 
+Expressions are not evaluated unless and until they are needed. It is a common feature of functional programming languages.
+
 ## math
 Vectors occurring in the same expression need not all be of the same length. 
 If they are not, the value of the expression is a vector with the same length as the longest vector which occurs in the expression. 
@@ -1401,15 +1564,15 @@ There are three issues to consider when working with large datasets:
 ## Efficient programming
 There are a number of programming tips that improve performance when working with large datasets.
 
-- Vectorize calculations when possible. Use R's built-in functions for manipulating vectors, matrices, and lists (for example, s apply , lappy , and mapply ) and avoid loops ( for and  while ) when feasible.
+- Vectorize calculations when possible. Use R built-in functions for manipulating vectors, matrices, and lists (for example, s apply , lappy , and mapply ) and avoid loops ( for and  while ) when feasible.
 - Use matrices rather than data frames (they have less overhead).
 - When using the  read.table()  family of functions to input external data into data frames, specify the  colClasses  and  nrows options explicitly, set  comment.  
-char = "" , and specify  "NULL" for columns that aren't needed. This will decrease memory usage and speed up processing considerably. 
+char = "" , and specify  "NULL" for columns that are not needed. This will decrease memory usage and speed up processing considerably. 
 When reading external data into a matrix, use the  scan() function instead.
 - Test programs on subsets of the data, in order to optimize code and remove bugs, before attempting a run on the full dataset.
 - Delete temporary objects and objects that are no longer needed. 
 The call rm(list=ls())  will remove all objects from memory, providing a clean slate.  Specific objects can be removed with  rm( object )  .
-- Use the function . ls.objects() described in Jeromy Anglim's blog entry "Memory Management in R: A Few Tips and Tricks" (jeromyanglim.blogspot.com), 
+- Use the function . ls.objects() described in Jeromy Anglim blog entry "Memory Management in R: A Few Tips and Tricks" (jeromyanglim.blogspot.com), 
 to list all workspace objects sorted by size ( MB ). This function will help you find and deal with memory hogs.
 - Profile your programs to see how much time is being spent in each function.  
 You can accomplish this with the  Rprof()  and  summaryRprof() functions. The system.time()  function can also help. 
@@ -1419,7 +1582,7 @@ With large datasets, increasing code efficiency will only get you so far.
 When bumping up against memory limits, you can also store our data externally and use specialized analysis routines.
 
 ## Storing data outside of RAM
-There are several packages available for storing data outside of R's main memory. 
+There are several packages available for storing data outside of R main memory. 
 The strategy involves storing data in external databases or in binary flat files on disk, and then accessing portions as they are needed. 
 
 - ff Provides data structures that are stored on disk but behave as if they were in RAM.
@@ -1440,4 +1603,141 @@ The  bigtabulate package provides  table()  ,  split()  , and  tapply() function
 - The  Brobdingnag package can be used to manipulate large numbers (numbers larger than 2^1024).
 Working with datasets in the gigabyte to terabyte range can be challenging in any language. 
 For more information on the methods available within R, see the CRAN Task View: High-Performance and Parallel Computing with R (cran.r-project.org/web/views/).
+
+# Writing R Extensions
+A package consists of a subdirectory containing a file 'DESCRIPTION' and the subdirectories 'R', 'data', 'demo', 'exec', 'inst', 'man', 'po', 'src', and 'tests' (some of which can be missing).
+The package subdirectory may also contain files 'INDEX', 'NAMESPACE', 'configure', 'cleanup', 'LICENSE', 'LICENCE', and 'COPYING'. 
+Other files such as 'README', 'NEWS' or 'ChangeLog' will be ignored by R, but may be useful to end-users.
+
+一个最简单的包结构如下(括号中为相应解释):
+```
+pkg (包的名字,请使用一个有意义的名字,不要照抄这里的pkg三个字母)
+|
+|--DESCRIPTION (描述文件,包括包名,版本号,标题,描述,依赖关系等)
+|--R (函数源文件)
+	|--function1.R
+	|--function2.R
+	|--...
+|--man (帮助文档)
+	|--function1.Rd
+	|--function2.Rd
+	|--...
+|--...
+```
+
+'package.skeleton' automates some of the setup for a new source package.  
+It creates directories, saves functions, data, and R code files to appropriate places, and creates skeleton help files and a 'Read-and-delete-me' file describing further steps in packaging.
+
+制作package 的步骤[ref](http://blog.fens.me/r-build-package/):
+
+1. 生成骨架: `package.skeleton(name="package-name", code_files="./sayHello.R")`
+1. 打包: `R CMD build package-name`
+1. 安装: `R CMD INSTALL package-name_version.tar.gz`
+1. 卸载: 进入sudo R环境, `remove.package("package-name")`
+1. 如果要提交R包和CRAN,必须要执行check检查.如果有任何的error和warning都将不被通过: `R CMD check package-name_version.tar.gz`
+
+## DESCRIPTION
+- Package: 包的名字
+- Version: 版本(介绍语义版本命名法,主要.次要.补丁:http://semver.org/,让版本号变得有意义,除非你是Knuth,用pi做版本号)
+- Date: 日期
+- Title: 标题
+- Description: 描述(详细说明)
+- Author: 作者(可以多人)
+- Maintainer: 维护者(一个人,可以不同于作者,**必须要有邮箱**)
+- 依赖关系
+	- Depends 加载这个包会依赖加载进来的包
+	- Imports 只是导入命名空间,不直接加载(被导入的包中的函数对用户不直接可见)
+	- Suggests 推荐安装的包,通常不涉及到本包的核心功能,但如果有这些包的话,本包会更强大
+- License: 许可证(发布到CRAN的包必须用开源许可证,不限于GPL)
+- URL: 网址
+- BugReports: Bug报告地址
+- R源文件列表(指定用哪些R代码来创建本包)
+
+## 其他目录
+data文件夹放R数据,扩展名为rda,通常可以用save()函数生成.  
+对每一个数据,都必须有相应的Rd文档,它可以通过roxygen生成
+
+demo文件夹里可以放一些演示,这些演示文件将来可以用demo()函数来调用
+
+inst文件夹下的所有文件都会被原封不动复制到安装包的路径下,这个文件夹下可以放任意文件,但有一个例外是doc,它用来放R包的手册(Vignette),后文详述
+
+## NAMESPACE
+命名空间(NAMESPACE)是R包管理包内对象的一个途径,它可以控制哪些R对象是对用户可见的,哪些对象是从别的包导入(import),哪些对象从本包导出(export).
+
+为什么要有这么个玩意儿存在?主要是为了更好管理你的一堆对象.写R包时,有时候可能会遇到某些函数只是为了另外的函数的代码更短而从中抽象,独立出来的.
+这些小函数仅仅供你自己使用,对用户没什么帮助,他们不需要看见这些函数,
+这样你就可以在包的根目录下创建一个NAMESPACE文件,里面写上export(函数名)来导出那些需要对用户可见的函数.
+自R 2.14.0开始,命名空间是R包的强制组成部分,所有的包必须有命名空间,如果没有的话,R会自动创建.
+
+Imports,这里设置的包通常是你只需要其部分功能的包,
+例如我只想在我的包中使用foo包中的bar()函数,NAMESPACE中则需要写`importFrom(foo, bar)`,
+在自己的包的源代码中则可以直接调用bar()函数,R会从NAMESPACE看出这个bar()对象是从哪里来的.
+
+### S3泛型函数
+S3泛型函数的核心思想是基于对象的类去匹配函数
+S3函数可以用UseMethod()去定义,然后**函数.类名**就是具体的子函数,
+例如hello()这个函数([ref](https://github.com/yihui/rmini/blob/master/R/S3.R))有两个子函数hello.default()和hello.character(),分别对应它的默认方法以及对字符对象应用的方法.
+NAMESPACE 中写
+```
+S3method(hello, character)
+S3method(hello, default)
+```
+使用
+```
+library(rmini)
+hello(1) ## hello, numeric
+hello("a") ## Hi! I love characters!
+hello(structure(1, class = "world")) ## hello, world
+```
+
+## 嵌入其它语言
+R可以与其它语言沟通,常见的如C和Fortran.  
+其它语言的源代码都放在src文件夹底下(ex: [reverse.c](https://github.com/yihui/rmini/blob/master/src/reverse.c)).
+这个c文件将来在R CMD INSTALL过程中会被编译成一个动态链接库,供R调用.
+R函数(ex: [reverse()](https://github.com/yihui/rmini/blob/master/R/C.R))中我们使用`.C()`调用前面提到的C函数.  
+注意这里在调用之前我们必须告诉R加载编译好的动态链接库,所以我们在NAMESPACE文件中生成相应的useDynLib()命令,当R包加载的时候,动态链接库也会被加载.
+
+## C interface
+1. C functions called by R must all return void, which means they need to return the results of the computation in their arguments.
+2. All arguments passed to the C function are passed by reference, which means we pass a pointer to a number or array.
+3. Each file containing C code to be called by R should include the `R.h` header file.
+If you are using special functions (e.g. distribution functions), you need to include the `Rmath.h` header file.
+1. When compiling your C code, you use R to do the compilation rather than call the C compiler directly.
+Use `R CMD SHLIB foo.c` or `R CMD SHLIB -o foo.so foo.c`
+1. load the library, `> dyn.load('foo.so')`
+
+[demo C](../../demo/r/hello.c)  
+[demo R](../../demo/r/hello.r)
+
+在R中定义的函数是可以和C中的函数用一样的名字
+
+Notice that we convert n to integer type using as.integer and 
+in the C function we have set n to be of type int * (remember that variables are always passed as pointers when using .C)
+
+.C returns a list containing the (possibly modified) arguments which were passed into your C function.
+
+输出用, Rprintf.
+Rprintf is exactly like the standard printf function in C except that Rprintf sends its output to the R console so that you can see it when running R.
+
+Another ex:
+```
+cconv.c
+*s is the result
+void cconv(int *l, double *x, int *n, double *s){
+	double *y = x + (*n - *l), *z = x + *l, *u = x;
+	while ( u < y)
+		*s += *u++ * *z++;
+}
+
+rconv.r
+rconv <- function(lag,x) {
+	.C("cconv", as.integer(lag), as.double(x), as.integer(length(x)), as.double(0.0))[[4]]
+}
+```
+The .C function returns a list with all its arguments, we only need the last (fourth) argument.  
+In this case we did not name the last argument but extracted it using a numeric index.
+
+R has many matrix manipulation routines that are highly optimized.
+所以要尽量避免在C里面操作矩阵, 但是如果确实需要的话, 
+it is important to remember that matrices are represented as just very long vectors (of length nrows * ncols) in C.
 

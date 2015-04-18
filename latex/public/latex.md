@@ -103,6 +103,35 @@ generate:
 
 [Avoid eqnarray](https://tug.org/pracjourn/2006-4/madsen/madsen.pdf)
 
+公式中对齐
+
+```
+\begin{equation}  fst_a(A)\triangleq 
+\left\{
+      \begin{aligned}
+			 &\varnothing & if\ a \notin\Sigma(A)\\
+             &hitter(A_m) & if\ m=min\{n \in \uppercase\expandafter{\romannumeral2^A|a \in \Sigma(A_n)}\land\Sigma(hitter(A_m))=a\}\\  
+             &target(A_m) & if\ m=min\{n \in \uppercase\expandafter{\romannumeral2^A|a \in \Sigma(A_n)}\land\Sigma(target(A_m))=a\}\\  
+           \end{aligned}
+\right.  
+\end{equation}  
+```
+\href{http://i.imgbox.com/JGSKOgTs.png}{result}
+
+
+```
+\begin{equation}  fst_a(A)\triangleq 
+\left\{
+      \begin{aligned}
+             &\varnothing & if & \ a \notin\Sigma(A)\\
+             &hitter(A_m) & if & \ m=min\{n \in \uppercase\expandafter{\romannumeral2^A|a \in \Sigma(A_n)}\land\Sigma(hitter(A_m))=a\}\\  
+             &target(A_m) & if & \ m=min\{n \in \uppercase\expandafter{\romannumeral2^A|a \in \Sigma(A_n)}\land\Sigma(target(A_m))=a\}\\  
+           \end{aligned}
+\right.  
+\end{equation}  
+```
+\href{http://i.imgbox.com/mcWpxQK9.png}{将if放在单独一格的result}
+
 ## Matrix
 pmatrix,bmatrix,Bmatrix,vmatrix和Vmatrix
 
@@ -296,37 +325,14 @@ The uppercase-character allows the figure to float, while the lowercase version 
 	\end{wrapfigure}
 [result figure](http://upload.wikimedia.org/wikipedia/commons/d/dc/Latex_example_wrapfig_vspace.png)
 
-### Subfloats
-`\setcounter{subfigure}{0}`
-让每个figure的subfigure都重新编号, 而不是整个article 的subfigure的编号是连续的, 
-[ref](http://tex.stackexchange.com/questions/4530/subfigures-in-beamer-documents)
-
-也可以考虑使用minipage 来达到同样的效果
-
-	\setcounter{subfigure}{0}
-	\begin{figure}
-	        \centering
-	        \begin{subfigure}[b]{0.3\textwidth}
-	                \includegraphics[width=\textwidth]{gull}
-	                \caption{A gull}
-	                \label{fig:gull}
-	        \end{subfigure}%
-	        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-	          %(or a blank line to force the subfigure onto a new line)
-	        \begin{subfigure}[b]{0.3\textwidth}
-	                \includegraphics[width=\textwidth]{tiger}
-	                \caption{A tiger}
-	                \label{fig:tiger}
-	        \end{subfigure}
-	        ~ 
-	        \begin{subfigure}[b]{0.3\textwidth}
-	                \includegraphics[width=\textwidth]{mouse}
-	                \caption{A mouse}
-	                \label{fig:mouse}
-	        \end{subfigure}
-	        \caption{Pictures of animals}\label{fig:animals}
-	\end{figure}
-[result figure](http://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Latex_example_subfig.png/500px-Latex_example_subfig.png)
+## subfloat
+```
+\usepackage{subfig}
+\subfloat[list entry][sub-caption]{\label{sub-label}body}
+body 可以为figure, 也可以是table
+```
+Normally, if a caption is present, it is also included on the List-of-Floats page.
+However, if a second optional argument is present, than the first one controls what is on the List-of-Floats page and the second is the caption text
 
 # Table
 ```
@@ -628,6 +634,17 @@ eg:
 
 `\todo[inline, color=green!40]{This is an inline comment.}`
 
+根据条件进行不同的设置
+```
+\newif\ifdirector
+\directorfalse %I set the conditional to false
+\ifdirector
+ I write something for the director.
+\else
+ I write something for common people.
+\fi
+```
+
 `\textsuperscript`  
 For example, let's say I want to write the `$n^{th}$` element, but without the math mode's automatic italicization of the th. And what if I still want the n to be in math mode, but the th outside?  
 `$n$\textsuperscript{th}`
@@ -640,9 +657,10 @@ For example, let's say I want to write the `$n^{th}$` element, but without the m
 ```
 \usepackage{listings}
 \begin{lstlisting}[language=...] Put your code here. \end{lstlisting}
-
 \lstinputlisting[language=Python]{source_filename.py}
+\lstinputlisting[language=Python, float, caption = Add Fake Source Dependencies, firstnumber=91, firstline=91, lastline=95]{source_filename.py}
 ```
+Python 的注释只能使用一个#, 而不能使用两个##, 否则会报错.
 
 ```
 \setcounter{page}{1}
