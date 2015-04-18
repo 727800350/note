@@ -291,4 +291,9 @@ end do
 
 [loop demo](../../demo/fortran/loop.f90)
 
+**提前跳出循环**  
+Fortran中跳出循环的两个命令为exit和cycle,
+exit表示跳出离命令最近的循环,
+cycle表示结束此次循环并开始下一次循环
+
 # 函数 function
