@@ -132,6 +132,8 @@ inquire(UNIT = number, FILE = filename, IOSTAT = stat, ERR = label, EXIST = exis
 
 [data type demo](../../demo/fortran/data_type.f90)
 
+[basic calculation demo](../../demo/fortran/calculation.f90)
+
 请注意以下事项:
 
 REAL*16 和 COMPLEX*32:在 64 位环境(使用 -m64 进行编译)中,缺省对齐位置是 16 字节(而非 8 字节)边界,如表中 8/16 所示.该数据类型通常称为四精度.
