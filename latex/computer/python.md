@@ -112,6 +112,13 @@ f.read(1) // read 'd'
 The optional argument random is a 0-argument function returning a random float in [0.0, 1.0); by default, this is the function random().
 - `random.sample(sequence, k)`,从指定序列中随机获取指定长度的片断.sample函数不会修改原有序列
 
+```
+list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
+slice = random.sample(list, 5)  #从list中随机获取5个元素,作为一个片断返回  
+print slice  
+print list #原有序列并没有改变
+```
+
 # Data types
 - **list and dictionary is mutable**
 - two non-scalar type: **tuple and string are immutable**

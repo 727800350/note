@@ -8,9 +8,9 @@
 fortran 90 可以使用双引号或者单引号来封装字符串.  
 fortran 77 标准中只能使用单引号, 不过大部分的fortran 77 编译器还是可以接受双引号.
 
-fortran 程序中空格是无意义的字符
-
-fortran **不区分大小写**, 不管是程序关键字还是变量
+- fortran 程序中空格是无意义的字符
+- fortran **不区分大小写**, 不管是程序关键字还是变量
+- 变量定义必须放在函数的开始位置, 而不能向C语言那样在需要用到的地方再定义
 
 ## 固定格式
 - 第1 个字符: 如果是字母C,c或*, 这一行文本会被作为注释
@@ -129,6 +129,10 @@ inquire(UNIT = number, FILE = filename, IOSTAT = stat, ERR = label, EXIST = exis
 | LOGICAL*2 X            | 2        | 2            | 2                   |
 | LOGICAL*4 X            | 4        | 4            | 4                   |
 | LOGICAL*8 X            | 8        | 8            | 4                   |
+
+[data type demo](../../demo/fortran/data_type.f90)
+
+[basic calculation demo](../../demo/fortran/calculation.f90)
 
 请注意以下事项:
 
@@ -291,5 +295,10 @@ end do
 ```
 
 [loop demo](../../demo/fortran/loop.f90)
+
+**提前跳出循环**  
+Fortran中跳出循环的两个命令为exit和cycle,
+exit表示跳出离命令最近的循环,
+cycle表示结束此次循环并开始下一次循环
 
 # 函数 function
