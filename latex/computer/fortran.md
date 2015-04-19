@@ -138,6 +138,9 @@ REAL*16 和 COMPLEX*32:在 64 位环境(使用 -m64 进行编译)中,缺省对�
 数组对齐方式与数组元素相同.
 结构对齐方式与具有最宽对齐的字段相同.
 
+## 类型转换
+- `dble(a)` Converts a to double precision real type
+
 ## 隐含说明语句IMPLICIT语句
 IMPLICIT可以将程序中以某一字母开头的所有变量指定为所需类型.例如: 
 ```
