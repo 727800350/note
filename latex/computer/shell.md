@@ -1,29 +1,28 @@
-# shell 编程
 主要参考自:
 1. [Shell脚本编程30分钟入门](https://github.com/qinjx/30min_guides/blob/master/shell.md)
 1. [ShellProgramming](http://mprc.pku.edu.cn/mentors/training/TrainingCourses/material/ShellProgramming.HTM#\_Toc37518066)
 
-## Introduction
-### shell和shell脚本的概念
+# Introduction
+## shell和shell脚本的概念
 shell是指一种应用程序,这个应用程序提供了一个界面,用户通过这个界面访问操作系统内核的服务.Ken Thompson的sh是第一种Unix Shell,Windows Explorer是一个典型的图形界面Shell.
 
 shell脚本(shell script),是一种为shell编写的脚本程序.业界所说的shell通常都是指shell脚本,但读者朋友要知道,shell和shell script是两个不同的概念.由于习惯的原因,简洁起见,本文出现的"shell编程"都是指shell脚本编程,不是指开发shell自身(如Windows Explorer扩展开发).
 
-### 脚本解释器
-#### sh and bash
+## 脚本解释器
+### sh and bash
 即Bourne shell,POSIX(Portable Operating System Interface)标准的shell解释器,它的二进制文件路径通常是/bin/sh,由Bell Labs开发.
 
 Bash是Bourne shell的替代品,属GNU Project,二进制文件路径通常是/bin/bash.业界通常混用bash,sh,和shell,比如你会经常在招聘运维工程师的文案中见到:熟悉Linux Bash编程,精通Shell编程.
 
 在CentOS里,/bin/sh是一个指向/bin/bash的符号链接, Mac OS上不是
 
-#### 高级编程语言
+### 高级编程语言
 理论上讲,只要一门语言提供了解释器(而不仅是编译器),这门语言就可以胜任脚本编程,常见的解释型语言都是可以用作脚本编程的,如:Perl,Tcl,Python,PHP,Ruby.
 Perl是最老牌的脚本编程语言了,Python这些年也成了一些linux发行版的预置解释器.
 
 编译型语言,只要有解释器,也可以用作脚本编程,如C shell是内置的(/bin/csh),Java有第三方解释器Jshell,Ada有收费的解释器AdaScript.
 
-#### 简单 vs 高级
+### 简单 vs 高级
 如果你觉得自己熟悉的语言(如Java,C)写shell脚本实在太啰嗦,你只是想做一些备份文件,安装软件,下载数据之类的事情,学着使用sh,bash会是一个好主意.
 
 shell只定义了一个非常简单的编程语言,所以,如果你的脚本程序复杂度较高,或者要操作的数据结构比较复杂,那么还是应该使用Python,Perl这样的脚本语言,或者是你本来就已经很擅长的高级语言.
@@ -33,34 +32,7 @@ shell只定义了一个非常简单的编程语言,所以,如果你的脚本程�
 - 它不支持面向对象,你无法实现一些优雅的设计模式
 - 它是解释型的,一边解释一边执行,连PHP那种预编译都不是,如果你的脚本包含错误(例如调用了不存在的函数),只要没执行到这一行,就不会报错
 
-## 第一个shell脚本
-### 编写
-打开文本编辑器,新建一个文件,扩展名为sh(sh代表shell),扩展名并不影响脚本执行,见名知意就好,如果你用php写shell 脚本,扩展名就用php好了.
-
-输入一些代码,第一行一般是这样:
-
-	#!/bin/bash
-	#!/usr/bin/php
-
-"#!"是一个约定的标记,它告诉系统这个脚本需要什么解释器来执行.
-
-### 运行
-运行Shell脚本有两种方法:
-#### 作为可执行程序
-
-	chmod +x test.sh
-	./test.sh
-
-
-#### 作为解释器参数
-这种运行方式是,直接运行解释器,其参数就是shell脚本的文件名,如:
-
-	/bin/sh test.sh
-	/bin/php test.php
-
-这种方式运行的脚本,不需要在第一行指定解释器信息,写了也没用.
-
-#### 调试
+### 调试
 最有用的调试脚本的工具是echo命令,可以随时打印有关变量或操作的信息,以帮助定位错误.也可使用打印最后状态($?) 命令来判断命令是否成功,这时要注意的是要在执行完要测试的命令后立即输出$?,否则$?将会改变.
 Set命令也可以用来辅助脚本测试:
 ```
@@ -70,8 +42,44 @@ Set –x           显示所有的命令及其参数
 ```
 (要关闭set选项,只要把－换成+就可以了,这里有点特殊,要注意一下)
 
-## 变量
-### 定义变量
+# IO
+每个shell 过程一次最多可以有9 个文件描述符(其中 0(stdin),1(stdout),2(stderr)作为保留的文件描述符)
+## 输入重定向
+输入重定向符号: `<`.
+
+内联输入重定向符号: `<<`, 在使用的时候, 除了这个符号, 你必须指定一个文本(任意的字符串)标记来划分要输入数据的开始和结尾. eg.
+```
+$ wc << EOF
+> test string 1
+> test string 2
+> EOF
+	2 6 28
+```
+
+## 输出重定向
+文件描述符必须放在重定向符号前, 该值必须紧紧地放在重定向符号前, eg: `2> log.error`
+
+- 重定向数据和错误: `command 1> log.out 2> log.error`
+- 重定向到同一个文件: `command &> log`(注意: bash shell 会自动给错误消息更高的优先级, 使得可以在一处地方查看错误消息, 不用翻遍整个输出文件)
+- 临时重定向: `echo "this is an error" >&2`: 将这条输出重定向到错误输出.(& 不能丢, 否则是将输出重定向到一个名为2的文件)
+- 永久重定向: `exec 2> error`: 将错误消息全部重定向到error 文件. 相应的, 永久输入重定向为: `exec 0< input`([redirect input demo](../../demo/shell/input.sh))
+
+## 创建文件描述符
+除了0,1,2, 我们还可以自己定义文件描述符.
+
+[重定向标准输出到一个文件, 然后再恢复](../../demo/shell/redirect.sh)  
+同样的操作可以应用到输入上
+
+关闭文件描述符: `exec 3>&-`(最后的4个字符之间不能有空格). [demo](../../demo/shell/close_file_descriptor.sh)
+
+[创建临时文件](../../demo/shell/tmp_file.sh)
+
+- in default, mktemp will create the tmp file in the current directory
+- `mktemp -t`: 会强制mktemp 在系统的临时目录创建该文件, 在使用这个特性时, 命令会返回这个临时文件的全路径
+- `mktemp -d`: 创建一个临时目录
+
+# 变量
+## 定义变量
 定义变量时,变量名不加美元符号($),如:
 
 	your_name="qinjx"
@@ -82,7 +90,7 @@ Set –x           显示所有的命令及其参数
 
 	for file in `ls /etc`
 
-### 使用变量
+## 使用变量
 使用一个定义过的变量,只要在变量名前面加美元符号即可,如:
 
 	your_name="qinjx"
@@ -99,7 +107,7 @@ Set –x           显示所有的命令及其参数
 
 推荐给所有变量加上花括号,这是个好的编程习惯.IntelliJ IDEA编写shell script时,IDE就会提示加花括号.
 
-### 重定义变量
+## 重定义变量
 已定义的变量,可以被重新定义,如:
 
 	your_name="qinjx"
@@ -110,7 +118,7 @@ Set –x           显示所有的命令及其参数
 	
 这样写是合法的,但注意,第二次赋值的时候不能写$your_name="alibaba",使用变量的时候才加美元符.
 
-### 一些常用的shell变量
+## 一些常用的shell变量
 ```
 $#  传递到脚本的参数个数
 $*  以一个单字符串显示所有向脚本传递的参数(可大于9个)
@@ -177,9 +185,10 @@ $?  显示最后命令的退出状态,0表示无错误
 
 ## 数组
 
-## 管道
-
+# 程序流程, 结构化命令
 ## 条件判断
+`-o`: 逻辑或
+
 ### 字符串测试
 五种格式: 
 ```
@@ -216,47 +225,20 @@ NUMBER=130
 
 ###  文件状态测试(常用的)
 ```
+-e  测试文件是否存在
 -d  测试是否文件夹
 -f  测试是否一般文件
+-s  测试文件是否非空
 -L  测试是否链接文件
 -r  测试文件是否可读
 -w  测试文件是否可写
 -x  测试文件是否可执行
--s  测试文件是否非空
 ```
 
-#### 判断文件是否存在
-```
-shell判断文件,目录是否存在或者具有权限 
-#!/bin/sh 
-
-myPath="/var/log/httpd/" 
-myFile="/var /log/httpd/access.log" 
-
-# 这里的-x 参数判断$myPath是否存在并且是否具有可执行权限 
-if [ ! -x "$myPath"]; then 
-	mkdir "$myPath" 
-fi 
-
-# 这里的-d 参数判断$myPath是否存在 
-if [ ! -d "$myPath"]; then 
-	mkdir "$myPath" 
-fi 
-
-# 这里的-f参数判断$myFile是否存在 
-if [ ! -f "$myFile" ]; then 
-	touch "$myFile" 
-fi 
-```
-
-不同的判断
 ```
 -a file exists. 
 -b file exists and is a block special file. 
 -c file exists and is a character special file. 
--d file exists and is a directory. 
--e file exists (just the same as -a). 
--f file exists and is a regular file. 
 -g file exists and has its setgid(2) bit set. 
 -G file exists and has the same group ID as this process. 
 -k file exists and has its sticky bit set. 
@@ -270,12 +252,7 @@ fi
 -S file exists and is a socket. 
 -t file descriptor number fildes is open and associated with a terminal device. 
 -u file exists and has its setuid(2) bit set. 
--w file exists and is writable by the current process. 
--x file exists and is executable by the current process. 
--z string length is zero. 
 ```
-
-是用 `-s` 还是用 `-f` 这个区别是很大的!
 
 ## 流程控制
 
@@ -290,9 +267,7 @@ fi
 #### if
 
 	if condition; then
-		command1 
-		...
-		commandN 
+		commands
 	fi
 或者then换行, 那么condition后面的分号就不要了
 
@@ -306,10 +281,7 @@ fi
 
 	if condition
 	then
-		command1 
-		command2
-		...
-		commandN
+		command
 	else
 		command
 	fi
@@ -331,9 +303,7 @@ fi
 
 	for var in item1 item2 ... itemN
 	do
-		command1
-		...
-		commandN
+		command
 	done
 
 写成一行:
@@ -344,9 +314,7 @@ fi
 
 	for (( EXP1; EXP2; EXP3 ))
 	do
-		command1
-		command2
-		command3
+		command
 	done
 
 #### while
