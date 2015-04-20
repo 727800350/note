@@ -1,26 +1,26 @@
-"===============================复制===============================
-"从系统剪切板中复制，剪切，粘贴
-"Ctrl Y  复制
+"copy and coller from system clipboard
+"Ctrl Y  copy
 map <C-Y> "+y  
 map <C-X> "+x
 map <C-P> "+p
 
-" 原样从剪贴板粘贴到vim中, 而不对粘贴的文字使用auto indent等设置
+" raw copy, do not use auto indent etc.
 set pastetoggle=<F9>
 
-"保存文件并留在插入模式 [插入模式]
+"save file and stay in insert mode
 imap jj <ESC>:w<CR>li
-"返回Normal模式 [插入模式]
+"go back to Normal mode from insertion mode
 imap kk <ESC>l
-"===============================自动补全===============================
+
+"===============================auto completion===============================
 imap <c-\> <c-p>
-" c-j自动补全，当补全菜单打开时，c-j,k上下选择
-" f:文件名补全，l:行补全，d:字典补全，]:tag补全,t thesaurus
+" c-j auto completion, c-j,k go up and down to choose
+" f:filename; l:line; d:dic; ]: tag; t thesaurus
 imap <C-]>             <C-X><C-]> 
 imap <C-F>             <C-X><C-F> 
 imap <C-D>             <C-X><C-K>  
-set dictionary+=~/.mydict "自定义单词库
-set thesaurus+=~/.mthesaur  "自定义分类词库
+set dictionary+=~/.mydict
+set thesaurus+=~/.mthesaur
 imap <C-L>             <C-X><C-L> 
 imap <C-T>             <C-X><C-T> 
 set  complete-=k complete+=k
@@ -29,53 +29,53 @@ set  complete-=k complete+=k
 "Ctrl-X Ctrl-I searches forward through the current file and included files defined by #include <somefile.h>
 "F3 switches between two windows after a split
 map <F3> <c-w>w
-set backspace=2 "启用退格键
+"enable backspace
+set backspace=2 
 let g:vimrc_author='Eric'
 
-set nocompatible             " 关闭兼容模式
+set nocompatible             
 
-"===============================字体及编码===============================
-set guifont=Lucida\ Console:h10  "字体 && 字号
-set guifont=fangsong:h12  "字体 && 字号,中文竟然需要用拼音表示
+"=============================== font and encoding ===============================
+set guifont=Lucida\ Console:h10 
+set guifont=fangsong:h12
 let &termencoding=&encoding
 set fileencodings=utf-8,ucs-2,ansi,gb18030,gbk,gb2312,big5,cp936,latin1
 
-set nu "number 行号
-colorscheme evening "颜色主题
-set showmatch "显示匹配的括号
+set nu
+colorscheme evening
+set showmatch
 "set laststatus=2 "always show status line
 set shortmess=atI "shortens messages"
-set showcmd         " 显示命令``
-set ruler                    " 右下角显示光标位置的状态行
-
+set showcmd
+set ruler
 
 set ic "ignore case
-set hlsearch                 " 开启高亮显示结果
-set incsearch                " 查找book时，当输入/b时会自动找到,in c search
+set hlsearch
+set incsearch                " when searching book, when type /b will automatically find in c search
 
-set cursorline              " 突出显示当前行
-syntax enable                " 打开语法高亮
-syntax on                  "也是语法高亮,不同的系统可能用不一样的语法 
-filetype indent on           " 针对不同的文件类型采用不同的缩进格式
-filetype plugin on           " 针对不同的文件类型加载对应的插件
-filetype plugin indent on    " 启用自动补全
+" hightlight the current line
+set cursorline
+syntax enable
+syntax on
+filetype indent on
+filetype plugin on
+filetype plugin indent on
 
-set autoread     "当文件在外部被修改时，自动重新读取
-set autoindent "自动缩进
-set smartindent  "智能缩进
-set tabstop=4  "tab 缩进4个空格，而不是默认的8个
+set autoread
+set autoindent
+set smartindent
+set tabstop=4
 
-"不要备份文件
 set nobackup
 set nowb
-set noswapfile      " 不使用swp文件，注意，错误退出后无法恢复
+set noswapfile
 
-"自动回到上次光标所在位置
+"go back the previvous cursor location
 if has("autocmd")
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
-" ======= 引号 && 括号自动匹配 ======= "
+" ======= auto match ===================
 :inoremap ( ()<ESC>i
 :inoremap ) <c-r>=ClosePair(')')<CR>
 :inoremap { {}<ESC>i
@@ -95,11 +95,10 @@ function ClosePair(char)
         return a:char
     endif
 endf
-" ======= 引号 && 括号自动匹配 ======= "
+" ======= auto match ===================
 
 
-" ======= 编译 && 运行 ======= "
-" 编译源文件
+" ======= compile and run ======= "
 func! CompileCode()
         exec "w"
         if &filetype == "c"
@@ -136,7 +135,6 @@ func! CompileCode()
         endif
 endfunc
 
-" 运行可执行文件
 func! RunCode()
         exec "w"
         if &filetype == "c" || &filetype == "cpp" || &filetype == "haskell"
@@ -171,21 +169,22 @@ func! Save()
             exec "!epstopdf %<.mps"
         endif
 endfunc
-" Ctrl + c 一键保存、编译
+
+" Ctrl + c Compile
 map <c-c> :call CompileCode()<CR>
 imap <c-c> <ESC>:call CompileCode()<CR>
 vmap <c-c> <ESC>:call CompileCode()<CR>
 
-" Ctrl + R 一键保存、运行
+" Ctrl + R Run
 map <c-r> :call RunCode()<CR>
 imap <c-r> <ESC>:call RunCode()<CR>
 vmap <c-r> <ESC>:call RunCode()<CR>
 
-" Ctrl + s 一键保存
+" Ctrl + s Save
 map <c-s> :call Save()<CR>
 imap <c-s> <ESC>:call Save()<CR>
 vmap <c-s> <ESC>:call Save()<CR>
-" ======= 编译 && 运行 ======= "
+" ======= compile and run ======= "
 
 "==============================comments===================================
 "F11 Comment F12 uncomment
