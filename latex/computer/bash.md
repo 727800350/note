@@ -88,6 +88,8 @@ zless: look at compressed files
 **strings**  
 returns each string of printable characters in files. Its main uses are to determine the contents of and to extract text from binary files (i.e., non-text files).
 
+uniq: 去重
+
 # 网络
 **ss**
 socket statistics (show apps using the Internet)

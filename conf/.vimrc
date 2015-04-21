@@ -38,8 +38,9 @@ set nocompatible
 "=============================== font and encoding ===============================
 set guifont=Lucida\ Console:h10 
 set guifont=fangsong:h12
-let &termencoding=&encoding
-set fileencodings=utf-8,ucs-2,ansi,gb18030,gbk,gb2312,big5,cp936,latin1
+set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
+set termencoding=gb2312,utf-8
+set encoding=utf-8
 
 set nu
 colorscheme evening
