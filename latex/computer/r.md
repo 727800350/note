@@ -1154,6 +1154,15 @@ dbSendQuery 传送查询,返回的结果是 继承"DBIResult"的一个子类的�
 ```
 exp 中可以用{}
 
+```
+if(condition){
+	...
+}else{
+	...
+}
+```
+一定要注意: else必须放在} 的后面, 而不能另起一行.
+
 break, next
 
 `prediction = ifelse(post.yes >= post.no, "Yes", "No")` 类似于C 语言中的`? :`运算符.
