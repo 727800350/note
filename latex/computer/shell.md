@@ -156,7 +156,8 @@ $?  显示最后命令的退出状态,0表示无错误
 
 # 程序流程, 结构化命令
 ## 条件判断
-`-o`: 逻辑或
+- `-o`: 逻辑或
+- `-a`: 逻辑和
 
 ### 字符串测试
 五种格式: 
@@ -261,6 +262,7 @@ NUMBER=130
 	then
 		command1
 	elif condition2
+	then
 		command2
 	else
 		commandN
