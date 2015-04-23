@@ -1,3 +1,6 @@
+io:
+	gfortran -g -Wall io.f90
+
 calculation:
 	gfortran -g -Wall calculation.f90
 

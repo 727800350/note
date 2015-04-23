@@ -64,6 +64,8 @@ end
 - `print *,"string"`: * 表示不限定输出格式, print 只能输出到stdout
 
 ## File
+[file io demo](../../demo/fortran/io.f90)
+
 **打开文件**
 ```
 open(UNIT = number, FILE = filename, FROM = '...', STATUS = '...', ACCESS = '...')
