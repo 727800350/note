@@ -184,7 +184,7 @@ test  "string"  string_operator  "string"
 "number"  number_operator  "number"
 [ "number"  number_operator  "number" ]
 ```
-其中:number_operator 可以为:`-eq  ,-ne,-gt,-lt,-ge`
+其中:number_operator 可以为:`-eq, -ne, -gt, -lt, -ge`
 例如:
 ```
 NUMBER=130
@@ -353,7 +353,29 @@ case的语法和C family语言差别很大,它需要一个esac(就是case反过�
 
 ## 函数
 ### 定义
-### 调用
+[ref](http://www.cnblogs.com/chengmo/archive/2010/10/17/1853356.html)
+```
+[ function ] funname[()]
+{
+    action;
+    [return int;]
+}
+```
+
+[user defined func demo](../../demo/shell/function.sh)
+
+1. 必须在调用函数地方之前,声明函数,shell脚本是逐行运行.不会像其它语言一样先预编译,一次必须在使用函数前先声明函数
+1. 可以带function fun()定义,也可以直接fun()定义,不带任何参数
+2. 参数返回,可以显示加:return 返回, 也可以不加.
+如果不加,将以最后一条命令运行结果作为返回值. 
+return后跟数值n( n 的范围必须在0-255之间, 如果n>255, 返回的实际结果为 n % 256),
+
+[变量作用域demo](../../demo/shell/function_variable_scope.sh)
+
+1. 定义函数可以与系统命令相同, 自定义的函数命令比系统自带的命令优先级高
+2. 需要获得函数值,通过$?获得
+3. 如果需要传出其它类型函数值,可以在函数调用之前,定义变量(这个就是全局变量),在函数内部就可以直接修改,然后在执行函数就可以修改
+4. 如果需要定义local变量,可以在函数中定义:`local 变量=值`, 这时变量就是内部变量,它的修改,不会影响函数外部相同变量的值
 
 ## 文件包含
 可以使用source和.关键字,如:
