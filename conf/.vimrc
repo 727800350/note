@@ -121,6 +121,8 @@ func! CompileCode()
             exec "!python %<.py"
         elseif &filetype == "ruby"
             exec "!ruby %<.rb"
+        elseif &filetype == "sh"
+            exec "!bash %<.sh"
         elseif &filetype == "mp"
             exec "!mpost -tex=latex %<.mp"
         elseif &filetype == "dot"
