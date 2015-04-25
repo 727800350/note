@@ -263,3 +263,25 @@ git commit --amend --no-edit
 `git push git-osc --tags`  
 以上两条命令执行完毕,即推送完成
 
+# git config
+## [Using ssh over https](https://help.github.com/articles/using-ssh-over-the-https-port/)
+有时, 由于众所周知的原因, 无法进行ssh 连接, 可以让ssh 通过https
+
+1. To test if SSH over the HTTPS port is possible, run this SSH command:
+```
+$ ssh -T -p 443 git@ssh.github.com
+# Hi username! You have successfully authenticated, but GitHub does not provide shell access.
+```
+If that worked, great!
+1. Enabling SSH connections over HTTPS
+```
+[eric@alien ~]$ cat .ssh/config 
+Host github.com
+	Hostname ssh.github.com
+		Port 443
+```
+1. verification
+```
+$ ssh -T git@github.com
+# Hi username! You have successfully authenticated, but GitHub does not provide shell access.'
+```
