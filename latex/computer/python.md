@@ -1,9 +1,19 @@
+脚本里面退出: `sys.exit(1)`
+
 # Python sequence
 sequence在python不是一种特定的类型,而是泛指一系列的类型
 
 list, tuple, 字符串都属于sequence
 
 # 参数
+## 系统参数
+```
+import sys
+```
+`sys.argv` 获取参数列表  
+如果需要获取参数列表的长度, 需要通过`len(sys.argv)`.  
+参数依次为: `sys.argv[0]`(第一个参数为本文件的名字), `sys.argv[1]`
+
 ## 可变长参数
 使用可变长参数的函数, 将其所有参数保存在一个元组里, 在函数中可以使用for循环来处理
 以 `*` 开头定义一个参数即可
