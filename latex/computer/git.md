@@ -139,6 +139,15 @@ https://github.com/rails/rails/compare/master@{2014-10-04}...master
 ```
 
 # FAQ
+I mistakenly added files using the command, `git add file`
+I have not yet run git commit.
+Is there a way to undo this or remove these files from the commit?
+
+可以执行下面的两个方法:
+
+1. `git rm --cached <added_file_to_undo>`
+1. `git reset .`: (to undo my entire initial add) only to get this (not so) helpful message:
+
 **错误提交了一个commit, 需要把它撤销掉**  
 但是这个好像只针对于刚提交就意识到了错误
 ```
@@ -190,7 +199,7 @@ clean the remote branch status
 
 	[eric@iis ntop]$ git remote prune origin
 
-query the remote and automatically set the origin/HEAD pointer to the remote's current branch.
+query the remote and automatically set the origin/HEAD pointer to the remote current branch.
 
 	[eric@iis ntop]$ git remote set-head origin -a
 
@@ -201,7 +210,7 @@ Done
 
 **commit 之后发现commit的message有错误**  
 `git commit --amend`   
-lets you edit the previous commit's message
+lets you edit the previous commit message
 
 **commit 之后想起忘了add 另外一个修改的文件**
 ```
@@ -286,6 +295,6 @@ If that worked, great!
 
 		```
 		$ ssh -T git@github.com
-		# Hi username! You have successfully authenticated, but GitHub does not provide shell access.'
+		# Hi username! You have successfully authenticated, but GitHub does not provide shell access.
 		```
 
