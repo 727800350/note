@@ -230,6 +230,10 @@ compresses better than
 ```
 gzip -c file1 file2 > foo.gz
 ```
+-c --stdout --to-stdout
+Write output on standard output; keep original files unchanged.  
+If there are several input files, the output consists of a sequence of independently compressed  members. 
+To obtain better compression, concatenate all input files before compressing them.
 
 将foo.tar.gz 解压到/to 目录
 ```
