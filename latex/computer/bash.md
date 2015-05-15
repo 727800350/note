@@ -103,10 +103,10 @@ ssh
 ```
 ssh user@ip 'bash shell.sh'
 ```
-登陆到ip 机器上, 在 ip 上执行bash shell.sh, 
-但是这个命令的stdout 仍然在发起ssh 命令的机器的stdout, stderr 同样在发起ssh 命令的机器的stderr 上.
-当加上 bash shell.sh 1>out 2>log 时, 才会将stdout, stderr 输出到ip 的机器上.
-也可以使用双引号, 使用双引号可以传入参数, 但是当有很多参数时, 可以通过将这些参数先写到一个本地文件, 然后将这个文件scp 到远程目的机器上, 
+登陆到ip 机器上, 在 ip 上执行bash shell.sh  
+但是这个命令的stdout 仍然在发起ssh 命令的机器的stdout, stderr 同样在发起ssh 命令的机器的stderr 上.  
+当加上 bash shell.sh 1>out 2>log 时, 才会将stdout, stderr 输出到ip 的机器上.  
+也可以使用双引号, 使用双引号可以传入参数, 但是当有很多参数时, 可以通过将这些参数先写到一个本地文件, 然后将这个文件scp 到远程目的机器上,
 然后在shell.sh 加入一个source file.conf, 从而可以引入这些变量.
 
 ```
@@ -289,57 +289,6 @@ chkconfig –list httpd
 打开terminal的命令方式:  
 `Alt+F2`后在出现"运行应用程序"中输入`x-terminal-emulator`(一般在你输入到`x-term`后系统会自己显示全部)或者输入`gnome-terminal`
 
-**定时任务crontab**
-
-cron把命令行保存在/etc/crontab文件里,每个系统用户如果设置了自己的cron,那都会在/var/spool/cron下面有对应用户名的crontab.
-无论编写/var/spool/cron目录内的文件还是/etc/crontab文件,都能让cron准确无误地执行安排的任务,
-区别是/var/spool/cron下各系统用户的crontab文件是对应用户级别的的任务配置,而/etc/crontab文件则是对应系统级别的任务配置.
-cron服务器每分钟读取一次/var/crontab/cron目录内的所有文件和/etc/crontab文件
-
-格式
-```
-# Example of job definition:
-# .---------------- minute (0 - 59)
-# |  .------------- hour (0 - 23)
-# |  |  .---------- day of month (1 - 31)
-# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
-# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
-# |  |  |  |  |
-# *  *  *  *  * user-name command to be executed
-```
-
-特别需要注意的是crontab 下的环境变量$PATH 和普通shell 下的 $PATH 是不一样的, 在crontab下, `$PATH=/usr/bin:/bin`, 所以需要特别注意command 的路径
-
-crontab
-
-- `crontab -l`: The current crontab will be displayed on standard output.
-- `crontab -r`: The current crontab will be removed.
-- `crontab -e`: edit the current crontab.  After you exit from the editor, the modified crontab will be installed automatically.
-
-eg:
-
-1. `9 9 * * * /usr/local/bin/cvsb`
-表示每天早上9点9分执行目录/usr/local/bin/中的cvsb文件
-2. `3 3 * * 0 /usr/local/bin/qbbak`
-表示每周日凌晨3时3分执行目录/usr/local/bin中的qbbak文件
-3. `* */6 * * * /usr/local/bin/esbbak`
-表示每6小时执行一次,执行时间从第一次执行起计算,当然也可以自定义执行时间,比如0 */6 * * *那程序就会在整点执行
-4. `20,30 * * * /usr/local/bin/esbak`
-表示在每小时20分和30分时执行
-5. `* 23 * * 2-5 /usr/local/bin/esbbak`
-表示在星期二到星期五每天的23点执行
-
-nohup命令:
-如果你正在运行一个进程,而且你觉得在退出帐户时该进程还不会结束,那么可以使用nohup命令.该命令可以在你退出帐户/关闭终端之后继续运行相应的进程.nohup就是不挂断的意思( no hang up).
-该命令的一般形式为:`nohup command &`  
-如果使用nohup命令提交作业,那么在缺省情况下该作业的所有输出都被重定向到一个名为nohup.out的文件中,除非另外指定了输出文件:
-```
-nohup command > myout.file 2>&1 &
-```
-在上面的例子中,0 – stdin (standard input),1 – stdout (standard output),2 – stderr (standard error) ,
-2>&1是将标准错误(2)重定向到标准输出(&1),标准输出(&1)再被重定向输入到myout.file文件中.
-使用 jobs 查看任务.
-使用 fg %n　关闭.
 
 有两个常用的ftp工具ncftpget和ncftpput,可以实现ftp上传和下载,我们可以利用nohup命令在后台实现文件的上传和下载.
 
@@ -360,6 +309,18 @@ sys     0m0.070s
 ```
 
 # 进程
+nohup命令:
+如果你正在运行一个进程,而且你觉得在退出帐户时该进程还不会结束,那么可以使用nohup命令.该命令可以在你退出帐户/关闭终端之后继续运行相应的进程.nohup就是不挂断的意思( no hang up).
+该命令的一般形式为:`nohup command &`  
+如果使用nohup命令提交作业,那么在缺省情况下该作业的所有输出都被重定向到一个名为nohup.out的文件中,除非另外指定了输出文件:
+```
+nohup command > myout.file 2>&1 &
+```
+在上面的例子中,0 – stdin (standard input),1 – stdout (standard output),2 – stderr (standard error) ,
+2>&1是将标准错误(2)重定向到标准输出(&1),标准输出(&1)再被重定向输入到myout.file文件中.
+使用 jobs 查看任务.
+使用 fg %n　关闭.
+
 **kill**
 当给多个进程号的时候, 可以同时杀死多个进行
 
@@ -408,6 +369,46 @@ $ renice +15 785
 ```
 $ nice -n 19 dd if=/dev/cdrom of=~/mdk1.iso
 ```
+
+**定时任务crontab**
+
+cron把命令行保存在/etc/crontab文件里,每个系统用户如果设置了自己的cron,那都会在/var/spool/cron下面有对应用户名的crontab.
+无论编写/var/spool/cron目录内的文件还是/etc/crontab文件,都能让cron准确无误地执行安排的任务,
+区别是/var/spool/cron下各系统用户的crontab文件是对应用户级别的的任务配置,而/etc/crontab文件则是对应系统级别的任务配置.
+cron服务器每分钟读取一次/var/crontab/cron目录内的所有文件和/etc/crontab文件
+
+格式
+```
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+```
+
+特别需要注意的是crontab 下的环境变量$PATH 和普通shell 下的 $PATH 是不一样的, 在crontab下, `$PATH=/usr/bin:/bin`, 所以需要特别注意command 的路径
+
+crontab
+
+- `crontab -l`: The current crontab will be displayed on standard output.
+- `crontab -r`: The current crontab will be removed.
+- `crontab -e`: edit the current crontab.  After you exit from the editor, the modified crontab will be installed automatically.
+
+eg:
+
+1. `9 9 * * * /usr/local/bin/cvsb`
+表示每天早上9点9分执行目录/usr/local/bin/中的cvsb文件
+2. `3 3 * * 0 /usr/local/bin/qbbak`
+表示每周日凌晨3时3分执行目录/usr/local/bin中的qbbak文件
+3. `* */6 * * * /usr/local/bin/esbbak`
+表示每6小时执行一次,执行时间从第一次执行起计算,当然也可以自定义执行时间,比如0 */6 * * *那程序就会在整点执行
+4. `20,30 * * * /usr/local/bin/esbak`
+表示在每小时20分和30分时执行
+5. `* 23 * * 2-5 /usr/local/bin/esbbak`
+表示在星期二到星期五每天的23点执行
 
 ## iptables
 iptables,但更正确的名称是 iptables／netfilter.
