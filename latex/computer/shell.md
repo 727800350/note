@@ -348,6 +348,13 @@ NUMBER=130
 	fi
 
 ### for while
+[Shell 循环控制break/continue](http://www.yiibai.com/shell/unix-loop-control.html)
+
+- break: 退出循环
+- continue: 直接跳到下次循环
+
+两者都可以带一个整数参数, 表示跳出第n个封闭的循环
+
 #### for
 在开篇的示例里演示过了:
 
