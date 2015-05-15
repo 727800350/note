@@ -98,6 +98,17 @@ iftop: visually show network traffic
 
 ## 远程主机相关的
 ssh
+
+登陆一台机器, 并在登录后的机器上执行命令
+```
+ssh user@ip 'bash shell.sh'
+```
+登陆到ip 机器上, 在 ip 上执行bash shell.sh, 
+但是这个命令的stdout 仍然在发起ssh 命令的机器的stdout, stderr 同样在发起ssh 命令的机器的stderr 上.
+当加上 bash shell.sh 1>out 2>log 时, 才会将stdout, stderr 输出到ip 的机器上.
+也可以使用双引号, 使用双引号可以传入参数, 但是当有很多参数时, 可以通过将这些参数先写到一个本地文件, 然后将这个文件scp 到远程目的机器上, 
+然后在shell.sh 加入一个source file.conf, 从而可以引入这些变量.
+
 ```
 cd ~/.ssh
 ssh-keygen -t rsa -C "your_email@example.com"
