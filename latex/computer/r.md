@@ -133,7 +133,24 @@ The function na.omit() returns the object with listwise deletion of missing valu
 newdata <- na.omit(mydata)
 ```
 
-**rearrange columns of a data frame**  
+### 更改列名
+直接通过index 来修改
+```
+names(dataframe)[index] <- "newname"
+```
+
+不需要知道列名情况下修改列名:
+```
+names(df)[names(df)=="site"]="position";
+```
+
+通过reshape 重命名
+```
+library(reshape)
+rename(dataframe, c(oldname = "newname", oldname = "newname", ...))
+```
+
+### rearrange columns of a data frame
 [ref](http://stackoverflow.com/questions/3369959/moving-columns-within-a-data-frame-without-retyping/18540144#18540144).
 use functio [moveme](../../demo/r/moveme.r)
 Usage is simple. Try these out:
@@ -746,15 +763,6 @@ Aggregation function missing: defaulting to length
 This warning is a warning that you usually get when the combination of IDs is not unique.  
 you would need to add another column to make the ID variables unique to avoid having dcast automatically use length as its fun.aggregate function.
 
-### 变量的重命名
-```
-names(dataframe)[index] <- "newname"
-
-## 通过reshape 重命名
-library(reshape)
-rename(dataframe, c(oldname = "newname", oldname = "newname", ...))
-```
-
 Reshape2 is a reboot of the reshape package. 
 It is been over five years since the first release of the package, and in that time I have learned a tremendous amount about R programming, and how to work with data in R. 
 Reshape2 uses that knowledge to make a new package for reshaping data that is much more focussed and much much faster.
@@ -985,6 +993,15 @@ tapply(iris$Petal.Length, Species, mean)
      1.462      4.260      5.552
 ```
 与tapply功能非常相似的还有aggregate(),其输出是更为友好的数据框格式.而by()和上面两个函数是同门师兄弟.
+
+## 集合运算
+- 求A和B的并集 `union(A, B)`
+- 求A和B的交集 `intersect(A, B)`
+- 求A-B `setdiff(A, B)`
+- 求B-A `setdiff(B, A)`
+- 检验集合A,B是否相同 `setequal(A, B)`
+- 检验元素12是否属于集合A `is.element(12, A)`
+- 检验集合A是否包含B `all(B %in% A)`
 
 ## 概率计算函数
 如果给定一种概率分布,通常会有四类计算问题:
