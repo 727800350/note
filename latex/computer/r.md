@@ -43,6 +43,8 @@ f4() # 2; do not put '+' in the beginning, as '+1==1'
 ```
 
 # Objects
+`str(object)`: Compactly Display the Structure of an Arbitrary R Object
+
 R是一种基于对象(Object)的语言,所以你在R语言中接触到的每样东西都是一个对象,一串数值向量是一个对象,一个函数是一个对象,一个图形也是一个对象.
 基于对象的编程(OOP)就是在定义类的基础上,创建与操作对象.
 
@@ -1370,6 +1372,9 @@ All object classes which are returned by model fitting functions should provide 
 
 package doc  
 文档中的Value 部分是返回值, 可以通过$来获取, 例如
+
+`library(packagename)` 或者`library("packagename")`.  
+当var 是一个字符串变量呃时候, `library(var)` 会失败, 需要使用`library(var, character.only = TRUE)`
 
 ## K-近邻算法
 用到kknn package
