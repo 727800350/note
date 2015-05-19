@@ -36,7 +36,42 @@ shell只定义了一个非常简单的编程语言,所以,如果你的脚本程�
 最有用的调试脚本的工具是echo命令,可以随时打印有关变量或操作的信息,以帮助定位错误.
 也可使用打印最后状态($?) 命令来判断命令是否成功,这时要注意的是要在执行完要测试的命令后立即输出$?,否则$?将会改变.
 
-set 选项
+#### set 选项
+在脚本里面添加  
+
+**set -e**  
+Exit immediately if a simple command exits with a non-zero status.
+
+["set -e" 与 "set -o pipefail" ref](http://blog.sina.com.cn/s/blog_8bb0a3bd010171cp.html)
+
+**set -o pipefail**  
+对于set命令-o参数的pipefail选项,linux是这样解释的:  
+"If set, the return value of a pipeline is the value of the last (rightmost) command to exit with a  non-zero  status,
+or zero if all commands in the pipeline exit successfully.  This option is disabled by default."  
+设置了这个选项以后,包含管道命令的语句的返回值,会变成最后一个返回非零的管道命令的返回值.听起来比较绕,其实也很简单:
+
+```
+# test.sh
+set -o pipefail
+ls ./a.txt |echo "hi" >/dev/null
+echo $?
+```
+
+运行test.sh(当前不存在a.txt),输出:
+```
+ls: ./a.txt: No such file or directory
+1  # 设置了set -o pipefail,返回从右往左第一个非零返回值,即ls的返回值1
+```
+
+注释掉set -o pipefail 这一行,再次运行,输出:
+```
+ls: ./a.txt: No such file or directory
+0  # 没有set -o pipefail,默认返回最后一个管道命令的返回值
+```
+
+set -x
+
+#### 直接在运行的时候设置
 ```
 bash –n script.sh          读命令但是不执行
 bash –v script.sh          显示读取的所有的行
