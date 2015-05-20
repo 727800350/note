@@ -33,7 +33,7 @@ typing two backquotes \`\` returns you to the position where you issued the G co
 
 `[[`  跳转到代码块的开头去(但要求代码块中'{'必须单独占一行) 
 
-`''`  跳转到光标上次停靠的地方, 是两个', 而不是一个"
+`''`  跳转到光标上次停靠的地方, 是两个, 而不是一个
 
 **书签**  
 `mx`  设置书签,x 只能是 a-z 的 26 个字母  
@@ -126,6 +126,10 @@ all following characters are converted to uppercase or lowercase until the end o
 `:%s/Fortran/\U&/`
 
 # Match
+删除包含特定字符的行(全局匹配): `g/pattern/d`
+
+删除不包含指定字符的行: `v/pattern/d` 或者`g!/pattern/d`
+
 ## Replacement
 `&` is replaced by the entire text matched by the search pattern when used in a replacement  
 `:%s/Yazstremski/&,clar/`  #the result is `Yazstremski,clar`  
@@ -278,26 +282,26 @@ you will get a list of any files that the system has saved
 
 # Tools
 ## cscope
-cscope 自身带一个基于文本的用户界面，不过 gvim 提供了cscope接口
+cscope 自身带一个基于文本的用户界面,不过 gvim 提供了cscope接口
 
 	$cscope -Rbkq
 	R 表示把所有子目录里的文件也建立索引
-	b 表示cscope不启动自带的用户界面，而仅仅建立符号数据库
-	q 生成cscope.in.out和cscope.po.out文件，加快cscope的索引速度
-	k 在生成索引文件时，不搜索/usr/include目录
+	b 表示cscope不启动自带的用户界面,而仅仅建立符号数据库
+	q 生成cscope.in.out和cscope.po.out文件,加快cscope的索引速度
+	k 在生成索引文件时,不搜索/usr/include目录
 
 使用cs find 查找[3] (也可以简化写成 cs f)后面添加需要字符串类型
 
 - c: Find functions **c**alling this function//查找调用本函数的函数
 - d: Find functions calle**d** by this function //查找本函数调用的函数
-- e: Find this **e**grep pattern//查找egrep模式，相当于egrep功能，但查找速度快多了
-- f: Find this **f**ile //查找并打开文件，类似vim的find功能
-- g: Find this **g**lobal definition//查找函数、宏、枚举等定义的位置，类似ctags的功能
+- e: Find this **e**grep pattern//查找egrep模式,相当于egrep功能,但查找速度快多了
+- f: Find this **f**ile //查找并打开文件,类似vim的find功能
+- g: Find this **g**lobal definition//查找函数,宏,枚举等定义的位置,类似ctags的功能
 - i: Find files #**i**ncluding this file //查找包含本文件的文件
-- s: Find this C **s**ymbol //查找C语言符号，即查找函数名、宏、枚举值等出现的地方
+- s: Find this C **s**ymbol //查找C语言符号,即查找函数名,宏,枚举值等出现的地方
 - t: Find assignments **t**o //查找指定的字符串
 
-例如：使用cscope查找do_fork函数的定义,在vim命令行下执行 `:cs f g do_fork`
+例如:使用cscope查找do_fork函数的定义,在vim命令行下执行 `:cs f g do_fork`
 
 ## ctags
 If you're currently sitting in the directory you want to index, just run:  
