@@ -412,7 +412,8 @@ ssh "bash run.sh" & < /dev/null
 
 #### C风格的for
 
-	for (( EXP1; EXP2; EXP3 ))
+	num=100
+	for((i=0;i<=$num;i++))
 	do
 		command
 	done
@@ -423,24 +424,21 @@ ssh "bash run.sh" & < /dev/null
 	do
 		command
 	done
-	
+
+ex:
+```
+while(($i<100))	
+do
+	...
+done
+```
+
 #### 无限循环
-
-	while :
-	do
-		command
-	done
-
-或者
 
 	while true
 	do
 		command
 	done
-
-或者
-
-	for (( ; ; ))
 
 #### until
 
