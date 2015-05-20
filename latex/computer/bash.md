@@ -72,10 +72,19 @@ grep
 ```
 grep -R --include="*.c" keyword directory
 ```
-`-B num` to set how many lines before the match and `-A num` for the number of lines after the match, If you want the same amount of lines before and after you can use `-C num`, for example:
-```
-grep -B 3 -A 2 foo README.txt
-```
+
+- -l参数列出包含指定模式的文件的文件名
+- -n参数，在文件中查找指定模式并显示匹配行的行号(同时会列出文件名)
+- -v参数输出不包含指定模式的行
+- -i: 不区分大小写
+- -e 参数查找多个模式, **或**关系, 当和-v 一起使用时有疑问
+- -f 用文件指定待查找的模式
+- -c 参数计算模式匹配到的数量
+- -B: 输出匹配行的前n行
+- -A: 输出匹配行的后n行
+- -C: 相当于-B and -A
+- ^ 符号输出所有以某指定模式开头的行
+- $ 符号输出所有以指定模式结尾的行, `^$` 就表示空行
 
 pgrep  
 looks through the currently running processes and **lists the process IDs** which matches the selection criteria to stdout. All the criteria have to match.  
