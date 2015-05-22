@@ -168,10 +168,14 @@ BEGIN {
 }
 ```
 
-如果FS中指定的是多个字符组成的字符串, 那么awk会严格匹配.  
-If you change the field separator before you read the line, the change affects what you read. 
-If you change it after you read the line, it will not redefine the variables. You would not want a variable to change on you as a side-effect of another action.
-Note the field separator variable retains its value until it is explicitly changed.
+几个注意事项
+
+1. 如果分隔符是多个字符, 使用单引号或者双引号括起来, 但是如果分隔符是`.`,  不能使用括号.
+1. 当不指定分隔符时, awk 会默认使用空格或tab作为分隔符, 这时有一个好处, 就是能够处理**不同行的空白字符数目不一致的情况**.
+1. 如果FS中指定的是多个字符组成的字符串, 那么awk会严格匹配.  
+1. If you change the field separator before you read the line, the change affects what you read. 
+1. If you change it after you read the line, it will not redefine the variables. You would not want a variable to change on you as a side-effect of another action.
+1. Note the field separator variable retains its value until it is explicitly changed.
 ```
 #!/bin/awk -f
 {
