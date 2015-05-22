@@ -119,6 +119,19 @@ REM [comment]
 If ECHO is ON, the comment is displayed. Otherwise, it is ignored
 
 # Office
+## Excel
+### Count
+COUNTIF in Excel - count if not blank, greater than, duplicate or unique
+[ref](https://www.ablebits.com/office-addins-blog/2014/07/02/excel-countif-examples/)
+
+**COUNTIF not blank**  
+- `=COUNTIF(range,"*")`: counts all cells that **contain any text**, meaning that cells with dates and numbers will be treated as blank cells!
+- `=COUNTIF(range,"<>"&"")`:  universal COUNTIF formula for counting all non-blank cells(all value types - text, dates and numbers)
+
+**COUNTIF blank**  
+- `=COUNTIF(range,"<>"&"*")`:  Formula to count cells not containing any text
+- `=COUNTIF(range,"")`: Universal COUNTIF formula for blanks (all value types)
+
 ## Word
 更新域
 
