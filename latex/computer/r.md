@@ -1027,10 +1027,9 @@ replicate(n=10000,game())
 
 # 字符串str
 - 获取字符串长度:nchar()能够获取字符串的长度,它也支持字符串向量操作.注意它和length()的结果是有区别的.
-- 字符串粘合:paste()负责将若干个字符串相连结,返回成单独的字符串.其优点在于,就算有的处理对象不是字符型也能自动转为字符型.
+- 字符串连接: paste(sep=" "), 默认用空格进行连接
 - 字符串分割:strsplit()负责将字符串按照某种分割形式将其进行划分,它正是paste()的逆操作.
 - 字符串选取[: 在用strsplit之后, 得到一个字符串的list, 可以用[ 来进行选取操作
-- 字符串连接: paste(sep=" "), 默认用空格进行连接
 
 ```
 > str <- "this is a test"
@@ -1046,12 +1045,10 @@ replicate(n=10000,game())
 > r[1]
 [[1]]
 [1] "this" "is"   "a"    "test"
-> r[1,]
-Error in r[1, ] : incorrect number of dimensions
-> r[,1]
-Error in r[, 1] : incorrect number of dimensions
-> dim(r)
-NULL
+> length(r[[1]])
+[1] 4
+> r[[1]][4]
+[1] "test"
 ```
 - 字符串截取:substr()能对给定的字符串对象取出子集,其参数是子集所处的起始和终止位置.
 - 字符串替代:gsub()负责搜索字符串的特定表达式,并用新的内容加以替代.
