@@ -74,7 +74,7 @@ grep -R --include="*.c" keyword directory
 ```
 
 - -l参数列出包含指定模式的文件的文件名
-- -n参数，在文件中查找指定模式并显示匹配行的行号(同时会列出文件名)
+- -n参数,在文件中查找指定模式并显示匹配行的行号(同时会列出文件名)
 - -v参数输出不包含指定模式的行
 - -i: 不区分大小写
 - -e 参数查找多个模式, **或**关系, 当和-v 一起使用时有疑问
@@ -191,6 +191,12 @@ rsync -P --rsh=ssh home.tar 192.168.0.34:/home/home.tar
 ```
 -P: 是包含了 "–partial –progress", 部分传送和显示进度  
 -rsh=ssh 表示使用ssh协议传送数据
+
+**mail**  
+[ref](http://www.cnblogs.com/JemBai/archive/2012/01/24/2329136.html)
+```
+echo "mail content" | mail -s subject someone@mail.com
+```
 
 # File System
 iotop: i/o stats

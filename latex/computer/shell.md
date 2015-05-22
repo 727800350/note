@@ -2,6 +2,8 @@
 1. [Shell脚本编程30分钟入门](https://github.com/qinjx/30min_guides/blob/master/shell.md)
 1. [ShellProgramming](http://mprc.pku.edu.cn/mentors/training/TrainingCourses/material/ShellProgramming.HTM#\_Toc37518066)
 
+当运行一个需要很长时间才能结束的脚本时, 通过`nohup &` 让其在后台运行, 且在脚本的末尾加上 `mail`, 发送邮件通知
+
 # Introduction
 ## shell和shell脚本的概念
 shell是指一种应用程序,这个应用程序提供了一个界面,用户通过这个界面访问操作系统内核的服务.Ken Thompson的sh是第一种Unix Shell,Windows Explorer是一个典型的图形界面Shell.
