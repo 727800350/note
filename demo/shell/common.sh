@@ -9,6 +9,7 @@ function exist_e(){
 		echo "${file} does not exist."
 		return 1
 	fi
+	return 0
 }
 
 function exist_es(){
@@ -17,6 +18,7 @@ function exist_es(){
 	do
 		exist_e ${file} || return 1
 	done
+	return 0
 }
 
 function exist_f(){
@@ -26,6 +28,7 @@ function exist_f(){
 		echo "${file} does not exist."
 		return 1
 	fi
+	return 0
 }
 
 function exist_fs(){
@@ -34,6 +37,7 @@ function exist_fs(){
 	do
 		exist_f ${file} || return 1
 	done
+	return 0
 }
 
 function exist_d(){
@@ -43,6 +47,7 @@ function exist_d(){
 		echo "${dir} does not exist."
 		return 1
 	fi
+	return 0
 }
 
 function exist_ds(){
@@ -51,5 +56,6 @@ function exist_ds(){
 	do
 		exist_d ${dir} || return 1
 	done
+	return 0
 }
 
