@@ -1055,6 +1055,9 @@ replicate(n=10000,game())
 - sub()函数是类似的,但只替代第一个发现结果.
 - 字符串匹配:grep()负责搜索给定字符串对象中特定表达式 ,并返回其位置索引.
 - grepl()函数与之类似,但其后面的"l"则意味着返回的将是逻辑值.
+- tolower(): 将全部字母转换为小写
+- toupper()
+- capitalize(y): 首字母大写, 需要`library(Hmisc)`
 
 # IO
 `print(x, ...)`
