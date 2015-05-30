@@ -229,6 +229,7 @@ you will get a list of any files that the system has saved
 `$vi -r file` #to recover the file
 
 # Window
+[ref](http://www.linuxidc.com/Linux/2012-08/69363.htm)
 ## 打开多个窗口
 横向切割窗口
 
@@ -245,7 +246,17 @@ you will get a list of any files that the system has saved
 - :tabo 关闭所有窗口
 
 ## 窗口切换
-:ctrl+w+j/k,通过j/k可以上下切换,或者:ctrl+w加上下左右键,还可以通过快速双击ctrl+w依次切换窗口.
+快速双击ctrl+w依次切换窗口.
+
+由于你可以用垂直分割和水平分割命令打开任意多的窗口,你就能够任意设置窗口的布
+局.接着,你可以用下面的命令在窗口之间跳转:
+
+- CTRL-W h 跳转到左边的窗口
+- CTRL-W l 跳转到右边的窗口
+- CTRL-W j 跳转到下面的窗口
+- CTRL-W k 跳转到上面的窗口
+- CTRL-W t 跳转到最顶上的窗口
+- CTRL-W b 跳转到最底下的窗口
 
 ## 窗口大小调整
 纵向调整
@@ -304,14 +315,14 @@ cscope 自身带一个基于文本的用户界面,不过 gvim 提供了cscope接
 例如:使用cscope查找do_fork函数的定义,在vim命令行下执行 `:cs f g do_fork`
 
 ## ctags
-If you're currently sitting in the directory you want to index, just run:  
+If you are currently sitting in the directory you want to index, just run:  
 `ctags -R .`
 
 press `Ctrl + ]`, jump to the source  
 press `Ctrl + o` or `Ctrl + t` to climb back  
 `C-W C-]` - Open the definition in a horizontal split, 这个动作可以进行多次, 会产生多个窗口(`ctrl+w+j/k`,上下切换;或者`ctrl+w`加上下左右键;还可以通过快速双击`ctrl+w`依次切换窗)
 
-You can also go directly to a tag's definition by entering one of the following in vim's command mode:  
+You can also go directly to a tag definition by entering one of the following in vim command mode:  
 
 	:tag function_name
 	:ta function_name
@@ -325,7 +336,7 @@ By default vim will jump to the first result, but a number of commands can be us
 - :tp or :tprev goes to the previous tag in that list
 - :tf or :tfirst goes to the first tag of the list
 - :tl or :tlast goes to the last tag of the list
-- To show the tags you've traversed since you opened vim, run :tags.
+- To show the tags you have traversed since you opened vim, run :tags.
 
 **windows**  
 将 `E:\Program Files\ctags58` 添加到path中
