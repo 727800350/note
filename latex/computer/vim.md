@@ -270,8 +270,8 @@ you will get a list of any files that the system has saved
 横向调整
 
 - :vertical res(ize) num 指定当前窗口为num列
-- :vertical res(ize)+num 把当前窗口增加num列
-- :vertical res(ize)-num 把当前窗口减少num列
+- :vertical res(ize) +num 把当前窗口增加num列
+- :vertical res(ize) -num 把当前窗口减少num列
 
 ## 给窗口重命名
 :f file
@@ -289,7 +289,7 @@ you will get a list of any files that the system has saved
 
 ## vi与shell切换
 - :shell 可以在不关闭vi的情况下切换到shell命令行
-- :exit 从shell回到vi
+- exit 再从shell回到vi
 
 # Tools
 ## cscope
