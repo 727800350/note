@@ -26,6 +26,12 @@ path.sh
 
 脚本里没有`ll`命令, 需要使用 `ls -l`
 
+构造命令字符串, 然后执行(双引号不能丢)
+```
+$ bash -c "date"
+Wed Apr 22 19:08:12 CST 2015
+```
+
 在CentOS里,/bin/sh是一个指向/bin/bash的符号链接, Mac OS上不是
 
 # 调试
