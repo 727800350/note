@@ -59,3 +59,29 @@ function exist_ds(){
 	return 0
 }
 
+
+## check return value
+#FATAL $Msg
+function FATAL(){
+	echo "FATAL `date +"%F %T"` : $@" >&2
+	exit -1;
+}
+
+#WARNING $Msg
+function WARNING(){
+	echo "WARNING `date +"%F %T"` : $@" >&2
+}
+
+#NOTICE $Msg
+function NOTICE(){
+	echo "NOTICE `date +"%F %T"` : $@" >&2
+}
+
+#CHK_RET $LEVEL $Msg
+function CHK_RET(){
+	if [ $? -ne 0 ]
+	then
+		$@
+	fi
+}
+
