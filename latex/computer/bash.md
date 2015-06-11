@@ -560,6 +560,7 @@ rm /etc/systemd/system/default.target
 ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
 reboot
 ```
+ln -f remove existing destination files
 
 启动
 ```
