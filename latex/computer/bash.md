@@ -99,6 +99,15 @@ returns each string of printable characters in files. Its main uses are to deter
 
 uniq: 去重
 
+时间:
+```
+$ date +%Y%m%d_%H_%M_%S
+20150519_16_12_32
+
+$ date +"%F %T"
+2015-06-11 15:11:49
+```
+
 # 网络
 **ss**
 socket statistics (show apps using the Internet)
