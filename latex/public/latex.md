@@ -33,7 +33,15 @@ LaTeX command	Sample	Description
 \t{oo}	"tie" (inverted u) over the two letters
 \o		slashed o (o with stroke)
 ```
+#French Ordinal Numbers
+After having included \usepackage[frenchb]{babel}, use
+– 1\ier{}, 
+– 1\iere{} or 
+– 1\ieres{}
 
+For other ordinal numbers, use
+– \ieme{} or
+– \iemes{}
 # Math
 `$\not\in$`
 
