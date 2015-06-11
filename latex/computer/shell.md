@@ -15,6 +15,17 @@ commands
  
 {}运算符: { 命令; 命令; 命令 }
 
+目录
+```
+$ dirname /dir/path.sh
+/dir
+$ basename /dir/path.sh
+path.sh
+```
+在shell 脚本里一定要注意路径.
+
+脚本里没有`ll`命令, 需要使用 `ls -l`
+
 在CentOS里,/bin/sh是一个指向/bin/bash的符号链接, Mac OS上不是
 
 # 调试
