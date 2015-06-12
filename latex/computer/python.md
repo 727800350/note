@@ -67,6 +67,8 @@ print 'sth',
 sys.stdout.write('sth')  ## 用这个也可以达到同样的效果
 ```
 
+[从stdin 读入, 输出到stdout](../../demo/python/stdin_stdout.py)
+
 ## 重定向
 
 	import sys
