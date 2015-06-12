@@ -431,6 +431,9 @@ string.join() 的参数是一个iterable的object, 例如一个list
 在原始字符串中,\不再表示转义字符的含义
 原始字符串是为正则表达式而设计的, 但是可以用其来方便的表示windows系统下的路径
 
+# class
+[class inheritance demo](../../demo/python/school.py)
+
 # Database
 ## mysql-connector-python
 install
