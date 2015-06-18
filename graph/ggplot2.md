@@ -105,6 +105,22 @@ h + geom_smooth(aes(group = 1), size = 2, method = "lm", se = FALSE)
 [smooth group = 1 result](http://docs.ggplot2.org/current/aes_group_order-24.png)  
 把所有的subjects, 作为数据, 来拟合出一条直线
 
+## scale
+- xlim(10, 20): a continuous scale from 10 to 20
+- ylim(20, 10): a reversed continuous scale from 20 to 10
+- xlim("a", "b", "c"): a discrete scale
+- xlim(as.Date(c("2008-05-01", "2008-08-01"))): a date scale from May 1 to August 1 2008.
+
+### continuous
+scale_x_log10() is equivalent to scale_x_continuous(trans = "log10")
+
+- plot x using scale_x_log(): the axes will be labelled in the original data space, 也就是x
+- plot directory log10(x): 坐标轴是用 log10(x)进行标记的
+That produces an identical result inside the plotting region, 
+but the the axis and tick labels are not the same.
+
+### manuel
+
 ## stat
 A stat takes a dataset as input and returns a dataset as output, and so a stat can add new variables to the original dataset. 
 It is possible to map aesthetics to these new variables.  
@@ -130,6 +146,8 @@ p %+% mtcars
 
 # experssion
 Output of experssion will be formatted according to TeX-like rule
+
+`+ xlab(expression(frac(miles, gallon)))`
 
 # qplot
 ```
