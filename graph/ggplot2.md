@@ -69,9 +69,9 @@ Each layer can come from a different dataset and have a different aesthetic mapp
 # ggplot
 
 ## group
+Oxboys records the heights(height) and centered ages(age) of 26 boys(Subject), measured on nine occasions(Occasion).
 ```
 library(nlme)
-## It records the heights(height) and centered ages(age) of 26 boys(Subject), measured on nine occasions(Occasion).
 h <- ggplot(Oxboys, aes(age, height))  ## 默认的就是group = 1
 ## A single line tries to connect all the observations
 h + geom_line()
@@ -104,6 +104,20 @@ h + geom_smooth(aes(group = 1), size = 2, method = "lm", se = FALSE)
 ```
 [smooth group = 1 result](http://docs.ggplot2.org/current/aes_group_order-24.png)  
 把所有的subjects, 作为数据, 来拟合出一条直线
+
+## stat
+A stat takes a dataset as input and returns a dataset as output, and so a stat can add new variables to the original dataset. 
+It is possible to map aesthetics to these new variables.  
+For example, stat_bin, the statistic used to make histograms, produces the following variables:
+
+- count, the number of observations in each bin
+- density, the density of observations in each bin (percentage of total / bar width)
+- x, the centre of the bin
+
+```
+ggplot(diamonds, aes(carat)) + geom_histogram(aes(y = ..density..), binwidth = 0.1)
+```
+generated variables must be surrounded with ..  to prevents confusion in case the original dataset includes a variable with the same name.
 
 ## 仅仅更换数据的快捷方式
 You can replace the old dataset with `%+%`
