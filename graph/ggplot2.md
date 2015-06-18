@@ -1,6 +1,8 @@
 # R中绘图系统的介绍
 ggplot2:elegant graphics for data analysis 一书是ggplot软件包2的系统介绍,包括其语法结构的详细介绍以及绘图实例,也包括了plyr,reshape等包的强大的数据处理能力,是数据分析和统计图形的优秀著作.
 
+[online doc](http://docs.ggplot2.org/current/)
+
 R的基础图形系统基本上是一个"纸笔模型",即:一块画布摆在面前,你可以在这里画几个点,在那里画几条线,指哪儿画哪儿.
 
 后来lattice包的出现稍微改善了这种情况,你可以说,我要画散点图或直方图,并且按照某个分类变量给图中的元素上色,
@@ -21,8 +23,10 @@ Leland Wilkinson的著作在理论上改善了这种状况,他提出了一套图
 因此在ggplot2中,从一幅条形图过渡到饼图,只需要加极少量的代码,把坐标系换一下就可以了.
 如果我们用纸笔模型,则可以想象,这完全是不同的两幅图,一幅图里面要画的是矩形,另一幅图要画扇形.
 
+Without the grammer, there is no underlying theory and existing graphics packages are just a big collection of special cases.
+
 ## ggplot2 绘图概述
-一张统计图形就是从数据到几何对象(geometric object, 缩写为geom, 包括点, 线, 条形等)的图形属性(aesthetic attributes, 缩写为aes, 
+一张统计图形就是从**数据**到**几何对象**(geometric object, 缩写为geom, 包括点, 线, 条形等)的**图形属性**(aesthetic attributes, 缩写为aes, 
 包括颜色, 形状, 大小等)的一个映射.
 此外, 图形中还可能包含数据的统计变换(statistical transformation, 缩写为stats),
 最后绘制在某个特性的坐标系(coordinate system, 缩写为coord)中, 
