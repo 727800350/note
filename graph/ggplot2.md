@@ -26,8 +26,7 @@ Leland Wilkinson的著作在理论上改善了这种状况,他提出了一套图
 Without the grammer, there is no underlying theory and existing graphics packages are just a big collection of special cases.
 
 ## ggplot2 绘图概述
-一张统计图形就是从**数据**到**几何对象**(geometric object, 缩写为geom, 包括点, 线, 条形等)的**图形属性**(aesthetic attributes, 缩写为aes, 
-包括颜色, 形状, 大小等)的一个映射.
+A statistical graphic is a **mapping** from **data** to **aesthetic** attributes(colour, shape, size) of **geometric** objects(points, lines, bars)
 此外, 图形中还可能包含数据的统计变换(statistical transformation, 缩写为stats),
 最后绘制在某个特性的坐标系(coordinate system, 缩写为coord)中, 
 而分面(facet, 指将绘图窗口划分为若干个子窗口)则可以用来生成数据不同子集的图形.
@@ -36,14 +35,27 @@ Without the grammer, there is no underlying theory and existing graphics package
 - 最基础的部分是想要可视化的**数据(data)**, 以及一系列将数据中的变量对应到图形属性的**映射(mapping)**
 - **几何对象(geom)**: 代表你在图中实际看到的图形元素, 如点, 线, 多边形等
 - **统计变换(stats)**: 是对数据进行的某种汇总. 例如将数据分组计数以创建直方图, 或将一个二维的关系用线性模型来进行解释
-- **标度(scale)**: 将数据的取值映射到图形控件, 例如用颜色, 大小或形状来表示不同的取值. 展现标度的常见做法是绘制图例和坐标轴---他们实际上是图形到数据的一个映射, 使读者可以从图中读取原始的数据.
+- **标度(scale)**: 将数据的取值(values in the data space)映射到图形控件(values in an aesthetic space), 例如用颜色, 大小或形状来表示不同的取值. 展现标度的常见做法是绘制图例和坐标轴---他们实际上是图形到数据的一个映射, 使读者可以从图中读取原始的数据.
 - **坐标系(coord)**: 描述了数据是如何映射到图形所在的平面的, 它同时提供了看图所需的坐标轴和网格线. 通常使用笛卡尔坐标系, 但也用极坐标系和地图投影
 - **分面(facet)**: 描述了如何将数据分解为各个子集, 记忆如何对子集作图并联合进行展示. 分面也叫做条件作图或网格作图
+
+1. scale transformation 在 statistical transformation 之前  
+This ensures that a plot of log(x) vs. log(y) on linear scales looks the same as x vs. y on log scales.
+1. After the statistics are computed, each scale is trained on every dataset from all the layers and facets. 
+The training operation combines the ranges of the individual datasets to get the range of the complete data
+1. Finally the scales map the data values into aesthetic values producing a new dataset that can then be rendered by the geoms.
+
+Coordinate transformation 在 statistical transformation 之后
+
+A scale is a function, and its inverse, along with a set of parameters.
+The inverse function is used to draw a guide so that you can read values from the graph. 
+Guides are either axes (for position scales) or legends (for everything else).
 
 绘图有两种方式:
 
 1. 一种是一步到位, 即利用qplot
 1. 另一种是逐层叠加式, 即利用ggplot()函数和图层叠加逐步作图.
+Each layer can come from a different dataset and have a different aesthetic mapping
 
 当我们得到一个图形对象时, 可以对它进行如下处理.
 
@@ -53,6 +65,18 @@ Without the grammer, there is no underlying theory and existing graphics package
 - summary() 简单查看其结构
 - save() 把图像的缓存副本保存到磁盘; 这样可以保存图像的完整副本(包括图形中的数据), 可以调用load()来重现该图  
 `save(p, file = "plot.rdata")`
+
+# ggplot
+You can replace the old dataset with `%+%`
+```
+p <- ggplot(mtcars, aes(mpg, wt, colour = cyl)) + geom_point()
+p
+mtcars <- transform(mtcars, mpg = mpg ^ 2)
+p %+% mtcars
+```
+
+# experssion
+Output of experssion will be formatted according to TeX-like rule
 
 # qplot
 ```
