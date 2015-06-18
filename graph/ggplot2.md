@@ -76,14 +76,15 @@ h <- ggplot(Oxboys, aes(age, height))  ## 默认的就是group = 1
 ## A single line tries to connect all the observations
 h + geom_line()
 ```
-[group = 1 result](http://docs.ggplot2.org/current/aes_group_order-18.png)
+[group = 1 result](http://docs.ggplot2.org/current/aes_group_order-18.png)  
 从图中可以看到得到的线是杂乱无章的.
 
 ```
 ## The group aesthetic maps a different line for each subject
 h + geom_line(aes(group = Subject))
 ```
-[group = Sbuject result](http://docs.ggplot2.org/current/aes_group_order-20.png)
+[group = Sbuject result](http://docs.ggplot2.org/current/aes_group_order-20.png)  
+每个subject 画一条线
 
 
 ```
@@ -93,14 +94,16 @@ h <- h + geom_line(aes(group = Subject))
 # groups the data the same way for both layers
 h + geom_smooth(aes(group = Subject), method = "lm", se = FALSE)
 ```
-[smooth group = Subject result](http://docs.ggplot2.org/current/aes_group_order-22.png)
+[smooth group = Subject result](http://docs.ggplot2.org/current/aes_group_order-22.png)  
+对于每个subject, 画出来的本来就是一条线, 再对每个subject, 来进行数据拟合, 没有太大的意义.
 
 ```
 # Changing the group aesthetic for the smoother layer
 # fits a single line of best fit across all boys
 h + geom_smooth(aes(group = 1), size = 2, method = "lm", se = FALSE)
 ```
-[smooth group = 1 result](http://docs.ggplot2.org/current/aes_group_order-24.png)
+[smooth group = 1 result](http://docs.ggplot2.org/current/aes_group_order-24.png)  
+把所有的subjects, 作为数据, 来拟合出一条直线
 
 ## 仅仅更换数据的快捷方式
 You can replace the old dataset with `%+%`
