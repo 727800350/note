@@ -67,6 +67,42 @@ Each layer can come from a different dataset and have a different aesthetic mapp
 `save(p, file = "plot.rdata")`
 
 # ggplot
+
+## group
+```
+library(nlme)
+## It records the heights(height) and centered ages(age) of 26 boys(Subject), measured on nine occasions(Occasion).
+h <- ggplot(Oxboys, aes(age, height))  ## 默认的就是group = 1
+## A single line tries to connect all the observations
+h + geom_line()
+```
+[group = 1 result](http://docs.ggplot2.org/current/aes_group_order-18.png)
+从图中可以看到得到的线是杂乱无章的.
+
+```
+## The group aesthetic maps a different line for each subject
+h + geom_line(aes(group = Subject))
+```
+[group = Sbuject result](http://docs.ggplot2.org/current/aes_group_order-20.png)
+
+
+```
+# Different groups on different layers
+h <- h + geom_line(aes(group = Subject))
+# Using the group aesthetic with both geom_line() and geom_smooth()
+# groups the data the same way for both layers
+h + geom_smooth(aes(group = Subject), method = "lm", se = FALSE)
+```
+[smooth group = Subject result](http://docs.ggplot2.org/current/aes_group_order-22.png)
+
+```
+# Changing the group aesthetic for the smoother layer
+# fits a single line of best fit across all boys
+h + geom_smooth(aes(group = 1), size = 2, method = "lm", se = FALSE)
+```
+[smooth group = 1 result](http://docs.ggplot2.org/current/aes_group_order-24.png)
+
+## 仅仅更换数据的快捷方式
 You can replace the old dataset with `%+%`
 ```
 p <- ggplot(mtcars, aes(mpg, wt, colour = cyl)) + geom_point()
