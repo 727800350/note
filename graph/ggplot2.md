@@ -68,6 +68,11 @@ Each layer can come from a different dataset and have a different aesthetic mapp
 
 # ggplot
 
+## geom
+对于 geom_bar
+color 改变的只是框的颜色
+fill 才是填充色
+
 ## group
 Oxboys records the heights(height) and centered ages(age) of 26 boys(Subject), measured on nine occasions(Occasion).
 ```
@@ -106,18 +111,40 @@ h + geom_smooth(aes(group = 1), size = 2, method = "lm", se = FALSE)
 把所有的subjects, 作为数据, 来拟合出一条直线
 
 ## scale
-- xlim(10, 20): a continuous scale from 10 to 20
+### 设置边界 limits
+- xlim(10, 20): a continuous scale from 10 to 20, 为下面的简写形式
+- scale_x_continuous(limits=c(10, 20))
 - ylim(20, 10): a reversed continuous scale from 20 to 10
 - xlim("a", "b", "c"): a discrete scale
 - xlim(as.Date(c("2008-05-01", "2008-08-01"))): a date scale from May 1 to August 1 2008.
 
-### continuous
+### 设置 lab
+- xlab("x") 相当于`scale_x_continuous("x")`, 当不想显示xlab时, 需要设置为`NULL`
+- 使用expression, scale_y_continuous(expression(votes^alpha))
+
+- labs(title = "title")
+
+### 设置ticks, breaks
+- `+ scale_x_continuous(breaks=1:10)`
+- `+ scale_x_continuous(breaks=c(1,3,7,9))`
+- `+ scale_x_continuous(breaks=c(2,5,8), labels=c("two", "five", "eight"))`
+[ex](http://docs.ggplot2.org/current/scale_continuous-24.png)
+- `+ scale_x_continuous(breaks=c(2,5,8), labels=expression(Alpha, Beta, Omega))`
+
+NULL: do not display any breaks
+
+### 变换 transformation
 scale_x_log10() is equivalent to scale_x_continuous(trans = "log10")
 
 - plot x using scale_x_log(): the axes will be labelled in the original data space, 也就是x
 - plot directory log10(x): 坐标轴是用 log10(x)进行标记的
 That produces an identical result inside the plotting region, 
 but the the axis and tick labels are not the same.
+
+- `+ scale_y_log10()`
+- `+ scale_y_sqrt()`
+- `+ scale_y_reverse()`
+[ex](http://docs.ggplot2.org/current/scale_continuous-34.png)
 
 ### manuel
 
@@ -134,6 +161,16 @@ For example, stat_bin, the statistic used to make histograms, produces the follo
 ggplot(diamonds, aes(carat)) + geom_histogram(aes(y = ..density..), binwidth = 0.1)
 ```
 generated variables must be surrounded with ..  to prevents confusion in case the original dataset includes a variable with the same name.
+
+## facet and dodge
+`position = "dodge"` 画到一张图上
+`geom_bar(position="dodge")`
+
+facet 画到不同的小图上
+` + facet_wrap(~ cut)`
+[ex](http://docs.ggplot2.org/current/geom_bar-24.png)
+
+### facet_grid and facet_wrap 
 
 ## 仅仅更换数据的快捷方式
 You can replace the old dataset with `%+%`
