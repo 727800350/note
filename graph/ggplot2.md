@@ -68,10 +68,18 @@ Each layer can come from a different dataset and have a different aesthetic mapp
 
 # ggplot
 
+## aesthetic
+`unique(mtcars$cyl)` 得到 4 6 8
+
+- `ggplot(mtcars, aes(cyl))`, 那么x 就是从4 到 8
+- `ggplot(mtcars, aes(factor(cyl)))`, x 就是只有4, 6, 8三个
+
 ## geom
 对于 geom_bar
 color 改变的只是框的颜色
 fill 才是填充色
+
+geom_bar(width = 0.5)  控制宽度
 
 ## group
 Oxboys records the heights(height) and centered ages(age) of 26 boys(Subject), measured on nine occasions(Occasion).
@@ -90,7 +98,6 @@ h + geom_line(aes(group = Subject))
 ```
 [group = Sbuject result](http://docs.ggplot2.org/current/aes_group_order-20.png)  
 每个subject 画一条线
-
 
 ```
 # Different groups on different layers
@@ -244,6 +251,11 @@ facet vs dodge
 
 - `geom_bar(position="dodge")`: 画到一张图上
 - ` + facet_grid(. ~ cut)` facet 画到不同的小图上
+
+### coordinate system
+coord_flip() x 轴与y轴换着显示, 但是逻辑上x 还是原来的x, y 还是原来的y, 只是在渲染的时候改变了显示效果
+[ex](http://docs.ggplot2.org/current/geom_bar-6.png)  
+如果要对原来的x 轴进行设置, 仍然使用 scale_x_continuous 等.
 
 ## 仅仅更换数据的快捷方式
 You can replace the old dataset with `%+%`
