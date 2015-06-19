@@ -255,6 +255,9 @@ coord_flip() x 轴与y轴换着显示, 但是逻辑上x 还是原来的x, y 还�
 [ex](http://docs.ggplot2.org/current/geom_bar-6.png)  
 如果要对原来的x 轴进行设置, 仍然使用 scale_x_continuous 等.
 
+`coord_cartesian(ylim=c(1,4)) + coord_flip()`: 后面的coord_flip 会冲掉前面设置的ylim, 因为coord_cartesian and coord_flip are actually the same sort of thing, 
+需要将ylim 直接设置在coord_flip 里面`coord_flip(ylim=c(1,4))`
+
 ## 仅仅更换数据的快捷方式
 You can replace the old dataset with `%+%`
 ```
