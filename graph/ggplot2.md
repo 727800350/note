@@ -1,6 +1,8 @@
 # R中绘图系统的介绍
 ggplot2:elegant graphics for data analysis 一书是ggplot软件包2的系统介绍,包括其语法结构的详细介绍以及绘图实例,也包括了plyr,reshape等包的强大的数据处理能力,是数据分析和统计图形的优秀著作.
 
+[online doc](http://docs.ggplot2.org/current/)
+
 R的基础图形系统基本上是一个"纸笔模型",即:一块画布摆在面前,你可以在这里画几个点,在那里画几条线,指哪儿画哪儿.
 
 后来lattice包的出现稍微改善了这种情况,你可以说,我要画散点图或直方图,并且按照某个分类变量给图中的元素上色,
@@ -21,9 +23,10 @@ Leland Wilkinson的著作在理论上改善了这种状况,他提出了一套图
 因此在ggplot2中,从一幅条形图过渡到饼图,只需要加极少量的代码,把坐标系换一下就可以了.
 如果我们用纸笔模型,则可以想象,这完全是不同的两幅图,一幅图里面要画的是矩形,另一幅图要画扇形.
 
+Without the grammer, there is no underlying theory and existing graphics packages are just a big collection of special cases.
+
 ## ggplot2 绘图概述
-一张统计图形就是从数据到几何对象(geometric object, 缩写为geom, 包括点, 线, 条形等)的图形属性(aesthetic attributes, 缩写为aes, 
-包括颜色, 形状, 大小等)的一个映射.
+A statistical graphic is a **mapping** from **data** to **aesthetic** attributes(colour, shape, size) of **geometric** objects(points, lines, bars)
 此外, 图形中还可能包含数据的统计变换(statistical transformation, 缩写为stats),
 最后绘制在某个特性的坐标系(coordinate system, 缩写为coord)中, 
 而分面(facet, 指将绘图窗口划分为若干个子窗口)则可以用来生成数据不同子集的图形.
@@ -32,14 +35,27 @@ Leland Wilkinson的著作在理论上改善了这种状况,他提出了一套图
 - 最基础的部分是想要可视化的**数据(data)**, 以及一系列将数据中的变量对应到图形属性的**映射(mapping)**
 - **几何对象(geom)**: 代表你在图中实际看到的图形元素, 如点, 线, 多边形等
 - **统计变换(stats)**: 是对数据进行的某种汇总. 例如将数据分组计数以创建直方图, 或将一个二维的关系用线性模型来进行解释
-- **标度(scale)**: 将数据的取值映射到图形控件, 例如用颜色, 大小或形状来表示不同的取值. 展现标度的常见做法是绘制图例和坐标轴---他们实际上是图形到数据的一个映射, 使读者可以从图中读取原始的数据.
+- **标度(scale)**: 将数据的取值(values in the data space)映射到图形控件(values in an aesthetic space), 例如用颜色, 大小或形状来表示不同的取值. 展现标度的常见做法是绘制图例和坐标轴---他们实际上是图形到数据的一个映射, 使读者可以从图中读取原始的数据.
 - **坐标系(coord)**: 描述了数据是如何映射到图形所在的平面的, 它同时提供了看图所需的坐标轴和网格线. 通常使用笛卡尔坐标系, 但也用极坐标系和地图投影
 - **分面(facet)**: 描述了如何将数据分解为各个子集, 记忆如何对子集作图并联合进行展示. 分面也叫做条件作图或网格作图
+
+1. scale transformation 在 statistical transformation 之前  
+This ensures that a plot of log(x) vs. log(y) on linear scales looks the same as x vs. y on log scales.
+1. After the statistics are computed, each scale is trained on every dataset from all the layers and facets. 
+The training operation combines the ranges of the individual datasets to get the range of the complete data
+1. Finally the scales map the data values into aesthetic values producing a new dataset that can then be rendered by the geoms.
+
+Coordinate transformation 在 statistical transformation 之后
+
+A scale is a function, and its inverse, along with a set of parameters.
+The inverse function is used to draw a guide so that you can read values from the graph. 
+Guides are either axes (for position scales) or legends (for everything else).
 
 绘图有两种方式:
 
 1. 一种是一步到位, 即利用qplot
 1. 另一种是逐层叠加式, 即利用ggplot()函数和图层叠加逐步作图.
+Each layer can come from a different dataset and have a different aesthetic mapping
 
 当我们得到一个图形对象时, 可以对它进行如下处理.
 
@@ -49,6 +65,89 @@ Leland Wilkinson的著作在理论上改善了这种状况,他提出了一套图
 - summary() 简单查看其结构
 - save() 把图像的缓存副本保存到磁盘; 这样可以保存图像的完整副本(包括图形中的数据), 可以调用load()来重现该图  
 `save(p, file = "plot.rdata")`
+
+# ggplot
+
+## group
+Oxboys records the heights(height) and centered ages(age) of 26 boys(Subject), measured on nine occasions(Occasion).
+```
+library(nlme)
+h <- ggplot(Oxboys, aes(age, height))  ## 默认的就是group = 1
+## A single line tries to connect all the observations
+h + geom_line()
+```
+[group = 1 result](http://docs.ggplot2.org/current/aes_group_order-18.png)  
+从图中可以看到得到的线是杂乱无章的.
+
+```
+## The group aesthetic maps a different line for each subject
+h + geom_line(aes(group = Subject))
+```
+[group = Sbuject result](http://docs.ggplot2.org/current/aes_group_order-20.png)  
+每个subject 画一条线
+
+
+```
+# Different groups on different layers
+h <- h + geom_line(aes(group = Subject))
+# Using the group aesthetic with both geom_line() and geom_smooth()
+# groups the data the same way for both layers
+h + geom_smooth(aes(group = Subject), method = "lm", se = FALSE)
+```
+[smooth group = Subject result](http://docs.ggplot2.org/current/aes_group_order-22.png)  
+对于每个subject, 画出来的本来就是一条线, 再对每个subject, 来进行数据拟合, 没有太大的意义.
+
+```
+# Changing the group aesthetic for the smoother layer
+# fits a single line of best fit across all boys
+h + geom_smooth(aes(group = 1), size = 2, method = "lm", se = FALSE)
+```
+[smooth group = 1 result](http://docs.ggplot2.org/current/aes_group_order-24.png)  
+把所有的subjects, 作为数据, 来拟合出一条直线
+
+## scale
+- xlim(10, 20): a continuous scale from 10 to 20
+- ylim(20, 10): a reversed continuous scale from 20 to 10
+- xlim("a", "b", "c"): a discrete scale
+- xlim(as.Date(c("2008-05-01", "2008-08-01"))): a date scale from May 1 to August 1 2008.
+
+### continuous
+scale_x_log10() is equivalent to scale_x_continuous(trans = "log10")
+
+- plot x using scale_x_log(): the axes will be labelled in the original data space, 也就是x
+- plot directory log10(x): 坐标轴是用 log10(x)进行标记的
+That produces an identical result inside the plotting region, 
+but the the axis and tick labels are not the same.
+
+### manuel
+
+## stat
+A stat takes a dataset as input and returns a dataset as output, and so a stat can add new variables to the original dataset. 
+It is possible to map aesthetics to these new variables.  
+For example, stat_bin, the statistic used to make histograms, produces the following variables:
+
+- count, the number of observations in each bin
+- density, the density of observations in each bin (percentage of total / bar width)
+- x, the centre of the bin
+
+```
+ggplot(diamonds, aes(carat)) + geom_histogram(aes(y = ..density..), binwidth = 0.1)
+```
+generated variables must be surrounded with ..  to prevents confusion in case the original dataset includes a variable with the same name.
+
+## 仅仅更换数据的快捷方式
+You can replace the old dataset with `%+%`
+```
+p <- ggplot(mtcars, aes(mpg, wt, colour = cyl)) + geom_point()
+p
+mtcars <- transform(mtcars, mpg = mpg ^ 2)
+p %+% mtcars
+```
+
+# experssion
+Output of experssion will be formatted according to TeX-like rule
+
+`+ xlab(expression(frac(miles, gallon)))`
 
 # qplot
 ```
