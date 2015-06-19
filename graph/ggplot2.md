@@ -186,15 +186,64 @@ ggplot(diamonds, aes(carat)) + geom_histogram(aes(y = ..density..), binwidth = 0
 ```
 generated variables must be surrounded with ..  to prevents confusion in case the original dataset includes a variable with the same name.
 
-## facet and dodge
-`position = "dodge"` 画到一张图上
-`geom_bar(position="dodge")`
+## position
+### facet
+[facet grid ref](http://docs.ggplot2.org/current/facet_grid.html)
 
-facet 画到不同的小图上
-` + facet_wrap(~ cut)`
-[ex](http://docs.ggplot2.org/current/geom_bar-24.png)
+- facet_grid( . ~ .), 默认的, 不用facet
+- facet_grid( . ~ a), 单行多列
+- facet_grid( b ~ .): 多行单列
+- facet_grid( a ~ b): 多行多列的矩阵
+- facet_grid( . ~ a + b) 或者 facet_grid( a + b ~ .): multiple variable in the rows or columns(or both), 有点像 facet_grid( a ~ b)的一维排列效果. 
+[. ~ a+b ex](http://docs.ggplot2.org/current/facet_grid-14.png)
+[a+b ~. ex](http://docs.ggplot2.org/current/facet_grid-16.png)
 
-### facet_grid and facet_wrap 
+In contingency table, it is often usefull to display marginal totals(totals over a row or column), 在facet_grid 中同样适用  
+三种方式
+
+1. margins = TRUE: all margins[ex](http://docs.ggplot2.org/current/facet_grid-10.png)
+1. list the names of variables that you want margins for, eg: margins = c("sex", "age")
+1. grand_row, grand_col
+
+**facet_grid and facet_wrap**
+
+- facet_grid produces a 2d grid of panels, 严格的矩阵样式, 即使有的grid 是空的, 也会显示出来.
+- facet_warp( ~ a) or facet_wrap(a ~ b) 产生的是一个1d 的panels, 但是系统会为了节约纸张, 会自己在合适的位置进行换行, 也就是会产生一个2d. 但是不显示没有内容的grid.
+注意, 第一个没有那一点
+
+If you have a single variable with many levels and want to arrange the plots in a more space efficient manner, 那么就应当适用facet_wrap.
+如果使用facet_grid, 那么plots 会很长, 而不便于在纸上显示出来.
+
+For both types of faceting you can control whether the position scales are the same in all panels (fixed) or allowed to vary between panels (free). 
+
+- scales = "fixed": x and y scales are fixed across all panels.
+- scales = "free": x and y scales vary across panels.
+- scales = "free_x": the x scale is free, and the y scale is fixed.
+- scales = "free_y": the y scale is free, and the x scale is fixed
+
+```
+mt <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) + geom_point()
+mt + facet_grid(. ~ cyl, scales = "free")
+```
+[scale free ex](http://docs.ggplot2.org/current/facet_grid-27.png)
+从图中可以看到, 4, 6, 8 个grid 的横坐标的标度都不一样, 这就是scale 为 free 的效果.
+
+除了可以对scales 设置为free 外, 还可以对space 设置为free(不同的grid 占用不同的面积)
+```
+mt + facet_grid(. ~ cyl, scales = "free", space = "free")
+```
+[space free ex](http://docs.ggplot2.org/current/facet_grid-29.png)
+
+### dodge
+```
+ggplot(mtcars, aes(x=factor(cyl), fill=factor(vs))) + geom_bar(position="dodge")
+```
+或者采用position_dodge的方式: `position = position_dodge(width = 0.9)`
+
+facet vs dodge
+
+- `geom_bar(position="dodge")`: 画到一张图上
+- ` + facet_grid(. ~ cut)` facet 画到不同的小图上
 
 ## 仅仅更换数据的快捷方式
 You can replace the old dataset with `%+%`
