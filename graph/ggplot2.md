@@ -111,6 +111,18 @@ h + geom_smooth(aes(group = 1), size = 2, method = "lm", se = FALSE)
 把所有的subjects, 作为数据, 来拟合出一条直线
 
 ## scale
+格式为: `scale_element_option`
+
+- element 可以为x,y 与 color, fill, size, shape, linetype, alpha
+- option 可以为 continuous, discrete, manual 等
+
+eg:
+```
+scale_x_continuous
+scale_x_discrete
+scale_colour_manual(..., values)
+```
+
 ### 设置边界 limits
 - xlim(10, 20): a continuous scale from 10 to 20, 为下面的简写形式
 - scale_x_continuous(limits=c(10, 20))
@@ -147,6 +159,18 @@ but the the axis and tick labels are not the same.
 [ex](http://docs.ggplot2.org/current/scale_continuous-34.png)
 
 ### manuel
+```
+p <- qplot(mpg, wt, data = mtcars, colour = factor(cyl))
+cols <- c("8" = "red","4" = "blue","6" = "darkgreen", "10" = "orange")
+p + scale_colour_manual(values = cols, breaks = c("4", "6", "8"), labels = c("four", "six", "eight"))
+```
+[figure](http://docs.ggplot2.org/current/scale_manual-14.png)
+
+```
+# And limits to control the possible values of the scale
+ p + scale_colour_manual(values = cols, limits = c("4", "8"))
+```
+[figure](http://docs.ggplot2.org/current/scale_manual-16.png)
 
 ## stat
 A stat takes a dataset as input and returns a dataset as output, and so a stat can add new variables to the original dataset. 
