@@ -66,22 +66,20 @@ Each layer can come from a different dataset and have a different aesthetic mapp
 - save() 把图像的缓存副本保存到磁盘; 这样可以保存图像的完整副本(包括图形中的数据), 可以调用load()来重现该图  
 `save(p, file = "plot.rdata")`
 
-# ggplot
-
-## aesthetic
+# aesthetic
 `unique(mtcars$cyl)` 得到 4 6 8
 
 - `ggplot(mtcars, aes(cyl))`, 那么x 就是从4 到 8
 - `ggplot(mtcars, aes(factor(cyl)))`, x 就是只有4, 6, 8三个
 
-## geom
+# geom
 对于 geom_bar
 color 改变的只是框的颜色
 fill 才是填充色
 
 geom_bar(width = 0.5)  控制宽度
 
-## group
+# group
 Oxboys records the heights(height) and centered ages(age) of 26 boys(Subject), measured on nine occasions(Occasion).
 ```
 library(nlme)
@@ -117,7 +115,7 @@ h + geom_smooth(aes(group = 1), size = 2, method = "lm", se = FALSE)
 [smooth group = 1 result](http://docs.ggplot2.org/current/aes_group_order-24.png)  
 把所有的subjects, 作为数据, 来拟合出一条直线
 
-## scale
+# scale
 格式为: `scale_element_option`
 
 - element 可以为x,y 与 color, fill, size, shape, linetype, alpha
@@ -130,20 +128,20 @@ scale_x_discrete
 scale_colour_manual(..., values)
 ```
 
-### 设置边界 limits
+## 设置边界 limits
 - xlim(10, 20): a continuous scale from 10 to 20, 为下面的简写形式
 - scale_x_continuous(limits=c(10, 20))
 - ylim(20, 10): a reversed continuous scale from 20 to 10
 - xlim("a", "b", "c"): a discrete scale
 - xlim(as.Date(c("2008-05-01", "2008-08-01"))): a date scale from May 1 to August 1 2008.
 
-### 设置 lab
+## 设置 lab
 - xlab("x") 相当于`scale_x_continuous("x")`, 当不想显示xlab时, 需要设置为`NULL`
 - 使用expression, scale_y_continuous(expression(votes^alpha))
 
 - labs(title = "title")
 
-### 设置ticks, breaks
+## 设置ticks, breaks
 - `+ scale_x_continuous(breaks=1:10)`
 - `+ scale_x_continuous(breaks=c(1,3,7,9))`
 - `+ scale_x_continuous(breaks=c(2,5,8), labels=c("two", "five", "eight"))`
@@ -152,7 +150,7 @@ scale_colour_manual(..., values)
 
 NULL: do not display any breaks
 
-### 变换 transformation
+## 变换 transformation
 scale_x_log10() is equivalent to scale_x_continuous(trans = "log10")
 
 - plot x using scale_x_log(): the axes will be labelled in the original data space, 也就是x
@@ -165,7 +163,7 @@ but the the axis and tick labels are not the same.
 - `+ scale_y_reverse()`
 [ex](http://docs.ggplot2.org/current/scale_continuous-34.png)
 
-### manuel
+## manuel
 ```
 p <- qplot(mpg, wt, data = mtcars, colour = factor(cyl))
 cols <- c("8" = "red","4" = "blue","6" = "darkgreen", "10" = "orange")
@@ -179,7 +177,7 @@ p + scale_colour_manual(values = cols, breaks = c("4", "6", "8"), labels = c("fo
 ```
 [figure](http://docs.ggplot2.org/current/scale_manual-16.png)
 
-## stat
+# stat
 A stat takes a dataset as input and returns a dataset as output, and so a stat can add new variables to the original dataset. 
 It is possible to map aesthetics to these new variables.  
 For example, stat_bin, the statistic used to make histograms, produces the following variables:
@@ -193,8 +191,8 @@ ggplot(diamonds, aes(carat)) + geom_histogram(aes(y = ..density..), binwidth = 0
 ```
 generated variables must be surrounded with ..  to prevents confusion in case the original dataset includes a variable with the same name.
 
-## position
-### facet
+# position
+## facet
 [facet grid ref](http://docs.ggplot2.org/current/facet_grid.html)
 
 - facet_grid( . ~ .), 默认的, 不用facet
@@ -241,7 +239,7 @@ mt + facet_grid(. ~ cyl, scales = "free", space = "free")
 ```
 [space free ex](http://docs.ggplot2.org/current/facet_grid-29.png)
 
-### dodge
+## dodge
 ```
 ggplot(mtcars, aes(x=factor(cyl), fill=factor(vs))) + geom_bar(position="dodge")
 ```
@@ -252,7 +250,7 @@ facet vs dodge
 - `geom_bar(position="dodge")`: 画到一张图上
 - ` + facet_grid(. ~ cut)` facet 画到不同的小图上
 
-### coordinate system
+## coordinate system
 coord_flip() x 轴与y轴换着显示, 但是逻辑上x 还是原来的x, y 还是原来的y, 只是在渲染的时候改变了显示效果
 [ex](http://docs.ggplot2.org/current/geom_bar-6.png)  
 如果要对原来的x 轴进行设置, 仍然使用 scale_x_continuous 等.
@@ -266,7 +264,15 @@ mtcars <- transform(mtcars, mpg = mpg ^ 2)
 p %+% mtcars
 ```
 
+# annotate
+[annotate](http://docs.ggplot2.org/current/annotate.html)
+
+p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point()
+p + annotate("text", x = 4, y = 25, label = "Some text")
+
 # experssion
+`?plotmath`
+
 Output of experssion will be formatted according to TeX-like rule
 
 `+ xlab(expression(frac(miles, gallon)))`
@@ -323,8 +329,6 @@ Character vectors specifying the title and subtitle
 If the text argument to one of the text-drawing functions (text, mtext, axis, legend) in R is an expression, 
 the argument is interpreted as a mathematical expression and the output will be formatted according to TeX-like rules. 
 Expressions can also be used for titles, subtitles and x- and y-axis labels (but not for axis labels on persp plots).
-
-`?plotmath`
 
 **method, formula**  
 在图中添加平滑曲线
@@ -458,27 +462,6 @@ year <- function(x){as.POSIXlt(x)$year + 1900}
 qplot(unemploy / pop, uempmed, data = economics, geom = c("path"), color = year(date))
 ```
 
-## 分面
-将数据分隔为若干个子集, 然后创建一个图形的矩阵, 将每一个子集绘制到图形矩阵的窗格中.
-所有图形子集采用相同的图形类型, 并进行了一定的设计, 使得他们之间更方面的进行比较.
-
-`row_var ~ col_var`: 行变量 列变量  
-如果想指定一行或一列, 可以使用 . 作为占位符, 
-例如 `row_var ~ .` 表示一个单列多行的图形矩阵
-例如 `. ~ col_var` 表示一个单行多列的图形矩阵
-
-```
-qplot(carat, data = diamonds, facets = color ~ ., geom = "histogram", binwidth = 0.1, xlim = c(0,3))
-```
-![facet](http://i.imgbox.com/Cdcs8zUF.png)
-
-`.. density ..` 是一个新的语法, 将密度而不是频数映射到y 轴
-```
-qplot(carat,..density.., data = diamonds, facets = color ~ ., geom = "histogram", binwidth = 0.1, xlim = c(0,3))
-```
-![facet density](http://i.imgbox.com/XneB5Y95.png)
-
-
 ## 将多图绘制到一页
 ggplot2在生成一页多图方面,有个facet,分面的命令,可以自动根据分组,每组对应一幅图出来.
 但是,如果是不同类型的图,想拼到一起,就比较麻烦了.
@@ -524,138 +507,3 @@ p <- p + theme_bw()
 p <- p + theme(axis.title=element_text(face="bold.italic", size="12", color="brown"), legend.position="top")
 ```
 
-# 用图层构建图像
-qplot()的局限性在于它只能用一个数据集合一组图形属性映射, 解决这个问题的办法就是利用图层.
-每个图层可以有自己的数据集合图形属性映射, 附加的数据元素可通过图层添加到图形中.
-
-一个图层的由5 个部分组成:
-
-1. 数据, 必须是一个data frame, 在绘图结束后可以被修改
-1. 一组图形属性映射
-1. 几何对象
-1. 统计变换
-1. 位置调整, 通过调整元素位置来避免图形重合
-
-## 创建绘图对象
-参数**映射**的设定方法与前面讲过的qplot()非常相似, 只需要将图形属性和变量名放到函数`aes()`里面即可. 例如
-```
-## 设定一组默认参数, x 为 carat, y 为price, color 为 cut
-p <- ggplot(diamonds, aes(carat, price, color = cut))
-```
-这个图形在加上图层之前无法显示, 因此现在什么也看不到
-
-## 图层
-最简易的图层莫过于指设定一个几何对象
-```
-p <- p + layer(geom = "point")
-```
-现在可以显示, 得到一个散点图
-
-该图层使用了默认的数据集合图形属性映射, 并且只使用了另外两个可选参数的默认值: 统计变换和位置调整.
-
-图层的完整形式
-```
-layer(geom, geom_params, stat, stat_params, data, mapping, position)
-```
-
-组距为2, 红色的直方图
-```
-p <- p + layer(
-geom = "bar",
-geom_params = list(fill = "red"),
-stat = "bin",
-stat_params = list(binwidth = 2)
-)
-p
-```
-
-`geom_histogram(binwidth = 2, fill = "red")` 生成与上面完全一样的图层.  
-这就是快捷函数, 因为**每一个几何对象都对应着一个默认的统计变换和位置参数, 而每一个统计变换都对应着一个默认的几何对象参数**, 所以对于一个图层, 
-我们只需要设定stat或geom 参数即可.
-
-# 工具箱
-## 基本图形类型
-数据准备
-```
-df <- data.frame(x = c(3,1,5), y = c(2,4,6), label = c("a", "b", "c"))
-df
-##   x y label
-## 1 3 2     a
-## 2 1 4     b
-## 3 5 6     c
-p <- ggplot(df, aes(x,y)) + xlab(NULL) + ylab(NULL)
-```
-散点图
-```
-p + geom_point() + labs(title = "geom point")
-```
-
-条形图
-```
-p + geom_bar(stat="identity") + labs(title = "geom_bar(stat=\"identity\")")
-```
-![bar identity](http://i.imgbox.com/K7asxCBB.png)
-
-```
-p + geom_bar() + labs(title = "geom_bar()")
-Error : Mapping a variable to y and also using stat="bin".
-  With stat="bin", it will attempt to set the y value to the count of cases in each group.
-  This can result in unexpected behavior and will not be allowed in a future version of ggplot2.
-  If you want y to represent counts of cases, use stat="bin" and don't map a variable to y.
-  If you want y to represent values in the data, use stat="identity".
-  See ?geom_bar for examples. (Defunct; last used in version 0.9.2)
-q <- ggplot(df, aes(x)) + xlab(NULL) + ylab(NULL)
-q + geom_bar(stat="bin") + labs(title = "geom_bar(stat=\"bin\")")
-```
-![bar bin](http://i.imgbox.com/TgdZDMiu.png)
-
-线条图
-```
-p + geom_line() + labs(title = "geom_line")
-```
-从图中可以明显的看出线条是由图中的点从左到右进行连接的
-![line](http://i.imgbox.com/7pdUnV34.png)
-
-路径图
-```
-p + geom_path() + labs(title = "geom_path")
-```
-![path](http://i.imgbox.com/3PIbjRQw.png)
-从图中可以明显的看出路径是按照点在df 中出现的顺序进行连接的
-
-面积图
-```
-p + geom_area() + labs(title = "geom_area")
-```
-![area](http://i.imgbox.com/zvZNiVIy.png)
-
-含标签的散点图  
-可以通过图形属性angle 控制文本的旋转
-```
-p + geom_text(aes(label = label)) + labs(title = "geom_text")
-```
-![text](http://i.imgbox.com/t9QdlbNq.png)
-
-多边形图  
-绘制填充后的路径
-```
-p + geom_polygon() + labs(title = "geom_polygon")
-```
-![polygon](http://i.imgbox.com/LGxs2xwr.png)
-
-瓦片图  
-用来绘制色深图(image plot)或水平图(level plot).
-```
-p + geom_tile() + labs(title = "geom_tile")
-```
-![tile](http://i.imgbox.com/NFiHgXve.png)
-
-## 展示数据分布
-基本的数据: `depth_dist <- ggplot(diamonds, aes(depth))`
-加上直方图几何对象: `depth_dist + geom_histogram()`[figure](http://imgbox.com/n8oJgh17)  
-设置组距: `depth_dist + geom_histogram(binwidth = 0.1)`[figure](http://imgbox.com/8LmIEbI5)  
-放大细节: `depth_dist + geom_histogram(binwidth = 0.1) + scale_x_continuous(limits = c(55,70))`[figure](http://imgbox.com/0k1c4LIv)  
-设置标题: `depth_dist + geom_histogram(binwidth = 0.1) + scale_x_continuous(limits = c(55,70)) + labs(title = "histogram of depth with binwidth = 0.1")`[figure](http://imgbox.com/bXEJHgP3)  
-应用分面: `depth_dist + geom_histogram(binwidth = 0.1) + scale_x_continuous(limits = c(55,70)) + labs(title = "histogram of depth with binwidth = 0.1") + facet_grid(cut ~ .)`[figure](http://imgbox.com/awV1nNWM)  
-
-## 处理遮盖
