@@ -1,4 +1,0 @@
-service zabbix_agentd stop
-service zabbix_server stop
-service httpd stop
-service mysqld stop
