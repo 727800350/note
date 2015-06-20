@@ -2,59 +2,7 @@
 ## install software for new os
 set -x
 
-os=`cat /etc/issue | awk '{print $1}'`
-version=`cat /etc/issue | awk '{print $3}'`
-
-function installer(){
-	for soft in $@
-	do
-		## check
-		r=`yum list installed | grep ${soft}`
-
-		## install
-## 		sudo yum install -y ${soft}
-	done
-}
-
-function remove(){
-	for soft in $@
-	do
-		## check
-		r=`yum list installed | grep ${soft}`
-
-		## install
-## 		sudo yum install -y ${soft}
-	done
-}
-
-function update(){
-	for soft in $@
-	do
-		## check
-		r=`yum list installed | grep ${soft}`
-
-		## install
-## 		sudo yum install -y ${soft}
-	done
-}
-
-if [ ${os} = "CentOS"]
-then
-		if [ ${version} = "7" ]
-		then
-			sudo yum-config-manager --add-repo=https://copr.fedoraproject.org/coprs/mosquito/myrepo/repo/epel-7/mosquito-myrepo-epel-7.repo
-			## 默认的Centos 7不带能够播放MP3和视频文件的解码器支持, 默认repo和后来自己加的源都不带, 需要nux-desktop repo, 先把epel 的repo弄好
-			sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-1.el7.nux.noarch.rpm
-		fi
-fi
-
-## 如果系统中自带是vim是vim-minimal, 而不是vim
-## vi 默认是vi-minimal
-## 直接安装vim-enhanced 会提示和vi-minimal 冲突
-## 需要先卸载掉vi-minimal, 但是vi-minimal 又是cvs和sudo 的依赖项, 所以在安装完vim-enhanced, 再安装cvs, sudo的时候又会把vi-minimal 安装回来
-remove vim-minimal
-installer sudo ## visudo
-installer vim
+source ./common.env
 
 ## text convertion between windows and linux
 installer unix2dos dos2unix
@@ -120,31 +68,42 @@ installer PhpMyAdmin
 ## php data file in /usr/share/phpMyAdmin
 ## 访问权限的设置在/etc/httpd/conf.d/phpMyAdmin.conf
 ## Apache 2.4+ uses "Require all granted" instead of "Allow from all"
-## 为了让局域网内的其他机器能够访问网站, 将防火墙关闭掉, 
-if [ ${os} = "Fedora" ]
+## 为了让局域网内的其他机器能够访问网站, 将防火墙关闭掉
+if [ ${type} = "server" ]
 then
-	sudo service firewalld stop
-	sudo setenforce 0
-elif [ ${os} = "CentOS" ]
-then
-	sudo service iptables stop
-	sudo setenforce 0 #enforce 的默认值在/etc/selinux/config, permissive = 0, enforcing = 1
-else
-	echo "${os} not supported"
+	if [ ${os} = "fedora" ]
+	then
+		sudo service firewalld stop
+		sudo setenforce 0
+	elif [ ${os} = "centos" ]
+	then
+		sudo service iptables stop
+		sudo setenforce 0 #enforce 的默认值在/etc/selinux/config, permissive = 0, enforcing = 1
+	else
+		echo "${os} not supported"
+	fi
 fi
 ## 当在/var/www/html/ 中创建了一个指向 /home/eric 的symlink, 可能在浏览器中访问时, 提示权限问题
 ## Apache 需要这个目录以及上级目录的rx权限
 
 ## project
 installer libpcap libpcap-devel
+
 installer wireshark ## no gui
-installer wireshark-gnome
+if [ ${type} = "desktop" ]
+then
+	installer wireshark-gnome
+fi
+
 ## Berkeley Internet Name Domain (BIND) DNS (Domain Name System)
 installer bind 
+
 ## Network exploration tool and security scanner
 installer nmap 
+
 ## A whois client that accepts both traditional and finger-style queries
 installer jwhois 
+
 ## ntopng prerequisite
 installer libxml2-devel sqlite-devel
 
@@ -227,13 +186,6 @@ then
 	rm flash-plugin-11.2.202.425-release.x86_64.rpm
 fi
 
-## wiznote
-sudo yum-config-manager --add-repo=https://copr.fedoraproject.org/coprs/mosquito/myrepo/repo/epel-$(rpm -E %?rhel)/mosquito-myrepo-epel-$(rpm -E %?rhel).repo 
-sudo yum install epel-release 
-sudo yum localinstall \
-		http://li.nux.ro/download/nux/dextop/el$(rpm -E %rhel)/x86_64/nux-dextop-release-0-2.el$(rpm -E %rhel).nux.noarch.rpm \
-		http://download1.rpmfusion.org/nonfree/el/updates/$(rpm -E %rhel)/x86_64/rpmfusion-nonfree-release-$(rpm -E %rhel)-1.noarch.rpm \
-		http://download1.rpmfusion.org/free/el/updates/$(rpm -E %rhel)/x86_64/rpmfusion-free-release-$(rpm -E %rhel)-1.noarch.rpm 
 installer wiznote      # Stable version  
 
 installer gstreamer gstreamer-plugins-base gstreamer-plugins-good gstreamer-plugins-bad-free
@@ -255,5 +207,5 @@ COM
 
 ## markdown
 wget http://www.vim.org/scripts/download_script.php?src_id=15150 markdown
-## open vim and execute :source markdown
+echo "plean open vim and execute :source markdown"
 
