@@ -6,7 +6,7 @@ function exist_e(){
 	file=$1
 	if [ ! -e ${file} ]
 	then
-		echo "${file} does not exist."
+		echo "${file} does not exist." >&2
 		return 1
 	fi
 	return 0
@@ -25,7 +25,7 @@ function exist_f(){
 	file=$1
 	if [ ! -f ${file} ]
 	then
-		echo "${file} does not exist."
+		echo "${file} does not exist." >&2
 		return 1
 	fi
 	return 0
@@ -44,7 +44,7 @@ function exist_d(){
 	dir=$1
 	if [ ! -d ${dir} ]
 	then
-		echo "${dir} does not exist."
+		echo "${dir} does not exist." >&2
 		return 1
 	fi
 	return 0
