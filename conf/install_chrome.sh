@@ -1,19 +1,20 @@
 #! /bin/bash
 
 # Google Chrome Installer/Uninstaller for RHEL/CentOS 6 or 7
-# (C) Richard K. Lloyd 2014 <rklloyd@gmail.com>
+# (C) Richard K. Lloyd 2015 <rklloyd@gmail.com>
 # See http://chrome.richardlloyd.org.uk/ for further details.
 
 # This script is in the public domain and has no warranty.
 # It needs to be run as root because it installs/uninstalls RPMs.
 
 # Minimum system requirements:
-# - 32-bit or 64-bit RHEL/CentOS 6.5 or later (you will be asked to
-#   upgrade the OS and reboot if you're running 6.4 or earlier) or
-#   any 64-bit RHEL/CentOS 7 version (including pre-releases)
+# - 32-bit or 64-bit RHEL/CentOS 6.6 or later
+#   (any 64-bit RHEL/CentOS 7 version is supported)
+# - Minimum RHEL/CentOS 6 kernel version supported is 2.6.32-431.el6
+#   (any RHEL/CentOS 7 kernel version is supported)
 # - At least 250MB free in each of the temporary directory, /opt and /root
 # - A working yum system (including http proxy configured if needed)
-# - http_proxy env var set if you are using an http proxy
+# - http_proxy and https_proxy env vars set if you are using an http proxy
 # - Google Chrome should not be running at the same time as this script
 
 show_syntax()
@@ -46,42 +47,100 @@ Syntax: ./install_chrome.sh [-b] [-d] [-f [-f [-f]]] [-h] [-n] [-q] [-s]
 }
 
 # Current version of this script
-version="6.10"
+version="7.20"
 
 # This script will download/install the following for an installation:
 
 # These RHEL/CentOS 6 RPMs and their (many!) deps that aren't already installed:
-# redhat-lsb, wget, xdg-utils, GConf2, libXSCrnSaver, libX11,
+# redhat-lsb, wget, xdg-utils, GConf2, libXSCrnSaver, libX11, gnome-keyring,
 # gcc, glibc-devel, nss, rpm-build and rpmdevtools.
 # These RHEL/CentOS 7 RPMs and their (many!) deps that aren't already installed:
-# redhat-lsb, wget, xdg-utils, GConf2, libXSCrnSaver. libX11 and nss.
+# redhat-lsb, wget, xdg-utils, GConf2, libXSCrnSaver. libX11, gnome-keyring and nss.
 # The latest Google Chrome RPM if not already downloaded (or out-of-date).
-# RHEL/CentOS 6 only: 5 RPM packages from Fedora 15 if not already downloaded.
-# RHEL/CentOS 6 only: 1 RPM package from Fedora 17 if not already downloaded.
+# 64-bit RHEL/CentOS 6 only: libstdc++ library from a gcc 5.1.0 source build.
+# 32-bit RHEL/CentOS 6 only: libstdc++ RPM from CentOS 7.
 
 # For RHEL/CentOS 6 only:
-# It then copies 11 libraries from the F15/F17 packages into
-# /opt/google/chrome*/lib.
-# It also changes ld library references in four F15 libraries to end
-# in .so.0 instead of .so.2 so that they avoid the system ld library.
-# It sets SELinux context user/type for the F15/F17 libraries as well if
-# SELinux is enabled on the system.
+# It then copies the downloaded libstdc++ library into /opt/google/chrome*/lib.
 
-# Next, it C-compiles an LD_PRELOAD library that's installed as
-# /opt/google/chrome*/lib/unset_var.so, which saves/unsets LD_LIBRARY_PATH
-# and LD_PRELOAD before calling exec*() routines and then restores the
-# environmental variables afterwards.
-# /opt/google/chrome*/google-chrome* is also modified to point LD_PRELOAD
-# to the installed library. This is avoids having LD_LIBRARY_PATH and
-# LD_PRELOAD set when sub-processes are run.
+# Next, it C-compiles a shared library that provides the "missing"
+# gnome_keyring_attribute_list_new function that's installed as
+# /opt/google/chrome*/lib/libgnome-keyring.so.0 and linked against a
+# newly installed soft-link called
+# /opt/google/chrome*/lib/link-to-libgmome-keyring.so.0 which in turn points
+# to the system copy of libgmome-keyring.so.0.
 
 # Finally, it creates and installs a chrome-deps-* RPM which includes the
-# F15/F17 libraries, unset_var.so and code to modify the google-chrome wrapper.
-# (End of RHEL/CentOS 6 only actions)
+# downloaded libstdc++ library, libgnome-keyring.so.0, the soft-link
+# link-to-libgmome-keyring.so.0 and code to modify the
+# google-chrome wrapper. (End of RHEL/CentOS 6 only actions)
 
 # Note that you can't run Google Chrome as root - it stops you from doing so.
 
 # Revision history:
+
+# 7.20 - 7th June 2015
+# - Warn about out-of-date kernels that will cause Google Chrome to crash
+#   and offer to update the kernel (and preferably reboot).
+# - Fixed a yum repo path typo shown during a dry run (-n) (reported by John
+#    Stembridge).
+# - Don't try to create a spec file if the dry run option -n is specified
+#   (also reported by John Stembridge).
+# - Removed remove_redundant_libs() function - ironically, it's now redundant.
+
+# 7.13 - 24th April 2015
+# - Updated the downloadable 64-bit libstdc++.so.6 to one built from gcc 5.1.0.
+#   Sadly, the uncompressed library has bloated to being 60% bigger than the
+#   one created from gcc 4.9.2 :-(
+
+# 7.12 - 10th April 2015
+# - CentOS 7.0.1406 got abruptly shunted off to vault.centos.org this week,
+#   promptly completely breaking the 32-bit libstdc++ RPM download. Now the
+#   download looks at latest 7.1.1503 RPM on mirror.centos.org first and if
+#   that gets moved (which it eventually will be when 7.2 comes out), it looks
+#   at the latest 7.0.1406 update on vault.centos.org as a fallback.
+
+# 7.11 - 23rd February 2015
+# - Added a Provides: link to the spec file to avoid RPM dependency issues
+#   with the soft-link (thanks to Raymond Page for spotting the issue) and
+#   bumped chrome-deps-* RPM version to 3.11.
+
+# 7.10 - 6th February 2015
+# - The later libstdc++ works fine with LD_LIBRARY_PATH pointing to it when
+#   sub-processes are run, so we can finally stop using LD_PRELOAD and the
+#   unset_var.so shared library.
+# - We still need the "missing" gnome_keyring_attribute_list_new function
+#   that's in later releases of libgnome-keyring.so.0, so build a library
+#   using that name with the function in it, but link it against a soft-link
+#   (link-to-libgnome-keyring.so.0 which soft-links to the system-installed
+#   copy of libgnome-keyring.so.0). Convoluted, but allows us to bring in
+#   both gnome_keyring_attribute_list_new and all the other library functions/
+#   symbols in at start-up.
+# - Added gnome-keyring as a dependency just to make sure it's there before
+#   we go ahead with the machinations above.
+# - 50% reduction in orphaned kitten-killing tendencies.
+
+# 7.00 - 2nd February 2015
+# - Raise minimum RHEL/CentOS 6 version required from 6.5 to 6.6. This is
+#   because 6.6 now has library updates that negate the need to install patched
+#   versions from Fedora 15 or 17.
+# - The only external library that has to remain is libstdc++, which provides
+#   the appropriate runtime symbols to satisfy the Google Chrome binary. The
+#   good news is that it no longer needs to be patched. For 64-bit systems,
+#   the libstdc++ is lifted by me from a gcc 4.9.2 source build I did.
+#   For 32-bit systems, libstdc++ is extracted from the CentOS 7 libstdc++ RPM.
+# - If the updated CentOS 7 libstdc++ 32-bit RPM goes "missing" (e.g. it is
+#   removed because of an even newer update), fall back to the
+#   original 32-bit libstdc++ RPM that shipped with the initial CentOS 7 release.
+#   I will release a new script version if a libstdc++ (or gcc source) update
+#   happens of course.
+# - Remove any unneeded /opt/google/chrome*/lib libraries that are probably
+#   hanging around from earlier script releases. For the avoidance of
+#   doubt, this includes removing the F15 libc library, thus removing the
+#   GHOST vulnerability that previous script releases may have had.
+# - Use %_topdir for RPM build dir location (thanks to Bob Hepple for this)
+# - Changed year to 2015 in a few places.
+# - Now kills less orphaned kittens than ever!
 
 # 6.10 - 29th August 2014
 # - Don't permanently run 2 copies of cat from the google-chrome script
@@ -187,7 +246,7 @@ version="6.10"
 # - A similar issue to the 4.30 release cropped up again (reported by
 #   the same user!) that I still can't reproduce. This time it was a missing
 #   gdk_pixbuf_format_get_type symbol in F15's libgtk-x11-2.0. This was fixed
-#   by additonally downloading F15's gdk-pixbuf2 RPM and extracting
+#   by additionally downloading F15's gdk-pixbuf2 RPM and extracting
 #   libgdk_pixbuf-2.0 from it. This prompted a bump of the chrome-deps RPM to
 #   version 1.03.
 
@@ -258,7 +317,7 @@ version="6.10"
 #   not to run Google Chrome if either the OS update or reboot are declined
 #   until they complete the OS update and reboot.
 # - Don't remove /etc/cron.daily/google-chrome or
-#   /etc/yum.conf.d/google-chrome.repo any more because we actually want
+#   /etc/yum.repos.d/google-chrome.repo any more because we actually want
 #   people to use those (they won't be happy cron'ing this script or having
 #   to regularly run it manually to check for updates).
 # - Added -t option to specify the temporary directory parent tree.
@@ -573,7 +632,7 @@ set_tmp_tree()
    fi
 
    tmp_tree="$1/chrome_install"
-   unsetsrc="$tmp_tree/unset_var.c"
+   customsrc="$tmp_tree/missing_functions.c"
 }
 
 check_binary_not_running()
@@ -683,7 +742,9 @@ set_rpm_type()
    esac
    inst_tree="/opt/google/$swtype"
    libdir="$inst_tree/lib"
-   unsetlib="$libdir/unset_var.so"
+   missinglib="libgnome-keyring.so.0"
+   customlib="$libdir/$missinglib"
+   customlink="$libdir/link-to-${missinglib}"
    chrome_wrapper="$inst_tree/google-$swtype"
    modify_wrapper="$inst_tree/modify_wrapper"
    this_desktop="$app_tree/google-$swtype.desktop"
@@ -700,7 +761,7 @@ init_vars()
    dry_run=0 ; do_install=0 ; delete_tmp=0 
    past_run_check=0 ; force=0
 
-   # Avoid picking up the Fedora libs for any binaries
+   # Avoid picking up the custom libs for any binaries
    # run by this script
    unset LD_LIBRARY_PATH
 
@@ -713,8 +774,10 @@ init_vars()
 
    arch="`uname -m`"
    case "$arch" in
-   x86_64) rellib="lib64" ; ld_linux="ld-linux-x86-64" ; rpmarch="$arch" ;;
-     i686) rellib="lib" ; ld_linux="ld-linux" ; rpmarch="i386" ;;
+   x86_64) rellib="lib64" ; rpmarch="$arch"
+           rpmdep="()(64bit)" ;;
+     i686) rellib="lib" ; rpmarch="i386"
+           rpmdep="" ;;
         *) error "Unsupported architecture ($arch)" ;;
    esac
    relusrlib="usr/$rellib"
@@ -724,10 +787,12 @@ init_vars()
    # stable vs. others, but Google haven't changed it because it's not
    # shipped with the RPM, but actually created during installation.
    chrome_defaults="/etc/default/google-chrome"
-   chrome_repo="/etc/yum.conf.d/google-chrome.repo"
+   chrome_repo="/etc/yum.repos.d/google-chrome.repo"
    app_tree="/usr/share/applications"
    chrome_desktop="$app_tree/google-chrome.desktop"
-   deps_version="2.10"
+   deps_version="3.11"
+   download_lib="libstdc++.so.6"
+   download_lib_xz="$download_lib.xz"
 
    # Find the most stable installed Google Chrome and use that
    # as the default for the rest of the script (override with -b, -s or -U)
@@ -754,20 +819,25 @@ init_vars()
    install_message="already installed"
    trap "interrupt" 1 2 3
 
-   fedver=15 # Fedora version with most of the needed libs (F16 doesn't work!)
-   keyringver=17 # Fedora version needed for libgnome-keyring package
    suffix="$arch.rpm"
-   # $fedver archived updated packages directory
-   baseurl="http://archives.fedoraproject.org/pub/archive/fedora/linux/updates/$fedver/$rpmarch"
-   # Fedora 17 archived libgnome-keyring package directory
-   baseurlkeyring="http://archives.fedoraproject.org/pub/archive/fedora/linux/releases/$keyringver/Fedora/$rpmarch/os/Packages/l/"
+   centver="7.1.1503"
+   oldcentver="7.0.1406"
+
+   # Note that when 7.1.1503 provides a libstdc++ update, we'll have 2 fallbacks
+   # (penultimate 7.1.1503 and the last 7.0.1406 update)
+
+   # CentOS $centver initial release directory
+   baseurl="http://mirror.centos.org/centos-7/$centver/os/x86_64/Packages"
+
+   # CentOS $oldcentver updates directory
+   baseurlfallback="http://vault.centos.org/$oldcentver/updates/x86_64/Packages"
+
    wget="/usr/bin/wget"
    wget_options="--no-check-certificate"
    yum_options="-y"
    rpm_options="-U --force --nodeps"
    chcon_options="-u system_u"
    rpmbuild_options="-bb"
-   new_ld_suff=."so.0"
 
    # Update checker URL
    checksite="http://chrome.richardlloyd.org.uk/"
@@ -787,8 +857,9 @@ init_vars()
 download_file()
 # $1 = Full URL to download
 # $2 = Optional basename to save to (if omitted, then = basename $1)
-#      Also allow download to fail without exit if $2 is set
+#      Also allow download to silently fail without exit if $2 is set
 # $3 = Optional cksum value to compare download against
+# $4 = Optional 0 if failures are warnings, = 1 if errors
 {
    if [ "$2" = "" ]
    then
@@ -807,6 +878,14 @@ download_file()
    old_dlbase="$dlbase.old"
    if [ -f "$dlbase" ]
    then
+      if [ "$3" != "" ]
+      then
+         # If file already exists with right cksum, do nothing
+         if [ "`cksum \"$dlbase\"`" = "$3" ]
+         then
+            return
+         fi
+      fi
       rm -f "$old_dlbase"
       mv -f "$dlbase" "$old_dlbase"
    fi
@@ -816,7 +895,7 @@ download_file()
 
    if [ -s "$dlbase" -a "$3" != "" ]
    then
-      if [ "`cksum $dlbase`" != "$3" ]
+      if [ "`cksum \"$dlbase\"`" != "$3" ]
       then
          rm -f "$dlbase"
          warning "Deleted downloaded $dlbase - checksum or size incorrect"
@@ -831,7 +910,12 @@ download_file()
       fi
       if [ "$2" = "" -o "$3" != "" ]
       then
-         error "Failed to download $dlbase correctly"
+         if [ "$4" = "0" ]
+         then
+            warning "Failed to download $dlbase correctly"
+         else
+            error "Failed to download $dlbase correctly"
+         fi
       fi
    fi
 }
@@ -850,9 +934,8 @@ change_se_context()
    if [ -s "$1" -o -d "$1" ]
    then
       case "$1" in
-          *$ld_linux*) con_type="ld_so_t" ;;
       $chrome_wrapper) con_type="execmem_exec_t" ;;
-            $unsetlib) con_type="textrel_shlib_t" ;;
+           $customlib) con_type="textrel_shlib_t" ;;
                     *) con_type="lib_t" ;;
       esac
 
@@ -871,201 +954,128 @@ change_se_context()
    fi
 }
 
-install_ld_preload_lib()
-# Compile and install LD_PRELOAD lib as $libdir/unset_var.so
+install_custom_lib()
+# Compile and install missing function lib as $libdir/libgnome-keyring.so.0
 {
    if [ $dry_run -eq 1 ]
    then
-      echo "Would compile/install $unsetlib and"
-      echo "add LD_PRELOAD=$unsetlib to $chrome_wrapper"
+      echo "Would compile/install $customlib"
       echo
       return
    fi
      
-   cat <<@EOF >"$unsetsrc"
-/* unset_var.c 1.10 (C) Richard K. Lloyd 2014 <rklloyd@gmail.com>
+   cat <<@EOF >"$customsrc"
+/* missing_functions.c 3.00 (C) Richard K. Lloyd 2015 <rklloyd@gmail.com>
 
-   LD_PRELOAD code to save LD_LIBRARY_PATH, blank LD_LIBRARY_PATH
-   if the file to be exec'd isn't a full path, unset LD_PRELOAD,
-   run the original exec*() library routine and then restore
-   LD_LIBRARY_PATH and LD_PRELOAD.
-  
-   This way, we can avoid Fedora 15/17 libraries being picked up
-   by helper apps or plugins that are subsequently loaded by
-   Google Chrome.
-
-   strings -a /opt/google/chrome/chrome | grep ^exec
-   reveals three exec* routines used by the binary:
-   execvp(), execve() and execlp().
-
-   Compile with:
-   gcc -O -fpic -shared -s -o unset_var.so unset_var.c -ldl
-
-   Run with:
-   export LD_PRELOAD=/path/to/unset_var.so
-   /opt/google/chrome/google-chrome
+   Provides a gnome_keyring_attribute_list_new() function (was
+   a macro in CentOS 6 causing a missing symbol error when Google Chrome
+   was started up) that's present in later libgnome-keyring libraries.
+   See: https://mail.gnome.org/archives/commits-list/2012-January/msg08007.html
 */
 
-/* Have to build with this flag defined */
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
+/* Providing the "missing" gnome_keyring_attribute_list_new function
+   -----------------------------------------------------------------
+   To avoid having to install various *-devel packages, the required
+   definitions in CentOS 6.6 headers have been simplified to avoid the
+   need for any include files. I have also added the string "Custom" to the end
+   of any definitions that may clash with the original CentOS 6 libraries.
+*/
 
-/* The environmental variables we're going to unsetenv() */
-#define PATH_ENV_VAR "LD_LIBRARY_PATH"
-#define PRELOAD_ENV_VAR "LD_PRELOAD"
+/* Simplifying glib/gtypes.h, glib/garray.h and gnome-keyring.h,
+   we get this: */
+struct GnomeKeyringAttributeListCustom
+{
+  char *data;
+  int len;
+};
 
-/* Some system headers */
-#include <stdio.h>
-#include <dlfcn.h>
-#include <stdlib.h>
-#include <sys/socket.h>
-#include <stdarg.h>
-#include <string.h>
+/* Simplifying glib/gtypes.h and glib/garray.h, we get this: */
+struct GnomeKeyringAttributeListCustom *
+g_array_new (int zero_terminated, int clear_, unsigned int element_size);
 
-/* Each routine we intercept is likely to have different parameter types
-   and return types too, so firstly, we create common code macros */
+/* This is straight from gnome-keyring.h: */
+typedef enum {
+        GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+        GNOME_KEYRING_ATTRIBUTE_TYPE_UINT32
+} GnomeKeyringAttributeTypeCustom;
 
-/* Define local variables for function, passing in the function return type */
-#define INTERCEPT_LOCAL_VARS(return_type) \
-   char *pathenvptr=getenv(PATH_ENV_VAR), \
-        *preloadenvptr=getenv(PRELOAD_ENV_VAR); \
-   static char pathsavebuf[BUFSIZ],preloadsavebuf[BUFSIZ]; \
-   /* FILE *outhand=fopen("/tmp/exec.log","a"); */ \
-   return_type retval
+/* Simplifying glib/gtypes.h and gnome-keyring.h, we get this: */
+typedef struct {
+        char *name;
+        GnomeKeyringAttributeTypeCustom type;
+        union {
+                char *string;
+                unsigned int integer;
+        } value;
+} GnomeKeyringAttributeCustom;
 
-/* Save PATH_ENV_VAR and PRELOAD_ENV_VAR values in local buffers and then
-   unset the former if it's not a full path or is a Google Talk plugin path
-   and always unset the latter */
-#define INTERCEPT_SAVE_VAR(fname) \
-   if (pathenvptr!=(char *)NULL && pathenvptr[0]!='\0') \
-      (void)snprintf(pathsavebuf,BUFSIZ,PATH_ENV_VAR "=%s",pathenvptr); \
-   else pathsavebuf[0]='\0'; \
-   if (preloadenvptr!=(char *)NULL && preloadenvptr[0]!='\0') \
-      (void)snprintf(preloadsavebuf,BUFSIZ,PRELOAD_ENV_VAR "=%s",preloadenvptr); \
-   else preloadsavebuf[0]='\0'; \
-   /* if (outhand!=(FILE *)NULL) { fprintf(outhand,"%s\n",fname); (void)fclose(outhand); } */ \
-   if (strstr(fname,"/")==(char *)NULL || \
-       strstr(fname,"/opt/google/talkplugin/")!=(char *)NULL || \
-       strstr(fname,"/google-chrome")!=(char *)NULL) unsetenv(PATH_ENV_VAR); \
-   unsetenv(PRELOAD_ENV_VAR)
-
-/* Restore PATH_ENV_VAR and PRELOAD_ENV_VAR values if they had any previously
-   and then return the value from the function. */
-#define INTERCEPT_RESTORE_VAR \
-   if (pathsavebuf[0]) putenv(pathsavebuf); else unsetenv(PATH_ENV_VAR); \
-   if (preloadsavebuf[0]) putenv(preloadsavebuf); else unsetenv(PRELOAD_ENV_VAR); \
-   return(retval)
-
-/* Now string it into macros for different numbers of parameters. */
-
-/* execvp() */
-#define INTERCEPT_2_PARAMS(return_type,function_name,function_name_str,param_1_type,param_1_name,param_2_type,param_2_name) \
-return_type function_name(param_1_type param_1_name,param_2_type param_2_name) \
-{ \
-   INTERCEPT_LOCAL_VARS(return_type); \
-   return_type (*original_##function_name)(param_1_type,param_2_type); \
-   original_##function_name=dlsym(RTLD_NEXT,function_name_str); \
-   INTERCEPT_SAVE_VAR(param_1_name); \
-   retval=(*original_##function_name)(param_1_name,param_2_name); \
-   INTERCEPT_RESTORE_VAR; \
+/* The "missing" function from CentOS 6's gnome-keyring library */
+struct GnomeKeyringAttributeListCustom *
+gnome_keyring_attribute_list_new (void)
+{
+   return g_array_new (0, 0, sizeof (GnomeKeyringAttributeCustom));
 }
-
-/* execve() */
-#define INTERCEPT_3_PARAMS(return_type,function_name,function_name_str,param_1_type,param_1_name,param_2_type,param_2_name,param_3_type,param_3_name) \
-return_type function_name(param_1_type param_1_name,param_2_type param_2_name,param_3_type param_3_name) \
-{ \
-   INTERCEPT_LOCAL_VARS(return_type); \
-   return_type (*original_##function_name)(param_1_type,param_2_type,param_3_type); \
-   original_##function_name=dlsym(RTLD_NEXT,function_name_str); \
-   INTERCEPT_SAVE_VAR(param_1_name); \
-   retval=(*original_##function_name)(param_1_name,param_2_name,param_3_name); \
-   INTERCEPT_RESTORE_VAR; \
-}
-
-/* execlp() - I'm not fully sure I've done the va_list stuff right here! */
-#define INTERCEPT_2_VARARGS(return_type,function_name,function_name_str,param_1_type,param_1_name,param_2_type,param_2_name) \
-return_type function_name(param_1_type param_1_name,param_2_type param_2_name,...) \
-{ \
-   va_list args; \
-   INTERCEPT_LOCAL_VARS(return_type); \
-   return_type (*original_##function_name)(param_1_type,param_2_type,...); \
-   original_##function_name=dlsym(RTLD_NEXT,function_name_str); \
-   INTERCEPT_SAVE_VAR(param_1_name); \
-   va_start(args,param_2_name); \
-   retval=(*original_##function_name)(param_1_name,param_2_name,args); \
-   va_end(args); \
-   INTERCEPT_RESTORE_VAR; \
-}
-
-/* Only 3 routines intercepted so far - may be more in the future */
-INTERCEPT_2_PARAMS(int,execvp,"execvp",const char *,file,const char **,argv);
-INTERCEPT_3_PARAMS(int,execve,"execve",const char *,filename,const char **,argv,const char **,envp);
-INTERCEPT_2_VARARGS(int,execlp,"execlp",const char *,file,const char *,arg);
 @EOF
-
-   if [ -s "$unsetsrc" ]
+   if [ -s "$customsrc" ]
    then
-      gcc -O -fpic -shared -s -o "$unsetlib" "$unsetsrc" -ldl
-      rm -f "$unsetsrc"
-      if [ -s "$unsetlib" ]
+      rm -f "$customlink" "$customlib"
+
+      # Compile 1: Create the library as the link name.
+      #            You could probably copy any old system library
+      #            in as $customlink to be honest :-)
+      gcc -O -fpic -shared -s -o "$customlink" "$customsrc"
+      if [ ! -s "$customlink" ]
       then
-         chmod a+rx "$unsetlib"
-         change_se_context "$unsetlib"
-         message "Compiled/installed $unsetlib"
+         error "Failed to compile $customlink library"
+      fi
+
+      # Compile 2: Create the library as the system name and link
+      #            against the link name
+      gcc -O -fpic -shared -s -o "$customlib" "$customsrc" "$customlink"
+      if [ ! -s "$customlib" ]
+      then
+         error "Failed to compile $customlib library"
+      fi
+     
+      # Now remove the link name library/source file and replace the library
+      # with a soft-link to the system library. Now we have $customlib with
+      # the single function that will also load in the system library. It
+      # Would have been easier if there was a built libgnome-keyring.a <sigh>
+      rm -f "$customlink" "$customsrc"
+      ln -sf "/$relusrlib/$missinglib" "$customlink"
+
+      if [ -h "$customlink" ]
+      then
+         chmod a+rx "$customlib"
+         change_se_context "$customlib"
+         message "Compiled/installed $customlib"
       else
-         error "Failed to compile/install $unsetlib"
+         error "Failed to create $customlink soft-link"
       fi
    else
-      error "Unable to create $unsetsrc source file"
+      error "Unable to create $customsrc source file"
    fi
 }
 
 install_library()
 # $1 = Core of basename of RPM filename
-# $2 = cksum of 64-bit RPM
-# $3 = Size of 64-bit RPM (in bytes)
-# $4 = cksum of 32-bit RPM
-# $5 = Size of 32-bit RPM (in bytes)
-# $6 = After unpacking, relative path to library soft-link
-# $7 = Optional rename filename
+# $2 = cksum of RPM
+# $3 = Size of RPM (in bytes)
+# $4 = After unpacking, relative path to library soft-link
+# $5 = Download URL dir
+# $6 = 0 means download failures are warnings, = 1 means errors
 {
-   if [ "$7" = "" ]
+   # If we've already installed libstdc++, do nothing
+   if [ $lib_installed -eq 1 ]
    then
-      lib_name="`basename $6`"
-   else
-      lib_name="$7"
-   fi
-   fname="$libdir/$lib_name"
-   nonorig="$libdir/`basename $lib_name .orig`"
-
-   if [ "$fname" != "$nonorig" ]
-   then
-      # We hit here if library is patchable -
-      # we must leave function with the .orig file existing
-      if [ -s "$nonorig" -a ! -s "$fname" ]
-      then
-         # We have the non-.orig file and don't have the .orig one,
-         # rename one to the other. It will get patched later on.
-         mv -f "$nonorig" "$fname"
-      fi
-   fi
-
-   # Obvious optimisation here - if Fedora library is already installed,
-   # we only change SELinux context (no RPM or extraction needed)
-   # as long as patching isn't needed (the patching changed in 3.10+
-   # so we can't be sure the patch has been applied).
-   if [ -s "$fname" -a "$7" = "" ]
-   then
-      change_se_context "$fname"
       return
    fi
 
+   lib_name="`basename $4`"
+   fname="$libdir/$lib_name"
+
    rpmfile="$1.$suffix"
-   case "$arch" in
-   x86_64) rpmcksum="$2 $3 $rpmfile" ;;
-        *) rpmcksum="$4 $5 $rpmfile" ;;
-   esac
+   rpmcksum="$2 $3 $rpmfile"
 
    if [ -s $rpmfile ]
    then
@@ -1078,10 +1088,11 @@ install_library()
 
    if [ ! -s $rpmfile ]
    then
-      case "$rpmfile" in
-      libgnome-keyring*) download_file "$baseurlkeyring/$rpmfile" "$rpmfile" "$rpmcksum" ;;
-                      *) download_file        "$baseurl/$rpmfile" "$rpmfile" "$rpmcksum" ;;
-      esac
+      download_file "$5/$rpmfile" "$rpmfile" "$rpmcksum" "$6"
+      if [ ! -s $rpmfile -a $6 -eq 0 ]
+      then
+         return
+      fi
    fi
 
    message "Installing $fname" "n"
@@ -1089,22 +1100,31 @@ install_library()
    if [ $dry_run -eq 1 ]
    then
       echo "Would unpack $rpmfile using rpm2cpio/cpio and"
-      echo "then copy $6 to $fname" ; echo
+      echo "then copy $4 to $fname" ; echo
       return
    fi
 
    rpm2cpio "$rpmfile" | cpio -id 2>/dev/null
 
-   rel_link="`dirname \"$6\"`/`basename \"$6\" .orig`"  
+   if [ $6 -eq 0 ]
+   then
+      errfunc="warning" ; retfunc="return"
+   else
+      errfunc="error" ; retfunc=""
+   fi
+      
+   rel_link="`dirname \"$4\"`/$lib_name"
    if [ ! -h "$rel_link" ]
    then
-      error "Failed to find $rel_link soft-link (couldn't install $fname)"
+      $errfunc "Failed to find $rel_link soft-link (couldn't install $fname)"
+      $retfunc
    fi
    
-   rel_file="`dirname \"$6\"`/`readlink \"$rel_link\"`"
+   rel_file="`dirname \"$4\"`/`readlink \"$rel_link\"`"
    if [ ! -s "$rel_file" ]
    then
-      error "Failed to find $rel_file file (couldn't install $fname)"
+      $errfunc "Failed to find $rel_file file (couldn't install $fname)"
+      $retfunc
    fi
 
    rm -f "$fname"
@@ -1112,8 +1132,10 @@ install_library()
    if [ -s "$fname" ]
    then
       change_se_context "$fname"
+      lib_installed=1
    else
-      error "Failed to install $fname"
+      $errfunc "Failed to install $fname"
+      $retfunc
    fi
 }
 
@@ -1241,7 +1263,7 @@ get_installed_version()
    # If RPM not installed, see if we can use the shell wrapper for the version
    if [ "$chrome_installed" = "" -a -x "$chrome_wrapper" ]
    then
-      # This may fail of course if Google Chrome 28+ installed without Fedora libs
+      # This may fail of course if Google Chrome 28+ installed without custom libstdc++
       chrome_installed="`\"$chrome_wrapper\" --version 2>/dev/null | awk '{ print $3; }'`"
    fi
 
@@ -1396,47 +1418,6 @@ update_google_chrome()
    fi
 }
 
-patch_libs()
-# Hack references to $ld_linux.so.2 to be $ld_linux.so.0 in libc.so.6,
-# $ld_linux.so.0, libstdc++.so.6 and libdl.so.2 so that we avoid picking up
-# the system version in /$rellib (yes, there's a maddeningly hard-coded path
-# in the ld library that ignores LD_LIBRARY_PATH).
-{
-   libc="$libdir/libc.so.6"
-   libld="$libdir/$ld_linux$new_ld_suff"
-   libcpp="$libdir/libstdc++.so.6"
-   libdl="$libdir/libdl.so.2"
-
-   if [ $dry_run -eq 1 ]
-   then
-      echo "Would patch downloaded $libc, $libld, $libcpp and"
-      echo "$libdl to use $ld_linux$new_ld_suff and also"
-      echo "set their SELinux context types if necessary."
-      echo
-      return
-   fi
-
-   for each_lib in "$libc" "$libld" "$libcpp" "$libdl"
-   do
-      each_lib_orig="$each_lib.orig"
-      if [ -s "$each_lib_orig" ]
-      then
-         message "Patching $each_lib" "n"
-         sed -e "s/$ld_linux.so.2/$ld_linux$new_ld_suff/g" <"$each_lib_orig" >"$each_lib"
-         rm -f "$each_lib_orig"
-         if [ -s "$each_lib" ]
-         then
-            chmod a+rx "$each_lib"
-            change_se_context "$each_lib"
-         else
-            error "Failed to created patched $each_lib"
-         fi
-      else
-         error "$each_lib_orig missing (didn't extract from Fedora RPM)"
-      fi
-   done
-}
-
 init_setup()
 # Get everything setup and do a few basic checks
 {
@@ -1530,7 +1511,7 @@ check_derivative()
       deps_name="" ; deps_latest="latest"
       fedlibs="was" ; scriptdeps=""
    else
-      fedlibs="and Fedora $fedver/$keyringver libs were"
+      fedlibs="and extra libraries were"
       scriptdeps=" and its dependencies added by this script"
    fi
 }
@@ -1587,13 +1568,35 @@ yum_install()
    fi
 }
 
+request_reboot()
+# Request that the user reboots the machine after any upgrade
+# $1 = Kernel string number
+{
+   echo "You are STRONGLY RECOMMENDED to reboot this machine to run the new $1 kernel."
+   echo "If you don't, it's likely $chrome_name will not run correctly."
+   echo "Please close all applications now (except this script!) if you want to reboot."
+   warning "These users are logged into this machine: `users | tr ' ' '\n' | sort -u`"
+          
+   yesno "reboot this machine immediately" 3
+
+   if [ $ans -eq 1 ]
+   then
+      message "Rebooting machine now"
+      /sbin/shutdown -r now
+      exit 0
+   fi
+
+   warning "You are advised not to run $chrome_name until after the next reboot"
+   ans=1
+}
+
 check_if_os_obsolete()
-# If OS version is less than 6.5, offer to upgrade (and abort if declined).
-# We need at least 6.5 because bad things happen in earlier versions
+# If OS version is less than 6.6, offer to upgrade (and abort if declined).
+# We need at least 6.6 because bad things happen in earlier versions
 {
    os_version="`lsb_release -rs`"
    case "$os_version" in
-   6.0|6.1|6.2|6.3|6.4)
+   6.0|6.1|6.2|6.3|6.4|6.5)
       if [ $dry_run -eq 1 ]
       then
          echo "Would offer to upgrade your out-of-date OS (version $os_version)."
@@ -1619,20 +1622,7 @@ check_if_os_obsolete()
             error "You declined an OS update to the latest release"
          else
             message "Upgrade to OS version $new_os_version completed successfully"
-            echo "You are STRONGLY RECOMMENDED to reboot this machine to run the new $new_os_version kernel."
-            echo "If you don't, it's likely $chrome_name will not run correctly."
-            echo "Please close all applications now (except this script!) if you want to reboot."
-            warning "These users are logged into this machine: `users | tr ' ' '\n' | sort -u`"
-          
-            yesno "reboot this machine immediately" 3
-            if [ $ans -eq 1 ]
-            then
-               message "Rebooting machine now"
-               /sbin/shutdown -r now
-               exit 0
-            fi
-            warning "You are advised not to run $chrome_name until after the next reboot"
-            ans=1
+            request_reboot "$new_os_version"
          fi
       fi
 
@@ -1643,9 +1633,124 @@ check_if_os_obsolete()
    esac
 }
 
-install_rpm_libraries()
-# Extract and install libraries from Fedora RPMs
+check_if_kernel_obsolete()
+# Although a "yum update" may have been performed, users can exclude kernel updates
+# via the appropriate repo file (e.g. they may want to lock down the kernel to
+# a particular version that supports third-party binary drivers). The problem with this
+# is that recent Google Chrome releases immediately crash on RHEL/CentOS 6 with any
+# kernel shipped with RHEL CentOS 6.4 or earlier (i.e. 2.6.32-358.23.2.el6.x86_64 or
+# older). Such kernels need to be warned about that an update is needed.
 {
+   # Get the running kernel version as 4 dotted fields (4th is build nnumber)
+   kernelver="`uname -r | sed -e 's/-/./g' | cut -d. -f-4`"
+
+   if [ $dry_run -eq 1 ]
+   then
+      echo "If the running kernel ($kernelver) is too old, would offer to upgrade it"
+      echo "(and preferably reboot)."
+      echo
+      return
+   fi
+
+   dots=1 ; kernelok=1
+   for eachdot in 2 6 32 358
+   do
+      if [ $kernelok -eq 1 ]
+      then
+         kfield="`echo $kernelver | cut -d. -f$dots`"
+         case "$kfield" in
+         [0-9]*) # Is the kernel field a number?
+            if [ $kfield -gt $eachdot ]
+            then
+               # Running kernel is new enough, so return and do nothing
+               return
+            else
+               if [ $kfield -lt $eachdot ]
+               then
+                  kernelok=0
+               else
+                  let dots=$dots+1
+               fi
+            fi ;;
+            *) # Kernel field not a number, so custom version - let it through with a warning
+            warning "Running kernel version ($kernelver) contains a non-number - assuming a recent custom kernel"
+            return ;;
+          esac
+      fi
+   done
+
+   echo "Your running kernel version ($kernelver) is out-of-date and this will cause"
+   echo "$chrome_name to immediately crash."
+   echo
+   yesno "download/install the latest kernel" 2
+
+   if [ $ans -eq 1 ]
+   then
+      message "Upgrading kernel to latest release" "n"
+      message "You will have a final y/n prompt before the kernel updates are downloaded/installed"
+ 
+      kernelpacks=""
+      for eachpack in kernel kernel-devel kernel-firmware kernel-headers
+      do
+         if [ "`is_installed $eachpack`" != "" ]
+         then
+            kernelpacks="$kernelpacks $eachpack"
+         fi
+      done
+      yum update $kernelpacks
+
+      # Might have multiple kernel packages installed, so pick the numerically greatest one
+      # installed as the one that will run on the next reboot (if upgrade failed or was declined,
+      # this will probably mean the currently running old one ($kernelver)).
+      newkernelver="`rpm -q --queryformat '%{VERSION}.%{RELEASE}' kernel |
+                     sed -e 's/-/./g' | cut -d. -f-4 |
+                     sort -t. -n -r -k1,1 -k2,2 -k3,3 -k4,4 | head -1`"
+
+      if [ "$newkernelver" = "$kernelver" ]
+      then
+         # This will eventually become a fatal error
+         warning "You declined a kernel update to the latest release (or it failed)"
+         ans=0
+      else
+         message "Download/install of latest kernel ($newkernelver) completed successfully"
+         request_reboot "$newkernelver"
+      fi
+   fi
+
+   if [ $ans -eq 0 ]
+   then
+      warning "$chrome_name should not be run until you upgrade this machine's kernel via \"yum update\" and reboot it after the upgrade"
+   fi
+}
+
+install_prebuilt_library()
+# Download pre-built 64-bit libstdc++ library from script site
+{
+   download_file "$checksite$download_lib_xz" "$download_lib_xz" "3730939842 337884 $download_lib_xz" 1
+
+   destlib="$libdir/$download_lib"
+   xzcat -f "$download_lib_xz" >$destlib
+   if [ -s $destlib ]
+   then
+      chmod a+rx "$destlib"
+      change_se_context "$destlib"
+      message "Installed $destlib" 
+   else
+      rm -f "$destlib"
+      error "Failed to install $download_lib"
+   fi
+}
+
+install_rpm_libraries()
+# Extract and install libraries from CentOS 7 RPMs
+{
+   if [ $dry_run -eq 1 ]
+   then
+      echo "Would download and install the $download_lib library"
+      echo
+      return
+   fi
+
    # We need to create library dir because we haven't installed
    # the Google Chrome RPM yet
    if [ ! -d "$libdir" ]
@@ -1657,18 +1762,15 @@ install_rpm_libraries()
       fi
    fi
 
-   # Function       RPM core filename                        64-bit cksum  64-bit size  32-bit cksum  32-bit size  Relative soft-link unpacked     Optional rename
-   install_library  libstdc++-4.6.3-2.fc$fedver              493778044     295501       1671666549    308213       $relusrlib/libstdc++.so.6       libstdc++.so.6.orig
-   install_library  glibc-2.14.1-6                           841490955     3504537      3942597577    4011933      $rellib/libc.so.6               libc.so.6.orig
-   install_library  glibc-2.14.1-6                           841490955     3504537      3942597577    4011933      $rellib/$ld_linux.so.2          $ld_linux$new_ld_suff.orig
-   install_library  glibc-2.14.1-6                           841490955     3504537      3942597577    4011933      $rellib/libdl.so.2              libdl.so.2.orig
-   install_library  gtk2-2.24.7-3.fc$fedver                  1171472316    3401761      2066307093    3404053      $relusrlib/libgdk-x11-2.0.so.0
-   install_library  gtk2-2.24.7-3.fc$fedver                  1171472316    3401761      2066307093    3404053      $relusrlib/libgtk-x11-2.0.so.0
-   install_library  glib2-2.28.8-1.fc$fedver                 4259542939    1813252      365790344     1794500      $rellib/libgio-2.0.so.0
-   install_library  glib2-2.28.8-1.fc$fedver                 4259542939    1813252      365790344     1794500      $rellib/libglib-2.0.so.0
-   install_library  glib2-2.28.8-1.fc$fedver                 4259542939    1813252      365790344     1794500      $rellib/libgobject-2.0.so.0
-   install_library  gdk-pixbuf2-2.23.3-2.fc$fedver           1494219476    508020       746431589     506948       $relusrlib/libgdk_pixbuf-2.0.so.0
-   install_library  libgnome-keyring-3.4.1-2.fc$keyringver   4031467841    103229       3077278503    102049       $relusrlib/libgnome-keyring.so.0
+   case "$arch" in
+   x86_64) install_prebuilt_library ;;
+   *)
+   lib_installed=0
+   # Function       RPM core filename            32-bit cksum  32-bit size  Relative soft-link unpacked  URL                Warn/Err?
+   install_library  "libstdc++-4.8.3-9.el7"         103833770     314828    "$relusrlib/libstdc++.so.6"  "$baseurl"             0
+   install_library  "libstdc++-4.8.2-16.2.el7_0"   2441727600     308620    "$relusrlib/libstdc++.so.6"  "$baseurlfallback"     1
+   ;;
+   esac
 }
 
 bulk_warning()
@@ -1777,23 +1879,23 @@ Name:		@DEPS_NAME@
 Version:	@DEPS_VERSION@
 Release:	1
 Summary:	Dependencies required for Google Chrome 28+ on RHEL/CentOS 6 derivatives
-License:	LGPLv2+, LGPLv2+ with exceptions, GPLv2+, GPLv3+, GPLv3+ with exceptions, GPLv2+ with exceptions, BSD, public domain
+License:	GPLv3+, GPLv3+ with exceptions, GPLv2+ with exceptions, public domain
 Group:		System Environment/Libraries
 Obsoletes:	chrome-deps
+Provides:       @LIBDIR@/link-to-@MISSINGLIB@@RPMDEP@
 URL:		@CHECKSITE@
 Vendor:         Richard K. Lloyd and the Fedora Project
 Packager:       Richard K. Lloyd <rklloyd@gmail.com>
 BuildRoot:	@BUILDROOT@
 
 %description
-Includes modified Fedora @FEDVER@ and @KEYRINGVER@ Libraries (@LD_LINUX@,
-libc, libdl, libgdk-x11-2.0, libgdk_pixbuf-2.0, libgio-2.0, libglib-2.0,
-libgnome-keyring, libgobject-2.0, libgtk-x11-2.0 and libstdc++) and an
-LD_PRELOAD library (unset_var.so).  Also modifies Google Chrome's
+Includes an later libstdc++ Library, a shared library
+(@MISSINGLIB@) and a soft-link to load in the original
+@MISSINGLIB@ system library. Also modifies Google Chrome's
 @CHROME_WRAPPER@ wrapper script to allow
 Google Chrome 28 or later to run on RHEL/CentOS 6 derivatives.
-The URL for the script that downloaded, modified and re-packaged the
-Fedora @FEDVER@ and @KEYRINGVER@ libraries in this RPM is
+The URL for the script that downloaded and re-packaged the
+later libstdc++ library in this RPM is
 @CHECKSITE@@SCRIPTNAME@
 and it is in the public domain.
 
@@ -1801,18 +1903,9 @@ and it is in the public domain.
 %files
 %defattr(-,root,root,-)
 @MODIFY_WRAPPER@
-@LIBDIR@/@LD_LINUX@.so.0
-@LIBDIR@/libc.so.6
-@LIBDIR@/libdl.so.2
-@LIBDIR@/libgdk-x11-2.0.so.0
-@LIBDIR@/libgdk_pixbuf-2.0.so.0
-@LIBDIR@/libgio-2.0.so.0
-@LIBDIR@/libglib-2.0.so.0
-@LIBDIR@/libgnome-keyring.so.0
-@LIBDIR@/libgobject-2.0.so.0
-@LIBDIR@/libgtk-x11-2.0.so.0
 @LIBDIR@/libstdc++.so.6
-@LIBDIR@/unset_var.so
+@LIBDIR@/@MISSINGLIB@
+@LIBDIR@/link-to-@MISSINGLIB@
 
 # No prep or build rules because it's all been done by @SCRIPTNAME@
 
@@ -1821,7 +1914,8 @@ and it is in the public domain.
 rm -rf %{buildroot}
 mkdir -p -m 755 %{buildroot}@LIBDIR@
 cp -pf @MODIFY_WRAPPER@ %{buildroot}@INST_TREE@
-cp -pf @LIBDIR@/*.so.* @LIBDIR@/unset_var.so %{buildroot}@LIBDIR@/
+cp -pf @LIBDIR@/lib*.so.* %{buildroot}@LIBDIR@/
+ln -sf /@RELUSRLIB@/@MISSINGLIB@ %{buildroot}@LIBDIR@/link-to-@MISSINGLIB@
 
 # Run modify_wrapper once the files are installed
 %post
@@ -1833,6 +1927,16 @@ rm -rf %{buildroot}
 
 # Changelog, with annoyingly "wrong" US date format
 %changelog
+* Tue Feb 23 2015 Richard K. Lloyd <rklloyd@gmail.com> - 3.11-1
+- Added a Provides: line to avoid an RPM dependency issue.
+* Fri Feb  6 2015 Richard K. Lloyd <rklloyd@gmail.com> - 3.10-1
+- LD_PRELOAD unset_var.so library finally removed.
+- Created new single-function @MISSINGLIB@ library.
+- Added link-to-@MISSINGLIB@ soft-link to bring in
+  functions from system-installed @MISSINGLIB@.
+* Mon Feb  2 2015 Richard K. Lloyd <rklloyd@gmail.com> - 3.00-1
+- Removed all patched Fedora libraries.
+- Added an unpatched libstdc++ library (from gcc or CentOS 7).
 * Fri Aug 29 2014 Richard K. Lloyd <rklloyd@gmail.com> - 2.10-1 
 - Added "Obsoletes: chrome-deps" to spec file.
 - Redirected stdout/stderr to /dev/null in google-chrome script.
@@ -1861,19 +1965,19 @@ rm -rf %{buildroot}
 - All the Fedora @FEDVER@ and @KEYRINGVER@ library downloads, unpacking and modifications are
   done in the @SCRIPTNAME@ script that generated this spec file, rather
   than run as spec file commands.
-- LD_PRELOAD @UNSETLIB@ library and @MODIFY_WRAPPER@
+- LD_PRELOAD unset_var.so library and @MODIFY_WRAPPER@
   script are both included in the built RPM.
 @EOF
    ) | sed \
    -e "s#@DEPS_VERSION@#$deps_version#g" \
-   -e "s#@LD_LINUX@#$ld_linux#g" \
    -e "s#@DEPS_NAME@#$deps_name#g" \
    -e "s#@CHECKSITE@#$checksite#g" \
    -e "s#@FEDVER@#$fedver#g" \
-   -e "s#@KEYRINGVER@#$keyringver#g" \
    -e "s#@SCRIPTNAME@#$scriptname#g" \
    -e "s#@LIBDIR@#$libdir#g" \
-   -e "s#@UNSETLIB@#`basename $unsetlib`#g" \
+   -e "s#@MISSINGLIB@#$missinglib#g" \
+   -e "s#@RPMDEP@#$rpmdep#g" \
+   -e "s#@RELUSRLIB@#$relusrlib#g" \
    -e "s#@CHROME_WRAPPER@#$chrome_wrapper#g" \
    -e "s#@MODIFY_WRAPPER@#$modify_wrapper#g" \
    -e "s#@INST_TREE@#$inst_tree#g" \
@@ -1882,10 +1986,14 @@ rm -rf %{buildroot}
 }
 
 setup_build_env()
-# Create RPM build environment under ~/rpmbuild and also
+# Create RPM build environment under %_topdir and also
 # create the chrome-deps-*.spec file
 {
-   rpmbuilddir=~/rpmbuild
+   rpmbuilddir="`rpm --eval %_topdir`"
+   if [ "$rpmbuilddir" = "" -o "$rpmbuilddir" = "%_topdir" ]
+   then
+      error "Can't determine RPM build dir"
+   fi
    built_rpm="$rpmbuilddir/RPMS/$rpmarch/$built_rpm_base"
    specsdir="$rpmbuilddir/SPECS"
    specfile="$specsdir/$deps_name.spec"
@@ -1908,7 +2016,7 @@ setup_build_env()
 
       if [ ! -d "$specsdir" ]
       then
-         error "Unable to correctly run $setuptree to create build enviroment"
+         error "Unable to correctly run $setuptree to create build environment"
       fi
    fi
 }
@@ -1925,14 +2033,14 @@ build_deps_rpm()
       # Get ready for RPM build
       setup_build_env
 
-      # Create chrome-deps-*.spec file
-      create_spec_file
-
       if [ $dry_run -eq 1 ]
       then
          echo "Would run rpmbuild to create $tmpdir_rpm"
          echo
       else
+         # Create chrome-deps-*.spec file
+         create_spec_file
+
          cd "$specsdir"
          message "Building $tmpdir_rpm"
          rm -f "$tmpdir_rpm"
@@ -1995,12 +2103,12 @@ adjust_chrome_defaults()
 
    ( cat <<@EOF
 #! /bin/bash
-# @MODIFY_WRAPPER@ @WRAPPER_MOD_VERSION@ (C) Richard K. Lloyd 2014 <rklloyd@gmail.com>
+# @MODIFY_WRAPPER@ @WRAPPER_MOD_VERSION@ (C) Richard K. Lloyd 2015 <rklloyd@gmail.com>
 # Created by @SCRIPTNAME@ and included in the @DEPS_NAME@ RPM
 # to modify @CHROME_DEFAULTS@ in the following ways:
 # - Remove any existing setting of repo_add_once
 # - Updates (or adds) a custom ### START .. ### END section, which will
-#   add an LD_PRELOAD definition to google-chrome if one isn't present.
+#   adjust the dubious "exec cat" commands in google-chrome.
 # - Sets repo_add_once to true (picked up by /etc/cron.daily/google-chrome)
 # @MODIFY_WRAPPER@ is run once at the end of the @DEPS_NAME@ RPM installation.
 
@@ -2083,17 +2191,16 @@ END {
    {
       printf("### START %s %s modifications\n",
              wrapper_mod_version,scriptname);
-      printf("old_line=\"export LD_LIBRARY_PATH\"\n");
+      printf("old_line=\"exec cat\"\n");
       printf("for eachtype in \"\" -beta -unstable\n");
       printf("do\n");
-      printf("   new_line=\"\$old_line LD_PRELOAD=\\\\\"/opt/google/chrome\$eachtype/lib/%s\\\\\"\"\n",unsetlib);
       printf("   chrome_wrapper=\"/opt/google/chrome\$eachtype/google-chrome\$eachtype\"\n");
       printf("   if [ -s \"\$chrome_wrapper\" ]\n");
       printf("   then\n");
-      printf("      if [ \"\`grep \\\\\"\$new_line\\\\\" \\\\\"\$chrome_wrapper\\\\\"\`\" = \"\" ]\n");
+      printf("      if [ \"\`grep \\\\\"\$old_line\\\\\" \\\\\"\$chrome_wrapper\\\\\"\`\" != \"\" ]\n");
       printf("      then\n");
       printf("         new_wrapper=\"\$chrome_wrapper.new\"\n");
-      printf("         sed -e \"s#\$old_line#\$new_line#g\" -e \"s#>(exec cat)#/dev/null#g\" -e \"s#>(exec cat >&2)#/dev/null#g\" <\"\$chrome_wrapper\" >\"\$new_wrapper\"\n");
+      printf("         sed -e \"s#>(exec cat)#/dev/null#g\" -e \"s#>(exec cat >&2)#/dev/null#g\" <\"\$chrome_wrapper\" >\"\$new_wrapper\"\n");
       printf("         if [ -s \"\$new_wrapper\" ]\n");
       printf("         then\n");
       printf("            mv -f \"\$new_wrapper\" \"\$chrome_wrapper\"\n");
@@ -2108,7 +2215,7 @@ END {
    printf("repo_add_once=\"true\"\n");
 }' \
 wrapper_mod_version="@WRAPPER_MOD_VERSION@" scriptname="@SCRIPTNAME@" \
-unsetlib="@UNSETLIB@" |
+customlib="@CUSTOMLIB@" |
 update_file "\$chrome_defaults"
 
 # Now actually run the defaults file (it will be run daily via cron or
@@ -2128,14 +2235,14 @@ exit 0
    -e "s#@DEPS_NAME@#$deps_name#g" \
    -e "s#@CHROME_DEFAULTS@#$chrome_defaults#g" \
    -e "s#@DEPS_NAME@#$deps_name#g" \
-   -e "s#@UNSETLIB@#`basename \"$unsetlib\"`#g" \
+   -e "s#@CUSTOMLIB@#`basename \"$customlib\"`#g" \
    >"$modify_wrapper"
 
    if [ -s "$modify_wrapper" ]
    then
       chmod a+rx "$modify_wrapper"
       change_se_context "$modify_wrapper"
-      message "Created $modify_wrapper sucessfully"
+      message "Created $modify_wrapper successfully"
    else
       error "Failed to create $modify_wrapper"
    fi
@@ -2150,33 +2257,37 @@ main_code()
    if [ $do_install -eq 1 ]
    then
       # Only install RPM-building packages if latest chrome-deps-* isn't installed
-      # and we're using CentOS 6.X
+      # and we're using RHEL/CentOS 6.X
       if [ "$deps_latest" = "" -a $centos -eq 6 ]
       then
          rpm_build_packages="gcc glibc-devel rpm-build rpmdevtools"
+         if [ "$arch" = "x86_64" ]
+         then
+            # On 64-bit RHEL/CentOS 6, we need the xz package
+            rpm_build_packages="$rpm_build_packages xz"
+         fi
       else
          rpm_build_packages=""
       fi
 
       # Make sure google-chrome-stable and chrome-deps-* dependencies are present
       # but prompt for their download/install if any aren't 
-      yum_install prompt redhat-lsb wget xdg-utils GConf2 libXScrnSaver libX11 nss PackageKit $rpm_build_packages
+      yum_install prompt redhat-lsb wget xdg-utils GConf2 libXScrnSaver libX11 gnome-keyring nss PackageKit $rpm_build_packages
 
       # Now update Google Chrome if necessary
       update_google_chrome
 
       if [ "$deps_latest" = "" -a $centos -eq 6 ]
       then
-         # Download/install/patch Fedora libraries
+         # Download/install libstdc++ library
          install_rpm_libraries
-         patch_libs
 
          # Adjust /etc/default/google-chrome (sourced in daily by
          # /etc/cron.daily/google-chrome) as required
          adjust_chrome_defaults
 
-         # Build/install LD_PRELOAD library if latest chrome-deps-* not installed
-         install_ld_preload_lib
+         # Build/install custom library if latest chrome-deps-* not installed
+         install_custom_lib
 
          # Build and install the chrome-deps-* RPM if the latest isn't installed
          build_deps_rpm
@@ -2237,8 +2348,11 @@ final_messages
 
 if [ $do_install -eq 1 ]
 then
-   # Need at least version 6.5 of OS to run Google Chrome successfully
+   # Need at least version 6.6 of OS to run Google Chrome successfully
    check_if_os_obsolete
+
+   # Also need at least version 2.6.32.431 of the kernel
+   check_if_kernel_obsolete
 fi
 
 # A good exit
