@@ -117,6 +117,11 @@ sort
 - -t<分隔字符>   指定排序时所用的栏位分隔字符
 - -k  选择以哪个区间进行排序, 一般与 -t 一起使用
 
+Uppercase to lowercase:
+`$ tr '[:upper:]' '[:lower:]' < input` or `tr '[A-Z]' '[a-z]' < input`
+
+`tr -d'\n'` 删除回车符
+
 # 网络
 **ss**
 socket statistics (show apps using the Internet)
