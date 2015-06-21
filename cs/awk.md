@@ -3,7 +3,7 @@ pattern scanning and processing language
 
 AWK - the (very old) original from AT&T
 NAWK - A newer, improved version from AT&T
-GAWK - The FGNU Project’s implementation, linux 中默认的版本.
+GAWK - The FGNU Project's implementation, linux 中默认的版本.
 
 **特性**
 It can be considered to be a pseudo-C interpretor, as it understands the same arithmatic operators as C. 
@@ -67,6 +67,14 @@ BEGIN { print "File\tOwner" }
 { print $8, "\t", $3}
 END { print " - DONE -" }
 ```
+
+## 向awk 传递参数
+可以通过命令行向awk中传递参数.
+这样子传递进去的参数,在awk命令中可以访问(但是在BEGIN语句中访问不到).
+每一项都必须作为单一的一个参数来解释.所以,**等号之间不能有空格**
+
+但是,可以通过增加一个-v参数让awk在执行BEGIN之前得到变量的值.
+命令行中每一个指定的变量都需要一个-v参数.eg: `$ awk -v name=ddd -v age=33 'BEGIN{print name}{print $0}'`
 
 ## Dynamic Variables
 ```
