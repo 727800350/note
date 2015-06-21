@@ -85,6 +85,9 @@ fill 才是填充色
 
 geom_bar(width = 0.5)  控制宽度
 
+当要改变geom_bar 的y 轴的范围时, 通过 `p + scale_y_continuous(limits=c(5, 15))`, bars 会完全消失(但是不明白为什么).
+但是通过`p + coord_cartesian(ylim=c(5,15))` 是可以设置ylim的
+
 # group
 Oxboys records the heights(height) and centered ages(age) of 26 boys(Subject), measured on nine occasions(Occasion).
 ```
@@ -263,6 +266,8 @@ coord_flip() x 轴与y轴换着显示, 但是逻辑上x 还是原来的x, y 还�
 
 `coord_cartesian(ylim=c(1,4)) + coord_flip()`: 后面的coord_flip 会冲掉前面设置的ylim, 因为coord_cartesian and coord_flip are actually the same sort of thing, 
 需要将ylim 直接设置在coord_flip 里面`coord_flip(ylim=c(1,4))`
+
+[coord_polar ex](http://www.plob.org/2014/05/11/7264.html)
 
 ## 仅仅更换数据的快捷方式
 You can replace the old dataset with `%+%`
