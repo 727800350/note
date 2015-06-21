@@ -38,6 +38,15 @@ then
 	sudo yum localinstall http://download1.rpmfusion.org/free/el/updates/${version}/x86_64/rpmfusion-free-release-${version}-1.noarch.rpm
 
 	sudo yum localinstall http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el${version}.rf.x86_64.rpm
+
+	if [ ${version} -eq 7 ]
+	then
+		sudo yum localinstall http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+	elif [ ${version} -eq 6 ]
+		http://www.elrepo.org/elrepo-release-6-6.el6.elrepo.noarch.rpm
+	else
+		echo "${os} ${version} not supported"
+	fi
 elif [ ${os} = "fedora" ]
 then
 	## local repo
@@ -58,3 +67,9 @@ sudo sed -i "/^\[epel\]/a priority=3" /etc/yum.repos.d/CentOS-Base.repo
 ## 4 rpmfusion-free-release-${version}-1.noarch.rpm
 sudo sed -i "/^\[rpmforge\]/a priority=4" /etc/yum.repos.d/rpmforge.repo
 
+if [ -e /etc/yum.repos.d/google-chrome.repo ]
+then
+	sudo sed -i "s/enabled=1/enabled=0/g" /etc/yum.repos.d/google-chrome.repo
+fi
+
+exit 0
