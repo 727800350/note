@@ -10,6 +10,7 @@ fi
 
 source ./common.env
 
+## the path should not contain backspace, even with back slash
 if [ $# -eq 1 ]
 then
 	pkgs=$1
