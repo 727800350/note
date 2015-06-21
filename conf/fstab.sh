@@ -58,3 +58,8 @@ cat /etc/fstab > fstab
 cat tmp | awk '{print "UUID="$1, "/media/"$2, "ntfs defaults 0 0"}' >> fstab
 rm uuid.tmp df.tmp tmp
 
+sudo mv /etc/fstab /etc/fstab.`date +%Y%m%d_%H_%M_%S`
+sudo mv fstab /etc/fstab
+
+exit 0
+
