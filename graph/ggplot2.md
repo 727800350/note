@@ -66,6 +66,12 @@ Each layer can come from a different dataset and have a different aesthetic mapp
 - save() 把图像的缓存副本保存到磁盘; 这样可以保存图像的完整副本(包括图形中的数据), 可以调用load()来重现该图  
 `save(p, file = "plot.rdata")`
 
+If you want to save multiple plots to a single file, you will need to 
+
+1. explicitly open a disk-based graphics device(like png() or pdf())
+1. print the plots
+1. close it with dev.off()
+
 # aesthetic
 `unique(mtcars$cyl)` 得到 4 6 8
 
@@ -466,10 +472,6 @@ qplot(unemploy / pop, uempmed, data = economics, geom = c("path"), color = year(
 ```
 
 ## 将多图绘制到一页
-ggplot2在生成一页多图方面,有个facet,分面的命令,可以自动根据分组,每组对应一幅图出来.
-但是,如果是不同类型的图,想拼到一起,就比较麻烦了.
-在这里,Hiu给大家提供两种方法.
-
 第一种,使用grid包的viewport功能.
 ```
 library(ggplot2)
