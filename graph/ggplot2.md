@@ -281,8 +281,29 @@ p %+% mtcars
 # annotate
 [annotate](http://docs.ggplot2.org/current/annotate.html)
 
+```
 p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point()
 p + annotate("text", x = 4, y = 25, label = "Some text")
+```
+[text ex](http://docs.ggplot2.org/current/annotate-2.png)
+
+`p + annotate("text", x = 2:5, y = 25, label = "Some text")`, [result](http://docs.ggplot2.org/current/annotate-4.png)  
+`p + annotate("text", x = 2:3, y = 20:21, label = c("my label", "label 2"))`, [result](http://docs.ggplot2.org/current/annotate-12.png)
+
+```
+p + annotate("rect", xmin = 3, xmax = 4.2, ymin = 12, ymax = 21, alpha = .2)
+```
+[rect ex](http://docs.ggplot2.org/current/annotate-6.png)
+
+```
+p + annotate("segment", x = 2.5, xend = 4, y = 15, yend = 25, colour = "blue")
+```
+[segment ex](http://docs.ggplot2.org/current/annotate-8.png)
+
+```
+p + annotate("pointrange", x = 3.5, y = 20, ymin = 12, ymax = 28, colour = "red", size = 1.5)
+```
+[pointrage ex](http://docs.ggplot2.org/current/annotate-10.png)
 
 # experssion
 `?plotmath`
