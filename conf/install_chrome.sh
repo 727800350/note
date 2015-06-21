@@ -17,6 +17,20 @@
 # - http_proxy and https_proxy env vars set if you are using an http proxy
 # - Google Chrome should not be running at the same time as this script
 
+# *** Google Chrome was installed successfully ...
+# 
+# *** /opt/google/chrome tree contains 88 files totalling 178 MB ...
+# *** /tmp/chrome_install tree contains 1 files totalling 45 MB ...
+# 
+# Google Chrome was installed successfully.
+# Please run the browser via the 'google-chrome' command as a non-root user.
+# 
+# To update Google Chrome, run "yum update google-chrome-stable" or
+# simply re-run this script with "./install_chrome.sh".
+# 
+# To uninstall Google Chrome,
+# run "yum remove google-chrome-stable " or "./install_chrome.sh -u".
+
 show_syntax()
 # Show syntax of script
 {
