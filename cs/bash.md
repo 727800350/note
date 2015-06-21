@@ -66,7 +66,9 @@ find命令把匹配到的文件传递给xargs命令,而xargs命令每次只获�
 
 locate命令其实是"find -name"的另一种写法,但是要比后者快得多,原因在于它不搜索具体目录,而是搜索一个数据库(/var/lib/locatedb), 使用updatedb 来更新这个数据库
 
-grep
+grep  
+Normally, the exit status is 0 if selected lines are found and 1 otherwise. 
+But the exit status is 2 if an error occurred, unless the -q or --quiet or --silent option is used and a selected line is found
 
 在directory及其子目录下的c 文件中查找keyword
 ```
@@ -107,6 +109,13 @@ $ date +%Y%m%d_%H_%M_%S
 $ date +"%F %T"
 2015-06-11 15:11:49
 ```
+
+sort
+
+- -n   依照数值的大小排序
+- -r   以相反的顺序来排序
+- -t<分隔字符>   指定排序时所用的栏位分隔字符
+- -k  选择以哪个区间进行排序, 一般与 -t 一起使用
 
 # 网络
 **ss**
