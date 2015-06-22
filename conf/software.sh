@@ -72,28 +72,29 @@ installer jwhois
 installer libxml2-devel sqlite-devel
 
 ### zlog
-wget -c https://codeload.github.com/HardySimpson/zlog/tar.gz/latest-stable
-if [ $? -eq 0 -a -e latest-stable ]
+if [ ! -e /usr/local/include/zlog.h ]
 then
-	tar -xvf latest-stable
-	cd zlog-latest-stable
-	make
-	make install
-	cd ../
-	rm -rf latest-stable zlog-latest-stable
+	wget -c https://codeload.github.com/HardySimpson/zlog/tar.gz/latest-stable
+	if [ $? -eq 0 -a -e latest-stable ]
+	then
+		tar -xvf latest-stable
+		cd zlog-latest-stable
+		make
+		make install
+		cd ../
+		rm -rf latest-stable zlog-latest-stable
+	fi
 fi
 
 ### local libs
-if [ -d /etc/ld.so.conf.d ]
+if [ ! -e /etc/ld.so.conf.d/local_lib.conf -o ! -e /etc/ld.so.conf.d/local_lib64.conf ]
 then
 	cd /etc/ld.so.conf.d
-	touch local_lib.conf
-	touch local_lib64.conf
 	echo /usr/local/lib > local_lib.conf
 	echo /usr/local/lib64 > local_lib64.conf
 	ldconfig
 else
-	echo "/etc/ld.conf.d does not exist, pleas check" >&2
+	echo "/etc/ld.so.conf.d/local_lib.conf and /etc/ld.so.conf.d/local_lib64.conf already exist" >&2
 fi
 
 <<COM
@@ -108,40 +109,31 @@ COM
 installer gnuplot numpy scipy
 installer python-pip 
 
-wget -c https://pypi.python.org/packages/source/p/pip/pip-1.5.6.tar.gz#md5=01026f87978932060cc86c1dc527903e
-if [ $? -eq 0 -a -f pip-1.5.6.tar.gz ]
-then
-	tar -xvf pip-1.5.6.tar.gz
-	cd pip-1.5.6
-	python setup.py install
-	cd ../
-	rm -rf pip-1.5.6.tar.gz pip-1.5.6
-fi
+function pip_install(){
+	for soft in $@
+	do
+		## check
+		pip list | grep ${soft}
+		## the  exit  status  is 0 if selected lines are found and 1 otherwise.
+		if [ $? -ne 0 ]
+		then
+			echo "${soft} has not been installed"
+			## install
+ 			pip install ${soft}
+		fi
+	done
+}
 
-if [ -e /usr/bin/pip ]
-then
-## 	check
-	pip install gnuplot-py
-	pip install xlutils
+pip_install gnuplot-py
+pip_install xlutils
 ## 	you-get和youtube-dl <https://github.com/rg3/youtube-dl>是两个用于从视频网站上下载视频文件的工具。其中，后者支持的网站更多，但前者对国内的视频网站支持更好。
-	pip install you-get ## needs python 3
-	pip install youtube-dl
+if [ -e /usr/bin/python3 ]
+then
+	pip_install you-get ## needs python 3
 fi
+pip_install youtube-dl
 
-wget -c http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-2.0.2.tar.gz
-tar -xvf mysql-connector-python-2.0.2.tar.gz
-cd mysql-connector-python-2.0.2
-python setup.py install
-cd ../
-rm -rf mysql-connector-2.0.2/*
-
-## ## R language
-installer R
-installer curl libcurl libcurl-devel
-nohup Rscript ./package.r 1>r.log 2>&1 &
-
-## flash 
-yum localinstall -y http://fpdownload.macromedia.com/get/flashplayer/pdc/11.2.202.425/flash-plugin-11.2.202.425-release.x86_64.rpm
+installer mysql-connector-python
 
 installer wiznote      # Stable version  
 
@@ -149,12 +141,22 @@ installer gstreamer gstreamer-plugins-base gstreamer-plugins-good gstreamer-plug
 
 installer alacarte ## set desktop menu
 
-## wps office
-yum localinstall -y http://kdl.cc.ksosoft.com/wps-community/download/a18/wps-office-9.1.0.4961-1.a18p1.x86_64.rpm
-
 ## cpdf是一个跨平台的PDF处理工具，可以完成常见的PDF合并、切割、加密解密、书签、水印等功能。
 ## 下载已编译好的二进制包，解压，并将与自己的平台对应的二进制文件复制到${HOME}/bin目录下即可使用。
-wget -c https://github.com/coherentgraphics/cpdf-binaries/archive/master.zip
+cd ~
+if [ ! -d bin ]
+then
+	mkdir bin
+fi
+if [ ! -e bin/cpdf -o ! -e bin/smpdf ]
+then
+	wget -c https://github.com/coherentgraphics/cpdf-binaries/archive/master.zip
+	unzip cpdf-binaries-master.zip
+	cp cpdf-binaries-master/Linux-Intel-64bit/cpdf bin/
+	cp cpdf-binaries-master/LosslessPDFCompressor/Linux64/smpdf bin/
+	chmod +x bin/cpdf bin/smpdf
+	rm -rf cpdf-binaries-master.zip cpdf-binaries-master
+fi
 
 <<COM
 ## mutt
@@ -168,4 +170,19 @@ sudo yum install graphviz
 sudo dot -c  ## configure plugins
 sudo yum install graphviz-gd ## support for png, jpg, jpeg etc
 COM
+
+## wps office
+yum list installed | grep ^wps-office\\.
+if [ $? -ne 0 ]
+then
+	yum localinstall -y http://kdl.cc.ksosoft.com/wps-community/download/a18/wps-office-9.1.0.4961-1.a18p1.x86_64.rpm
+fi
+
+## R language
+installer R
+installer curl libcurl libcurl-devel
+
+## 不含参数的library()函数会显示已安装的R包列表
+## installed.packages()[,c("Package","Version")]
+## nohup Rscript ./package.r 1>r.log 2>&1 &
 
