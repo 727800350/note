@@ -56,10 +56,29 @@ BEGIN{
 
 cat /etc/fstab > fstab
 cat tmp | awk '{print "UUID="$1, "/media/"$2, "ntfs defaults 0 0"}' >> fstab
+
+cat tmp | while read line
+do
+	label=`echo $line | awk '{print $2}'`
+	target="/media/${label}"
+	if [ ! -d ${target} ]
+	then
+		sudo mkdir -p ${target}
+	fi
+done
+
 rm uuid.tmp df.tmp tmp
 
-sudo mv /etc/fstab /etc/fstab.`date +%Y%m%d_%H_%M_%S`
-sudo mv fstab /etc/fstab
+cat fstab
+echo "the next step is to replace fstab: Y/N"
+read line
+if [ ${line} = "Y" ]
+then
+	sudo mv /etc/fstab /etc/fstab.`date +%Y%m%d_%H_%M_%S`
+	sudo mv fstab /etc/fstab
+else
+	echo "you choose N"
+fi
 
 exit 0
 
