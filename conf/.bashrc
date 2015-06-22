@@ -9,18 +9,27 @@ fi
 # export SYSTEMD_PAGER=
 
 # texlive env
-export TEXLIVE=/usr/local/texlive/2012
+export TEXLIVE=/usr/local/texlive/2015
 export PATH=$PATH:$TEXLIVE/bin/x86_64-linux
 export MANPATH=$MANPATH:$TEXLIVE/texmf/doc/man
 export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info
 
-# User specific aliases and functions
-alias cp='acp -g'
-alias mv='amv -g'
-
 ## maven
-export MAVEN=/home/eric/program/apache-maven-3.2.5
+export MAVEN=/home/`whoami`/program/apache-maven-3.2.5
 export PATH=$PATH:$MAVEN/bin
+
+# User specific aliases and functions
+target=/usr/local/bin/acp
+if [ -e ${target} ]
+then
+	alias cp='acp -g'
+fi
+target=/usr/local/bin/amv
+if [ -e ${target} ]
+then
+	alias mv='amv -g'
+fi
+unset target
 
 ## functions
 ## usage: search [extention] keyword [dir]
