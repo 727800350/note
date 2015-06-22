@@ -171,6 +171,9 @@ sudo dot -c  ## configure plugins
 sudo yum install graphviz-gd ## support for png, jpg, jpeg etc
 COM
 
+## http://seisman.info/fcitx-for-centos-7.html
+## installer fcitx-googlepinyin fcitx-cloudpinyin
+
 ## wps office
 yum list installed | grep ^wps-office\\.
 if [ $? -ne 0 ]
