@@ -27,13 +27,6 @@ then
 	yum install -y installer createrepo
 fi
 
-## yum-axelget是EPEL提供的一个yum插件.使用该插件后用yum安装软件时可以并行下载
-yum list installed | grep ^yum-axelget\. >&2
-if [ $? -ne 0 ]
-then
-	yum install -y yum-axelget
-fi
-
 local="/yum/"
 if [ ! -d ${local} ]
 then

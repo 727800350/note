@@ -20,7 +20,7 @@ installer lrzsz
 installer unrar
 installer mlocate
 
-installer mysql mysql-server mysql-devel
+installer mariadb-server mariadb mariadb-devel
 installer glib2 glib2-devel
 installer boost
 
@@ -28,7 +28,7 @@ installer boost
 installer php
 installer php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml php-xmlrpc
 
-installer PhpMyAdmin
+installer phpMyAdmin
 ## php data file in /usr/share/phpMyAdmin
 ## 访问权限的设置在/etc/httpd/conf.d/phpMyAdmin.conf
 ## Apache 2.4+ uses "Require all granted" instead of "Allow from all"
@@ -106,7 +106,7 @@ installer octave
 COM
 
 ## python
-installer gnuplot numpy scipy
+installer numpy scipy
 installer python-pip 
 
 function pip_install(){
@@ -124,7 +124,6 @@ function pip_install(){
 	done
 }
 
-pip_install gnuplot-py
 pip_install xlutils
 ## 	you-get和youtube-dl <https://github.com/rg3/youtube-dl>是两个用于从视频网站上下载视频文件的工具。其中，后者支持的网站更多，但前者对国内的视频网站支持更好。
 if [ -e /usr/bin/python3 ]
@@ -143,7 +142,9 @@ installer alacarte ## set desktop menu
 
 ## cpdf是一个跨平台的PDF处理工具，可以完成常见的PDF合并、切割、加密解密、书签、水印等功能。
 ## 下载已编译好的二进制包，解压，并将与自己的平台对应的二进制文件复制到${HOME}/bin目录下即可使用。
-cd ~
+cd /home/
+user=`ls | grep -v lost+found`
+cd ${user}
 if [ ! -d bin ]
 then
 	mkdir bin
@@ -152,8 +153,12 @@ if [ ! -e bin/cpdf -o ! -e bin/smpdf ]
 then
 	wget -c https://github.com/coherentgraphics/cpdf-binaries/archive/master.zip
 	unzip cpdf-binaries-master.zip
+
 	cp cpdf-binaries-master/Linux-Intel-64bit/cpdf bin/
+	cp cpdf-binaries-master/cpdfmanual.pdf bin/
+
 	cp cpdf-binaries-master/LosslessPDFCompressor/Linux64/smpdf bin/
+	cp cpdf-binaries-master/LosslessPDFCompressor/smpdfmanual.pdf bin/
 	chmod +x bin/cpdf bin/smpdf
 	rm -rf cpdf-binaries-master.zip cpdf-binaries-master
 fi
