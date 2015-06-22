@@ -1,4 +1,6 @@
-## sudo R --no-save -f soft.r
+#!/usr/bin/Rscript
+## install R packages
+
 source("http://www.bioconductor.org/biocLite.R")
 
 install.packages("ElemStatLearn") ## for the book: "The Elements of Statistical Learning, Data Mining, Inference, and Prediction"
@@ -7,8 +9,8 @@ install.packages("magrittr") ## A Forward-Pipe Operator for R
 install.packages("knitr") ## A General-Purpose Package for Dynamic Report Generation in R
 
 install.packages("scales") ## Scale functions for graphics
-install.packages("reshape") ## Flexibly reshape data
 install.packages("reshape2") ## Flexibly Reshape Data: A Reboot of the Reshape Package
+install.packages("plyr") ## Tools for Splitting, Applying and Combining Data
 
 ## statistics
 install.packages("Hmisc") ## Harrell Miscellaneous

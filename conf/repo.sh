@@ -2,12 +2,6 @@
 ## take care of repos
 set -x
 
-if [ `whoami` != "root" ]
-then
-	echo "need root"
-	exit 1
-fi
-
 source ./common.env
 
 ## the path should not contain backspace, even with back slash
@@ -21,16 +15,23 @@ else
 fi
 
 ## the repos is the lowest(99)
-yum list installed | grep ^yum-plugin-priorities. >&2
+yum list installed | grep ^yum-plugin-priorities\. >&2
 if [ $? -ne 0 ]
 then
 	yum install -y yum-plugin-priorities
 fi
 
-yum list installed | grep ^createrepo. >&2
+yum list installed | grep ^createrepo\. >&2
 if [ $? -ne 0 ]
 then
 	yum install -y installer createrepo
+fi
+
+## yum-axelget是EPEL提供的一个yum插件.使用该插件后用yum安装软件时可以并行下载
+yum list installed | grep ^yum-axelget\. >&2
+if [ $? -ne 0 ]
+then
+	yum install -y yum-axelget
 fi
 
 local="/yum/"

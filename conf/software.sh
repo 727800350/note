@@ -2,12 +2,6 @@
 ## install software for new os
 set -x
 
-if [ `whoami` != "root" ]
-then
-	echo "need root"
-	exit 1
-fi
-
 source ./common.env
 
 ## text convertion between windows and linux
@@ -78,7 +72,7 @@ installer jwhois
 installer libxml2-devel sqlite-devel
 
 ### zlog
-wget https://codeload.github.com/HardySimpson/zlog/tar.gz/latest-stable
+wget -c https://codeload.github.com/HardySimpson/zlog/tar.gz/latest-stable
 if [ $? -eq 0 -a -e latest-stable ]
 then
 	tar -xvf latest-stable
@@ -114,7 +108,7 @@ COM
 installer gnuplot numpy scipy
 installer python-pip 
 
-wget https://pypi.python.org/packages/source/p/pip/pip-1.5.6.tar.gz#md5=01026f87978932060cc86c1dc527903e
+wget -c https://pypi.python.org/packages/source/p/pip/pip-1.5.6.tar.gz#md5=01026f87978932060cc86c1dc527903e
 if [ $? -eq 0 -a -f pip-1.5.6.tar.gz ]
 then
 	tar -xvf pip-1.5.6.tar.gz
@@ -129,9 +123,12 @@ then
 ## 	check
 	pip install gnuplot-py
 	pip install xlutils
+## 	you-get和youtube-dl <https://github.com/rg3/youtube-dl>是两个用于从视频网站上下载视频文件的工具。其中，后者支持的网站更多，但前者对国内的视频网站支持更好。
+	pip install you-get ## needs python 3
+	pip install youtube-dl
 fi
 
-wget http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-2.0.2.tar.gz
+wget -c http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-2.0.2.tar.gz
 tar -xvf mysql-connector-python-2.0.2.tar.gz
 cd mysql-connector-python-2.0.2
 python setup.py install
@@ -139,26 +136,25 @@ cd ../
 rm -rf mysql-connector-2.0.2/*
 
 ## ## R language
-## installer R
-## installer curl libcurl libcurl-devel
-## if [ -f package.r ]
-## then
-## 	Rscript --slave package.r
-## fi
+installer R
+installer curl libcurl libcurl-devel
+nohup Rscript ./package.r 1>r.log 2>&1 &
 
 ## flash 
-wget http://fpdownload.macromedia.com/get/flashplayer/pdc/11.2.202.425/flash-plugin-11.2.202.425-release.x86_64.rpm
-if [ $? -eq 0 -a -e flash-plugin-11.2.202.425-release.x86_64.rpm ]
-then
-	rpm -ivh flash-plugin-11.2.202.425-release.x86_64.rpm
-	rm flash-plugin-11.2.202.425-release.x86_64.rpm
-fi
+yum localinstall -y http://fpdownload.macromedia.com/get/flashplayer/pdc/11.2.202.425/flash-plugin-11.2.202.425-release.x86_64.rpm
 
 installer wiznote      # Stable version  
 
 installer gstreamer gstreamer-plugins-base gstreamer-plugins-good gstreamer-plugins-bad-free
 
 installer alacarte ## set desktop menu
+
+## wps office
+yum localinstall -y http://kdl.cc.ksosoft.com/wps-community/download/a18/wps-office-9.1.0.4961-1.a18p1.x86_64.rpm
+
+## cpdf是一个跨平台的PDF处理工具，可以完成常见的PDF合并、切割、加密解密、书签、水印等功能。
+## 下载已编译好的二进制包，解压，并将与自己的平台对应的二进制文件复制到${HOME}/bin目录下即可使用。
+wget -c https://github.com/coherentgraphics/cpdf-binaries/archive/master.zip
 
 <<COM
 ## mutt

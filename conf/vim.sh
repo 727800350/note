@@ -4,7 +4,6 @@ set -x
 
 source ./common.env
 
-## run as root
 ## 如果系统中自带是vim是vim-minimal, 而不是vim
 ## vi 默认是vi-minimal
 ## 直接安装vim-enhanced 会提示和vi-minimal 冲突
@@ -12,8 +11,17 @@ source ./common.env
 if [ ${os} = "fedora" ]
 then
 	yum remove -y vim-minimal
-	yum install -y sudo 
-	yum install -y vim
 	echo "please use visudo to give `whoami` sudo permission"
 fi
+
+installer sudo 
+tail /etc/sudoers
+cat /etc/sudoers | grep `whoami`
+if [ $? -ne 0 ]
+then
+	echo "`whoami` ALL=(ALL) ALL" >> /etc/sudoers
+fi
+tail /etc/sudoers
+
+installer vim-enhanced
 

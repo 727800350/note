@@ -10,9 +10,6 @@ local({r <- getOption("repos")
 
 ## Every R session starts with excuting the .First function
 .First <- function(){
-	library(ggplot2)
-	library(magrittr)
-	source("/home/eric/.Rfun.r")
 	cat("\nWelcome at ", date(),"\n")
 }
 

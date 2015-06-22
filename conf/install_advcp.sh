@@ -1,6 +1,14 @@
 #!/bin/bash
 ## do not use the root permission to execute this file
 
+set -x
+
+if [ `whoami` = "root" ]
+then
+	echo "do not use root"
+	exit 1
+fi
+
 wget https://aur.archlinux.org/packages/ad/advcp/advcp.tar.gz
 tar -zxvf advcp.tar.gz
 
@@ -27,3 +35,4 @@ rm -rf advcp/
 rm advcp.tar.gz
 rm -rf coreutils*
 printf "Don't forget to add \"alias cp='acp -g'\" and \"alias mv='amv -g'\" in your bashrc!\n"
+
