@@ -6,9 +6,11 @@ tmux: terminal multiplexer
 tmux采用C/S模型,包括以下单元
 
 - server:服务器,执行tmux命令就开启了一个服务器.
-- session:会话,一个服务器可以包含多个会话.
-- window:窗口,一个会话可以包含多个窗口.
+- session:会话,一个服务器可以包含多个会话, 一个session可以看作是tmux管理下的伪终端的一个集合
+- window:窗口,一个会话可以包含多个窗口, 每个window都是一个伪终端，会占据整个屏幕
 - panel:面板,一个窗口可以包含多个面板.
+
+[结构示意图](http://images.cnblogs.com/cnblogs_com/itech/linux/tmux.png)
 
 状态栏: `Session: basic 1 3`  
 表示 位于名为basic 的 session, 且位于这个session 的第一个window, 第三个 panel
@@ -33,11 +35,13 @@ tmux采用C/S模型,包括以下单元
 
 我的prefix为:C-a
 
-1. prefix Esc 进入复制模式
+1. prefix-Esc 进入复制模式
 2. 参考上表移动鼠标(可以通过vi 模式也可以通过方向键)到要复制的区域,移动鼠标时可用vim的搜索功能"/","?"
 3. 按 v 开始选择复制区域
 4. 选择完成后按y 或者 Enter键退出
-5. prefix p 粘贴
+5. prefix-p 粘贴
+
+使用鼠标选中之后(也就是进行复制), prefix-p 也是可以粘贴的
 
 # 设置
 查看prefix现有绑定键:
