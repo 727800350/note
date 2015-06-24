@@ -122,6 +122,18 @@ Uppercase to lowercase:
 
 `tr -d'\n'` 删除回车符
 
+w命令用于显示已经登录系统的用户的名称,以及他们正在做的事.该命令所使用的信息来源于/var/run/utmp文件
+```
+[wangchao34@cp01-rdqa04-dev123.cp01.baidu.com ~]$ w
+ 17:21:42 up 84 days,  5:08, 17 users,  load average: 0.20, 0.26, 2.45
+USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
+zhuchong pts/1    bb-sns-relay04.b 17:08   12:48   0.01s  0.01s bash -l
+wangchao pts/9    bb-sns-relay03.b 09:21    0.00s  0.06s  0.01s sshd: wangchao34 [priv]
+caiyuanj pts/10   bb-sns-relay03.b 10:10   17:43   0.42s  0.01s sshd: caiyuanjun [priv]
+```
+
+`ps -ef` 可以查看pid, ppid
+
 # 网络
 **ss**
 socket statistics (show apps using the Internet)
