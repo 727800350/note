@@ -25,6 +25,7 @@ tmux采用C/S模型,包括以下单元
 - prefix-D 选择要脱离的会话,在同时开启了多个会话时使用 
 - prefix-x 关闭当前的panel,如果只剩window了的话,也会关闭当前的window
 - prefix-& 退出当前的session
+- prefix-$ rename session
 - prefix-c 新建一个window
 - prefix-n 转到下一个window
 - prefix-w 显示当前的所有window
