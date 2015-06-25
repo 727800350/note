@@ -7,7 +7,7 @@ tmux采用C/S模型,包括以下单元
 
 - server:服务器,执行tmux命令就开启了一个服务器.
 - session:会话,一个服务器可以包含多个会话, 一个session可以看作是tmux管理下的伪终端的一个集合
-- window:窗口,一个会话可以包含多个窗口, 每个window都是一个伪终端，会占据整个屏幕
+- window:窗口,一个会话可以包含多个窗口, 每个window都是一个伪终端,会占据整个屏幕
 - panel:面板,一个窗口可以包含多个面板.
 
 [结构示意图](http://images.cnblogs.com/cnblogs_com/itech/linux/tmux.png)
@@ -42,6 +42,9 @@ tmux采用C/S模型,包括以下单元
 5. prefix-p 粘贴
 
 使用鼠标选中之后(也就是进行复制), prefix-p 也是可以粘贴的
+
+直接用鼠标复制的时候,是直接使用vim处理的, 
+如果需要复制到其他地方, 比如在windows 通过xshell 进行操作, 需要复制到win 的系统剪切板中, 那么需要鼠标复制的同时按住 shift.
 
 # 设置
 查看prefix现有绑定键:
