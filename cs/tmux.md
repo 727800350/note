@@ -19,26 +19,33 @@ tmux采用C/S模型,包括以下单元
 - prefix-? 列出所有快捷键,按q返回 
 
 ## session
-以后建立tmux的session,还是使用下面的方法:
-`tmux new-session -s basic` (basic 为这个session 的名字)  
-或者简写为:
-`tmux new -s basic`
+位于terminal
 
-如果你已经创建了一个或多个会话,但是还没有运行 Tmux,那么可以输入`tmux attach`以接入已开启的会话
+- tmux new-session -s basic: 创建名为basic 的session, 简写为 `tmux new -s basic`
+- tmux attach -t session_name: 键入session, 简写为 `tmux a -t session_name`
+- tmux kill-session -t $session_name 删除指定session
+- tmux kill-server 删除所有session
 
-- prefix-d 挂起(detach)当前的session,回退到您的终端,以后如果还希望进入这个session,可以在终端输入 tmux attach -t xxxx
+位于tmux
+
+- prefix-d 挂起(detach)当前的session,回退到您的终端
 - prefix-D 选择要脱离的会话,在同时开启了多个会话时使用 
 - prefix-& 退出当前的session
 - prefix-$ rename session
 - prefix-s 获取现有会话的列表, 列表中的每个会话都有一个 ID,该 ID 是从 0 开始的.按下对应的 ID 就可以进入会话.
+- prefix :kill-server 删除所有session
+- prefix :kill-session 删除session
 
 ## window
 - prefix-c 新建一个window
 - prefix-n 转到下一个window
 - prefix-w 显示当前的所有window
+- prefix-& 删除window
+- prefix-, 重命名window
 
 ## panel
 - prefix-x 关闭当前的panel,如果只剩window了的话,也会关闭当前的window
+- prefix-backspace 更换pane排版, 横竖进行变换
 - prefix-p 显示panel的index,当然我们设定了从1开始.
 - prefix-number - 跳转到对应index的panel
 
