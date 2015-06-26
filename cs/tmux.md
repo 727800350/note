@@ -12,27 +12,37 @@ tmux采用C/S模型,包括以下单元
 
 [结构示意图](http://images.cnblogs.com/cnblogs_com/itech/linux/tmux.png)
 
+# 快捷操作
 状态栏: `Session: basic 1 3`  
 表示 位于名为basic 的 session, 且位于这个session 的第一个window, 第三个 panel
 
+- prefix-? 列出所有快捷键,按q返回 
+
+## session
 以后建立tmux的session,还是使用下面的方法:
 `tmux new-session -s basic` (basic 为这个session 的名字)  
 或者简写为:
 `tmux new -s basic`
 
-- prefix-? 列出所有快捷键,按q返回 
+如果你已经创建了一个或多个会话,但是还没有运行 Tmux,那么可以输入`tmux attach`以接入已开启的会话
+
 - prefix-d 挂起(detach)当前的session,回退到您的终端,以后如果还希望进入这个session,可以在终端输入 tmux attach -t xxxx
 - prefix-D 选择要脱离的会话,在同时开启了多个会话时使用 
-- prefix-x 关闭当前的panel,如果只剩window了的话,也会关闭当前的window
 - prefix-& 退出当前的session
 - prefix-$ rename session
+- prefix-s 获取现有会话的列表, 列表中的每个会话都有一个 ID,该 ID 是从 0 开始的.按下对应的 ID 就可以进入会话.
+
+## window
 - prefix-c 新建一个window
 - prefix-n 转到下一个window
 - prefix-w 显示当前的所有window
+
+## panel
+- prefix-x 关闭当前的panel,如果只剩window了的话,也会关闭当前的window
 - prefix-p 显示panel的index,当然我们设定了从1开始.
 - prefix-number - 跳转到对应index的panel
 
-复制过程
+# 复制过程
 
 我的prefix为:C-a
 
@@ -46,6 +56,17 @@ tmux采用C/S模型,包括以下单元
 
 直接用鼠标复制的时候,是直接使用vim处理的, 
 如果需要复制到其他地方, 比如在windows 通过xshell 进行操作, 需要复制到win 的系统剪切板中, 那么需要鼠标复制的同时按住 shift.
+
+将复制下来的文本发送到系统的剪贴板中
+在默认情况下,当从 Tmux 中复制文本时,复制下来的文本只能粘贴到同一个 Tmux 会话中.
+若要使复制下来的文本可以粘贴到任何位置,就需要让 Tmux 将文本复制到系统的剪贴板.为此,我们需要这样做:
+
+1. reattach-to-user-namespace
+1. 在配置文件 ~/.tmux.conf 中加入以下内容:
+```
+# invoke reattach-to-user-namespace every time a new window/pane opens
+set-option -g default-command "reattach-to-user-namespace -l bash"
+```
 
 # 设置
 查看prefix现有绑定键:
