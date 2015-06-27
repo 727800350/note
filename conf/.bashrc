@@ -18,7 +18,7 @@ export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info
 export MAVEN=/home/`whoami`/program/apache-maven-3.2.5
 export PATH=$PATH:$MAVEN/bin
 
-# User specific aliases and functions
+# aliases
 target=/usr/local/bin/acp
 if [ -e ${target} ]
 then
@@ -31,7 +31,9 @@ then
 fi
 unset target
 
-## functions
+alias tmux="TERM=screen-256color tmux"
+
+# functions
 ## usage: search [extention] keyword [dir]
 function search(){
     if [ $# -eq 3 ] 
