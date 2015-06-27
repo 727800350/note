@@ -4,6 +4,9 @@ set -x
 
 source ./common.env
 
+## tmux
+installer tmux
+
 ## text convertion between windows and linux
 installer unix2dos dos2unix
 

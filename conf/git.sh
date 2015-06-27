@@ -35,7 +35,7 @@ then
 	fi
 fi
 
-cd note/conf
-cp .vimrc .bashrc ~
-cd ~
+ln -sf ~/git/note/conf/.vimrc ~/.vimrc
+ln -sf ~/git/note/conf/.bashrc ~/.bashrc
+ln -sf ~/git/note/conf/.tmux.conf ~/.tmux.conf
 
