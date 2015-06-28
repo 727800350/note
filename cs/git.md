@@ -6,6 +6,9 @@
 
 在日常的git操作中,git checkout,是我们的常用命令,既可以是某一个具体的commit hash值,也可以是某个分支名称, 还可以是tag名称
 
+## git add
+- git add -p <file> 把对某个文件的修改添加到下次提交中
+
 ## git cherry-pick. 
 What git cherry-pick does, basically, is take a commit from somewhere else, and "play it back" wherever you are right now. 
 Because this introduces the same change with a different parent, Git builds a new commit with a different ID.
@@ -39,6 +42,13 @@ older stashes are found in the reflog of this reference and can be named using t
 - git stash list: 显示Git栈内的所有备份,可以利用这个列表来决定从那个地方恢复
 - git stash clear: 清空Git栈
 
+把当前分支中未提交的修改移动到其他分支
+```
+git stash
+git checkout branch2
+git statsh pop
+```
+
 ## git tag
 - git tag 列出现有标签的命令非常简单
 - git tag -l 'v1.4.2.\*' // 匹配标签
@@ -70,6 +80,30 @@ git tag -d tag_name
 git push origin :refs/tags/tag_name
 ```
 
+## git log
+- git log -p <file> 显示某个文件的所有修改
+- git blame <file> 谁, 在什么时间, 修改了文件的什么内容
+
+## git grep
+- git grep "hello" 从当前目录的所有文件中搜索
+- git grep "hello" v2.5 在某一版本中搜索
+
+## 合并与重置
+- git merge <branch> 将分支合并到当前HEAD中：
+- git rebase <branch> 将当前HEAD版本重置到分支中(请勿重置已发布的提交!)
+- git rebase --abort 退出重置
+- git rebase --continue 解决冲突后继续重置：
+
+## 撤销
+- git reset --hard HEAD 放弃工作目录下的所有修改：
+- git reset HEAD 移除缓存区的所有文件（i.e. 撤销上次git add）:
+- git checkout HEAD <file> 放弃某个文件的所有本地修改：
+- git revert <commit> 重置一个提交（通过创建一个截然不同的新提交）
+- git reset --hard <commit> 将HEAD重置到指定的版本，并抛弃该版本之后的所有修改：
+- git reset <commit> 将HEAD重置到上一次提交的版本，并将之后的修改标记为未添加到缓存区的修改：
+- git reset --keep <commit> 将HEAD重置到上一次提交的版本，并保留未提交的本地修改：
+
+# repo
 ## Create repo
 创建 git 仓库
 
