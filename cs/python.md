@@ -123,7 +123,7 @@ struct模块中最重要的三个函数是pack(), unpack(), calcsize()
 - unpack(fmt, string)       按照给定的格式(fmt)解析字节流string,返回解析出来的tuple
 - calcsize(fmt)                 计算给定的格式(fmt)占用多少字节的内存
 
-[binary struct demo](../../demo/python/pack_unpack.py)
+[binary struct demo](../demo/python/pack_unpack.py)
 
 struct中支持的格式如下表:
 

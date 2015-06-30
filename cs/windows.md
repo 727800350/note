@@ -134,6 +134,14 @@ COUNTIF in Excel - count if not blank, greater than, duplicate or unique
 - `=COUNTIF(range,"<>"&"*")`:  Formula to count cells not containing any text
 - `=COUNTIF(range,"")`: Universal COUNTIF formula for blanks (all value types)
 
+### Google sheets
+Within a single spreadsheet, you can replicate data and copy it from one sheet to another by 
+entering the sheet name and an exclamation mark before the cell being copied. Here are some examples:
+```
+=Sheet1!A1
+='Sheet number two'!B4
+```
+
 ## Word
 更新域
 
