@@ -61,13 +61,20 @@ def fun(x):
 ```
 
 # IO
+print >>sys.stdout, 'sth'
+print >>sys.stderr, 'sth'
+
 print 默认输出的时候会自动换行, 在末尾加一个逗号可以避免换行
 ```
 print 'sth',
 sys.stdout.write('sth')  ## 用这个也可以达到同样的效果
 ```
 
-[从stdin 读入, 输出到stdout](../demo/python/stdin_stdout.py)
+[(非二进制)从stdin 读入, 输出到stdout](../demo/python/stdin_stdout.py)
+[(二进制)从stdin 读入, 输出到stdout](../demo/python/stdin_stdout_binary.py)
+
+If the end of the file has been reached, f.read() will return an empty string ("").  
+`a = ""` 可以使用 `a == ""` 或者 `not a` 来进行判断, 两者都为True
 
 ## 重定向
 
