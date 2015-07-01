@@ -50,7 +50,7 @@ new_list = copy.copy(existing_list)
 import copy
 new_list_of_dicts = copy.deepcopy(existing_list_of_dicts)
 ```
-[demo](../../demo/python/copy_deepcopy.py)
+[demo](../demo/python/copy_deepcopy.py)
 
 
 ## global
@@ -67,7 +67,7 @@ print 'sth',
 sys.stdout.write('sth')  ## 用这个也可以达到同样的效果
 ```
 
-[从stdin 读入, 输出到stdout](../../demo/python/stdin_stdout.py)
+[从stdin 读入, 输出到stdout](../demo/python/stdin_stdout.py)
 
 ## 重定向
 
@@ -316,7 +316,7 @@ If default is not given, it defaults to None, so that this method **never raises
 
 ### set
 集合是无序的,不重复的元素集,类似数学中的集合,可进行逻辑运算和算术运算.
-[set demo](../../demo/python/set.py)
+[set demo](../demo/python/set.py)
 
 ## [heapq](https://docs.python.org/2/library/heapq.html)
 需要 `import heapq`
@@ -378,7 +378,7 @@ Return the number of non-overlapping occurrences of substring sub in the range [
 [编码](http://in355hz.iteye.com/blog/1860787)
 因为 Python 认为 16 位的 unicode 才是字符的唯一内码,而大家常用的字符集如 gb2312,gb18030/gbk,utf-8,以及 ascii 都是字符的二进制(字节)编码形式.
 把字符从 unicode 转换成二进制编码,当然是要 encode
-[encoding demo](../../demo/python/encoding.py)
+[encoding demo](../demo/python/encoding.py)
 
 - `str.decode([encoding[, errors]])`
 Decodes the string using the codec registered for encoding. encoding defaults to the default string encoding. errors may be given to set a different error handling scheme. The default is 'strict', meaning that encoding errors raise UnicodeError. Other possible values are 'ignore','replace' and any other name registered via codecs.register_error(), see section Codec Base Classes.
@@ -432,7 +432,7 @@ string.join() 的参数是一个iterable的object, 例如一个list
 原始字符串是为正则表达式而设计的, 但是可以用其来方便的表示windows系统下的路径
 
 # class
-[class inheritance demo](../../demo/python/school.py)
+[class inheritance demo](../demo/python/school.py)
 
 # Database
 ## mysql-connector-python
@@ -469,7 +469,7 @@ Inserting or updating data is also done using the handler structure known as a c
 When you use a transactional storage engine such as InnoDB (the default in MySQL 5.5 and later), 
 you must commit the data after a sequence of INSERT, DELETE, and UPDATE statements.
 
-[insert demo](/../../demo/python/db_insert.py)
+[insert demo](/../demo/python/db_insert.py)
 
 update 也可以像上面的demo 一样使用.
 
@@ -811,7 +811,7 @@ the size in bytes of each element of the array. For example, an array of element
 - ndarray.data
 the buffer containing the actual elements of the array. Normally, we will not need to use this attribute because we will access the elements in an array using indexing facilities.
 
-[Array Creation demo](../../demo/python/numpy_array_create.py)
+[Array Creation demo](../demo/python/numpy_array_create.py)
 
 ```
 array, zeros, zeros_like, ones, ones_like, empty, empty_like, arange, linspace, rand, randn, fromfunction, fromfile
@@ -821,7 +821,7 @@ numpy.dot and numpy.transpose
 The copy method makes a complete copy of the array and its data.
 
 使用数组的方法函数`tofile`可以方便地将数组中数据以二进制的格式写进文件.tofile输出的数据没有格式,因此用numpy.fromfile读回来的时候需要自己格式化数据, 例如修改shape
-[File IO demo](../../demo/python/numpy_file.py)
+[File IO demo](../demo/python/numpy_file.py)
 
 **loadtxt**
 `numpy.loadtxt(fname, dtype=<type 'float'>, comments='#', delimiter=None, converters=None, skiprows=0,usecols=None, unpack=False, ndmin=0)`
@@ -872,9 +872,9 @@ There are several popular MCMC Python packages like PyMC, a rich package with ma
 
 There are several ways to fit data with a linear regression. In this section we will use `curve_fit`, which is a χ2-based method (in other words, a best-fit method)
 
-[solve funtion](../../demo/python/scipy_solve_function.py)
+[solve funtion](../demo/python/scipy_solve_function.py)
 
-[interpolation](../../demo/python/scipy_interpolation.py)
+[interpolation](../demo/python/scipy_interpolation.py)
 
 ### xlutils, xlrd, xlwt
 module for excel
@@ -886,7 +886,7 @@ workbook = xlrd.open_workbook(path)
 sheet = workbook.sheets()[0]
 value = sheet.cell(1,2).value
 ```
-[xlrd demo](../../demo/python/excel.py)
+[xlrd demo](../demo/python/excel.py)
 
 xlwt: 创建编辑新的excel
 ```
@@ -1008,7 +1008,7 @@ print map(lambda x: x* * 2, range(10))
 这个机制被称为反射(反过来让对象告诉我们他是什么),或是自省(让对象自己告诉我们他是什么,好吧我承认括号里是我瞎掰的- -#),用于实现在运行时获取未知对象的信息.反射是个很吓唬人的名词,听起来高深莫测,在一般的编程语言里反射相对其他概念来说稍显复杂,一般来说都是作为高级主题来讲,但在Python中反射非常简单,用起来几乎感觉不到与其他的代码有区别,使用反射获取到的函数和方法可以像平常一样加上括号直接调用,获取到类后可以直接构造实例,不过获取到的字段不能直接赋值,因为拿到的其实是另一个指向同一个地方的引用,赋值只能改变当前的这个引用而已.
 
 **访问对象的属性**
-[demo](../../demo/python/reflection.py)
+[demo](../demo/python/reflection.py)
 
 - `dir([obj])`:
 调用这个方法将返回包含obj大多数属性名的列表(会有一些特殊的属性不包含在内).obj的默认值是当前的模块对象.
