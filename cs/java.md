@@ -312,7 +312,7 @@ synchronized和方法的实现细节有关,抽象方法不涉及实现细节,因
 ## Cast
 First, you must understand, that by casting you are not actually changing the object itself, you are just labeling it differently.
 
-[Cast ex](../../demo/java/Cast.java)
+[Cast ex](../demo/java/Cast.java)
 
 ![Cast example](http://uploads.codecall.net/monthly_05_2014/post-27003-0-90059300-1399049433.jpg)
 
@@ -353,7 +353,7 @@ Java 中会存在内存泄漏吗,请简单描述.
 答:理论上Java因为有垃圾回收机制(GC)不会存在内存泄露问题(这也是Java被广泛使用于服务器端编程的一个重要原因),
 然而在实际开发中,可能会存在**无用但可达**的对象,这些对象不能被GC回收也会发生内存泄露.
 一个例子就是Hibernate的Session(一级缓存)中的对象属于持久态,垃圾回收器是不会回收这些对象的,然而这些对象中可能存在无用的垃圾对象.下面的例子也展示了Java中发生内存泄露的情况:  
-[内存泄露的demo](../../demo/java/MyStack.java)  
+[内存泄露的demo](../demo/java/MyStack.java)  
 上面的代码实现了一个栈(先进后出(FILO))结构,乍看之下似乎没有什么明显的问题,它甚至可以通过你编写的各种单元测试.
 然而其中的pop方法却存在内存泄露的问题,当我们用pop方法弹出栈中的对象时,该对象不会被当作垃圾回收,即使使用栈的程序不再引用这些对象,因为栈内部维护着对这些对象的**过期引用(obsolete reference)**.
 在支持垃圾回收的语言中,内存泄露是很隐蔽的,这种内存泄露其实就是无意识的对象保持.

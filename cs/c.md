@@ -227,7 +227,7 @@ struct GSList {
 };
 typedef void* gpointer;
 ```
-[GSList demo](../../demo/c/glib_slist.c)  
+[GSList demo](../demo/c/glib_slist.c)  
 glib slist 的循环,最后好还是采用glib本身提供的函数, 而不要自己写, 
 因为我们在使用slist的时候,可以会将append和prepend混合着使用, 所以自己写循环函数会比较麻烦.
 
@@ -271,7 +271,7 @@ gmtime()和localtime()可以将time()获得的日历时间time_t结构体转换�
 其中gmtime()函数是将日历时间转化为世界标准时间(即格林尼治时间0,并返回一个tm结构体来保存这个时间,
 而localtime()函数是将日历时间转化为本地时间.
 
-[conversion demo](../../demo/c/time.c) 里面还有将时间转化为mysql 的格式的
+[conversion demo](../demo/c/time.c) 里面还有将时间转化为mysql 的格式的
 
 The struct timeval structure represents an elapsed time. 
 ```
@@ -524,7 +524,7 @@ optstring中后面的**冒号表示需要接变量**,并存于optarg中.如果�
 `optopt` 存储出错的option(如缺参数),或者不认识的option  
 `optind`, 表示下一次运行getopt时将读取数组第optind个
 
-[parse options demo](../../demo/c/parse_options.c)
+[parse options demo](../demo/c/parse_options.c)
 
 **chroot**  
 [Is chroot a security feature?](https://securityblog.redhat.com/2013/03/27/is-chroot-a-security-feature/)  

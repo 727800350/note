@@ -170,7 +170,7 @@ rename(dataframe, c(oldname = "newname", oldname = "newname", ...))
 
 ### rearrange columns of a data frame
 [ref](http://stackoverflow.com/questions/3369959/moving-columns-within-a-data-frame-without-retyping/18540144#18540144).
-use functio [moveme](../../demo/r/moveme.r)
+use functio [moveme](../demo/r/moveme.r)
 Usage is simple. Try these out:
 ```
 moveme(names(df), "g first")
@@ -188,7 +188,7 @@ setcolorder(dt, moveme(names(dt), "g first"))
 ## namespace
 同一个环境只能存在一个唯一的名字,不同环境可以存在相同名字,R寻找一个名字,
 会站在当前环境沿着search() path(`".GlobalEnv"     "package:base"   "namespace:base"`)往之后的环境中找名字,如果当前名字不符合就依次找后面的环境.  
-可以参见[demo namespace](../../demo/r/namespace.r)
+可以参见[demo namespace](../demo/r/namespace.r)
 
 ## object types
 R语言中最为基本的类包括了数值(numeric),逻辑(logical),字符(character),列表(list),
@@ -242,7 +242,7 @@ save objects to File System
 - cbind() 把矩阵横向合并成一个大矩阵(列方式), 将参数当成列矩阵来处理
 - rbind() 是纵向合并(行方式), 将参数当行矩阵来处理
 
-[cbind and rbind demo](../../demo/r/bind.r)
+[cbind and rbind demo](../demo/r/bind.r)
 
 类型的判断,**[is 与 inherits](http://stackoverflow.com/questions/27923345/whats-the-difference-between-is-and-inherits)**
 ```
@@ -399,7 +399,7 @@ hash它对environment进行了封装,使用户可以很方便的利用Hash表进
 
 [hash 与 list 性能比较](http://equation85.github.io/blog/hash-table-for-r/)
 
-[hash demo](../../demo/r/hash_demo.r)
+[hash demo](../demo/r/hash_demo.r)
 
 ## data.frame
 在数据导入R语言后,会以数据框(dataframe)的形式储存.
@@ -754,7 +754,7 @@ newdf <- sqldf("select avg(mpg) as avg_mpg, avg(disp) as avg_disp, gear from mtc
 ### transform data between wide and long formats
 [An Introduction to reshape2](http://seananderson.ca/2013/10/19/reshape.html)
 
-[What makes data wide or long?](../../demo/r/reshape2.r)
+[What makes data wide or long?](../demo/r/reshape2.r)
 
 It is easier to record their data in wide format, but it is easy to process in long format
 
@@ -768,7 +768,7 @@ In reshape2 there are multiple cast functions. Since you will most commonly work
 
 dcast uses a formula to describe the shape of the data. The arguments on the left refer to the ID variables and the arguments on the right refer to the measured variables.
 
-[reshape demo](../../demo/r/reshape2.r)
+[reshape demo](../demo/r/reshape2.r)
 
 **melt 错误提示**  
 Warning message: attributes are not identical across measure variables; they will be dropped  
@@ -916,13 +916,13 @@ cast(dfm, am + cyl + variable ~ ., dstats)
 - Addmargins(table, margins) 将概述边margins(默认是求和结果)放入表中
 - ftable(table) 创建一个紧凑的平铺式列联表
 
-[一维列联表](../../demo/r/table.r)
+[一维列联表](../demo/r/table.r)
 ### 二维列联表
 ```
 mytable <- table(A,B)
 mytable <- xtabs(~A+B, data = mydata)
 ```
-[二维列联表](../../demo/r/table.r)
+[二维列联表](../demo/r/table.r)
 
 table和xtabs 都可以基于三个或者更多个的类型变量生成多维列联表.  
 margin.table, prop.table, addmargins 可以自然地推广到高于二维的情况.  
@@ -1181,7 +1181,7 @@ dbSendQuery 传送查询,返回的结果是 继承"DBIResult"的一个子类的�
 
 这些是数据库中读/写/测试/删除表的方便接口. dbReadTable 和 dbWriteTable 实现一个 R 数据框的复制进和复制出数据库, 把数据框的行名字映射到 MySQL 表的 row_names 字段.
 
-[database demo](../../demo/r/db.r)
+[database demo](../demo/r/db.r)
 
 # 流程
 ```
@@ -1755,8 +1755,8 @@ If you are using special functions (e.g. distribution functions), you need to in
 Use `R CMD SHLIB foo.c` or `R CMD SHLIB -o foo.so foo.c`
 1. load the library, `> dyn.load('foo.so')`
 
-[demo C](../../demo/r/hello.c)  
-[demo R](../../demo/r/hello.r)
+[demo C](../demo/r/hello.c)  
+[demo R](../demo/r/hello.r)
 
 在R中定义的函数是可以和C中的函数用一样的名字
 

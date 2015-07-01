@@ -126,7 +126,7 @@ $array = [
 ];
 var_dump($array);
 ```
-[more examples of array](../../demo/php/array.php)
+[more examples of array](../demo/php/array.php)
 
 # Form 
 	<html>
@@ -144,7 +144,7 @@ var_dump($array);
 	</html>
 
 ## upload files
-[upload file demo](../../demo/php/upload-file.php)
+[upload file demo](../demo/php/upload-file.php)
 
 参数含义:
 
@@ -157,11 +157,11 @@ var_dump($array);
 # Database
 php 使用mysql有两个方式, 一种是面向过程式的, 一种是面向对象式的, 官方推荐使用面向对象式的.
 
-[面向对象式的demo](../../demo/php/db/mysql_object-oriented.php)
+[面向对象式的demo](../demo/php/db/mysql_object-oriented.php)
 
-[面向过程式的demo](../../demo/php/db/mysql_procedure-oriented.php)
+[面向过程式的demo](../demo/php/db/mysql_procedure-oriented.php)
 
-[微软的sqlserver, access, excel 连接](../../demo/php/db/ms.php)
+[微软的sqlserver, access, excel 连接](../demo/php/db/ms.php)
 
 **`$count = $result->fetch_row()[0]` 错误**:   
 PHP Fatal error:  Call to a member function query() on a non-object in xxx.php. 
