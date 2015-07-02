@@ -641,7 +641,7 @@ trigger_event: { INSERT | UPDATE | DELETE }
 FOR EACH ROW表示任何一条记录上的操作满足触发事件都会触发该触发器  
 当trigger body是多句sql语句时, 需要使用BEGIN END
 
-插入的record 用new 代指, 删除的record 用old代指, 具体见[trigger demo](../../demo/sql/trigger.sql)
+插入的record 用new 代指, 删除的record 用old代指, 具体见[trigger demo](../demo/sql/trigger.sql)
 
 ```
 mysql> CREATE TRIGGER trig1 AFTER INSERT

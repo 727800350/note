@@ -77,7 +77,7 @@ path.extname('path')  // 包括那个点, 'path'不用真实存在
 ```
 **阻塞与非阻塞**  
 一个类似的例子: 银行里取号之后, 然后我们就可以去干其他的事情, 等轮到我们的时候, 银行的叫号机就会发出通知.  
-[文件读取的异步与同步方式比较](../../demo/node.js/sync_async.js)
+[文件读取的异步与同步方式比较](../demo/node.js/sync_async.js)
 
 # 模块和包
 ## 模块
@@ -89,8 +89,8 @@ require('./sum.js')
 
 模块中的功能(如: 变量, 函数)通过赋值给exports 对象的某个属性提供给调用者使用.
 例如:  
-[sum 模块](../../demo/node.js/sum.js)  
-[sum 模块的测试](../../demo/node.js/sum_test.js)
+[sum 模块](../demo/node.js/sum.js)  
+[sum 模块的测试](../demo/node.js/sum_test.js)
 
 http server 实例:
 ```
@@ -107,7 +107,7 @@ server.listen(8080); // 第二个参数是IP地址, 不写的话就是默认的�
 http.createServer(function(request, response){}).server.listen(8080);
 ```
 
-[http server with url demo](../../demo/node.js/http_server.js)
+[http server with url demo](../demo/node.js/http_server.js)
 
 ## 包
 特殊的文件夹  

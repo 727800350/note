@@ -351,7 +351,7 @@ void mysql_thread_end(void)
 This function needs to be called before calling pthread_exit() to free memory allocated by mysql_thread_init().
 mysql_thread_end() is not invoked automatically by the client library. It must be called explicitly to avoid a memory leak.
 
-[multi thread demo](../../demo/c/db/multi_thread.c)
+[multi thread demo](../demo/c/db/multi_thread.c)
 
 ## Bind
 statement: **Multiple statement handles can be associated with a single connection. 但是同一个进程(线程) 只能有一个**

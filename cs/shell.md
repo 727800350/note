@@ -124,24 +124,24 @@ $ wc << EOF
 - 重定向数据和错误: `command 1> log.out 2> log.error`
 - 重定向到同一个文件: `command &> log`(注意: bash shell 会自动给错误消息更高的优先级, 使得可以在一处地方查看错误消息, 不用翻遍整个输出文件)
 - 临时重定向: `echo "this is an error" >&2`: 将这条输出重定向到错误输出.(& 不能丢, 否则是将输出重定向到一个名为2的文件)
-- 永久重定向: `exec 2> error`: 将错误消息全部重定向到error 文件. 相应的, 永久输入重定向为: `exec 0< input`([redirect input demo](../../demo/shell/input.sh))
+- 永久重定向: `exec 2> error`: 将错误消息全部重定向到error 文件. 相应的, 永久输入重定向为: `exec 0< input`([redirect input demo](../demo/shell/input.sh))
 
 ## 创建文件描述符
 除了0,1,2, 我们还可以自己定义文件描述符.
 
-[重定向标准输出到一个文件, 然后再恢复](../../demo/shell/redirect.sh)  
+[重定向标准输出到一个文件, 然后再恢复](../demo/shell/redirect.sh)  
 同样的操作可以应用到输入上
 
-关闭文件描述符: `exec 3>&-`(最后的4个字符之间不能有空格). [demo](../../demo/shell/close_file_descriptor.sh)
+关闭文件描述符: `exec 3>&-`(最后的4个字符之间不能有空格). [demo](../demo/shell/close_file_descriptor.sh)
 
-[创建临时文件](../../demo/shell/tmp_file.sh)
+[创建临时文件](../demo/shell/tmp_file.sh)
 
 - in default, mktemp will create the tmp file in the current directory
 - `mktemp -t`: 会强制mktemp 在系统的临时目录创建该文件, 在使用这个特性时, 命令会返回这个临时文件的全路径
 - `mktemp -d`: 创建一个临时目录
 
 # 变量
-[variable demo](../../demo/shell/variable.sh)
+[variable demo](../demo/shell/variable.sh)
 
 **注意:
 1. 变量名和等号之间不能有空格**
@@ -492,7 +492,7 @@ done
 }
 ```
 
-[user defined func demo](../../demo/shell/function.sh)
+[user defined func demo](../demo/shell/function.sh)
 
 1. 必须在调用函数地方之前,声明函数,shell脚本是逐行运行.不会像其它语言一样先预编译,一次必须在使用函数前先声明函数
 1. 可以带function fun()定义,也可以直接fun()定义,不带任何参数
@@ -500,7 +500,7 @@ done
 如果不加,将以最后一条命令运行结果作为返回值. 
 return后跟数值n( n 的范围必须在0-255之间, 如果n>255, 返回的实际结果为 n % 256),
 
-[变量作用域demo](../../demo/shell/function_variable_scope.sh)
+[变量作用域demo](../demo/shell/function_variable_scope.sh)
 
 1. 定义函数可以与系统命令相同, 自定义的函数命令比系统自带的命令优先级高
 2. 需要获得函数值,通过$?获得

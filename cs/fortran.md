@@ -64,7 +64,7 @@ end
 - `print *,"string"`: * 表示不限定输出格式, print 只能输出到stdout
 
 ## File
-[file io demo](../../demo/fortran/io.f90)
+[file io demo](../demo/fortran/io.f90)
 
 **打开文件**
 ```
@@ -102,7 +102,7 @@ inquire(UNIT = number, FILE = filename, IOSTAT = stat, ERR = label, EXIST = exis
 
 在使用open 命令打开文件的前后, 都可以通过inquire 命令来查询文件目前的状态.
 
-[检查文件是否存在的demo](../../demo/fortran/file_exist.f90)
+[检查文件是否存在的demo](../demo/fortran/file_exist.f90)
 
 # 数据类型 data type
 [ref](https://docs.oracle.com/cd/E19205-01/821-0391/aevmb/index.html)
@@ -132,9 +132,9 @@ inquire(UNIT = number, FILE = filename, IOSTAT = stat, ERR = label, EXIST = exis
 | LOGICAL*4 X            | 4        | 4            | 4                   |
 | LOGICAL*8 X            | 8        | 8            | 4                   |
 
-[data type demo](../../demo/fortran/data_type.f90)
+[data type demo](../demo/fortran/data_type.f90)
 
-[basic calculation demo](../../demo/fortran/calculation.f90)
+[basic calculation demo](../demo/fortran/calculation.f90)
 
 请注意以下事项:
 
@@ -171,7 +171,7 @@ end
 ```
 
 ## 全局变量 global variable
-[全局变量 demo](../../demo/fortran/global.f90)
+[全局变量 demo](../demo/fortran/global.f90)
 
 ## 数组 array
 定义:
@@ -227,7 +227,7 @@ However, FORTRAN will store the same array in the following sequence:
 ```
 
 ## 指针
-[demo](../../demo/fortran/pointer.f90)
+[demo](../demo/fortran/pointer.f90)
 
 ## 数学表达式
 ** 表示乘幂
@@ -296,7 +296,7 @@ do while(condition)
 end do
 ```
 
-[loop demo](../../demo/fortran/loop.f90)
+[loop demo](../demo/fortran/loop.f90)
 
 **提前跳出循环**  
 Fortran中跳出循环的两个命令为exit和cycle,
