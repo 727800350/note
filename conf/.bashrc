@@ -8,7 +8,8 @@ fi
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
-# texlive env
+# Path
+## texlive env
 export TEXLIVE=/usr/local/texlive/2015
 export PATH=$PATH:$TEXLIVE/bin/x86_64-linux
 export MANPATH=$MANPATH:$TEXLIVE/texmf/doc/man
@@ -18,20 +19,19 @@ export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info
 export MAVEN=/home/`whoami`/program/apache-maven-3.2.5
 export PATH=$PATH:$MAVEN/bin
 
+## user defined bin
+export PATH=$PATH:/home/`whoami`/git/note/bin/
+
 # aliases
-target=/usr/local/bin/acp
-if [ -e ${target} ]
+## cp and mv
+if [ -e /usr/local/bin/acp ]
 then
 	alias cp='acp -g'
 fi
-target=/usr/local/bin/amv
-if [ -e ${target} ]
+if [ -e /usr/local/bin/amv ]
 then
 	alias mv='amv -g'
 fi
-unset target
-
-alias tmux="TERM=screen-256color tmux"
 
 # functions
 ## usage: search [extention] keyword [dir]
