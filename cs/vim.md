@@ -26,6 +26,8 @@ Markdown 高亮配置
 |L 									  | low, 跳到屏幕下端|
 |M 									  | middle, 跳到屏幕中间|
 
+'*'可以查找当前光标下的word(完全符合),'g*'则部分符合,以#代替*表示向后(上)找.
+
 typing two backquotes \`\` returns you to the position where you issued the G command
 
 `w` move the cursor forward one word, **counting symboles and punctuations as equivalent to a word**  
