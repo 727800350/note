@@ -1,0 +1,196 @@
+#!/bin/bash
+
+#变量
+USER=`whoami`
+eval HOME=~$USER/goto/
+CONF=$HOME/go.conf
+TMPFILE=$HOME/.tmp
+
+#************************************** OP配置 **********************************
+#以RD用户认证，门神环境
+AUTH_1="$HOME/goto/auth $USER"
+
+#以work用户认证
+AUTH_2="$HOME/goto/auth work"
+
+#密码 noah
+NOAHPASS="$HOME/goto/pass noah"
+
+#密码 测试机
+CSJPASS="$HOME/goto/pass myp"
+
+#密码 ps-testing!!!
+QAPASS="$HOME/goto/pass ptest" 
+
+#密码 楠姐参考机
+NANPASS="$HOME/goto/pass nan"
+
+#密码 ps公用
+PSPASS="$HOME/goto/pass ps"
+
+#密码 wise测试
+WISEPASS="$HOME/goto/pass wise"
+
+#ndi209密码
+NDIPASS="$HOME/goto/pass ndi"
+
+#操作类型定义
+OPS=(AUTH_1 AUTH_2 NOAHPASS CSJPASS NANPASS QAPASS PSPASS WISEPASS NDIPASS)
+
+#************************************** OP配置 **********************************
+
+function goto()
+{
+    echo "now in goto"
+    CMDLINE=''
+    cnt=0
+        
+    op_num=${#OPS[@]}
+    echo "op_num: ${op_num}"
+    i=0
+    while [ $i -lt $op_num ]
+    do
+        if [ ${OPS[$i]} == $2 ]; then
+            echo "woca, left is : ${OPS[$i]}, and right is: $2"
+                
+            eval OPCMD="$"$2
+            echo "OPCMD is: ${OPCMD}"
+            
+            CMDLINE="$OPCMD $1"
+
+            echo "CMDLINE is : ${CMDLINE}"
+            
+            break
+        fi
+        i=`expr $i + 1`
+    done
+            
+    if [ "x$CMDLINE" == "x" ]; then
+        return -1
+    fi
+    
+    eval $CMDLINE
+    exit 0
+}
+
+cnt=0
+hosts=()
+ops=()
+> $TMPFILE
+while read line
+do
+    #过滤空行和注释行
+    line=`echo $line | tr -d '\r' | tr -d '\n'`
+    line0=`echo $line | sed 's/ //g'`
+    if [ "x$line0" == "x" -o "x${line0:0:1}" == "x#" ]; then
+        continue
+    fi
+
+    HOST=`echo $line | awk '{print $1;}' | sed 's/ //g'`
+    OP=`echo $line | awk '{print $2;}' | sed 's/ //g'`
+    COMMENT=`echo $line | awk -F'(' '{print $2;}' | awk -F')' '{print $1;}'` 
+    
+    if [ "x$1" != "x" ]; then
+        left=`echo $line | grep $1`
+        if [ "x$left" == "x" ]; then
+            continue
+        fi
+    fi
+
+    if [ "x$COMMENT" == "x" ]; then
+        echo -e "  $HOST \033[30;47;2m($cnt)\033[0m" >> $TMPFILE
+    else 
+        echo -e "  $HOST \033[30;47;2m($cnt)\033[0m ($COMMENT)" >> $TMPFILE
+    fi
+    
+    hosts[$cnt]=$HOST
+    ops[$cnt]=$OP
+    cnt=`expr $cnt + 1`
+done < $CONF
+
+id=0
+if [ $cnt -gt 1 ]; then
+    cat $TMPFILE
+    echo -e -n "Please select a number: "
+    stty erase  
+    read id
+    if [ "x$id" == "xq" -o "x$id" == "xquit" -o "x$id" == "xexit" ]; then
+        exit 0
+    fi
+    
+    #判断是否是数字
+    id1=`expr $id + 0`
+    if [ "x$id1" != "x$id" ]; then 
+        echo "ERROR: invalid number [%id]"
+        exit
+    fi
+    if [ $id -ge $cnt ]; then 
+        echo "ERROR: invalid number [%id]"
+        exit
+    fi
+fi
+
+> $TMPFILE
+if [ $cnt -eq 0 ]; then
+    if [ "x$1" != "x" ]; then
+        echo ">>> Can't find [$1]! Try lh ..."
+        host=$1
+        op=AUTH_1
+        lh $host >> $TMPFILE
+    fi
+else
+    echo "now come here"
+    host=${hosts[$id]}
+    op=${ops[$id]}
+    echo "hostname is: ${host}"
+    echo "op is: ${op}"
+    _h=`echo $host | grep '/'`   
+    echo "_h is: ${_h}"
+    if [ "x$_h" != "x" ]; then
+        echo "now call lh -l ${host} >> ${TMPFILE}"
+        lh -l $host >> $TMPFILE
+    fi
+fi
+
+#判断host是否需要展开二级菜单
+if [ -s $TMPFILE ]; then
+    echo "$TMPFILE exits"
+    cnt=0
+    while read line
+    do
+        echo -e "  $line \033[30;47;2m($cnt)\033[0m"
+        hosts[$cnt]=$line
+        cnt=`expr $cnt + 1`
+    done < $TMPFILE
+   
+    if [ $cnt -eq 0 ]; then
+        echo "ERROR: not found!"
+        exit
+    fi
+    
+    if [ $cnt -gt 1 ]; then
+        echo -e -n "Please select a number: "
+        read id
+        if [ "x$id" == "xq" -o "x$id" == "xquit" -o "x$id" == "xexit" ]; then
+            exit 0
+        fi
+        
+        #判断是否是数字
+        id1=`expr $id + 0`
+        if [ "x$id1" != "x$id" ]; then 
+            echo "ERROR: invalid number [%id]"
+            exit
+        fi
+        if [ $id -ge $cnt ]; then 
+            echo "ERROR: invalid number [%id]"
+            exit
+        fi   
+    else
+        id=0
+    fi    
+    
+    host=${hosts[$id]}
+fi
+
+echo "i will call goto ${host} ${op}"
+goto $host $op
