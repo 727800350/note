@@ -7,26 +7,23 @@ cs1 flag2 (flag2 != flag1)
 ==> cs1
 COM
 
-cs_old=""
-flag_old=""
+last=""
+sum=0
 while read line
 do
-	cs=`echo ${line} | awk '{print $1}'`
-	flag=`echo ${line} | awk '{print $2}'`
-	if [ "x$cs_old" = "x" ]
+	this=`echo ${line} | awk '{print $1}'`
+	value=`echo ${line} | awk '{print $2}'`
+	if [ "x$last" = "x" ]
 	then
-		cs_old=$cs
-		flag_old=$flag
+		last=$this
+		sum=$value
 	else
-		if [ "$cs" = "$cs_old" ]
+		if [ "$this" = "$last" ]
 		then
-			if [ $flag -ne $flag_old ]
-			then
-				echo $cs
-			fi
+			sum=`expr $sum + $value`
 		else
-			cs_old=$cs
-			flag_old=$flag
+			last=$this
+			sum=$value
 		fi
 	fi
 done
