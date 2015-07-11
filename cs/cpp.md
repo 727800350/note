@@ -1,32 +1,88 @@
+# 参数传递
+Things are passed by value unless you specify otherwise using the &-operator 
+(note that this operator is also used as the 'address-of' operator, but in a different context).
+```
+void foo(vector<int> bar); // by value
+void foo(vector<int> &bar); // by reference (non-const, so modifyable inside foo
+void foo(vector<int> const &bar); // by const-reference
+```
+You can also choose to pass a pointer to a vector void `foo(vector<int> *bar)`, 
+but unless you know what you know exactly what are doing, do not do this.
+
+````
+void foo1(int *arr) { cout << sizeof(arr) << '\n'; }
+void foo2(int arr[]) { cout << sizeof(arr) << '\n'; }
+void foo3(int arr[10]) { cout << sizeof(arr) << '\n'; }
+void foo4(int (&arr)[10]) { cout << sizeof(arr) << '\n'; }
+
+int main(){
+    int arr[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    foo1(arr);
+    foo2(arr);
+    foo3(arr);
+    foo4(arr);
+}
+````
+
 # IO
+- `std::cin extern std::istream`
+- `std::cout extern std::ostream`
+- `std::cerr extern std::ostream`
+- ios_base <--- ios <--- istream(ostream) <--- ifstream(ofstream)
+
+ifstream: input file stream
+
+
+```
+std::cin >> in;
+std::cout << out;
+```
+But when reading a string, `std::cin >> in` stops reading as soon as it encounters any black space character(a space or new line etc.)
+You may want to use getline to get a entire line of input from the console, `std::getline(std::cin, in)`
+```
+istream& getline (istream& is, string& str, char delim);
+istream& getline (istream& is, string& str);
+```
+Extracts characters from is and stores them into str until the delimitation character delim is found (or the newline character '\n' for the second usage).
+The **encountered delimiter is extracted and discarded**, i.e. it is not stored and the next input operation will begin after it.
+
+You use the same methods with a file (when dealing with non binary data).
+std::ofstream ofs('myfile.txt');
+
+[标准输入, 输出](../demo/cpp/stdio_demo.cpp)
+
+- `istream& read (char* s, streamsize n);`  
+Extracts n characters from the stream and stores them in the array pointed to by s.
+This function simply copies a block of data, without checking its contents nor appending a null character at the end.
+- `ostream& write (const char* s, streamsize n);`  
+Inserts the first n characters of the array pointed by s into the stream.
+This function simply copies a block of data, without checking its contents: 
+The array may contain null characters, which are also copied without stopping the copying process.
+
+[二进制标准输入, 输出](../demo/cpp/stdio_binary_demo.cpp)
+
 ## File IO
-### [ofstream](http://www.cplusplus.com/reference/fstream/ofstream/)
-Output file stream  
-ios_base <--- ios <--- ostream <--- ofstream
+- fwrite is still (usually) buffered I/O(and that is a good thing)
+- ofstream is a perfectly good interface for doing formatted output to a file
+and ostream (and thus all of its derived classes) have the write member which serves the same purpose as fwrite.
 
-Objects of this class maintain a filebuf object as their internal stream buffer, which performs input/output operations on the file they are associated with.
-
-File streams are associated with files either on construction, or by calling member open.
-
-	explicit ofstream (const char* filename, ios_base::openmode mode = ios_base::out);
-
-demo
-
-	// ofstream constructor.
-	#include <fstream>      // std::ofstream
-	int main () {
-	std::ofstream ofs ("test.txt", std::ofstream::out);
+```
+#include <fstream>      // std::ofstream
+int main (){
+	std::ofstream ofs ("output.txt", std::ofstream::out);
 	ofs << "lorem ipsum";
 	ofs.close();
 	return 0;
-	}
+}
+```
 
-
-`cin >> mystring;`  
-However, as it has been said, `cin` extraction stops reading as soon as if finds any blank space character, so in this
-case we will be able to get just one word for each extraction.
-
-In order to get entire lines, we can use the function `getline`
+二进制io [ex](http://www.cplusplus.com/reference/ostream/ostream/write/)
+```
+std::ifstream infile("input.txt", std::ifstream::binary);
+infile.read()
+std::ofstream outfile("output.txt", std::ofstream::binary);
+outfile.write()
+```
 
 we can initialize the array of char elements called myword with a null-terminated sequence of characters
 by either one of these two methods:
@@ -38,6 +94,32 @@ that compose the word "Hello" plus a final null character ('\0') which specifies
 in the second case, when using double quotes, '\0' is appended automatically.
 
 [**Pointers to functions**](../demo/c++/pointer_function.cpp)  
+
+# [string](http://www.cplusplus.com/reference/string/string/)
+- `std::string::c_str`: 
+Returns a pointer to an internal array that contains a null-terminated sequence of characters (i.e., a C-string).
+A program shall **not alter** any of the characters in this sequence.
+
+scan in values from a string
+
+使用C语言的方式, sscanf
+```
+string str("2.5,6.7");
+double val1, val2;
+if(sscanf(str.c_str(),"%lf,%lf", &val1, &val2) == 2){
+    // got them!
+}
+```
+
+使用boost
+```
+#include <spirit.hpp>
+using namespace boost::spirit;
+boost::fusion::vector < double, double > value_;
+
+std::string string_ = "10.5,10.6 ";
+bool result_ = qi::parse(string_.begin(), string_.end(), qi::double_ >> ',' >> qi::double_, value_);
+```
 
 # Memory
 	pointer = new type
