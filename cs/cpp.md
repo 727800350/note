@@ -1,52 +1,134 @@
+# 参数传递
+Things are passed by value unless you specify otherwise using the &-operator 
+(note that this operator is also used as the 'address-of' operator, but in a different context).
+```
+void foo(vector<int> bar); // by value
+void foo(vector<int> &bar); // by reference (non-const, so modifyable inside foo
+void foo(vector<int> const &bar); // by const-reference
+```
+You can also choose to pass a pointer to a vector void `foo(vector<int> *bar)`, 
+but unless you know what you know exactly what are doing, do not do this.
+
+````
+void foo1(int *arr) { cout << sizeof(arr) << '\n'; }
+void foo2(int arr[]) { cout << sizeof(arr) << '\n'; }
+void foo3(int arr[10]) { cout << sizeof(arr) << '\n'; }
+void foo4(int (&arr)[10]) { cout << sizeof(arr) << '\n'; }
+
+int main(){
+    int arr[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    foo1(arr);
+    foo2(arr);
+    foo3(arr);
+    foo4(arr);
+}
+````
+
 # IO
+- `std::cin extern std::istream`
+- `std::cout extern std::ostream`
+- `std::cerr extern std::ostream`
+- ios_base <--- ios <--- istream(ostream) <--- ifstream(ofstream)
+
+ifstream: input file stream
+
+
+```
+std::cin >> in;
+std::cout << out;
+```
+But when reading a string, `std::cin >> in` stops reading as soon as it encounters any black space character(a space or new line etc.)
+You may want to use getline to get a entire line of input from the console, `std::getline(std::cin, in)`
+```
+istream& getline (istream& is, string& str, char delim);
+istream& getline (istream& is, string& str);
+```
+Extracts characters from is and stores them into str until the delimitation character delim is found (or the newline character '\n' for the second usage).
+The **encountered delimiter is extracted and discarded**, i.e. it is not stored and the next input operation will begin after it.
+
+You use the same methods with a file (when dealing with non binary data).
+std::ofstream ofs('myfile.txt');
+
+[标准输入, 输出](../demo/cpp/stdio_demo.cpp)
+
+- `istream& read (char* s, streamsize n);`  
+Extracts n characters from the stream and stores them in the array pointed to by s.
+This function simply copies a block of data, without checking its contents nor appending a null character at the end.
+- `ostream& write (const char* s, streamsize n);`  
+Inserts the first n characters of the array pointed by s into the stream.
+This function simply copies a block of data, without checking its contents: 
+The array may contain null characters, which are also copied without stopping the copying process.
+
+[二进制标准输入, 输出](../demo/cpp/stdio_binary_demo.cpp)
+
 ## File IO
-### [ofstream](http://www.cplusplus.com/reference/fstream/ofstream/)
-Output file stream  
-ios_base <--- ios <--- ostream <--- ofstream
+- fwrite is still (usually) buffered I/O(and that is a good thing)
+- ofstream is a perfectly good interface for doing formatted output to a file
+and ostream (and thus all of its derived classes) have the write member which serves the same purpose as fwrite.
 
-Objects of this class maintain a filebuf object as their internal stream buffer, which performs input/output operations on the file they are associated with.
-
-File streams are associated with files either on construction, or by calling member open.
-
-	explicit ofstream (const char* filename, ios_base::openmode mode = ios_base::out);
-
-demo
-
-	// ofstream constructor.
-	#include <fstream>      // std::ofstream
-	int main () {
-	std::ofstream ofs ("test.txt", std::ofstream::out);
+```
+#include <fstream>      // std::ofstream
+int main (){
+	std::ofstream ofs ("output.txt", std::ofstream::out);
 	ofs << "lorem ipsum";
 	ofs.close();
 	return 0;
-	}
+}
+```
 
+二进制io [ex](http://www.cplusplus.com/reference/ostream/ostream/write/)
+```
+std::ifstream infile("input.txt", std::ifstream::binary);
+infile.read()
+std::ofstream outfile("output.txt", std::ofstream::binary);
+outfile.write()
+```
 
-`cin >> mystring;`  
-However, as it has been said, `cin` extraction stops reading as soon as if finds any blank space character, so in this
-case we will be able to get just one word for each extraction.
+# [std::string](http://www.cplusplus.com/reference/string/string/)
+- `size()` or `length()`: Return length of string
+- `std::string::c_str`: Returns a pointer to an internal array that contains a null-terminated sequence of characters (i.e., a C-string).
+A program shall **not alter** any of the characters in this sequence.
 
-In order to get entire lines, we can use the function `getline`
+scan in values from a string
+
+使用C语言的方式, sscanf
+```
+string str("2.5,6.7");
+double val1, val2;
+if(sscanf(str.c_str(),"%lf,%lf", &val1, &val2) == 2){
+    // got them!
+}
+```
+
+使用boost
+```
+#include <spirit.hpp>
+using namespace boost::spirit;
+boost::fusion::vector < double, double > value_;
+
+std::string string_ = "10.5,10.6 ";
+bool result_ = qi::parse(string_.begin(), string_.end(), qi::double_ >> ',' >> qi::double_, value_);
+```
 
 we can initialize the array of char elements called myword with a null-terminated sequence of characters
 by either one of these two methods:
 
-	char myword [] = { 'H', 'e', 'l', 'l', 'o', '\0' };
-	char myword [] = "Hello";
+1. `char myword [] = { 'H', 'e', 'l', 'l', 'o', '\0' };`
+1. `char myword [] = "Hello";`
 In both cases the array of characters myword is declared with a size of 6 elements of type char: the 5 characters
 that compose the word "Hello" plus a final null character ('\0') which specifies the end of the sequence and that,
 in the second case, when using double quotes, '\0' is appended automatically.
 
-[**Pointers to functions**](../demo/cpp/pointer_function.cpp)  
-
 # Memory
-	pointer = new type
-	pointer = new type [number_of_elements]
-The first expression is used to allocate memory to contain one single element of type type. The second one is used
-to assign a block (an array) of elements of type type
+```
+pointer = new type
+delete pointer;
 
-	delete pointer;
-	delete [] pointer;
+pointer = new type [number_of_elements]
+delete [] pointer;
+```
+
+[**Pointers to functions**](../demo/c++/pointer_function.cpp)  
 
 ## 二维数组
 [C++二维数组new小结(zz)](http://www.cnblogs.com/beyondstorm/archive/2008/08/26/1276278.html)
@@ -346,77 +428,7 @@ Notice how the type that typeid considers for pointers is the pointer type itsel
 
 我们在项目中以Package为编辑对象来扩展和修正我们的程序. 申明写在.h文件,定义实现写在.cpp文件.
 
-<table border="1" cellspacing="0" cellpadding="5">
-<thead>
-<tr>
-<td align="center"> &nbsp; </td>
-<td align="center"> 非模板类型(none-template) </a> </td>
-<td align="center"> 模板类型(template) </a> </td>
-</tr>
-</thead>
-<tbody>
-<tr>
-
-<td rowspan="2" valign="top"> <a href="#header_file">头文件(.h)</a> </td>
-
-<td valign="top">
-<ul>
-<li>全局变量申明(带extern限定符)</li>
-<li>全局函数的申明</li>
-<li>带<a href="#inline_qualifier">inline限定符</a>的全局函数的定义</li>
-</ul>
-</td>
-
-<td>
-<ul>
-<li>带<a href="#inline_qualifier">inline限定符</a>的全局模板函数的申明和定义</li>
-</ul>
-</td>
-
-</tr>
-
-<tr>
-<td valign="top">
-<ul>
-<li>类的定义</li>
-<li>类函数成员和数据成员的申明(在类内部)</li>
-<li>类定义内的函数定义(相当于inline)</li>
-<li>带<a href="#static_const_qualifier">static const限定符</a>的数据成员在<strong><span class="accentuation">类内部</span></strong>的初始化</li>
-<li>带<a href="#inline_qualifier">inline限定符</a>的类定义外的函数定义</li>
-</ul>
-
-</td>
-<td valign="top">
-<ul>
-<li>模板类的定义</li>
-<li>模板类成员的申明和定义(定义可以放在类内或者类外,类外不需要写inline)</li>
-</ul>
-</td>
-
-</tr>
-
-<tr>
-<td rowspan="2" valign="top"> 实现文件(.cpp) </td>
-<td valign="top">
-<ul>
-<li>全局变量的定义(及初始化)</li>
-<li>全局函数的定义</li>
-</ul>
-</td>
-
-<td rowspan="2"> (无) </td>
-</tr>
-
-<tr>
-<td valign="top">
-<ul>
-<li>类函数成员的定义</li>
-<li>类带static限定符的数据成员的初始化</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+![declaration and implementation](http://i.imgbox.com/A7NmGCr8.png)
 
 **头文件**
 
@@ -488,33 +500,34 @@ Notice how the type that typeid considers for pointers is the pointer type itsel
 当然还有其他原因就是写在类外部,对于每一个函数成员的实现都需要把模板类型作为限定符写一遍,把类名限定符也要写一遍.
 
 # STL 标准模板库
-- list封装了链表, 以链表形式实现的
 - vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素,从尾部追加
+- list封装了链表, 以链表形式实现的
 
 ## [vector](http://www.cplusplus.com/reference/vector/vector/)
-在vector中,如果元素是对象的指针,当该vector用erase删除元素时, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
-
-在调用push_back时,都要重新分配一个大一个元素的存储(古国不考虑处于性能考虑而预分配的内存空间),将要push_back的元素拷贝到新分配的内存中.
-
+- push_back: 将要push_back的元素拷贝到新分配的内存中, 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容.
 对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针, 
 所以即使原来的object被删除了, vector中的仍然可以正常访问.
 
-`std::vector::back`:  Returns a reference to the last element in the vector.
+- erase: 删除元素, 如果元素是指向某个对象的指针, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
+- back:  Returns a reference to the last element in the vector.
+- empty()用来检测容器是否为空的.  
+- clear()可以清空所有元素.但是即使clear(),vector所占用的内存空间依然如故,无法保证内存的回收
 
 [vector push_back operation demo](../demo/cpp/stl/vector-push_back.cpp)
 
-### 内存的释放
 由于vector的内存占用空间只增不减,比如你首先分配了10,000个字节,然后erase掉后面9,999个,留下一个有效元素,但是内存占用仍为10,000个(capacity 仍然很大).
 所有内存空间是在vector析构时候才能被系统回收.  
-empty()用来检测容器是否为空的.  
-clear()可以清空所有元素.但是即使clear(),vector所占用的内存空间依然如故,无法保证内存的回收
 
 如果需要空间动态缩小,可以考虑使用deque.  
 如果vector,可以用swap()来帮助你释放内存.具体方法如下:
 
 	vector<Point>().swap(pointVec); //或者pointVec.swap(vector<Point> ())
 
-## [list](http://www.cplusplus.com/reference/list/list)
+## [std::list](http://www.cplusplus.com/reference/list/list)
+implemented as doubly-linked lists
+
+- push_front: 在头插入
+- push_back: 在尾插入
 
 # boost
 安装
