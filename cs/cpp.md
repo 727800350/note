@@ -428,77 +428,7 @@ Notice how the type that typeid considers for pointers is the pointer type itsel
 
 我们在项目中以Package为编辑对象来扩展和修正我们的程序. 申明写在.h文件,定义实现写在.cpp文件.
 
-<table border="1" cellspacing="0" cellpadding="5">
-<thead>
-<tr>
-<td align="center"> &nbsp; </td>
-<td align="center"> 非模板类型(none-template) </a> </td>
-<td align="center"> 模板类型(template) </a> </td>
-</tr>
-</thead>
-<tbody>
-<tr>
-
-<td rowspan="2" valign="top"> <a href="#header_file">头文件(.h)</a> </td>
-
-<td valign="top">
-<ul>
-<li>全局变量申明(带extern限定符)</li>
-<li>全局函数的申明</li>
-<li>带<a href="#inline_qualifier">inline限定符</a>的全局函数的定义</li>
-</ul>
-</td>
-
-<td>
-<ul>
-<li>带<a href="#inline_qualifier">inline限定符</a>的全局模板函数的申明和定义</li>
-</ul>
-</td>
-
-</tr>
-
-<tr>
-<td valign="top">
-<ul>
-<li>类的定义</li>
-<li>类函数成员和数据成员的申明(在类内部)</li>
-<li>类定义内的函数定义(相当于inline)</li>
-<li>带<a href="#static_const_qualifier">static const限定符</a>的数据成员在<strong><span class="accentuation">类内部</span></strong>的初始化</li>
-<li>带<a href="#inline_qualifier">inline限定符</a>的类定义外的函数定义</li>
-</ul>
-
-</td>
-<td valign="top">
-<ul>
-<li>模板类的定义</li>
-<li>模板类成员的申明和定义(定义可以放在类内或者类外,类外不需要写inline)</li>
-</ul>
-</td>
-
-</tr>
-
-<tr>
-<td rowspan="2" valign="top"> 实现文件(.cpp) </td>
-<td valign="top">
-<ul>
-<li>全局变量的定义(及初始化)</li>
-<li>全局函数的定义</li>
-</ul>
-</td>
-
-<td rowspan="2"> (无) </td>
-</tr>
-
-<tr>
-<td valign="top">
-<ul>
-<li>类函数成员的定义</li>
-<li>类带static限定符的数据成员的初始化</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+![declaration and implementation](http://i.imgbox.com/A7NmGCr8.png)
 
 **头文件**
 
