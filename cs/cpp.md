@@ -84,20 +84,9 @@ std::ofstream outfile("output.txt", std::ofstream::binary);
 outfile.write()
 ```
 
-we can initialize the array of char elements called myword with a null-terminated sequence of characters
-by either one of these two methods:
-
-	char myword [] = { 'H', 'e', 'l', 'l', 'o', '\0' };
-	char myword [] = "Hello";
-In both cases the array of characters myword is declared with a size of 6 elements of type char: the 5 characters
-that compose the word "Hello" plus a final null character ('\0') which specifies the end of the sequence and that,
-in the second case, when using double quotes, '\0' is appended automatically.
-
-[**Pointers to functions**](../demo/c++/pointer_function.cpp)  
-
-# [string](http://www.cplusplus.com/reference/string/string/)
-- `std::string::c_str`: 
-Returns a pointer to an internal array that contains a null-terminated sequence of characters (i.e., a C-string).
+# [std::string](http://www.cplusplus.com/reference/string/string/)
+- `size()` or `length()`: Return length of string
+- `std::string::c_str`: Returns a pointer to an internal array that contains a null-terminated sequence of characters (i.e., a C-string).
 A program shall **not alter** any of the characters in this sequence.
 
 scan in values from a string
@@ -121,14 +110,25 @@ std::string string_ = "10.5,10.6 ";
 bool result_ = qi::parse(string_.begin(), string_.end(), qi::double_ >> ',' >> qi::double_, value_);
 ```
 
-# Memory
-	pointer = new type
-	pointer = new type [number_of_elements]
-The first expression is used to allocate memory to contain one single element of type type. The second one is used
-to assign a block (an array) of elements of type type
+we can initialize the array of char elements called myword with a null-terminated sequence of characters
+by either one of these two methods:
 
-	delete pointer;
-	delete [] pointer;
+1. `char myword [] = { 'H', 'e', 'l', 'l', 'o', '\0' };`
+1. `char myword [] = "Hello";`
+In both cases the array of characters myword is declared with a size of 6 elements of type char: the 5 characters
+that compose the word "Hello" plus a final null character ('\0') which specifies the end of the sequence and that,
+in the second case, when using double quotes, '\0' is appended automatically.
+
+# Memory
+```
+pointer = new type
+delete pointer;
+
+pointer = new type [number_of_elements]
+delete [] pointer;
+```
+
+[**Pointers to functions**](../demo/c++/pointer_function.cpp)  
 
 ## 二维数组
 [C++二维数组new小结(zz)](http://www.cnblogs.com/beyondstorm/archive/2008/08/26/1276278.html)
