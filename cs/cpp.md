@@ -500,33 +500,34 @@ Notice how the type that typeid considers for pointers is the pointer type itsel
 当然还有其他原因就是写在类外部,对于每一个函数成员的实现都需要把模板类型作为限定符写一遍,把类名限定符也要写一遍.
 
 # STL 标准模板库
-- list封装了链表, 以链表形式实现的
 - vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素,从尾部追加
+- list封装了链表, 以链表形式实现的
 
 ## [vector](http://www.cplusplus.com/reference/vector/vector/)
-在vector中,如果元素是对象的指针,当该vector用erase删除元素时, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
-
-在调用push_back时,都要重新分配一个大一个元素的存储(古国不考虑处于性能考虑而预分配的内存空间),将要push_back的元素拷贝到新分配的内存中.
-
+- push_back: 将要push_back的元素拷贝到新分配的内存中, 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容.
 对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针, 
 所以即使原来的object被删除了, vector中的仍然可以正常访问.
 
-`std::vector::back`:  Returns a reference to the last element in the vector.
+- erase: 删除元素, 如果元素是指向某个对象的指针, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
+- back:  Returns a reference to the last element in the vector.
+- empty()用来检测容器是否为空的.  
+- clear()可以清空所有元素.但是即使clear(),vector所占用的内存空间依然如故,无法保证内存的回收
 
 [vector push_back operation demo](../demo/c++/stl/vector-push_back.cpp)
 
-### 内存的释放
 由于vector的内存占用空间只增不减,比如你首先分配了10,000个字节,然后erase掉后面9,999个,留下一个有效元素,但是内存占用仍为10,000个(capacity 仍然很大).
 所有内存空间是在vector析构时候才能被系统回收.  
-empty()用来检测容器是否为空的.  
-clear()可以清空所有元素.但是即使clear(),vector所占用的内存空间依然如故,无法保证内存的回收
 
 如果需要空间动态缩小,可以考虑使用deque.  
 如果vector,可以用swap()来帮助你释放内存.具体方法如下:
 
 	vector<Point>().swap(pointVec); //或者pointVec.swap(vector<Point> ())
 
-## [list](http://www.cplusplus.com/reference/list/list)
+## [std::list](http://www.cplusplus.com/reference/list/list)
+implemented as doubly-linked lists
+
+- push_front: 在头插入
+- push_back: 在尾插入
 
 # boost
 安装
