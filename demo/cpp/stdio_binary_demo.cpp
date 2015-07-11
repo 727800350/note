@@ -1,9 +1,10 @@
 #include <iostream>
 #include <string>
+#include <cstring>
 
 #define max 100
 int main(){
-	char buffer[max]
+	char buffer[max];
 	memset(buffer, 0, max);
 	std::cin.read(buffer, max);
 
