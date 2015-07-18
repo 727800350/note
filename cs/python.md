@@ -134,6 +134,24 @@ struct模块中最重要的三个函数是pack(), unpack(), calcsize()
 
 struct中支持的格式如下表:
 
+big endian or little endian
+
+| Character | Byte order             | Size     | Alignment |
+|-----------|------------------------|----------|-----------|
+| @         | native                 | native   | native    |
+| =         | native                 | standard | none      |
+| <         | little-endian          | standard | none      |
+| >         | big-endian             | standard | none      |
+| !         | network (= big-endian) | standard | none      |
+
+数据是二进制的, 按照big endian 进行的编码, 但是本纪是litte endian, 则按照下面的方法可以正确读取出值
+```
+value = sys.stdin.read(4)
+value = struct.unpack('>i', value)[0]
+```
+
+data type
+
 | Format | C Type             | Python             | 字节数 |
 |--------|--------------------|--------------------|--------|
 | x      | pad byte           | no value           | 1      |
