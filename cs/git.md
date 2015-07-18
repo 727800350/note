@@ -188,6 +188,7 @@ Is there a way to undo this or remove these files from the commit?
 git reset --hard <commit_id>  ##  commit_id 为这个commit 之前的一个commit_id
 git push origin HEAD --force
 ```
+可以使用`HEAD~1` 表示刚刚commit 的 commit_id
 
 **Git: Checkout all files except one**  
 When I do a git status, I see files like this:
