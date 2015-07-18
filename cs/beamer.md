@@ -51,6 +51,24 @@ Title, Author, His or Her Affiliation, The Date, Title Graphic
 如果需要在author 中使用tabular 以产生对齐效果, 那么需要把`\author` 命令放在`\begin{document}`之后, 否则 tabular 命令不认.  
 如果使用`\quad` 等空白符, 还是需要加上`$$`符号.
 
+# logo
+Beamer provides `\logo{<logo code>}` to set the logo(s)
+```
+\logo{%
+    \includegraphics[width=1cm,height=1cm,keepaspectratio]{logo1}~%
+    \includegraphics[width=1cm,height=1cm,keepaspectratio]{logo2}~%
+    \includegraphics[width=1cm,height=1cm,keepaspectratio]{logo3}%
+}
+```
+
+[logo in the first page only](http://tex.stackexchange.com/questions/61051/logo-in-the-first-page-only)
+```
+% logo of my university
+\titlegraphic{\includegraphics[width=2cm]{logopolito}\hspace*{4.75cm}~%
+   \includegraphics[width=2cm]{logopolito}
+}
+```
+
 # List
 If you want each item of a list to appear in order, use the `[<+->]` option. (i.e. `\begin{itemize}[<+->]` )
 
