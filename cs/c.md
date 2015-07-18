@@ -106,6 +106,21 @@ By constrast, `strdup` is a Posix function, and it performs **dynamic memory all
 - `strsep, settok` extract token from string
 - `atoi, atol, atoll, atof, strtol, strtoul, strtoll, strtoull` 字符串转换为数字 
 
+- isspace
+检查参数c是否为空格字符,也就是判断是否为空格(' '),水平定位字符
+('\t'),归位键('\r'),换行('\n'),垂直定位字符('\v')或翻页('\f')的情况
+```
+void delspace(char *p){
+	int i,j = 0;
+	for(i = 0; p[i] != '\0'; i++){
+		if(! isspace(p[i])){
+			p[j++] = p[i];
+		}
+	}
+p[j] = '\0';
+}
+```
+
 # IO
 
 printf使用的格式字符如下
@@ -132,6 +147,13 @@ printf使用的格式字符如下
 dup() uses  the lowest-numbered unused descriptor for the new descriptor.  
 dup2() makes newfd be the copy of oldfd, closing newfd first if necessary  
 On success, these system calls return the new descriptor.  On error, -1 is returned, and errno is set appropriately.
+
+- fgets  
+fgets函数从文件读取到'\n'并存储,在'\n'后再增加一个'\0'构成字符串.  
+但fgets函数需要指定读入的字符数,如果指定了n,则最多只能读取n-1个.fgets在读取了n-1个字符,读到了'\n'或遇到了EOF三种情况之一时都结束读取.  
+返回值: If the End-of-File is encountered and no characters have been read, the contents of str remain unchanged and a null pointer is returned.
+If an error occurs, a null pointer is returned.
+
 
 # apr
 install
