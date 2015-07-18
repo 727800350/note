@@ -1,3 +1,13 @@
+命令行快捷键:
+
+- CTRL-P: 从history缓冲区召回上一次的命令(在命令行下), 可以按下多次
+- CTRL-R: 回溯搜索(Backwards search)history缓冲区内的文本(在命令行下)
+- CTRL-T: 交换光标位置与光标的前一个位置的字符内容(在命令行下).比如:echo $var;,假设光标在a上,那么,按下C-T之后,v和a将会交换位置:echo $avr;.
+- CTRL-U: 擦除从光标位置开始到行首的所有字符内容
+- CTRL-W: 当在控制台或一个xterm窗口敲入文本时, CTRL-W 会删除从在光标处往后(回)的第一个空白符之间的内容.在某些设置里, CTRL-W 删除光标往后(回)到第一个非文字和数字之间的字符.
+- CTRL-Y: 将之前已经清除的文本粘贴回来(主要针对CTRL-U或CTRL-W)
+- CTRL-/: 撤消操作,Undo.
+
 # Help
 man
 
@@ -226,6 +236,12 @@ rsync -P --rsh=ssh home.tar 192.168.0.34:/home/home.tar
 ```
 -P: 是包含了 "–partial –progress", 部分传送和显示进度  
 -rsh=ssh 表示使用ssh协议传送数据
+
+将src 目录完全同步到 dst 目录
+```
+rsync --delete -a --progress /home/eric/git/tool/analyse/ /mnt/analyse/
+```
+最后面的 / 不能丢
 
 **mail**  
 [ref](http://www.cnblogs.com/JemBai/archive/2012/01/24/2329136.html)
