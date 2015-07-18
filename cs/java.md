@@ -1,6 +1,12 @@
 # Java
 [环境变量配置](http://jingyan.baidu.com/article/f96699bb8b38e0894e3c1bef.html)
 
+## 命令行调用
+
+- -Xms<size>        set initial Java heap size
+- -Xmx<size>        set maximum Java heap size
+- -Xss<size>        set java thread stack size
+
 ## Data Types
 基本数据类型只有8个, byte, short, int, log, float, double, char, boolean;  
 除了基本类型(primitive type)和枚举类型(enumeration type), 剩下的都是引用类型.
@@ -313,8 +319,6 @@ synchronized和方法的实现细节有关,抽象方法不涉及实现细节,因
 First, you must understand, that by casting you are not actually changing the object itself, you are just labeling it differently.
 
 [Cast ex](../demo/java/Cast.java)
-
-![Cast example](http://uploads.codecall.net/monthly_05_2014/post-27003-0-90059300-1399049433.jpg)
 
 For example, if you create a Cat and upcast it to Animal, then the object doesnot stop from being a Cat. 
 It is still a Cat, but it is just treated as any other Animal and it is Cat properties are **hidden**(数据还是在实实在在的在那里, 只是无法访问) until it is downcasted to a Cat again.
