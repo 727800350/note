@@ -6,6 +6,8 @@ source ./common.env
 
 ## tmux
 installer tmux
+installer samba
+chkconfig --level 35 smb on
 
 ## text convertion between windows and linux
 installer unix2dos dos2unix
