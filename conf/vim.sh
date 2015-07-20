@@ -25,3 +25,5 @@ tail /etc/sudoers
 
 installer vim-enhanced
 
+exit 0
+

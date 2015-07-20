@@ -30,3 +30,5 @@ cat id_rsa.pub
 cd ~
 echo "test github connection: ssh -T git@github.com" >&2
 
+exit 0
+

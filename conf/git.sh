@@ -39,3 +39,5 @@ ln -sf ~/git/note/conf/.vimrc ~/.vimrc
 ln -sf ~/git/note/conf/.bashrc ~/.bashrc
 ln -sf ~/git/note/conf/.tmux.conf ~/.tmux.conf
 
+exit 0
+
