@@ -12,6 +12,9 @@ chkconfig --level 35 smb on
 ## screen capture
 installer shutter
 
+## video and audio convertor
+installer ffmpeg
+
 ## text convertion between windows and linux
 installer unix2dos dos2unix
 
@@ -201,4 +204,6 @@ installer curl libcurl libcurl-devel
 ## 不含参数的library()函数会显示已安装的R包列表
 ## installed.packages()[,c("Package","Version")]
 ## nohup Rscript ./package.r 1>r.log 2>&1 &
+
+exit 0
 
