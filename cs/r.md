@@ -32,31 +32,7 @@ y <- as.integer(argv[2])
 注意: 
 
 1. R 语言里面没有像C 语言那样的多行注释
-1. R 中时没有续行符的, 所以要注意[换行的问题](http://yihui.name/en/2007/12/be-careful-with-the-value-returned-in-r-functions/).
-```
-f1 = function() {
-    1 + 1
-}
-f1() # of course 2
-
-f2 = function() {
-   1
-   + 1
-}
-f2() # returns 1
-
-f3 = function() {
-   return(1
-   + 1)
-}
-f3() # 2; use return() if you want break lines, or
-
-f4 = function() {
-   1 +
-   1
-}
-f4() # 2; do not put '+' in the beginning, as '+1==1'
-```
+1. R 中时没有续行符的, 所以要注意[ref](http://yihui.name/en/2007/12/be-careful-with-the-value-returned-in-r-functions/), [demo](../demo/r/line_continuation.r)
 
 # Objects
 `str(object)`: Compactly Display the Structure of an Arbitrary R Object
@@ -264,6 +240,13 @@ inherits(1L, "numeric") ## [1] FALSE
 
 ## vector
 Vectors are the most important type of object in R.
+
+追加元素
+```
+> x <- c(1:3)
+> c(x,5)
+[1] 1 2 3 5
+```
 
 选择特定的元素
 ```
@@ -561,7 +544,7 @@ Time difference of 0.5 hours
 [1] "2014-01-23 17:15:41 EST"
 ```
 
-The last thing to mention is that once a time stamp is cast into one of R's internal formats comparisons can be made in a natural way.
+The last thing to mention is that once a time stamp is cast into one of R internal formats comparisons can be made in a natural way.
 
 ```
 > diff <- as.difftime("00:30:00","%H:%M:%S",units="hour")
@@ -608,7 +591,7 @@ The class() is used to define/identify what "type" an object is from the point o
 > class(x)
 [1] "integer"
 ```
-typeof() gives the "type" of object from R's point of view,   
+typeof() gives the "type" of object from R point of view,   
 whilst mode() gives the "type" of object from the point of view of Becker, Chambers Wilks (1988). 
 The latter may be more compatible with other S implementations according to the R Language Definition manual.
 
@@ -1132,27 +1115,8 @@ If 'FALSE', nothing is quoted.
 - Concept index: 概念索引
 
 ```
-read.table(file, header = FALSE, sep = "", quote = "\"'")
-read.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", ...)
-```
-
-excel
-第一个建议就是尽量避免这样做!
-如果你可以访问Excel,把你的Excel数据 用制表符分隔或逗号分隔的格式导出,然后用 read.delim 或 read.csv 导入R.(在采用逗号作为小数点的欧洲大陆本地系统里面,你可能需要用 read.delim2 或 read.csv2.) 
-导出一个DIF文件然后用read.DIF 读入是另外一种可能性.
-
-```
-> library(gdata)                   # load gdata package 
-> help(read.xls)                   # documentation 
-> mydata = read.xls("mydata.xls")  # read from first sheet
-```
-Alternatively, we can use the function loadWorkbook from the XLConnect package to read the entire workbook, 
-and then load the worksheets with readWorksheet. 
-The XLConnect package requires Java to be pre-installed.
-```
-> library(XLConnect)               # load XLConnect package 
-> wk = loadWorkbook("mydata.xls") 
-> df = readWorksheet(wk, sheet="Sheet1")
+read.table(file, header = FALSE, sep = "")
+read.csv(file, header = TRUE, sep = ",", dec = ".", fill = TRUE, comment.char = "", ...)
 ```
 
 **Working Directory**  
@@ -1214,6 +1178,16 @@ break, next
 - sys.parent(0) 返回的是上级 environment,
 - 对应还有复数版本,比如 sys.functions() 就是获得调用栈里面所有函数.
 
+## 自定义
+当要返回多值, 可以返回一个list, eg: `return(list(min = value_min, max = value_max))`
+
+```
+myfunction <- function(arg1, arg2, ... ){
+	...
+	return(object)
+}
+```
+
 ## Default arguments and lazy evaluation in R
 [ref](http://www.johndcook.com/blog/2008/10/16/default-arguments-and-lazy-evaluation-in-r/)
 
@@ -1228,7 +1202,7 @@ f <- function(a, b=c) {c = log(a); a*b}
 ```
 Now the default argument is a variable that does not exist until the body of the function executes! 
 If f is called with one argument, the R interpreter chugs along until it gets to the last line of the function and says 
-"Hmm. What is b? Let me go back and see. Oh, the default value of b is c, and now I know what c is."
+Hmm. What is b? Let me go back and see. Oh, the default value of b is c, and now I know what c is.
 
 This behavior is called lazy evaluation. 
 Expressions are not evaluated unless and until they are needed. It is a common feature of functional programming languages.
@@ -1353,23 +1327,6 @@ seq(from, to, length.out= )  ## equally spaced
 `> s5 <- rep(x, times=5)` which will put five copies of x end-to-end in s5.  
 `> s6 <- rep(x, each=5)` which repeats each element of x five times before moving on to the next.
 
-## 自定义
-```
-myfunction <- function(arg1, arg2, ... ){
-	statements
-	return(object)
-}
-```
-例如下面的归一化函数
-```
-autonorm <- function(data){
-	min <- min(data)
-	max <- max(data)
-	for(i in 1:length(data))
-		data[i] <- (data[i] - min)/(max - min)
-	return(data)
-}
-```
 # package and model
 `fitted` is a generic function which extracts fitted values from objects returned by modeling functions.
 All object classes which are returned by model fitting functions should provide a 'fitted' method.
@@ -1446,121 +1403,6 @@ Another Approach
 > dev.copy(jpeg,'rplot.jpg')
 > dev.off()
 ```
-
-## scatter plot
-[ref](http://www.statmethods.net/graphs/scatterplot.html)
-
-## graphical parameters
-One way is to specify these options in through the par( ) function. 
-If you set parameter values here, the changes will be in effect for the rest of the session or until you change them again. 
-The format is `par(optionname=value, optionname=value, ...)`
-```
-# Set a graphical parameter using par()
-par()              # view current settings
-opar <- par()      # make a copy of current settings
-par(col.lab="red") # red x and y labels 
-hist(mtcars$mpg)   # create a plot with these new settings 
-par(opar)          # restore original settings
-```
-A second way to specify graphical parameters is by providing the `optionname=value` pairs directly to a high level plotting function. 
-In this case, the options are only in effect for that specific graph.
-
-```
-# Set a graphical parameter within the plotting function 
-hist(mtcars$mpg, col.lab="red")
-```
-
-## color
-[color ref](http://research.stowers-institute.org/efg/R/Color/Chart/index.htm)  
-[quick color value ref](http://research.stowers-institute.org/efg/R/Color/Chart/ColorChart.pdf)
-
-`colors()`, or with the British spelling, `colours()`, returns a **vector of 657 color names** in R.
-The names "gray" and "grey" can be spelled either way
-
-Options that specify colors include the following.
-
-- col	Default plotting color. Some functions (e.g. lines) accept a vector of values that are recycled.
-- col.axis	color for axis annotation
-- col.lab	color for x and y labels
-- col.main	color for titles
-- col.sub	color for subtitles
-- fg	plot foreground color (axes, boxes - also sets col= to same)
-- bg	plot background color
-
-You can specify colors in R by index, name, hexadecimal, or RGB.  
-For example `col=1, col="white"`, and `col="#FFFFFF"` are equivalent.
-
-```
-> colors()[c(552,254,26)]
-[1] "red" "green" "blue"
-
-> grep("red",colors())
-[1] 100 372 373 374 375 376 476 503 504 505 506 507 524 525 526 527 528 552 553
-[20] 554 555 556 641 642 643 644 645
-
-> colors()[grep("red",colors())]
-[1] "darkred" "indianred" "indianred1" "indianred2" ...
-
-> col2rgb("yellow")
-[,1]
-red 255
-green 255
-blue 0
-```
-
-Create a vector of 'n' contiguous colors, 比如当需要同时使用多种颜色时, 就可以通过这些函数来自动选择.
-```
-rainbow(n, s = 1, v = 1, start = 0, end = max(1, n - 1)/n, alpha = 1)
-heat.colors(n, alpha = 1)
-terrain.colors(n, alpha = 1)
-topo.colors(n, alpha = 1)
-cm.colors(n, alpha = 1)
-```
-
-## Plotting Symbols/Chracters
-Use the pch= option to specify symbols to use when plotting points. For symbols 21 through 25, specify border color (col=) and fill color (bg=).
-
-![symbols](http://www.statmethods.net/advgraphs/images/points.png)
-
-plot中默认的pch为1, 也就是"空心圆圈"
-
-- '0:18': S-compatible vector symbols.
-- '19:25': further R vector symbols.
-- '26:31': unused (and ignored).
-- '32:127': ASCII characters.
-
-## lines
-- lty	line type. see the chart below.
-- lwd	line width relative to the default (default=1). 2 is twice as wide.
-
-![line types](http://www.statmethods.net/advgraphs/images/lines.png)
-
-## [Axes and Text](http://www.statmethods.net/advgraphs/axes.html)
-### legend
-```
-legend(location, title, legend, ...)
-```
-ex: `legend("topleft", c('Positive','Negative'), col=seq(2), pch=1, text.col=seq(2))`
-
-- location	There are several ways to indicate the location of the legend.  
-You can give an x,y coordinate for the upper left hand corner of the legend.   
-You can use locator(1), in which case you use the mouse to indicate the location of the legend.   
-You can also use the keywords "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "bottomright", or "center".   
-If you use a keyword, you may want to use `inset=` to specify an amount to move the legend into the graph (as fraction of plot region).
-- title	A character string for the legend title (optional)
-- legend	A character vector with the labels
-- bty for box type
-- bg for background color
-- cex for size, 放大倍数 1=default, 1.5 is 50% larger,
-- text.col for text color
-- Setting horiz=TRUE sets the legend horizontally rather than vertically.
-
-Other options
-
-- If the legend labels colored lines, specify col= and a vector of colors. 
-- If the legend labels point symbols, specify pch= and a vector of point symbols. 
-- If the legend labels line width or line style, use lwd= or lty= and a vector of widths or styles. 
-- To create colored boxes for the legend (common in bar, box, or pie charts), use fill= and a vector of colors.
 
 # help
 `?command`, `help(command)`, `help("command")`.  
