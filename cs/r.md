@@ -45,6 +45,7 @@ y <- as.integer(argv[2])
 - `cat("x = ", x, "\n")`
 - 'write' is a wrapper for 'cat', which gives further details on the format used.
 - `write.table(x, file = "", append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE)`, for data frames
+
 		- quote('TRUE'): any character or factor columns will be surrounded by double quotes;
 		- sep: the field separator string;
 		- eol: end of line;
@@ -52,6 +53,7 @@ y <- as.integer(argv[2])
 		- dec: the string to use for decimal points in numeric or complex columns: must be a single character;
 		- row.names('TRUE'): row names will be written along with x;
 		- col.names('TRUE'): column names will be written along with x
+
 - write.csv(...), 参数与 write.table 类似
 - write.csv2(...), 参数与 write.table 类似
 
