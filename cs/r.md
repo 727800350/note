@@ -82,14 +82,6 @@ overview of the type of objects representing data
 
 a matrix with 2 lines and 2 columns has for dim the pair of values `[2, 2]`, but its length is 4.
 
-## conversion
-
-|                 | to one long vector | to matrix           | to data frame        |                         |
-|-----------------|--------------------|---------------------|----------------------|-------------------------|
-| from vector     |                    | c(x,y)              | cbind(x,y), rbind(x,y)| data.frame(x,y)         |
-| from matrix     |                    | as.vector(mymatrix) |                      | as.data.frame(mymatrix) |
-| from data frame |                    |                     | as.matrix(myframe)   |                         |
-
 - cbind() 把矩阵横向合并成一个大矩阵(列方式), 将参数当成列矩阵来处理
 - rbind() 是纵向合并(行方式), 将参数当行矩阵来处理
 
@@ -225,24 +217,8 @@ Levels: f m #有几种可选的值
 
 [如何高效的append an element to a list in R](http://stackoverflow.com/questions/17046336/here-we-go-again-append-an-element-to-a-list-in-r)
 
-## hash
-在Python中有这样一个神通广大的数据类型,它叫Dictionary.
-而长久以来在R中想要实现类似的Hash存储只能依靠environment类型,用起来非常不友好.
-hash它对environment进行了封装,使用户可以很方便的利用Hash表进行存储.
-
-其中有几个地方需要特别注意的:
-
-1. Hash表的Key必须为字符类型的,而且不能是空字符串
-1. 引用传递.在R中environment和hash对象只存在一份全局拷贝,因此如果在函数内改变它的值将会影响到外部访问的结果.如果需要复制hash对象,需调用它的copy方法
-1. 内存释放.通过rm销毁hash对象时,其占用的内存不会自动释放,因此需在rm前调用clear,以防内存泄露
-
-[hash 与 list 性能比较](http://equation85.github.io/blog/hash-table-for-r/)
-
-[hash demo](../demo/r/hash_demo.r)
-
 ## data.frame
 在数据导入R语言后,会以数据框(dataframe)的形式储存.
-dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征.
 ```
 mydata <- data.frame(col1, col2, col3, ...)
 ```
@@ -262,13 +238,44 @@ books <- data.frame(
 3 lord of the rings tolkien       500
 ```
 
-如果在像数据库那样, 获得的都是一个个的record(具有不同数据类型的fields), 然后想把很多的records组成一个data.frame, 
+有时后从数据源处获得的都是一个个的record(具有不同数据类型的fields), 然后想把很多的records组成一个data.frame, 
 现在我能想到的方法就是用list来存储一个record, 然后用rbind 函数将这个list 放到data.frame里面.(循环实现将所以的records放入data.frame中)
 
 下面的命令可以让你有机会修改数据并存入到新的变量newdata中:
 ```
 newdata=edit(data)
 ```
+
+### 更改列名
+1. 直接通过index 来修改: `names(dataframe)[index] <- "newname"`
+1. 不需要知道列名情况下修改列名:`names(df)[names(df)=="site"]="position";`
+1. 通过reshape 重命名: `library(reshape); rename(dataframe, c(oldname = "newname", oldname = "newname", ...))`
+
+### rearrange columns of a data frame
+[ref](http://stackoverflow.com/questions/3369959/moving-columns-within-a-data-frame-without-retyping/18540144#18540144).
+use functio [moveme](../demo/r/moveme.r)
+
+using it to reorder the columns in your data.frame is straightforward: `df[moveme(names(df), "g first")]`
+
+```
+moveme(names(df), "g first")
+moveme(names(df), "g first; a last; e before c")
+```
+
+## hash
+在Python中有这样一个神通广大的数据类型,它叫Dictionary.
+而长久以来在R中想要实现类似的Hash存储只能依靠environment类型,用起来非常不友好.
+hash它对environment进行了封装,使用户可以很方便的利用Hash表进行存储.
+
+其中有几个地方需要特别注意的:
+
+1. Hash表的Key必须为字符类型的,而且不能是空字符串
+1. 引用传递.在R中environment和hash对象只存在一份全局拷贝,因此如果在函数内改变它的值将会影响到外部访问的结果.如果需要复制hash对象,需调用它的copy方法
+1. 内存释放.通过rm销毁hash对象时,其占用的内存不会自动释放,因此需在rm前调用clear,以防内存泄露
+
+[hash 与 list 性能比较](http://equation85.github.io/blog/hash-table-for-r/)
+
+[hash demo](../demo/r/hash_demo.r)
 
 ## NA
 Missing values are represented by the symbol NA (not available).   
@@ -352,40 +359,6 @@ The function na.omit() returns the object with listwise deletion of missing valu
 ```
 # create new dataset without missing data 
 newdata <- na.omit(mydata)
-```
-
-### 更改列名
-直接通过index 来修改
-```
-names(dataframe)[index] <- "newname"
-```
-
-不需要知道列名情况下修改列名:
-```
-names(df)[names(df)=="site"]="position";
-```
-
-通过reshape 重命名
-```
-library(reshape)
-rename(dataframe, c(oldname = "newname", oldname = "newname", ...))
-```
-
-### rearrange columns of a data frame
-[ref](http://stackoverflow.com/questions/3369959/moving-columns-within-a-data-frame-without-retyping/18540144#18540144).
-use functio [moveme](../demo/r/moveme.r)
-Usage is simple. Try these out:
-```
-moveme(names(df), "g first")
-moveme(names(df), "g first; a last; e before c")
-```
-Of course, using it to reorder the columns in your data.frame is straightforward:
-```
-df[moveme(names(df), "g first")]
-```
-And for data.tables (moves by reference, no copy) :
-```
-setcolorder(dt, moveme(names(dt), "g first"))
 ```
 
 ## [date and time](http://www.cyclismo.org/tutorial/R/time.html)
