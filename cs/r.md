@@ -70,23 +70,15 @@ save objects to File System
 
 overview of the type of objects representing data
 
-| object                                     | modes                                     | several modes possible in the same object? |
-|--------------------------------------------|-------------------------------------------|--------------------------------------------|
-| vector                                     | numeric, character, complex or logical 	 | No  
-| factor                                     | numeric or character 					 | No
-| array                                      | numeric, character, complex or logical 	 | No  
-| matrix                                     | numeric, character, complex or logical 	 | No  
-| data frame                                 | numeric, character, complex or logical 	 | No  
-| ts                                         | numeric, character, complex or logical 	 | No  
-| list                                       | numeric, character, complex or logical, function, expression, ... 	 | No  
-
-- A factor is a categorical variable
-- A data frame is a table composed with one or several vectors and/or factors all of the same length but possibly of different modes. 
-dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征
-- A 'ts' is a time series data set and so contains additional attributes such as frequency and dates. 
-- A list a general form of vector in which the various elements need not be of the same type. 
-They can contain any type of object, included lists!
-- matrices or more generally arrays are multi-dimensional generalizations of vectors.
+| object       | comment |
+|--------------|---------|
+| vector       | 
+| array        | 
+| factor       | a categorical variable, 类似于C 语言中enum 类型 | 
+| data frame   | 类似于数据库中的table, 每一行都代表a record,而每一列则代表了不同属性 |
+| list         | 可以包含任何的object |
+| matrix       | 
+| ts           |a time series data set |
 
 a matrix with 2 lines and 2 columns has for dim the pair of values `[2, 2]`, but its length is 4.
 
