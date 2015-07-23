@@ -246,6 +246,75 @@ books <- data.frame(
 newdata=edit(data)
 ```
 
+根据已有列同时增加多列数据
+```
+mydata <- transform(mydata, 
+	sumx = x1 + x2, 
+	meanx = (x1 + x2)/2)
+```
+
+同时减少多列
+```
+## 方式1
+myvars <- names(leadership) %in% c("q3", "q4")
+newdata <- leadership[!myvars]
+
+## 方式2
+newdata <- leadership[c(-7, -8)]
+```
+也可以采用另外一种思路, 用集和运算将要保留的cols 计算出来
+
+### 取子集
+Using the subset() function
+```
+## 选择所有age >= 35 或者 age <24的行, 保留了fields q1 到 q4
+newdata <- subset(leadership, age >= 35 | age < 24, select = c(q1, q2, q3, q4))
+
+## 选择所有满足条件的行, 保留了gender 到 q4之间所有的fields(包括两者)
+newdata <- subset(leadership, gender == "M" & age > 25, select = gender:q4)
+```
+
+Selecting observations
+```
+newdata <- leadership[which(leadership$gender == "M" & leadership$age > 30), ]
+
+attach(leadership)
+newdata <- leadership[which(gender == "M" & age > 30), ]
+detach(leadership)
+```
+
+涉及到日期
+```
+leadership$date <- as.Date(leadership$date, "%m/%d/%y")
+startdate <- as.Date("2009-01-01")
+enddate <- as.Date("2009-10-31")
+newdata <- leadership[leadership$date >= startdate & leadership$date <= enddate, ]
+```
+
+## 随机抽样 sample
+`sample(x, size, replace = FALSE, prob = NULL)`  
+replace(FALSE) 表示无放回抽样; prob 的和可以不为1, 只要保证每个元素非负就可以了
+
+随机抽取大小为3的样本: `mysample <- leadership[sample(1:nrow(leadership), 3, replace=FALSE), ]`
+
+我们想从1到10中随机抽取5个数字,那么这样来做:首先产生一个序列,然后用sample函数进行无放回抽取: `sample(c(1:10),size=5)`
+
+`sample(x, n)`  ## 当length(x) = 1 且 x > 1, 那么这句话就是从序列1:x中取出n个值
+
+和replicate 结合可以很方便的产生**matrix**, 一个sample 构成一列
+```
+> x <- 1:5
+> sample(x, length(x),replace=T, prob=c(0.1,0.2,0.3,0.25,0.25))
+[1] 3 4 4 2 5
+> replicate(3, sample(x, length(x),replace=F))
+     [,1] [,2] [,3]
+[1,]    4    4    4
+[2,]    3    5    2
+[3,]    2    1    5
+[4,]    1    2    1
+[5,]    5    3    3
+```
+
 ### 更改列名
 1. 直接通过index 来修改: `names(dataframe)[index] <- "newname"`
 1. 不需要知道列名情况下修改列名:`names(df)[names(df)=="site"]="position";`
@@ -261,6 +330,9 @@ using it to reorder the columns in your data.frame is straightforward: `df[movem
 moveme(names(df), "g first")
 moveme(names(df), "g first; a last; e before c")
 ```
+
+使用sql 操作data.frame, 使用sqldf的前提是本地有数据库服务, 因为sqldf 会调用本地的数据库来执行语句
+[manipulate data.frame using sql demo](../demo/r/data.frame_sql.r)
 
 ## hash
 在Python中有这样一个神通广大的数据类型,它叫Dictionary.
@@ -510,123 +582,8 @@ Once an object has been created, new components may be added to it simply by giv
 `> e[3] <- 17`  
 now makes e a vector of length 3, (the first two components of which are at this point both NA).
 
-# 基本数据管理
-## 创建新变量
-```
-x1 <- c(2, 2, 6, 4)
-x2 <- c(3, 4, 2, 8)
-mydata <- data.frame(x1,x2)
-
-## 第一种方式
-mydata$sumx <- mydata$x1 + mydata$x2
-mydata$meanx <- (mydata$x1 + mydata$x2)/2
-
-## 第二种方式
-attach(mydata)
-mydata$sumx <- x1 + x2
-mydata$meanx <- (x1 + x2)/2
-detach(mydata)
-
-## 第三种方式
-mydata <- transform(mydata, 
-	sumx = x1 + x2, 
-	meanx = (x1 + x2)/2)
-## 注意, 其中的 = 不能换成 <-
-```
-
-## 数据集取子集
-Dropping variables
-```
-myvars <- names(leadership) %in% c("q3", "q4")
-newdata <- leadership[!myvars]
-
-newdata <- leadership[c(-7, -8)]
-```
-
-Selecting observations
-```
-newdata <- leadership[which(leadership$gender == "M" & leadership$age > 30), ]
-
-attach(leadership)
-newdata <- leadership[which(gender == "M" & age > 30), ]
-detach(leadership)
-```
-
-Selecting observations based on dates
-```
-leadership$date <- as.Date(leadership$date, "%m/%d/%y")
-startdate <- as.Date("2009-01-01")
-enddate <- as.Date("2009-10-31")
-newdata <- leadership[leadership$date >= startdate & leadership$date <= enddate, ]
-```
-
-Using the subset() function
-```
-## 选择所有age >= 35 或者 age <24的行, 保留了fields q1 到 q4
-newdata <- subset(leadership, age >= 35 | age < 24, select = c(q1, q2, q3, q4))
-## 选择所有满足条件的行, 保留了gender 到 q4之前所有的fields(包括两者)
-newdata <- subset(leadership, gender == "M" & age > 25, select = gender:q4)
-```
-
-随机抽样 sample
-```
-## 随机抽取大小为3的样本
-mysample <- leadership[sample(1:nrow(leadership), 3, replace=FALSE), ]
-```
-
-我们想从1到10中随机抽取5个数字,那么这样来做:首先产生一个序列,然后用sample函数进行无放回抽取.
-```
-x=1:10
-sample(x,size=5)
-```
-有放回抽取则是
-```
-sample(x,size=5,replace=T)
-```
-sample函数在建模中经常用来对样本数据进行随机的划分,一部分作为训练数据,另一部分作为检验数据.
-
-`sample(x, size, replace = FALSE, prob = NULL)`
-replace 表示取样的时候能够重复, 也就是说一个元素可以不可以被多次取到  
-prob 的和可以不为1, 只要保证每个元素非负就可以了
-
-```
-> x <- 1:5
-> sample(x, length(x),replace=T, prob=c(0.1,0.2,0.3,0.25,0.25))
-[1] 3 4 4 2 5
-> replicate(3, sample(x, length(x),replace=F))  ## repalce=FALSE 表示元素不能重复
-     [,1] [,2] [,3]
-[1,]    4    4    4
-[2,]    3    5    2
-[3,]    2    1    5
-[4,]    1    2    1
-[5,]    5    3    3
-> replicate(3, sample(x, length(x),replace=T))
-     [,1] [,2] [,3]
-[1,]    4    2    4
-[2,]    5    3    1
-[3,]    1    2    4
-[4,]    3    4    2
-[5,]    1    1    1
-```
-
-特殊的简化
-```
-sample(x, n)  ## 当length(x) = 1 且 x > 1, 那么这句话就是从序列1:x中取出n个值
-```
-
 描述统计是一种从大量数据中压缩提取信息的工具,最常用的就是summary命令
 对于数值变量计算了五个分位点和均值,对于分类变量则计算了频数
-
-## 使用sql 操作data.frame
-使用sqldf的前提是本地有数据库服务, 因为sqldf 会调用本地的数据库来执行语句
-```
-library(sqldf)
-
-newdf <- sqldf("select * from mtcars where carb=1 order by mpg", row.names = TRUE)
-## 参数row.names = TRUE 将原始数据框中的行名延续到新的数据框中
-
-newdf <- sqldf("select avg(mpg) as avg_mpg, avg(disp) as avg_disp, gear from mtcars where cyl in (4, 6) group by gear")
-```
 
 ## reshape2
 ### transform data between wide and long formats
