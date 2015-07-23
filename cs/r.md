@@ -350,7 +350,7 @@ hash它对environment进行了封装,使用户可以很方便的利用Hash表进
 [hash demo](../demo/r/hash_demo.r)
 
 ## NA
-- **Missing values are represented by the symbol **NA** (not available).
+- **Missing values** are represented by the symbol **NA** (not available).
 - **Impossible values**(e.g., dividing by zero) are represented by the symbol **NaN**(not a number).
 
 Testing for Missing Values  
@@ -406,128 +406,22 @@ POSIXlt a vector, and the entries in the vector have the following meanings:
 - zone (Optional.) The abbreviation for the time zone in force at that time: "" if unknown (but "" might also be used for UTC).
 - gmtoff (Optional.) The offset in seconds from GMT: positive values are East of the meridian. Usually NA if unknown, but 0 could mean unknown.
 
-Sys.time():  get the current time
-as.POSIXct and as.POSIXlt convert the time value into the different formats.
-strftime command is used to take a time data type and convert it to a string
-```
-timeString <-  strftime(t,"%Y-%m-%d %H:%M:%S")
-```
-strptime command is used to take a string and convert it into a form that R can use for calculations
-```
-time <- strptime("2014-01-23 14:28:21", "%Y-%m-%d %H:%M:%S")
-```
+- Sys.time():  get the current time
+- as.POSIXct and as.POSIXlt convert the time value into the different formats.
+- strftime: string from time, convert time to string, eg `timeString <-  strftime(t,"%Y-%m-%d %H:%M:%S")`
+- strptime: convert string into a form that R can use for calculations, eg `time <- strptime("2014-01-23 14:28:21", "%Y-%m-%d %H:%M:%S")`
 
-从系统与字符串转换来的时间类型是不一样的
-```
-> now <- Sys.time()
-> now
-[1] "2015-01-23 22:47:11 CST"
-> class(now)
-[1] "POSIXct" "POSIXt"
-> mode(now)
-[1] "numeric"
-> typeof(now)
-[1] "double"
-
-> t <- strptime("2005-06-24 10:05:35","%Y-%m-%d %H:%M:%S")
-> class(t)
-[1] "POSIXlt" "POSIXt"
-> mode(t)
-[1] "list"
-> typeof(t)
-[1] "list"
-
-## 但是还是可以直接作差的
-> now - t
-Time difference of 3500.529 days
-> difftime(now, t)
-Time difference of 3500.529 days
-```
+[从系统与字符串转换来的时间类型是不一样的, 但是还是可以直接作差的](../demo/r/time_type.r)
 
 ### Date
 The difference is that the date data type keeps track of numbers of days rather than seconds. 
 You can cast a string into a date type using the `as.Date` function. The `as.Date` function takes the same arguments as the time data types discussed above.
-```
-> theDates <- c("1 jan 2012","1 jan 2013","1 jan 2014")
-> d <- as.Date(theDates,"%d %b %Y")
-> d 
-[1] "2012-01-01" "2013-01-01" "2014-01-01"
-> class(d)
-[1] "Date"
-> mode(d)
-[1] "numeric"
-> typeof(d)
-[1] "double"
 
-> infamy <- as.Date(-179,origin="1942-06-04")
-```
+[日期类型的数据](../demo/r/date_type.r)
 
-### Time Operations
-```
-> earlier <- strptime("2000-01-01 00:00:00","%Y-%m-%d %H:%M:%S")
-> later <- strptime("2000-01-01 00:00:20","%Y-%m-%d %H:%M:%S")
-> later-earlier
-Time difference of 20 secs
-> as.double(later-earlier)
-[1] 20
+[Time Operations](../demo/r/time_operation.r)
 
-> earlier <- strptime("2000-01-01 00:00:00","%Y-%m-%d %H:%M:%S")
-> later <- strptime("2000-01-01 01:00:00","%Y-%m-%d %H:%M:%S")
-> later-earlier
-Time difference of 1 hours
-> as.double(later-earlier)
-[1] 1
-
-> up <- as.Date("1961-08-13")
-> down <- as.Date("1989-11-9")
-> down-up
-Time difference of 10315 days
-```
-以上说明时间直接作差的结果取决于差值的大小.
-使用`difftime`可以避免这个问题
-```
-difftime(time1, time2, 'arg')
-```
-arg should be one of "auto", "secs", "mins", "hours", "days", "weeks"
-
-例子
-```
-> earlier <- strptime("2000-01-01 00:00:00","%Y-%m-%d %H:%M:%S")
-> later <- strptime("2000-01-01 01:00:00","%Y-%m-%d %H:%M:%S")
-> difftime(later,earlier)
-Time difference of 1 hours
-> difftime(later,earlier,units="secs")
-Time difference of 3600 secs
-```
-
-difftime 的另外一种用法
-```
-> diff <- as.difftime("00:30:00","%H:%M:%S",units="hour")
-> diff
-Time difference of 0.5 hours
-> Sys.time()
-[1] "2014-01-23 16:45:39 EST"
-> Sys.time()+diff
-[1] "2014-01-23 17:15:41 EST"
-```
-
-The last thing to mention is that once a time stamp is cast into one of R internal formats comparisons can be made in a natural way.
-
-```
-> diff <- as.difftime("00:30:00","%H:%M:%S",units="hour")
-> now <- Sys.time()
-> later <- now + diff
-> now
-[1] "2014-01-23 16:47:48 EST"
-> later
-[1] "2014-01-23 17:17:48 EST"
->
-> if(now < later)
-  {
-     cat("there you go\n")
-  }
-there you go
-```
+`difftime(time1, time2, 'arg')`, arg should be one of "auto", "secs", "mins", "hours", "days", "weeks"
 
 ## class, mode and typeof
 All objects have two intrinsic attributes: mode and length. 
