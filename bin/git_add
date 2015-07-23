@@ -21,7 +21,7 @@ find . | grep \\.inc$ | xargs git add 2>/dev/null
 find . | grep \\.xml$ | xargs git add 2>/dev/null
 
 git commit -m "add $@ `basename ${dir}`"
-git push -v origin `where`
+git push -v origin `git_where`
 
 exit 0
 

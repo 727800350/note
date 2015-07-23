@@ -3,5 +3,8 @@
 
 dir=`pwd`
 cd ${dir}
-git status | head -n 1 | awk '{print $3}'
+
+git status | head -n 1 | awk '{print $NF}'
+
 exit 0
+

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -x
+
+dir=`pwd`
+cd ${dir}
+
+git commit -a -m "$@"
+git push -v origin `git_where`
+
+exit 0
+
