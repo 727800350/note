@@ -34,14 +34,249 @@ y <- as.integer(argv[2])
 1. R 语言里面没有像C 语言那样的多行注释
 1. R 中时没有续行符的, 所以要注意[ref](http://yihui.name/en/2007/12/be-careful-with-the-value-returned-in-r-functions/), [demo](../demo/r/line_continuation.r)
 
-# Objects
-`str(object)`: Compactly Display the Structure of an Arbitrary R Object
-
-R是一种基于对象(Object)的语言,所以你在R语言中接触到的每样东西都是一个对象,一串数值向量是一个对象,一个函数是一个对象,一个图形也是一个对象.
+# Data Types
+## every is object
+R是一种基于对象(Object)的语言,在R语言中接触到的每样东西都是一个对象,一串数值向量是一个对象,一个函数是一个对象,一个图形也是一个对象.
 基于对象的编程(OOP)就是在定义类的基础上,创建与操作对象.
 
 - `attributes()` 获得对象属性
 - `str()`,它能以简洁的方式显示对象的数据结构及其内容
+
+list objects in memory  
+
+- `ls()`: only the names of objects
+- `ls(pattern = "m")`: list the objects with the name containing "m", or using `pat` for short
+- `ls.str()`: display some details
+
+delete objects in memory  
+
+- `rm(x)`, `rm(x,y)` remove the object x and y from memory  
+- `rm(list=ls())` remove all objects
+
+save objects to File System  
+
+- `save(x, file = 'x.RData')` 保存一个对象x 到文件 x.RData 中,  
+- `load('x.RData')`, 将文件 x.RData 中的对象加载到内存中, 这里也就是x 对象.  
+- `save.image()` is just a short-cut for 'save my current workspace', i.e., `save(list = ls(all = TRUE), file = ".RData")`.
+
+## namespace
+同一个环境只能存在一个唯一的名字,不同环境可以存在相同名字,R寻找一个名字,
+会站在当前环境沿着search() path(`".GlobalEnv"     "package:base"   "namespace:base"`)往之后的环境中找名字,如果当前名字不符合就依次找后面的环境.  
+可以参见[demo namespace](../demo/r/namespace.r)
+
+## data types
+最为基本的类包括了数值(numeric),逻辑(logical),字符(character),列表(list),
+在此基础上构成了一些复合型的类,包括矩阵(matrix),数组(array),因子(factor),数据框(dataframe).
+
+overview of the type of objects representing data
+
+| object                                     | modes                                     | several modes possible in the same object? |
+|--------------------------------------------|-------------------------------------------|--------------------------------------------|
+| vector                                     | numeric, character, complex or logical 	 | No  
+| factor                                     | numeric or character 					 | No
+| array                                      | numeric, character, complex or logical 	 | No  
+| matrix                                     | numeric, character, complex or logical 	 | No  
+| data frame                                 | numeric, character, complex or logical 	 | No  
+| ts                                         | numeric, character, complex or logical 	 | No  
+| list                                       | numeric, character, complex or logical, function, expression, ... 	 | No  
+
+- A factor is a categorical variable
+- A data frame is a table composed with one or several vectors and/or factors all of the same length but possibly of different modes. 
+dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征
+- A 'ts' is a time series data set and so contains additional attributes such as frequency and dates. 
+- A list a general form of vector in which the various elements need not be of the same type. 
+They can contain any type of object, included lists!
+- matrices or more generally arrays are multi-dimensional generalizations of vectors.
+
+a matrix with 2 lines and 2 columns has for dim the pair of values `[2, 2]`, but its length is 4.
+
+## conversion
+
+|                 | to one long vector | to matrix           | to data frame        |                         |
+|-----------------|--------------------|---------------------|----------------------|-------------------------|
+| from vector     |                    | c(x,y)              | cbind(x,y), rbind(x,y)| data.frame(x,y)         |
+| from matrix     |                    | as.vector(mymatrix) |                      | as.data.frame(mymatrix) |
+| from data frame |                    |                     | as.matrix(myframe)   |                         |
+
+- cbind() 把矩阵横向合并成一个大矩阵(列方式), 将参数当成列矩阵来处理
+- rbind() 是纵向合并(行方式), 将参数当行矩阵来处理
+
+[cbind and rbind demo](../demo/r/bind.r)
+
+## 类型的判断
+[is 与 inherits](http://stackoverflow.com/questions/27923345/whats-the-difference-between-is-and-inherits)
+```
+class(letters) ## [1] "character"
+is(letters, "character") ## [1] TRUE
+inherits(letters, "character") ## [1] TRUE
+```
+Is there a preference for which one I should use, and do they ever return different values?
+
+Use inherits, but be careful with numbers and S4 classes.
+
+The most obvious place where the two functions differ is when checking if integers are numeric.
+```
+class(1L) ## [1] "integer"
+is.numeric(1L) ## [1] TRUE
+is(1L, "numeric") ## [1] TRUE
+inherits(1L, "numeric") ## [1] FALSE
+```
+
+## vector
+Vectors are the most important type of object in R.
+
+追加元素
+```
+> x <- c(1:3)
+> c(x,5)
+[1] 1 2 3 5
+```
+
+选择特定的元素
+```
+> a <- c(1:5)
+> a>3
+[1] FALSE FALSE FALSE  TRUE  TRUE
+> a[a>3]
+> sum(a>3)  ## 统计满足条件的元素的个数
+```
+
+`> y <- x[-(1:5)]` gives y all but the first five elements of x
+
+`> y <- x[!is.na(x)]`  
+creates (or re-creates) an object y which will contain the non-missing values of x, in the same order.
+
+`> z <- (x+1)[(!is.na(x)) & x>0]`  
+creates an object z and places in it the values of the vector x+1 for which 
+the corresponding value in x was both non-missing and positive.
+
+`x[is.na(x)] <- 0` replaces any missing values in x by zeros and  
+`> y[y < 0] <- -y[y < 0]` has the same effect as `> y <- abs(y)`
+
+```
+> fruit <- c(5,10,1,20)
+> fruit
+[1]  5 10  1 20
+> names(fruit) <- c("orange", "banana", "apple", "peach")
+> fruit
+orange banana  apple  peach 
+     5     10      1     20 
+> lunch <- fruit[c("apple","orange")]
+> lunch
+ apple orange 
+     1      5 
+> fruit["apple"]
+apple 
+    1 
+```
+
+`as.matrix(vector)`生成的矩阵是一个column matrice
+
+logical vectors
+
+- any: Given a set of logical vectors, is at least one of the values true?
+- all: Given a set of logical vectors, are all of the values true?
+```
+> x <- c(1:5)
+> y <- c(2:4)
+> x %in% y [1] FALSE  TRUE  TRUE  TRUE FALSE
+> all(x %in% y) [1] FALSE
+> any(x %in% y) [1] TRUE
+```
+
+## array
+`> x <- array(1:20, dim=c(4,5))` generates a 4 by 5 array, a matrix  
+
+`> Z <- array(1:24, dim=c(3,4,2))` generates a 3 by 4 by 2 array
+
+## matrix
+```
+> x <- matrix(c(1,2,3,4,5,6), c(2,3))
+> x
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+
+```
+## factor
+因子提供了一个简单并且紧凑的形式来处理**分类数据(不能进行数字计算)**.
+因子用"水平level"来表示所有可能的取值.
+如果数据集有取值个数固定的名字变量,因子就特别有用.
+
+```
+> g<-c("f","m","f","f","m") 
+> g 
+[1] "f" "m" "f" "f" "m" 
+> g<-factor(g)#因子化 
+> g 
+[1] f m f f m 
+Levels: f m #有几种可选的值
+```
+
+`levels(factor)`: 获取不同的levels, 返回类型为character 的数据类型
+
+## list
+- unlist: 将list转换为非list格式, 为向量格式
+
+```
+> a <- list(1,2, "test")
+> a
+[[1]]
+[1] 1
+
+[[2]]
+[1] 2
+
+[[3]]
+[1] "test"
+```
+
+[如何高效的append an element to a list in R](http://stackoverflow.com/questions/17046336/here-we-go-again-append-an-element-to-a-list-in-r)
+
+## hash
+在Python中有这样一个神通广大的数据类型,它叫Dictionary.
+而长久以来在R中想要实现类似的Hash存储只能依靠environment类型,用起来非常不友好.
+hash它对environment进行了封装,使用户可以很方便的利用Hash表进行存储.
+
+其中有几个地方需要特别注意的:
+
+1. Hash表的Key必须为字符类型的,而且不能是空字符串
+1. 引用传递.在R中environment和hash对象只存在一份全局拷贝,因此如果在函数内改变它的值将会影响到外部访问的结果.如果需要复制hash对象,需调用它的copy方法
+1. 内存释放.通过rm销毁hash对象时,其占用的内存不会自动释放,因此需在rm前调用clear,以防内存泄露
+
+[hash 与 list 性能比较](http://equation85.github.io/blog/hash-table-for-r/)
+
+[hash demo](../demo/r/hash_demo.r)
+
+## data.frame
+在数据导入R语言后,会以数据框(dataframe)的形式储存.
+dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征.
+```
+mydata <- data.frame(col1, col2, col3, ...)
+```
+例如
+
+```
+books <- data.frame(
+    title = c("harry potter", "war and peace", "lord of the rings"), # column named "title"
+    author = c("rowling", "tolstoy", "tolkien"),
+    num_pages = c("350", "875", "500")
+)
+
+> books
+              title  author num_pages
+1      harry potter rowling       350
+2     war and peace tolstoy       875
+3 lord of the rings tolkien       500
+```
+
+如果在像数据库那样, 获得的都是一个个的record(具有不同数据类型的fields), 然后想把很多的records组成一个data.frame, 
+现在我能想到的方法就是用list来存储一个record, 然后用rbind 函数将这个list 放到data.frame里面.(循环实现将所以的records放入data.frame中)
+
+下面的命令可以让你有机会修改数据并存入到新的变量newdata中:
+```
+newdata=edit(data)
+```
 
 ## NA
 Missing values are represented by the symbol NA (not available).   
@@ -159,259 +394,6 @@ df[moveme(names(df), "g first")]
 And for data.tables (moves by reference, no copy) :
 ```
 setcolorder(dt, moveme(names(dt), "g first"))
-```
-
-## namespace
-同一个环境只能存在一个唯一的名字,不同环境可以存在相同名字,R寻找一个名字,
-会站在当前环境沿着search() path(`".GlobalEnv"     "package:base"   "namespace:base"`)往之后的环境中找名字,如果当前名字不符合就依次找后面的环境.  
-可以参见[demo namespace](../demo/r/namespace.r)
-
-## object types
-R语言中最为基本的类包括了数值(numeric),逻辑(logical),字符(character),列表(list),
-在此基础上构成了一些复合型的类,包括矩阵(matrix),数组(array),因子(factor),数据框(dataframe).
-除了这些内置的类外还有很多其它的,用户还可以自定义新的类,但所有的类都是建立在这些基本的类之上的
-
-overview of the type of objects representing data
-
-| object                                     | modes                                     | several modes possible in the same object? |
-|--------------------------------------------|-------------------------------------------|--------------------------------------------|
-| vector                                     | numeric, character, complex or logical 	 | No  
-| factor                                     | numeric or character 					 | No
-| array                                      | numeric, character, complex or logical 	 | No  
-| matrix                                     | numeric, character, complex or logical 	 | No  
-| data frame                                 | numeric, character, complex or logical 	 | No  
-| ts                                         | numeric, character, complex or logical 	 | No  
-| list                                       | numeric, character, complex or logical, function, expression, ... 	 | No  
-
-- A factor is a categorical variable
-- A data frame is a table composed with one or several vectors and/or factors all of the same length but possibly of different modes. 
-dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征
-- A 'ts' is a time series data set and so contains additional attributes such as frequency and dates. 
-- A list a general form of vector in which the various elements need not be of the same type. 
-They can contain any type of object, included lists!
-- matrices or more generally arrays are multi-dimensional generalizations of vectors.
-
-a matrix with 2 lines and 2 columns has for dim the pair of values `[2, 2]`, but its length is 4.
-
-list objects in memory  
-`ls()`: only the names of objects
-`ls(pattern = "m")`: list the objects with the name containing "m", or using `pat` for short
-`ls.str()`: display some details
-
-delete objects in memory  
-`rm(x)`, `rm(x,y)` remove the object x and y from memory  
-`rm(list=ls())` remove all objects
-
-save objects to File System  
-`save(x, file = 'x.RData')` 保存一个对象x 到文件 x.RData 中,  
-`load('x.RData')`, 将文件 x.RData 中的对象加载到内存中, 这里也就是x 对象.  
-`save.image()` is just a short-cut for 'save my current workspace', i.e., `save(list = ls(all = TRUE), file = ".RData")`.
-
-**Conversion**
-
-|                 | to one long vector | to matrix           | to data frame        |                         |
-|-----------------|--------------------|---------------------|----------------------|-------------------------|
-| from vector     |                    | c(x,y)              | cbind(x,y), rbind(x,y)| data.frame(x,y)         |
-| from matrix     |                    | as.vector(mymatrix) |                      | as.data.frame(mymatrix) |
-| from data frame |                    |                     | as.matrix(myframe)   |                         |
-
-- cbind() 把矩阵横向合并成一个大矩阵(列方式), 将参数当成列矩阵来处理
-- rbind() 是纵向合并(行方式), 将参数当行矩阵来处理
-
-[cbind and rbind demo](../demo/r/bind.r)
-
-类型的判断,**[is 与 inherits](http://stackoverflow.com/questions/27923345/whats-the-difference-between-is-and-inherits)**
-```
-class(letters) ## [1] "character"
-is(letters, "character") ## [1] TRUE
-inherits(letters, "character") ## [1] TRUE
-```
-Is there a preference for which one I should use, and do they ever return different values?
-
-Use inherits, but be careful with numbers and S4 classes.
-
-The most obvious place where the two functions differ is when checking if integers are numeric.
-```
-class(1L) ## [1] "integer"
-is.numeric(1L) ## [1] TRUE
-is(1L, "numeric") ## [1] TRUE
-inherits(1L, "numeric") ## [1] FALSE
-```
-
-## vector
-Vectors are the most important type of object in R.
-
-追加元素
-```
-> x <- c(1:3)
-> c(x,5)
-[1] 1 2 3 5
-```
-
-选择特定的元素
-```
-> a <- c(1:5)
-> a>3
-[1] FALSE FALSE FALSE  TRUE  TRUE
-> a[a>3]
-[1] 4 5
-> sum(a[a>3])
-[1] 9
-> sum(a>3)  ## 统计满足条件的元素的个数
-[1] 2
-```
-
-`x[1:10]` selects the first 10 elements of x
-
-`> y <- x[-(1:5)]` gives y all but the first five elements of x
-
-`> y <- x[!is.na(x)]`  
-creates (or re-creates) an object y which will contain the non-missing values of x, in the same order.
-
-`> z <- (x+1)[(!is.na(x)) & x>0]`  
-creates an object z and places in it the values of the vector x+1 for which 
-the corresponding value in x was both non-missing and positive.
-
-`x[is.na(x)] <- 0` replaces any missing values in x by zeros and  
-`> y[y < 0] <- -y[y < 0]` has the same effect as `> y <- abs(y)`
-
-```
-> fruit <- c(5,10,1,20)
-> fruit
-[1]  5 10  1 20
-> names(fruit) <- c("orange", "banana", "apple", "peach")
-> fruit
-orange banana  apple  peach 
-     5     10      1     20 
-> lunch <- fruit[c("apple","orange")]
-> lunch
- apple orange 
-     1      5 
-> fruit["apple"]
-apple 
-    1 
-```
-
-`as.matrix(vector)`生成的矩阵是一个column matrice
-
-logical vectors
-
-- any: Given a set of logical vectors, is at least one of the values true?
-- all: Given a set of logical vectors, are all of the values true?
-```
-> x <- c(1:5)
-> y <- c(2:4)
-> x %in% y [1] FALSE  TRUE  TRUE  TRUE FALSE
-> all(x %in% y) [1] FALSE
-> any(x %in% y) [1] TRUE
-```
-
-## array
-```
-> z <- c(1:24)
-> dim(z) <- c(3,4,2)
-> dim(z)
-[1] 3 4 2
-> dim(z[,,]) ## z[,,]表示整个array
-[1] 3 4 2
-> dim(z[1,,])
-[1] 4 2
-> dim(z[,1,])
-[1] 3 2
-> dim(z[,,1])
-[1] 3 4
-```
-
-`> x <- array(1:20, dim=c(4,5))` generates a 4 by 5 array, a matrix  
-`> Z <- array(1:24, dim=c(3,4,2))` generates a 3 by 4 by 2 array
-
-## matrix
-```
-> x <- matrix(c(1,2,3,4,5,6), c(2,3))
-> x
-     [,1] [,2] [,3]
-[1,]    1    3    5
-[2,]    2    4    6
-
-```
-## factor
-因子提供了一个简单并且紧凑的形式来处理**分类数据(不能进行数字计算)**.
-因子用"水平level"来表示所有可能的取值.
-如果数据集有取值个数固定的名字变量,因子就特别有用.
-
-```
-> g<-c("f","m","f","f","m") 
-> g 
-[1] "f" "m" "f" "f" "m" 
-> g<-factor(g)#因子化 
-> g 
-[1] f m f f m 
-Levels: f m #有几种可选的值
-```
-
-`levels(factor)`: 获取不同的levels, 返回类型为character 的数据类型
-
-## list
-- unlist: 将list转换为非list格式, 为向量格式
-
-```
-> a <- list(1,2, "test")
-> a
-[[1]]
-[1] 1
-
-[[2]]
-[1] 2
-
-[[3]]
-[1] "test"
-```
-
-[如何高效的append an element to a list in R](http://stackoverflow.com/questions/17046336/here-we-go-again-append-an-element-to-a-list-in-r)
-
-## hash
-在Python中有这样一个神通广大的数据类型,它叫Dictionary.
-而长久以来在R中想要实现类似的Hash存储只能依靠environment类型,用起来非常不友好.
-hash它对environment进行了封装,使用户可以很方便的利用Hash表进行存储.
-
-其中有几个地方需要特别注意的:
-
-1. Hash表的Key必须为字符类型的,而且不能是空字符串
-1. 引用传递.在R中environment和hash对象只存在一份全局拷贝,因此如果在函数内改变它的值将会影响到外部访问的结果.如果需要复制hash对象,需调用它的copy方法
-1. 内存释放.通过rm销毁hash对象时,其占用的内存不会自动释放,因此需在rm前调用clear,以防内存泄露
-
-[hash 与 list 性能比较](http://equation85.github.io/blog/hash-table-for-r/)
-
-[hash demo](../demo/r/hash_demo.r)
-
-## data.frame
-在数据导入R语言后,会以数据框(dataframe)的形式储存.
-dataframe是一种R的数据格式,可以将它想象成类似统计表格,每一行都代表一个样本点,而每一列则代表了样本的不同属性或特征.
-```
-mydata <- data.frame(col1, col2, col3, ...)
-```
-例如
-
-```
-books <- data.frame(
-    title = c("harry potter", "war and peace", "lord of the rings"), # column named "title"
-    author = c("rowling", "tolstoy", "tolkien"),
-    num_pages = c("350", "875", "500")
-)
-
-> books
-              title  author num_pages
-1      harry potter rowling       350
-2     war and peace tolstoy       875
-3 lord of the rings tolkien       500
-```
-
-如果在像数据库那样, 获得的都是一个个的record(具有不同数据类型的fields), 然后想把很多的records组成一个data.frame, 
-现在我能想到的方法就是用list来存储一个record, 然后用rbind 函数将这个list 放到data.frame里面.(循环实现将所以的records放入data.frame中)
-
-下面的命令可以让你有机会修改数据并存入到新的变量newdata中:
-```
-newdata=edit(data)
 ```
 
 ## [date and time](http://www.cyclismo.org/tutorial/R/time.html)
