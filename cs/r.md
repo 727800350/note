@@ -49,8 +49,8 @@ y <- as.integer(argv[2])
 		- quote('TRUE'): any character or factor columns will be surrounded by double quotes;
 		- sep: the field separator string;
 		- eol: end of line;
-		- na: the string to use for missing values in the data;
-		- dec: the string to use for decimal points in numeric or complex columns: must be a single character;
+		- na: the string to use for missing values in the data
+		- dec: customize decimal point for numeric or complex, must be a single character
 		- row.names('TRUE'): row names will be written along with x;
 		- col.names('TRUE'): column names will be written along with x
 
