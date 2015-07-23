@@ -29,10 +29,39 @@ y <- as.integer(argv[2])
 - --no-save 在退出R时,不保存工作空间,否则,R会保存当前工作空间并覆盖原有工作目录中的.RData文件.
 - --no-init-file 不读取.Rprofile文件或者~/. Rprofile文件.
 
+在R 里面可以通过: `source("commands.r")` 读取文件并执行  
+
 注意: 
 
 1. R 语言里面没有像C 语言那样的多行注释
 1. R 中时没有续行符的, 所以要注意[ref](http://yihui.name/en/2007/12/be-careful-with-the-value-returned-in-r-functions/), [demo](../demo/r/line_continuation.r)
+
+# IO
+- `read.table(file, header = FALSE, sep = "")`
+- `read.csv(file, header = TRUE, sep = ",", dec = ".", fill = TRUE, comment.char = "", ...)`
+- 'scan' Read data into a vector or list from the console or file
+
+- `print(x, ...)`, for more customizable (but cumbersome) printing, see `cat`, `format` or also `write`
+- `cat("x = ", x, "\n")`
+- 'write' is a wrapper for 'cat', which gives further details on the format used.
+- `write.table(x, file = "", append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE)`, for data frames
+		- quote('TRUE'): any character or factor columns will be surrounded by double quotes;
+		- sep: the field separator string;
+		- eol: end of line;
+		- na: the string to use for missing values in the data;
+		- dec: the string to use for decimal points in numeric or complex columns: must be a single character;
+		- row.names('TRUE'): row names will be written along with x;
+		- col.names('TRUE'): column names will be written along with x
+- write.csv(...), 参数与 write.table 类似
+- write.csv2(...), 参数与 write.table 类似
+
+重定向输出
+```
+sink("文件名", append = FALSE, split = FALSE)
+sink()   #取消显示到文件
+```
+使用参数append=TRUE可以将文本追加到文件后  
+参数split=TRUE可将输出同时发送到屏幕和输出文件中
 
 # Data Types
 ## every is object
@@ -334,6 +363,19 @@ moveme(names(df), "g first; a last; e before c")
 使用sql 操作data.frame, 使用sqldf的前提是本地有数据库服务, 因为sqldf 会调用本地的数据库来执行语句
 [manipulate data.frame using sql demo](../demo/r/data.frame_sql.r)
 
+## 字符串str
+- 获取长度:nchar()能够获取字符串的长度,它也支持字符串向量操作.注意它和length()的结果是有区别的.
+- 连接: paste(sep=" "), 默认用空格进行连接
+- 分割:strsplit()负责将字符串按照某种分割形式将其进行划分,它正是paste()的逆操作.
+- 选取[: 在用strsplit之后, 得到一个字符串的list, 可以用[ 来进行选取操作, [demo](../demo/r/str_selection.r)
+- 截取:substr()能对给定的字符串对象取出子集,其参数是子集所处的起始和终止位置.
+- 替代:gsub()负责搜索字符串的特定表达式,并用新的内容加以替代.
+- sub()函数是类似的,但只替代第一个发现结果.
+- 匹配:grep()负责搜索给定字符串对象中特定表达式 ,并返回其位置索引.
+- grepl()函数与之类似,但其后面的"l"则意味着返回的将是逻辑值.
+- tolower(), toupper(): 将全部字母转换为小, 大写
+- capitalize(y): 首字母大写, 需要`library(Hmisc)`
+
 ## hash
 在Python中有这样一个神通广大的数据类型,它叫Dictionary.
 而长久以来在R中想要实现类似的Hash存储只能依靠environment类型,用起来非常不友好.
@@ -566,16 +608,14 @@ x: a data frame or a time series
 basic: do we have to return basic statistics (by default, it is TRUE)? 
 	These are: the number of values (nbr.val), the number of null values (nbr.null), the number of missing values (nbr.na), the minimal value (min), the maximal value (max), the range (range, that is, max-min) and the sum of all non-missing values (sum)
 
-desc: do we have to return various descriptive statistics (by
-          default, it is TRUE)? These are: the median (median), the
-          mean (mean), the standard error on the mean (SE.mean), the
-          confidence interval of the mean (CI.mean) at the 'p' level,
-          the variance (var), the standard deviation (std.dev) and the
-          variation coefficient (coef.var) defined as the standard
-          deviation divided by the mean
+desc: do we have to return various descriptive statistics (by default, it is TRUE)? 
+These are: the median (median), the mean (mean), the standard error on the mean (SE.mean), the confidence interval of the mean (CI.mean) at the 'p' level,
+the variance (var), the standard deviation (std.dev) and the variation coefficient (coef.var) defined as the standard deviation divided by the mean
 
 norm: do we have to return normal distribution statistics (by default, it is FALSE)? 
-	the skewness coefficient g1 (skewness), its significant criterium (skew.2SE, that is, g1/2.SEg1; if skew.2SE > 1, then skewness is significantly different than zero), kurtosis coefficient g2 (kurtosis), its significant criterium (kurt.2SE, same remark than for skew.2SE), the statistic of a Shapiro-Wilk test of normality (normtest.W) and its associated probability (normtest.p)
+	the skewness coefficient g1 (skewness), its significant criterium (skew.2SE, that is, g1/2.SEg1; if skew.2SE > 1, 
+	then skewness is significantly different than zero), kurtosis coefficient g2 (kurtosis), its significant criterium (kurt.2SE, same remark than for skew.2SE), 
+	the statistic of a Shapiro-Wilk test of normality (normtest.W) and its associated probability (normtest.p)
 
 p: 置信区间
 ```
@@ -768,101 +808,6 @@ game <- function() {
     return(sum(n))
 }
 replicate(n=10000,game())
-```
-
-# 字符串str
-- 获取字符串长度:nchar()能够获取字符串的长度,它也支持字符串向量操作.注意它和length()的结果是有区别的.
-- 字符串连接: paste(sep=" "), 默认用空格进行连接
-- 字符串分割:strsplit()负责将字符串按照某种分割形式将其进行划分,它正是paste()的逆操作.
-- 字符串选取[: 在用strsplit之后, 得到一个字符串的list, 可以用[ 来进行选取操作
-
-```
-> str <- "this is a test"
-> str
-[1] "this is a test"
-> r <- strsplit(str, " ") ## "this" "is"   "a"    "test"
-> length(r)  ## 不知道为什么length 是1 
-[1] 1
-> mode(r)
-[1] "list"
-> sapply(r,"[",1)
-[1] "this"
-> r[1]
-[[1]]
-[1] "this" "is"   "a"    "test"
-> length(r[[1]])
-[1] 4
-> r[[1]][4]
-[1] "test"
-```
-- 字符串截取:substr()能对给定的字符串对象取出子集,其参数是子集所处的起始和终止位置.
-- 字符串替代:gsub()负责搜索字符串的特定表达式,并用新的内容加以替代.
-- sub()函数是类似的,但只替代第一个发现结果.
-- 字符串匹配:grep()负责搜索给定字符串对象中特定表达式 ,并返回其位置索引.
-- grepl()函数与之类似,但其后面的"l"则意味着返回的将是逻辑值.
-- tolower(): 将全部字母转换为小写
-- toupper()
-- capitalize(y): 首字母大写, 需要`library(Hmisc)`
-
-# IO
-`print(x, ...)`
-
-For more customizable (but cumbersome) printing, see `cat`, `format` or also `write`.   
-For a simple prototypical print method, see `.print.via.format` in package **tools**.
-
-`cat(x, y, ...)`: 可以输出多个变量, eg: `cat("x = ", x, "\n")`
-
-`source("commands.R")` 读取文件并执行  
-
-重定向输出
-```
-sink("文件名", append = FALSE, split = FALSE)
-sink()   #取消显示到文件
-```
-使用参数append=TRUE可以将文本追加到文件后  
-参数split=TRUE可将输出同时发送到屏幕和输出文件中
-
-- 'write' is a wrapper for 'cat', which gives further details on the format used.
-- 'save' for writing any R objects, 
-- 'write.table' for data frames, and 
-- 'scan' for reading data.
-
-```
-write.table(x, file = "", append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE, qmethod = c("escape", "double"), fileEncoding = "")
-write.csv(...)
-write.csv2(...)
-```
-
-- quote: a logical value ('TRUE' or 'FALSE') or a numeric vector.  
-If 'TRUE', any character or factor columns will be surrounded by double quotes.  
-If a numeric vector, its elements are taken as the indices of columns to quote.  In both cases, row and column names are quoted if they are written.  
-If 'FALSE', nothing is quoted.
-- sep: the field separator string. Values within each row of x are separated by this string.
-- eol: end of line
-- na: the string to use for missing values in the data
-- dec: the string to use for decimal points in numeric or complex columns: must be a single character.
-- row.names: either a logical value indicating whether the row names of x are to be written along with x, or a character vector of row names to be written.
-- col.names: either a logical value indicating whether the column names of x are to be written along with x, or a character vector of column names to be written. 
-
-## file
-[data import](http://www.r-tutor.com/r-introduction/data-frame/data-import)
-
-[R数据的导入与导出](http://www.biosino.org/R/R-doc/onepage/R-data_cn.html), 这个比较全面, 包含
-
-- Spreadsheet-like data: 电子表格类似的数据
-- Importing from other statistical systems: 导入其它统计软件的数据
-- Relational databases: 关系数据库
-- Binary files: 二进制文件
-- Connections: 连接
-- Network interfaces: 网络接口
-- Reading Excel spreadsheets: 读取Excel表格文件
-- References: 参考文献
-- Function and variable index: 函数和变量索引
-- Concept index: 概念索引
-
-```
-read.table(file, header = FALSE, sep = "")
-read.csv(file, header = TRUE, sep = ",", dec = ".", fill = TRUE, comment.char = "", ...)
 ```
 
 **Working Directory**  
