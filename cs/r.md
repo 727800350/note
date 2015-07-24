@@ -1,17 +1,14 @@
 - R启动后加载环境配置文件: `.Rprofile`
 - 退出: `q()`
 - 执行r的脚本文件: `R -f file.r`
-- [批量运行R代码](http://book.2cto.com/201305/21969.html) Rscript
+- [批量运行R代码](http://book.2cto.com/201305/21969.html) 执行: `$ Rscript scriptfile arg1 arg2`
 		
-		```
 		#!/usr/bin/Rscript --slave
 		argv <- commandArgs(TRUE)
 		x <- as.numeric(argv[1]) # 默认的参数是字符串类型
 		y <- as.integer(argv[2])
-		```
-		执行: `$ Rscript scriptfile arg1 arg2`
-		
-		下面是一些其他批处理模式下的实用命令:
+
+	下面是一些其他批处理模式下的实用命令:
 		
 		- --slave 类似于--quiet,它禁止回送输入的信息,使R软件输出的信息更为简洁.
 		- --no-restore 在R启动时不还原工作空间.对于希望以空白工作空间启动R的脚本而言,这个选项很有必要.
