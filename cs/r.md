@@ -1,35 +1,24 @@
-**R语言的启动**
+- R启动后加载环境配置文件: `.Rprofile`
+- 退出: `q()`
+- 执行r的脚本文件: `R -f file.r`
+- [批量运行R代码](http://book.2cto.com/201305/21969.html) Rscript
+		
+		```
+		#!/usr/bin/Rscript --slave
+		argv <- commandArgs(TRUE)
+		x <- as.numeric(argv[1]) # 默认的参数是字符串类型
+		y <- as.integer(argv[2])
+		```
+		执行: `$ Rscript scriptfile arg1 arg2`
+		
+		下面是一些其他批处理模式下的实用命令:
+		
+		- --slave 类似于--quiet,它禁止回送输入的信息,使R软件输出的信息更为简洁.
+		- --no-restore 在R启动时不还原工作空间.对于希望以空白工作空间启动R的脚本而言,这个选项很有必要.
+		- --no-save 在退出R时,不保存工作空间,否则,R会保存当前工作空间并覆盖原有工作目录中的.RData文件.
+		- --no-init-file 不读取.Rprofile文件或者~/. Rprofile文件.
 
-- R语言启动后会首先查找有无.Rprofile文档,用户可通过编辑.Rprofile文档来自定义R启动环境,该文件可放在工作目录或安装目录中.
-- 之后R会查找在工作目录有无.RData文档,若有的话将自动加载恢复之前的工作内容.
-- 在R中所有的默认输入输出文件都会在工作目录中.getwd() 报告工作目录,setwd() 负责设置工作目录.在win窗口下也可以点击Change Working Directory来更改.
-- Sys.getenv('R_HOME') 会报告R主程序安装目录
-- ?Startup可以得到更多关于R启动时的帮助
-
-退出
-`> q()`
-At this point you will be asked whether you want to save the data from your R session.
-Data which is saved will be available in future R sessions.
-
-执行r的脚本文件: `R -f file.r`
-
-[批量运行R代码](http://book.2cto.com/201305/21969.html)
-```
-#!/usr/bin/Rscript --slave
-argv <- commandArgs(TRUE)
-x <- as.numeric(argv[1]) # 默认的参数是字符串类型
-y <- as.integer(argv[2])
-```
-执行: `$ Rscript scriptfile arg1 arg2`
-
-下面是一些其他批处理模式下的实用命令:
-
-- --slave 类似于--quiet,它禁止回送输入的信息,使R软件输出的信息更为简洁.
-- --no-restore 在R启动时不还原工作空间.对于希望以空白工作空间启动R的脚本而言,这个选项很有必要.
-- --no-save 在退出R时,不保存工作空间,否则,R会保存当前工作空间并覆盖原有工作目录中的.RData文件.
-- --no-init-file 不读取.Rprofile文件或者~/. Rprofile文件.
-
-在R 里面可以通过: `source("commands.r")` 读取文件并执行  
+- 在R 里面可以通过: `source("commands.r")` 读取文件并执行  
 
 注意: 
 
