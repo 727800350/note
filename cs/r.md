@@ -126,14 +126,42 @@ inherits(1L, "numeric") ## [1] FALSE
 ## vector
 Vectors are the most important type of object in R.
 
-追加元素
+### 创建vector
+- `x <- vector()`: 创建了一个空的vector
+- `c`:  
+All arguments are coerced to a common type which is the type of the returned value, and all attributes except names are removed.  
+The output type is determined from the highest type of the components in the hierarchy 
+**NULL < raw < logical < integer < double < complex < character < list < expression**
+
+	```
+	> c(1,7:9)
+	[1] 1 7 8 9
+	> c(1:5, 10.5, "next")
+	[1] "1"    "2"    "3"    "4"    "5"    "10.5" "next"
+	```
+
+- `seq(from = 1, to = 1, by = ((to - from)/(length.out - 1)), length.out = NULL, along.with = NULL, ...)`
+
+	```
+	seq(from, to)
+	seq(from, to, by= ) ## from, from+by, from+2*by...
+	seq(from, to, length.out= )  ## equally spaced
+	```
+
+- `rep`  
+`rep()` which can be used for replicating an object in various complicated ways. The simplest form is  
+
+	- `> s5 <- rep(x, times=5)` which will put five copies of x end-to-end in s5.  
+	- `> s6 <- rep(x, each=5)` which repeats each element of x five times before moving on to the next.
+
+### 追加元素
 ```
 > x <- c(1:3)
 > c(x,5)
 [1] 1 2 3 5
 ```
 
-选择特定的元素
+### 选择特定的元素
 ```
 > a <- c(1:5)
 > a>3
@@ -154,6 +182,7 @@ the corresponding value in x was both non-missing and positive.
 `x[is.na(x)] <- 0` replaces any missing values in x by zeros and  
 `> y[y < 0] <- -y[y < 0]` has the same effect as `> y <- abs(y)`
 
+### names 属性
 ```
 > fruit <- c(5,10,1,20)
 > fruit
@@ -171,9 +200,12 @@ apple
     1 
 ```
 
-`as.matrix(vector)`生成的矩阵是一个column matrice
-
-logical vectors
+### logical vectors
+```
+> x <- vector(length=4)
+> x
+[1] FALSE FALSE FALSE FALSE
+```
 
 - any: Given a set of logical vectors, is at least one of the values true?
 - all: Given a set of logical vectors, are all of the values true?
@@ -184,6 +216,8 @@ logical vectors
 > all(x %in% y) [1] FALSE
 > any(x %in% y) [1] TRUE
 ```
+
+`as.matrix(vector)`生成的矩阵是一个column matrice
 
 ## array
 `> x <- array(1:20, dim=c(4,5))` generates a 4 by 5 array, a matrix  
@@ -924,77 +958,6 @@ detach(mtcars)
 order(a) is saying, 'put the third element first when you sort... ', 
 whereas rank(a) is saying, 'the first element is the second lowest... '. 
 (Note that they both agree on which element is lowest, etc.; they just present the information differently.)''''
-
-## construct sequence
-### c
-This is a generic function which combines its arguments.
-
-The default method combines its arguments to form a vector.
-All arguments are coerced to a common type which is the type of the returned value, and all attributes except names are removed.  
-The output type is determined from the highest type of the components in the hierarchy 
-`NULL < raw < logical < integer < double < complex < character < list < expression`.
-
-```
-> c(1,7:9)
-[1] 1 7 8 9
-> c(1:5, 10.5, "next")
-[1] "1"    "2"    "3"    "4"    "5"    "10.5" "next"
-
-构造list ll
-> ll <- list(A = 1, c = "C")
-> ll
-$A
-[1] 1
-
-$c
-[1] "C"
-
-由于1:3 生成的三个元素时integer类型的数据, 比list类型的ll层级低, 所以c会把1:3生成的三个元素都分别转化为list类型
-> c(ll, d=1:3)
-$A
-[1] 1
-
-$c
-[1] "C"
-
-$d1
-[1] 1
-
-$d2
-[1] 2
-
-$d3
-[1] 3
-
-这里d才是一个list, 和ll的层级一样
-> c(ll, d=list(1:3))
-$A
-[1] 1
-
-$c
-[1] "C"
-
-$d
-[1] 1 2 3
-
-```
-
-### seq
-`seq()` is a more general facility for generating sequences.
-
-`seq(from = 1, to = 1, by = ((to - from)/(length.out - 1)), length.out = NULL, along.with = NULL, ...)`
-
-typical usage
-```
-seq(from, to)
-seq(from, to, by= ) ## from, from+by, from+2*by...
-seq(from, to, length.out= )  ## equally spaced
-```
-
-### rep
-`rep()` which can be used for replicating an object in various complicated ways. The simplest form is  
-`> s5 <- rep(x, times=5)` which will put five copies of x end-to-end in s5.  
-`> s6 <- rep(x, each=5)` which repeats each element of x five times before moving on to the next.
 
 # package and model
 `fitted` is a generic function which extracts fitted values from objects returned by modeling functions.
