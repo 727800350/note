@@ -537,8 +537,92 @@ now makes e a vector of length 3, (the first two components of which are at this
 描述统计是一种从大量数据中压缩提取信息的工具,最常用的就是summary命令
 对于数值变量计算了五个分位点和均值,对于分类变量则计算了频数
 
-## reshape2
-### transform data between wide and long formats
+# 其他常用命令
+## 排序
+- `sort(x, decreasing = FALSE, ...)`
+- `order`: By default, sorting is ASCENDING. Prepend the sorting variable by a minus sign to indicate DESCENDING order, eg:
+sort by mpg (ascending) and cyl (descending) `mtcars[order(mtcars$mpg, -mtcars$cyl),]`
+- rank
+	```
+	> a <- c(45, 50, 10, 96)
+	> order(a)  
+	[1] 3 1 2 4
+	## 第三个数10, 应该排在第一个位置, 第1 个数45 应该排在第二个位置
+	> a[order(a)]
+	[1] 10 45 50 96  
+	
+	> rank(a)
+	[1] 2 3 1 4
+	## 第1 个数是第二小的
+	```
+
+# function
+## 流程
+- `if (expr_1) expr_2 else expr_3`
+- `for (name in expr_1) expr_2`
+- `while (condition) expr`
+
+exp 中都可以用`{}`
+
+```
+if(condition){
+	...
+}else{
+	...
+}
+```
+一定要注意: else必须放在} 的后面, 而不能另起一行.
+
+break, next
+
+`prediction = ifelse(post.yes >= post.no, "Yes", "No")` 类似于C 语言中的`? :`运算符.
+
+## 自定义
+当要返回多值, 可以返回一个list, eg: `return(list(min = value_min, max = value_max))`
+
+```
+myfunction <- function(arg1, arg2, ... ){
+	...
+	return(object)
+}
+```
+
+## math
+- ceiling(x)
+- floor(x)
+- round(x, digits = 0)
+
+## 函数栈
+函数调用会产生所谓的 call stack,这个结构也就产生了 environment 的树状结构.
+我们可以用 sys.* 函数访问这个 call stack, 如 
+
+- sys.call() 返回当前(或者通过 which 参数表示更上几个层次的)函数,
+- sys.frame() 返回当前 environment 的 frame,
+- sys.function() 返回的是当前函数,
+- sys.parent(0) 返回的是上级 environment,
+- 对应还有复数版本,比如 sys.functions() 就是获得调用栈里面所有函数.
+
+## Default arguments and lazy evaluation in R
+[ref](http://www.johndcook.com/blog/2008/10/16/default-arguments-and-lazy-evaluation-in-r/)
+
+In C++, default function arguments must be constants, but in R they can be much more general. For example, consider this R function definition.
+```
+f <- function(a, b=log(a)) { a*b }
+```
+If f is called with two arguments, it returns their product. 
+If f is called with one argument, the second argument defaults to the logarithm of the first. That is convenient, but it gets more surprising. Look at this variation.
+```
+f <- function(a, b=c) {c = log(a); a*b}
+```
+Now the default argument is a variable that does not exist until the body of the function executes! 
+If f is called with one argument, the R interpreter chugs along until it gets to the last line of the function and says 
+Hmm. What is b? Let me go back and see. Oh, the default value of b is c, and now I know what c is.
+
+This behavior is called lazy evaluation. 
+Expressions are not evaluated unless and until they are needed. It is a common feature of functional programming languages.
+
+# reshape2
+## transform data between wide and long formats
 [An Introduction to reshape2](http://seananderson.ca/2013/10/19/reshape.html)
 
 [What makes data wide or long?](../demo/r/reshape2.r)
@@ -853,111 +937,6 @@ dbSendQuery 传送查询,返回的结果是 继承"DBIResult"的一个子类的�
 这些是数据库中读/写/测试/删除表的方便接口. dbReadTable 和 dbWriteTable 实现一个 R 数据框的复制进和复制出数据库, 把数据框的行名字映射到 MySQL 表的 row_names 字段.
 
 [database demo](../demo/r/db.r)
-
-# 流程
-```
-> if (expr_1) expr_2 else expr_3
-> for (name in expr_1) expr_2
-> while (condition) expr
-```
-exp 中可以用{}
-
-```
-if(condition){
-	...
-}else{
-	...
-}
-```
-一定要注意: else必须放在} 的后面, 而不能另起一行.
-
-break, next
-
-`prediction = ifelse(post.yes >= post.no, "Yes", "No")` 类似于C 语言中的`? :`运算符.
-
-# function
-函数调用会产生所谓的 call stack,这个结构也就产生了 environment 的树状结构.
-我们可以用 sys.* 函数访问这个 call stack, 如 
-
-- sys.call() 返回当前(或者通过 which 参数表示更上几个层次的)函数,
-- sys.frame() 返回当前 environment 的 frame,
-- sys.function() 返回的是当前函数,
-- sys.parent(0) 返回的是上级 environment,
-- 对应还有复数版本,比如 sys.functions() 就是获得调用栈里面所有函数.
-
-## 自定义
-当要返回多值, 可以返回一个list, eg: `return(list(min = value_min, max = value_max))`
-
-```
-myfunction <- function(arg1, arg2, ... ){
-	...
-	return(object)
-}
-```
-
-## Default arguments and lazy evaluation in R
-[ref](http://www.johndcook.com/blog/2008/10/16/default-arguments-and-lazy-evaluation-in-r/)
-
-In C++, default function arguments must be constants, but in R they can be much more general. For example, consider this R function definition.
-```
-f <- function(a, b=log(a)) { a*b }
-```
-If f is called with two arguments, it returns their product. 
-If f is called with one argument, the second argument defaults to the logarithm of the first. That is convenient, but it gets more surprising. Look at this variation.
-```
-f <- function(a, b=c) {c = log(a); a*b}
-```
-Now the default argument is a variable that does not exist until the body of the function executes! 
-If f is called with one argument, the R interpreter chugs along until it gets to the last line of the function and says 
-Hmm. What is b? Let me go back and see. Oh, the default value of b is c, and now I know what c is.
-
-This behavior is called lazy evaluation. 
-Expressions are not evaluated unless and until they are needed. It is a common feature of functional programming languages.
-
-## math
-Vectors occurring in the same expression need not all be of the same length. 
-If they are not, the value of the expression is a vector with the same length as the longest vector which occurs in the expression. 
-**Shorter vectors in the expression are recycled** as often as need be until they match the length of the longest vector.
-
-近似
-
-- ceiling(x)
-- floor(x)
-- round(x, digits = 0)
-
-### sort
-#### order
-By default, sorting is ASCENDING. Prepend the sorting variable by a minus sign to indicate DESCENDING order. Here are some examples.
-```
-# sorting examples using the mtcars dataset
-attach(mtcars)
-
-# sort by mpg
-newdata <- mtcars[order(mpg),] 
-
-# sort by mpg and cyl
-newdata <- mtcars[order(mpg, cyl),]
-
-#sort by mpg (ascending) and cyl (descending)
-newdata <- mtcars[order(mpg, -cyl),] 
-
-detach(mtcars)
-```
-#### order and rank
-```
-> a <- c(45, 50, 10, 96)
-> order(a)  
-[1] 3 1 2 4
-> rank(a)
-[1] 2 3 1 4
-> a[order(a)]
-[1] 10 45 50 96  
-> sort(a)
-[1] 10 45 50 96  
-```
-order(a) is saying, 'put the third element first when you sort... ', 
-whereas rank(a) is saying, 'the first element is the second lowest... '. 
-(Note that they both agree on which element is lowest, etc.; they just present the information differently.)''''
 
 # package
 `fitted` is a generic function which extracts fitted values from objects returned by modeling functions.
