@@ -226,13 +226,17 @@ apple
 
 ## matrix
 ```
+## matrix(data, dim)
 > x <- matrix(c(1,2,3,4,5,6), c(2,3))
 > x
      [,1] [,2] [,3]
 [1,]    1    3    5
 [2,]    2    4    6
-
 ```
+
+- `A %*% B`: 矩阵相乘
+- `t(A)`: 矩阵转置
+
 ## factor
 因子提供了一个简单并且紧凑的形式来处理**分类数据(不能进行数字计算)**.
 因子用"水平level"来表示所有可能的取值.
@@ -920,10 +924,6 @@ If they are not, the value of the expression is a vector with the same length as
 - ceiling(x)
 - floor(x)
 - round(x, digits = 0)
-
-### matrix
-- `A %*% B`: 矩阵相乘
-- `t(A)`: 矩阵转置
 
 ### sort
 #### order
