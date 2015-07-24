@@ -221,15 +221,8 @@ Levels: f m #有几种可选的值
 
 ```
 > a <- list(1,2, "test")
-> a
-[[1]]
-[1] 1
-
-[[2]]
-[1] 2
-
-[[3]]
-[1] "test"
+> unlist(a)
+[1] "1"    "2"    "test"
 ```
 
 [如何高效的append an element to a list in R](http://stackoverflow.com/questions/17046336/here-we-go-again-append-an-element-to-a-list-in-r)
@@ -258,10 +251,7 @@ books <- data.frame(
 有时后从数据源处获得的都是一个个的record(具有不同数据类型的fields), 然后想把很多的records组成一个data.frame, 
 现在我能想到的方法就是用list来存储一个record, 然后用rbind 函数将这个list 放到data.frame里面.(循环实现将所以的records放入data.frame中)
 
-下面的命令可以让你有机会修改数据并存入到新的变量newdata中:
-```
-newdata=edit(data)
-```
+修改数据并存入到新的变量newdata中: `newdata=edit(data)`
 
 根据已有列同时增加多列数据
 ```
