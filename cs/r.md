@@ -959,7 +959,7 @@ order(a) is saying, 'put the third element first when you sort... ',
 whereas rank(a) is saying, 'the first element is the second lowest... '. 
 (Note that they both agree on which element is lowest, etc.; they just present the information differently.)''''
 
-# package and model
+# package
 `fitted` is a generic function which extracts fitted values from objects returned by modeling functions.
 All object classes which are returned by model fitting functions should provide a 'fitted' method.
 
@@ -980,61 +980,6 @@ package doc
 
 `library(packagename)` 或者`library("packagename")`.  
 当var 是一个字符串变量呃时候, `library(var)` 会失败, 需要使用`library(var, character.only = TRUE)`
-
-## K-近邻算法
-用到kknn package
-```
-kknn(formula = formula(train), train, test, na.action = na.omit(),
-k = 7, distance = 2, kernel = "optimal", ykernel = NULL, scale=TRUE,
-contrasts = c( unordered = "contr.dummy", ordered = "contr.ordinal"))
-
-kknn.dist(learn, valid, k = 10, distance = 2)
-```
-demo
-```
-library(kknn)
-data(iris)
-m <- dim(iris)[1]
-val <- sample(1:m, size = round(m/3), replace = FALSE, prob = rep(1/m, m))
-iris.learn <- iris[-val,]
-iris.valid <- iris[val,]
-iris.kknn <- kknn(Species~., iris.learn, iris.valid, distance = 1,
-kernel = "triangular")
-summary(iris.kknn)
-fit <- fitted(iris.kknn)
-table(iris.valid$Species, fit)
-```
-
-## svm(support vector machine)
-### e1071
-`classAgreement()` computes several coefficients of agreement between the columns and rows of a 2-way contingency table.  
-diag: Percentage of data points in the main diagonal of `tab`, 也就是分类正确率
-
-# graph
-## save graph
-
-|Format	|	Driver	|	Notes|
-|-------|-----------|--------|
-|JPG	|	jpeg	|	Can be used anywhere, but doesn't resize|
-|PNG	|	png	|	Can be used anywhere, but doesn't resize|
-|WMF	|	win.metafile	|	Windows only; best choice with Word; easily resizable|
-|PDF	|	pdf	|	Best choice with pdflatex; easily resizable|
-|Postscript	|	postscript	|	Best choice with latex and Open Office; easily resizable|
-
-
-So if I wanted to save a jpg file called "rplot.jpg" containing a plot of x and y, I would type the following commands:
-```
-> jpeg('rplot.jpg')
-> plot(x,y)
-> dev.off()
-```
-Another Approach
-```
-> plot(x,y)
-## When you are happy with the way it looks, call dev.copy
-> dev.copy(jpeg,'rplot.jpg')
-> dev.off()
-```
 
 # help
 `?command`, `help(command)`, `help("command")`.  

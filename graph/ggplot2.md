@@ -72,6 +72,28 @@ If you want to save multiple plots to a single file, you will need to
 1. print the plots
 1. close it with dev.off()
 
+|Format	|	Driver	|	Notes|
+|-------|-----------|--------|
+|JPG	|	jpeg	|	Can be used anywhere, but does not resize|
+|PNG	|	png	|	Can be used anywhere, but does not resize|
+|WMF	|	win.metafile	|	Windows only; best choice with Word; easily resizable|
+|PDF	|	pdf	|	Best choice with pdflatex; easily resizable|
+|Postscript	|	postscript	|	Best choice with latex and Open Office; easily resizable|
+
+So if I wanted to save a jpg file called "rplot.jpg" containing a plot of x and y, I would type the following commands:
+```
+> jpeg('rplot.jpg')
+> plot(x,y)
+> dev.off()
+```
+Another Approach
+```
+> plot(x,y)
+## When you are happy with the way it looks, call dev.copy
+> dev.copy(jpeg,'rplot.jpg')
+> dev.off()
+```
+
 # aesthetic
 `unique(mtcars$cyl)` 得到 4 6 8
 
