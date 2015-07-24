@@ -1090,7 +1090,7 @@ int great_function(int a) {
 >>> great_module.great_function(2)
 3
 ```
-[Python call C 实现方式](../demo/python/greate_module.c)
+[Python call C 实现方式](../demo/python/great_module.c)
 
 除了功能强大的函数great_function外,这个文件中还有以下部分:
 
