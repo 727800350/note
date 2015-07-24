@@ -1073,3 +1073,75 @@ types模块中仅仅定义了类型,而inspect模块中封装了很多检查类�
 
 - `*__dict__`: 包含了可用的属性名-属性字典.
 - `*__class__`: 该实例的类对象.对于类Cat,cat.__class__ == Cat 为 True.
+
+# 胶水语言
+它常被昵称为胶水语言,能够把用其他语言制作的各种模块(尤其是C/C++)很轻松地联结在一起.
+[如何实现 C/C++ 与 Python 的通信?](http://www.zhihu.com/question/23003213/answer/56121859)
+## Python call C
+比如说,我们有一个功能强大的C函数:
+```
+int great_function(int a) {
+	return a + 1;
+}
+```
+期望在Python里这样使用:
+```
+>>> import great_module
+>>> great_module.great_function(2)
+3
+```
+[Python call C 实现方式](../demo/python/greate_module.c)
+
+除了功能强大的函数great_function外,这个文件中还有以下部分:
+
+- 包裹函数_great_function.它负责将Python的参数转化为C的参数(PyArg_ParseTuple),调用实际的great_function,并处理great_function的返回值,最终返回给Python环境.
+- 导出表GreateModuleMethods. 它负责告诉Python这个模块里有哪些函数可以被Python调用.
+导出表的名字可以随便起,每一项有4个参数:Python环境的函数名称;_great_function,即包裹函数;参数变长;说明性的字符串.
+导出表总是以{NULL, NULL, 0, NULL}结束.
+- 导出函数initgreat_module.这个的名字不是任取的,是你的module名称添加前缀init.导出函数中将模块名称与导出表进行连接.
+
+## C call Python
+```
+// c_call_python_simple.c
+#include <Python.h>
+int main(int argc, char *argv[]){
+	Py_SetProgramName(argv[0]);
+	Py_Initialize();
+	PyRun_SimpleString("print 'Hello Python!'\n");
+	Py_Finalize();
+	return 0;
+}
+```
+编译生成可执行文件: `gcc c_call_python_simple.c -I/usr/include/python2.7/ -lpython2.7`
+
+虽然非常简单,但这段代码除了能用C语言动态生成一些Python代码之外,并没有什么用处.我们需要的是C语言的数据结构能够和Python交互.
+
+下面举个例子,比如说,有一天我们用Python写了一个功能特别强大的函数:
+```
+## great_module.py
+def great_function(a):
+	return a + 1
+```
+接下来要把它包装成C语言的函数.我们期待的C语言的对应函数应该是这样的:
+```
+int great_function_from_python(int a){
+    int res; 
+    // some magic
+    return res;
+}
+```
+
+[C call Python 实现方式](../demo/python/c_call_python.c)
+
+编译生成可执行文件: `gcc c_call_python.c -I/usr/include/python2.7/ -lpython2.7`
+
+在Linux/Mac OSX运行此示例之前,可能先需要设置Python环境变量:`export PYTHONPATH=.:$PYTHONPATH`
+
+从上述代码可以窥见Python内部运行的方式:
+
+- 所有Python元素,module,function,tuple,string等等,实际上都是PyObject.C语言里操纵它们,一律使用PyObject *.
+- Python的类型与C语言类型可以相互转换.Python类型XXX转换为C语言类型YYY要使用PyXXX_AsYYY函数,C类型YYY转换为Python类型XXX要使用PyXXX_FromYYY函数.
+- 也可以创建Python类型的变量,使用PyXXX_New可以创建类型为XXX的变量.
+- 若a是Tuple,则a[i] = b对应于 PyTuple_SetItem(a,i,b),有理由相信还有一个函数PyTuple_GetItem完成取得某一项的值.
+- 不仅Python语言很优雅,Python的库函数API也非常优雅.
+
