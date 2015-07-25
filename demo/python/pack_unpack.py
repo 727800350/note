@@ -70,3 +70,16 @@ a,b,c,d=struct.unpack('5s6sif',bytes)
 5s表示占5个字符的字符串,
 2i,表示2个整数等等
 
+当某一个格式符经常用到时, 可以先为这个格式符创建一个对象
+import struct
+import binascii
+
+values = (1, 'ab', 2.7)
+s = struct.Struct('I 2s f')
+packed_data = s.pack(*values)
+
+print 'Original values:', values
+print 'Format string  :', s.format
+print 'Uses           :', s.size, 'bytes'
+print 'Packed Value   :', binascii.hexlify(packed_data)
+

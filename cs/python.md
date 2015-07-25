@@ -123,14 +123,25 @@ f.read(1) // read 'd'
 
 ## [二进制](http://www.cnblogs.com/gala/archive/2011/09/22/2184801.html)
 有的时候需要用python处理二进制数据,比如,存取文件,socket操作时.这时候,可以使用python的struct模块来完成.可以用 struct来处理c语言中的结构体.
+
+binascii模块包含很多在二进制和ASCII编码的二进制表示转换的方法
+
+- binascii.hexlify(data): Return the hexadecimal representation of the binary data. Every byte of data is converted into the corresponding 2-digit hex representation(因此变为原来的两倍长)
+- binascii.unhexlify(hexstr): Return the binary data represented by the hexadecimal string hexstr. hexstr 必须为偶数个16 进制digits, otherwise a TypeError is raised.
+```
+bin = struct.pack(i, 23) ## bin 为 '\x17\x00\x00\x00' 占4 个bytes
+binascii.hexlify(bin) ## 返回'17000000', 占 8 个bytes
+```
  
 struct模块中最重要的三个函数是pack(), unpack(), calcsize()
 
-- pack(fmt, v1, v2, ...)     按照给定的格式(fmt),把数据封装成字符串(实际上是类似于c结构体的字节流)
-- unpack(fmt, string)       按照给定的格式(fmt)解析字节流string,返回解析出来的tuple
-- calcsize(fmt)                 计算给定的格式(fmt)占用多少字节的内存
+- `pack(fmt, v1, v2, ...)`: 按照给定的格式(fmt),把数据封装成字符串(实际上是类似于c结构体的字节流)
+- `unpack(fmt, string)`: 按照给定的格式(fmt)解析字节流string,返回解析出来的tuple
+- `calcsize(fmt)`: 计算给定的格式(fmt)占用多少字节的内存
 
 [binary struct demo](../demo/python/pack_unpack.py)
+
+[PyMOTW: Struct](https://pymotwcn.readthedocs.org/en/latest/documents/struct.html)
 
 struct中支持的格式如下表:
 
