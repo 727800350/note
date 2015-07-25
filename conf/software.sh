@@ -17,6 +17,7 @@ installer ffmpeg
 
 ## text convertion between windows and linux
 installer unix2dos dos2unix
+installer pdfgrep
 
 ## programming
 installer gcc gcc-c++ gdb cmake
