@@ -21,6 +21,7 @@ installer pdfgrep
 
 ## programming
 installer gcc gcc-c++ gdb cmake
+installer golang
 installer valgrind
 installer strace
 installer libasan libasan-static
