@@ -15,19 +15,19 @@ then
 	flag="untrack"
 fi
 
-cat status.info | grep "ahead of"
+cat status.info | grep "ahead of" 1>/dev/null
 if [ $? -eq 0 ]
 then
 	flag="ahead"
 fi
 
-cat status.info | grep "modified:"
+cat status.info | grep "modified:" 1>/dev/null
 if [ $? -eq 0 ]
 then
 	flag="modified"
 fi
 
-cat status.info | grep "to be committed"
+cat status.info | grep "to be committed" 1>/dev/null
 if [ $? -eq 0 ]
 then
 	flag="commit"
