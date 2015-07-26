@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+## set -x
 
 dir=`pwd`
 cd ${dir}
@@ -33,6 +33,7 @@ then
 	flag="commit"
 fi
 
+echo ${flag}
 case ${flag} in
 	"clean")
 		echo "repo is clean"
