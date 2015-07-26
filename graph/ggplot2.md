@@ -334,6 +334,11 @@ Output of experssion will be formatted according to TeX-like rule
 
 `+ xlab(expression(frac(miles, gallon)))`
 
+# theme
+设置legend 的位置
+- `+ theme(legend.position = "top")` ## top, right, left, bottom
+- `+ theme(legend.position = c(0.15, 0.15))` ## (0, 0) 为左下角
+
 # qplot
 ```
 qplot(x, y, data=, color=, shape=, size=, alpha=, geom=, method=, formula=, facets=, 
