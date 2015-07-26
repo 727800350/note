@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## set -x
+set -x
 
 dir=`pwd`
 cd ${dir}
@@ -20,7 +20,7 @@ then
 	flag="modified"
 fi
 
-cat status.info | grep "to be commited"
+cat status.info | grep "to be committed"
 if [ $? -eq 0 ]
 then
 	flag="commit"
