@@ -8,6 +8,13 @@ cd ${dir}
 git status > status.info
 
 flag="clean"
+
+cat status.info | grep "# Untracked files:"
+if [ $? -eq 0 ]
+then
+	flag="untrack"
+fi
+
 cat status.info | grep "ahead of"
 if [ $? -eq 0 ]
 then
@@ -30,15 +37,18 @@ case ${flag} in
 	"clean")
 		echo "repo is clean"
 	;;
-	"ahead")
-		git push -v origin `git_where`
+	"untrack")
+		echo "there are untracked files"
 	;;
-	"commit")
-		git commit -m "$@"
+	"ahead")
 		git push -v origin `git_where`
 	;;
 	"modified")
 		git commit -a -m "$@"
+		git push -v origin `git_where`
+	;;
+	"commit")
+		git commit -m "$@"
 		git push -v origin `git_where`
 	;;
 	*)
