@@ -1,12 +1,52 @@
 #!/bin/bash
 
-set -x
+## set -x
 
 dir=`pwd`
 cd ${dir}
 
-git commit -a -m "$@"
-git push -v origin `git_where`
+git status > status.info
+
+flag="clean"
+cat status.info | grep "ahead of"
+if [ $? -eq 0 ]
+then
+	flag="ahead"
+fi
+
+cat status.info | grep "modified:"
+if [ $? -eq 0 ]
+then
+	flag="modified"
+fi
+
+cat status.info | grep "to be commited"
+if [ $? -eq 0 ]
+then
+	flag="commit"
+fi
+
+case ${flag} in
+	"clean")
+		echo "repo is clean"
+	;;
+	"ahead")
+		git push -v origin `git_where`
+	;;
+	"commit")
+		git commit -m "$@"
+		git push -v origin `git_where`
+	;;
+	"modified")
+		git commit -a -m "$@"
+		git push -v origin `git_where`
+	;;
+	*)
+		echo "${flag} not supported"
+		exit 1
+esac
+
+rm status.info
 
 exit 0
 

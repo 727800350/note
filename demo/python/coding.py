@@ -6,7 +6,8 @@ import time
 
 def encode():
 	content = sys.stdin.read()
-	value = st.pack('i', int(time.time()))
+## 	value = st.pack('i', int(time.time()))
+	value = st.pack('i', 20150415)
 	sys.stdout.write(value)
 	sys.stdout.write(content)
 
