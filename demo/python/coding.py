@@ -5,14 +5,18 @@ import struct as st
 import time
 
 def encode():
+## 	head = st.pack('i', int(time.time()))
+	head = 20150415
+	print >> sys.stderr, "head:", head
+	head = st.pack('i', head)
+	sys.stdout.write(head)
 	content = sys.stdin.read()
-## 	value = st.pack('i', int(time.time()))
-	value = st.pack('i', 20150415)
-	sys.stdout.write(value)
 	sys.stdout.write(content)
 
 def decode():
-	sys.stdin.read(4)
+	head = sys.stdin.read(4)
+	head = st.unpack('i', head)[0]
+	print >> sys.stderr, "head:", head
 	content = sys.stdin.read()
 	sys.stdout.write(content)
 
