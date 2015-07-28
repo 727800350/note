@@ -313,23 +313,23 @@ git commit --amend --no-edit
 
 1. To test if SSH over the HTTPS port is possible, run this SSH command:
 
-		```
-		$ ssh -T -p 443 git@ssh.github.com
-		# Hi username! You have successfully authenticated, but GitHub does not provide shell access.
-		```
+	```
+	$ ssh -T -p 443 git@ssh.github.com
+	# Hi username! You have successfully authenticated, but GitHub does not provide shell access.
+	```
 If that worked, great!
 1. Enabling SSH connections over HTTPS
 
-		```
-		[eric@alien ~]$ cat .ssh/config 
-		Host github.com
-			Hostname ssh.github.com
-				Port 443
-		```
+	```
+	[eric@alien ~]$ cat .ssh/config
+	Host github.com
+		Hostname ssh.github.com
+			Port 443
+	```
 1. verification
 
-		```
-		$ ssh -T git@github.com
-		# Hi username! You have successfully authenticated, but GitHub does not provide shell access.
-		```
+	```
+	$ ssh -T git@github.com
+	# Hi username! You have successfully authenticated, but GitHub does not provide shell access.
+	```
 
