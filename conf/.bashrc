@@ -16,11 +16,11 @@ export MANPATH=$MANPATH:$TEXLIVE/texmf/doc/man
 export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info
 
 ## maven
-export MAVEN=/home/`whoami`/program/apache-maven-3.2.5
+export MAVEN=${HOME}/program/apache-maven-3.2.5
 export PATH=$PATH:$MAVEN/bin
 
 ## user defined bin
-export PATH=$PATH:/home/`whoami`/git/note/bin/
+export PATH=$PATH:${HOME}/git/note/bin/
 
 # aliases
 ## cp and mv
@@ -32,6 +32,8 @@ if [ -e /usr/local/bin/amv ]
 then
 	alias mv='amv -g'
 fi
+
+alias hadoop='${HOME}/hadoop/hadoop-client/hadoop/bin/hadoop'
 
 # functions
 ## usage: search [extention] keyword [dir]
