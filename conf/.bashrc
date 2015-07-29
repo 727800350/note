@@ -8,16 +8,25 @@ fi
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
+user=`whoami`
+
 # Path
+if [ ${user} = "eric" ]
+then
+	export TEXLIVE=/usr/local/texlive/2015/
+else
+	export TEXLIVE=${HOME}/program/texlive/2015/
+	export PATH=$PATH:${HOME}/.jumbo/bin/
+fi
+
 ## texlive env
-export TEXLIVE=/usr/local/texlive/2015
-export PATH=$PATH:$TEXLIVE/bin/x86_64-linux
-export MANPATH=$MANPATH:$TEXLIVE/texmf/doc/man
-export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info
+export PATH=$PATH:$TEXLIVE/bin/x86_64-linux/
+export MANPATH=$MANPATH:$TEXLIVE/texmf/doc/man/
+export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info/
 
 ## maven
-export MAVEN=${HOME}/program/apache-maven-3.2.5
-export PATH=$PATH:$MAVEN/bin
+export MAVEN=${HOME}/program/apache-maven-3.2.5/
+export PATH=$PATH:$MAVEN/bin/
 
 ## user defined bin
 export PATH=$PATH:${HOME}/git/note/bin/
