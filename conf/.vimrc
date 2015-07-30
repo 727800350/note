@@ -201,7 +201,7 @@ set hlsearch
 set incsearch                " when searching book, when type /b will automatically find in c search
 
 " hightlight the current line
-set cursorline
+" set cursorline
 syntax enable
 syntax on
 filetype indent on
