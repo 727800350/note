@@ -17,6 +17,7 @@ then
 else
 	export TEXLIVE=${HOME}/program/texlive/2015/
 	export PATH=$PATH:${HOME}/.jumbo/bin/
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/samba/lib/
 fi
 
 ## texlive env
