@@ -184,54 +184,84 @@ $ echo $c
 在shell 中单括号里面,可以是命令语句, 
 也就是$() 与 ``等效, 中间包含命令语句执行,返回执行结果
 
-## 字符串
-字符串是shell编程中最常用最有用的数据类型(除了数字和字符串,也没啥其它类型好用了,哈哈),字符串可以用单引号,也可以用双引号,也可以不用引号.单双引号的区别跟PHP类似.
+## [字符串](http://tldp.org/LDP/abs/html/string-manipulation.html)
+字符串是shell编程中最常用最有用的数据类型(除了数字和字符串,也没啥其它类型好用了),
+字符串可以用单引号,也可以用双引号,也可以不用引号.单双引号的区别跟PHP类似.
 
-### 单引号
+- 单引号里的任何字符都会原样输出,单引号字符串中的变量是无效的, 转意符也不太好用
+- 双引号里可以有变量,双引号里可以出现转义字符
 
-	str='this is a string'
+### 获取字符串长度 String Length
+```
+str="abcABC123ABCabc"
+echo ${#str}
+echo `expr length ${str}`
+```
 
-单引号字符串的限制:
+### 提取子字符串 Substring Extraction
+- `${string:position}`在$string中, 从位置$position开始提取子串
+- `${string:position:length}`在$string中, 从位置$position开始提取长度为$length的子串
+**字符串的第一个字符, position 为 0**
 
-- 单引号里的任何字符都会原样输出,单引号字符串中的变量是无效的
-- 单引号字串中不能出现单引号(对单引号使用转义符后也不行)
+position 可以为负值
+```
+echo ${str: -0}
+echo ${str: -1} ## c
+echo ${str: -3:2} ## ab
+```
 
-注意: 反单引号 \` \`用于设置系统命令的输出到变量,shell会将\` \`中的内容作为一个系统命令并执行质
- 
-### 双引号
+substr: str 的第一个字符position 为 1: `echo `expr substr $str 1 2` ## ab`
 
-	your_name='qinjx'
-	str="Hello, I know your are \"$your_name\"! \n"
+- `expr match "$string" '\($substring\)'`: Extracts $substring at **beginning** of $string, where $substring is a regular expression.
+- expr match "$string" '.*\($substring\)': Extracts $substring at **end** of $string. 这个实际上还是从beginning 开始匹配, 但是 `.*` 匹配开头所有部分, 只有 substring 是在 `\(\)` 里面
+```
+echo `expr match "$str" '\(.[b-c]\)'` ## ab
+echo `expr match "$str" '.*\([A-C][A-C][A-C][a-c]*\)'`    # ABCabc
+```
 
-- 双引号里可以有变量
-- 双引号里可以出现转义字符
+### Substring Removal
+- ${string#substring} Deletes **shortest** match of $substring from **front** of $string.
+- ${string##substring} Deletes **longest** match of $substring from **front** of $string.
 
-### 字符串操作
-#### 拼接字符串
-	
-	your_name="qinjx"
-	greeting="hello, "$your_name" !"
-	greeting_1="hello, ${your_name} !"
-	
-	echo $greeting $greeting_1
+```
+echo ${str#a*C}      # 123ABCabc
+echo ${str##a*C}     # abc
+```
+a*C 在 str 中有两个匹配, abcABC, abcABC123ABC, `#` 使用短的, `##` 使用长的
 
-#### 获取字符串长度:
+- ${string%substring} Deletes **shortest** match of $substring from **back** of $string.
+- ${string%%substring} Deletes **longest** match of $substring from **back** of $string.
 
-	string="abcd"
-	echo ${#string} #输出:4
+```
+echo ${str%b*c}      # abcABC123ABCa
+echo ${str%%b*c}     # a
+```
 
-#### 提取子字符串
+### Substring Replacement
+- ${string/substring/replacement} Replace first match of $substring with $replacement
+- ${string//substring/replacement} Replace all matchs
 
-	string="alibaba is a great company"
-	echo ${string:1:4} #输出:liba
+```
+echo ${str/abc/xyz}       # xyzABC123ABCabc
+echo ${str//abc/xyz}      # xyzABC123ABCxyz
+```
 
-#### 查找子字符串
+What happens if no $replacement string is supplied?
+```
+echo ${str/abc}           # ABC123ABCabc
+echo ${str//abc}          # ABC123ABC
+```
+A simple deletion takes place.
 
-	string="alibaba is a great company"
-	echo `expr index "$string" is`#输出:8,这个语句的意思是:找出单词is在这名话中的位置
+- ${string/#substring/replacement} If $substring matches front end of $string, substitute $replacement for $substring.
+- ${string/%substring/replacement} If $substring matches back end of $string, substitute $replacement for $substring.
 
-#### 更多
-参见本文档末尾的参考资料中[Advanced Bash-Scripting Guid Chapter 10.1](http://tldp.org/LDP/abs/html/string-manipulation.html)
+使用了 `#` 或者 `%` 之后, 即时加上了 `//`, 也还是只对 `#, %` 部分生效
+
+```
+echo ${str/#abc/XYZ}          # XYZABC123ABCabc
+echo ${str/%abc/XYZ}          # abcABC123ABCXYZ
+```
 
 ## 数组
 [ref](http://c.biancheng.net/cpp/view/7002.html)
