@@ -33,7 +33,7 @@ then
 	flag="commit"
 fi
 
-echo "status = ${flag}"
+echo "repo `git_where` status = ${flag}"
 case ${flag} in
 	"clean")
 		echo "repo is clean"
