@@ -43,7 +43,8 @@ then
 	alias mv='amv -g'
 fi
 
-alias hadoop='${HOME}/hadoop/hadoop-client/hadoop/bin/hadoop'
+alias hadoop='${HOME}/hadoop-client/hadoop/bin/hadoop'
+alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
 
 # functions
 ## usage: search [extention] keyword [dir]
