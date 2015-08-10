@@ -310,13 +310,11 @@ ${array_name[index]}
 
 ### 获取数组的长度
 获取数组长度的方法与获取字符串长度的方法相同,例如:
-
-    # 取得数组元素的个数
-    length=${#array_name[@]}
-    # 或者
-    length=${#array_name[*]}
-    # 取得数组单个元素的长度
-    lengthn=${#array_name[n]}
+```
+# 取得数组元素的个数
+num_items=${#array_name[@]}
+num_items=${#array_name[*]}
+```
 
 # 程序流程, 结构化命令
 ## 条件判断
