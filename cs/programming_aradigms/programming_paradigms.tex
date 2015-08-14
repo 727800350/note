@@ -9,23 +9,32 @@
 \newpage
 \tableofcontents
 \newpage
+
 \section{Lecture 1 - 基本介绍}
-C procedure paradigm\\
-Assembly 汇编\\
-C++\\
-Concurrent Programming 并发编程\\
-Sequential Programming 顺序
+programming paradigms
+\begin{itemize}
+\item C procedure paradigm
+	\begin{itemize}
+	\item Assembly 汇编
+	\item C++
+	\item Concurrent Programming 并发编程
+	\item Sequential Programming 顺序
+	\end{itemize}
 
-Scheme Lisp functional paradigm\\
-You always rely on the return value of a function to move forward, And you program without side effects
+\item Scheme Lisp functional paradigm
+	\begin{itemize}
+	\item You always rely on the return value of a function to move forward, And you program without side effects
+	\end{itemize}
 
-Python
+\item Python
+\end{itemize}
 
 \section{Lecture 2}
-The memory system as a whole is organized as a large array of bytes. Every byte has its
-own "address" which is like its index in the array.
+The memory system as a whole is organized as a large array of bytes. 
+Every byte has its own "address" which is like its index in the array.
 
-The byte is sometimes defined as the "smallest addressable unit" of memory. Most computers also support reading and writing larger units of memory— 2 byte "half-words" (sometimes known as a "short" word) and 4 byte "words".
+The byte is sometimes defined as the "smallest addressable unit" of memory. 
+Most computers also support reading and writing larger units of memory— 2 byte "half-words" (sometimes known as a "short" word) and 4 byte "words".
 
 Half-words and words span consecutive bytes in memory. By convention the address of any multiple-byte thing is the address of its lowest byte— its "base-address".
 
@@ -47,16 +56,18 @@ short           2 bytes
 int             4 bytes
 long            4 bytes
 float           4 bytes
-double        	8 bytes
+double          8 bytes
 binary digit => bit
 Byte=> 8 bits   2^8=256
 \end{verbatim}
-Currently almost all machines use $4$ bytes to store an address, creating a $4$GB addressable range.\\
-Because each byte of memory has to have an address. In a $32$-bit operating system, an address is $32$ bits long; thus, there are $2^{32}$ possible addresses, which means there are $2^{32}$ bytes $= 4$ GB.
+Currently almost all machines use $4$ bytes to store an address, creating \textbf{a $4$GB addressable range}.\\
+Because each byte of memory has to have an address. 
+In a $32$-bit operating system, an address is $32$ bits long; thus, there are $2^{32}$ possible addresses, which means there are $2^{32}$ bytes $= 4$ GB.
 
 Some processors have a special hardware Floating Point Unit, FPU, that substantially speeds up floating point operations.
 
-Instruction— Machine instructions themselves are also encoded using bit patterns,most often using the same 4-byte native word size. The different bits in the instruction encoding indicate things such as what type of instruction it is (load,store, multiply, etc.) and the registers involved.
+Instruction— Machine instructions themselves are also encoded using bit patterns,most often using the same 4-byte native word size. 
+The different bits in the instruction encoding indicate things such as what type of instruction it is(load, store, multiply, etc.) and the registers involved.
 
 \subsection{负数的表示}
 \begin{verbatim}
@@ -94,14 +105,16 @@ Instruction— Machine instructions themselves are also encoded using bit patter
 \end{verbatim}
 我们发现
 \begin{verbatim}
-0000,0000,0000,1111  //15
-1111,1111,1111,0000
+15: 0000,0000,0000,1111
+ x: 1111,1111,1111,0000
 \end{verbatim}
-这两个数的和 然后再加上1 就是0, 所以如果我们将1111,1111,1111,0000加上1 刚好就是 -15, 也就是说
+$$ 15 + x + 1 = 0 \Rightarrow -15 = x + 1 $$
+意味着
 \begin{verbatim}
 -15: 1111,1111,1111,0001
 \end{verbatim}
-所以得到一个正数的相反数, 就是将这个正数的所有二进制取反(补码), 然后再加上1
+
+\textbf{所以得到一个正数的相反数, 就是将这个正数的所有二进制取反(补码), 然后再加上1}
 
 \section{Lecture 3}
 \begin{table}[htbp]
@@ -117,9 +130,9 @@ Instruction— Machine instructions themselves are also encoded using bit patter
 int array[10]
 array \equiv &array[0]
 array + k \equiv &array[k]
-\end{verbatim}
 
-\verb+void swap(int *a, int *b)+
+void swap(int *a, int *b)
+\end{verbatim}
 
 \section{Lecture 4}
 \subsection{Arithmetic on a void pointer}
@@ -437,7 +450,7 @@ int b;
 	\includegraphics[scale = 0.7]{stack_push-a}\\
 	\caption{压a 进入stack之后}\label{fig.stack.push.a}
 \end{figure}
-然后读到b, 再将b 压入stack中, 由于内存中下方的地址是低地址, 所以是从下方压栈, 所以b在a的下方, 也就是说b在低地址, a在高地址
+然后读到b, 再将b 压入stack中, 由于内存中下方的地址是低地址(先使用低地址的内存), 所以是从下方压栈, 所以b在a的下方, 也就是说b在低地址, a在高地址
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[scale = 0.7]{stack_push-ab}\\
@@ -615,7 +628,7 @@ BGE branch on greater than or equal to\\
 001001
 \end{verbatim}
 
-\section{Lecture 10} important
+\section{Lecture 10 important}
 函数
 \begin{lstlisting}[language = C]
 void foo(int bar, int *baz){
@@ -629,6 +642,10 @@ short *why;
 	\caption{编程范式 activation foo}\label{fig.activation.foo}
 \end{figure}
 
+执行函数的时候, 首先解析参数, 解析参数的顺序是从左到右.
+所以这里, 先读取baz, 进行压栈, 然后读取bar, 进行压栈.
+这个时候, 函数的参数读取完了, 所以接下来的一个地址保存sp寄存器.
+然后进入到函数内部, 读取局部变量, 4 个char, 进行压栈, 然后读取指针类型, 进行压栈.
 
 \begin{lstlisting}[language = C]
 int main(int argc, char **argv){
@@ -638,11 +655,9 @@ return 0;
 }
 \end{lstlisting}
 
-sp特殊寄存器:
-static pointer 指向执行栈的最低地址, 也就是之前我们一直使用的基地址R1
+\textbf{sp特殊寄存器: static pointer 指向执行栈的最低地址, 也就是之前我们一直使用的基地址R1}
 
-RV 特殊寄存器:
-存放函数的返回值
+RV 特殊寄存器: 存放函数的返回值
 
 \begin{lstlisting}[language = C]
 int fact(int n){
@@ -657,8 +672,8 @@ return n * fact(n-1);
 void foo(){
 int x;
 int y;
-x=11
-y=
+x = 11
+y = 1
 swap(&x, &y);
 }
 \end{lstlisting}
@@ -670,7 +685,7 @@ swap(&x, &y);
 
 
 \begin{lstlisting}[language = C]
-void swap(int *x, int *bp){
+void swap(int *ap, int *bp){
 int temp=*ap;
 *ap=*bp;
 *bp=temp;
@@ -1325,15 +1340,12 @@ SS(line.customers[i];
 \end{lstlisting}
 
 \section{Lecture 19}
-imperative: 因为主要是围绕动词展开的\\
-procedural:
-C
-
-object-oriented:
-C++
-
-functional:
-Scheme	runtime language
+\begin{itemize}
+\item imperative: 因为主要是围绕动词展开的
+\item procedural: C
+\item object-oriented: C++
+\item functional: Scheme runtime language
+\end{itemize}
 
 \begin{lstlisting}[language = Lisp]
 (define Celsius→fahrenheit(temp)
