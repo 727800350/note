@@ -18,6 +18,7 @@ else
 	export TEXLIVE=${HOME}/program/texlive/2015/
 	export PATH=$PATH:${HOME}/.jumbo/bin/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/samba/lib/
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/utils/gcc/lib/gcc/x86_64-unknown-linux-gnu/4.8.1/
 fi
 
 ## texlive env
