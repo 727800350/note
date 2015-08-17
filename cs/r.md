@@ -964,6 +964,9 @@ package doc
 `library(packagename)` 或者`library("packagename")`.  
 当var 是一个字符串变量呃时候, `library(var)` 会失败, 需要使用`library(var, character.only = TRUE)`
 
+- 卸载: `remove.packages("mypackage")`
+- 更新: `update.packages()`
+
 # help
 `?command`, `help(command)`, `help("command")`.  
 The last one must be used to access help with non-conventional characters:
