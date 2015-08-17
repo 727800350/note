@@ -949,6 +949,10 @@ All object classes which are returned by model fitting functions should provide 
 - `remove.packages()`会将package移除  
 - `update.packages()`: update package
 
+当以普通用户身份install, 可以将软件包安装到${HOME} 目录下.
+
+当机器没有网络时, 可以使用源代码安装, eg: `> install.packages("randomForest_4.6-10.tar.gz")`
+
 ```
 > .libPaths()
 [1] "/usr/lib64/R/library" "/usr/share/R/library"
