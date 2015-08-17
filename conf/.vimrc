@@ -401,3 +401,12 @@ function! Uncomment() range
   endif
 endfunction
 
+" taglist
+" http://sourceforge.net/projects/vim-taglist/files/vim-taglist/
+" cp  doc/taglist.txt  /usr/share/vim/vim72/doc/
+" cp  plugin/taglist.vim  /usr/share/vim/vim72/plugin/
+let Tlist_Show_One_File=1    "只显示当前文件的tags
+let Tlist_WinWidth=40        "设置taglist宽度
+let Tlist_Exit_OnlyWindow=1  "tagList窗口是最后一个窗口，则退出Vim
+let Tlist_Use_Left_Window=1 "在Vim窗口右侧显示taglist窗口
+

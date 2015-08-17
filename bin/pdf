@@ -1,5 +1,6 @@
 #!/bin/bash
 ## genearate pdf from tex using xelatex
+set -x
 
 dir=`pwd`
 cd $dir
@@ -7,26 +8,22 @@ cd $dir
 tex=`ls *.tex`
 tex=`echo $tex | awk -F. '{print $1}'`
 
-log="$tex.log"
-echo "xelatex $tex 1> ${log} 2>&1 || exit 1"
-xelatex $tex 1> ${log} 2>&1 || exit 1
+xelatex $tex || exit 1
 
 if [ -f *.bib ]
 then
-	echo "bib file exists"
+	echo "bib file exists" >&2
 
-	echo "bibtex $tex 1> ${log} 2>&1 || exit 1"
-	bibtex $tex 1> ${log} 2>&1 || exit 1
+	bibtex $tex || exit 1
 
-	echo "xelatex $tex 1> ${log} 2>&1 || exit 1"
-	xelatex $tex 1> ${log} 2>&1 || exit 1
-
-	echo "xelatex $tex 1> ${log} 2>&1 || exit 1"
-	xelatex $tex 1> ${log} 2>&1 || exit 1
+	xelatex $tex || exit 1
 fi
 
-echo "Generate pdf done"
-echo "removing generated intermediate files"
-rm *.aux *.bbl *.blg *.out *.log *.toc 2>/dev/null
+xelatex $tex || exit 1
+
+echo "Generate pdf done" >&2
+echo "removing generated intermediate files" >&2
+rm -rf *.aux *.bbl *.blg *.out *.log *.toc
+
 exit 0
 
