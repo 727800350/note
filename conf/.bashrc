@@ -47,30 +47,3 @@ fi
 alias hadoop='${HOME}/hadoop-client/hadoop/bin/hadoop'
 alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
 
-# functions
-## usage: search [extention] keyword [dir]
-function search(){
-    if [ $# -eq 3 ] 
-    then    
-        suffix=$1
-        target=$2
-        dir=$3  
-        include="--include=*.${suffix}"
-    elif [ $# -eq 2 ] 
-    then    
-        target=$1
-        dir=$2  
-        include=""
-    elif [ $# -eq 1 ] 
-    then    
-        target=$1
-        dir=.   
-        include=""
-    else    
-        echo "wrong parameters" >&2
-        exit 1  
-    fi
-    
-    grep -R -i ${include} "${target}" ${dir}
-}
-
