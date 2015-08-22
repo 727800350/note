@@ -67,10 +67,10 @@ function search(){
         dir=.   
         include=""
     else    
-        echo "wrong parameters"
+        echo "wrong parameters" >&2
         exit 1  
     fi
     
-    grep -R -i ${include} ${target} ${dir}
+    grep -R -i ${include} "${target}" ${dir}
 }
 
