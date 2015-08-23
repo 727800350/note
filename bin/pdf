@@ -13,9 +13,7 @@ xelatex $tex || exit 1
 if [ -f *.bib ]
 then
 	echo "bib file exists" >&2
-
 	bibtex $tex || exit 1
-
 	xelatex $tex || exit 1
 fi
 
