@@ -127,6 +127,14 @@ sort
 - -t<分隔字符>   指定排序时所用的栏位分隔字符
 - -k  选择以哪个区间进行排序, 一般与 -t 一起使用
 
+[cut](http://www.thegeekstuff.com/2013/06/cut-command-examples/)
+
+- `$ cut -c1-3` ## 第1到第3个字符
+- `$ cut -c3-` ## 第3个字符一直到最后一个字符
+- `$ cut -d':' -f1`
+- `$ cut -d':' -f1,6`
+- `$ cut -d':' --complement -s -f7` ## Select All Fields Except the Specified Fields
+
 Uppercase to lowercase:
 `$ tr '[:upper:]' '[:lower:]' < input` or `tr '[A-Z]' '[a-z]' < input`
 
