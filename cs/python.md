@@ -61,8 +61,11 @@ def fun(x):
 ```
 
 # IO
+```
 print >>sys.stdout, 'sth'
 print >>sys.stderr, 'sth'
+print >> sys.stdout, ("pass: %2d, avg_cost: %f"%(num, avg_cost))
+```
 
 print 默认输出的时候会自动换行, 在末尾加一个逗号可以避免换行
 ```
