@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ $# -eq 2 ]
+then
+	method=$1
+	target=$2
+elif [ $# -eq 1 ]
+then
+	method="wget"
+	target=$2
+elif [ $# -eq 0 ]
+then
+	method="wget"
+	target=""
+fi
+
+if [ $target = "." ]
+then
+	target=""
+fi
+
+if [ $method = "wget" ]
+then
+	echo "`hostname`:`pwd`/${target}"
+elif [ $method = "ssh" ]
+then
+	echo "`whoami`@`hostname`:`pwd`/${target}"
+else
+	echo "$method not supported" >&2
+fi	
+
+exit 0
+
