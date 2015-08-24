@@ -1,8 +1,20 @@
 强数据类型 `/usr/include/sys/types.h`  
 `u_int64_t, int64_t, u_int32_t, int32_t, u_int16_t, int16_t, u_int8_t, int8_t ...`
 
-指针数组: `int *ptr_array[10]`, 每个元组都是指针, 共10个元素.  
-数组指针: `int (\*)array_ptr[10]`, 指向一个10个元素数组的指针.
+- 指针数组: `int *ptr_array[10]`, 每个元素都是指针, 共10个元素.
+元素表示:`*a[i], *(a[i])`是一样的，因为[]优先级高于*
+- 数组指针: `int (\*)array_ptr[10]`, 指向一个10个元素数组的指针.
+元素表示:`(\*a)[i]`
+
+```
+int c[4]={1,2,3,4};
+int *a[4]; //指针数组
+int (\*b)[4]; //数组指针
+b=&c;
+for(int i=0;i<4;i++){
+	a[i]=&c[i];
+}
+```
 
 [运算符](http://www.math.pku.edu.cn/teachers/qiuzy/c/operator.htm)
 
@@ -28,6 +40,8 @@
 Technically speaking, the C standard only guarantees that `sizeof(char) == 1`, and the rest is up to the implementation.  
 In practice, pointers will be size 2 on a 16-bit system (if you can find one), 4 on a 32-bit system, and 8 on a 64-bit system, 
 but there is nothing to be gained in relying on a given size
+
+当把数组作为参数传递给一个函数后, 实际上传递的是一个指针, 所以在函数里面用sizeof和在函数外面对数组用sizeof 得到的结果是不一样的.
 
 # String
 `int snprintf(char *str, size_t size, const char *format, ...);`  
