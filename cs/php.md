@@ -6,16 +6,16 @@ excute external program
 - passthru() 只调用命令，把命令的运行结果原样地直接输出到标准输出设备上
 
 ```
-string system ( string $command [, int &$return_var ] )
-return_var: If the return_var argument is present, then the return status of the executed command will be written to this variable.
-Return Value: Returns the last line of the command output on success, and FALSE on failure.
+string system(string $command, int $ret)
+return_var: $command 的状态码保存到 $ret
+Return Value: 返回last line of the command output on success, and FALSE on failure.
 
-string exec ( string $command [, array &$output [, int &$return_var ]] )
-output: If the output argument is present, then the specified array will be filled with every line of output from the command. 
-return_var: If the return_var argument is present along with the output argument, then the return status of the executed command will be written to this variable.
+string exec(string $command, array $res, int $ret)
+output: the array $res will be filled with every line of output from the command. 
+return_var: the return status of the executed command will be written to $ret
 Return Value: The last line from the result of the command.
 
-void passthru ( string $command [, int &$return_var ] )
+void passthru(string $command, int $ret)
 ```
 
 ```
