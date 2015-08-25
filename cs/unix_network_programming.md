@@ -715,7 +715,7 @@ wait等待第一个终止的子进程,而waitpid可以通过pid参数指定等�
 `fork` 是昂贵的. fork要把父进程的内存镜像复制到子进程, 并在子进程中复制所有描述符, 如此, 等等.  
 子进程获取父进程数据空间,堆和栈的副本
 
-统一进程内的所有线程共享
+同一进程内的所有线程共享
 
 1. 相同的全局内存(也就是全局变量)
 1. 打开的文件(即描述符)
@@ -727,9 +727,11 @@ wait等待第一个终止的子进程,而waitpid可以通过pid参数指定等�
 
 All threads share a common heap.
 
-Each thread has a private stack, which it can quickly add and remove items from. This makes stack based memory fast, but if you use too much stack memory, as occurs in infinite recursion, you will get a stack overflow.
+Each thread has a private stack, which it can quickly add and remove items from. 
+This makes stack based memory fast, but if you use too much stack memory, as occurs in infinite recursion, you will get a stack overflow.
 
-Since all threads share the same heap, access to the allocator/deallocator must be synchronized. There are various methods and libraries for avoiding allocator contention.
+Since all threads share the same heap, access to the allocator/deallocator must be synchronized. 
+There are various methods and libraries for avoiding allocator contention.
 
 Some languages allow you to create private pools of memory, or individual heaps, which you can assign to a single thread.
 
@@ -738,37 +740,39 @@ Some languages allow you to create private pools of memory, or individual heaps,
 1. 线程ID
 1. 寄存器集合, 包括程序计数器和栈指针
 1. 栈(用于存放局部变量和返回地址)
-1. errno. [ref](http://learn.akae.cn/media/ch35s02.html). pthread库的函数都是通过返回值返回错误号,虽然每个线程也都有一个errno,但这是为了兼容其它函数接口而提供的,pthread库本身并不使用它. 所以errno 还是看成同一个进程的所有线程共享一个全局的errno.
+1. errno. [ref](http://learn.akae.cn/media/ch35s02.html). 
+	pthread库的函数都是通过返回值返回错误号,虽然每个线程也都有一个errno,但这是为了兼容其它函数接口而提供的,pthread库本身并不使用它. 
+	所以errno 还是看成同一个进程的所有线程共享一个全局的errno.
 1. 信号掩码
 1. 优先级
 
 [Why do threads share the heap space?](http://stackoverflow.com/questions/3318750/why-do-threads-share-the-heap-space)
 
 What do you do when you want to pass data from one thread to another?
-(If you never did that you'd be writing separate programs, not one multi-threaded program.) There are two major approaches:
+(If you never did that you have be writing separate programs, not one multi-threaded program.) There are two major approaches:
 
-The approach you seem to take for granted is **shared memory**: except for data that has a compelling reason to be thread-specific
-(such as the stack), all data is accessible to all threads. 
+The approach you seem to take for granted is **shared memory**: except for data that has a compelling reason to be thread-specific (such as the stack), 
+all data is accessible to all threads. 
 Basically, there is a shared heap. That gives you **speed**: any time a thread changes some data, other threads can see it. 
 (Limitation: this is not true if the threads are executing on different processors: 
-there the programmer needs to work especially hard to use shared memory correctly and efficiently.) 
+then the programmer needs to work especially hard to use shared memory correctly and efficiently.) 
 Most major imperative languages, in particular Java and C#, favor this model.
 
 It is possible to have one heap per thread, plus a shared heap. This requires the programmer to decide which data to put where, 
-and that often doesn't mesh well with existing programming languages.
+and that often does not mesh well with existing programming languages.
 
 The dual approach is **message passing**: 
 each thread has its own data space; when a thread wants to communicate with another thread it needs to explicitly send a message to the other thread, 
-so as to copy the data from the sender's heap to the recipient's heap. 
+so as to copy the data from the sender heap to the recipient heap. 
 In this setting many communities prefer to call the threads processes. That gives you **safety**: 
-since a thread can't overwrite some other thread's memory on a whim, a lot of bugs are avoided. Another benefit is distribution: 
+since a thread can not overwrite some other thread memory, a lot of bugs are avoided. Another benefit is distribution: 
 you can make your threads run on separate machines without having to change a single line in your program. 
 You can find message passing libraries for most languages but integration tends to be less good. 
 Good languages to understand message passing in are *Erlang* and *JoCaml*.
 
 In fact message passing environments usually use shared memory behind the scene, 
 at least as long as the threads are running on the same machine/processor. 
-This saves a lot of time and memory since passing a message from one thread to another then doesn't require making a copy of the data. 
+This saves a lot of time and memory since passing a message from one thread to another then does not require making a copy of the data. 
 But since the shared memory is not exposed to the programmer, its inherent complexity is confined to the language/library implementation.
 
 ## demo
@@ -786,14 +790,12 @@ But since the shared memory is not exposed to the programmer, its inherent compl
 	
 	/* struct to hold data to be passed to a thread
 	   this shows how multiple data items can be passed to a thread */
-	typedef struct str_thdata
-	{
+	typedef struct str_thdata{
 	    int thread_no;
 	    char message[100];
 	} thdata;
 	
-	int main()
-	{
+	int main(){
 	    pthread_t thread1, thread2;  /* thread variables */
 	    thdata data1, data2;         /* structs to be passed to threads */
 	    
@@ -823,8 +825,7 @@ But since the shared memory is not exposed to the programmer, its inherent compl
 	 * print_message_function is used as the start routine for the threads used
 	 * it accepts a void pointer 
 	**/
-	void print_message_function ( void *ptr )
-	{
+	void print_message_function ( void *ptr ){
 	    thdata *data;            
 	    data = (thdata *) ptr;  /* type cast to a pointer to thdata */
 	    
@@ -836,28 +837,35 @@ But since the shared memory is not exposed to the programmer, its inherent compl
 
 
 **运行流程**  
-在一个线程中调用`pthread_create()`创建新的线程后,当前线程从`pthread_create()`返回继续往下执行,而新的线程所执行的代码由我们传给`pthread_create`的函数指针`start_routine`决定.  
+在一个线程中调用`pthread_create()`创建新的线程后,当前线程从`pthread_create()`返回继续往下执行,
+而新的线程所执行的代码由我们传给`pthread_create`的函数指针`start_routine`决定.  
 `start_routine`函数接收一个参数,是通过`pthread_create`的`arg`参数传递给它的.  
 `start_routine`返回时,这个线程就退出了,其它线程可以调用`pthread_join`得到`start_routine`的返回值,类似于父进程调用`wait(2)`得到子进程的退出状态,稍后详细介绍`pthread_join`.
 
 如果需要只终止某个线程而不终止整个进程,可以有三种方法:
 
 1. 从线程函数`return`. 既然该函数必须声明成返回一个`void`指针, 它的返回值就是相应线程的终止状态.  
-这种方法对主线程不适用,从`main`函数`return`相当于调用`exit`
+	这种方法对主线程不适用,从`main`函数`return`相当于调用`exit`
 1. 一个线程可以调用`pthread_cancel`终止同一进程中的另一个线程
 1. 线程可以调用`pthread_exit`终止自己
 2. 如果进程的`main` 函数返回或者任何线程调用了`exit`, 整个进程就终止, 其中包括它的任何线程
 
 **But** [When to use pthread_cancel and not pthread_kill](http://stackoverflow.com/questions/3438536/when-to-use-pthread-cancel-and-not-pthread-kill)  
-I would use neither of those two but that's just personal preference.
+I would use neither of those two but that is just personal preference.
 
-Of the two, `pthread_cancel` is the safest for terminating a thread since the thread is only supposed to be affected when it has set its cancelability state to true using `pthread_setcancelstate()`.
+Of the two, `pthread_cancel` is the safest for terminating a thread 
+since the thread is only supposed to be affected when it has set its cancelability state to true using `pthread_setcancelstate()`.
 
-In other words, it shouldn't disappear while holding resources in a way that might cause deadlock. The `pthread_kill()` call sends a signal to the specific thread, and this is a way to affect a thread asynchronously for reasons other than cancelling it.
+In other words, it should not disappear while holding resources in a way that might cause deadlock. 
+The `pthread_kill()` call sends a signal to the specific thread, and this is a way to affect a thread asynchronously for reasons other than cancelling it.
 
-**Most of my threads tends to be in loops doing work anyway and periodically checking flags to see if they should exit**. That's mostly because I was raised in a world when `pthread_kill()` was dangerous and `pthread_cancel()` didn't exist.
+**Most of my threads tends to be in loops doing work anyway and periodically checking flags to see if they should exit**. 
+That is mostly because I was raised in a world when `pthread_kill()` was dangerous and `pthread_cancel()` did not exist.
 
-I subscribe to the theory that **each thread should totally control its own resources, including its execution lifetime**. I've always found that to be the best way to avoid deadlock. To that end, I simply use mutexes for communication between threads (I've rarely found a need for true asynchronous communication) and a flag variable for termination.
+I subscribe to the theory that **each thread should totally control its own resources, including its execution lifetime**. 
+I have always found that to be the best way to avoid deadlock. 
+To that end, I simply use mutexes for communication between threads(I have rarely found a need for true asynchronous communication) 
+and a flag variable for termination.
 
 一般情况下,线程终止后,其终止状态一直保留到其它线程调用`pthread_join`获取它的状态为止.  
 但是线程也可以被置为`detach`状态,这样的线程一旦终止就**立刻回收它占用的所有资源**,而不保留终止状态.  
@@ -870,7 +878,11 @@ I subscribe to the theory that **each thread should totally control its own reso
 
 线程特定数据看似很复杂,其实我们可以把它理解为就是一个索引和指针.key结构中存储的是索引,pthread结构中存储的是指针,指向线程中的私有数据,通常是malloc函数返回的指针.
 
-下面看一个具体的过程,启动一个进程并创建了若干线程,其中一个线程(比如线程1),要申请线程私有数据,系统调用`pthread_key_creat()`在图3所示的key结构数组中找到第一个未用的元素,并把它的键,也就是看面说的索引(0-127),返回给调用者,假设返回的索引是1,线程之后通过`pthrea_getspecific()`调用获得本线程的`pkey[1]`值,返回的是一个空指针`ptr = null`,这个指针就是我们可以通过索引1使用的线程数据的首地址了,但是他现在为空,因此根据实际情况用`malloc`分配一快内存,在使用`pthread_setspecific()`调用将特定数据的指针指向刚才分配到内存区域.整个过程结束后key结构和pthread结构如图3所示.  
+下面看一个具体的过程,启动一个进程并创建了若干线程,其中一个线程(比如线程1),要申请线程私有数据,
+系统调用`pthread_key_creat()`在图3所示的key结构数组中找到第一个未用的元素,并把它的键,也就是看面说的索引(0-127),返回给调用者,假设返回的索引是1,
+线程之后通过`pthrea_getspecific()`调用获得本线程的`pkey[1]`值,返回的是一个空指针`ptr = null`,这个指针就是我们可以通过索引1使用的线程数据的首地址了,
+但是他现在为空,因此根据实际情况用`malloc`分配一快内存,在使用`pthread_setspecific()`调用将特定数据的指针指向刚才分配到内存区域.
+整个过程结束后key结构和pthread结构如图3所示.  
 ![特定数据的结构](http://img.blog.csdn.net/20130809181815203)
 
 ## 互斥锁 Mutual Exclusive Lock
@@ -878,7 +890,8 @@ I subscribe to the theory that **each thread should totally control its own reso
 如果我们在共享内存区中分配一个互斥锁, 那么必须通过调用`pthread_mutex_init` 函数在运行时把它初始化.
 
 **"挂起等待"和"唤醒等待线程"的操作如何实现**?  
-每个Mutex有一个等待队列,一个线程要在Mutex上挂起等待,首先在把自己加入等待队列中,然后置线程状态为睡眠,然后调用调度器函数切换到别的线程.一个线程要唤醒等待队列中的其它线程,只需从等待队列中取出一项,把它的状态从睡眠改为就绪,加入就绪队列,那么下次调度器函数执行时就有可能切换到被唤醒的线程.
+每个Mutex有一个等待队列,一个线程要在Mutex上挂起等待,首先在把自己加入等待队列中,然后置线程状态为睡眠,然后调用调度器函数切换到别的线程.
+一个线程要唤醒等待队列中的其它线程,只需从等待队列中取出一项,把它的状态从睡眠改为就绪,加入就绪队列,那么下次调度器函数执行时就有可能切换到被唤醒的线程.
 
 ## 条件变量 condition variable
 互斥锁提供互斥机制, 条件变量提供信号机制
@@ -894,16 +907,20 @@ I subscribe to the theory that **each thread should totally control its own reso
 1. 当被唤醒时,重新获得Mutex并返回
 
 ## Semaphore
-Mutex变量是非0即1的,可看作一种资源的可用数量,初始化时Mutex是1,表示有一个可用资源,加锁时获得该资源,将Mutex减到0,表示不再有可用资源,解锁时释放该资源,将Mutex重新加到1,表示又有了一个可用资源.
+Mutex变量是非0即1的,可看作一种资源的可用数量,初始化时Mutex是1,表示有一个可用资源.
+加锁时获得该资源,将Mutex减到0,表示不再有可用资源,解锁时释放该资源,将Mutex重新加到1,表示又有了一个可用资源.
 
 信号量(Semaphore)和Mutex类似,表示可用资源的数量,和Mutex不同的是这个数量可以大于1.
 
 本节介绍的是POSIX semaphore库函数,详见sem_overview(7),这种信号量不仅可用于同一进程的线程间同步,也可用于不同进程间的同步.
 
 ## 其它线程间同步机制
-如果共享数据是只读的,那么各线程读到的数据应该总是一致的,不会出现访问冲突.只要有一个线程可以改写数据,就必须考虑线程间同步的问题.由此引出了读者写者锁(Reader-Writer Lock)的概念,Reader之间并不互斥,可以同时读共享数据,而Writer是独占的(exclusive),在Writer修改数据时其它Reader或Writer不能访问数据,可见Reader-Writer Lock比Mutex具有更好的并发性.
+如果共享数据是只读的,那么各线程读到的数据应该总是一致的,不会出现访问冲突.
+只要有一个线程可以改写数据,就必须考虑线程间同步的问题.由此引出了读者写者锁(Reader-Writer Lock)的概念.
+Reader之间并不互斥,可以同时读共享数据,而Writer是独占的(exclusive),在Writer修改数据时其它Reader或Writer不能访问数据,可见Reader-Writer Lock比Mutex具有更好的并发性.
 
-用挂起等待的方式解决访问冲突不见得是最好的办法,因为这样毕竟会影响系统的并发性,在某些情况下解决访问冲突的问题可以尽量避免挂起某个线程,例如Linux内核的Seqlock,RCU(read-copy-update)等机制.
+用挂起等待的方式解决访问冲突不见得是最好的办法,因为这样毕竟会影响系统的并发性,
+在某些情况下解决访问冲突的问题可以尽量避免挂起某个线程,例如Linux内核的Seqlock,RCU(read-copy-update)等机制.
 
 ## pthread API
     #include <pthread.h>
@@ -935,8 +952,11 @@ Mutex变量是非0即1的,可看作一种资源的可用数量,初始化时Mutex
 The `pthread_mutex_init()` function initializes a mutex with the specified attributes for use.  
 If attr is specified as NULL, all attributes are set to the default mutex attributes for the newly created mutex.
 
-Mutex initialization using the `PTHREAD_MUTEX_INITIALIZER` does not immediately initialize the mutex. Instead, on first use, the `pthread_mutex_lock()` or `pthread_mutex_trylock()` functions branch into a slow path and cause the initialization of the mutex.  
-Because a mutex is not just a simple memory object and requires that some resources be allocated by the system, an attempt to call `pthread_mutex_destroy()` or `pthread_mutex_unlock()` on a mutex that was statically initialized using `PTHREAD_MUTEX_INITIALER` and was not yet locked causes an `EINVAL` error.
+Mutex initialization using the `PTHREAD_MUTEX_INITIALIZER` does not immediately initialize the mutex. 
+Instead, on first use, the `pthread_mutex_lock()` or `pthread_mutex_trylock()` functions branch into a slow path and cause the initialization of the mutex.  
+Because a mutex is not just a simple memory object and requires that some resources be allocated by the system, 
+an attempt to call `pthread_mutex_destroy()` or `pthread_mutex_unlock()` on a mutex that was statically initialized using `PTHREAD_MUTEX_INITIALER` and 
+was not yet locked causes an `EINVAL` error.
 
     int pthread_mutex_lock(pthread_mutex_t *mutex);
     int pthread_mutex_unlock(pthread_mutex_t *mutex);
@@ -973,7 +993,7 @@ Convert IP addresses from a dots-and-number string to a struct in_addr and back
 
 `inet_aton()`: **dots string to a number**. returns non-zero if the address is a valid one, and it returns zero if the address is invalid.  
 `inet_ntoa()`: **number to a dots string**. returns the dots-and-numbers string **in a static buffer that is overwritten with each call to the function**.  
-`inet_addr()` returns the address as an `in_addr_t` an `u_int32_t` value, or -1 if there's an error. 
+`inet_addr()` returns the address as an `in_addr_t` an `u_int32_t` value, or -1 if there is an error.
 
 	struct sockaddr_in antelope;
 	char *some_addr;
@@ -1014,8 +1034,8 @@ Example of `inet_ntoa`
 
 
 **IP 的结构**
-    
-    struct ip{
+```    
+struct ip{
     #if __BYTE_ORDER == __LITTLE_ENDIAN
     unsigned int ip_hl:4; /* header length */
     unsigned int ip_v:4; /* version */
@@ -1036,8 +1056,8 @@ Example of `inet_ntoa`
     u_int8_t ip_p; /* protocol */
     u_short ip_sum; /* checksum */
     struct in_addr ip_src, ip_dst; /* source and dest address */
-    }; 
-    
+}; 
+```    
 
 ## Socket
     #include <netinet/in.h>
@@ -1062,10 +1082,12 @@ Example of `inet_ntoa`
 参数说明
 hostname:一个主机名或者地址串(IPv4的点分十进制串或者IPv6的16进制串)  
 service:服务名可以是十进制的端口号,也可以是已定义的服务名称,如ftp,http等  
-hints:可以是一个空指针,也可以是一个指向某个addrinfo结构体的指针, 调用者在这个结构中填入关于期望返回的信息类型的暗示. 举例来说:指定的服务既可支持TCP也可支持UDP,所以调用者可以把	hints结构中的ai_socktype成员设置成SOCK_DGRAM使得返回的仅仅是适用于数据报套接口的信息.  
+hints:可以是一个空指针,也可以是一个指向某个addrinfo结构体的指针, 调用者在这个结构中填入关于期望返回的信息类型的暗示. 
+	举例来说:指定的服务既可支持TCP也可支持UDP,所以调用者可以把	hints结构中的ai_socktype成员设置成SOCK_DGRAM使得返回的仅仅是适用于数据报套接口的信息.  
 result:本函数通过result指针参数返回一个指向addrinfo结构体链表的指针.  
 
 `getnameinfo` converts a socket address to a corresponding host and service, in a protocol-independent manner.  
 It combines the functionality of `gethostbyaddr(3)` and `getservbyport(3)`, but unlike those functions, 
 `getnameinfo()` is reentrant and allows programs to eliminate IPv4-versus-IPv6 dependencies.
 the inverse is `getaddrinfo(3)`
+
