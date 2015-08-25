@@ -52,13 +52,13 @@ OSI是Open System Interconnect的缩写,意为开放式系统互联.国际标准
 
 |具体7层|数据格式|功能与连接方式|典型设备|
 |-------|--------|--------------|--------|
-|应用层 Application    |  -        |    网络服务与使用者应用程序间的一个接口    |    网关    |
-|表示层 Presentation    |  -         |    数据表示,数据安全,数据压缩    |    -     |
-|会话层 Session    |       -    |    建立,管理和终止会话    |       -  |
-|传输层 Transport    |    数据组织成数据段Segment    |    用一个寻址机制来标识一个特定的应用程序(端口号)    | -        |
-|网络层 Network    |    分割和重新组合数据包Packet    |    基于网络层地址(IP地址)进行不同网络系统间的路径选择    |    路由器    |
-|数据链路层 Data Link    |    将比特信息封装成数据帧Frame    |    在物理层上建立,撤销,标识逻辑链接和链路复用以及差错校验等功能.通过使用接收系统的硬件地址或物理地址来寻址    |    网桥(广播风暴),交换机,网卡    |
-|物理层 Physical    |    传输比特(bit)流    |    建立,维护和取消物理连接    |    光纤,同轴电缆,双绞线,中继器和集线器hub(冲突域)    |
+|应用层 Application  |  -                          | 网络服务与使用者应用程序间的一个接口 			   |  网关                                               |
+|表示层 Presentation |  -                          | 数据表示,数据安全,数据压缩           			   |   -     										     |
+|会话层 Session      |  -    					   | 建立,管理和终止会话                  			   |   -     										     |
+|传输层 Transport    | 数据组织成数据段Segment     | 用一个寻址机制来标识一个特定的应用程序(端口号)    |   -       											 |
+|网络层 Network      | 分割和重新组合数据包Packet  | 基于网络层地址(IP地址)进行不同网络系统间的路径选择|  路由器  										     |
+|数据链路层 Data Link| 将比特信息封装成数据帧Frame | 在物理层上建立,撤销,标识逻辑链接和链路复用以及差错校验等功能.通过使用接收系统的硬件地址或物理地址来寻址 |    网桥(广播风暴),交换机,网卡    |
+|物理层 Physical     |    传输比特(bit)流          | 建立,维护和取消物理连接              			   |  光纤,同轴电缆,双绞线,中继器和集线器hub(冲突域)   	 |
 
 **TCP/IP 参考模型**
 
@@ -71,7 +71,7 @@ OSI是Open System Interconnect的缩写,意为开放式系统互联.国际标准
 
 结合了OSI和TCP/IP的优点, 上课采用的参考模型
  
-应用层 传输层 网络层 数据链路层 物理层
+应用层  <--- 传输层  <--- 网络层 <--- 数据链路层 <--- 物理层
 
 # Application layer
 Application architecture
@@ -111,7 +111,9 @@ DHCP: 用广播
 # Transport layer
 ## TCP
 建立, 三次握手  
-打开连接时,一个可能出现但是非常罕见的情况,两方同时打开,这是有四次握手,双方同时发送SYN进入SYN-SENT状态,当对方分别收到相应的SYN,在同时发出SYN+ACK,进入SYN+RECV状态,这样就包括了四次.
+打开连接时,一个可能出现但是非常罕见的情况,两方同时打开,这是有四次握手,
+双方同时发送SYN进入SYN-SENT状态,
+当对方分别收到相应的SYN,在同时发出SYN+ACK,进入SYN+RECV状态,这样就包括了四次.
 
 释放, 四次握手, 有时候也简化为三次握手
 
@@ -165,7 +167,7 @@ NAT
 网络地址转换(NAT,Network Address Translation)
 
 ## Internet Routing
-- AS's run intra-domain routing protocols
+- AS run intra-domain routing protocols
 	- Distance Vector, e.g., Routing Information Protocol (RIP)  
 		基于Bellman-Foed算法的距离矢量路由协议
 		一个自治系统内的路由器都要与同一个系统内的其他路由器交换路由表信息, 因此适用于规模较小的自治系统
@@ -173,7 +175,7 @@ NAT
 	- Link State, e.g., Open Shortest Path First (OSPF)  
 		在OSPF协议中,当链路状态发生变化时要用Flooding向所有路由器发送信息.
 		此算法不要求维护网络的拓扑结构和相关的路由计算,仅要求接收到信息的节点以广播方式转发数据包.
-- Between AS's runs inter-domain routing protocols
+- Between AS runs inter-domain routing protocols
 	- Border Gateway Routing (BGP)  
 		BGP发言人
 
@@ -192,7 +194,7 @@ ICMP报文不是直接传送给数据链路层, 而是要封装成IP数据报, �
 # Datalink layer
 Data Link Layer -- Services
 
-- Providing a well-defined services' interface to the upper layer- network.
+- Providing a well-defined service interface to the upper layer- network.
 - Provide necessary services for data transmission over link between two adjacent nodes
 	- Unacknowledged connectionless services (Most LAN)
 	- Acknowledged connectionless service(wireless network)
@@ -263,9 +265,9 @@ Ethernet的物理层规定发送的数据采用曼彻斯特编码方式, 如果�
 如果一个结点已经准备好发送的数据帧, 并且总线此时处于空闲状态, 泽这个结点就可以启动发送
 
 2. 冲突检测  
-有一种极端的情况, 节点A向节点B发送了数据, 在数据信号正好快要到达B的时候, 节点B也发送了数据, 此时冲突发生. 等到冲突的信号传送回到A, 已经经过了两倍的时间延迟2t, 其中t=D/V, D为总线长度, V为传播速度.  
+有一种极端的情况, 节点A向节点B发送了数据, 在数据信号正好快要到达B的时候, 节点B也发送了数据, 此时冲突发生. 
+等到冲突的信号传送回到A, 已经经过了两倍的时间延迟2t, 其中t=D/V, D为总线长度, V为传播速度.  
 如果超过两倍的传播延迟2t 时间没有检测出冲突, 就能肯定该节点已经取得总线访问权, 因此人们将2D/V 定义为冲突窗口(collision window)
-
 
 "Taking Turns" MAC protocols
 
@@ -343,7 +345,8 @@ MAC protocol: CSMA/CA(Carrier Sense Multiple Access/Collision Derect)
 
 # cellular network 蜂窝网
 每个蜂窝单元使用一组频率, 并且这组频率不会被他的任何一个邻居使用.  
-蜂窝网络之所以比以前的系统有更大的容量, 关键在于它使用了相对较小的蜂窝单元, 并且在相近(但不相邻)的蜂窝单元中重复使用相同的传输频率. 蜂窝单元越小, 容量增加越多. 此外, 蜂窝单元越小, 意味着所需要的功率越小, 因而发射器和手持机也越小, 越便宜.  
+蜂窝网络之所以比以前的系统有更大的容量, 关键在于它使用了相对较小的蜂窝单元, 并且在相近(但不相邻)的蜂窝单元中重复使用相同的传输频率. 
+蜂窝单元越小, 容量增加越多. 此外, 蜂窝单元越小, 意味着所需要的功率越小, 因而发射器和手持机也越小, 越便宜.  
 当由于运动赛事, 音乐会等活动, 大量的人聚集在一起时, 运营商可以使用可移动的塔(塔上有卫星链路), 建立临时的微蜂窝单元.
 
 - TDMA: Time Division Multiple Access 时分
@@ -365,7 +368,8 @@ BTS: 基站
 越区切换: 用户的手机进入到不同的蜂窝网络中不同的cellular时, 通话不能中断.  
 用户位置感知与资源预留
 
-漫游: 身份认证信息, 用户相关信息都存储在当地(手机号的注册地), 这样当在非注册地使用网络时, 在进行身份认证时, 需要向用户的手机号注册地请求数据, 然后进行比对. 所以成本会高一点, 但是仍然比现在的漫游费低很多很多倍.
+漫游: 身份认证信息, 用户相关信息都存储在当地(手机号的注册地), 这样当在非注册地使用网络时, 在进行身份认证时, 需要向用户的手机号注册地请求数据, 然后进行比对. 
+所以成本会高一点, 但是仍然比现在的漫游费低很多很多倍.
 
 认证, 加密, 完整性, 访问控制(一般通过防火墙来进行)
 
@@ -383,3 +387,4 @@ A -> 1 -> 2-> 3-> B
 1. 最后使用1的公钥进行加密成为K(K1, K(K2, K(K3, M)))
 
 这样就形成了一个洋葱的结构, 一层包一层
+
