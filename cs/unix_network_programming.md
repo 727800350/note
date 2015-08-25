@@ -2,29 +2,6 @@ Unix network Programming note
 
 Note: This markdown file also contains other resources, but it is mostly from UNP.
 
-<link rel="stylesheet" href="http://yandex.st/highlightjs/6.2/styles/googlecode.min.css">
- 
-<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-<script src="http://yandex.st/highlightjs/6.2/highlight.min.js"></script>
- 
-<script>hljs.initHighlightingOnLoad();</script>
-<script type="text/javascript">
- $(document).ready(function(){
-      $("h1,h2,h3,h4,h5,h6").each(function(i,item){
-        var tag = $(item).get(0).localName;
-        $(item).attr("id","wow"+i);
-        $("#category").append('<a class="new'+tag+'" href="#wow'+i+'">'+$(this).text()+'</a></br>');
-        $(".newh1").css("margin-left",0);
-        $(".newh2").css("margin-left",20);
-        $(".newh3").css("margin-left",40);
-        $(".newh4").css("margin-left",60);
-        $(".newh5").css("margin-left",80);
-        $(".newh6").css("margin-left",100);
-      });
- });
-</script>
-<div id="category"></div>
-
 [Best C/C++ Network Library](http://stackoverflow.com/questions/118945/best-c-c-network-library)  
 Aggregated List of Libraries
 
@@ -84,12 +61,17 @@ TCP标记和他们的意义如下所列:
 * W : CWR - 拥塞窗口减少
 * 
 # UDP
-We also say that UDP provides a connectionless service, as there need not be any long-term relationship between a UDP client and server. For example, a UDP client can create a socket and send a datagram to a given server and then immediately send another datagram on the same socket to a different server. Similarly, a UDP server can receive several datagrams on a single UDP socket, each from a different client.
+We also say that UDP provides a connectionless service, as there need not be any long-term relationship between a UDP client and server. 
+For example, a UDP client can create a socket and send a datagram to a given server and then immediately send another datagram on the same socket to a different server. 
+Similarly, a UDP server can receive several datagrams on a single UDP socket, each from a different client.
 
 ![UDP客户/服务器程序所用的套接字函数](http://pic002.cnblogs.com/images/2012/367190/2012081121141279.jpg)  
-如上图所示, 客户不与服务器建立连接, 而是只管使用`sendto`函数给服务器发送数据报, 其中必须指定目的地(即服务器)第地址作为参数. 类似的, 服务器不接受来自客户的连接, 而是只管调用`recvfrom` 函数, 等待来自某个客户的数据到达. recvfrom将与所接受的数据报一道返回客户的协议地址, 因此服务器可以把响应发送给正确的客户.
+如上图所示, 客户不与服务器建立连接, 而是只管使用`sendto`函数给服务器发送数据报, 其中必须指定目的地(即服务器)第地址作为参数. 
+类似的, 服务器不接受来自客户的连接, 而是只管调用`recvfrom` 函数, 等待来自某个客户的数据到达. recvfrom将接收到的数据与client 的地址一并返回, 因此服务器可以把响应发送给正确的客户.
 
-写一个长度为0 的数据报是可行的. 在UDP情况下, 这会形成一个只包含一个IP首部和一个UDP首部而没有数据的IP数据报. 这也意味着对于UDP协议, recvfrom返回0 值是可接受的: 他并不像TCP套接字上read 返回0值那样表示对端已关闭连接. 既然UDP是无连接的, 因此也没有诸如关闭一个UDP连接之类的事情.
+写一个长度为0 的数据报是可行的. 在UDP情况下, 这会形成一个只包含一个IP首部和一个UDP首部而没有数据的IP数据报. 
+这也意味着对于UDP协议, recvfrom返回0 值是可接受的: 
+他并不像TCP套接字上read 返回0值那样表示对端已关闭连接. 既然UDP是无连接的, 因此也没有诸如关闭一个UDP连接之类的事情.
 
 大多数TCP服务器是并发的, 而大多数UDP服务器是迭代的
 
@@ -105,7 +87,8 @@ We also say that UDP provides a connectionless service, as there need not be any
 
 在一个信号处理函数运行期间, 正被递交的信号是阻塞的. 而且, 安装处理函数时在传递给sigaction函数的sa_mask 信号集中指定的任何额外信号也被阻塞.
 
-A process can selectively block the receipt of certain signals. When a signal is blocked, it can be delivered, but the resulting pending signal will not be received until the process unblocks the signal.
+A process can selectively block the receipt of certain signals. 
+When a signal is blocked, it can be delivered, but the resulting pending signal will not be received until the process unblocks the signal.
 
 一般有3 种方式进行操作
 
@@ -187,7 +170,8 @@ pause函数使调用进程挂起直到有信号递达.
 1. 调用`pause`等待,内核切换到别的进程运行.
 1. `nsecs`秒之后,闹钟超时,内核发`SIGALRM`给这个进程.
 1. 从内核态返回这个进程的用户态之前处理未决信号,发现有`SIGALRM`信号,其处理函数是`sig_alrm`.
-1. 切换到用户态执行`sig_alrm`函数,进入`sig_alrm`函数时`SIGALRM`信号被自动屏蔽,从`sig_alrm`函数返回时`SIGALRM`信号自动解除屏蔽.然后自动执行系统调用`sigreturn`再次进入内核,再返回用户态继续执行进程的主控制流程(`main`函数调用的`mysleep`函数).
+1. 切换到用户态执行`sig_alrm`函数,进入`sig_alrm`函数时`SIGALRM`信号被自动屏蔽,
+	从`sig_alrm`函数返回时`SIGALRM`信号自动解除屏蔽.然后自动执行系统调用`sigreturn`再次进入内核,再返回用户态继续执行进程的主控制流程(`main`函数调用的`mysleep`函数).
 1. `pause`函数返回-1,然后调用`alarm(0)`取消闹钟,调用`sigaction`恢复`SIGALRM`信号以前的处理动作.
 
 现在重新审视例 33.2 "mysleep",设想这样的时序:
@@ -208,7 +192,7 @@ pause函数使调用进程挂起直到有信号递达.
 
 ## API
 函数signal 的正常函数原型:
-`void (*signal (int signo, void (* func)(int)))(int);`  
+`void (\*signal (int signo, void (\* func)(int)))(int);`  
 为了简化, 我们定义  
 
 	typedef void Sigfunc(int);
@@ -422,21 +406,16 @@ errno 变量存在不可重入的问题, 这个整型变量历来每个进程各
 要启动一个守护进程,可以采取以下的几种方式:
 
 1. 在系统期间通过系统的初始化脚本启动守护进程.这些脚本通常在目录etc/rc.d 下,
-通过它们所启动的守护进程具有超级用户的权限.系统的一些基本服务程序通常都是通过
-这种方式启动的.
+通过它们所启动的守护进程具有超级用户的权限.系统的一些基本服务程序通常都是通过这种方式启动的.
 2. 很多网络服务程序是由inetd 守护程序启动的.在后面的章节中我们还会讲到它.
-它监听各种网络请求,如telnet,ftp 等,在请求到达时启动相应的服务器程序(telnet server,
-ftp server 等).
+它监听各种网络请求,如telnet,ftp 等,在请求到达时启动相应的服务器程序(telnet server, ftp server 等).
 3. 由cron 定时启动的处理程序.这些程序在运行时实际上也是一个守护进程.
 4. 由at 启动的处理程序.
-5. 守护程序也可以从终端启动,通常这种方式只用于守护进程的测试,或者是重起因
-某种原因而停止的进程.
+5. 守护程序也可以从终端启动,通常这种方式只用于守护进程的测试,或者是重起因某种原因而停止的进程.
 6. 在终端上用nohup 启动的进程.用这种方法可以把所有的程序都变为守护进程
 
-守护进程不属于任何的终端,所以当需要输出某些信息时,它无法像通常程序那样将
-信息直接输出到标准输出和标准错误输出中.这就需要某些特殊的机制来处理它的输出.  
-为了解决这个问题,Linux 系统提供了`syslog()`系统调用.通过它,守护进程可以向系统的
-log 文件写入信息.它在Linux 系统函数库`syslog.h` 中的定义如下:
+守护进程不属于任何的终端,所以当需要输出某些信息时,它无法像通常程序那样将信息直接输出到标准输出和标准错误输出中.这就需要某些特殊的机制来处理它的输出.  
+为了解决这个问题,Linux 系统提供了`syslog()`系统调用.通过它,守护进程可以向系统的log 文件写入信息.它在Linux 系统函数库`syslog.h` 中的定义如下:
 `void syslog( int priority, char *format, ...);`  
 该调用有两个参数:priority 参数指明了进程要写入信息的等级和用途
 
@@ -447,72 +426,76 @@ Unix 系统中的syslogd 守护进程通常由某个系统初始化脚本启动,
 1. 创建一个Unix域数据报套接字, 给它捆绑路径名`/var/run/log` (在某些系统上是`/dev/log`)
 1. 创建一个UDP 套接字, 给它捆绑端口514(syslog 服务使用的端口号)
 1. 打开路径名`/dev/klog`. 来自内核的中的任何出错消息到输出到这里
-1. 此后syslogd 在一个无限循环中运行. 调用select 以等待它的3 个描述符(分别来自上面的第2, 3, 4 步)之一变为可读, 读入日志消息, 并按照配置文件进行处理.如果守护进程受到`SIGHUP`信号, 那就重新读取配置文件.
+1. 此后syslogd 在一个无限循环中运行. 调用select 以等待它的3 个描述符(分别来自上面的第2, 3, 4 步)之一变为可读, 读入日志消息, 并按照配置文件进行处理.
+	如果守护进程受到`SIGHUP`信号, 那就重新读取配置文件.
 
-通过创建一个unix 雨数据报套接字, 我们就可以从自己的守护进程中通过往syslogd 绑定的路径名发送我们的消息达到发送日志消息的目的, 然而更简单的接口是使用`syslog` 函数.
+通过创建一个unix 数据报套接字, 我们就可以从自己的守护进程中通过往syslogd 绑定的路径名发送我们的消息达到发送日志消息的目的, 然而更简单的接口是使用`syslog` 函数.
 
 ## 守护进程启动实例
+```
+#include"unp.h"
+#include<syslog.h>
+ 
+#define MAXFD 64
+extern int daemon_proc; /* defined in error.c */
+ 
+int daemon_init(const char *pname, int facility){
+	int i;
+	pid_t pid;
 
-   	 	#include"unp.h"
-    	#include<syslog.h>
-    
-    	#define MAXFD 64
-    	extern int daemon_proc; /* defined in error.c */
-    
-    	int daemon_init(const char *pname, int facility){
-    	int i;
-    	pid_t pid;
-    
-		// 如果本程序是从前台作为一个shell 命令启动的, 当父进程终止时, shell 就认为该命令已执行完毕. 这样子进程就自动在后台运行. 
-		// 另外, 子进程继承了父进程的进程组ID, 这就保证了子进程不是一个进程组的头进程, 这是接下去调用setsid的必要条件
-    	if ( (pid = Fork()) < 0)
-    			return (-1); //error
-    	else if (pid)
-    			_exit(0);   /* parent terminates */
-    
-    	/* child 1 continues... */
-    
-		// 当前进程变为新会话的会话头进程以及新进程组的进程组头进程, 从而不再有控制终端
-    	if (setsid() < 0)   /* become session leader */
-    			return (-1);
+	// 如果本程序是从前台作为一个shell 命令启动的, 当父进程终止时, shell 就认为该命令已执行完毕. 这样子进程就自动在后台运行. 
+	// 另外, 子进程继承了父进程的进程组ID, 这就保证了子进程不是一个进程组的头进程, 这是接下去调用setsid的必要条件
+	if ((pid = Fork()) < 0)
+		return (-1); //error
+	else if (pid)
+		_exit(1);   /* parent terminates */
 
-		// 这里必须忽略SIGHUP信号, 因为当会话头进程终止时(即首次fork 产生的子进程) 终止时, 
-		// 其会话中的所有进程(即在此fork产生的子进程) 都收到SIGHUP信号    
-    	Signal(SIGHUP, SIG_IGN);
+	/* child 1 continues... */
 
-		// 再次调用fork的目的是确保本守护进程即使将来打开了一个终端设备, 也不会自动获得控制终端.
-		// 因为当没有控制终端的会话头进程打开一个终端设备时, 该终端自动成为这个会话头进程的控制终端. 
-		// 然后再次调用fork 之后, 我们确保新的子进程不再是一个会话头进程, 从而不能自动获得一个控制终端
-    	if ( (pid = Fork()) < 0)
-    			return (-1);
-    	else if (pid)
-    			_exit(0);   /* child 1 terminates */
-    
-    	/* child 2 continues... */
-    
-    	daemon_proc = 1;/* for err_XXX() functions */
-    
-		// 使用fork创建的子进程继承了父进程的当前工作目录, 切换到根目录, 可以避免将来的文件系统卸载问题
-    	chdir("/"); /* change working directory */
-    
-    	/* close off file descriptors */
-    	for (i = 0; i < MAXFD; i++)
-    			close(i);
-    
-    	/* redirect stdin, stdout, and stderr to /dev/null */
-		// 保证这些常用描述符是打开的, 针对他们的系统调用read 返回0(EOF)
-    	open("/dev/null", O_RDONLY);
-    	open("/dev/null", O_RDWR);
-    	open("/dev/null", O_RDWR);
-    
-    	openlog(pname, LOG_PID, facility);
-    
-    	return (0); /* success */
-    }
-	
-	example: inetd/daytimetcpserv2.c
+	// 当前进程变为新会话的会话头进程以及新进程组的进程组头进程, 从而不再有控制终端
+	if (setsid() < 0)   /* become session leader */
+		return (-1);
 
-进程组:是一个或多个进程的集合.进程组有进程组ID来唯一标识.除了进程号(PID)之外,进程组ID也是一个进程的必备属性.每个进程组都有一个组长进程,其组长进程的进程号等于进程组ID.且该**进程组ID不会因组长进程的退出而受到影响**.  
+	// 这里必须忽略SIGHUP信号, 因为当会话头进程终止时(即首次fork 产生的子进程) 终止时, 
+	// 其会话中的所有进程(即在此fork产生的子进程) 都收到SIGHUP信号    
+	Signal(SIGHUP, SIG_IGN);
+
+	// 再次调用fork的目的是确保本守护进程即使将来打开了一个终端设备, 也不会自动获得控制终端.
+	// 因为当没有控制终端的会话头进程打开一个终端设备时, 该终端自动成为这个会话头进程的控制终端. 
+	// 然后再次调用fork 之后, 我们确保新的子进程不再是一个会话头进程, 从而不能自动获得一个控制终端
+	if ((pid = Fork()) < 0)
+		return (-1);
+	else if (pid)
+		_exit(0);   /* child 1 terminates */
+
+	/* child 2 continues... */
+
+	daemon_proc = 1;/* for err_XXX() functions */
+
+	// 使用fork创建的子进程继承了父进程的当前工作目录, 切换到根目录, 可以避免将来的文件系统卸载问题
+	chdir("/"); /* change working directory */
+
+	/* close off file descriptors */
+	for (i = 0; i < MAXFD; i++)
+		close(i);
+
+	/* redirect stdin, stdout, and stderr to /dev/null */
+	// 保证这些常用描述符是打开的, 针对他们的系统调用read 返回0(EOF)
+	open("/dev/null", O_RDONLY);
+	open("/dev/null", O_RDWR);
+	open("/dev/null", O_RDWR);
+
+	openlog(pname, LOG_PID, facility);
+
+	return (0); /* success */
+}
+```	
+example: inetd/daytimetcpserv2.c
+
+进程组:是一个或多个进程的集合.
+进程组有进程组ID来唯一标识.除了进程号(PID)之外,进程组ID也是一个进程的必备属性.
+每个进程组都有一个组长进程,其组长进程的进程号等于进程组ID.且该**进程组ID不会因组长进程的退出而受到影响**.  
+
 会话周期:会话期是一个或多个进程组的集合.通常,一个会话开始于用户登录,终止于用户退出,在此期间该用户运行的所有进程都属于这个会话期.
 
 setsid函数用于创建一个新的会话,并担任该会话组的组长.调用setsid有下面的3个作用:
@@ -521,9 +504,13 @@ setsid函数用于创建一个新的会话,并担任该会话组的组长.调用
 1. 让进程摆脱原进程组的控制
 1. 让进程摆脱原控制终端的控制
 
-那么,在创建守护进程时为什么要调用setsid函数呢?由于创建守护进程的第一步调用了fork函数来创建子进程,再将父进程退出.由于在调用了fork函数时,子进程全盘拷贝了父进程的会话期,进程组,控制终端等,虽然父进程退出了,但会话期,进程组,控制终端等并没有改变,因此,这还不是真正意义上的独立开来,而setsid函数能够使进程完全独立出来,从而摆脱其他进程的控制.
+那么,在创建守护进程时为什么要调用setsid函数呢?
+由于创建守护进程的第一步调用了fork函数来创建子进程,再将父进程退出.
+由于在调用了fork函数时,子进程全盘拷贝了父进程的会话期,进程组,控制终端等,虽然父进程退出了,但会话期,进程组,控制终端等并没有改变,
+因此,这还不是真正意义上的独立开来,而setsid函数能够使进程完全独立出来,从而摆脱其他进程的控制.
 
-既然守护进程在没有控制终端的环境下运行, 他绝不会收到来自内核的`SIGHUP` 信号. 许多守护进程因此把这个吸纳后作为来自管理员的一个通知, 表示其配置文件爱你已经发生更改, 需要重新读取配置文件.  
+既然守护进程在没有控制终端的环境下运行, 他绝不会收到来自内核的`SIGHUP` 信号.
+许多守护进程因此把这个吸纳后作为来自管理员的一个通知, 表示其配置文件爱你已经发生更改, 需要重新读取配置文件.  
 守护进程同样绝不会收到来自内核的`SIGINT` 和`SIGWINCH` 信号, 因此这些信号也可以安全地用作系统管理员的通知手段, 指示守护进程应作出某种反应.
 
 当用户需要外部停止守护进程运行时,往往会使用 kill命令停止该守护进程.所以,守护进程中需要编码来实现kill发出的signal信号处理,达到进程的正常退出
@@ -535,16 +522,20 @@ setsid函数用于创建一个新的会话,并担任该会话组的组长.调用
 
 不同的进程(非父进程与子进程的关系)各自拥有标准输入, 标准输出和标准错误输出这几个描述符.
 
-	example: 
-	lib/daemon_inetd.c: daemon_inetd 函数, 用于由`inetd` 启动的服务器程序中
-	inetd/daytimetcpserv3.c: 使用daemon_inted 函数的例子
+example:
+```
+lib/daemon_inetd.c: daemon_inetd 函数, 用于由`inetd` 启动的服务器程序中
+inetd/daytimetcpserv3.c: 使用daemon_inted 函数的例子
+```
 
 # 非阻塞式IO
 套接字的默认状态是阻塞的. 这就意味着当发出一个不能立即完成的套接字调用时, 其进程将被投入睡眠, 等待相应操作完成.  
 可能阻塞的套接字调用可分为以下四类
 
 1. 输入操作: 包括`read, readv, recv, recvfrom, recvmsg` 共5 个函数.  
-	- 如果某个进程对一个阻塞的TCP套接字(默认设置) 调用这些输入函数, 而且**该套接字的接收缓冲区中没有数据可读**, 该进程将被投入睡眠, 直到有一些数据到达. 既然TCP 是字节流协议, 该进程的唤醒就是只要有一些数据到达, 可以使单个字节, 也可以是一个完整的TCP分节. 如果想等到某个固定数目的数据可读为止, 那么可以调用我们的`readn` 函数或者指定`MSG_WAITALL` 标志.  
+	- 如果某个进程对一个阻塞的TCP套接字(默认设置)调用这些输入函数, 而且**该套接字的接收缓冲区中没有数据可读**, 该进程将被投入睡眠, 直到有一些数据到达. 
+	既然TCP 是字节流协议, 该进程的唤醒就是只要有一些数据到达, 可以使单个字节, 也可以是一个完整的TCP分节. 
+	如果想等到某个固定数目的数据可读为止, 那么可以调用我们的`readn` 函数或者指定`MSG_WAITALL` 标志.  
 	- 既然UDP是数据报协议, 如果一个阻塞的UDP套接字的接收缓冲区为空, 对它调用输入函数的进程将被投入睡眠, 直到有UDP数据报到达.  
 	- 对于非阻塞的套接字, 如果输入操作不能被满足, 相应调用将立即返回一个`EWOULDBLOCK` 错误.
 1. 输出操作: 包括`write, writev, send, sendto, sendmsg` 共5 个函数.  
