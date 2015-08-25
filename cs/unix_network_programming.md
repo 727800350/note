@@ -443,8 +443,8 @@ int daemon_init(const char *pname, int facility){
 	int i;
 	pid_t pid;
 
-	// 如果本程序是从前台作为一个shell 命令启动的, 当父进程终止时, shell 就认为该命令已执行完毕. 这样子进程就自动在后台运行. 
-	// 另外, 子进程继承了父进程的进程组ID, 这就保证了子进程不是一个进程组的头进程, 这是接下去调用setsid的必要条件
+	//若本程序从前台作为一个shell命令启动,当父进程终止时,shell会认为该命令已执行完毕.这样子进程就自动在后台运行
+	//另外,子进程继承了父进程的进程组ID, 这就保证了子进程不是一个进程组的头进程, 这是接下去调用setsid的必要条件
 	if ((pid = Fork()) < 0)
 		return (-1); //error
 	else if (pid)
