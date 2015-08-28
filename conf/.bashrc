@@ -44,6 +44,9 @@ then
 	alias mv='amv -g'
 fi
 
+alias g++='g++ -std=c++11'
+alias clang++='clang++ -std=c++11'
+
 alias hadoop='${HOME}/hadoop-client/hadoop/bin/hadoop'
 alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
 
