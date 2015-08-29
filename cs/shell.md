@@ -308,6 +308,14 @@ ${array_name[index]}
     ${array_name[*]}
     ${array_name[@]}
 
+遍历数组
+```
+for item in ${array[*]}
+do
+	...
+done
+```
+
 ### 获取数组的长度
 获取数组长度的方法与获取字符串长度的方法相同,例如:
 ```
