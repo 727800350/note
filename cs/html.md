@@ -1,13 +1,16 @@
 # HTML
-## 特殊标记
-
 HyperText Markup Language超文本标记语言
 
+特殊标记
+```
 &lt; 小于号 less than
 &gt; 大于号greater than
 &nbsp; 空格no-break space
 &copy;
+```
 
+文字标签
+```
 <p>文字</p>创建段落
 <br/>回车
 <hr />
@@ -25,19 +28,23 @@ HyperText Markup Language超文本标记语言
 <SUB>...</SUB> 下标字,字体下标字
  
 <font size="30" color="red">文字</font>
+```
 
+超链接
+```
 <a href="www.baidu.com">百度</a>
 
 <a href="http://www.rupeng.com">
 	<img src="http://www.rupeng.com/forum.templates/uchome/images/logo.gif"/>
 </a>
+```
 
 <pre> pre 元素可定义预格式化的文本.被包围在 pre 元素中的文本通常会保留空格和换行符.而文本也会呈现为等宽字体.
 <pre> 标签的一个常见应用就是用来表示计算机的源代码.
 ```
 <pre>
 for i = 1 to 10
-     print i
+	 print i
 next i
 </pre>
 ```
@@ -49,13 +56,14 @@ next i
 - ul unordered list
 - ol ordered list
 
+```
 <table>
 <CAPTION>...</CAPTION> 表格标题
-<thead><tr><td colspan="2" ></td></tr></thead>
+<tr><th></th></tr>
+<tr><td></td></tr>
 <tr><td></td></tr>
 </table>
-
-Table 表; tr行 ;td单元格; thead表头;colspan占多少列
+```
 
 Form表单
 ```
@@ -75,24 +83,17 @@ checkbox类型时,在javascript中有一个属性是checked,其值为布尔值
 如果size大于1就是listbox(size的值为显示出来的列表数量)
 或者Multiple=" Multiple" 就是listbox
 
-Select中项是option <option value="" selected="selected">北京</option>//每一个项代表的值为value,后面编程的时候会用到,selected表示默认被选中
+Select中项是option `<option value="" selected="selected">北京</option>`
+每一个项代表的值为value,后面编程的时候会用到,selected表示默认被选中
 
 Optiongroup
 ```
-       <select>
-              <optgroup label="直辖市" >
-                     <option value="value">北京</option>
-                     <option value="value">上海</option>
-                     <option value="value">天津</option>
-                     <option value="value">重庆</option>
-              </optgroup>
-
-              <optgroup label="湖北省">
-                     <option value="value">武汉</option>
-                     <option value="value">襄阳</option>
-                     <option value="value">随州</option>
-              </optgroup>
-       </select>
+<select>
+	<optgroup label="湖北省">
+		<option value="value">武汉</option>
+		<option value="value">随州</option>
+</optgroup>
+</select>
 ```
 当选中某一项时,这个项的value就会成为这个select的value属性
 
@@ -113,10 +114,10 @@ label 元素不会向用户呈现任何特殊效果.不过,它为鼠标用户改
 Fieldset 相当于winform的Groupbox
 ```
 <fieldset>
-       <legend>常用</legend>
-       <input type="text" />
-       <input type="text" />
-       <input type="text" />      
+	   <legend>常用</legend>
+	   <input type="text" />
+	   <input type="text" />
+	   <input type="text" />	  
 </fieldset>
 ```
  
@@ -127,86 +128,15 @@ div标签是区块层级,span是内文层级
 一般使用css+div构造页面的布局,使用span控制局部的效果  
 div与span都属于层标签
 
-<bgsound src="/mp3/爱很美.mp3" loop=True>
-
-# CSS
-层叠样式表
-
-<link href="StyleSheet1.css" rel="stylesheet" type="text/css" />
-
-计量单位:px像素;30%;em相对单位.width:20px
-
-background-color背景颜色;color文本颜色
-
-border
-
-border-style;border-color;border-width(默认值是0)
-
-style="border-style:dotted;border-color:Red;border-width:2px"
-
-display控制显示与否none(不显示);block(显示为块级元素,元素前后带有换行符);inline(元素前后没有换行符)
-
-CSS float 属性
-
-float 属性定义元素在哪个方向浮动.以往这个属性总应用于图像,使文本围绕在图像周围,不过在CSS 中,任何元素都可以浮动.浮动元素会生成一个块级框,而不论它本身是何种元素.
-如果浮动非替换元素,则要指定一个明确的宽度,否则,它们会尽可能地窄.
-注释:假如在一行之上只有极少的空间可供浮动元素,那么这个元素会跳至下一行,这个过程会持续到某一行拥有足够的空间为止.
-JavaScript 语法:object.style.cssFloat="left"
-
-cursor:鼠标指针放到元素上面时显示的样子  
-`td.style.cursor = "pointer";`//td是一个表table中的一个单元格,鼠标放到这个单元格上面时,鼠标变成手的形状
-
-list-style-type:对于<ul></ul><li></li>列表时对那个圆点的控制
-```
-onfocus="this.style.textAlign='left';" onblur="this.style.textAlign='right';"
-```
-
-## 样式选择器
-三种:标签选择器;class选择器;id选择器
-
-标签
-```
-input{background-color:Green;border-color:Black;}
-p{color:Blue;}
-```
-
-class
-```
-.Class_warning{font-style:italic;font-size:xx-large;}//前面的点不能丢
-<p class=" Class_warning ">aaaaa</p>
-```
-当有多个样式一起作用相互冲突时,以用style直接指定的为准
-
- 
-标签+class
-```
-input.class1{background-color:Green;border-color:Black;}
-p.class1{color:Blue;}
-```
-
-id
-#id_username
-```
-{ background-color:Red; }
-```
-
-关联选择器
-
-使用空格分隔
-```
-p strong{color:Yellow;}
-```
-同时具有p与strong标签
-
 # DOM
-Document object model文档对象模型
+Document Object Model文档对象模型
 
 CSS+JavaScript+DOM=DHTML
 
 定时 setInterval  
 每间隔一定时间执行
 ```
-intervalId=setInterval("alert('hello')",5000)//每隔5000毫秒,也就是5秒弹出一个hello对话框
+intervalId=setInterval("alert('hello')", 5000)//每隔5000毫秒,也就是5秒弹出一个hello对话框
 ```
 
 setTimeout
@@ -221,15 +151,12 @@ navigate("http://www.baidu.com")
 confirm()
 
 ```
-function confirmdemo() {
-       if (confirm("是否要放弃输入的文本")) {
-              alert("yes");
-       }
-       else {
-              alert("no");
-       }
+if (confirm("是否要放弃输入的文本")) {
+	alert("yes");
 }
-<input type="button" onclick="confirmdemo()" value="confirmdemo" />
+else{
+	alert("no");
+}
 ```
 confirm()可以用来防止用户的误操作导致离开这个页面而致使输入的东西都丢失掉
  
@@ -299,32 +226,29 @@ getData("Text")读取粘贴板的值,返回值为粘贴板中的内容
 
 setData("Text",val)设置粘贴板中的值
  
-
+```
 <body oncopy="alert('禁止复制');window.event.returnValue=false;"></body>
 <body oncopy="alert('禁止复制'); return false;"></body>
  
 mobile:<input type="text" /><br />
 mobile again:<input type="text" onpaste="alert('为保证你的资金充值到正确的手机号,请勿复制');return false;" />
 
-function modifyClipboard() {
+function modifyClipboard(){
 	clipboardData.setData('Text', clipboardData.getData('Text') +"文章转自:"+ window.location.href);
 }
-<body oncopy="setTimeout('modifyClipboard()',100)"></body>
- 
+<body oncopy="setTimeout('modifyClipboard()', 100)"></body>
+```
 
-window.history
-
-window.history.back();  window.history.go(-1);后退一个页面
-
-window.history.forward();  window.history.g0(1);
-
-window.history.go(2);
-
+- window.history
+- window.history.back();  window.history.go(-1);后退一个页面
+- window.history.forward();  window.history.g0(1);
+- window.history.go(2);
+```
 <a href="javascript:window.history.back()">back</a>
 
 也可以放到input button的onclick事件中
-
 <input type="button" onclick="window.history.back()" value="back"  />
+```
 
 window.document
 
@@ -337,16 +261,12 @@ write(text);
 window.document.write("this is a document<br/>");
 window.document.write("<a href='http://www.buaa.edu.cn'>buaa</a><br/>");
 
- 
 但是如果在onclick事件中,写入的内容会冲掉页面中的原有内容
 
 <input type="button" value="document.write" onclick="window.document.write('buaa is mine');"/>
 write经常在广告代码/整合资源代码中使用,例如引用百度的新闻http://news.baidu.com/newscode.html
-
  
 getElementById();
-
-一个页面中id必须唯一
 
 alert(form1.textbox2.value);
 alert(textbox1.value);
@@ -359,15 +279,15 @@ getElementsByName();
 一个页面中name可以不唯一,所以返回的结果是一个数组
 ```
 <head>
-    <title></title>
-       <script type="text/javascript">
-              function btnclick() {
-                  var radios = document.getElementsByName("gender");
-                  for (var i = 0; i < radios.length; i++) {
-                       alert(radios[i].value);
-                  }
-              }
-       </script>
+	<title></title>
+	   <script type="text/javascript">
+			  function btnclick() {
+				  var radios = document.getElementsByName("gender");
+				  for (var i = 0; i < radios.length; i++) {
+					   alert(radios[i].value);
+				  }
+			  }
+	   </script>
 </head>
 
 <body>
@@ -410,22 +330,6 @@ The innerText property is valid for block elements only. By definition, elements
 对于innerHTML 属性,几乎所有的元素都有innerHTML属性,它是一个字符串,用来设置或获取位于对象起始和结束标签内的HTML.
 firefox下innerText是target
  
-时间冒泡
-```
-<body onclick="alert('body onclick')">
-       <table border="0" cellpadding="0" cellspacing="0" onclick="alert('table onclick')">
-              <tr onclick="alert('tr onclick')">
-                     <td onclick="alert('td onclick')">
-                            <p onclick="alert('p onclick')">
-                            this is a test for the bubble.
-                            </p>
-                     </td>
-              </tr>
-       </table>
-</body>
-```
-从最内层依次触发
-
 this 获得事件对象
 
 修改属性
@@ -435,31 +339,31 @@ css中background-color,在js中是backgroundcolor,因为在js中,-有特殊的�
 onfocus onblur 焦点进入控件的事件是onfocus,焦点离开控件的事件是onblur
 ```
 <head>
-    <title></title>
-       <script type="text/javascript">
-              function initEvent() {
-                     var inputs = document.getElementsByTagName("input");
-                     for (var i = 0; i < inputs.length; i++) {
-                            var input = inputs[i];
-                            input.onblur = inputOnblur;
-                     }
-              }
+	<title></title>
+	   <script type="text/javascript">
+			  function initEvent() {
+					 var inputs = document.getElementsByTagName("input");
+					 for (var i = 0; i < inputs.length; i++) {
+							var input = inputs[i];
+							input.onblur = inputOnblur;
+					 }
+			  }
 
-              function inputOnblur() {
-                     if (this.value.length <= 0) {
-                            this.style.background = "red"; //由于是将控件的onblur响应函数设置为inputOnblur,而不是该控件的onblur响应函数调用inputOnblur(),所以这里可以用this               }
-                     else {
-                            this.style.background = "white";
-                     }
-              }
-       </script>
+			  function inputOnblur() {
+					 if (this.value.length <= 0) {
+							this.style.background = "red"; //由于是将控件的onblur响应函数设置为inputOnblur,而不是该控件的onblur响应函数调用inputOnblur(),所以这里可以用this			   }
+					 else {
+							this.style.background = "white";
+					 }
+			  }
+	   </script>
 </head>
 
 <body onload="initEvent()">
-       <input type="text" name="name" value="content1" onblur="alert('第一个失去了焦点')"  onfocus="alert('第一个得到了焦点')"/>
-       <input type="text" name="name" value="content2" onblur="alert('第二个失去了焦点')"  onfocus="alert('第二个得到了焦点')"/>
-       <br />
-       <input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" />
+	   <input type="text" name="name" value="content1" onblur="alert('第一个失去了焦点')"  onfocus="alert('第一个得到了焦点')"/>
+	   <input type="text" name="name" value="content2" onblur="alert('第二个失去了焦点')"  onfocus="alert('第二个得到了焦点')"/>
+	   <br />
+	   <input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" />
 </body>
 ```
 
@@ -476,13 +380,9 @@ style.display属性
 
 只有当值为none时,才不显示,其他值(包括空值)都显示
 
- 
-
 在IE中监听body的onclick,最后一个元素以下内容是不被监听的,如果一定要监听,需要监听document的onclick事件,在javascript中完成
-
 例如下面的匿名函数
-
-document.onclick = function () { alert("OK");    }
+`document.onclick = function(){alert("OK");}`
 
 postion
 写某个对象的具体坐标之前,先要确定是哪种类型的position
@@ -502,46 +402,44 @@ style="position:absolute;top:200px;left:200px"
 form submit
 通过一个普通的按钮也能提交表单
 ```
-       <form action="default.aspx" method="post" id="form1">
-       <input type="button" name="name" value="same as submit" onclick="form1.submit()" />
-
-       <input type="submit" />
-       </form>
+<form action="default.aspx" method="post" id="form1">
+	<input type="button" name="name" value="same as submit" onclick="form1.submit()" />
+	<input type="submit" />
+</form>
 ```
-
-如果提交之前要检查数据,可以在form的onsubmit(如果是return false;就可以阻止提交)事件中写代码进行数据检查,但是如果通过掉用form1.submit()进行提交,他不会执行onsubmit里的代码.
+如果提交之前要检查数据,可以在form的`onsubmit`(如果是return false;就可以阻止提交)事件中写代码进行数据检查,
+但是如果通过`form1.submit()`进行提交,他不会执行onsubmit里的代码.
 
 另外,如果onsubmit事件要调用函数,要特别注意返回值的处理
 ```
-function beforeSubmit() {
-       var name = document.getElementById("name");
-       if (name.value.length <= 0) {
-       		alert('name can not be empty');
-            return false;
-       }
+function beforeSubmit(){
+   var name = document.getElementById("name");
+   if (name.value.length <= 0) {
+   		alert('name can not be empty');
+		return false;
+   }
 }
-onsubmit="return beforeSubmit()
+onsubmit="return beforeSubmit()"
 ```
 
-但是调用函数的时候,由于我们需要onsubmit事件需要返回值,而调用函数的返回值只是调用函数的返回值,不是onsubmit事件的返回值,所以需要些return bofreSubmit();,而不能写作bofreSubmit();
- 
 通过一个按钮的点击触发另外一个按钮点击动作
-       <input type="button" id="btn1" value="btn" onclick="alert('btn')" />
-       <input type="button" name="name" value="clickonme"  onclick="btn1.click()" />
-
+```
+<input type="button" id="btn1" value="btn" onclick="alert('btn')" />
+<input type="button" name="name" value="clickonme"  onclick="btn1.click()" />
 //不是btn1.onclick();
+```
 
 # Jquery
 ready
 
-$(document).ready(function () {alert("加载完毕");    });
+`$(document).ready(function(){alert("加载完毕");});`
 注册事件函数,和普通的dom函数不一样,不需要在元素的标签上添加on**等标记
 
 ready()和dom中的onload类似,但是onload只能注册一次,而ready()可以注册多次
 
-$(document).ready(function () {alert("加载完毕");    });
+$(document).ready(function () {alert("加载完毕");});
 
-$(document).ready(function () {alert("加载完毕2");  });
+$(document).ready(function () {alert("加载完毕2");});
 onload是在所有的dom元素,图片,css等都加载完毕后才会被触发,而ready在所有的dom元素创建完毕后就会被触发,这样可以提高网页的响应速度
 
 $(window).load()可以实现onload那种事件调用的时机
@@ -565,7 +463,7 @@ jquery对象只能调用jquery封装的方法.不能调用dom对象的方法
 可以讲一个dom对象转化为jquery对象
 
 var div = document.getElementById("div1");
-       alert($(div).html());
+	   alert($(div).html());
 
 请注意,array是javascript语言本身包含的,不是dom对象,所以不需要转换为jquery对象
 
@@ -576,33 +474,27 @@ jquery对象都有内置的隐式调用each方法,如果是自己写的对象可
 注册事件
 ```
 $(function () {
-
-       $("p").click(function () {
-              alert("i am is a p");
-       });//隐式迭代,对取到的每个p都注册click事件
+	$("p").click(function(){
+	  alert("i am is a p");
+	});//隐式迭代,对取到的每个p都注册click事件
 });
 ```
 
 css
-
 ```
 $(function () {$("#div1").css("background", "red");});
 $(function () { alert($("#div1").css("backgroundColor")); });
 ```
 
 class
-
 ```
 attr("class")
 attr("class","myclass")
 ```
 
 addClass
-
 removeClass
-
 toggleClass 切换样式,如果没有,则添加,如果有,则删除
-
 hasClass 判断是否有这个样式
 
 filter:Gray黑白样式
@@ -615,10 +507,9 @@ $("#id ")/$("TagName")/$(".cssClassName")
 ```
 
 例如:
-
 ```
-$(function () {
-       $("p").click(function () { alert("i am is a p"); });//隐式迭代,对取到的每个p都注册click事件
+$(function(){
+	$("p").click(function () { alert("i am is a p"); });//隐式迭代,对取到的每个p都注册click事件
 });
 ```
 
@@ -631,31 +522,17 @@ $("p,div,span.menuitem") 选择所有的p标签,div标签和带有menuitem样式
 层次选择器
 
 $("div li")获取div下的所有li元素
-
 $("div > li")获取div下的直接li元素
-
 $("body *")选取body下的所有元素
-
-not
-
 $("#table img").not(this)
 
- 
-
 过滤选择器
-
 :first 选取第一个元素 $("div:first")
-
 :last
-
 :not  $("input:not(.myclass)")选取不是myclass的input
-
 :event  :odd 选取奇偶数
-
 :eq/:gt/:lt选取索引号等于,大于,小于的元素  $("input:lt(5)")
-
 $(":header")
-
 $("div:animated")选取正在执行动画的div
 
 过滤选择器可以组合使用,但是请注意每一步过滤都是在前一步的过滤所得结果进一步过滤
@@ -663,7 +540,6 @@ $("div:animated")选取正在执行动画的div
 属性过滤选择器
 
 $("div[id]")选取有id属性的div
-
 $("div[title=test]")
 
 还可以选择开头/结束/包含等,可以组合使用
@@ -671,22 +547,12 @@ $("div[title=test]")
 表单对象选择器
 
 $("#form1 :enabled")选取id为form1的表单内所有启用的元素
-
 $("#form1 :disabled")选取id为form1的表单内所有禁用的元素
-
-$('input:checked")选取所有选中的元素(radio,checkbox)
-
+$("input:checked")选取所有选中的元素(radio,checkbox)
 $("select:selectd")
-
-$(":input")选取所有<input>/<textarea>/<select>/<button>
-
-而$("input")只获得<input>
-
+$(":input")选取所有<input>/<textarea>/<select>/<button>, 而$("input")只获得<input>
 $(":text")选取所有单行文本框,等价于$("input:[type=text]")
-
 $(":password")选取所有密码框.同理还有:radio,:checkbox,:submit,:image,:rest,:buttion,:file,:hidden
-
- 
 
 相对选择器
 
@@ -695,9 +561,7 @@ $("li",$(this));//this下的li元素
 节点遍历
 
 next()获取紧挨着下一个的元素
-
 nextAll()/nextAll("div")//后一个为待选择性质的
-
 siblings()/siblings("div") 所有的兄弟
 
 链式编程
@@ -713,17 +577,10 @@ $(this).siblings("div").css("background", "green");
 attr
 
 $(selector).attr(attribute)返回属性值
-
 $(selector).attr(attribute,value)这只属性值
-
 $("img").attr("width","180");
-
 $(selector).attr(attribute,function(index,oldvalue))通过函数设置属性值
-
-$("img").attr("width",function(index,oldvalue){
-      return oldvalue -50;
-});
-
+$("img").attr("width",function(index,oldvalue){return oldvalue -50;});
 $("img").attr({width:"50",height:"80"});设置属性对
 
 removeAttr()删除属性,之后这个属性就不存在了,不同于清空
@@ -774,11 +631,11 @@ radio与checkbox设值的时候要通过数组的形式,虽然radio只有一个�
 <input type="radio" name="gender" value="femme" />女<br />
 <input type="radio" name="gender" value="secret" />未知<br />
 $("#btnSet").click(function () {
-       $(":radio[name=gender]").val(["femme"]);
+	   $(":radio[name=gender]").val(["femme"]);
 });
 
 $("#btnGet").click(function () {
-       alert($(":radio[name=gender]:checked").val());
+	   alert($(":radio[name=gender]:checked").val());
 });
 ```
 
@@ -856,11 +713,11 @@ $.cookie('name', 'value', {expires: 7, path: '/', domain: 'jquery.com', secure: 
 $(function () {
 	if ($.cookie("username")) {
 		$("#username").val($.cookie("username"));
-    }
-    $("#signIn").click(function () {
-         $.cookie("username", $("#username").val());
-         alert("your name is " + $("#username").val());
-     });
+	}
+	$("#signIn").click(function () {
+		 $.cookie("username", $("#username").val());
+		 alert("your name is " + $("#username").val());
+	 });
 });
 <input type="text" name="name" value=" " id="username"/>
 <input type="button" name="name" value="signIn" id="signIn" />
@@ -893,7 +750,7 @@ IE浏览器版本的ajax 实例
 ```
 <html>
 <head>
-    <title></title>
+	<title></title>
 <script type="text/javascript">
 	function btnclick(){
 		var xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
@@ -917,7 +774,7 @@ IE浏览器版本的ajax 实例
 	}
 </head>
 <body>
-    <input id="Text1" type="text" /><input id="Button1" type="button" value="button" onclick="btnclick()" />
+	<input id="Text1" type="text" /><input id="Button1" type="button" value="button" onclick="btnclick()" />
 </body>
 </html>
 ```
@@ -969,4 +826,73 @@ Ajax是以异步的方式向服务器提交需求.对服务器而言,其与传�
 这会造成应用程序典型的多进程(process)或多线程(thread)的竞争(racing)问题.
 程序员因此必须自行处理或在JavaScript里面动手脚以避免这类竞争问题的发生(如Ajax需求未响应之前,先disable送出按钮),这又不必要的增加了程序员的负担.
 目前已知有自动处理此问题之开发框架似乎只有ZK.
+
+# CSS
+Cascading Style Sheets 层叠样式表
+
+引入一个定义好的css 文件: `<link href="StyleSheet1.css" rel="stylesheet" type="text/css" />`
+
+计量单位:px像素;30%;em相对单位.width:20px
+
+background-color背景颜色;color文本颜色
+
+border
+
+border-style;border-color;border-width(默认值是0)
+
+`style="border-style:dotted;border-color:Red;border-width:2px"`
+
+display控制显示与否none(不显示);block(显示为块级元素,元素前后带有换行符);inline(元素前后没有换行符)
+
+CSS float 属性
+
+float 属性定义元素在哪个方向浮动.以往这个属性总应用于图像,使文本围绕在图像周围,不过在CSS 中,任何元素都可以浮动.浮动元素会生成一个块级框,而不论它本身是何种元素.
+如果浮动非替换元素,则要指定一个明确的宽度,否则,它们会尽可能地窄.
+注释:假如在一行之上只有极少的空间可供浮动元素,那么这个元素会跳至下一行,这个过程会持续到某一行拥有足够的空间为止.
+JavaScript 语法:object.style.cssFloat="left"
+
+cursor:鼠标指针放到元素上面时显示的样子  
+`td.style.cursor = "pointer";`//td是一个表table中的一个单元格,鼠标放到这个单元格上面时,鼠标变成手的形状
+
+list-style-type:对于<ul></ul><li></li>列表时对那个圆点的控制
+```
+onfocus="this.style.textAlign='left';" onblur="this.style.textAlign='right';"
+```
+
+## 样式选择器
+三种:标签选择器;class选择器;id选择器
+
+标签
+```
+input{background-color:Green;border-color:Black;}
+p{color:Blue;}
+```
+
+class
+```
+.Class_warning{font-style:italic;font-size:xx-large;}//前面的点不能丢
+<p class=" Class_warning ">aaaaa</p>
+```
+当有多个样式一起作用相互冲突时,以用style直接指定的为准
+
+ 
+标签+class
+```
+input.class1{background-color:Green;border-color:Black;}
+p.class1{color:Blue;}
+```
+
+id
+#id_username
+```
+{ background-color:Red; }
+```
+
+关联选择器
+
+使用空格分隔
+```
+p strong{color:Yellow;}
+```
+同时具有p与strong标签
 
