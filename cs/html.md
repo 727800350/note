@@ -39,8 +39,8 @@ HyperText Markup Language超文本标记语言
 </a>
 ```
 
-<pre> pre 元素可定义预格式化的文本.被包围在 pre 元素中的文本通常会保留空格和换行符.而文本也会呈现为等宽字体.
-<pre> 标签的一个常见应用就是用来表示计算机的源代码.
+`<pre>` pre 元素可定义预格式化的文本.被包围在 pre 元素中的文本通常会保留空格和换行符.而文本也会呈现为等宽字体.
+`<pre>` 标签的一个常见应用就是用来表示计算机的源代码.
 ```
 <pre>
 for i = 1 to 10
@@ -77,9 +77,9 @@ Type submit/button/checkbox/file/hidden/image/reset/text/radio(单选按钮)
 
 checkbox类型时,在javascript中有一个属性是checked,其值为布尔值
 
-<textarea>
+`<textarea>`
 
-<select> comobox下拉框选择 listbox复选框(按下ctrl复选)
+`<select>` comobox下拉框选择 listbox复选框(按下ctrl复选)
 如果size大于1就是listbox(size的值为显示出来的列表数量)
 或者Multiple=" Multiple" 就是listbox
 
@@ -99,10 +99,10 @@ Optiongroup
 
 Radio的name相同的为一组,组内选择是互斥的
 
-<label> 标签为 input 元素定义标注(标记).
+`<label>` 标签为 input 元素定义标注(标记).
 
 label 元素不会向用户呈现任何特殊效果.不过,它为鼠标用户改进了可用性.如果您在label 元素内点击文本,就会触发此控件.就是说,当用户选择该标签时,浏览器就会自动将焦点转到和标签相关的表单控件上.
-<label> 标签的 for 属性应当与相关元素的 id 属性相同.
+`<label>` 标签的 for 属性应当与相关元素的 id 属性相同.
 ```
 <label for="name">姓名</label>
 <input type="text" id="name" />
@@ -145,7 +145,7 @@ clearTimeout
 
 navigate
 
-<input type="button" onclick="navigate('HTMLPageForm.htm')" value="navigate demo" />
+`<input type="button" onclick="navigate('HTMLPageForm.htm')" value="navigate demo" />`
 
 navigate("http://www.baidu.com")
 confirm()
@@ -546,13 +546,13 @@ $("div[title=test]")
 
 表单对象选择器
 
-$("#form1 :enabled")选取id为form1的表单内所有启用的元素
-$("#form1 :disabled")选取id为form1的表单内所有禁用的元素
-$("input:checked")选取所有选中的元素(radio,checkbox)
-$("select:selectd")
-$(":input")选取所有<input>/<textarea>/<select>/<button>, 而$("input")只获得<input>
-$(":text")选取所有单行文本框,等价于$("input:[type=text]")
-$(":password")选取所有密码框.同理还有:radio,:checkbox,:submit,:image,:rest,:buttion,:file,:hidden
+- `$("#form1 :enabled")`选取id为form1的表单内所有启用的元素
+- `$("#form1 :disabled")`选取id为form1的表单内所有禁用的元素
+- `$("input:checked")`选取所有选中的元素(radio,checkbox)
+- `$("select:selectd")`
+- `$(":input")`选取所有`<input>/<textarea>/<select>/<button>`, 而$("input")只获得`<input>`
+- `$(":text")`选取所有单行文本框,等价于`$("input:[type=text]")`
+- `$(":password")`选取所有密码框.同理还有:radio, :checkbox, :submit, :image, :rest, :buttion, :file, :hidden
 
 相对选择器
 
@@ -588,28 +588,28 @@ removeAttr()删除属性,之后这个属性就不存在了,不同于清空
 创建元素
 
 $(html语句)创建一个dom节点,并返回一个jquery对象
-
+```
 var link = $("<a href='http://www.baidu.com'>baidu</a>")
 $("div:first").append(link);
 
 append(newChild)
 appendTo(newFather)
-
+```
 prepend在元素的开始添加元素(添加儿子)
 
 after在元素之后添加元素(添加兄弟)
 
 before在元素之前添加元素(添加兄弟)
 
-var link = $('<a href="http://wwww.baidu.com" id="link1">百度</a>');//创建之后还位于内存中
+`var link = $('<a href="http://wwww.baidu.com" id="link1">百度</a>');`//创建之后还位于内存中
 
 $("#link1").text("新浪");//这个时候修改不成功,因为link还没有加载到页面上,所以找不到这个id的元素
 
 //link.text("腾讯");//这个可以修改
 
-$(document.body).append(link);
+`$(document.body).append(link);`
 
-$("#link1").text("新浪");//这个可以修改
+`$("#link1").text("新浪")`;//这个可以修改
 
 remove
 
