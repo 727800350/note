@@ -160,56 +160,56 @@ for(var e in document){
 
 example1
 ```
-var checkNumericRange = function (value) {
-	if(typeof value !== 'number')
+var checkNumericRange = function(value) {
+	if(typeof value != 'number')
 		return false;
 	else
 		return value >= this.minimum && value <= this.maximum;
 }
-// 如果直接调用 checkNumericRange() 会返回false, 因为this.minimum与this.maximum 还没有指定
-// The objForThis argument enables use of the this value within the callback function.
+```
+如果直接调用 checkNumericRange() 会返回false, 因为this.minimum与this.maximum 还没有指定.  
+但是可以为bind 函数指定一个参数, 并让这个参数成为 this 对象, 进而可以在函数里面访问到这个对象的属性信息.
+```
 var objForThis = {minimum: 10, maximum: 20 };
-var chk = checkNumericRange.bind(objForThis); // objForThis将成为chk的this
+var chk = checkNumericRange.bind(objForThis);
+```
+The objForThis argument enables use of the this value within the callback function.
 
 // Use the new function to check whether 12 is in the numeric range.
+```
 var result = chk(12);
 document.write(result); // Output: true
 ```
 
-出现bind的原因
-
-以下面的例子说明:
+出现bind的原因, 用下面的例子说明:
 ```
 window.name = "the window object"
-function scopeTest() { return this.name}
+function scopeTest(){ return this.name}
 scopeTest() // 得到 "the window object"
 var foo = {name:"the foo object!", otherScopeTest: function(){ return this.name }}
 foo.name // 得到 "the foo object"
 foo.otherScopeTest()// -> "the foo object!"
-
-// note that we are not calling the function, we are simply referencing it
-window.test = foo.otherScopeTest
-// now we are actually calling it:
-test() // -> "the window object" 因为我们是通过window调用的, 所以this 就是window, 但是test 实际上是foo.otherScopeTest, 
-// 我们希望得到"the foo object", 在这种情况下, 我们就可以通过bind 来强行改变this的指向
 ```
+note that we are not calling the function, we are simply referencing it
+```
+window.test = foo.otherScopeTest
+```
+now we are actually calling it:
+```
+test() // -> "the window object" 因为我们是通过window调用的, 所以this 就是window, 但是test 实际上是foo.otherScopeTest, 
+```
+我们希望得到"the foo object", 在这种情况下, 我们就可以通过bind 来强行改变this的指向
 
 对比
 ```
 var obj = {
-  name: 'A nice demo',
-  fx: function() {    alert(this.name);  }
+	name: 'A nice demo',
+	fx: function(){alert(this.name);  }
 };
 window.name = 'I am such a beautiful window!';
-function runFx(f) {f();}
+function runFx(f){f();}
 
 runFx(obj.fx);// 输出I am such a beautiful window,说明this指向错误
 runFx(obj.fx.bind(obj)); //A nice demo, 强行将obj绑定到obj.fx的this上
 ```
-
-<a href="javascript:alert('hello')">Hello</a>
-<a href="HTMLPageTable.htm" onclick="alert('888')">hi</a>
-
-Alert() 相当于winform中的messagebox.show()
-<script type="text/javascript" src="common.js"></script>
 
