@@ -134,7 +134,7 @@ for(var e in document){
 
 # 三种交互对话框
 
-1. alert
+1. alert, 在文本里面加入`\n`就可以换行
 1. confirm
 
 	```

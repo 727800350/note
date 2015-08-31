@@ -24,6 +24,23 @@ Accepts a timer ID (returned by either of the aforementioned functions) and stop
 - keyCode: 发生事件时的按键值
 - button: 发生事件时的鼠标按键, 1为左键, 2为右键, 3为左右键同时按
 
+**id 和 name**
+
+name原来是为了标识之用,但是现在根据规范,都建议用id来标识元素.
+但是name在以下用途是不能替代的:   
+
+1. 表单(form)的控件名, 提交的数据都用控件的name而不是id来控制.
+因为有许多name会同时对应多个控件,比如checkbox和radio,而id必须是全文档中唯一的.
+此外浏览器会根据name来设定发送到服务器的request.因此如果用id,服务器是无法得到数据的.   
+2. frame和window的名字,用于在其他frame或window指定target.   
+
+for属性指定与label关联的元素的id,不可用name替代
+
+name与id的还有区别是:
+
+- id要符合标识的要求,比如大小写敏感,最好不要包含下划线(因为不兼容CSS).
+- name基本上没有什么要求,甚至可以用数字.
+
 ## body, document对象的事件
 - onload:网页加载完毕后触发
 - onunload:网页关闭(或者离开)后触发
@@ -47,6 +64,8 @@ Accepts a timer ID (returned by either of the aforementioned functions) and stop
 
 - onfocus: 焦点进入控件的事件是
 - onblur: 焦点离开控件的事件是
+
+注册事件: `document.getElementById("myBtn").onclick=function(){displayDate()};`
 
 navigate: `<input type="button" onclick="navigate('HTMLPageForm.htm')" value="navigate demo" />`
 
