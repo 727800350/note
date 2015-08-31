@@ -89,26 +89,16 @@ PHP FIG中提及: All PHP files MUST end with a single blank line. -- 来源
 ## 输出
 在PHP中,有四种方法输出字符串:
 
-- echo结构可以一次输出多个值
-- print()只可以输出一个值
-- printf(), sprintf()可以格式化输出
+- echo 结构可以一次输出多个值
+- print() 只可以输出一个值
+- printf(), sprintf()可以格式化输出, 与C 的格式一样
 - `print_r()`, `var_dump()`可以输出数组,对调试很有好处
-
-echo 是PHP的一个关键字,它没有返回值.在写法上,它可以省略小括号
-
-print 也是PHP的一个关键字,它有返回值,一般返回true,返回false的情况应该没有.在写法上,它和echo一样,可以省略小括号.
-
-printf可以像C语言的printf一样,格式化输出一个字符串.它的格式和C语言差不多,都是以%开头
-
-sprintf和格式转换和printf一样,两者区别在于printf直接输出,而sprintf返回一个格式化后的字符串
-
-`print_r`和`var_dump`都能输出数组和对象,但`print_r`对布尔型的输出不太明显,`var_dump`输出比较详细,一般调试时用得多. 
 
 # data type
 ## map
 A map is a type that associates values to keys. 
 This type is optimized for several different uses; 
-it can be treated as an array, list (vector), hash table (an implementation of a map), dictionary, collection, stack, queue, and probably more. 
+it can be treated as an **array, list (vector), hash table (an implementation of a map), dictionary, collection, stack, queue**, and probably more. 
 
 ### array
 An array in PHP is actually an ordered map. So the key can either be an integer or a string. The value can be of any type.
@@ -129,19 +119,17 @@ var_dump($array);
 [more examples of array](../demo/php/array.php)
 
 # Form 
-	<html>
-	<body>
-		<?php 
-			if(!empty($_POST['name'])){
-				echo "Greetings, {$_POST['name']}, and welcome.";
-			}
-		?>
-		<form action="<?php $PHP_SELF; ?>" method="post">
-			Enter your name: <input type="text" name="name" />
-			<input type="submit" />
-		</form>
-	</body>
-	</html>
+```
+<?php 
+	if(!empty($_POST['name'])){
+		echo $_POST['name'];
+	}
+?>
+<form action="<?php $PHP_SELF; ?>" method="post">
+	Enter your name: <input type="text" name="name" />
+	<input type="submit" />
+</form>
+```
 
 ## upload files
 [upload file demo](../demo/php/upload-file.php)
