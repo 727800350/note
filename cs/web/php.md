@@ -1,29 +1,16 @@
 # php script for shell
 excute external program
 
-- system() 输出并返回最后一行shell结果
-- exec() 不输出结果，返回最后一行shell结果，所有结果可以保存到一个返回的数组里面
-- passthru() 只调用命令，把命令的运行结果原样地直接输出到标准输出设备上
-
-```
-string system(string $command, int $ret)
-return_var: $command 的状态码保存到 $ret
-Return Value: 返回last line of the command output on success, and FALSE on failure.
-
-string exec(string $command, array $res, int $ret)
-output: the array $res will be filled with every line of output from the command. 
-return_var: the return status of the executed command will be written to $ret
-Return Value: The last line from the result of the command.
-
-void passthru(string $command, int $ret)
-```
+- `string system(string $command, int $ret)` 输出并返回最后一行shell结果, 命令的执行状态保存在 $ret 中
+- `string exec(string $command, array $res, int $ret)` 返回最后一行shell结果，所有结果保存到一个返回的数组$res, 状态保存在 $ret 中
+- `void passthru(string $command, int $ret)` 只调用命令，把命令的运行结果原样地直接输出到标准输出设备上
 
 ```
 #!/usr/bin/env php
 <?php
 // $v = system('ls -l', $ret); // 输出会被立刻显示出来
-$v = exec('ls -l', $array, $ret);
-var_dump($array);
+$v = exec('ls -l', $res, $ret);
+var_dump($res);
 echo $ret;
 echo "\n";
 echo $v;
