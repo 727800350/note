@@ -1,5 +1,16 @@
 # intro
+jquery对象就是通过jquery封装的dom对象.
+jquery对象只能调用jquery封装的方法.不能调用dom对象的方法
 
+可以将一个dom对象转化为jquery对象
+```
+var div = document.getElementById("div1");
+alert($(div).html());
+```
+
+同时,也可以将jquery对象转化为dom对象`$(div)[0]` 或者 `$(div).get(0)`
+
+array是javascript语言本身包含的,不是dom对象,所以不需要转换为jquery对象
 
 # 事件
 ## ready
@@ -26,33 +37,32 @@ $(function () {
 ```
 隐式迭代,对取到的每个p都注册click事件
 
-# 结构
-## map
-
-$.map(array,function)对array中的每个元素调用function函数进行处理,有返回值
-
-each
-
-$.each(array,function),没有返回值
-
-$.each(array,function(key,value){})
-当使用一个参数时,指key
-
-当不使用参数时,可以实用this,这个时候this指value
-jquery对象就是通过jquery封装的dom对象
-
-jquery对象只能调用jquery封装的方法.不能调用dom对象的方法
-
-可以讲一个dom对象转化为jquery对象
-
-var div = document.getElementById("div1");
-alert($(div).html());
-
-请注意,array是javascript语言本身包含的,不是dom对象,所以不需要转换为jquery对象
-
-同时,也可以将jquery对象转化为dom对象($(div)[0]或者($(div).get(0)
-
 jquery对象都有内置的隐式调用each方法,如果是自己写的对象可以显示调用each方法
+
+# 结构
+- `$.map(array,function)`对array中的每个元素调用function函数进行处理,有返回值
+- `$.each(array,function)`,没有返回值
+
+链式编程
+```
+$(this).css("background", "red").siblings("div").css("background", "green");
+```
+等价于下面的两行:
+```
+$(this).css("background", "red");
+$(this).siblings("div").css("background", "green");
+```
+
+attr
+
+- $(selector).attr(attribute)返回属性值
+- $(selector).attr(attribute,value)这只属性值
+- $("img").attr("width","180");
+- $(selector).attr(attribute,function(index,oldvalue))通过函数设置属性值
+- $("img").attr("width",function(index,oldvalue){return oldvalue -50;});
+- $("img").attr({width:"50",height:"80"});设置属性对
+
+`removeAttr()`删除属性, 之后这个属性就不存在了, 不同于清空
 
 # css
 ```
@@ -136,27 +146,6 @@ $("li",$(this));//this下的li元素
 - next()获取紧挨着下一个的元素
 - nextAll()/nextAll("div")//后一个为待选择性质的
 - siblings()/siblings("div") 所有的兄弟
-
-链式编程
-```
-$(this).css("background", "red").siblings("div").css("background", "green");
-```
-等价于下面的两行:
-```
-$(this).css("background", "red");
-$(this).siblings("div").css("background", "green");
-```
-
-attr
-
-- $(selector).attr(attribute)返回属性值
-- $(selector).attr(attribute,value)这只属性值
-- $("img").attr("width","180");
-- $(selector).attr(attribute,function(index,oldvalue))通过函数设置属性值
-- $("img").attr("width",function(index,oldvalue){return oldvalue -50;});
-- $("img").attr({width:"50",height:"80"});设置属性对
-
-removeAttr()删除属性,之后这个属性就不存在了,不同于清空
 
 # 元素管理
 ## 创建
