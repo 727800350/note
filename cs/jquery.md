@@ -1,21 +1,36 @@
-ready
+# intro
 
-`$(document).ready(function(){alert("加载完毕");});`
-注册事件函数,和普通的dom函数不一样,不需要在元素的标签上添加on**等标记
 
+# 事件
+## ready
 ready()和dom中的onload类似,但是onload只能注册一次,而ready()可以注册多次
+```
+$(document).ready(function(){alert("加载完毕1");});
+$(document).ready(function(){alert("加载完毕2");});
+```
 
-$(document).ready(function () {alert("加载完毕");});
+- onload是在所有的dom元素,图片,css等都加载完毕后才会被触发,
+- ready 是在所有的dom元素创建完毕后就会被触发,这样可以提高网页的响应速度
 
-$(document).ready(function () {alert("加载完毕2");});
-onload是在所有的dom元素,图片,css等都加载完毕后才会被触发,而ready在所有的dom元素创建完毕后就会被触发,这样可以提高网页的响应速度
+`$(window).load()`可以实现onload那种事件调用的时机
 
-$(window).load()可以实现onload那种事件调用的时机
-由于ready()这个函数很常用,所以jquery对其进行了简化, $(function () {alert("over");})
+由于ready()这个函数很常用,所以jquery对其进行了简化, `$(function(){alert("over");})`
 
-map
+注册事件
+```
+$(function () {
+	$("p").click(function(){
+		alert("i am is a p");
+	});
+});
+```
+隐式迭代,对取到的每个p都注册click事件
+
+# 结构
+## map
 
 $.map(array,function)对array中的每个元素调用function函数进行处理,有返回值
+
 each
 
 $.each(array,function),没有返回值
@@ -39,17 +54,7 @@ alert($(div).html());
 
 jquery对象都有内置的隐式调用each方法,如果是自己写的对象可以显示调用each方法
 
-注册事件
-```
-$(function () {
-	$("p").click(function(){
-		alert("i am is a p");
-	});
-});
-```
-隐式迭代,对取到的每个p都注册click事件
-
-css
+# css
 ```
 $(function(){$("#div1").css("background", "red");});
 $(function(){alert($("#div1").css("backgroundColor"));});
@@ -68,8 +73,7 @@ attr("class","myclass")
 
 filter:Gray黑白样式
 
-选择器
-
+# 选择器
 id/tagName/cssClassName选择器
 
 用法: `$("#id ")/$("TagName")/$(".cssClassName")`
@@ -81,20 +85,20 @@ $(function(){
 });
 ```
 
-多条件选择器
+## 多条件选择器
 
 `$("p,div,span.menuitem")`: 选择所有的p标签,div标签和带有menuitem样式的span标签
 
 选择器表达式中的空格不能多也不能少
 
-层次选择器
+## 层次选择器
 
 - $("div li")获取div下的所有li元素
 - $("div > li")获取div下的直接li元素
 - $("body *")选取body下的所有元素
 - $("#table img").not(this)
 
-过滤选择器
+## 过滤选择器
 
 - :first 选取第一个元素 $("div:first")
 - :last
@@ -106,14 +110,14 @@ $(function(){
  
 过滤选择器可以组合使用,但是请注意每一步过滤都是在前一步的过滤所得结果进一步过滤
 
-属性过滤选择器
+### 属性过滤选择器
 
 - $("div[id]")选取有id属性的div
 - $("div[title=test]")
 
 还可以选择开头/结束/包含等,可以组合使用
 
-表单对象选择器
+## 表单对象选择器
 
 - `$("#form1 :enabled")`选取id为form1的表单内所有启用的元素
 - `$("#form1 :disabled")`选取id为form1的表单内所有禁用的元素
@@ -123,7 +127,7 @@ $(function(){
 - `$(":text")`选取所有单行文本框,等价于`$("input:[type=text]")`
 - `$(":password")`选取所有密码框.同理还有:radio, :checkbox, :submit, :image, :rest, :buttion, :file, :hidden
 
-相对选择器
+## 相对选择器
 
 $("li",$(this));//this下的li元素
 
@@ -154,8 +158,8 @@ attr
 
 removeAttr()删除属性,之后这个属性就不存在了,不同于清空
 
-创建元素
-
+# 元素管理
+## 创建
 $(html语句)创建一个dom节点,并返回一个jquery对象
 ```
 var link = $("<a href='http://www.baidu.com'>baidu</a>")
@@ -177,10 +181,10 @@ $("#link1").text("新浪");
 ```
 这个可以修改, 因为已经将其添加到页面上了
 
-remove
-
+## remove
 remove方法的返回值是被删除的对象,还可以继续使用
 
+## replace
 replace 替换节点 
 
 wrap包裹: `$("b").wrap("<font color='red'></font>");`
@@ -201,7 +205,7 @@ $("#btnGet").click(function(){
 });
 ```
 
-bind
+# bind
 
 bind注册函数,但是一般用简写形式
 ```
@@ -219,6 +223,7 @@ click()模拟点击
 
 当只写click()时,而不写具体的函数时,就相当于进行了一次模拟单击
 
+# cookie
 一个域名能写入的cookie总尺寸是有限制的,这次写入的数据,下一次不一定能读到
 
 `$.cookie('name', 'value', {expires: 7, path: '/', domain: 'jquery.com', secure: true});`
