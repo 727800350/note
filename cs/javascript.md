@@ -136,22 +136,24 @@ for(var e in document){
 
 1. alert
 1. confirm
-```
-function firm(){
-	//利用对话框返回的值 (true 或者 false)
-	if(confirm("你确信要转去 天轰穿的博客?")){
-		location.href="http://thcjp.cnblogs.com";
+
+	```
+	function firm(){
+		//利用对话框返回的值 (true 或者 false)
+		if(confirm("你确信要转去 天轰穿的博客?")){
+			location.href="http://thcjp.cnblogs.com";
+		}
+		else{
+			alert("你按了取消,那就是返回false");
+		}
 	}
-	else{
-		alert("你按了取消,那就是返回false");
-	}
-}
-```
+	```
 1. prompt
-```
-var name = prompt("please input your name", 'eric');//eric是默认值
-document.writeln(name);
-```
+
+	```
+	var name = prompt("please input your name", 'eric');//eric是默认值
+	document.writeln(name);
+	```
 
 # bind
 `functionname.bind(thisArg[,arg1[,arg2[,argN]]])`
