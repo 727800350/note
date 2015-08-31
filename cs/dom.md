@@ -18,11 +18,11 @@ Accepts a timer ID (returned by either of the aforementioned functions) and stop
 
 - setInterval code executes every 1000ms exactly, while...
 - setTimeout waits 1000ms, runs the function (which takes few ms), then sets another timeout. So the wait period is actually a bit more than 1000ms.
-# 事件
 
-srcElement 获得事件源对象
-keyCode发生事件时的按键值
-button发生事件时的鼠标按键,1为左键,2为右键,3为左右键同时按
+# 事件
+- srcElement: 获得事件源对象
+- keyCode: 发生事件时的按键值
+- button: 发生事件时的鼠标按键, 1为左键, 2为右键, 3为左右键同时按
 
 ## body, document对象的事件
 - onload:网页加载完毕后触发
