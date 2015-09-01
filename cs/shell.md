@@ -316,6 +316,10 @@ do
 done
 ```
 
+当数组的元素中含有空格时, 例如 `array=("bash -x ./test.sh")`, 本来我们预期结果是array 就一个元素, 
+但是如果采用上面的遍历方式, 这个元素会被拆分为 3 个元素,`bash`, `-x`, `./test.sh`.
+解决方法: "${array[*]}". [ref](http://unix.stackexchange.com/questions/108635/why-i-cant-escape-spaces-on-a-bash-script)
+
 ### 获取数组的长度
 获取数组长度的方法与获取字符串长度的方法相同,例如:
 ```
