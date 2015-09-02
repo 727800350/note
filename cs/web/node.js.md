@@ -13,9 +13,23 @@ You definitely do not want to use Node.js for CPU-intensive operations; in fact,
 Where Node really shines is in building fast, scalable network applications, 
 as it is capable of handling a huge number of simultaneous connections with high throughput, which equates to high scalability.
 
+使用 Node.js,你可以轻松地开发:
+
+- 具有复杂逻辑的网站,
+- 基于社交网络的大规模 Web 应用,
+- Web Socket 服务器,
+- TCP/UDP 套接字应用程序,
+- 命令行工具,
+- 交互式终端程序,
+- 带有图形用户界面的本地应用程序,
+- 单元测试工具,
+- 客户端 JavaScript 编译器.
+
+Node.js 内建了 HTTP 服务器支持,也就是说你可以轻而易举地实现一个网站和服务器的组合.
+
 # IO
 ## 输出
-- `console.log`
+- `console.log`, 支持C 的printf 语法, eg: `console.log('%s: %d', 'Hello', 25);`
 - `console.info`
 - `console.warn`
 - `console.error`
@@ -51,6 +65,7 @@ SIGINT 事件 signal interrupted
 `process.argv`
 
 ## File
+fs.readFile  接收了三个参数, 文件名, 编码方式(optional),回调函数.
 ```
 var fs = require('fs')
 fs.readfile('file', function(err, data){
@@ -123,6 +138,14 @@ http.createServer(function(request, response){}).server.listen(8080);
 ```
 
 [http server with url demo](/demo/node.js/http_server.js)
+
+Node.js 只有在第一次引用到某部份时才会去解析脚本文件,以后都会直接访问内存,避免重复载入.
+而 PHP 则总是重新读取并解析脚本(如果没有专门的优化配置).
+Node.js的这种设计虽然有利于提高性能,却不利于开发调试,因为我们在开发过程中总是希望代码修改后立即看到效果,而不是每次都要终止进程并重启.
+supervisor 可以帮助你实现这个功能,它会监视你对代码的改动,并自动重启 Node.js.
+
+1. 使用 npm 安装 supervisor: `$ npm install -g supervisor`
+1. 使用 supervisor 命令启动 app.js: `$ supervisor app.js`
 
 ## 包
 特殊的文件夹  
