@@ -1,3 +1,18 @@
+# Intro
+The main idea of Node.js: use <font color='red'>non-blocking, event-driven I/O</font> to remain lightweight and efficient 
+in the face of <font color='red'>data-intensive real-time</font> applications that run across distributed devices.
+
+In Node, **blocking operations are the root of all evil**—99% of Node misuses come as a direct consequence.
+
+Node.js shines in real-time web applications employing push technology over websockets. 
+After over 20 years of stateless-web based on the stateless request-response paradigm, 
+we finally have web applications with **real-time, two-way connections**, 
+ where both the client and server can initiate communication, allowing them to exchange data freely.
+
+You definitely do not want to use Node.js for CPU-intensive operations; in fact, using it for heavy computation will annul nearly all of its advantages. 
+Where Node really shines is in building fast, scalable network applications, 
+as it is capable of handling a huge number of simultaneous connections with high throughput, which equates to high scalability.
+
 # IO
 ## 输出
 - `console.log`
