@@ -84,7 +84,24 @@ path.extname('path')  // 包括那个点, 'path'不用真实存在
 
 # 模块和包
 ## 模块
-通过 `require` 引入模块, 例如: `require('./sum')` (可以不写后缀`.js`)
+Node.js的模块分为两类,一类为原生(核心)模块,一类为文件模块.
+
+在文件模块中,又分为3类模块.这三类文件模块以后缀来区分,Node.js会根据后缀名来决定加载方法.
+
+- .js: 通过fs模块同步读取js文件并编译执行.
+- .node: 通过C/C++进行编写的Addon.通过dlopen方法进行加载.
+- .json: 读取文件,调用JSON.parse解析加载.
+
+Node.提供了exports和require两个对象,
+其中exports是模块公开的接口,
+require用于从外部获取一个模块接口,即所获取模块的exports对象.
+
+只有module.exports指向的对象才回被导出.
+module.exports才是真正的接口,exports只不过是它的一个辅助工具. 
+最终返回给调用的是module.exports而不是exports. 
+所有的exports收集到的属性和方法,都赋值给了module.exports.
+
+通过 `require` 引入模块, 例如: `require('./sum.js')` (可以不写后缀`.js`)
 
 模块中的功能(如: 变量, 函数)通过赋值给exports 对象的某个属性提供给调用者使用.
 例如:
