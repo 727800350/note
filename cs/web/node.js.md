@@ -1,11 +1,11 @@
 # IO
 ## 输出
-```
-console.log
-console.info
-console.warn
-console.error
-```
+- `console.log`
+- `console.info`
+- `console.warn`
+- `console.error`
+- `process.stdout.write` 类似于`console.log`, 但是建议使用console
+- `process.stderr.write`
 
 统计运行时间
 ```
@@ -14,38 +14,26 @@ console.time('str');
 console.timeEnd('str'); // 这个字符串与前面的字符串要一样
 ```
 
-另外一种输出方式
-```
-process.stdout.write 类似于console.log, 但是建议使用console
-process.stderr.write
-```
-
 ## 输入
 ```
 process.stdin.setEncoding('utf-8');
 process.stdin.on('data', function(data){console.log(data);});  // 注册data事件监听
-process.stdin.on('readable', function(){var data = process.stdin.read(); console.log(data);});  // 注册readable 事件监听, 但是这个事件不会将用户输入的参数主动传递给回调函数
+process.stdin.on('readable', function(){var data = process.stdin.read(); console.log(data);});  
+// 注册readable 事件监听, 但是这个事件不会将用户输入的参数主动传递给回调函数
 ```
 
 ##  变量
-```
-global
-__dirname
-__filename
-```
+global: `__dirname`, `__filename`
 
 exit 事件
-```
-process,on('exit', function(){console.log('program will exit');});  
-```
+`process,on('exit', function(){console.log('program will exit');});`
 
 SIGINT 事件 signal interrupted
-process,on('SIGINT', function(){console.log('a sigint signal'); process.exit()});  
+`process,on('SIGINT', function(){console.log('a sigint signal'); process.exit()});`
 
-退出程序
-process.exit()
+退出程序 `process.exit()`
 
-process.argv
+`process.argv`
 
 ## File
 ```
