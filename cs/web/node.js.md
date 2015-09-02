@@ -1,6 +1,6 @@
 # Intro
-The main idea of Node.js: use <font color='red'>non-blocking, event-driven I/O</font> to remain lightweight and efficient 
-in the face of <font color='red'>data-intensive real-time</font> applications that run across distributed devices.
+The main idea of Node.js: use **non-blocking, event-driven I/O** to remain lightweight and efficient 
+in the face of **data-intensive real-time** applications that run across distributed devices.
 
 In Node, **blocking operations are the root of all evil**—99% of Node misuses come as a direct consequence.
 
@@ -92,13 +92,12 @@ require('./sum.js')
 
 模块中的功能(如: 变量, 函数)通过赋值给exports 对象的某个属性提供给调用者使用.
 例如:  
-[sum 模块](../demo/node.js/sum.js)  
-[sum 模块的测试](../demo/node.js/sum_test.js)
+[sum 模块](/demo/node.js/sum.js), 
+[sum 模块的测试](/demo/node.js/sum_test.js)
 
 http server 实例:
 ```
 var http = require('http');
-
 var server = http.createServer(function(request, response){
 	response.end('node.js course.');	
 });
@@ -115,7 +114,7 @@ http.createServer(function(request, response){}).server.listen(8080);
 ## 包
 特殊的文件夹  
 通过package.json 来描述包的信息: 入口文件, 依赖的外部包等
-```
-npm install package
-npm remove package
-```
+
+- npm install package
+- npm remove package
+
