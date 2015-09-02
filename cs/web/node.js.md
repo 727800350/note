@@ -29,10 +29,11 @@ Node.js 内建了 HTTP 服务器支持,也就是说你可以轻而易举地实�
 
 # IO
 ## 输出
-- `console.log`, 支持C 的printf 语法, eg: `console.log('%s: %d', 'Hello', 25);`
+- `console.log`, 会自动添加换行符, 支持C 的printf 语法, eg: `console.log('%s: %d', 'Hello', 25);`
 - `console.info`
 - `console.warn`
 - `console.error`
+- `console.trace()`: 向标准错误流输出当前的调用栈
 - `process.stdout.write` 类似于`console.log`, 但是建议使用console
 - `process.stderr.write`
 
@@ -51,23 +52,10 @@ process.stdin.on('readable', function(){var data = process.stdin.read(); console
 // 注册readable 事件监听, 但是这个事件不会将用户输入的参数主动传递给回调函数
 ```
 
-##  变量
-global: `__dirname`, `__filename`
-
-exit 事件
-`process,on('exit', function(){console.log('program will exit');});`
-
-SIGINT 事件 signal interrupted
-`process,on('SIGINT', function(){console.log('a sigint signal'); process.exit()});`
-
-退出程序 `process.exit()`
-
-`process.argv`
-
 ## File
-fs.readFile  接收了三个参数, 文件名, 编码方式(optional),回调函数.
+fs.readFile 接收了三个参数, 文件名, 编码方式(optional),回调函数.
 ```
-var fs = require('fs')
+var fs = require('fs');
 fs.readfile('file', function(err, data){
 	if(err){
 		console.error(err);
@@ -75,7 +63,7 @@ fs.readfile('file', function(err, data){
 	else{
 		console.log(data);
 	}
-	})
+});
 ```
 默认的读取方式是读入到全局变量buffer中, 里面是ASCII 表的十六进制
 
@@ -83,10 +71,40 @@ fs.readfile('file', function(err, data){
 `console.log(data.toString());` 或者
 `fs.readfile('file', 'utf-8', function(err, data)`
 
-同步读取, 不需要使用回调函数
+同步读取, 不需要使用回调函数 `var data = fs.readFileSync('file','utf-8');`
+
+`fs.open(path, flags, [mode], [callback(err, fd)])`: 
+flags 与 C语言的flags 一样, mode 为创建文件时的权限, 默认为 0666
+
+`fs.read(fd, buffer, offset, length, position, [callback(err, bytesRead, buffer)])`
+是 POSIX read 函数的封装,相比 fs.readFile 提供了更底层的接口.
+
+从fd 的 position 位置读取 length 个bytes, 存入到 buffer 的offset 位置.
+position 是文件读取的起始位置,如果 position 的值为 null ,则会从当前文件指针的位置读取.
+回调函数传递bytesRead 和buffer ,分别表示读取的字节数和缓冲区对象.
+
+fs.open 与 fs.read 示例
 ```
-var data = fs.readFileSync('file','utf-8');
+var fs = require('fs');
+fs.open('content.txt', 'r', function(err, fd){
+	if(err){
+		console.error(err);
+		return;
+	}
+	var buf = new Buffer(8);
+	fs.read(fd, buf, 0, 8, null, function(err, bytesRead, buffer){
+		if(err){
+			console.error(err);
+			return;
+		}
+	console.log('bytesRead: ' + bytesRead);
+	console.log(buffer);
+	})
+});
 ```
+一般来说,除非必要,否则不要使用这种方式读取文件,因为它要求你手动管理缓冲区和文件指针,
+尤其是在你不知道文件大小的时候,这将会是一件很麻烦的事情.
+
 
 ```
 var path = require('path')
@@ -96,6 +114,45 @@ path.extname('path')  // 包括那个点, 'path'不用真实存在
 **阻塞与非阻塞**  
 一个类似的例子: 银行里取号之后, 然后我们就可以去干其他的事情, 等轮到我们的时候, 银行的叫号机就会发出通知.  
 [文件读取的异步与同步方式比较](/demo/node.js/sync_async.js)
+
+# 变量
+在浏览器 JavaScript 中,通常 `window` 是全局对象,
+而 Node.js 中的全局对象是`global`, 所有全局变量(除了global本身以外)都是global对象的属性.
+我们在 Node.js 中能够直接访问到对象通常都是 global 的属性,如 console , process等
+
+## process
+它用于描述当前 Node.js 进程状态的对象,提供了一个与操作系统的简单接口.通常在你写本地命令行程序的时候,少不了要和它打交道
+
+process.argv 是命令行参数数组,第一个元素是 node, 第二个元素是脚本文件名(绝对路径), 从第三个元素开始每个元素是一个运行参数
+
+process.stdout 是标准输出流,
+通常我们使用的 console.log() 向标准输出打印字符,
+而 process.stdout.write() 函数提供了更底层的接口
+
+process.stdin 是标准输入流,初始时它是被暂停的,要想从标准输入读取数据,
+你必须恢复流,并手动编写流的事件响应函数.
+```
+process.stdin.resume();
+process.stdin.on('data', function(data){
+	process.stdout.write('read from console: ' + data.toString());
+});
+```
+
+process.nextTick(callback) 的功能是为事件循环设置一项任务, Node.js 会在下次事件循环调响应时调用 callback.
+可以把复杂的工作拆散,变成一个个较小的事件
+
+退出程序 `process.exit()`
+
+除此之外 process 还具有 process.platform, process.pid, process.execPath, process.memoryUsage()
+
+global: `__dirname`, `__filename`
+
+exit 事件
+`process,on('exit', function(){console.log('program will exit');});`
+
+SIGINT 事件 signal interrupted
+`process,on('SIGINT', function(){console.log('a sigint signal'); process.exit()});`
+
 
 # 模块和包
 ## 模块
