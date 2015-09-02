@@ -3,6 +3,8 @@ JavaScript(JS) 解释性语言
 在浏览器上执行的程序代码,避免与服务器的交互,对服务器造成很大的压力.
 只有在迫不得已的情况下才与后台服务器进行交互,列入从前台取数据
 
+注释: `//` 或者 `/* ... */`
+
 # Data Type
 javascript的简单类型,包括 number, string, Boolean, null值和undefined值
 
