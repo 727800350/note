@@ -145,14 +145,9 @@ process.nextTick(callback) 的功能是为事件循环设置一项任务, Node.j
 
 除此之外 process 还具有 process.platform, process.pid, process.execPath, process.memoryUsage()
 
-global: `__dirname`, `__filename`
+exit 事件: `process.on('exit', function(){console.log('program will exit');});`
 
-exit 事件
-`process,on('exit', function(){console.log('program will exit');});`
-
-SIGINT 事件 signal interrupted
-`process,on('SIGINT', function(){console.log('a sigint signal'); process.exit()});`
-
+SIGINT 事件 signal interrupted: `process.on('SIGINT', function(){console.log('a sigint signal'); process.exit()});`
 
 # 模块和包
 ## 模块
@@ -179,6 +174,9 @@ module.exports才是真正的接口,exports只不过是它的一个辅助工具.
 例如:
 [sum 模块](/demo/node.js/sum.js), 
 [sum 模块的测试](/demo/node.js/sum_test.js)
+
+http.Server 是一个基于事件的 HTTP 服务器.
+http.request 则是一个HTTP 客户端工具
 
 http server 实例:
 ```
