@@ -1,19 +1,29 @@
+# Intro
+## FP
+there was 2 main mindsets in terms of design and implementation of programming languages:
+
+1. Start from the Von Neumann Architecture and add abstraction. 这个就是 imperative language, C家族
+1. Start from Mathematics and remove abstraction. FP 家族.
+
+Here is a (non-exhaustive) list of FP features:
+
+1. First-Class Functions: mean that you can store functions into a variable
+1. High-Order Functions: functions can return functions or receive other functions as params
+1. Pure Functions: mean that the function does not change any value, it just receives data and output data, just like our beloved functions from Mathematics.
+1. Closures: mean that you can save some data inside a function that is only accessible to a specific returning function, i.e the returning function keeps its execution environment.
+1. Immutable State: means that you can not change any state at all (even though you can get a new state).
+
 Lisp: List Processing
 
-Guile implements Scheme as described in the Revised5Report on the Algorithmic Language
-Scheme (usually known as R5RS), providing clean and general data and control structures.
-Guile goes beyond the rather austere language presented in R5RS, extending it with a
-module system, full access to POSIX system calls, networking support, multiple threads,
-dynamic linking, a foreign function call interface, powerful string processing, and many
-other features needed for programming in the real world.
+Guile implements Scheme as described in the Revised5Report on the Algorithmic Language Scheme (usually known as R5RS), providing clean and general data and control structures.
+Guile goes beyond the rather austere language presented in R5RS, extending it with a module system, full access to POSIX system calls, networking support, multiple threads,
+dynamic linking, a foreign function call interface, powerful string processing, and many other features needed for programming in the real world.
 
-It is easy to call Scheme code 
-from C code and vice versa, giving the application designer full control of how and when to
-invoke the interpreter. Applications can add new functions, data types, control structures,
-and even syntax to Guile, creating a domain-specific language tailored to the task at hand,
+It is easy to call Scheme code from C code and vice versa, giving the application designer full control of how and when to invoke the interpreter. 
+Applications can add new functions, data types, control structures, and even syntax to Guile, creating a domain-specific language tailored to the task at hand,
 but based on a robust language design.
 
-Since the 2.0, Guile's architecture supports compiling any language to its core virtual machine bytecode, and Scheme is just one of the supported languages. 
+Since the 2.0, Guile architecture supports compiling any language to its core virtual machine bytecode, and Scheme is just one of the supported languages. 
 Other supported languages are Emacs Lisp, ECMAScript (commonly known as Javascript) and Brainfuck, and work is under discussion for Lua, Ruby and Python.
 
 ## Start and exit
@@ -50,7 +60,7 @@ Load the file /u/jimb/ex4, and then call the function main, passing it the list 
 Guile initialization file: `~/.guile`
 
 To make it easier for you to repeat and vary previously entered expressions, or to edit
-the expression that you’re typing in, Guile can use the GNU Readline library. This is not
+the expression that you are typing in, Guile can use the GNU Readline library. This is not
 enabled by default because of licensing reasons, but all you need to activate Readline is the
 following pair of lines.
 
@@ -69,9 +79,8 @@ History
 ## Syntax
 - #t: true
 - #f: false  
-It is important to note that `#f` is not equivalent to any other Scheme value. In particular,
-`#f` is not the same as the number 0 (like in C and C++), and not the same as the “empty
-list” (like in some Lisp dialects).
+It is important to note that `#f` is not equivalent to any other Scheme value. 
+In particular, `#f` is not the same as the number 0 (like in C and C++), and not the same as the "empty list" (like in some Lisp dialects).
 
 	(if condition action-true action-false)
 	(if condition action-true)
@@ -531,6 +540,5 @@ This is what is meant by closure.
 	(print (entry-generator)) ;; 3
 
 # History
-The Emacs thesis is that it is delightful to create composite
-programs based on an orthogonal kernel written in a low-level language together with a
-powerful, high-level extension language.
+The Emacs thesis is that it is delightful to create composite programs based on an orthogonal kernel written in a low-level language together with a powerful, high-level extension language.
+
