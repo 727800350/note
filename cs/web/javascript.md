@@ -5,26 +5,27 @@ JavaScript(JS) 解释性语言
 
 注释: `//` 或者 `/* ... */`
 
+**strict模式**  
+JavaScript在设计之初,为了方便初学者学习,并不强制要求用var申明变量.
+这个设计错误带来了严重的后果:如果一个变量没有通过var申明就被使用,那么该变量就自动被申明为全局变量:
+启用strict模式的方法是在JavaScript代码的第一行写上: `'use strict';`, 未使用var申明变量就使用的,将导致运行错误.
+
 # Data Type
-javascript的简单类型,包括 number, string, Boolean, null值和undefined值
+javascript的简单类型,包括 number, string, boolean, null值和undefined值
 
 typeof六种类型:
 number, string, boolean, object, function, date, undefined
-
-如果不声明直接使用则这个变量将成为全局变量
-
 
 类型判断
 ```
 x == null
 typeof(x) // object
 ```
-
 其他所有的值都是对象
 
 对象是属性的容器,其中每个属性都有名字和值,属性的名字可以是包含空字符串在内的所有字符串,值可以是除undefined之外的任何值
 
-<font color="red">对象通过引用来传递,他们永远不会被拷贝</font>
+**对象通过引用来传递,他们永远不会被拷贝**
 
 - == 等于, 只要求值相等,如果类型不同,会自动进行转换
 - === 严格等于, "===" 要求值和类型都相等
@@ -44,8 +45,89 @@ javascript没有字符类型, 要创建字符, 只需创建包含一个字符的
 两个包含着完全相同的字符的字符串被认为是一样的字符串
 
 - str.length
+- str.toUpperCase()
+- str.toLowerCase()
+- str.indexOf(), 没有找到, 返回 -1
+- str.subString(), eg: `str.substring(0, 5);`, `str.substring(7);`
 
-## Function
+## Array
+两种创建数组的方法:
+
+1. `[1, 2, 3.14, 'Hello', null, true];`
+1. `new Array(1, 2, 3);`
+
+- array.length
+- array.indexOf
+- slice 就是对应String的substring()版本
+- array.pop()方法移除最后一个元素
+- array.push()方法添加元素到末尾
+- array.unshift(): 往Array的头部添加若干元素
+- array.shift(): shift()方法则把Array的第一个元素删掉
+- array.sort: 直接**修改原来的array**
+- array.reverse: 直接**修改原来的**
+- concat()方法把当前的Array和另一个Array连接起来,并返回一个新的Array, 并**没有修改原来的array**
+- join(): 把当前Array的每个元素都用指定的字符串连接起来,然后返回连接后的字符串:
+
+## 对象
+Array也是一个对象, 也是一个stack(push()入栈,pop()出栈,同时出栈的这个元素被删除)
+```
+var list=new Array();
+list["ren1"] = "tom";
+list["ren2"] = "jim";
+for (var k in list){
+	alert(list[k]);
+}
+```
+通过.的方式也可以访问: `alert(list.ren1);`
+
+字典使用大括号
+```
+var person = {
+    name: 'Bob',
+    age: 20,
+    tags: ['js', 'web', 'mobile'],
+    city: 'Beijing',
+    zipcode: null
+};
+for(var key in person){
+	alert(key);//e是key
+	alert(person[key]);//输出值
+}
+```
+
+如果我们要检测对象是否拥有某一属性,可以用in操作符, 
+不过要小心,如果in判断一个属性存在,这个属性不一定是该对象的,它可能是继承得到的.
+要判断一个属性是否是对象自身拥有的,而不是继承得到的,可以用hasOwnProperty()方法
+
+## Map 和 Set
+JavaScript的默认对象表示方式{}可以视为其他语言中的Map或Dictionary的数据结构,即一组键值对.
+但是JavaScript的对象有个小问题,就是键必须是字符串.但实际上Number或者其他数据类型作为键也是非常合理的.
+为了解决这个问题,最新的ES6规范引入了新的数据类型Map
+
+初始化Map需要一个二维数组,或者直接初始化一个空Map
+```
+var m = new Map([['Michael', 95], ['Bob', 75], ['Tracy', 85]]);
+m.get('Michael'); // 95
+```
+
+- map.get
+- map.has
+- map.set
+- map.delete
+
+## Set
+Set和Map类似,也是一组key的集合,但不存储value
+```
+var s1 = new Set(); // 空Set
+var s2 = new Set([1, 2, 3]); // 含1, 2, 3
+```
+- s.add
+- s.delete
+
+## [Iterable](http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450082788640f82a480be8481a8ce8272951a40970000)
+
+
+# Function
 函数不需要声明返回值类型与参数类型
 ```
 function add(x, y){
@@ -81,58 +163,6 @@ p.Sayhello();
 
 ## Date()
 `var now = new Date();`
-
-## Array对象,字典
-动态数组
-```
-var list=new Array();
-list[0] = "tom";
-list[1] = "jim";
-list[2] = "clara";
-list.length // 得到3
-```
-
-- pop()方法移除最后一个元素
-- push()方法添加元素到末尾
-```
-a = []
-a.push(1)
-a.push('string')
-a.pop()　// 'string'
-```
-
-Array也是一个Dictionary, 也是一个stack(push()入栈,pop()出栈,同时出栈的这个元素被删除)
-```
-var list=new Array();
-list["ren1"] = "tom";
-list["ren2"] = "jim";
-list["ren3"] = "clara";
-for (var k in list){
-	alert(list[k]);
-}
-```
-// 通过. 的方式也可以访问: `alert(list.ren1);`
-
-```
-var arr = [3, 4, 5, 7, 8];//普通的数组,使用中括号
-alert(arr);
-```
-
-字典使用大括号
-```
-var dic = {"tom": 20, "jim": 40 }; //key={tom,jim},value={20,40};
-for(var key in dic){
-	alert(key);//e是key
-	alert(dic[key]);//输出值
-}
-```
-
-获得对象的所有成员,因为对象的所有成员都是以对象的key形式出现的, 例如 document
-```
-for(var e in document){
-	alert(e);
-}
-```
 
 # 三种交互对话框
 
