@@ -99,6 +99,13 @@ code
 COM
 ```
 
+统计时间
+```
+time_start=`date +%s -d "2015-01-01 00:00:00"`
+  time_end=`date +%s -d "2015-01-01 00:00:00"`
+echo "operation takes `expr ${time_end} - ${time_start}`"
+```
+
 # IO
 ## 管道
 数据处理类shell脚本中可能会多次用到 "cat xxx|awk yyy"类似的管道命令,判断返回值时不能仅仅用$?来判断返回值,最好使用PIPESTATUS获取管道中所有命令的返回码\\
