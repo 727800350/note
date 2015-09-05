@@ -149,7 +149,9 @@ exit 事件: `process.on('exit', function(){console.log('program will exit');});
 
 SIGINT 事件 signal interrupted: `process.on('SIGINT', function(){console.log('a sigint signal'); process.exit()});`
 
-## 闭包 Closure
+## [闭包 Closure](http://www.ruanyifeng.com/blog/2009/08/learning_javascript_closures.html)
+[理解Javascript的闭包](http://coolshell.cn/articles/6731.html)
+
 函数内部声明变量的时候,一定要使用var命令.如果不用的话,你实际上声明了一个全局变量!
 ```
 function f1(){
@@ -191,6 +193,10 @@ result(); // 999
 
 上一节代码中的f2函数,就是闭包.
 由于在Javascript语言中,只有函数内部的子函数才能读取局部变量,因此可以把闭包简单理解成"定义在一个函数内部的函数".
+
+- 闭包就是函数的局部变量集合,只是这些局部变量在函数返回后会继续存在.
+- 闭包就是就是函数的"堆栈"在函数返回后并不释放,我们也可以理解为这些函数堆栈并不在栈上分配而是在堆上分配
+- 当在一个函数内定义另外一个函数就会产生闭包
 
 ### 闭包的用途
 闭包可以用在许多地方.它的最大用处有两个,一个是前面提到的可以读取函数内部的变量,另一个就是让这些变量的值始终保持在内存中.
