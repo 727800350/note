@@ -65,8 +65,8 @@ javascript没有字符类型, 要创建字符, 只需创建包含一个字符的
 - array.shift(): shift()方法则把Array的第一个元素删掉
 - array.sort: 直接**修改原来的array**
 - array.reverse: 直接**修改原来的**
-- concat()方法把当前的Array和另一个Array连接起来,并返回一个新的Array, 并**没有修改原来的array**
-- join(): 把当前Array的每个元素都用指定的字符串连接起来,然后返回连接后的字符串:
+- array.concat()方法把当前的Array和另一个Array连接起来,并返回一个新的Array, 并**没有修改原来的array**
+- array.join(): 把当前Array的每个元素都用指定的字符串连接起来,然后返回连接后的字符串:
 
 ## 对象
 Array也是一个对象, 也是一个stack(push()入栈,pop()出栈,同时出栈的这个元素被删除)
@@ -121,8 +121,8 @@ Set和Map类似,也是一组key的集合,但不存储value
 var s1 = new Set(); // 空Set
 var s2 = new Set([1, 2, 3]); // 含1, 2, 3
 ```
-- s.add
-- s.delete
+- set.add
+- set.delete
 
 ## [Iterable](http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00143450082788640f82a480be8481a8ce8272951a40970000)
 
