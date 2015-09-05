@@ -221,6 +221,28 @@ result(); // 1000
 nAdd是一个全局变量, nAdd的值是一个匿名函数(anonymous function),而这个匿名函数本身也是一个闭包,
 所以nAdd相当于是一个setter,可以在函数外部对函数内部的局部变量进行操作, 而 result 也就是返回的f2 相当于一个 getter, 用于获取内部变量的状态.
 
+### 闭包的一个坑
+```
+for(var i = 0; i < 5; i++){
+	setTimeout(function(){console.log(i);}, 5);
+}
+```
+上面这个代码块会打印五个 5 出来,而我们预想的结果是打印 1 2 3 4 5.
+
+之所以会这样,是因为 setTimeout 中的 i 是对外层 i 的引用. 当 setTimeout 的代码被解释的时候, **运行时只是记录了 i 的引用,而不是值**.
+而当 setTimeout 被触发时,五个 setTimeout 中的 i 同时被取值,由于它们都指向了外层的同一个 i,而那个 i 的值在迭代完成时为 5,所以打印了五次 5.
+
+为了得到我们预想的结果,我们可以把 i 赋值成一个局部的变量,从而摆脱外层迭代的影响.
+```
+for(var i = 0; i < 5; i++){
+	var foo = function(idx){
+		setTimeout(function(){console.log(idx);},5);
+	};
+	foo(i);
+}
+```
+也可以写成: `(function (idx){setTimeout(function (){console.log(idx);},5);})(i);`
+
 # [this](https://github.com/alsotang/node-lessons/blob/master/lesson11/README.md)
 在函数执行时,this 总是指向调用该函数的对象.要判断 this 的指向,其实就是判断 this 所在的函数属于谁.
 
