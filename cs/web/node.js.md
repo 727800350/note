@@ -253,8 +253,35 @@ for(var i = 0; i < 5; i++){
 * 用new构造就指向新对象
 * 通过 apply 或 call 或 bind 来改变 this 的所指.
 
-1)函数有所属对象时:指向所属对象
+## 纯粹的函数调用
+这是函数的最通常用法,属于全局性调用,因此this就代表全局对象Global.
+请看下面这段代码,它的运行结果是1.
+```
+function test(){
+	this.x = 1;
+	console.log(this.x);
+}
+test(); // 1
+```
+为了证明this就是全局对象,我对代码做一些改变:
+```
+var x = 1;
+function test(){
+	console.log(this.x);
+}
+test(); // 1
+```
+运行结果还是1.再变一下:
+```
+var x = 1;
+function test(){
+	this.x = 0;
+}
+test();
+console.log(x); //0
+```
 
+## 函数有所属对象时:指向所属对象
 函数有所属对象时,通常通过 `.` 表达式调用,这时 `this` 自然指向所属对象.比如下面的例子:
 
 ```js
@@ -273,8 +300,7 @@ console.log(myObject.getValue()); // => 100
 ```
 `getValue()` 属于对象 `myObject`,并由 `myOjbect` 进行 `.` 调用,因此 `this` 指向对象 `myObject`.
 
-2) 函数没有所属对象:指向全局对象
-
+## 函数没有所属对象:指向全局对象
 ```js
 var myObject = {value: 100};
 myObject.getValue = function(){
@@ -294,8 +320,7 @@ console.log(myObject.getValue()); // => 100
 
 据说这是个设计错误.
 
-3) 构造器中的 this:指向新对象
-
+## 构造器中的 this:指向新对象
 js 中,我们通过 `new` 关键词来调用构造函数,此时 this 会绑定在该新对象上.
 
 ```js
@@ -307,8 +332,7 @@ console.log(myCreate.value); // 输出100
 ```
 顺便说一句,在 js 中,构造函数,普通函数,对象方法,闭包,这四者没有明确界线.界线都在人的心中.
 
-4) apply 和 call 调用以及 bind 绑定:指向绑定的对象
-
+## apply 和 call 调用以及 bind 绑定:指向绑定的对象
 - apply() 方法接受两个参数第一个是函数运行的作用域,另外一个是一个参数数组(arguments).
 - call() 方法第一个参数的意义与 apply() 方法相同,只是其他的参数需要一个个列举出来.
 
