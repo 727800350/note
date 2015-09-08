@@ -41,8 +41,12 @@ then
 	alias mv='amv -g'
 fi
 
-alias g++='g++ -std=c++11'
-alias clang++='clang++ -std=c++11'
+gcc -v 2>&1 | grep -i "version 4." > /dev/null
+if [ $? -eq 0 ]
+then
+	alias g++='g++ -std=c++11'
+	alias clang++='clang++ -std=c++11'
+fi
 
 alias hadoop='${HOME}/hadoop-client/hadoop/bin/hadoop'
 alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
