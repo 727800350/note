@@ -400,6 +400,11 @@ console.log(object.getNameFunc()());
 getNameFunc 里面, this 是 object, 这点没有疑问, 但是getNameFunc 的里面的里面, this 就是没有绑定的, 所以是global, 而global 又没有name 这个property, 所以输出 `undefined`.  
 如果把 `return foo` 换成 `return foo.bind(this)`, 则可以正确地输出 My Object. 因为这里将 object 绑定到了 foo, 也就是改变了foo 里面的this 指向.
 
+# 继承
+[Javascript面向对象编程(二):构造函数的继承](http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance.html)
+
+[Javascript面向对象编程(三):非构造函数的继承](http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance_continued.html)
+
 # 模块和包
 ## 模块
 Node.js的模块分为两类,一类为原生(核心)模块,一类为文件模块.
