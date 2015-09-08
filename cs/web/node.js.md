@@ -27,6 +27,8 @@ as it is capable of handling a huge number of simultaneous connections with high
 
 Node.js 内建了 HTTP 服务器支持,也就是说你可以轻而易举地实现一个网站和服务器的组合.
 
+[ref](http://blog.csdn.net/cike110120/article/details/12916573)
+
 # IO
 ## 输出
 - `console.log`, 会自动添加换行符, 支持C 的printf 语法, eg: `console.log('%s: %d', 'Hello', 25);`
@@ -34,7 +36,7 @@ Node.js 内建了 HTTP 服务器支持,也就是说你可以轻而易举地实�
 - `console.warn`
 - `console.error`
 - `console.trace()`: 向标准错误流输出当前的调用栈
-- `process.stdout.write` 类似于`console.log`, 但是建议使用console
+- `process.stdout.write` 类似于pyhton中的 `sys.stdout.write`, `console.log` 等是在这些底层io上进行的封装
 - `process.stderr.write`
 
 统计运行时间
@@ -48,9 +50,34 @@ console.timeEnd('str'); // 这个字符串与前面的字符串要一样
 ```
 process.stdin.setEncoding('utf-8');
 process.stdin.on('data', function(data){console.log(data);});  // 注册data事件监听
+```
+或者
+```
+process.stdin.setEncoding('utf-8');
 process.stdin.on('readable', function(){var data = process.stdin.read(); console.log(data);});  
 // 注册readable 事件监听, 但是这个事件不会将用户输入的参数主动传递给回调函数
 ```
+**这里的data 不是一行一行获取的, 而是整体**
+
+使用readline 模块可以一行一行的处理, 实现python 的`for line in sys.stdin:` 的效果
+```
+var readline = require('readline');
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+rl.on('line', function(line){
+    console.log(line);
+});
+
+process.stdin.on('end', function(){
+	console.log('stdin stream ends');
+	process.exit(0);
+});
+```
+
 
 ## File
 fs.readFile 接收了三个参数, 文件名, 编码方式(optional),回调函数.
