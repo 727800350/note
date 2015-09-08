@@ -26,12 +26,9 @@ export PATH=$PATH:$TEXLIVE/bin/x86_64-linux/
 export MANPATH=$MANPATH:$TEXLIVE/texmf/doc/man/
 export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info/
 
-## maven
-export MAVEN=${HOME}/program/apache-maven-3.2.5/
-export PATH=$PATH:$MAVEN/bin/
-
 ## user defined bin
 export PATH=$PATH:${HOME}/git/note/bin/
+export PATH=$PATH:${HOME}/bin/
 
 # aliases
 ## cp and mv
