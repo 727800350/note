@@ -63,6 +63,7 @@ javascript没有字符类型, 要创建字符, 只需创建包含一个字符的
 
 两个包含着完全相同的字符的字符串被认为是一样的字符串
 
+- str.trim(): strip leading and trailing spaces from a string
 - str.length
 - str.toUpperCase()
 - str.toLowerCase()
