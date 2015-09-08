@@ -115,6 +115,30 @@ path.extname('path')  // 包括那个点, 'path'不用真实存在
 一个类似的例子: 银行里取号之后, 然后我们就可以去干其他的事情, 等轮到我们的时候, 银行的叫号机就会发出通知.  
 [文件读取的异步与同步方式比较](/demo/node.js/sync_async.js)
 
+# 数据类型
+Javascript有三种基本数据类型:字符串,数字和布尔值.
+它们都有相应的建构函数,可以生成字符串对象,数字对象和布尔值对象.
+```
+new Boolean(false);
+new Number(1234);
+new String("Hello World");
+alert( typeof 1234); // number
+alert( typeof new Number(1234)); // object
+```
+与基本数据类型对应的对象类型,作用很小,造成的混淆却很大.
+[Javascript的10个设计缺陷](http://www.ruanyifeng.com/blog/2011/06/10_design_defects_in_javascript.html)
+
+可以使用typeof运算符,判断myObj是否有定义.
+```
+if(typeof myObj == "undefined"){
+	var myObj = { };
+}
+```
+这是目前使用最广泛的判断javascript对象是否存在的方法.
+
+null属于对象(object)的一种,意思是该对象为空,undefined则是一种数据类型,表示未定义.
+在编程实践中,null几乎没用,根本不应该设计它.
+
 # 变量
 在浏览器 JavaScript 中,通常 `window` 是全局对象,
 而 Node.js 中的全局对象是`global`, 所有全局变量(除了global本身以外)都是global对象的属性.
@@ -397,13 +421,16 @@ var object = {
 console.log(object.getNameFunc()());
 ```
 因为 `object.getNameFunc` 是一个function, 所以需要使用`getNameFunc()`, 而`getNameFunc()`的返回仍然是一个function, 所以需要继续使用 `getNameFunc()()`.  
-getNameFunc 里面, this 是 object, 这点没有疑问, 但是getNameFunc 的里面的里面, this 就是没有绑定的, 所以是global, 而global 又没有name 这个property, 所以输出 `undefined`.  
+getNameFunc 里面, this 是 object, 这点没有疑问, 
+但是getNameFunc 的里面的里面, this 就是没有绑定的, 所以是global, 而global 又没有name 这个property, 所以输出 `undefined`.  
 如果把 `return foo` 换成 `return foo.bind(this)`, 则可以正确地输出 My Object. 因为这里将 object 绑定到了 foo, 也就是改变了foo 里面的this 指向.
 
 # 继承
 [Javascript面向对象编程(二):构造函数的继承](http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance.html)
 
 [Javascript面向对象编程(三):非构造函数的继承](http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance_continued.html)
+
+# [node.js 开发命令行程序](http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html)
 
 # 模块和包
 ## 模块
