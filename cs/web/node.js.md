@@ -157,9 +157,9 @@ function Cat(name, color){
 }
 var cat1 = new Cat("大毛","黄色");
 ```
-这时cat1会自动含有一个constructor属性,指向它们的构造函数.
+这时cat1会自动含有一个constructor属性,指向它们的构造函数.  
 `console.log(cat1.constructor == Cat);` //true
-Javascript还提供了一个instanceof运算符,验证原型对象与实例对象之间的关系.
+Javascript还提供了一个instanceof运算符,验证原型对象与实例对象之间的关系.  
 `alert(cat1 instanceof Cat);` //true
 
 不同的实例可以共享一个相同的信息.
@@ -171,14 +171,13 @@ Cat.prototype.eat = function(){alert("吃老鼠")};
 ```
  
 - isPrototypeOf() 判断某个proptotype对象和某个实例之间的关系.
-	`alert(Cat.prototype.isPrototypeOf(cat1));` //true
+	- `alert(Cat.prototype.isPrototypeOf(cat1));` //true
 - hasOwnProperty() 用来判断某一个属性到底是本地属性,还是继承自prototype对象的属性.
-	`alert(cat1.hasOwnProperty("name"));` // true, 
-	`alert(cat1.hasOwnProperty("type"));` // false
-- in: 判断,某个实例是否含有某个属性,不管是不是本地属性.
-	`alert("name" in cat1);` // true, 
-	`alert("type" in cat1);` // true
-
+	- `alert(cat1.hasOwnProperty("name"));` // true
+	- `alert(cat1.hasOwnProperty("type"));` // false
+- in: 判断,某个实例是否含有某个属性,不管是不是本地属性
+	- `alert("name" in cat1);` // true
+	- `alert("type" in cat1);` // true
 
 # [闭包 Closure](http://www.ruanyifeng.com/blog/2009/08/learning_javascript_closures.html)
 [理解Javascript的闭包](http://coolshell.cn/articles/6731.html)
