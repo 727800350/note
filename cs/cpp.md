@@ -120,6 +120,24 @@ delete [] pointer;
 ## 二维数组
 [C++二维数组new小结(zz)](http://www.cnblogs.com/beyondstorm/archive/2008/08/26/1276278.html)
 
+# struct
+位结构
+位结构是一种特殊的结构, 在需按位访问一个字节或字的多个位时, 位结构比按位运算符更加方便
+
+1. 位结构中的成员可以定义为unsigned, 也可定义为signed, 但当成员长度为1时, 会被认为是unsigned类型.因为单个位不可能具有符号.
+1. 位结构成员可以与其它结构成员一起使用.
+```
+struct info{
+	char name[8];
+	int age;
+	struct addr address;
+	float pay;
+	unsigned state: 1;
+	unsigned pay: 1;
+}worker;
+```
+访问方式和普通的结构体成员相同, `worker.pay`
+
 # Class
 定义class的结尾}后需要一个分号,和结构体的定义一样.
 
