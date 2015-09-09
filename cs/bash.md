@@ -109,6 +109,8 @@ zless: look at compressed files
 **strings**  
 returns each string of printable characters in files. Its main uses are to determine the contents of and to extract text from binary files (i.e., non-text files).
 
+`printf "%05o\n" 65` (5 characters width, padded with zeros)
+
 uniq: 去重
 
 时间:
