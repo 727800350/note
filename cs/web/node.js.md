@@ -189,8 +189,7 @@ process.stdin.on('data', function(data){
 });
 ```
 
-process.nextTick(callback) 的功能是为事件循环设置一项任务, Node.js 会在下次事件循环调响应时调用 callback.
-可以把复杂的工作拆散,变成一个个较小的事件
+process.nextTick(callback) 将一个回调函数放在下次事件循环的顶部, 可以实现把复杂的工作拆散,变成一个个较小的事件
 
 退出程序 `process.exit()`
 
