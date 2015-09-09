@@ -12,6 +12,8 @@
 
 (display (read-char input) output)
 
+(newline output)
+
 (close-input-port input)
 (close-output-port output)
 
