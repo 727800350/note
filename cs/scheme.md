@@ -283,23 +283,62 @@ vector是一种比较常用的复合类型,它的元素索引从0开始,至第 n
 - `(string->symbol "good") => good`: 字符串转换为符号类型
 - `(symbol->string ''better) => "better"`: 符号类型转换为字符串
 
+## 过程 procedure
+在Scheme语言中, 过程相当于C语言中的函数, 不同的是Scheme语言过程是一种数据类型, 这也是为什么Scheme语言将程序和数据作为同一对象处理的原因
+
+Scheme语言中可以用lambda来定义过程,其格式如下:
+```
+(define 过程名 (lambda (参数 ...) (操作过程 ...)))
+```
+我们可以自定义一个简单的过程,如下: `(define add5 (lambda (x) (+ x 5)))`.  
+`(lambda (x) (+ x 5))` 实际上就是一个匿名过程.
+
+既然过程是一种数据类型,所以将过程作为过程的参数是完全可以的
+```
+(define isp
+	(lambda (x)
+		(if (procedure? x) 'isaprocedure 'notaprocedure)))
+```
+
+过程的嵌套定义
+在Scheme语言中,过程定义也可以嵌套,一般情况下,过程的内部过程定义只有在过程内部才有效,相当C语言中的局部变量.
+如下面的代码的最终结果是50:
+```
+(define fix 
+	(lambda (x y z)
+		(define add 
+			(lambda (a b) (+ a b)))
+		(- x (add y z))))
+(display (fix 100 20 30))
+```
+
+此时过程add只在fix过程内部起做用,这事实上涉及了过程和变量的绑定,可以参考下面的关于过程绑定(let,let* 和letrec)的介绍.
+
 # 控制结构
 块(form)是Scheme语言中的最小程序单元,一个Scheme语言程序是由一个或多个form构成.
 没有特殊说明的情况下 form 都由小括号括起来
 
+## 顺序结构
+也可以说成由多个form组成的form, 用begin来将多个form放在一对小括号内, 最终形成一个form.
+
+格式为:`(begin form1 form2 ...)`
+
+如用Scheme语言写成的经典的helloworld程序是如下样子的:
+```
+(begin 
+	(display "Hello world!")
+	(newline))
+```
+
 ## if cond and case
-```
-(if condition action-true action-false)
+- `(if condition action-true action-false)`
+- `(if condition action-true)`
 
-(if condition action-true)
-	
-(cond ((测试) 操作) ... (else 操作))
-```
+Scheme语言中的cond结构类似于C语言中的switch结构
+`(cond ((测试) 操作) ... (else 操作))`
 
-case
-```
-(case (表达式) ((值) 操作))	... (else 操作)))
-```
+case结构和cond结构有点类似
+`(case (表达式) ((值) 操作))	... (else 操作)))`
 
 ```
 (and arg1 ... argn)
