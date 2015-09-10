@@ -212,6 +212,22 @@ p => ''(1 2 . 3)
 ```
 cadr,cdddr等过程是专门对PAIR型数据再复合形成的数据操作的过程,最多可以支持在中间加四位a或d,如cdddr,caaddr等
 
+### 向量(vector)
+可以说是一个非常好用的类型, 是一种元素按整数来索引的对象, 异源的数据结构, 在占用空间上比同样元素的列表要少.
+vector是一种比较常用的复合类型,它的元素索引从0开始,至第 n-1 结束,这一点有点类似C语言中的数组.
+
+创建vector
+
+- (define v (vector 3 4 5))
+- (define v #(3 4 5))
+
+操作
+
+- (vector-ref vecteur index)
+- (vector-length vecteur)
+- (vector-set! vecteur index value)
+- (make-vector num value)
+
 # 控制结构
 块(form)是Scheme语言中的最小程序单元,一个Scheme语言程序是由一个或多个form构成.
 没有特殊说明的情况下 form 都由小括号括起来
