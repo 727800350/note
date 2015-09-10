@@ -58,6 +58,17 @@ Load the file /u/jimb/ex4, and then call the function main, passing it the list 
 
 还可以用load过程来直接调用Scheme语言源文件并执行它,格式为:`(load "filename")`
 
+注释:
+标准的Scheme语言定义中没有多行注释,不过在它的实现中几乎都有.
+在Guile中就有多行注释,以符号组合"#!"开始,以相反的另一符号组合"!#"结束,其中内容为注释,如:
+```
+#!
+there are scheme comment area.
+you can write mulity lines here.
+!#
+```
+注意的是,符号组合"#!"和"!#"一定分做两行来写.
+
 ## Tips
 Guile initialization file: `~/.guile`
 
@@ -79,20 +90,66 @@ History
 
 # Data Types
 
-## bool
+- (define 变量名 值): 定义变量
+- (set! 变量名 值): 改变变量的值
+
+Scheme语言的变量类型不是固定的,可以随时改变.
+
+## 基本类型
+### boolean
+
 - #t: true
 - #f: false  
+- not: 对 boolean 类型取反
+
 It is important to note that `#f` is not equivalent to any other Scheme value. 
 In particular, `#f` is not the same as the number 0 (like in C and C++), and not the same as the "empty list" (like in some Lisp dialects).
 
-## String
-- string-append str1 ... strn
-- string-length str
-- string=? argument
-- number->string argument
-- string->number argument
+### number
+它又分为四种子类型:整型(integer),有理数型(rational),实型(real),复数型(complex)
+
+- `(complex? (define c 3+2i))`
+- `(real? (define f 22/7))`: 就是 22/7, 不会把它近似
+- `(retaional? (define p 3.1415))`
+- `(integer? (define i 123))`
+
+#b, #o, #d, #x(二进制,八进制,十进制和十六进制), 来作为表示数字进制类型的前缀,其中表示十进制的#d可以省略不写,
+如:二进制的 #b1010, 八进制的 #o567, 十进制的123或#d123, 十六进制的 #x1afc
+
+### char
+字符型数据均以符号组合"#\" 开头, 表示单个字符
+
+- `#\A` 表示大写字母A, `#\0`表示字符0
+- 特殊字符: `#\space` 表示空格符和 `#\newline` 表示换行符
+
+### symbol 符号型
+符号类型是Scheme语言中有多种用途的符号名称,它可以是单词,用括号括起来的多个单词,也可以是无意义的字母组合或符号组合,
+它在某种意义上可以理解为C中的枚举类型
+
+- `(define a (quote xyz))`: 定义变量a为符号类型,值为xyz
+- `(define xyz ''a)`: 定义变量xyz为符号类型,值为a, 单引号'' 与quote是等价(注意, 这些''都表示单引号, 由于vim 高亮的缺陷)
+
+符号类型与字符串不同的是符号类型不能象字符串那样可以取得长度或改变其中某一成员字符的值,但二者之间可以互相转换.
+
+## 复合类型
+### String
+
+- (string-append str1 ... strn)
+
+- (string-length str)
+
+- (string-set! string index char): 更改string 中index 位置的字符为char( string 中下标从 0 开始)
+- (string-ref! string index): 取得string 中index 位置的字符
+
+- (string=? argument)
+
+- (number->string argument)
+- (string->number argument)
 
 # 控制结构
+块(form)是Scheme语言中的最小程序单元,一个Scheme语言程序是由一个或多个form构成.
+没有特殊说明的情况下 form 都由小括号括起来
+
 ## if cond and case
 ```
 (if condition action-true action-false)
