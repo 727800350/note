@@ -113,8 +113,7 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 - `(retaional? (define p 3.1415))`
 - `(integer? (define i 123))`
 
-#b, #o, #d, #x(二进制,八进制,十进制和十六进制), 来作为表示数字进制类型的前缀,其中表示十进制的#d可以省略不写,
-如:二进制的 #b1010, 八进制的 #o567, 十进制的123或#d123, 十六进制的 #x1afc
+`#b, #o, #d, #x`(二进制,八进制,十进制和十六进制), 来作为表示数字进制类型的前缀,其中表示十进制的#d可以省略不写,
 
 ### char
 字符型数据均以符号组合"#\" 开头, 表示单个字符
@@ -127,7 +126,7 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 它在某种意义上可以理解为C中的枚举类型
 
 - `(define a (quote xyz))`: 定义变量a为符号类型,值为xyz
-- `(define xyz ''a)`: 定义变量xyz为符号类型,值为a, 单引号'' 与quote是等价(注意, 这些''都表示单引号, 由于vim 高亮的缺陷)
+- `(define xyz ''a)`: 定义变量xyz为符号类型,值为a, 单引号'' 与quote是等价(**注意, 这些''都表示单引号, 由于vim 高亮的缺陷**)
 
 符号类型与字符串不同的是符号类型不能象字符串那样可以取得长度或改变其中某一成员字符的值,但二者之间可以互相转换.
 
@@ -145,6 +144,26 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 
 - (number->string argument)
 - (string->number argument)
+
+### 点对(pair)
+是由一个点和被它分隔开的两个所值组成的.形如: (1 . 2) 或 (a . b), 注意的是点的两边有空格.
+这是最简单的复合数据类型,同是它也是其它复合数据类型的基础类型, 如列表类型(list)就是由它来实现的.
+按照Scheme语言说明中的惯例,以下我们用符号组合 "=>" 来表示表达式的值.
+
+它用cons来定义,如: `(cons 8 9) => (8 . 9)`
+
+其中在点前面的值被称为 car ,在点后面的值被称为 cdr ,car和cdr同时又成为取pair的这两个值的过程,如:
+```
+(define p (cons 4 5)) => (4 . 5)
+(car p)	=> 4
+(cdr p)	=> 5
+```
+还可以用set-car! 和 set-cdr! 来分别设定这两个值:
+```
+(set-car! p "hello")
+(set-cdr! p "good")
+```
+如此,以前定义的 p 又变成了 `("hello" . "good")` 这个样子了
 
 # 控制结构
 块(form)是Scheme语言中的最小程序单元,一个Scheme语言程序是由一个或多个form构成.
