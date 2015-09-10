@@ -101,6 +101,7 @@ Scheme语言的变量类型不是固定的,可以随时改变.
 - #t: true
 - #f: false  
 - not: 对 boolean 类型取反
+- (boolean? value)
 
 It is important to note that `#f` is not equivalent to any other Scheme value. 
 In particular, `#f` is not the same as the number 0 (like in C and C++), and not the same as the "empty list" (like in some Lisp dialects).
@@ -108,18 +109,30 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 ### number
 它又分为四种子类型:整型(integer),有理数型(rational),实型(real),复数型(complex)
 
+`#b, #o, #d, #x`(二进制,八进制,十进制和十六进制), 来作为表示数字进制类型的前缀,其中表示十进制的#d可以省略不写,
+
 - `(complex? (define c 3+2i))`
 - `(real? (define f 22/7))`: 就是 22/7, 不会把它近似
 - `(retaional? (define p 3.1415))`
 - `(integer? (define i 123))`
+- `(number? value)`
 
-`#b, #o, #d, #x`(二进制,八进制,十进制和十六进制), 来作为表示数字进制类型的前缀,其中表示十进制的#d可以省略不写,
+数学运算
+
+- max, min, abs
+- reminder, modulo
+- gcd, lcm
+- (complex? arg)
+- (odd? arg)
+- (positive? arg)
+- (negative? arg)
+- (pair? arg)
 
 ### char
 字符型数据均以符号组合"#\" 开头, 表示单个字符
+例如, `#\A` 表示大写字母A, `#\0`表示字符0, `#\space` 表示空格符和 `#\newline` 表示换行符
 
-- `#\A` 表示大写字母A, `#\0`表示字符0
-- 特殊字符: `#\space` 表示空格符和 `#\newline` 表示换行符
+- `(char? value)`
 
 ### symbol 符号型
 符号类型是Scheme语言中有多种用途的符号名称,它可以是单词,用括号括起来的多个单词,也可以是无意义的字母组合或符号组合,
@@ -127,6 +140,8 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 
 - `(define a (quote xyz))`: 定义变量a为符号类型,值为xyz
 - `(define xyz ''a)`: 定义变量xyz为符号类型,值为a, 单引号'' 与quote是等价(**注意, 这些''都表示单引号, 由于vim 高亮的缺陷**)
+- `(symbol? value)`
+- `(null? '()) => #t`, null意为空类型,它表示为 '() ,即括号里什么都没有的符号
 
 符号类型与字符串不同的是符号类型不能象字符串那样可以取得长度或改变其中某一成员字符的值,但二者之间可以互相转换.
 
@@ -174,6 +189,14 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 - `(list-ref liste index)`
 - `(list-set! liste index value)`
 - `(define y (make-list 5 6)) => (6 6 6 6 6)`: 创建列表, make-list用来创建列表,第一个参数是列表的长度,第二个参数是列表中添充的内容
+- `(append arg list)`: append arg to list, note the difference between cons and append from the example below
+
+(apply procedure list)
+
+map的功能和apply有些相似,它的第一个参数也必需是一个过程,随后的参数必需是多个列表,返回的结果是此过程来操作列表后的值
+(map + (list 1 2 3) (list 4 5 6)) => (5 7 9)
+(map car (list (a b) (c d) (e f))) => (a c e)
+
 
 还可以实现多重列表,即列表的元素也是列表,如:(list (list 1 2 3) (list 4 5 6)).
 
@@ -303,48 +326,6 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 ```
 
 - delete-file
-
-## List
-构造list的方式举例:
-
-- `(list 1 2 3)` 或者简写成 `'(1 2 3)`
-
-	(car list) ;; get the first element
-	(cdr list) ;; get the rest of the list except the first element
-	(cadr list) ;; (car (cdr list))
-	(caddr list) ;; (car (cdr (cdr list)))
-	(cons arg1 arg2) ;; concatenate
-	(append arg list) ;; append arg to list, note the difference between cons and append from the example below
-	(length list) ;; get the length of the list, eg:(length (list 2 3 4)) ;; return 3
-
-	(apply procedure list) ;; 
-
-	map的功能和apply有些相似,它的第一个参数也必需是一个过程,随后的参数必需是多个列表,返回的结果是此过程来操作列表后的值
-	guile> (map + (list 1 2 3) (list 4 5 6))
-	(5 7 9)
-	guile> (map car '((a b)(c d)(e f)))
-	(a c e)
-
-## ?
-
-- (null? arg)
-- (list? arg)
-- (number? arg)
-- (equal? arg) (eq? arg)
-- (integer? arg) Return #t if x is an exact or inexact integer number, else return #f.
-- (odd? arg)
-- (positive? arg)
-- (negative? arg)
-- (pair? arg)
-
-## Math
-
-- max, min, abs
-- reminder, modulo
-- gcd, lcm
-- (complex? arg)
-
-## Other
 
 # Data Types, Values and Variables
 **latent typing**  
