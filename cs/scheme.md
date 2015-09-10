@@ -89,6 +89,13 @@ History
 	(use-modules (ice-9 history))
 
 # Data Types
+The term **latent typing** is used to describe a computer language, such as Scheme, 
+for which you cannot, in general, simply look at a program source code and determine what type of data will be associated with a particular variable, 
+or with the result of a particular expression. 
+Instead, **the types of variables and expressions are only known in general at run time**
+
+**all values in Scheme – carry their type with them**.   
+In other words, every value "knows," at runtime, what kind of value it is, a number, a string, a list, whatever.
 
 - (define 变量名 值): 定义变量
 - (set! 变量名 值): 改变变量的值
@@ -107,6 +114,8 @@ ex:
 - `(eqv? null (list)) => #t`
 
 ## 基本类型
+include characters, strings, numbers and procedures. 
+
 ### boolean
 
 - #t: true
@@ -349,48 +358,6 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 ```
 
 - delete-file
-
-# Data Types, Values and Variables
-**latent typing**  
-The term latent typing is used to describe a computer language, such as Scheme, for which
-you cannot, in general, simply look at a program source code and determine what type
-of data will be associated with a particular variable, or with the result of a particular
-expression.  
-Instead, the types of variables and expressions are only known – in general – at run time.
-
-## Values and Variables
-**Primitive types**:
-include characters, strings, numbers and procedures. 
-
-**Compound types**: allow *a group of primitive and compound values* to be stored together,
-include lists, pairs, vectors and multi-dimensional arrays. 
-
-#(1 2 3) is a three-element vector
-
-In addition, Guile allows applications to define their own data types, 
-with the same status as the built-in standard Scheme types.
-
-**all values in Scheme – carry their type with them**.   
-In other words, every value "knows," at runtime, what kind of value it is, 
-a number, a string, a list, whatever.
-
-### Defining and Setting Variables
-	(define variable-name value)
-	
-For example(;; 表示注释):
-
-	;; Make a variable 'x' with initial numeric value 1.
-	(define x 1)
-	
-	;; Make a variable 'organization' with an initial string value.
-	(define organization "Free Software Foundation")
-	
-	;; change value, new-value can have different data type
-	(set! variable-name new-value)
-	
-In general, however, **value and new-value can be any Scheme expression**.
-
-	(set! x (+ x 1))
 
 ## Procedures
 The value of the procedure invocation expression is the value of the last evaluated expression
