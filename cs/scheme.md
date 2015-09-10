@@ -165,6 +165,53 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 ```
 如此,以前定义的 p 又变成了 `("hello" . "good")` 这个样子了
 
+### 列表(list)
+列表是由多个相同或不同的数据连续组成的数据类型,它是编程中最常用的复合数据类型之一,很多过程操作都与它相关
+
+- `(list)` 表示一个空的列表, 可以简写为 `''()`
+- `(define liste (list 1 2 3 4 ))`
+- `(length liste)`
+- `(list-ref liste index)`
+- `(list-set! liste index value)`
+- `(define y (make-list 5 6)) => (6 6 6 6 6)`: 创建列表, make-list用来创建列表,第一个参数是列表的长度,第二个参数是列表中添充的内容
+
+还可以实现多重列表,即列表的元素也是列表,如:(list (list 1 2 3) (list 4 5 6)).
+
+list 和 pair 的关系
+
+```
+(define a (cons 1 (cons 2 (cons 3 (list)))))
+a => (1 2 3)
+(list? a) => #t
+(pair? a) => #t
+```
+由上可见,a本来是我们上面定义的点对,最后形成的却是列表.事实上列表是在点对的基础上形成的一种特殊格式.
+事实上列表是在点对的基础上形成的一种特殊格式.
+list是pair的子类型,list一定是一个pair,而pair不是list
+
+list
+```
+(define liste (list 1 2 3))
+(car liste) => 1
+(caar liste) => fail
+(cdr liste) => ''(2 3)
+(cddr liste) => ''(3)
+(cdddr liste) => ''()
+(cddddr liste) => fail
+```
+
+pair
+```
+(define p (cons 1 (cons 2 3)))
+p => ''(1 2 . 3)
+(car p) => 1
+(caar p) => fail
+(cdr p) => ''(2 . 3)
+(cddr p) => 3
+(cdddr p) => fail
+```
+cadr,cdddr等过程是专门对PAIR型数据再复合形成的数据操作的过程,最多可以支持在中间加四位a或d,如cdddr,caaddr等
+
 # 控制结构
 块(form)是Scheme语言中的最小程序单元,一个Scheme语言程序是由一个或多个form构成.
 没有特殊说明的情况下 form 都由小括号括起来
