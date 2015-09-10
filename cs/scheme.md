@@ -95,6 +95,17 @@ History
 
 Scheme语言的变量类型不是固定的,可以随时改变.
 
+数据比较
+
+- eq?: 两个变量正好是同一个对象
+- eqv?: 同 eq?
+- equal?: 值相同
+
+ex:
+
+- `(eqv? null ''()) => #t`
+- `(eqv? null (list)) => #t`
+
 ## 基本类型
 ### boolean
 
@@ -250,6 +261,18 @@ vector是一种比较常用的复合类型,它的元素索引从0开始,至第 n
 - (vector-length vecteur)
 - (vector-set! vecteur index value)
 - (make-vector num value)
+
+## 类型转换
+
+- `(number->string 123) => "123"`: 数字转换为字符串
+- `(string->number "456") => 456`: 字符串转换为数字
+- `(char->integer #\a) => 97`: 字符转换为整型数,小写字母a的ASCII码值为96
+- `(char->integer #\A) => 65`: 大写字母A的值为65
+- `(integer->char 97) => #\a`: 整型数转换为字符
+- `(string->list "hello") => (#\h #\e #\l #\l #\o)`: 字符串转换为列表
+- `(list->string (make-list 4 #\a)) => "aaaa"`: 列表转换为字符串
+- `(string->symbol "good") => good`: 字符串转换为符号类型
+- `(symbol->string ''better) => "better"`: 符号类型转换为字符串
 
 # 控制结构
 块(form)是Scheme语言中的最小程序单元,一个Scheme语言程序是由一个或多个form构成.
