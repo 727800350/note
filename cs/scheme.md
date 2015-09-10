@@ -318,6 +318,9 @@ Scheme语言中可以用lambda来定义过程,其格式如下:
 块(form)是Scheme语言中的最小程序单元,一个Scheme语言程序是由一个或多个form构成.
 没有特殊说明的情况下 form 都由小括号括起来
 
+Scheme语言中只有if结构是系统原始提供的, 其它的cond, case, and, or, 另外还有do,when,unless等都是可以用宏定义的方式来定义的.
+这一点充分体现了Scheme的元语言特性, 关于do,when等结构的使用可以参考R5RS.
+
 ## 顺序结构
 也可以说成由多个form组成的form, 用begin来将多个form放在一对小括号内, 最终形成一个form.
 
@@ -340,9 +343,9 @@ Scheme语言中的cond结构类似于C语言中的switch结构
 case结构和cond结构有点类似
 `(case (表达式) ((值) 操作))	... (else 操作)))`
 
-```
-(and arg1 ... argn)
-```
+## and 与 or
+- `(and arg1 ... argn)`: 后面的参数的表达式的值都为#t时,它的返回值才为#t,否则为#f
+- `(or arg1 ... argn)`: 后面的参数的表达式的值有一个为#t时, 返回值为#t,否则为#f
 
 ## loop
 在Scheme语言中没有循环结构, 不过循环结构可以用递归来很轻松的实现(在Scheme语言中只有通过递归才能实现循环)
@@ -351,7 +354,11 @@ case结构和cond结构有点类似
 	(lambda(x y)
 		(if (<= x y)
 			(begin 
-				(display x) (display " ") (set! x (+ x 1)) (loop x y)))))
+				(display x)
+				(display " ")
+				(set! x (+ x 1))
+				(loop x y)))))
+
 (loop 1 10) ;; print from 1 to 10
 ```
 
