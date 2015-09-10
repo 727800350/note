@@ -56,6 +56,8 @@ Start ex:
 	guile -e main -s /u/jimb/ex4 foo
 Load the file /u/jimb/ex4, and then call the function main, passing it the list `("/u/jimb/ex4" "foo")`
 
+还可以用load过程来直接调用Scheme语言源文件并执行它,格式为:`(load "filename")`
+
 ## Tips
 Guile initialization file: `~/.guile`
 
@@ -75,128 +77,98 @@ History
 
 	(use-modules (ice-9 history))
 
-# API
-## Syntax
+# Data Types
+
+## bool
 - #t: true
 - #f: false  
 It is important to note that `#f` is not equivalent to any other Scheme value. 
 In particular, `#f` is not the same as the number 0 (like in C and C++), and not the same as the "empty list" (like in some Lisp dialects).
 
-	(if condition action-true action-false)
-	(if condition action-true)
+## String
+- string-append str1 ... strn
+- string-length str
+- string=? argument
+- number->string argument
+- string->number argument
+
+# 控制结构
+## if cond and case
+```
+(if condition action-true action-false)
+
+(if condition action-true)
 	
-	(cond ((测试) 操作) ... (else 操作))
-	(case (表达式) ((值) 操作))	... (else 操作)))
+(cond ((测试) 操作) ... (else 操作))
+```
 
-	(and arg1 ... argn)
+case
+```
+(case (表达式) ((值) 操作))	... (else 操作)))
+```
 
-	(let ((...)...) ...)
-	(let ((x 2) (y 4)) (+ x y)))
+```
+(and arg1 ... argn)
+```
 
+## loop
 在Scheme语言中没有循环结构, 不过循环结构可以用递归来很轻松的实现(在Scheme语言中只有通过递归才能实现循环)
-	
-	(define loop
-		(lambda(x y)
-			(if (<= x y)
-				(begin 
-					(display x) (display " ") (set! x (+ x 1)) (loop x y)))))
-	(loop 1 10) ;; print from 1 to 10
+```
+(define loop
+	(lambda(x y)
+		(if (<= x y)
+			(begin 
+				(display x) (display " ") (set! x (+ x 1)) (loop x y)))))
+(loop 1 10) ;; print from 1 to 10
+```
 
-## IO
+## let let* letrec
+(let ((...)...) ...)
+(let ((x 2) (y 4)) (+ x y)))
+
+# IO
 `(command-line)`: 得到a list of strings  
 eg: `./choose 1 4`: `(command-line)` 返回的是a **list of strings**: `("./choose" "1" "4")`, 然后`cadr` 得到 "1", `caddr`得到"4"
 
-	(display x)
-	(newline)
-	
-	;; 定义一个print, 在末尾添加一个换行符
-	;; todo: 变长参数
-	(define print
-  		(lambda (para)
-        	(display para)(newline)))
-
-Scheme语言中也提供了相应的输入输出功能,是在C基础上的一种封装.
-
-**端口**  
-Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指针,也就是Linux中的设备文件,请看下面的操作
-	
-	guile> (current-input-port)
-	#<input: standard input /dev/pts/0> ;当前的输入端口
-	guile> (current-output-port)
-	#<output: standard output /dev/pts/0> ;当前的输出端口
-
-判断是否为输入输出端口,可以用:`input-port?` 和`output-port?`
-
-`open-input-file,open-output-file,close-input-port,close-output-port`这四个过程用来打开和关闭输入输出文件,其中打开文件的参数是文件名字符串,关闭文件的参数是打开的端口.
-
-### 输入
+## input
 打开一个输入文件后,返回的是输入端口,可以用read过程来输入文件的内容:
 
-	guile> (define port (open-input-file "readme"))
-	guile> port
-	#<input: readme 4>
-	guile> (read port)
-	GUILE语言
-上面的操作打开了readme文件,并读出了它的第一行内容.
+- read: 读入一个 s-expression, `(define x (read))`
+- read-char: 读入一个 char
+- read-line: 读入一行
 
-此外还可以直接用read过程来接收键盘输入,如下面的操作:
+## output
+- (display x)
+- (newline)
+- (write 对象 端口)
+- write-char
 
-	guile> (read)  ; 执行后即等待键盘输入
-	12345
-	12345
-	guile> (define x (read))  ; 等待键盘输入并赋值给x
-	12345
-	guile> x
-	12345
-以上为用read来读取键入的数字,还可以输入字符串等其它类型数据:
-
-	guile> (define name (read))
-	tomson
-	guile> name
-	tomson
-	guile> (string? name)
-	#f
-	guile> (symbol? name)
-	#t
-此时输入的tomson是一个符号类型,因为字符串是用引号引起来的,所以出现上面的情况.下面因为用引号了,所以`(string? str)`返回值为`#t`.
-
-	guile> (define str (read))
-	"Johnson"
-	guile> str
-	"Johnson"
-	guile> (string? str)
-	#t
-
-还可以用load过程来直接调用Scheme语言源文件并执行它,格式为:`(load "filename")`,还有`read-char`过程来读单个字符等等.
-
-### 输出
-常用的输出过程是display,还有write,它的格式是
+## File
+Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指针,也就是Linux中的设备文件,请看下面的操作
 	
-	(write 对象 端口)
-这里的对象是指字符串等常量或变量,端口是指输出端口或打开的文件.下面的操作过程演示了向输出文件temp中写入字符串"helloworld",并分行的实现.
-	guile> (define port1 (open-output-file "temp"))  ; 打开文件端口赋于port1
-	guile> port1
-	#<output: temp 3> 
-	guile> (output-port? port1)
-	#t                     ; 此时证明port1为输出端口
-	guile> (write "hello world" port1)
-	guile> (close-output-port port1)
-	guile> (exit)               ; 写入数据并关闭退出
-	[root@toymouse test]# more temp          显示文件的内容,达到测试目的
-	"hello world"
+- (current-input-port): stdin
+- (current-output-port): stdout
+- input-port?, output-port?: 判断是否为输入或者输出文件
+- open-input-file, open-output-file
+- close-input-port, close-output-port
 
-## String
-	(string-append str1 ... strn)
-	(string-length str)
-	(string=? argument)
-	(number->string argument)
-	(string->number argument) ;; 但是没有string->integer 等
+```
+(define input (open-input-file "input"))
+(read input)
+(close-input-port input)
+
+(define output (open-output-file "output"))
+(display var output)
+(newline output)
+(close-output-port output)
+```
+
+- delete-file
 
 ## List
 构造list的方式举例:
 
-- `(list 1 2 3)`
-- `'(1 2 3)`
+- `(list 1 2 3)` 或者简写成 `'(1 2 3)`
 
 	(car list) ;; get the first element
 	(cdr list) ;; get the rest of the list except the first element
@@ -214,68 +186,31 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 	guile> (map car '((a b)(c d)(e f)))
 	(a c e)
 
-**Demo**
-
-	guile> (define list '(1 2 3))
-	guile> (car list)
-	1
-	guile> (cdr list)
-	(2 3)
-	guile> (cdr '(4))
-	()
-	guile> (cdr '())
-	error: Wrong type (expecting pair): ()
-
-	guile> (cons 0 list)
-	(0 1 2 3)
-	guile> (cons '(7 8) list)
-	((7 8) 1 2 3)
-	guile> (cons 1 2)
-	(1 . 2)
-	guile> (cons 1 2 3)
-	error: Wrong number of arguments to #<primitive-procedure cons>
-	guile> (cons (cons 1 2) 3)
-	((1 . 2) . 3)
-
-	guile> (append '(7 8) list)
-	(7 8 1 2 3)
-
 ## ?
 
-	(null? arg)
-	(list? arg)
-	(number? arg)
-	(equal? arg) (eq? arg)
-
-	(integer? arg) Return #t if x is an exact or inexact integer number, else return #f.
-Ex:
-
-	(integer? 487) #t
-	(integer? 3.0) #t
-	(integer? -3.4) #f
-
-	(odd? arg)
-	(positive? arg)
-	(negative? arg)
-	(pair? arg)
+- (null? arg)
+- (list? arg)
+- (number? arg)
+- (equal? arg) (eq? arg)
+- (integer? arg) Return #t if x is an exact or inexact integer number, else return #f.
+- (odd? arg)
+- (positive? arg)
+- (negative? arg)
+- (pair? arg)
 
 ## Math
 
-	max, min
-	abs
-	reminder, modulo
-	gcd, lcm
-	(complex? arg)
-
-## File system
-	(delete-file file)
+- max, min, abs
+- reminder, modulo
+- gcd, lcm
+- (complex? arg)
 
 ## Other
 
 # Data Types, Values and Variables
 **latent typing**  
 The term latent typing is used to describe a computer language, such as Scheme, for which
-you cannot, in general, simply look at a program's source code and determine what type
+you cannot, in general, simply look at a program source code and determine what type
 of data will be associated with a particular variable, or with the result of a particular
 expression.  
 Instead, the types of variables and expressions are only known – in general – at run time.
@@ -287,7 +222,7 @@ include characters, strings, numbers and procedures.
 **Compound types**: allow *a group of primitive and compound values* to be stored together,
 include lists, pairs, vectors and multi-dimensional arrays. 
 
-	#(1 2 3) is a three-element vector
+#(1 2 3) is a three-element vector
 
 In addition, Guile allows applications to define their own data types, 
 with the same status as the built-in standard Scheme types.
@@ -490,10 +425,10 @@ scope, typically as part of a procedure body. In Scheme, this is done using the 
 or one of its modified forms let* and letrec.
 
 ## Closure
-Consider a let expression that doesn't contain any lambdas:
+Consider a let expression that does not contain any lambdas:
 
 	(let ((s (/ (+ a b c) 2)))
-		(sqrt (* s (- s a) (- s b) (- s c))))
+		(sqrt (\* s (- s a) (- s b) (- s c))))
 When the Scheme interpreter evaluates this, it
 
 - creates a new environment with a reference to the environment that was current when it encountered the let
@@ -538,7 +473,4 @@ This is what is meant by closure.
 	(print (entry-generator)) ;; 1
 	(print (entry-generator)) ;; 2
 	(print (entry-generator)) ;; 3
-
-# History
-The Emacs thesis is that it is delightful to create composite programs based on an orthogonal kernel written in a low-level language together with a powerful, high-level extension language.
 
