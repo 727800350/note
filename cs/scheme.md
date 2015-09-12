@@ -211,17 +211,7 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 - `(define y (make-list 5 6)) => (6 6 6 6 6)`: 创建列表, make-list用来创建列表,第一个参数是列表的长度,第二个参数是列表中添充的内容
 - `(append arg list)`: append arg to list, note the difference between cons and append from the example below
 
-(apply procedure list)
-
-map的功能和apply有些相似,它的第一个参数也必需是一个过程,随后的参数必需是多个列表,返回的结果是此过程来操作列表后的值
-(map + (list 1 2 3) (list 4 5 6)) => (5 7 9)
-(map car (list (a b) (c d) (e f))) => (a c e)
-
-
-还可以实现多重列表,即列表的元素也是列表,如:(list (list 1 2 3) (list 4 5 6)).
-
-list 和 pair 的关系
-
+#### list 和 pair 的关系
 ```
 (define a (cons 1 (cons 2 (cons 3 (list)))))
 a => (1 2 3)
@@ -314,6 +304,23 @@ Scheme语言中可以用lambda来定义过程,其格式如下:
 
 此时过程add只在fix过程内部起做用,这事实上涉及了过程和变量的绑定,可以参考下面的关于过程绑定(let,let* 和letrec)的介绍.
 
+### apply
+apply的功能是为数据赋予某一操作过程,它的第一个参数必需是一个过程,随后的其它参数必需是列表  
+`(apply procedure list)`
+
+eg: `(apply + (list 2 3 4)) => 9`.  
+执行的过程, 对list的前两个元素应用+, 得到5, 然后再将+ 应用到结果与第三个元素上, 之后继续这个操作.
+
+### map
+map的功能和apply有些相似,它的第一个参数也必需是一个过程,随后的参数必需是多个列表,返回的结果是此过程来操作列表后的值
+
+- `(map + (list 1 2 3) (list 4 5 6)) => (5 7 9)`
+- `(map car (list (a b) (c d) (e f))) => (a c e)`
+
+还可以实现多重列表,即列表的元素也是列表,如:`(list (list 1 2 3) (list 4 5 6))`.
+
+除了apply, map以外, Scheme 语言中还有很多,诸如:eval, delay, for-each, force, call-with-current-continuation等过程绑定的操作定义,它们都无一例外的提供了相当灵活的数据处理能力.
+
 # 控制结构
 块(form)是Scheme语言中的最小程序单元,一个Scheme语言程序是由一个或多个form构成.
 没有特殊说明的情况下 form 都由小括号括起来
@@ -362,8 +369,8 @@ case结构和cond结构有点类似
 (loop 1 10) ;; print from 1 to 10
 ```
 
-## let let* letrec
-在多数编程语言中都有关于变量的存在的时限问题, Scheme语言中用let,let*和letrec来确定变量的存在的时限问题,即局部变量和全局变量.
+## `let` `let*` `letrec`
+在多数编程语言中都有关于变量的存在的时限问题, Scheme语言中用`let`,`let*`和`letrec`来确定变量的存在的时限问题,即局部变量和全局变量.
 一般情况下,全局变量都用define来定义,并放在过程代码的外部,
 而局部变量则用let等绑定到过程内部使用.
 
@@ -371,8 +378,9 @@ let的用法: `(let ((...)...) ...)`, 也就是`(let s-expression s-expression)`
 例如: `(let ((x 2) (y 4)) (+ x y)))`, 在 执行`(+ x y)`的时候, x 为2, y 为 4.
 
 let 有一个局限, 以上面的例子来说, 虽然let y 为4 定义在 let x 为 2 之后, 但是let y 为 4的时候, x 为 2 是不可用的, 如果此时访问x, 访问的仍然是上一层的x(这里就是global x).  
-这时可以使用let*, 在定义后面的时候, 前面的已经生效了.  
-但是即时使用let* 还是有缺陷的, 例如
+这时可以使用`let*`, 在定义后面的时候, 前面的已经生效了.  
+
+但是即时使用`let`* 还是有缺陷的, 例如
 ```
 (letrec ((even?
 			(lambda(x)
@@ -382,9 +390,9 @@ let 有一个局限, 以上面的例子来说, 虽然let y 为4 定义在 let x 
 				(if (= x 0) #f (even? (- x 1))))))
 	(even? 88))
 ```
-上面的操作过程中,内部定义了两个判断过程even?和odd?,这两个过程是互相递归引用的.
-如果将letrec换成let或let*都会不正常,因为letrec是将内部定义的过程或变量间进行相互引用的.
-这种情况下就需要使用 letrec
+上面的操作过程中,内部定义了两个判断过程`even?`和`odd?`,这两个过程是互相递归引用的.
+如果将`letrec`换成`let`或`let*`都会不正常,因为`letrec`是将内部定义的过程或变量间进行相互引用的.
+这种情况下就需要使用 `letrec`
 
 # IO
 `(command-line)`: 得到a list of strings  
