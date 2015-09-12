@@ -363,8 +363,28 @@ case结构和cond结构有点类似
 ```
 
 ## let let* letrec
-(let ((...)...) ...)
-(let ((x 2) (y 4)) (+ x y)))
+在多数编程语言中都有关于变量的存在的时限问题, Scheme语言中用let,let*和letrec来确定变量的存在的时限问题,即局部变量和全局变量.
+一般情况下,全局变量都用define来定义,并放在过程代码的外部,
+而局部变量则用let等绑定到过程内部使用.
+
+let的用法: `(let ((...)...) ...)`, 也就是`(let s-expression s-expression)`的结构.  
+例如: `(let ((x 2) (y 4)) (+ x y)))`, 在 执行`(+ x y)`的时候, x 为2, y 为 4.
+
+let 有一个局限, 以上面的例子来说, 虽然let y 为4 定义在 let x 为 2 之后, 但是let y 为 4的时候, x 为 2 是不可用的, 如果此时访问x, 访问的仍然是上一层的x(这里就是global x).  
+这时可以使用let*, 在定义后面的时候, 前面的已经生效了.  
+但是即时使用let* 还是有缺陷的, 例如
+```
+(letrec ((even?
+			(lambda(x)
+				(if (= x 0) #t (odd? (- x 1)))))
+		(odd?
+			(lambda(x) 
+				(if (= x 0) #f (even? (- x 1))))))
+	(even? 88))
+```
+上面的操作过程中,内部定义了两个判断过程even?和odd?,这两个过程是互相递归引用的.
+如果将letrec换成let或let*都会不正常,因为letrec是将内部定义的过程或变量间进行相互引用的.
+这种情况下就需要使用 letrec
 
 # IO
 `(command-line)`: 得到a list of strings  
