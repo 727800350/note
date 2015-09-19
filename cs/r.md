@@ -934,16 +934,33 @@ Note that the forward slash should be used as the path separator even on Windows
 SQL 查询可以通过dbSendQuery或 dbGetQuery 传给数据库管理系统.
 
 - dbGetQuery 传送查询语句, 把结果以数据框形式返回.
-- dbSendQuery 传送查询,返回的结果是继承"DBIResult"的一个子类的对象."DBIResult" 类可用于取得结果,而且还可以通过调用 dbClearResult 清除结果.
+- dbSendQuery 传送查询, 返回的结果是继承"DBIResult"的一个子类的对象.
+	- dbFetch(res, n) 用于获得查询结果的部分或全部行,并以列表返回, n = -1 也表示全部行
+	- dbHasCompleted 确定是否所有行已经获得
+	- dbGetRowCount, dbGetRowsAffected 返回结果中(影响)行的数目
+	- dbColumnInfo, dbGetStatement
+	- dbClearResult
+```
+# Fetch all results
+res <- dbSendQuery(con, "SELECT * FROM mtcars WHERE cyl = 4")
+dbFetch(res)
+dbClearResult(res)
+     
+# Fetch in chunks
+res <- dbSendQuery(con, "SELECT * FROM mtcars")
+while(!dbHasCompleted(res)){
+	chunk <- fetch(res, 10)
+	print(nrow(chunk))
+}
+dbClearResult(res)
+```
 
-结果处理
+dbReadTable and dbWriteTable, 仅用于测试
 
-- 函数 fetch 用于获得查询结果的部分或全部行,并以列表返回
-- 函数 dbHasCompleted 确定是否所有行已经获得
-- dbGetRowCount 返回结果中行的数目
-
-这些是数据库中读/写/测试/删除表的方便接口.
-dbReadTable 和 dbWriteTable 实现一个 R 数据框的复制进和复制出数据库, 把数据框的行名字映射到 MySQL 表的 row_names 字段.
+- `dbReadTable(con, "table")`: 取出table 中的数据, 返回的是一个data frame
+- `dbWriteTable(con, "table", df, row.names = T, overwrite = F, append = T)`: 将df 中的数据写入到table 中, 如果 row.names 为T(默认情况下), 会往表中增加一个列, row_names.
+返回值为True(如果成功)
+**dbWriteTable 操作之后, 表中各列的属性会被更改, primary key 消失, char 变成text, int 变成bigint, 所以这个函数仅用于测试, 快速查看结果**
 
 [database demo](/demo/r/db.r)
 
