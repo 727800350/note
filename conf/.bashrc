@@ -11,14 +11,19 @@ fi
 user=`whoami`
 
 # Path
+## my own pc
 if [ ${user} = "eric" ]
 then
 	export TEXLIVE=/usr/local/texlive/2015/
+## enterprise
 else
 	export TEXLIVE=${HOME}/program/texlive/2015/
 	export PATH=$PATH:${HOME}/.jumbo/bin/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/samba/lib/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/utils/gcc/lib/gcc/x86_64-unknown-linux-gnu/4.8.1/
+	alias hadoop='${HOME}/hadoop-client/hadoop/bin/hadoop'
+	alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
+	alias nanling='${HOME}/hadoop-client/hadoop-nanling/bin/hadoop'
 fi
 
 ## texlive env
@@ -47,7 +52,4 @@ then
 	alias g++='g++ -std=c++11'
 	alias clang++='clang++ -std=c++11'
 fi
-
-alias hadoop='${HOME}/hadoop-client/hadoop/bin/hadoop'
-alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
 
