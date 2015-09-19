@@ -940,13 +940,16 @@ SQL 查询可以通过dbSendQuery或 dbGetQuery 传给数据库管理系统.
 	- dbGetRowCount, dbGetRowsAffected 返回结果中(影响)行的数目
 	- dbColumnInfo, dbGetStatement
 	- dbClearResult
+
+Fetch all results
 ```
-# Fetch all results
 res <- dbSendQuery(con, "SELECT * FROM mtcars WHERE cyl = 4")
 dbFetch(res)
 dbClearResult(res)
+```
      
-# Fetch in chunks
+Fetch in chunks
+```
 res <- dbSendQuery(con, "SELECT * FROM mtcars")
 while(!dbHasCompleted(res)){
 	chunk <- fetch(res, 10)
