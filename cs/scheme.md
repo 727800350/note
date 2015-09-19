@@ -94,6 +94,8 @@ for which you cannot, in general, simply look at a program source code and deter
 or with the result of a particular expression. 
 Instead, **the types of variables and expressions are only known in general at run time**
 
+All names belong to a single unified namespace**, and the variables that these names identify can hold any kind of Scheme value, including procedure values.
+
 **all values in Scheme – carry their type with them**.   
 In other words, every value "knows," at runtime, what kind of value it is, a number, a string, a list, whatever.
 
@@ -211,17 +213,7 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 - `(define y (make-list 5 6)) => (6 6 6 6 6)`: 创建列表, make-list用来创建列表,第一个参数是列表的长度,第二个参数是列表中添充的内容
 - `(append arg list)`: append arg to list, note the difference between cons and append from the example below
 
-(apply procedure list)
-
-map的功能和apply有些相似,它的第一个参数也必需是一个过程,随后的参数必需是多个列表,返回的结果是此过程来操作列表后的值
-(map + (list 1 2 3) (list 4 5 6)) => (5 7 9)
-(map car (list (a b) (c d) (e f))) => (a c e)
-
-
-还可以实现多重列表,即列表的元素也是列表,如:(list (list 1 2 3) (list 4 5 6)).
-
-list 和 pair 的关系
-
+#### list 和 pair 的关系
 ```
 (define a (cons 1 (cons 2 (cons 3 (list)))))
 a => (1 2 3)
@@ -286,6 +278,8 @@ vector是一种比较常用的复合类型,它的元素索引从0开始,至第 n
 ## 过程 procedure
 在Scheme语言中, 过程相当于C语言中的函数, 不同的是Scheme语言过程是一种数据类型, 这也是为什么Scheme语言将程序和数据作为同一对象处理的原因
 
+The value of the procedure invocation expression is the value of the last evaluated expression in the procedure body.
+
 Scheme语言中可以用lambda来定义过程,其格式如下:
 ```
 (define 过程名 (lambda (参数 ...) (操作过程 ...)))
@@ -313,6 +307,23 @@ Scheme语言中可以用lambda来定义过程,其格式如下:
 ```
 
 此时过程add只在fix过程内部起做用,这事实上涉及了过程和变量的绑定,可以参考下面的关于过程绑定(let,let* 和letrec)的介绍.
+
+### apply
+apply的功能是为数据赋予某一操作过程,它的第一个参数必需是一个过程,随后的其它参数必需是列表  
+`(apply procedure list)`
+
+eg: `(apply + (list 2 3 4)) => 9`.  
+执行的过程, 对list的前两个元素应用+, 得到5, 然后再将+ 应用到结果与第三个元素上, 之后继续这个操作.
+
+### map
+map的功能和apply有些相似,它的第一个参数也必需是一个过程,随后的参数必需是多个列表,返回的结果是此过程来操作列表后的值
+
+- `(map + (list 1 2 3) (list 4 5 6)) => (5 7 9)`
+- `(map car (list (a b) (c d) (e f))) => (a c e)`
+
+还可以实现多重列表,即列表的元素也是列表,如:`(list (list 1 2 3) (list 4 5 6))`.
+
+除了apply, map以外, Scheme 语言中还有很多,诸如:eval, delay, for-each, force, call-with-current-continuation等过程绑定的操作定义,它们都无一例外的提供了相当灵活的数据处理能力.
 
 # 控制结构
 块(form)是Scheme语言中的最小程序单元,一个Scheme语言程序是由一个或多个form构成.
@@ -362,9 +373,30 @@ case结构和cond结构有点类似
 (loop 1 10) ;; print from 1 to 10
 ```
 
-## let let* letrec
-(let ((...)...) ...)
-(let ((x 2) (y 4)) (+ x y)))
+## `let` `let*` `letrec`
+在多数编程语言中都有关于变量的存在的时限问题, Scheme语言中用`let`,`let*`和`letrec`来确定变量的存在的时限问题,即局部变量和全局变量.
+一般情况下,全局变量都用define来定义,并放在过程代码的外部,
+而局部变量则用let等绑定到过程内部使用.
+
+let的用法: `(let ((...)...) ...)`, 也就是`(let s-expression s-expression)`的结构.  
+例如: `(let ((x 2) (y 4)) (+ x y)))`, 在 执行`(+ x y)`的时候, x 为2, y 为 4.
+
+let 有一个局限, 以上面的例子来说, 虽然let y 为4 定义在 let x 为 2 之后, 但是let y 为 4的时候, x 为 2 是不可用的, 如果此时访问x, 访问的仍然是上一层的x(这里就是global x).  
+这时可以使用`let*`, 在定义后面的时候, 前面的已经生效了.  
+
+但是即时使用`let`* 还是有缺陷的, 例如
+```
+(letrec ((even?
+			(lambda(x)
+				(if (= x 0) #t (odd? (- x 1)))))
+		(odd?
+			(lambda(x) 
+				(if (= x 0) #f (even? (- x 1))))))
+	(even? 88))
+```
+上面的操作过程中,内部定义了两个判断过程`even?`和`odd?`,这两个过程是互相递归引用的.
+如果将`letrec`换成`let`或`let*`都会不正常,因为`letrec`是将内部定义的过程或变量间进行相互引用的.
+这种情况下就需要使用 `letrec`
 
 # IO
 `(command-line)`: 得到a list of strings  
@@ -405,118 +437,12 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 
 - delete-file
 
-## Procedures
-The value of the procedure invocation expression is the value of the last evaluated expression
-in the procedure body.
-
-The side effects of calling the procedure are the combination of the
-side effects of the sequence of evaluations of expressions in the procedure body.
-
-One of the great simplifications of Scheme is that a procedure is just 
-another type of value,
-and that procedure values can be passed around and stored in variables in exactly the same
-way as, for example, strings and lists.
-
-**Note** that this is quite different from many dialects of Lisp — including Emacs Lisp —
-in which a program can use the same name with two quite separate meanings: one meaning
-identifies a Lisp function, while the other meaning identifies a Lisp variable, whose value
-need have nothing to do with the function that is associated with the first meaning. In
-these dialects, functions and variables are said to live in different namespaces.  
-**In Scheme, on the other hand, all names belong to a single unified namespace**, and the
-variables that these names identify can hold any kind of Scheme value, including procedure
-values.
-
-top level variable
-
-### Creating and Using a New Procedure
-	(lambda (argument1 argument2) expression ...)
-创建的lambda 表达式是一个procedure, 只不过没有名字, 例如:
-
-	(lambda (name address)
-		(string-append "Name=" name ":Address=" address))
-定义之后可以直接作用在参数上, 例如:	
-	
-	((lambda (name address)
-		(string-append "Name=" name ":Address=" address))
-	"FSF" "Cambridge")
-	
-**store the procedure value in a variable**
-
-	(define make-combined-string
-		(lambda (name address)
-			(string-append "Name=" name ":Address=" address)))
-然后就可以使用: `(make-combined-string "FSF" "Cambridge")`
-
-#### Lambda Alternatives
-Since it is so common in Scheme programs to want to create a procedure and then store it
-in a variable, there is an alternative form of the define syntax that allows you to do just
-that.
-A define expression of the form
-
-	(define (name [arg1 [arg2 ...]])
-		expression ...)
-is exactly equivalent to the longer form
-
-	(define name
-		(lambda ([arg1 [arg2 ...]])
-			expression ...))
-例如对上面的进行重定义:
-
-	(define (make-combined-string name address)
-		(string-append "Name=" name ":Address=" address))
-		
-
-**variable number of arguments:**
-
-	(lambda (arg1 ... . args) expression ...)
-	(lambda args expression ...)
-The corresponding forms of the alternative define syntax are:
-
-	(define (name arg1 ... . args) expression ...)
-	(define (name . args) expression ...)
-
-## Side effect
-Of the expressions that we have met so far, `define` and `set!` expressions have side
-effects 
-— the creation or modification of a variable — but no value;   
-`lambda` expressions
-have values — the newly constructed procedures — but no side effects;   
-and procedure invocation expressions, in general, have either values, or side effects, or both.
-
-**Variables**
-
-	(define x 5)
-	(display "original x: ")(display x)(newline) ;; x = 5
-	
-	(define y x)
-	(display y)(newline) ;; y = 5
-	
-	(set! x "now, a string")
-	(display "resetting x: ")(display x)(newline) ;; x = "now, a string"
-	
-	(display "y: ")(display y)(newline) ;; y = 5
-	
-**Porcedure**:	
-	
-	(display (string-append "/home" "/" "eric"))(newline) ;; /home/eric
-	
-	(define t string-append)
-	(display (t "/home" "/" "eric"))(newline) ;; /home/eric
-	
-	(define string-append string-length)
-	(display (string-append "/home"))(newline) ;; 5
-	
-	(display (t "/home" "/" "eric"))(newline) ;; /home/eric
-从上面的结果我们可以看到, procedure 的改变也没有side effect
-
 # Expressions and Evaluation
 ## Evaluating Special Syntactic Expressions
-When a procedure invocation expression is evaluated, the procedure and all the argument
-expressions must be evaluated before the procedure can be invoked.  
+When a procedure invocation expression is evaluated, the procedure and all the argument expressions must be evaluated before the procedure can be invoked.  
 Special syntactic expressions 不遵循这个规定.
 
-Why is this needed? Consider a program fragment that asks the user whether or not to
-delete a file, and then deletes the file if the user answers yes.
+Why is this needed? Consider a program fragment that asks the user whether or not to delete a file, and then deletes the file if the user answers yes.
 
 	(if (string=? (read-answer "Should I delete this file?") "yes")
 		(delete-file file))
@@ -525,8 +451,7 @@ delete a file, and then deletes the file if the user answers yes.
 Therefore `if` must be special syntax, not a procedure. 
 
 Other special syntaxes that we have already met are `define, set!` and `lambda`. 
-define and set! are syntax because they need to know the variable name that is given as the first argument in a define or set!
-expression, not that variable's value. 
+define and set! are syntax because they need to know the variable name that is given as the first argument in a define or set! expression, not that variable value. 
 lambda is syntax because it does not immediately evaluate the expressions that define the procedure body;
 
 ## Tail calls
@@ -538,7 +463,7 @@ lambda is syntax because it does not immediately evaluate the expressions that d
 		  (car lst)
 		  (my-last (cdr lst)))))
 
-	(print (my-last '(1 2 3)))
+	(print (my-last (list 1 2 3)))
 
 A proper tail call is only available from certain contexts, namely the following special form positions,
 
