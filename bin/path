@@ -21,7 +21,7 @@ fi
 
 if [ $method = "wget" ]
 then
-	echo "`hostname`:`pwd`/${target}"
+	echo "ftp://`hostname`:`pwd`/${target}"
 elif [ $method = "ssh" ]
 then
 	echo "`whoami`@`hostname`:`pwd`/${target}"
