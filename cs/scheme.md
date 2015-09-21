@@ -89,6 +89,20 @@ History
 	(use-modules (ice-9 history))
 
 # Data Types
+Scheme的结构就两种:原子和表达式.
+原子是诸如数,字符串,布尔值,变量,空表这类简单数据.
+对非变量的原子求值,得到原子自身.
+对变量求值,得到变量绑定的值.
+
+表达式的形式也只有一种:列表.
+一对括号包含起来的就是列表.表里的元素用空格分开.列表可以嵌套.这样的表达式在Lisp里叫做S-表达式,意思是符号表达式.
+
+前置操作符让任何操作符都是多维的.
+比如说.如果我们要把1到5的整数相加,用中缀操作符,就得写成 `1 + 2 + 3 + 4 + 5`.同一个加好重复了4次.
+而用前缀操作符,只需要写一次:`(+ 1 2 3 4 5)`.
+推而广之,如果我们要把一列数加起来,就得用到循环.而在Scheme里则不需要.
+而且前缀操作符去掉了优先级问题:我们可以通过括号来判断每个表达式的优先级.
+
 The term **latent typing** is used to describe a computer language, such as Scheme, 
 for which you cannot, in general, simply look at a program source code and determine what type of data will be associated with a particular variable, 
 or with the result of a particular expression. 
@@ -212,6 +226,10 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 - `(list-set! liste index value)`
 - `(define y (make-list 5 6)) => (6 6 6 6 6)`: 创建列表, make-list用来创建列表,第一个参数是列表的长度,第二个参数是列表中添充的内容
 - `(append arg list)`: append arg to list, note the difference between cons and append from the example below
+
+`(car ''(1 2 3 4))`:这个表达式调用函数car.函数car接收一个列表参数,并返回这个参数的第一个值,也就是1.
+注意例子里的参数`(1 2 3 4)`前有一单引号.这是因为Scheme总是把一个普通列表当作表达式计算.加上单引号相当于告诉Scheme,不要对`(1 2 3 4)`估值,把它当成数据对待.
+如果不加这个单引号,Scheme会执行`(1 2 3 4)`.执行的规则是把该列表的第一个元素当成函数来调用.而第一个元素是1,不是函数, Scheme会抛出错误.
 
 #### list 和 pair 的关系
 ```
