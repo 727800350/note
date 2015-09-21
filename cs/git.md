@@ -184,10 +184,9 @@ Is there a way to undo this or remove these files from the commit?
 
 **错误提交了一个commit, 需要把它撤销掉**  
 但是这个好像只针对于刚提交就意识到了错误
-```
-git reset --hard <commit_id>  ##  commit_id 为这个commit 之前的一个commit_id
-git push origin HEAD --force
-```
+
+1. `git reset --hard <commit_id>`  ##  commit_id 为这个commit 之前的一个commit_id
+1. `git push origin HEAD --force`
 可以使用`HEAD~1` 表示刚刚commit 的 commit_id
 
 **Git: Checkout all files except one**  
@@ -198,10 +197,6 @@ When I do a git status, I see files like this:
 	modified:  dir/C/file.txt
 	modified:  dir/D/file.txt
 What I want to do is to discard changes to all files EXCEPT for dir/C/file.txt
-
-I want to do something like this:
-
-	git checkout -- dir/!C/file.txt
 
 Answer:
 
@@ -226,22 +221,10 @@ original branch status:
 	  remotes/origin/note
 note branch 是在其他机器上删除的一个分支
 
-delete the branch locally
-
-	[eric@iis ntop]$ git branch -d note
-
-clean the remote branch status
-
-	[eric@iis ntop]$ git remote prune origin
-
-query the remote and automatically set the origin/HEAD pointer to the remote current branch.
-
-	[eric@iis ntop]$ git remote set-head origin -a
-
-delete the origin/HEAD symbolic ref
-
-	[eric@iis ntop]$ git remote set-head origin -d
-Done
+1. `$ git branch -d note` delete the branch locally
+1. `$ git remote prune origin` clean the remote branch status
+1. `$ git remote set-head origin -a` query the remote and automatically set the origin/HEAD pointer to the remote current branch.
+1. `$ git remote set-head origin -d` delete the origin/HEAD symbolic ref
 
 **commit 之后发现commit的message有错误**  
 `git commit --amend`   
