@@ -233,6 +233,18 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 注意例子里的参数`(1 2 3 4)`前有一单引号.这是因为Scheme总是把一个普通列表当作表达式计算.加上单引号相当于告诉Scheme,不要对`(1 2 3 4)`估值,把它当成数据对待.
 如果不加这个单引号,Scheme会执行`(1 2 3 4)`.执行的规则是把该列表的第一个元素当成函数来调用.而第一个元素是1,不是函数, Scheme会抛出错误.
 
+下面的有点不太理解
+```
+scheme@(guile-user) [1]> '((1 2 3) (4 5 6))
+$4 = ((1 2 3) (4 5 6))
+scheme@(guile-user) [1]> '('(1 2 3) '(4 5 6))
+$5 = ((quote (1 2 3)) (quote (4 5 6)))
+scheme@(guile-user) [1]> (list '(1 2 3) '(4 5 6))
+$6 = ((1 2 3) (4 5 6))
+scheme@(guile-user) [1]> (list (list 1 2 3) (list 4 5 6))
+$7 = ((1 2 3) (4 5 6))
+```
+
 不要小看了列表.这个看似简单的数据类型的具有丰富的表达能力.
 比如我们可以把下面2x3的矩阵
 ![matrix](http://p.blog.csdn.net/images/p_blog_csdn_net/g9yuayon/890834bc366e48e29ddb374a82b7554b.png)
@@ -358,21 +370,21 @@ map的功能和apply有些相似,它的第一个参数也必需是一个过程,�
 除了apply, map以外, Scheme 语言中还有很多,诸如:eval, delay, for-each, force, call-with-current-continuation等过程绑定的操作定义,它们都无一例外的提供了相当灵活的数据处理能力.
 
 ### ex
-定义一个函数sum-of-squares计算一列数的平方和
+定义一个函数sum_of_squares计算一列数的平方和
 ```scheme
 (define (sum_of_squares numbers)
-	(apply + (map (lambda (x) (\* x x)) numbers)))
+	(apply + (map (lambda (x) (/* x x)) numbers)))
 ```
 [sum of squares test](http://p.blog.csdn.net/images/p_blog_csdn_net/g9yuayon/a6f5baf5fb64466aa0ef70fe34b5de12.png)
 
 求出两个矢量的点乘
-```
+```scheme
 (define (dot_product left_vector right_vector)
 	(apply + (map * left_vector right_vector)))
 ```
 
 写个矩阵转置
-```
+```scheme
 (define (transpose matrix)
 	(apply map (cons list matrix)))
 ```
@@ -382,6 +394,12 @@ map的功能和apply有些相似,它的第一个参数也必需是一个过程,�
 
 树的高度
 [tree ex](http://p.blog.csdn.net/images/p_blog_csdn_net/g9yuayon/67adf90203e94115a36a9f0690abf6b9.png)
+```
+(define (tree_depth tree)
+	(cond
+		((list? tree) (+ 1 (apply max (map tree_depth tree))))
+		(else 0)))
+```
 
 # 控制结构
 块(form)是Scheme语言中的最小程序单元,一个Scheme语言程序是由一个或多个form构成.
