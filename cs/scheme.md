@@ -97,6 +97,8 @@ Scheme的结构就两种:原子和表达式.
 表达式的形式也只有一种:列表.
 一对括号包含起来的就是列表.表里的元素用空格分开.列表可以嵌套.这样的表达式在Lisp里叫做S-表达式,意思是符号表达式.
 
+在Scheme里,所有变量本质上都是指针.指针本身没有类型,他们指向的值才有类型.换句话说,Scheme是动态类型语言.
+
 前置操作符让任何操作符都是多维的.
 比如说.如果我们要把1到5的整数相加,用中缀操作符,就得写成 `1 + 2 + 3 + 4 + 5`.同一个加好重复了4次.
 而用前缀操作符,只需要写一次:`(+ 1 2 3 4 5)`.
@@ -231,6 +233,18 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 注意例子里的参数`(1 2 3 4)`前有一单引号.这是因为Scheme总是把一个普通列表当作表达式计算.加上单引号相当于告诉Scheme,不要对`(1 2 3 4)`估值,把它当成数据对待.
 如果不加这个单引号,Scheme会执行`(1 2 3 4)`.执行的规则是把该列表的第一个元素当成函数来调用.而第一个元素是1,不是函数, Scheme会抛出错误.
 
+不要小看了列表.这个看似简单的数据类型的具有丰富的表达能力.
+比如我们可以把下面2x3的矩阵
+![matrix](http://p.blog.csdn.net/images/p_blog_csdn_net/g9yuayon/890834bc366e48e29ddb374a82b7554b.png)
+表达为`((1 2 3) (4 5 6) (7 8 9))`
+
+而下面的树也可以用列表直观表达:`(A B C (D (F H) G) E)`.也就是说,每个列表表示一个树或子树.列表的第一个元素是根.
+![tree](http://p.blog.csdn.net/images/p_blog_csdn_net/g9yuayon/19562bff2b0c431cb0846843563a0a75.png)
+
+在Scheme 里面, 程序即数据,数据即程序.
+我们遍历列表修改数据.同理,我们也可以遍列类表修改程序.
+正是这样的统一处理带给Scheme无与伦比的威力:无论是编译时还是运行时,我们都可以修改,注入,加载,或者生成新的程序
+
 #### list 和 pair 的关系
 ```
 (define a (cons 1 (cons 2 (cons 3 (list)))))
@@ -342,6 +356,32 @@ map的功能和apply有些相似,它的第一个参数也必需是一个过程,�
 还可以实现多重列表,即列表的元素也是列表,如:`(list (list 1 2 3) (list 4 5 6))`.
 
 除了apply, map以外, Scheme 语言中还有很多,诸如:eval, delay, for-each, force, call-with-current-continuation等过程绑定的操作定义,它们都无一例外的提供了相当灵活的数据处理能力.
+
+### ex
+定义一个函数sum-of-squares计算一列数的平方和
+```scheme
+(define (sum_of_squares numbers)
+	(apply + (map (lambda (x) (\* x x)) numbers)))
+```
+[sum of squares test](http://p.blog.csdn.net/images/p_blog_csdn_net/g9yuayon/a6f5baf5fb64466aa0ef70fe34b5de12.png)
+
+求出两个矢量的点乘
+```
+(define (dot_product left_vector right_vector)
+	(apply + (map * left_vector right_vector)))
+```
+
+写个矩阵转置
+```
+(define (transpose matrix)
+	(apply map (cons list matrix)))
+```
+调用函数`(transpose ''((1 2 3) (4 5 6) (7 8 9) (10 11 12)))`就应该得到`((1 4 7 10) (2 5 8 11) (3 6 9 12))`.  
+
+1. 首先执行(cons list matrix), 得到()
+
+树的高度
+[tree ex](http://p.blog.csdn.net/images/p_blog_csdn_net/g9yuayon/67adf90203e94115a36a9f0690abf6b9.png)
 
 # 控制结构
 块(form)是Scheme语言中的最小程序单元,一个Scheme语言程序是由一个或多个form构成.
