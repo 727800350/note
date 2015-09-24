@@ -88,6 +88,53 @@ History
 
 	(use-modules (ice-9 history))
 
+# [Quote, Quasiquote, and Metaprogramming](http://courses.cs.washington.edu/courses/cse341/04wi/lectures/14-scheme-quote.html)
+```
+'3        ; => 3                 (a number)
+'"hi"     ; => "hi"              (a string)
+'a        ; => a                 (a symbol)
+'(+ 3 4)  ; => (list '+ '3 '4)   (a list)
+'(a b c)  ; => (list 'a 'b 'c)   (a list)
+
+'(define x 25)                   (a list)
+          ; => (list 'define 'x '25)
+          ; => (list 'define 'x 25)
+
+'(lambda (x) (+ x 3))            (a list)
+          ; => (list 'lambda (list 'x) (list '+ 'x '3))
+          ; => (list 'lambda (list 'x) (list '+ 'x 3))
+```
+"quoted" data remains unevaluated, and provides a convenient way of representing Scheme programs.
+This makes it simple to write programs that manipulate other programs --- it is easy to construct and transform programs on the fly.
+
+下面的有点不太理解
+```
+scheme@(guile-user) [1]> '((1 2 3) (4 5 6))
+$4 = ((1 2 3) (4 5 6))
+scheme@(guile-user) [1]> '('(1 2 3) '(4 5 6))
+$5 = ((quote (1 2 3)) (quote (4 5 6)))
+scheme@(guile-user) [1]> (list '(1 2 3) '(4 5 6))
+$6 = ((1 2 3) (4 5 6))
+scheme@(guile-user) [1]> (list (list 1 2 3) (list 4 5 6))
+$7 = ((1 2 3) (4 5 6))
+```
+Sometimes one doesn't want to escape evaluation of an entire list. 
+```
+`(1 2 ,(+ 3 4))   ; => '(1 2 7)
+(quasiquote (1 2 (unquote (+ 3 4))))  ; => '(1 2 7)
+(quote (1 2 (+ 3 4)))   ; => '(1 2 (+ 3 4))
+```
+
+Since we have a method for representing programs as data, it is convenient to have a function that evaluates that data as if it were a part of the currently running program. 
+Indeed, Scheme has such a function **eval**, but its behavior is not well-standardized across Scheme implementations.
+```
+(define x 5)
+(define y '(+ x 10))
+(eval y)             ; => 15
+
+(eval '((lambda (x y) (string-concat x y)) "foo" "bar")) ; => "foobar"
+```
+
 # Data Types
 Scheme的结构就两种:原子和表达式.
 原子是诸如数,字符串,布尔值,变量,空表这类简单数据.
@@ -232,18 +279,6 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 `(car ''(1 2 3 4))`:这个表达式调用函数car.函数car接收一个列表参数,并返回这个参数的第一个值,也就是1.
 注意例子里的参数`(1 2 3 4)`前有一单引号.这是因为Scheme总是把一个普通列表当作表达式计算.加上单引号相当于告诉Scheme,不要对`(1 2 3 4)`估值,把它当成数据对待.
 如果不加这个单引号,Scheme会执行`(1 2 3 4)`.执行的规则是把该列表的第一个元素当成函数来调用.而第一个元素是1,不是函数, Scheme会抛出错误.
-
-下面的有点不太理解
-```
-scheme@(guile-user) [1]> '((1 2 3) (4 5 6))
-$4 = ((1 2 3) (4 5 6))
-scheme@(guile-user) [1]> '('(1 2 3) '(4 5 6))
-$5 = ((quote (1 2 3)) (quote (4 5 6)))
-scheme@(guile-user) [1]> (list '(1 2 3) '(4 5 6))
-$6 = ((1 2 3) (4 5 6))
-scheme@(guile-user) [1]> (list (list 1 2 3) (list 4 5 6))
-$7 = ((1 2 3) (4 5 6))
-```
 
 不要小看了列表.这个看似简单的数据类型的具有丰富的表达能力.
 比如我们可以把下面2x3的矩阵
