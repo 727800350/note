@@ -108,35 +108,24 @@ Indeed, Scheme has such a function **eval**, but its behavior is not well-standa
 
 # Data Types
 Scheme的结构就两种:原子和表达式.
-原子是诸如数,字符串,布尔值,变量,空表这类简单数据.
-对非变量的原子求值,得到原子自身.
-对变量求值,得到变量绑定的值.
 
+- 原子是诸如数,字符串,布尔值,变量,空表这类简单数据. 对非变量的原子求值,得到原子自身. 对变量求值,得到变量绑定的值.
 表达式的形式也只有一种:列表.
-一对括号包含起来的就是列表.表里的元素用空格分开.列表可以嵌套.这样的表达式在Lisp里叫做S-表达式,意思是符号表达式.
+- 一对括号包含起来的就是列表.表里的元素用空格分开.列表可以嵌套.
 
-在Scheme里,所有变量本质上都是指针.指针本身没有类型,他们指向的值才有类型.换句话说,Scheme是动态类型语言.
-
-前置操作符让任何操作符都是多维的.
-比如说.如果我们要把1到5的整数相加,用中缀操作符,就得写成 `1 + 2 + 3 + 4 + 5`.同一个加好重复了4次.
-而用前缀操作符,只需要写一次:`(+ 1 2 3 4 5)`.
-推而广之,如果我们要把一列数加起来,就得用到循环.而在Scheme里则不需要.
-而且前缀操作符去掉了优先级问题:我们可以通过括号来判断每个表达式的优先级.
+**All names belong to a single unified namespace**, and the variables that these names identify can hold any kind of Scheme value, including procedure values.
 
 The term **latent typing** is used to describe a computer language, such as Scheme, 
 for which you cannot, in general, simply look at a program source code and determine what type of data will be associated with a particular variable, 
 or with the result of a particular expression. 
 Instead, **the types of variables and expressions are only known in general at run time**
 
-All names belong to a single unified namespace**, and the variables that these names identify can hold any kind of Scheme value, including procedure values.
-
 **all values in Scheme – carry their type with them**.   
 In other words, every value "knows," at runtime, what kind of value it is, a number, a string, a list, whatever.
+Scheme语言的变量类型不是固定的,可以随时改变.
 
 - (define 变量名 值): 定义变量
 - (set! 变量名 值): 改变变量的值
-
-Scheme语言的变量类型不是固定的,可以随时改变.
 
 数据比较
 
