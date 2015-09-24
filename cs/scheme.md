@@ -268,13 +268,14 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 ### 列表(list)
 列表是由多个相同或不同的数据连续组成的数据类型,它是编程中最常用的复合数据类型之一,很多过程操作都与它相关
 
-- `(list)` 表示一个空的列表, 可以简写为 `''()`
+- `(list)` 表示一个空的列表, 可以简写为 `'()`
 - `(define liste (list 1 2 3 4 ))`
 - `(length liste)`
 - `(list-ref liste index)`
 - `(list-set! liste index value)`
 - `(define y (make-list 5 6)) => (6 6 6 6 6)`: 创建列表, make-list用来创建列表,第一个参数是列表的长度,第二个参数是列表中添充的内容
 - `(append arg list)`: append arg to list, note the difference between cons and append from the example below
+- `(list (list 1 2 3) (list 4 5 6))`, 相当于 `'((1 2 3) (4 5 6))`
 
 `(car ''(1 2 3 4))`:这个表达式调用函数car.函数car接收一个列表参数,并返回这个参数的第一个值,也就是1.
 注意例子里的参数`(1 2 3 4)`前有一单引号.这是因为Scheme总是把一个普通列表当作表达式计算.加上单引号相当于告诉Scheme,不要对`(1 2 3 4)`估值,把它当成数据对待.
@@ -388,11 +389,15 @@ Scheme语言中可以用lambda来定义过程,其格式如下:
 此时过程add只在fix过程内部起做用,这事实上涉及了过程和变量的绑定,可以参考下面的关于过程绑定(let,let* 和letrec)的介绍.
 
 ### apply
-apply的功能是为数据赋予某一操作过程,它的第一个参数必需是一个过程,随后的其它参数必需是列表  
+[map vs apply](http://stackoverflow.com/questions/27488723/what-is-the-difference-between-map-and-apply-in-scheme)
+
+apply的功能是为数据赋予某一操作过程,它的第一个参数必需是一个过程, **最后的一个参数必需是列表**.
 `(apply procedure list)`
 
-eg: `(apply + (list 2 3 4)) => 9`.  
+eg: `(apply + '(2 3 4))` 相当于 `(+ 2 3 4))`
 执行的过程, 对list的前两个元素应用+, 得到5, 然后再将+ 应用到结果与第三个元素上, 之后继续这个操作.
+
+`(apply + 1 -2 3 '(10 20))` 相当于 `(+ 1 -2 3 10 20)`
 
 ### map
 map的功能和apply有些相似,它的第一个参数也必需是一个过程,随后的参数必需是多个列表,返回的结果是此过程来操作列表后的值
@@ -400,7 +405,20 @@ map的功能和apply有些相似,它的第一个参数也必需是一个过程,�
 - `(map + (list 1 2 3) (list 4 5 6)) => (5 7 9)`
 - `(map car (list (a b) (c d) (e f))) => (a c e)`
 
-还可以实现多重列表,即列表的元素也是列表,如:`(list (list 1 2 3) (list 4 5 6))`.
+```
+(map - '(2 3 4))
+ arguments     mapping "-"     result
+     2       === (- 2) ===>     -2
+     3       === (- 3) ===>     -3
+     4       === (- 4) ===>     -4
+
+(map + '( 1  2  3)
+       '(10 20 30))
+ arguments      mapping "+"      result
+    1 10     === (+ 1 10) ===>     11
+    2 20     === (+ 2 20) ===>     22
+    3 30     === (+ 3 30) ===>     33
+```
 
 除了apply, map以外, Scheme 语言中还有很多,诸如:eval, delay, for-each, force, call-with-current-continuation等过程绑定的操作定义,它们都无一例外的提供了相当灵活的数据处理能力.
 
