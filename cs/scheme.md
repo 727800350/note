@@ -194,14 +194,10 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 ### String
 
 - (string-append str1 ... strn)
-
 - (string-length str)
-
 - (string-set! string index char): 更改string 中index 位置的字符为char( string 中下标从 0 开始)
 - (string-ref! string index): 取得string 中index 位置的字符
-
 - (string=? argument)
-
 - (number->string argument)
 - (string->number argument)
 
@@ -213,13 +209,13 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 它用cons来定义,如: `(cons 8 9) => (8 . 9)`
 
 其中在点前面的值被称为 car ,在点后面的值被称为 cdr ,car和cdr同时又成为取pair的这两个值的过程,如:
-```
+```scheme
 (define p (cons 4 5)) => (4 . 5)
 (car p)	=> 4
 (cdr p)	=> 5
 ```
 还可以用set-car! 和 set-cdr! 来分别设定这两个值:
-```
+```scheme
 (set-car! p "hello")
 (set-cdr! p "good")
 ```
@@ -254,7 +250,7 @@ In particular, `#f` is not the same as the number 0 (like in C and C++), and not
 正是这样的统一处理带给Scheme无与伦比的威力:无论是编译时还是运行时,我们都可以修改,注入,加载,或者生成新的程序
 
 #### list 和 pair 的关系
-```
+```scheme
 (define a (cons 1 (cons 2 (cons 3 (list)))))
 a => (1 2 3)
 (list? a) => #t
@@ -265,7 +261,7 @@ a => (1 2 3)
 list是pair的子类型,list一定是一个pair,而pair不是list
 
 list
-```
+```scheme
 (define liste (list 1 2 3))
 (car liste) => 1
 (caar liste) => fail
@@ -276,7 +272,7 @@ list
 ```
 
 pair
-```
+```scheme
 (define p (cons 1 (cons 2 3)))
 p => ''(1 2 . 3)
 (car p) => 1
@@ -321,14 +317,17 @@ vector是一种比较常用的复合类型,它的元素索引从0开始,至第 n
 The value of the procedure invocation expression is the value of the last evaluated expression in the procedure body.
 
 Scheme语言中可以用lambda来定义过程,其格式如下:
-```
+```scheme
 (define 过程名 (lambda (参数 ...) (操作过程 ...)))
+(define (过程名 参数 ...) (操作过程 ...)))
 ```
+省略lambda 的为简写形式
+
 我们可以自定义一个简单的过程,如下: `(define add5 (lambda (x) (+ x 5)))`.  
 `(lambda (x) (+ x 5))` 实际上就是一个匿名过程.
 
 既然过程是一种数据类型,所以将过程作为过程的参数是完全可以的
-```
+```scheme
 (define isp
 	(lambda (x)
 		(if (procedure? x) 'isaprocedure 'notaprocedure)))
@@ -337,7 +336,7 @@ Scheme语言中可以用lambda来定义过程,其格式如下:
 过程的嵌套定义
 在Scheme语言中,过程定义也可以嵌套,一般情况下,过程的内部过程定义只有在过程内部才有效,相当C语言中的局部变量.
 如下面的代码的最终结果是50:
-```
+```scheme
 (define fix 
 	(lambda (x y z)
 		(define add 
@@ -446,7 +445,7 @@ Scheme语言中只有if结构是系统原始提供的, 其它的cond, case, and,
 格式为:`(begin form1 form2 ...)`
 
 如用Scheme语言写成的经典的helloworld程序是如下样子的:
-```
+```scheme
 (begin 
 	(display "Hello world!")
 	(newline))
@@ -468,7 +467,7 @@ case结构和cond结构有点类似
 
 ## loop
 在Scheme语言中没有循环结构, 不过循环结构可以用递归来很轻松的实现(在Scheme语言中只有通过递归才能实现循环)
-```
+```scheme
 (define loop
 	(lambda(x y)
 		(if (<= x y)
@@ -493,7 +492,7 @@ let 有一个局限, 以上面的例子来说, 虽然let y 为4 定义在 let x 
 这时可以使用`let*`, 在定义后面的时候, 前面的已经生效了.  
 
 但是即时使用`let`* 还是有缺陷的, 例如
-```
+```scheme
 (letrec ((even?
 			(lambda(x)
 				(if (= x 0) #t (odd? (- x 1)))))
@@ -532,7 +531,7 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 - open-input-file, open-output-file
 - close-input-port, close-output-port
 
-```
+```scheme
 (define input (open-input-file "input"))
 (read input)
 (close-input-port input)
