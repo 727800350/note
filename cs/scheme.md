@@ -24,23 +24,18 @@ guile 的启动方式
 退出:`(quit)` or `(exit)`
 
 ## guile script
-
-	#!/usr/bin/guile -s
-	!#
-	(display "Hello, world!")
-	(newline)
-
+```scheme
+#!/usr/bin/guile -s
+!#
+(display "Hello, world!")
+(newline)
+```
 当有多个options时:  
-the meta switch `\` allows the Guile programmer to specify an arbitrary
-number of options
-
-	#!/usr/local/bin/guile \
-	-e main -s
-	!#
-
-Start ex:
-
-	guile -e main -s /u/jimb/ex4 foo
+```scheme
+#!/usr/local/bin/guile -e main -s
+!#
+```
+Start ex:`guile -e main -s /u/jimb/ex4 foo`  
 Load the file /u/jimb/ex4, and then call the function main, passing it the list `("/u/jimb/ex4" "foo")`
 
 还可以用load过程来直接调用Scheme语言源文件并执行它,格式为:`(load "filename")`
@@ -53,7 +48,7 @@ Load the file /u/jimb/ex4, and then call the function main, passing it the list 
 Guile initialization file: `~/.guile`.  
 To make it easier for you to repeat and vary previously entered expressions, or to edit the expression that you are typing in, Guile can use the GNU Readline library. 
 This is not enabled by default because of licensing reasons
-```
+```scheme
 (use-modules (ice-9 readline))
 (activate-readline)
 (use-modules (ice-9 history))
@@ -79,7 +74,7 @@ This is not enabled by default because of licensing reasons
 This makes it simple to write programs that manipulate other programs --- it is easy to construct and transform programs on the fly.
 
 下面的有点不太理解
-```
+```scheme
 scheme@(guile-user) [1]> '((1 2 3) (4 5 6))
 $4 = ((1 2 3) (4 5 6))
 scheme@(guile-user) [1]> '('(1 2 3) '(4 5 6))
