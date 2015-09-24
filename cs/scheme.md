@@ -55,7 +55,7 @@ This is not enabled by default because of licensing reasons
 ```
 
 # [Quote, Quasiquote, and Metaprogramming](http://courses.cs.washington.edu/courses/cse341/04wi/lectures/14-scheme-quote.html)
-```
+```scheme
 '3        ; => 3                 (a number)
 '"hi"     ; => "hi"              (a string)
 'a        ; => a                 (a symbol)
@@ -85,7 +85,7 @@ scheme@(guile-user) [1]> (list (list 1 2 3) (list 4 5 6))
 $7 = ((1 2 3) (4 5 6))
 ```
 Sometimes one doesn't want to escape evaluation of an entire list. 
-```
+```scheme
 `(1 2 ,(+ 3 4))   ; => '(1 2 7)
 (quasiquote (1 2 (unquote (+ 3 4))))  ; => '(1 2 7)
 (quote (1 2 (+ 3 4)))   ; => '(1 2 (+ 3 4))
@@ -93,7 +93,7 @@ Sometimes one doesn't want to escape evaluation of an entire list.
 
 Since we have a method for representing programs as data, it is convenient to have a function that evaluates that data as if it were a part of the currently running program. 
 Indeed, Scheme has such a function **eval**, but its behavior is not well-standardized across Scheme implementations.
-```
+```scheme
 (define x 5)
 (define y '(+ x 10))
 (eval y)             ; => 15
