@@ -539,6 +539,28 @@ Scheme语言中输入输出中用到了端口的概念,相当于C中的文件指
 
 - delete-file
 
+# 宏
+一个简单的例子: Perl和Ruby里有一方便的语言后置修饰,即把条件判断放到执行语句的后面.
+比如: `print "x > y" unless y >= x` 这相当于下面的语句: `if(! (y >= x) ){ print "x > y" }`  
+Scheme里没有unless这个关键词,也不能后置修饰条件.不过用上宏就不一样了
+```scheme
+(define-syntax du
+	(syntax-rules ()
+		((_ experssion unless condition)
+			(if (not condition) expression))))
+```
+ex: `(du (display "3>2") unless (> 2 3))`, 会把`"3>2"` 打出来
+
+- 用函数define-syntax定义宏.
+du是这个宏的名字(do-unless的缩写). 缺省情况下,宏扩展从表达式的第一个元素开始,所以我加上du作为关键字.
+我们可以通过修改扩展宏的函数来去掉对起首关键字的依赖,不过这无关本质.
+- 每个宏由一系列句法规则组成.这些句法规则由syntax-rules定义.
+函数syntax-rules规定了一到多组模式匹配的语句:(模式 模板): (syntax-rules () (模式1 模板1) (模式2 模板2) ... (模式n 模板n))
+Scheme会依次用列出的模板匹配定义的表达式.匹配成功的话,就扩展模板.
+比如说当Scheme看到`(du (display "3 > 2") unless (> 2 3))`时,就开始试着用宏定义里的模式来匹配该表达式.  下划线`_`是一特殊字符,指代宏的名字.
+匹配的结果是 `_` 与"du"匹配,expression与`(display "3 > 2")`匹配,而condition与`(> 2 3)`匹配.匹配成功,
+所以这个模式对应的模板被展开为`(if (not (> 2 3)) (display "3 > 2"))`.执行该语句,便打印"3 > 2"
+
 # Expressions and Evaluation
 ## Evaluating Special Syntactic Expressions
 When a procedure invocation expression is evaluated, the procedure and all the argument expressions must be evaluated before the procedure can be invoked.  
