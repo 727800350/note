@@ -7,24 +7,11 @@ there was 2 main mindsets in terms of design and implementation of programming l
 
 Here is a (non-exhaustive) list of FP features:
 
-1. First-Class Functions: mean that you can store functions into a variable
-1. High-Order Functions: functions can return functions or receive other functions as params
-1. Pure Functions: mean that the function does not change any value, it just receives data and output data, just like our beloved functions from Mathematics.
-1. Closures: mean that you can save some data inside a function that is only accessible to a specific returning function, i.e the returning function keeps its execution environment.
-1. Immutable State: means that you can not change any state at all (even though you can get a new state).
-
-Lisp: List Processing
-
-Guile implements Scheme as described in the Revised5Report on the Algorithmic Language Scheme (usually known as R5RS), providing clean and general data and control structures.
-Guile goes beyond the rather austere language presented in R5RS, extending it with a module system, full access to POSIX system calls, networking support, multiple threads,
-dynamic linking, a foreign function call interface, powerful string processing, and many other features needed for programming in the real world.
-
-It is easy to call Scheme code from C code and vice versa, giving the application designer full control of how and when to invoke the interpreter. 
-Applications can add new functions, data types, control structures, and even syntax to Guile, creating a domain-specific language tailored to the task at hand,
-but based on a robust language design.
-
-Since the 2.0, Guile architecture supports compiling any language to its core virtual machine bytecode, and Scheme is just one of the supported languages. 
-Other supported languages are Emacs Lisp, ECMAScript (commonly known as Javascript) and Brainfuck, and work is under discussion for Lua, Ruby and Python.
+1. **First-Class Functions**: mean that you can store functions into a variable
+1. **High-Order Functions**: functions can return functions or receive other functions as params
+1. **Pure Functions**: mean that the function does not change any value, it just receives data and output data, just like our beloved functions from Mathematics.
+1. **Closures**: mean that you can save some data inside a function that is only accessible to a specific returning function, i.e the returning function keeps its execution environment.
+1. **Immutable State**: means that you can not change any state at all (even though you can get a new state).
 
 ## Start and exit
 guile 的启动方式
@@ -59,34 +46,18 @@ Load the file /u/jimb/ex4, and then call the function main, passing it the list 
 还可以用load过程来直接调用Scheme语言源文件并执行它,格式为:`(load "filename")`
 
 注释:
-标准的Scheme语言定义中没有多行注释,不过在它的实现中几乎都有.
-在Guile中就有多行注释,以符号组合"#!"开始,以相反的另一符号组合"!#"结束,其中内容为注释,如:
-```
-#!
-there are scheme comment area.
-you can write mulity lines here.
-!#
-```
-注意的是,符号组合"#!"和"!#"一定分做两行来写.
+单行用`;`, 标准的Scheme语言定义中没有多行注释,不过在它的实现中几乎都有.
+在Guile中就有多行注释,以符号组合"#!"开始,以相反的另一符号组合"!#"结束.
 
 ## Tips
-Guile initialization file: `~/.guile`
-
-To make it easier for you to repeat and vary previously entered expressions, or to edit
-the expression that you are typing in, Guile can use the GNU Readline library. This is not
-enabled by default because of licensing reasons, but all you need to activate Readline is the
-following pair of lines.
-
-	scheme@(guile-user)> (use-modules (ice-9 readline))
-	scheme@(guile-user)> (activate-readline)
-Put 
-	(use-modules (ice-9 readline))
-	(activate-readline)
-in `~/.guile`
-
-History
-
-	(use-modules (ice-9 history))
+Guile initialization file: `~/.guile`.  
+To make it easier for you to repeat and vary previously entered expressions, or to edit the expression that you are typing in, Guile can use the GNU Readline library. 
+This is not enabled by default because of licensing reasons
+```
+(use-modules (ice-9 readline))
+(activate-readline)
+(use-modules (ice-9 history))
+```
 
 # [Quote, Quasiquote, and Metaprogramming](http://courses.cs.washington.edu/courses/cse341/04wi/lectures/14-scheme-quote.html)
 ```
@@ -394,10 +365,8 @@ Scheme语言中可以用lambda来定义过程,其格式如下:
 apply的功能是为数据赋予某一操作过程,它的第一个参数必需是一个过程, **最后的一个参数必需是列表**.
 `(apply procedure list)`
 
-eg: `(apply + '(2 3 4))` 相当于 `(+ 2 3 4))`
-执行的过程, 对list的前两个元素应用+, 得到5, 然后再将+ 应用到结果与第三个元素上, 之后继续这个操作.
-
-`(apply + 1 -2 3 '(10 20))` 相当于 `(+ 1 -2 3 10 20)`
+- `(apply + '(2 3 4))` 相当于 `(+ 2 3 4))`
+- `(apply + 1 -2 3 '(10 20))` 相当于 `(+ 1 -2 3 10 20)`
 
 ### map
 map的功能和apply有些相似,它的第一个参数也必需是一个过程,随后的参数必需是多个列表,返回的结果是此过程来操作列表后的值
@@ -441,7 +410,7 @@ map的功能和apply有些相似,它的第一个参数也必需是一个过程,�
 (define (transpose matrix)
 	(apply map (cons list matrix)))
 ```
-调用函数`(transpose '((1 2 3) (4 5 6)))`就应该得到`((1 4) (2 5) (3 6))`.  
+调用函数`(transpose '((1 2 3) (4 5 6)))`就应该得到`'((1 4) (2 5) (3 6))`
 
 执行顺序如下:
 ```scheme
@@ -463,7 +432,7 @@ map的功能和apply有些相似,它的第一个参数也必需是一个过程,�
 		(else 0)))
 ```
 执行过程如下
-```
+```scheme
 (tree_depth tree)
 => (tree_depth '(A B C (D (F H) G) E))
 => (+ 1 (apply max (map tree_depth '(A B C (D (F H) G) E))))
