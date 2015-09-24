@@ -423,7 +423,7 @@ map的功能和apply有些相似,它的第一个参数也必需是一个过程,�
 除了apply, map以外, Scheme 语言中还有很多,诸如:eval, delay, for-each, force, call-with-current-continuation等过程绑定的操作定义,它们都无一例外的提供了相当灵活的数据处理能力.
 
 ### ex
-定义一个函数sum_of_squares计算一列数的平方和
+#### 定义一个函数sum_of_squares计算一列数的平方和
 ```scheme
 (define (sum_of_squares numbers)
 	(apply + (map (lambda (x) (/* x x)) numbers)))
@@ -436,22 +436,43 @@ map的功能和apply有些相似,它的第一个参数也必需是一个过程,�
 	(apply + (map * left_vector right_vector)))
 ```
 
-写个矩阵转置
+#### 矩阵转置
 ```scheme
 (define (transpose matrix)
 	(apply map (cons list matrix)))
 ```
-调用函数`(transpose ''((1 2 3) (4 5 6) (7 8 9) (10 11 12)))`就应该得到`((1 4 7 10) (2 5 8 11) (3 6 9 12))`.  
+调用函数`(transpose '((1 2 3) (4 5 6)))`就应该得到`((1 4) (2 5) (3 6))`.  
 
-1. 首先执行(cons list matrix), 得到()
-
-树的高度
-[tree ex](http://p.blog.csdn.net/images/p_blog_csdn_net/g9yuayon/67adf90203e94115a36a9f0690abf6b9.png)
+执行顺序如下:
+```scheme
+(apply map (cons list matrix))
+=> (apply map (cons list '((1 2 3) (4 5 6))))
+=> (apply map '(list (1 2 3) (4 5 6)))
+=> (map list (1 2 3) (4 5 6))
+=> ((list 1 4) (list 2 5) (list 3 6))
+=> '((1 4) (2 5) (3 6))
 ```
+
+#### 树的高度
+[tree ex](http://p.blog.csdn.net/images/p_blog_csdn_net/g9yuayon/67adf90203e94115a36a9f0690abf6b9.png)
+以`'(A B C (D (F H) G) E)`为例
+```scheme
 (define (tree_depth tree)
 	(cond
 		((list? tree) (+ 1 (apply max (map tree_depth tree))))
 		(else 0)))
+```
+执行过程如下
+```
+(tree_depth tree)
+=> (tree_depth '(A B C (D (F H) G) E))
+=> (+ 1 (apply max (map tree_depth '(A B C (D (F H) G) E))))
+=> (+ 1 (apply max ((tree_depth A) (tree_depth B) (tree_depth C) (tree_depth '(D (F H) G)) (tree_depth E))))
+=> (+ 1 (apply max (0 0 0 (tree_depth '(D (F H) G)) 0)))
+=> (+ 1 (tree_depth '(D (F H) G)))
+=> (+ 1 (+ 1 tree_depth '(F H)))
+=> (+ 1 (+ 1 (+ 1 0)))
+=> 3
 ```
 
 # 控制结构
