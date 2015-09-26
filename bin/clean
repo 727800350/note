@@ -3,7 +3,7 @@
 dir=`pwd`
 cd $dir
 
-rm *.aux *.bbl *.blg *.out *.log 2>/dev/null
+rm *.aux *.bbl *.blg *.out *.log *.lof *.lot *.toc *.thm 2>/dev/null
 
 exit 0
 
