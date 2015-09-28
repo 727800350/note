@@ -21,7 +21,9 @@ else
 	export PATH=$PATH:${HOME}/.jumbo/bin/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/samba/lib/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/utils/gcc/lib/gcc/x86_64-unknown-linux-gnu/4.8.1/
-	alias hadoop='${HOME}/hadoop-client/hadoop/bin/hadoop'
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/hadoop-client/java6/jre/lib/amd64/server/:~/hadoop-client/hadoop/libhdfs/
+	export HADOOP_HOME="${HOME}/hadoop-client/hadoop/"
+	alias hadoop='${HADOOP_HOME}/bin/hadoop'
 	alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
 	alias nanling='${HOME}/hadoop-client/hadoop-nanling/bin/hadoop'
 fi
