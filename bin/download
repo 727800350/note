@@ -1,0 +1,48 @@
+#!/bin/bash
+set -x
+
+## line=ftp:///hostname:a/b/c/file
+## mark=b
+## path=a/b/c/file
+## dir_absolute=a/b/c
+## dir_relative=c
+
+source ~/git/note/conf/func.sh || exit 1
+
+if [ $# -ne 2 ]
+then
+	echo "wrong args" >&2
+	echo "usage: $0 file.list mark" >&2
+	exit 1
+fi
+
+list=$1
+mark=$2
+
+base=`pwd`
+
+cat ${list} | while read line
+do
+	cd ${base}
+
+	path=`echo ${line} | awk -F ':' '{print $NF}'`
+	dir_absolute=${path%\/*}
+	dir_relative=${dir_absolute#*${mark}\/}
+	if [ "x${dir_absolute}" = "x${dir_relative}" ]
+	then
+		dir_relative="./"
+	fi
+
+	if [ ! -d ${dir_relative} ]
+	then
+		mkdir -p ${dir_relative}
+		CHK_RET FATAL "mkdir ${dir_relative} error"
+	fi
+
+	cd ${dir_relative}
+	wget ${line}
+	CHK_RET FATAL "download ${line} error"
+done
+
+exit 0
+
