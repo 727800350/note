@@ -21,7 +21,8 @@ xelatex $tex || exit 1
 
 echo "Generate pdf done" >&2
 echo "removing generated intermediate files" >&2
-rm -rf *.aux *.bbl *.blg *.out *.log *.toc
+
+clean
 
 exit 0
 
