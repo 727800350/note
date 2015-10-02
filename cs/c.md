@@ -136,6 +136,11 @@ p[j] = '\0';
 ```
 
 # IO
+- `FILE *fopen(const char *path, const char *mode);`
+- `int fgetc(FILE *stream);`: 
+- `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储'\0'作为字符串的结尾.
+- `size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);`
+- `size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);`
 
 printf使用的格式字符如下
 
@@ -148,35 +153,6 @@ printf使用的格式字符如下
 - f:输出一个浮点数
 - e:以科学表示法输出浮点数
 - g:输出%f与%e中占用位数较短的一个
-
-- `fopen` opens the file whose name is the string pointed to by path and associates a stream with it.  
-`FILE *fopen(const char *path, const char *mode);`
-- `fdopen` function associates a stream with the existing file descriptor fd  
-`FILE *fdopen(int fd, const char *mode);`
-- `setbuf, setbuffer, setlinebuf, setvbuf` stream buffering operations in `<stdio.h>`
-
-	#include <unistd.h>
-    int dup(int oldfd);
-	int dup2(int oldfd, int newfd);
-dup() uses  the lowest-numbered unused descriptor for the new descriptor.  
-dup2() makes newfd be the copy of oldfd, closing newfd first if necessary  
-On success, these system calls return the new descriptor.  On error, -1 is returned, and errno is set appropriately.
-
-- fgets  
-fgets函数从文件读取到'\n'并存储,在'\n'后再增加一个'\0'构成字符串.  
-但fgets函数需要指定读入的字符数,如果指定了n,则最多只能读取n-1个.fgets在读取了n-1个字符,读到了'\n'或遇到了EOF三种情况之一时都结束读取.  
-返回值: If the End-of-File is encountered and no characters have been read, the contents of str remain unchanged and a null pointer is returned.
-If an error occurs, a null pointer is returned.
-
-
-# apr
-install
-```
-./configure --prefix=/usr/local/apr --enable-debug --enable-profile --enable-threads --enable-other-child
-```
-安装完之后, 进入到test 目录, 进行测试, 看时候安装成功
-
-[apr hash](http://apr.apache.org/docs/apr/1.4/group__apr__hash.html)
 
 # [GLib](https://developer.gnome.org/glib/unstable/)
 GLib提供了多种高级的数据结构,如内存块,双向和单向链表,哈希表,动态字符串以及字符串工具(例如词法分析器,字符串切分等),动态数组,平衡二叉树,n-叉树,键值存储,关系和元组etc.
