@@ -138,7 +138,7 @@ p[j] = '\0';
 # IO
 - `FILE *fopen(const char *path, const char *mode);`
 - `int fgetc(FILE *stream);`: 
-- `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储'\0'作为字符串的结尾.
+- `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储`\0`作为字符串的结尾.
 - `size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);`
 - `size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);`
 
