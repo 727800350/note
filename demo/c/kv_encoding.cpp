@@ -4,6 +4,7 @@
 #include <unistd.h> // getopt
 #include <ctype.h> // isprint
 
+// The default stack max size is 1 MB
 #define BUFFER_SIZE (1 * 1024 * 1024)
 
 int usage(){
