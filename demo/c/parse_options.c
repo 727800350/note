@@ -46,6 +46,11 @@ int main(int argc, char *argv[]){
 
 	fprintf(stderr, "aflag = %d, bflag = %d, num = %d, str = %s\n", aflag, bflag, num, str);
 
+	// args not prefixed by optstring
+	for(index = optind; index < argc; index++){
+		fprintf(stderr, "Non-option argument %s\n", argv[index]);
+	}
+
 	return 0;
 }
 

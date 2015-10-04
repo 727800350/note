@@ -501,44 +501,13 @@ The operator `##` concatenates two arguments **leaving no blank spaces** between
 
 # Linux
 ## [Example of Parsing Arguments with getopt](http://www.gnu.org/software/libc/manual/html_node/Getopt.html)
-Normally, `getopt` is called in a loop. When `getopt` returns `-1`, indicating no more options are present, the loop terminates.  
-A **switch statement** is used to dispatch on the return value from getopt. In typical use, each case just sets a variable that is used later in the program.  
-A second loop is used to process the remaining non-option arguments.
+optstring中后面的`:`表示需要接值, 如果`::`, 则表示值可有可无.
 
-optstring中后面的**冒号表示需要接变量**,并存于optarg中.如果接二个冒号,则表示变量可有可无.
-
-扫描模式:
-
-1. 如果第一个字符为加号: 停止于发现第一个非选项
-2. 如果第一个字符为减号:全部扫描,此为默认模式.
-
-碰到'--',则忽略扫描模式,必须停止扫描.
-
-`getopt`返回值:  
-
-1. 成功,返回option,  
-1. 结束,返回-1,  
-1. 发现不认识的option,返回?号  
-1. 碰到option后面缺参数,则返回?号. 或返回:号(optstring中第一个字符(如果有加减号,在加减号后面)为冒号时返回,即为:或+:或-:).
-
-`optarg` 存数据  
-`optopt` 存储出错的option(如缺参数),或者不认识的option  
-`optind`, 表示下一次运行getopt时将读取数组第optind个
+- `optarg` 存数据
+- `optopt` 存储出错的option(如缺参数),或者不认识的option
+- `optind`, 表示下一次运行getopt时将读取数组第optind个
 
 [parse options demo](../demo/c/parse_options.c)
-
-**chroot**  
-[Is chroot a security feature?](https://securityblog.redhat.com/2013/03/27/is-chroot-a-security-feature/)  
-chroot: an operation that changes the apparent root directory for the current running process and its children.  
-This call changes an ingredient in the pathname resolution process and does nothing else.  
-This call does not close open file descriptors, and such file descriptors may allow access to files outside the chroot tree.  
-A program that is run in such a modified environment cannot name (and therefore normally not access) files outside the designated directory tree.  
-The modified environment is called a "chroot jail".  
-This can be useful for: Testing and development and Privilege separation 
-
-This call does not change the current working directory, so that after the call '.' can be outside the tree rooted at '/'.  In particular, the superuser can escape from a "chroot jail" by doing:  
-`mkdir foo; chroot foo; cd ..`  
-So chrooted programs should relinquish root privileges as soon as practical after chrooting
 
 # Linux 下的动态与静态库
 使用locate命令找到该库的被默认安装的路径,使用方法是先用updatedb更新一下locate命令的索引库,然后"locate libnet.so"查找就可以了
