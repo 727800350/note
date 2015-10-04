@@ -15,6 +15,7 @@ user=`whoami`
 if [ ${user} = "eric" ]
 then
 	export TEXLIVE=/usr/local/texlive/2015/
+	ulimit -c unlimited
 ## enterprise
 else
 	export TEXLIVE=${HOME}/program/texlive/2015/
@@ -51,7 +52,11 @@ fi
 gcc -v 2>&1 | grep -i "version 4." > /dev/null
 if [ $? -eq 0 ]
 then
-	alias g++='g++ -std=c++11'
-	alias clang++='clang++ -std=c++11'
+	alias g++='g++ -std=c++11 -g -Wall'
+	alias clang++='clang++ -std=c++11 -g -Wall'
+else
+	alias g++='g++ -g -Wall'
+	alias clang++='clang++ -g -Wall'
 fi
+alias gcc='gcc -g -Wall'
 
