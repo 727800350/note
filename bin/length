@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]
+then
+	echo "wrong args" >&2
+	echo "usage: $0 file" >&2
+	exit 1
+fi
+
+base=`pwd`
+cd $base
+
+file=$1
+if [ ! -f $file ]
+then
+	echo "$file does not exist" >&2
+	exit 1
+fi
+
+ls -l $file | awk '{print $5}'
+
+exit 0
+
