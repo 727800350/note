@@ -62,34 +62,30 @@ str2是一个数组,可以改变数组中保存的内容(但是数组的名字st
 因为定义的是一个字符数组,所以就相当于定义了一些空间来存放"abc",而又因为字符数组就是把字符一个一个地存放的,
 所以编译器把这个语句解析为 `char str2[3] = {'a','b','c'};`, 然后补零, 所以最终结果是 `char str2[4] = {'a','b','c','/0'};`  
 如果这个语句是在函数内部写的话, 那么这里的`"abc/0"`, 因为不是常量, 所以应该被放在栈上.
- 
+
+### API 
+#### <string.h>
 - `strcpy(ptr2, ptr1)` is equivalent to `while(\*ptr2++ = *ptr1++)`  
 **So if you want the string which you have copied to be used in another function (as it is created in heap section) you can use `strdup`, else strcpy is enough.**
+The functions `strcpy` and `strncpy` are part of the **C standard library** and **operate on existing memory**.   
 
 - `char *strdup(const char *s);`相当于 `ptr2 = malloc(strlen(ptr1)+1); strcpy(ptr2, ptr1);`
 - `char *strndup(const char *s, size_t n);`  
-The functions `strcpy` and `strncpy` are part of the C standard library and **operate on existing memory**.   
-By constrast, `strdup` is a Posix function, and it performs **dynamic memory allocation** for you. 
+By constrast, `strdup` is a **Posix function**, and it performs **dynamic memory allocation** for you. 
 It returns a pointer to **newly allocated memory** into which it has copied the string. But you are now responsible for this memory and **must eventually free it**.
 
-- `strchr` 查找字符串
-- `strcasecmp, strncasecmp` compare two strings ignoring case
-- `strsep, settok` extract token from string
+- `char *strchr(const char *s, int c);` 第一次出现
+- `char *strrchr(const char *s, int c);`; 最后一次出现
+
+- `int strcmp(const char *s1, const char *s2);`
+- `strcasecmp, strncasecmp`: **ignoring case**
+
+#### <stdlib.h>
 - `atoi, atol, atoll, atof, strtol, strtoul, strtoll, strtoull` 字符串转换为数字 
 
+#### <ctypes.h>
 - isprint, 是否为可打印字符, ctypes.h 中的函数
 - isspace: 判断是否为' ', '\t', '\r', '\n', '\v', '\f'等
-```
-void delspace(char *p){
-	int i,j = 0;
-	for(i = 0; p[i] != '\0'; i++){
-		if(! isspace(p[i])){
-			p[j++] = p[i];
-		}
-	}
-p[j] = '\0';
-}
-```
 
 # IO
 - `FILE *fopen(const char *path, const char *mode);`
