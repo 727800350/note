@@ -26,27 +26,20 @@
 | ,                                | 逗号(顺序)                             					 | 由左向右 |
 
 # Data Types
+**当把数组作为参数传递给一个函数后, 实际上传递的是一个指针, 所以在函数里面用sizeof和在函数外面对数组用sizeof 得到的结果是不一样的.**
+
 ```
 #include <sys/types.h>  
 u_int64_t, int64_t, u_int32_t, int32_t, u_int16_t, int16_t, u_int8_t, int8_t ...
 ```
 
+## 容易混淆的
+### 指针数组与数组指针
+
 - 指针数组: `int *ptr_array[10]`, 每个元素都是指针, 共10个元素.
-元素表示:`*a[i], *(a[i])`是一样的，因为[]优先级高于*
-- 数组指针: `int (\*)array_ptr[10]`, 指向一个10个元素数组的指针.
-元素表示:`(\*a)[i]`
-
-```
-int c[4]={1,2,3,4};
-int *a[4]; //指针数组
-int (\*b)[4]; //数组指针
-b=&c;
-for(int i=0;i<4;i++){
-	a[i]=&c[i];
-}
-```
-
-当把数组作为参数传递给一个函数后, 实际上传递的是一个指针, 所以在函数里面用sizeof和在函数外面对数组用sizeof 得到的结果是不一样的.
+	元素表示:`*a[i], *(a[i])`是一样的，因为[]优先级高于*
+- 数组指针: `int (\*)array_ptr[10]`, 指向一个10元素数组的指针.
+	元素表示:`(\*a)[i]`
 
 ## char
 ```
@@ -60,8 +53,9 @@ Note that in C++, a character literal is of type char and so `sizeof('a') == siz
 ### [字符数组与字符指针](http://blog.csdn.net/qiumm/article/details/5657120)
 - `char *str1 = "abc";` 字符指针指向的是一个**字符串常量**(存储在程序的常量区)的首地址, str1即指向字符串的首地址.  
 所以尽管str1的类型不是`const char *`,并且`str1[0] = 'x'`;也能编译通过, 但是执行`str1[0] = 'x';`就会发生运行时异常,因为这个语句试图去修改程序常量区中的东西.  
-但是建议的写法应该是`const char* str1 = "abc";`, 这样如果后面写`str1[0] = 'x'`, 的话编译器就不会让它编译通过,也就避免了上面说的运行时异常.  
+但是建议的写法应该是**`const char* str1 = "abc";`**, 这样如果后面写`str1[0] = 'x'`, 的话编译器就不会让它编译通过,也就避免了上面说的运行时异常.  
 如果这个语句写在函数体内,那么虽然这里的`"abc/0"`被放在常量区中,但是str1本身只是一个普通的指针变量,所以ptr是被放在栈上的, 只不过是它所指向的东西被放在常量区罢了.  
+**C++ 中这种写法会warning**
 
 - `char str2[ ] = "abc";`: str2是字符数组,它存放了一个字符串, 编译会自动在str2 末尾添加`\0`.  
 str2是一个数组,可以改变数组中保存的内容(但是数组的名字str2本身, 它是一个常量, 也就是说str2 is not assignable)
@@ -69,36 +63,22 @@ str2是一个数组,可以改变数组中保存的内容(但是数组的名字st
 所以编译器把这个语句解析为 `char str2[3] = {'a','b','c'};`, 然后补零, 所以最终结果是 `char str2[4] = {'a','b','c','/0'};`  
 如果这个语句是在函数内部写的话, 那么这里的`"abc/0"`, 因为不是常量, 所以应该被放在栈上.
  
-1. 数组的类型是由该数组所存放的东西的类型以及数组本身的大小决定的.  
-如`char s1[3]`和`char s2[4]`,s1的类型就是`char[3]`,s2的类型就是`char[4]`  
-也就是说尽管s1和s2都是字符数组,但两者的类型却是不同的
-1. 字符串常量的类型可以理解为相应字符常量数组的类型,如"abcdef"的类型就可以看成是`const char[7]`
-1. 对于函数参数列表中的以数组类型书写的形式参数,编译器把其解释为普通的指针类型,如对于
- 	
- 		void func(char sa[100],int ia[20],char *p)
-则sa的类型为`char*`,ia的类型为`int*`,p的类型为`char*`, 所以我们看到的`string.h` 中的函数的参数都是 `char *` 或者`const char *`类型的, 而不是 `char []`.
-
-`strcpy(ptr2, ptr1)` is equivalent to `while(\*ptr2++ = *ptr1++)`
-where as strdup is equivalent to
-
-	ptr2 = malloc(strlen(ptr1)+1);
-	strcpy(ptr2,ptr1);
+- `strcpy(ptr2, ptr1)` is equivalent to `while(\*ptr2++ = *ptr1++)`  
 **So if you want the string which you have copied to be used in another function (as it is created in heap section) you can use `strdup`, else strcpy is enough.**
 
+- `char *strdup(const char *s);`相当于 `ptr2 = malloc(strlen(ptr1)+1); strcpy(ptr2, ptr1);`
+- `char *strndup(const char *s, size_t n);`  
 The functions `strcpy` and `strncpy` are part of the C standard library and **operate on existing memory**.   
-By constrast, `strdup` is a Posix function, and it performs **dynamic memory allocation** for you. It returns a pointer to newly allocated memory into which it has copied the string. But you are now responsible for this memory and must eventually free it.
-
-	char *strdup(const char *s);
-	char *strndup(const char *s, size_t n);
+By constrast, `strdup` is a Posix function, and it performs **dynamic memory allocation** for you. 
+It returns a pointer to **newly allocated memory** into which it has copied the string. But you are now responsible for this memory and **must eventually free it**.
 
 - `strchr` 查找字符串
 - `strcasecmp, strncasecmp` compare two strings ignoring case
 - `strsep, settok` extract token from string
 - `atoi, atol, atoll, atof, strtol, strtoul, strtoll, strtoull` 字符串转换为数字 
 
-- isspace
-检查参数c是否为空格字符,也就是判断是否为空格(' '),水平定位字符
-('\t'),归位键('\r'),换行('\n'),垂直定位字符('\v')或翻页('\f')的情况
+- isprint, 是否为可打印字符, ctypes.h 中的函数
+- isspace: 判断是否为' ', '\t', '\r', '\n', '\v', '\f'等
 ```
 void delspace(char *p){
 	int i,j = 0;
