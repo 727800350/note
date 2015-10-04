@@ -5,6 +5,7 @@
 - 潜在情况下可以使用C++ 的stl 模块库
 - 第三方封装好的C++ 库
 
+
 # [运算符](http://www.math.pku.edu.cn/teachers/qiuzy/c/operator.htm)
 
 | 运算符                           | 解释                                 						 | 结合方式 |
@@ -65,6 +66,10 @@ str2是一个数组,可以改变数组中保存的内容(但是数组的名字st
 
 ### API 
 #### string.h
+- `void *memset(void *s, int c, size_t n);`
+- `void *memcpy(void *dest, const void *src, size_t n);`
+- `int memcmp(const void *s1, const void *s2, size_t n);`
+
 - `strcpy(ptr2, ptr1)` is equivalent to `while(\*ptr2++ = *ptr1++)`  
 **So if you want the string which you have copied to be used in another function (as it is created in heap section) you can use `strdup`, else strcpy is enough.**
 The functions `strcpy` and `strncpy` are part of the **C standard library** and **operate on existing memory**.   
@@ -81,11 +86,17 @@ It returns a pointer to **newly allocated memory** into which it has copied the 
 - `strcasecmp, strncasecmp`: **ignoring case**
 
 #### stdlib.h
-- `atoi, atol, atoll, atof, strtol, strtoul, strtoll, strtoull` 字符串转换为数字 
+- `int atoi(const char *nptr)`
+- `long int atol(const char *nptr)`, atoll
+- `long int strtol(const char *nptr, char **endptr, int base);`, endptr一般设为NULL, strtoul, strtoll, strtoull 类似
+- `double atof(const char *nptr)`
 
 #### ctypes.h
-- isprint, 是否为可打印字符, ctypes.h 中的函数
-- isspace: 判断是否为' ', '\t', '\r', '\n', '\v', '\f'等
+- `int isprint(int c)`: 判断是否为可打印字符
+- `int isspace(int c)`: 判断是否为' ', '\t', '\r', '\n', '\v', '\f'等
+- `int isalpha(int c)`
+- `int isdigit(int c)`
+- `int toupper(int c), tolower, islower, isupper`
 
 # IO
 - `FILE *fopen(const char *path, const char *mode);`
