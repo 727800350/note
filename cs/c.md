@@ -98,11 +98,45 @@ It returns a pointer to **newly allocated memory** into which it has copied the 
 - `int isdigit(int c)`
 - `int toupper(int c), tolower, islower, isupper`
 
+## struct
+是可以定义bit 级别的结构体的, 操作方式和一般的结构体没有任何区别.
+```
+typedef struct _site_t{
+	unsigned char rank:4;
+	unsigned char class:4;
+	int index;
+}site_t;
+```
+
 # IO
 - `FILE *fopen(const char *path, const char *mode);`
+- `int fclose(FILE *stream);`
+
 - `int fgetc(FILE *stream);`: 
 - `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储`\0`作为字符串的结尾.
+```
+while(!feof(stdin)){
+	if(fgets(line, 256, stdin) == NULL){
+		## error or when end of file occurs while no characters have been read
+		break;
+	}
+}
+```
+
 - `size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);`
+```
+while(true){
+	ret = fread(buffer, sizeof(char), buffer_size, stdin);
+	if(ret < 0){
+		fprintf(stderr, "read error");
+		return -1;
+	}
+	if(ret == 0){
+		fprintf(sterr, "eof");
+		break;
+	}
+}
+```
 - `size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);`
 
 printf使用的格式字符如下
