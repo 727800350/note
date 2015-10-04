@@ -64,7 +64,7 @@ str2是一个数组,可以改变数组中保存的内容(但是数组的名字st
 如果这个语句是在函数内部写的话, 那么这里的`"abc/0"`, 因为不是常量, 所以应该被放在栈上.
 
 ### API 
-#### <string.h>
+#### string.h
 - `strcpy(ptr2, ptr1)` is equivalent to `while(\*ptr2++ = *ptr1++)`  
 **So if you want the string which you have copied to be used in another function (as it is created in heap section) you can use `strdup`, else strcpy is enough.**
 The functions `strcpy` and `strncpy` are part of the **C standard library** and **operate on existing memory**.   
@@ -80,10 +80,10 @@ It returns a pointer to **newly allocated memory** into which it has copied the 
 - `int strcmp(const char *s1, const char *s2);`
 - `strcasecmp, strncasecmp`: **ignoring case**
 
-#### <stdlib.h>
+#### stdlib.h
 - `atoi, atol, atoll, atof, strtol, strtoul, strtoll, strtoull` 字符串转换为数字 
 
-#### <ctypes.h>
+#### ctypes.h
 - isprint, 是否为可打印字符, ctypes.h 中的函数
 - isspace: 判断是否为' ', '\t', '\r', '\n', '\v', '\f'等
 
