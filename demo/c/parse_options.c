@@ -1,20 +1,25 @@
- #include <ctype.h>
  #include <stdio.h>
  #include <stdlib.h>
- #include <unistd.h>
+ #include <unistd.h> // getopt
+ #include <ctype.h> // isprint
 
- int main (int argc, char **argv){
+int usage(){
+	char program[] = "parse_option_demo";
+	fprintf(stderr, "usage:\n");
+	fprintf(stderr, "%s -a -b -n num -c str\n", program);
+	return 0;
+}
+
+int main(int argc, char *argv[]){
 	int aflag = 0;
 	int bflag = 0;
-	int num;
+	int num = 0;
 	char *str = NULL;
-	int index;
+
 	int c;
-
 	opterr = 0;
-
-	while ((c = getopt (argc, argv, "abn:c:")) != -1){
-		switch (c){
+	while((c = getopt(argc, argv, "abn:c:")) != -1){
+		switch(c){
 		 case 'a':
 			aflag = 1;
 			break;
@@ -32,26 +37,15 @@
 				fprintf(stderr, "Unknown option `-%c'.\n", optopt);
 			else
 				fprintf(stderr, "Unknown option character `\\x%x'.\n", optopt);
+			usage();
 			return 1;
 		default:
 			abort();
-		} //end switch
-	} //end while
+		}
+	}
 
-	printf ("aflag = %d, bflag = %d, num = %d, str = %s\n", aflag, bflag, num, str);
-	printf("optind = %d\n", optind);
+	fprintf(stderr, "aflag = %d, bflag = %d, num = %d, str = %s\n", aflag, bflag, num, str);
 
-// 	in the following for loop, the value of optind does not change
-	for (index = optind; index < argc; index++){
-		printf ("Non-option argument %s\n", argv[index]);
- 	}
 	return 0;
-}//end main
+}
 
-/*
-[eric@human c]$ ./a.out -a -b -n 2 -c foo arg1 arg2
-aflag = 1, bflag = 1, num = 2, str = foo
-optind = 7
-Non-option argument arg1
-Non-option argument arg2
-**/
