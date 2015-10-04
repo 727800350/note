@@ -1,5 +1,30 @@
-强数据类型 `/usr/include/sys/types.h`  
-`u_int64_t, int64_t, u_int32_t, int32_t, u_int16_t, int16_t, u_int8_t, int8_t ...`
+# Intro
+
+# [运算符](http://www.math.pku.edu.cn/teachers/qiuzy/c/operator.htm)
+
+| 运算符                           | 解释                                 						 | 结合方式 |
+| -------------------------------- | ----------------------------------------------------------- | -------- |
+| () [] -> .                       | 括号(函数等),数组,两种结构成员访问                			 | 由左向右 |
+| ! ~ ++ -- + - * & (类型) sizeof  | 否定,按位否定,增量,减量,正负号, 间接,取地址,类型转换,求大小 | 由右向左 |
+| * / %                            | 乘,除,取模                             					 | 由左向右 |
+| + -                              | 加,减                                						 | 由左向右 |
+| << >>                            | 左移,右移                              					 | 由左向右 |
+| < <= >= >                        | 小于,小于等于,大于等于,大于                    			 | 由左向右 |
+| == !=                            | 等于,不等于                             					 | 由左向右 |
+| & bitand                         | 按位与                                						 | 由左向右 |
+| ^  xor                           | 按位异或(对应位相同的,结果为 0,不相同为 1) 				 | 由左向右 |
+| \|  bitor                        | 按位或                                						 | 由左向右 |
+| && and                           | 逻辑与                                					 	 | 由左向右 |
+| || or                            | 逻辑或                                						 | 由左向右 |
+| ? :                              | 条件                                 						 | 由右向左 |
+| = += -= *= /= &= ^= |= <<= >>=   | 各种赋值                               					 | 由右向左 |
+| ,                                | 逗号(顺序)                             					 | 由左向右 |
+
+# Data Types
+```
+#include <sys/types.h>  
+u_int64_t, int64_t, u_int32_t, int32_t, u_int16_t, int16_t, u_int8_t, int8_t ...
+```
 
 - 指针数组: `int *ptr_array[10]`, 每个元素都是指针, 共10个元素.
 元素表示:`*a[i], *(a[i])`是一样的，因为[]优先级高于*
@@ -16,51 +41,15 @@ for(int i=0;i<4;i++){
 }
 ```
 
-[运算符](http://www.math.pku.edu.cn/teachers/qiuzy/c/operator.htm)
-
-| 运算符                           | 解释                                 | 结合方式 |
-| -------------------------------- | ---------------------------------- | ---- |
-| () [] -> .                       | 括号(函数等),数组,两种结构成员访问                | 由左向右 |
-| ! ~ ++ -- + - * & (类型) sizeof  | 否定,按位否定,增量,减量,正负号, 间接,取地址,类型转换,求大小 | 由右向左 |
-| * / %                            | 乘,除,取模                             | 由左向右 |
-| + -                              | 加,减                                | 由左向右 |
-| << >>                            | 左移,右移                              | 由左向右 |
-| < <= >= >                        | 小于,小于等于,大于等于,大于                    | 由左向右 |
-| == !=                            | 等于,不等于                             | 由左向右 |
-| &                                | 按位与                                | 由左向右 |
-| ^                                | 按位异或(对应位相同的,结果为 0,不相同为 1) | 由左向右 |
-| \|                                | 按位或                                | 由左向右 |
-| &&                               | 逻辑与                                | 由左向右 |
-| ||                               | 逻辑或                                | 由左向右 |
-| ? :                              | 条件                                 | 由右向左 |
-| = += -= *= /= &= ^= |= <<= >>=   | 各种赋值                               | 由右向左 |
-| ,                                | 逗号(顺序)                             | 由左向右 |
-
-**sizeof**  
-Technically speaking, the C standard only guarantees that `sizeof(char) == 1`, and the rest is up to the implementation.  
-In practice, pointers will be size 2 on a 16-bit system (if you can find one), 4 on a 32-bit system, and 8 on a 64-bit system, 
-but there is nothing to be gained in relying on a given size
-
 当把数组作为参数传递给一个函数后, 实际上传递的是一个指针, 所以在函数里面用sizeof和在函数外面对数组用sizeof 得到的结果是不一样的.
 
-# String
-`int snprintf(char *str, size_t size, const char *format, ...);`  
-The functions `snprintf()` and `vsnprintf()`  write  **at most size bytes (including the trailing null byte ('\0'))** to str.
-
-If I stick a `'\0'` into the middle of the allocated memory, does `free()` still work properly?  
-Yes.
-
 ## char
-	int main(){
-		char b = 'a';
-		printf("%lu,", sizeof ('a'));
-		printf("%lu", sizeof (b));
-		return 0;
-	}
-
-	OUTPUT: 4,1
+```
+char b = 'a';
+printf("%lu, %lu", sizeof('a'), sizeof(b)); // OUTPUT: 4,1
+```
 character literals are of type int and not char in C.  
-So `sizeof('a') == sizeof (int)`.  
+
 Note that in C++, a character literal is of type char and so `sizeof('a') == sizeof(char)`
 
 ## [字符数组与字符指针](http://blog.csdn.net/qiumm/article/details/5657120)
