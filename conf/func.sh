@@ -42,19 +42,19 @@ function safe_run(){
 function safe_duprun(){
 	cmd=$1
 	trynum=$2
-	ret=0
+	ret=-1
 
 	for((i=0;i<trynum;i++))
 	do
 		eval $cmd
 		if [ $? -eq 0 ]
 		then
-			ret=1
+			ret=0
 			break
 		fi
 	done
 
-	if [ $ret -ne 1 ]
+	if [ $ret -ne 0 ]
 	then
 		exit -1
 	fi
