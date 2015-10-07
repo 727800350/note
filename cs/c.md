@@ -25,14 +25,6 @@
 u_int64_t, int64_t, u_int32_t, int32_t, u_int16_t, int16_t, u_int8_t, int8_t ...
 ```
 
-## 容易混淆的
-### 指针数组与数组指针
-
-- 指针数组: `int *ptr_array[10]`, 每个元素都是指针, 共10个元素.
-	元素表示:`*a[i], *(a[i])`是一样的，因为[]优先级高于*
-- 数组指针: `int (\*)array_ptr[10]`, 指向一个10元素数组的指针.
-	元素表示:`(\*a)[i]`
-
 ## char
 ```
 char b = 'a';
@@ -98,6 +90,16 @@ typedef struct _site_t{
 	int index;
 }site_t;
 ```
+
+## 容易混淆的
+### 指针数组与数组指针
+
+- 指针数组: `int *ptr_array[10]`, 每个元素都是指针, 共10个元素.
+	元素表示:`*a[i], *(a[i])`是一样的，因为[]优先级高于*
+- 数组指针: `int (\*)array_ptr[10]`, 指向一个10元素数组的指针.
+	元素表示:`(\*a)[i]`
+
+### [二维数组与指针](http://blog.csdn.net/yangchang999/article/details/6664069)
 
 # IO
 - `FILE *fopen(const char *path, const char *mode);`
