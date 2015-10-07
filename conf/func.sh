@@ -25,40 +25,40 @@ function CHK_RET(){
 	fi
 }
 
-## ex:safe_duprun "${_hadoop_cmd} -copyToLocal $file_dir thumail.data"
+## ex:safe_run "${_hadoop_cmd} -copyToLocal $file_dir thumail.data"
 function safe_run(){
-     cmd=$1  
+	cmd=$1  
 
-     eval $cmd
-     if [ $? -ne 0 ] 
-     then    
-        exit -1 
-     fi
+	eval $cmd
+	if [ $? -ne 0 ] 
+	then	
+	   exit -1 
+	fi
 
-     return 0
+	return 0
 }
 
 ## ex:safe_duprun "${_hadoop_cmd} -copyToLocal $file_dir thumail.data" 5
 function safe_duprun(){
-     cmd=$1
-     trynum=$2
-     ret=0
+	cmd=$1
+	trynum=$2
+	ret=0
 
-     for((i=0;i<trynum;i++))
-     do
-          eval $cmd
-          if [ $? -eq 0 ]
-          then
-              ret=1
-              break
-          fi
-     done
+	for((i=0;i<trynum;i++))
+	do
+		eval $cmd
+		if [ $? -eq 0 ]
+		then
+			ret=1
+			break
+		fi
+	done
 
-     if [ $ret -ne 1 ]
-     then
-         exit -1
-     fi
+	if [ $ret -ne 1 ]
+	then
+		exit -1
+	fi
 
-     return 0
+	return 0
 }
 
