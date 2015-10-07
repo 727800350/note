@@ -62,3 +62,13 @@ function safe_duprun(){
 	return 0
 }
 
+## guarantee the existence of a file
+function exist_f(){
+	local file=$1
+	if [ ! -f ${file} ]
+	then
+		echo "${file} does not exist" >&2
+		exit -1
+	fi
+}
+
