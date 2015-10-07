@@ -54,3 +54,21 @@ enumerate
 3.  由beamer 自动分页, `\begin{frame}[allowframebreaks]`\\
 有时这种方法给出的自动分页不是很好, 好不如自己手动分页, 这样可以控制在那里断开
 
+**摘录**
+```
+\begin{quote}
+引文两端都缩进
+\end{quote}
+
+\begin{quotation}
+引文两端都缩进且引文的首行继续缩进
+\end{quotation}
+
+\begin{verse}
+引文两端都缩进, 且引文的第二行继续缩进
+\end{verse}
+```
+
+**对齐方式**
+`flushleft, flushright, center` 三个环境
+

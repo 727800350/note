@@ -4,6 +4,11 @@
 数学公式中输入中文 可以把中文用`\text{}`或是`\mbox{}`引起来  
 在`\text{}` 仍然可以使用`$$` 符号进行数学输入
 
+`\textsuperscript`  
+For example, let us say I want to write the `$n^{th}$` element, but without the math mode automatic italicization of the th. 
+And what if I still want the n to be in math mode, but the th outside?  
+`$n$\textsuperscript{th}`
+
 ## 分数
 - `\frac` 自动调整字号,比如在行间公式中小一点,在独立公式则大一点.
 - `\dfrac` 命令把分数的字号显式设置为独立公式中的大小,
