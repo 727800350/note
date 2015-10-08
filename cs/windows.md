@@ -120,7 +120,8 @@ If ECHO is ON, the comment is displayed. Otherwise, it is ignored
 
 # Office
 ## Excel
-`=MATCH(MAX(range), range, 0)`: 最大值所在的位置, 最后一个参数 0 表示range 里面的数据时无序的, 有序时使用1(asc, 默认) 或者 -1(desc)
+- `=MATCH(MAX(range), range, 0)`: 最大值所在的位置, 最后一个参数 0 表示range 里面的数据时无序的, 有序时使用1(asc, 默认) 或者 -1(desc)
+- `concatenate(x, y)` 或者 `x&y`: 字符串拼接
 
 ### Count
 COUNTIF in Excel - count if not blank, greater than, duplicate or unique
