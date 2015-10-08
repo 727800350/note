@@ -89,19 +89,19 @@ git push origin :refs/tags/tag_name
 - git grep "hello" v2.5 在某一版本中搜索
 
 ## 合并与重置
-- git merge <branch> 将分支合并到当前HEAD中：
+- git merge <branch> 将分支合并到当前HEAD中:
 - git rebase <branch> 将当前HEAD版本重置到分支中(请勿重置已发布的提交!)
 - git rebase --abort 退出重置
-- git rebase --continue 解决冲突后继续重置：
+- git rebase --continue 解决冲突后继续重置:
 
 ## 撤销
-- git reset --hard HEAD 放弃工作目录下的所有修改：
-- git reset HEAD 移除缓存区的所有文件（i.e. 撤销上次git add）:
-- git checkout HEAD <file> 放弃某个文件的所有本地修改：
-- git revert <commit> 重置一个提交（通过创建一个截然不同的新提交）
-- git reset --hard <commit> 将HEAD重置到指定的版本，并抛弃该版本之后的所有修改：
-- git reset <commit> 将HEAD重置到上一次提交的版本，并将之后的修改标记为未添加到缓存区的修改：
-- git reset --keep <commit> 将HEAD重置到上一次提交的版本，并保留未提交的本地修改：
+- git reset --hard HEAD 放弃工作目录下的所有修改:
+- git reset HEAD 移除缓存区的所有文件(i.e. 撤销上次git add):
+- git checkout HEAD <file> 放弃某个文件的所有本地修改:
+- git revert <commit> 重置一个提交(通过创建一个截然不同的新提交)
+- git reset --hard <commit> 将HEAD重置到指定的版本,并抛弃该版本之后的所有修改:
+- git reset <commit> 将HEAD重置到上一次提交的版本,并将之后的修改标记为未添加到缓存区的修改:
+- git reset --keep <commit> 将HEAD重置到上一次提交的版本,并保留未提交的本地修改:
 
 # repo
 ## Create repo
@@ -315,4 +315,17 @@ If that worked, great!
 	$ ssh -T git@github.com
 	# Hi username! You have successfully authenticated, but GitHub does not provide shell access.
 	```
+
+## [GIT更新fork出来的代码](http://blog.sina.com.cn/s/blog_411fed0c0102vhlb.html)
+1. 增加远程分支: `git remote add source https://github.com/antirez/redis.git`
+	如果你运行命令:git remote -v你会发现多出来了一个Bob的远程分支.如下:
+	```
+	bob https://github.com/DoubleSpout/rrestjs.git (fetch)
+	bob https://github.com/DoubleSpout/rrestjs.git (push)
+	origin git@github.com:yss/rrestjs.git (fetch)
+	origin git@github.com:yss/rrestjs.git (push)
+	```
+1. 把对方的代码拉到你本地: `git fetch bob`
+1. 合并对方的代码: `git merge bob/master`
+1. 把最新的代码推送到你的github上: `git push origin master`
 
