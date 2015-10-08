@@ -6,12 +6,11 @@ then
 	target=$2
 elif [ $# -eq 1 ]
 then
-	method="wget"
 	target=$1
-elif [ $# -eq 0 ]
-then
-	method="wget"
-	target=""
+else
+	echo "wrong args" >&2
+	echo "usage: $0 [wget|ssh] file" >&2
+	exit 1
 fi
 
 if [ $target = "." ]
@@ -19,14 +18,17 @@ then
 	target=""
 fi
 
-if [ $method = "wget" ]
+if [ "x$method" = "x" ]
+then
+	echo "`pwd`/${target}"
+elif [ "x$method" = "xwget" ]
 then
 	echo "ftp://`hostname`:`pwd`/${target}"
-elif [ $method = "ssh" ]
+elif [ "x$method" = "xssh" ]
 then
 	echo "`whoami`@`hostname`:`pwd`/${target}"
 else
-	echo "$method not supported" >&2
+	echo "${method} not supported" >&2
 fi	
 
 exit 0
