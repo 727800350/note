@@ -122,6 +122,7 @@ If ECHO is ON, the comment is displayed. Otherwise, it is ignored
 ## Excel
 - `=MATCH(MAX(range), range, 0)`: 最大值所在的位置, 最后一个参数 0 表示range 里面的数据时无序的, 有序时使用1(asc, 默认) 或者 -1(desc)
 - `concatenate(x, y)` 或者 `x&y`: 字符串拼接
+- 行列转换, excel中在选择"编辑"菜单,点击"选择性粘贴", 选中"装置", 在google sheets 中为 "edit" --> "paste special" --> "paste transpose"
 
 ### Count
 COUNTIF in Excel - count if not blank, greater than, duplicate or unique
