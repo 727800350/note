@@ -318,7 +318,7 @@ If that worked, great!
 
 ## [GIT更新fork出来的代码](http://blog.sina.com.cn/s/blog_411fed0c0102vhlb.html)
 1. 增加远程分支: `git remote add source https://github.com/antirez/redis.git`
-	如果你运行命令:git remote -v你会发现多出来了一个Bob的远程分支.如下:
+	如果你运行命令:git remote -v你会发现多出来了一个source的远程分支.如下:
 
 	```
 	origin	git@github.com:ericuni/redis.git (fetch)
@@ -336,7 +336,24 @@ If that worked, great!
 		url = https://github.com/antirez/redis.git
 		fetch = +refs/heads/*:refs/remotes/source/*
 	```
-1. 把对方的代码拉到你本地: `git fetch bob`
-1. 合并对方的代码: `git merge bob/master`
+1. 把对方的代码拉到你本地: `git fetch source`
+1. 合并对方的代码: `git merge source/master`
 1. 把最新的代码推送到你的github上: `git push origin master`
+
+## [git 给远程库添加多个url地址](http://my.oschina.net/shede333/blog/299032)
+修改.git/config 中 url 部分
+
+```
+[remote "origin"]
+	url = git@github.com:ericuni/note.git
+	url = git@git.oschina.net:ericuni/note.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+```
+然后通过git remote -v 就可以看到多出来的一个
+```
+origin	git@github.com:ericuni/note.git (fetch)
+origin	git@github.com:ericuni/note.git (push)
+origin	git@git.oschina.net:ericuni/note.git (push)
+```
+这样之后的 git push origin master 就会将commit 同时推送到 github 和 oschina 上.
 
