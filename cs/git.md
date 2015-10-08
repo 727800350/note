@@ -321,10 +321,20 @@ If that worked, great!
 	如果你运行命令:git remote -v你会发现多出来了一个Bob的远程分支.如下:
 
 	```
-	bob https://github.com/DoubleSpout/rrestjs.git (fetch)
-	bob https://github.com/DoubleSpout/rrestjs.git (push)
-	origin git@github.com:yss/rrestjs.git (fetch)
-	origin git@github.com:yss/rrestjs.git (push)
+	origin	git@github.com:ericuni/redis.git (fetch)
+	origin	git@github.com:ericuni/redis.git (push)
+	source	https://github.com/antirez/redis.git (fetch)
+	source	https://github.com/antirez/redis.git (push)
+	```
+	.git/config 中remote 的部分会变为:
+
+	```
+	[remote "origin"]
+		url = git@github.com:ericuni/redis.git
+		fetch = +refs/heads/*:refs/remotes/origin/*
+	[remote "source"]
+		url = https://github.com/antirez/redis.git
+		fetch = +refs/heads/*:refs/remotes/source/*
 	```
 1. 把对方的代码拉到你本地: `git fetch bob`
 1. 合并对方的代码: `git merge bob/master`
