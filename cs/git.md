@@ -319,6 +319,7 @@ If that worked, great!
 ## [GIT更新fork出来的代码](http://blog.sina.com.cn/s/blog_411fed0c0102vhlb.html)
 1. 增加远程分支: `git remote add source https://github.com/antirez/redis.git`
 	如果你运行命令:git remote -v你会发现多出来了一个Bob的远程分支.如下:
+
 	```
 	bob https://github.com/DoubleSpout/rrestjs.git (fetch)
 	bob https://github.com/DoubleSpout/rrestjs.git (push)
