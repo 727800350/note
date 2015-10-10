@@ -937,9 +937,13 @@ SQL 查询可以通过dbSendQuery或 dbGetQuery 传给数据库管理系统.
 - dbSendQuery 传送查询, 返回的结果是继承"DBIResult"的一个子类的对象.
 	- dbFetch(res, n) 用于获得查询结果的部分或全部行,并以列表返回, n = -1 也表示全部行
 	- dbHasCompleted 确定是否所有行已经获得
-	- dbGetRowCount, dbGetRowsAffected 返回结果中(影响)行的数目
-	- dbColumnInfo, dbGetStatement
-	- dbClearResult
+	- dbGetRowCount 统计出已经dbFetch 了多少条记录
+	- dbGetRowsAffected 返回结果中(影响)行的数目(**但是在MySQL中使用得到的结果总是-1**)
+	- dbColumnInfo: 得到数据库中columns 的信息, name, Sclass, type, length
+	- dbGetStatement: 得到该res 的sql语句
+	- dbClearResult: 清空一个res
+
+当执行的sql语句是一个`select count( *) ...` 时, res 是一个 1 * 1 的data.frame, res[1,1] 即是想要的结果
 
 Fetch all results
 ```
