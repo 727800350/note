@@ -943,7 +943,7 @@ SQL 查询可以通过dbSendQuery或 dbGetQuery 传给数据库管理系统.
 	- dbGetStatement: 得到该res 的sql语句
 	- dbClearResult: 清空一个res
 
-当执行的sql语句是一个`select count( *) ...` 时, res 是一个 1 * 1 的data.frame, res[1,1] 即是想要的结果
+当执行的sql语句是一个`select count( *) ...` 时, `row = fetch(res, 1)` 是一个 1 * 1 的data.frame, row[1,1] 即是想要的结果
 
 Fetch all results
 ```
