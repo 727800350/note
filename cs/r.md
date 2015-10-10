@@ -942,6 +942,7 @@ SQL 查询可以通过dbSendQuery或 dbGetQuery 传给数据库管理系统.
 	- dbColumnInfo: 得到数据库中columns 的信息, name, Sclass, type, length
 	- dbGetStatement: 得到该res 的sql语句
 	- dbClearResult: 清空一个res
+- dbBegin(con), dbCommit(con): transaction
 
 当执行的sql语句是一个`select count( *) ...` 时, `row = fetch(res, 1)` 是一个 1 * 1 的data.frame, row[1,1] 即是想要的结果
 
