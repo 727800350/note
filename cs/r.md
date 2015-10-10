@@ -465,6 +465,7 @@ POSIXlt a vector, and the entries in the vector have the following meanings:
 - gmtoff (Optional.) The offset in seconds from GMT: positive values are East of the meridian. Usually NA if unknown, but 0 could mean unknown.
 
 - Sys.time():  get the current time
+- Sys.sleep():  sleep for secs
 - as.POSIXct and as.POSIXlt convert the time value into the different formats.
 - strftime: string from time, convert time to string, eg `timeString <-  strftime(t,"%Y-%m-%d %H:%M:%S")`
 - strptime: convert string into a form that R can use for calculations, eg `time <- strptime("2014-01-23 14:28:21", "%Y-%m-%d %H:%M:%S")`
