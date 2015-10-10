@@ -168,6 +168,8 @@ while(true){
 ```
 - `size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);`
 
+- `int snprintf(char *str, size_t size, const char *format, ...);`: can not write more than size bytes(including the trailing '\0').
+
 printf使用的格式字符如下
 
 - d:以十进制输出整型值
