@@ -173,14 +173,14 @@ https://github.com/rails/rails/compare/master@{2014-10-04}...master
 ```
 
 # FAQ
-I mistakenly added files using the command, `git add file`
+I mistakenly added files using the command, `git add file`,
 I have not yet run git commit.
 Is there a way to undo this or remove these files from the commit?
 
 可以执行下面的两个方法:
 
 1. `git rm --cached <added_file_to_undo>`
-1. `git reset .`: (to undo my entire initial add) only to get this (not so) helpful message:
+1. `git reset .`: (to undo my entire initial add), 修改的文件还将处于修改的状态
 
 **错误提交了一个commit, 需要把它撤销掉**  
 但是这个好像只针对于刚提交就意识到了错误
