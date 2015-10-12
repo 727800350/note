@@ -173,77 +173,64 @@ https://github.com/rails/rails/compare/master@{2014-10-04}...master
 ```
 
 # FAQ
-I mistakenly added files using the command, `git add file`,
-I have not yet run git commit.
-Is there a way to undo this or remove these files from the commit?
+## 撤销操作
+1. 运行了`git add`, 但是还没有运行`git commit`, 可以执行下面的两个方法:
 
-可以执行下面的两个方法:
+	- `git rm --cached <added_file_to_undo>`
+	- `git reset .`: (to undo my entire initial add), 修改的文件还将处于修改的状态
 
-1. `git rm --cached <added_file_to_undo>`
-1. `git reset .`: (to undo my entire initial add), 修改的文件还将处于修改的状态
+1. 错误提交了一个commit, 需要把它撤销掉, **只适用于刚提交的commit**
 
-**错误提交了一个commit, 需要把它撤销掉**  
-但是这个好像只针对于刚提交就意识到了错误
+	1. `git reset --hard <commit_id>`  ##  commit_id 为这个commit 之前的一个commit_id
+	1. `git push origin HEAD --force` ## 可以使用`HEAD~1` 表示刚刚commit 的 commit_id
 
-1. `git reset --hard <commit_id>`  ##  commit_id 为这个commit 之前的一个commit_id
-1. `git push origin HEAD --force`
-可以使用`HEAD~1` 表示刚刚commit 的 commit_id
-
-**Git: Checkout all files except one**  
+1. Checkout all files except one.  
 When I do a git status, I see files like this:
 
-	modified:  dir/A/file.txt
-	modified:  dir/B/file.txt
-	modified:  dir/C/file.txt
-	modified:  dir/D/file.txt
+		modified:  dir/A/file.txt
+		modified:  dir/B/file.txt
+		modified:  dir/C/file.txt
+		modified:  dir/D/file.txt
 What I want to do is to discard changes to all files EXCEPT for dir/C/file.txt
+操作步骤:
 
-Answer:
+	1. git add dir/C/file.txt # this file will stay modified and staged
+	1. git checkout .
 
-	git add dir/C/file.txt # this file will stay modified and staged
-	git checkout .
-If you want to unstage the file after that:
+1. commit 之后发现commit的message有错误  
+`git commit --amend`: lets you edit the previous commit message
 
-	git reset
+1. commit 之后想起忘了add 另外一个修改的文件  
+操作步骤如下
 
-<br/>
-**Using git in two computers, after merging one branch a into master with computer c1, delte the branch a in c1 both locally and remotely,
+		# Edit hello.py and main.py
+		git add hello.py
+		git commit
+		
+		# Realize you forgot to add the changes from main.py
+		git add main.py
+		git commit --amend --no-edit
+
+## 分支操作
+1. Using git in two computers, after merging one branch a into master with computer c1, delte the branch a in c1 both locally and remotely,
 switch to computer c2, delelte the branch a locally, and want to delete the branch a remotely in c2, 
-but an error is reported, as the remote branch a has been deleted by computer c1, so what should I do to clean the branch status in computer c2?**
-
+but an error is reported, as the remote branch a has been deleted by computer c1, so what should I do to clean the branch status in computer c2?  
 original branch status:
 
-	[eric@iis ntop]$ git branch -a
-	* master
-	  note
-	  remotes/origin/HEAD -> origin/master
-	  remotes/origin/master
-	  remotes/origin/note
+		[eric@iis ntop]$ git branch -a
+		* master
+		  note
+		  remotes/origin/HEAD -> origin/master
+		  remotes/origin/master
+		  remotes/origin/note
 note branch 是在其他机器上删除的一个分支
 
-1. `$ git branch -d note` delete the branch locally
-1. `$ git remote prune origin` clean the remote branch status
-1. `$ git remote set-head origin -a` query the remote and automatically set the origin/HEAD pointer to the remote current branch.
-1. `$ git remote set-head origin -d` delete the origin/HEAD symbolic ref
+	1. `$ git branch -d note`: delete the branch locally
+	1. `$ git remote prune origin`: clean the remote branch status
+	1. `$ git remote set-head origin -a`: query the remote and automatically set the origin/HEAD pointer to the remote current branch.
+	1. `$ git remote set-head origin -d`: delete the origin/HEAD symbolic ref
 
-**commit 之后发现commit的message有错误**  
-`git commit --amend`   
-lets you edit the previous commit message
 
-**commit 之后想起忘了add 另外一个修改的文件**
-```
-# Edit hello.py and main.py
-git add hello.py
-git commit
-
-# Realize you forgot to add the changes from main.py
-git add main.py
-git commit --amend --no-edit
-```
-
-# 如何导入外部Git仓库到中国源代码托管平台(Git@OSC)
-
-针对最近有很多网友提问,如何导入外部代码仓库(Github,bitbucket,Google Code等等)到Git@OSC ,给出如下解决方案:
 
 # git config
 ## [Using ssh over https](https://help.github.com/articles/using-ssh-over-the-https-port/)
