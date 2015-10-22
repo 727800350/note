@@ -49,6 +49,8 @@ sed script file should only contain sed commands
 - 我们可以使用&来当做被匹配的变量: `$ sed 's/my/[&]/g' my.txt`, 这里& 就会表示被匹配的my
 - 圆括号匹配: `$ sed 's/This is my \(a\) is \(b\)/\1 and \2/g' my.txt`: \1 表示被匹配的a, \2 表示被匹配的b
 
+使用shell 变量: `sed "/pattern/s/target/${target}/"`
+
 ## N命令
 先来看N命令 - 把下一行的内容纳入当成缓冲区做匹配.
 
