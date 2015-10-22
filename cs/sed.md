@@ -29,7 +29,7 @@ sed script file should only contain sed commands
 - `$ sed '3,6 {/This/{/fish/d}}' pets.txt`: 对3行到第6行,匹配/This/成功后,再匹配/fish/,成功后执行d命令
 - `$ sed '1,${/This/d;s/^ *//g}' pets.txt` 从第一行到最后一行,如果匹配到This,则删除之,如果前面有空格,则去除空格
 
-## 用s命令替换
+## s:替换
 - `$ sed "s/my/Hao Chen's/g" pets.txt`, g 表示每一行中所有出现 my 都被替换
 - 在每一行最前面加点东西, 也就是替换开头的位置: `$ sed 's/^/#/g' pets.txt`
 - 在每一行最后面加点东西: `$ sed 's/$/ --- /g' pets.txt`
