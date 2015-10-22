@@ -52,129 +52,30 @@ sed script file should only contain sed commands
 使用shell 变量: `sed "/pattern/s/target/${target}/"`
 
 ## N命令
-先来看N命令 - 把下一行的内容纳入当成缓冲区做匹配.
+**把当前行和下一行作为一行进行处理**, 换行符保留在新的一行中
 
-下面的的示例会把原文本中的偶数行纳入奇数行匹配,而s只匹配并替换一次,所以,就成了下面的结果:
+- `$ sed 'N;s/my/your/' pets.txt`
 
-	$ sed 'N;s/my/your/' pets.txt
-	This is your cat
-	  my cat's name is betty
-	This is your dog
-	  my dog's name is frank
-	This is your fish
-	  my fish's name is george
-	This is your goat
-	  my goat's name is adam
-也就是说,原来的文件成了:
+## a: 追加, i 前插
+a命令就是append, i命令就是insert,它们是用来添加行的
 
-	This is my cat\n  my cat's name is betty
-	This is my dog\n  my dog's name is frank
-	This is my fish\n  my fish's name is george
-	This is my goat\n  my goat's name is adam
-这样一来,下面的例子你就明白了,
+- 在第1行前插入一行(insert): `$ sed "1 i insert" my.txt`
+- 最后1行后追加一行(append): `$ sed "$ a append" my.txt`
+- 先匹配再添加文本: `$ sed "/pattern/a append" my.txt` 匹配到/fish/后就追加一行
 
-	$ sed 'N;s/\n/,/' pets.txt
-	This is my cat,  my cat's name is betty
-	This is my dog,  my dog's name is frank
-	This is my fish,  my fish's name is george
-	This is my goat,  my goat's name is adam
+## c: 整行替换
+- 替换第二行: `$ sed "2 c new line" my.txt`
+- 替换匹配行: `$ sed "/fish/c new line" my.txt`
 
-## a命令和i命令
-a命令就是append, i命令就是insert,它们是用来添加行的.如:
+## d: 删除
+- 删除匹配行: `$ sed '/fish/d' my.txt`
+- 删除第二行: `$ sed '2d' my.txt`
+- 从第二行开始删除: `$ sed '2,$d' my.txt`
 
-	# 其中的1i表明,其要在第1行前插入一行(insert)
-	$ sed "1 i This is my monkey, my monkey's name is wukong" my.txt
-	This is my monkey, my monkey's name is wukong
-	This is my cat, my cat's name is betty
-	This is my dog, my dog's name is frank
-	This is my fish, my fish's name is george
-	This is my goat, my goat's name is adam
- 
-	# 其中的1a表明,其要在最后一行后追加一行(append)
-	$ sed "$ a This is my monkey, my monkey's name is wukong" my.txt
-	This is my cat, my cat's name is betty
-	This is my monkey, my monkey's name is wukong
-	This is my dog, my dog's name is frank
-	This is my fish, my fish's name is george
-	This is my goat, my goat's name is adam
-我们可以运用匹配来添加文本:
+## p 打印
+类似 grep
 
-	# 注意其中的/fish/a,这意思是匹配到/fish/后就追加一行
-	$ sed "/fish/a This is my monkey, my monkey's name is wukong" my.txt
-	This is my cat, my cat's name is betty
-	This is my dog, my dog's name is frank
-	This is my fish, my fish's name is george
-	This is my monkey, my monkey's name is wukong
-	This is my goat, my goat's name is adam
-下面这个例子是对每一行都挺插入:
-
-	$ sed "/my/a ----" my.txt
-	This is my cat, my cat's name is betty
-	----
-	This is my dog, my dog's name is frank
-	----
-	This is my fish, my fish's name is george
-	----
-	This is my goat, my goat's name is adam
-	----
-
-## c命令
-c 命令是替换匹配行
-
-	$ sed "2 c This is my monkey, my monkey's name is wukong" my.txt
-	This is my cat, my cat's name is betty
-	This is my monkey, my monkey's name is wukong
-	This is my fish, my fish's name is george
-	This is my goat, my goat's name is adam
-	 
-	$ sed "/fish/c This is my monkey, my monkey's name is wukong" my.txt
-	This is my cat, my cat's name is betty
-	This is my dog, my dog's name is frank
-	This is my monkey, my monkey's name is wukong
-	This is my goat, my goat's name is adam
-
-## d命令
-删除匹配行
-
-	$ sed '/fish/d' my.txt
-	This is my cat, my cat's name is betty
-	This is my dog, my dog's name is frank
-	This is my goat, my goat's name is adam
-	 
-	$ sed '2d' my.txt
-	This is my cat, my cat's name is betty
-	This is my fish, my fish's name is george
-	This is my goat, my goat's name is adam
-	 
-	$ sed '2,$d' my.txt
-	This is my cat, my cat's name is betty
-
-## p命令
-打印命令
-
-你可以把这个命令当成grep式的命令
-
-	# 匹配fish并输出,可以看到fish的那一行被打了两遍,
-	# 这是因为sed处理时会把处理的信息输出
-	$ sed '/fish/p' my.txt
-	This is my cat, my cat's name is betty
-	This is my dog, my dog's name is frank
-	This is my fish, my fish's name is george
-	This is my fish, my fish's name is george
-	This is my goat, my goat's name is adam
-	 
-	# 使用n参数就好了
-	$ sed -n '/fish/p' my.txt
-	This is my fish, my fish's name is george
-	 
-	# 从一个模式到另一个模式
-	$ sed -n '/dog/,/fish/p' my.txt
-	This is my dog, my dog's name is frank
-	This is my fish, my fish's name is george
-	 
-	#从第一行打印到匹配fish成功的那一行
-	$ sed -n '1,/fish/p' my.txt
-	This is my cat, my cat's name is betty
-	This is my dog, my dog's name is frank
-	This is my fish, my fish's name is george
+- 只显示匹配行: `$ sed -n '/fish/p' my.txt`
+- 显示区间: `$ sed -n '/dog/,/fish/p' my.txt`
+- 从第1行到fish那一行: `$ sed -n '1,/fish/p' my.txt`
 
