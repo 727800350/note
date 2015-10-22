@@ -33,16 +33,16 @@ sed script file should only contain sed commands
 - `$ sed "s/my/Hao Chen's/g" pets.txt`, g 表示每一行中所有出现 my 都被替换
 - 在每一行最前面加点东西, 也就是替换开头的位置: `$ sed 's/^/#/g' pets.txt`
 - 在每一行最后面加点东西: `$ sed 's/$/ --- /g' pets.txt`
-替换指定行: 
+- 替换指定行: 
 	- 一行: $ sed "3s/my/your/g" pets.txt
 	- 多行: $ sed "3,6s/my/your/g" pets.txt, 第3行到6行
 	- 多行: $ sed "3,$s/my/your/g" pets.txt, 从第3行开始的所有
-替换一行的指定出现
+- 替换一行的指定出现
 	- 第一个s: $ sed 's/s/S/1' my.txt
 	- 第二个s: $ sed 's/s/S/2' my.txt
 	- 第3个以后的s: $ sed 's/s/S/3g' my.txt
 
-- 或使用 -i 参数直接修改文件内容: `$ sed -i "s/my/Hao Chen's/g" pets.txt`
+使用 -i 参数可以直接修改原有的文件内容: `$ sed -i "s/my/Hao Chen's/g" pets.txt`
 
 指代变量
 
