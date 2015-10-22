@@ -51,7 +51,7 @@ sed script file should only contain sed commands
 
 使用shell 变量: `sed "/pattern/s/target/${target}/"`
 
-## N命令
+## N: 缓冲区
 **把当前行和下一行作为一行进行处理**, 换行符保留在新的一行中
 
 - `$ sed 'N;s/my/your/' pets.txt`
@@ -72,7 +72,7 @@ a命令就是append, i命令就是insert,它们是用来添加行的
 - 删除第二行: `$ sed '2d' my.txt`
 - 从第二行开始删除: `$ sed '2,$d' my.txt`
 
-## p 打印
+## p: 打印
 类似 grep
 
 - 只显示匹配行: `$ sed -n '/fish/p' my.txt`
