@@ -11,18 +11,6 @@ It can be considered to be a **pseudo-C interpretor, as it understands the same 
 AWK also has string manipulation functions, so it can search for particular strings and modify the output. 
 AWK also has associative arrays, which are incredible useful, and is a feature most computing languages lack. Associative arrays can make a complex problem a trivial exercise.
 
-# Basic Structure
-语法模式: `pattern {action}`
-
-The pattern specifies when the action is performed.
-
-AWK is line oriented. The default pattern is something that matches every line.
-
-两个特殊的pattern
-`BEGIN {action}`, `END {action}`
-
-`BEGIN { x=5; }{ print x, $x}`: 会输出5和第5个field的value.
-
 ## awk脚本
 `cat input | awk -F '\t' -v var="value" -f script.awk`:
 
@@ -35,9 +23,40 @@ AWK is line oriented. The default pattern is something that matches every line.
 `${variable:-defaultvalue}` 注意那个减号
 例如: `column=${1:-1}`
 
-# Syntax of AWK
-## 运算符
+# Patterns
+语法模式: `pattern {action}`
 
+The pattern specifies where the action is performed.
+A pattern or condition is simply an abbreviated test. 
+If the condition is true, the action is performed. All relational tests can be used as a pattern.
+
+可以使用逻辑运算符和括号: AND(`&&`), OR(`||`) and NOT(`!`)
+
+AWK is line oriented. 
+
+- 默认是所有行都匹配
+- 两个特殊的pattern
+	1. `BEGIN {action}`
+	1. `END {action}`
+- 使用 regex, eg: `{if($0 ~ /special/) {print}}`
+- 限制起始与结束: `/start/,/stop/ {action}`: 在/start/ 与 /stop/ 两个pattern之间(包括边界), action 有效, 等同于下面的实现
+	```
+	{
+		if($0 ~ /start/){
+			triggered=1;
+		}
+		if(triggered){
+			print;
+			if($0 ~ /stop/){
+				triggered=0;
+			}
+		}
+	}
+	```
+
+`BEGIN { x=5; }{ print x, $x}`: 会输出5和第5个field的value.
+
+# 运算符
 Binary Operators
 
 | Operator | Type       | Meaning        |
@@ -56,9 +75,7 @@ Regular Expressions
 
 A value of 0 is false, while anything else is true. Undefined variables has the value of 0.
 
-And/Or/Not: "&&" / "||" / "!".
-
-## Built-in Variables
+# Built-in Variables
 - $0 refers to the entire line that AWK reads in
 - FS - The Input Field Separator Variable, 等同于命令行的`-F`
 - OFS - The Output Field Separator Variable, 默认的OFS是一个空格
@@ -78,8 +95,7 @@ printf("string\n") > "/tmp/file";
 printf("string\n") >> "/tmp/file";
 ```
 
-### String Functions
-
+# String Functions
 - index(string,search)	AWK, NAWK, GAWK
 - length(string)	AWK, NAWK, GAWK
 - split(string,array,separator)	AWK, NAWK, GAWK
@@ -133,42 +149,6 @@ function error(message){
         printf("%s: ", FILENAME) > "/dev/tty";
     }
     printf("line # %d, %s, line: %s\n", NR, message, $0) >> "/dev/tty";
-}
-```
-
-## AWK patterns
-A pattern or condition is simply an abbreviated test. If the condition is true, the action is performed. All relational tests can be used as a pattern.
-
-### if的省略
-eg: The `head -10` command, which prints the first 10 lines and stops, can be duplicated with
-```
-{if (NR <= 10 ) {print}}
-```
-Changing the if statement to a condition shortens the code:
-```
-NR <= 10 {print}
-```
-
-### 含有regex的简化
-`{if ($0 ~ /special/) {print}}` or more briefly `$0 ~ /special/ {print}` or `/special/ {print}`
-
-### 逻辑运算法
-可以使用逻辑运算符和括号
-AND (&&), OR (||) and NOT (!) operator
-
-### 开始与结束
-`/start/,/stop/ {action}`: 在/start/ 与 /stop/ 两个pattern之间(包括边界), action 有效, 等同于下面的实现
-```
-{
-  if ($0 ~ /start/) {
-    triggered=1;
-  }
-  if (triggered) {
-     print;
-     if ($0 ~ /stop/) {
-	triggered=0;
-     }
-  }
 }
 ```
 
