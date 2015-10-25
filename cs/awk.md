@@ -21,7 +21,7 @@ AWK also has associative arrays, which are incredible useful, and is a feature m
 
 参数的默认值
 `${variable:-defaultvalue}` 注意那个减号
-例如: `column=${1:-1}`
+例如: `column = ${1:-1}`
 
 # Patterns
 语法模式: `pattern {action}`
@@ -44,18 +44,18 @@ AWK is line oriented.
 ```awk
 		{
 			if($0 ~ /start/){
-				triggered=1;
+				triggered = 1;
 			}
 			if(triggered){
 				print;
 				if($0 ~ /stop/){
-					triggered=0;
+					triggered = 0;
 				}
 			}
 		}
 ```
 
-`BEGIN { x=5; }{ print x, $x}`: 会输出5和第5个field的value.
+`BEGIN { x=5; }{print x, $x}`: 会输出5和第5个field的value.
 
 # 运算符
 Binary Operators
@@ -101,8 +101,10 @@ printf("string\n") >> "/tmp/file";
 - length(string)	AWK, NAWK, GAWK
 - split(string,array,separator)	AWK, NAWK, GAWK
 
+```awk
 		set time = 12:34:56
-		set hms = `echo $time | awk '{split($0,a,":" ); print a[1], a[2], a[3]}'` # = 12 34 56
+		set hms = `echo $time | awk '{split($0,a,":" ); print a[1], a[2], a[3]}'` => 12 34 56
+```
 
 - substr(string,position)	AWK, NAWK, GAWK, 第一个字母的下标为1, 而不是0
 - substr(string,position,max)	AWK, NAWK, GAWK
