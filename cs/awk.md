@@ -40,7 +40,7 @@ AWK is line oriented.
 	1. `END {action}`
 - 使用 regex, eg: `{if($0 ~ /special/) {print}}`
 - 限制起始与结束: `/start/,/stop/ {action}`: 在/start/ 与 /stop/ 两个pattern之间(包括边界), action 有效, 等同于下面的实现
-	```
+
 	{
 		if($0 ~ /start/){
 			triggered=1;
@@ -52,21 +52,20 @@ AWK is line oriented.
 			}
 		}
 	}
-	```
 
 `BEGIN { x=5; }{ print x, $x}`: 会输出5和第5个field的value.
 
 # 运算符
 Binary Operators
 
-| Operator | Type       | Meaning        |
-|----------|------------|----------------|
-| +        | Arithmetic | Addition       |
-| -        | Arithmetic | Subtraction    |
-| *        | Arithmetic | Multiplication |
-| /        | Arithmetic | Division, 5/2=2.5       |
-| %        | Arithmetic | Modulo         |
-| <space>  | String     | Concatenation, 字符串拼接  |
+| Operator | Type       | Meaning        			 |
+|----------|------------|----------------------------|
+| +        | Arithmetic | Addition       			 |
+| -        | Arithmetic | Subtraction    			 |
+| *        | Arithmetic | Multiplication 			 |
+| /        | Arithmetic | Division, 5/2=2.5       	 |
+| %        | Arithmetic | Modulo         			 |
+| `\space` | String     | Concatenation, 字符串拼接  |
 
 Regular Expressions
 
@@ -99,10 +98,10 @@ printf("string\n") >> "/tmp/file";
 - index(string,search)	AWK, NAWK, GAWK
 - length(string)	AWK, NAWK, GAWK
 - split(string,array,separator)	AWK, NAWK, GAWK
-```
-set time = 12:34:56
-set hms = `echo $time | awk '{split($0,a,":" ); print a[1], a[2], a[3]}'` # = 12 34 56
-```
+
+	set time = 12:34:56
+	set hms = `echo $time | awk '{split($0,a,":" ); print a[1], a[2], a[3]}'` # = 12 34 56
+
 - substr(string,position)	AWK, NAWK, GAWK, 第一个字母的下标为1, 而不是0
 - substr(string,position,max)	AWK, NAWK, GAWK
 - sub(regex,replacement)	NAWK, GAWK
