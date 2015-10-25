@@ -41,6 +41,7 @@ AWK is line oriented.
 - 使用 regex, eg: `{if($0 ~ /special/) {print}}`
 - 限制起始与结束: `/start/,/stop/ {action}`: 在/start/ 与 /stop/ 两个pattern之间(包括边界), action 有效, 等同于下面的实现
 
+		```awk
 		{
 			if($0 ~ /start/){
 				triggered=1;
@@ -52,6 +53,7 @@ AWK is line oriented.
 				}
 			}
 		}
+		```
 
 `BEGIN { x=5; }{ print x, $x}`: 会输出5和第5个field的value.
 
@@ -120,7 +122,7 @@ printf("string\n") >> "/tmp/file";
 ## 高级命令
 **system**
 NAWK has a function system() that can execute any program. It returns the exit status of the program.
-```
+```awk
 if (system("/bin/rm junk") != 0)
 print "command did not work";
 ```
@@ -135,10 +137,7 @@ As a side effect, the line containing the input changes.没有理解这个side e
 **strftime**: GAWK has a special function for creating strings based on the current time.
 The systime() function returns the current date in seconds. 
 使用起来不是很方便,仅仅是在计算时间差的比较方便
-```
-strftime("%y_%m_%d_%H_%M_%S")
-94_12_25_12_00_00
-```
+`strftime("%y_%m_%d_%H_%M_%S")` => 94_12_25_12_00_00
 
 ## 自定义函数
 Finally, NAWK and GAWK support user defined functions.
