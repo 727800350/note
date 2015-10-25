@@ -1,4 +1,4 @@
-# intro
+# Intro
 pattern scanning and processing language
 [awk ref](http://www.grymoire.com/Unix/Awk.html)
 
@@ -99,8 +99,8 @@ printf("string\n") >> "/tmp/file";
 - length(string)	AWK, NAWK, GAWK
 - split(string,array,separator)	AWK, NAWK, GAWK
 
-	set time = 12:34:56
-	set hms = `echo $time | awk '{split($0,a,":" ); print a[1], a[2], a[3]}'` # = 12 34 56
+		set time = 12:34:56
+		set hms = `echo $time | awk '{split($0,a,":" ); print a[1], a[2], a[3]}'` # = 12 34 56
 
 - substr(string,position)	AWK, NAWK, GAWK, 第一个字母的下标为1, 而不是0
 - substr(string,position,max)	AWK, NAWK, GAWK
