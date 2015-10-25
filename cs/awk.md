@@ -41,17 +41,17 @@ AWK is line oriented.
 - 使用 regex, eg: `{if($0 ~ /special/) {print}}`
 - 限制起始与结束: `/start/,/stop/ {action}`: 在/start/ 与 /stop/ 两个pattern之间(包括边界), action 有效, 等同于下面的实现
 
-	{
-		if($0 ~ /start/){
-			triggered=1;
-		}
-		if(triggered){
-			print;
-			if($0 ~ /stop/){
-				triggered=0;
+		{
+			if($0 ~ /start/){
+				triggered=1;
+			}
+			if(triggered){
+				print;
+				if($0 ~ /stop/){
+					triggered=0;
+				}
 			}
 		}
-	}
 
 `BEGIN { x=5; }{ print x, $x}`: 会输出5和第5个field的value.
 
