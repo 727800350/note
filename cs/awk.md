@@ -1,100 +1,38 @@
+# intro
 pattern scanning and processing language
 [awk ref](http://www.grymoire.com/Unix/Awk.html)
 
-AWK - the (very old) original from AT&T
-NAWK - A newer, improved version from AT&T
-GAWK - The FGNU Project's implementation, linux 中默认的版本.
+- AWK - the (very old) original from AT&T
+- NAWK - A newer, improved version from AT&T
+- GAWK - The FGNU Project implementation, linux 中默认的版本.
 
 **特性**
-It can be considered to be a pseudo-C interpretor, as it understands the same arithmatic operators as C. 
+It can be considered to be a **pseudo-C interpretor, as it understands the same arithmatic operators as C**. 
 AWK also has string manipulation functions, so it can search for particular strings and modify the output. 
 AWK also has associative arrays, which are incredible useful, and is a feature most computing languages lack. Associative arrays can make a complex problem a trivial exercise.
 
-If you find yourself needing a feature that is very difficult or impossible to do in AWK, I suggest you either use NAWK, or GAWK, or convert your AWK script into PERL using the "a2p" conversion program which comes with PERL.
-
 # Basic Structure
-```
-pattern { action }
-```
+语法模式: `pattern {action}`
+
 The pattern specifies when the action is performed.
 
 AWK is line oriented. The default pattern is something that matches every line.
 
 两个特殊的pattern
-```
-BEGIN { print "START" }
-      { print         }
-END   { print "STOP"  }
-```
-adds one line before and one line after the input file.
-**BEGIN 后面的做大括号必须与BEGIN在同一行, END也一样.**
+`BEGIN {action}`, `END {action}`
 
-
-AWK does not evaluate variables within strings. To explain, the second line could not be written like this:
-```
-{print "$8\t$3" }
-```
-That example would print "$8 $3"
-在引号里面, $符号变成了一般的字符, 就不是指示位置的了.
-
-```
-BEGIN { x=5 }
-{ print x, $x}
-```
-会输出5和第5个field的value.
-
-If you had four fields, and wanted to print out the second and fourth field, there are two ways. 
-This is the first:
-```
-$1=""; $3=""; print;
-```
-
-and the second
-```
-print $2, $4;
-```
-两种都能够实现, 但是细节上还是不同的, 第一种方式只是把第1和第3个field 的value置为空的字符串,然后打印出整行, 但是output filed seperator还是3个.
+`BEGIN { x=5; }{ print x, $x}`: 会输出5和第5个field的value.
 
 ## awk脚本
-```
-awk -f filename
-```
+`cat input | awk -F '\t' -v var="value" -f script.awk`:
 
-或者在awk脚本的首行加上以下内容 `#!/bin/awk -f`, 然后加上x权限, 例如:
-```
-#!/bin/awk -f
-BEGIN { print "File\tOwner" }
-{ print $8, "\t", $3}
-END { print " - DONE -" }
-```
-
-## 向awk 传递参数
-可以通过命令行向awk中传递参数.
-这样子传递进去的参数,在awk命令中可以访问(但是在BEGIN语句中访问不到).
-每一项都必须作为单一的一个参数来解释.所以,**等号之间不能有空格**
-
-但是,可以通过增加一个-v参数让awk在执行BEGIN之前得到变量的值.
-命令行中每一个指定的变量都需要一个-v参数.eg: `$ awk -v name=ddd -v age=33 'BEGIN{print name}{print $0}'`
-
-## Dynamic Variables
-```
-column 文件的内容
-#!/bin/sh
-column=$1
-awk '{print $'$column'}'
-```
-执行上述脚本
-```
-ls -l | column 3
-```
-得到第3个field 的value
-
-如果写成, `awk '{print $column}'`, 将不能工作, 单引号里面的变量$column的值将不会被awk看到, 需要把它分开,`awk '{print $'` 和 `$column` 和 `'}'` 三部分拼接而成
+- -F: 指定分隔符, 默认会同时使用 `\t` 和 `\space`
+	- 当指定分隔符为`.`时, 需要使用 `-F.`
+- -v: 传递一个变量给awk, 在awk里面可以直接使用 var 变量,它的值为 "value"
+- -f: 指定awk脚本
 
 参数的默认值
-```
-${variable:-defaultvalue} 注意那个减号
-```
+`${variable:-defaultvalue}` 注意那个减号
 例如: `column=${1:-1}`
 
 # Syntax of AWK
@@ -113,108 +51,22 @@ Binary Operators
 
 Regular Expressions
 
-- ~	Matches
-- !~	Does not match
+- ~: Matches, eg: `if($0 ~ /:/)`
+- !~: Does not match
 
 A value of 0 is false, while anything else is true. Undefined variables has the value of 0.
 
 And/Or/Not: "&&" / "||" / "!".
 
-## commands 
-There are only a few commands in AWK. The list and syntax follows:
-
-```
-if ( conditional ) statement [ else statement ]
-while ( conditional ) statement
-for ( expression ; conditional ; expression ) statement
-for ( variable in array ) statement
-break
-continue
-{ [ statement ] ...}
-variable=expression
-print [ expression-list ] [ > expression ]
-printf format [ , expression-list ] [ > expression ]
-next 
-exit
-```
-
-```
-#!/bin/awk -f
-{
-	if ( $0 ~ /:/ ) {
-		FS=":";
-		$0=$0;  ## 这句话是由于awk版本兼容性
-	} else {
-		FS=" ";
-		$0=$0;
-	}
-	#print the third field, whatever format
-	print $3
-}
-```
-
 ## Built-in Variables
 - $0 refers to the entire line that AWK reads in
-
-- FS - The Input Field Separator Variable
-"-F": 在command line上指定awk的input field separator, 在脚本中是通过FS这个变量实现的.  
-下面量段代码的功能是相同的, 前者是command line 的形式, 后者是script的形式
-
-```
-awk -F: '{if ($2 == "") print $1 ": no password!"}' </etc/passwd
-```
-与
-```
-#!/bin/awk -f
-BEGIN {
-	FS=":";
-}
-{
-	if ( $2 == "" ) {
-		print $1 ": no password!";
-	}
-}
-```
-
-几个注意事项
-
-1. 如果分隔符是多个字符, 使用单引号或者双引号括起来, 但是如果分隔符是`.`,  不能使用括号.
-1. 当不指定分隔符时, awk 会默认使用空格或tab作为分隔符, 这时有一个好处, 就是能够处理**不同行的空白字符数目不一致的情况**.
-1. 如果FS中指定的是多个字符组成的字符串, 那么awk会严格匹配.  
-1. If you change the field separator before you read the line, the change affects what you read. 
-1. If you change it after you read the line, it will not redefine the variables. You would not want a variable to change on you as a side-effect of another action.
-1. Note the field separator variable retains its value until it is explicitly changed.
-```
-#!/bin/awk -f
-{
-	print $2
-	FS=":"
-	print $2
-}
-```
-输入: `One Two:Three:4 Five`  
-print out "Two:Three:4" twice
-
-- OFS - The Output Field Separator Variable
-默认的OFS是一个空格
-```
-print $2 $3
-```
-$2和$3会拼接到一起成为一个field
-
+- FS - The Input Field Separator Variable, 等同于命令行的`-F`
+- OFS - The Output Field Separator Variable, 默认的OFS是一个空格
 - NF - The Number of Fields Variable
-
 - NR - The Number of Records Variable, 一行就是一个record
-
 - FNR: contains the number of lines read, but is **reset for each file read**. The NR variable accumulates for all files read.
-
-- RS - The Record Separator Variable
-Normally, AWK reads one line at a time, and breaks up the line into fields.
-You can set the "RS" variable to change AWK definition of a "line". If you set it to an empty string, then AWK will read the entire file into memory. 
-You can combine this with changing the "FS" variable.
-
+- RS - The Record Separator Variable, 默认是一行一条record
 - ORS - The Output Record Separator Variable
-
 - FILENAME - The Current Filename Variable
 
 ## prinf
@@ -275,10 +127,9 @@ strftime("%y_%m_%d_%H_%M_%S")
 
 ## 自定义函数
 Finally, NAWK and GAWK support user defined functions.
-
 ```
-function error ( message ) {
-    if (FILENAME != "-") {
+function error(message){
+    if(FILENAME != "-"){
         printf("%s: ", FILENAME) > "/dev/tty";
     }
     printf("line # %d, %s, line: %s\n", NR, message, $0) >> "/dev/tty";
@@ -306,13 +157,7 @@ NR <= 10 {print}
 AND (&&), OR (||) and NOT (!) operator
 
 ### 开始与结束
-```
-/start/,/stop/ {print}
-```
-This form defines, in one line, the condition to turn the action on, and the condition to turn the action off. 
-That is, when a line containing "start" is seen, it is printed. Every line afterwards is also printed, 
-until a line containing "stop" is seen. This one is also printed, but the line after, and all following lines, are not printed.   
-This triggering on and off can be repeated many times.
+`/start/,/stop/ {action}`: 在/start/ 与 /stop/ 两个pattern之间(包括边界), action 有效, 等同于下面的实现
 ```
 {
   if ($0 ~ /start/) {
@@ -327,32 +172,3 @@ This triggering on and off can be repeated many times.
 }
 ```
 
-最后附上所有的内置变量
-
-| Variable    | Purpose                                                              | AWK | NAWK | GAWK |
-|-------------|----------------------------------------------------------------------|-----|------|------|
-| FS          | Field separator                                                      | Yes | Yes  | Yes  |
-| NF          | Number of Fields                                                     | Yes | Yes  | Yes  |
-| RS          | Record separator                                                     | Yes | Yes  | Yes  |
-| NR          | Number of input records                                              | Yes | Yes  | Yes  |
-| FILENAME    | Current filename                                                     | Yes | Yes  | Yes  |
-| OFS         | Output field separator                                               | Yes | Yes  | Yes  |
-| ORS         | Output record separator                                              | Yes | Yes  | Yes  |
-| ARGC        | # of arguments                                                       |     | Yes  | Yes  |
-| ARGV        | Array of arguments                                                   |     | Yes  | Yes  |
-| ARGIND      | Index of ARGV of current file                                        |     |      | Yes  |
-| FNR         | Input record number                                                  |     | Yes  | Yes  |
-| OFMT        | Ouput format (default "%.6g")                                        |     | Yes  | Yes  |
-| RSTART      | Index of first character after match()                               |     | Yes  | Yes  |
-| RLENGTH     | Length of string after match()                                       |     | Yes  | Yes  |
-| SUBSEP      | Default separator with multiple subscripts in array (default "\034") |     | Yes  | Yes  |
-| ENVIRON     | Array of environment variables                                       |     |      | Yes  |
-| IGNORECASE  | Ignore case of regular expression                                    |     |      | Yes  |
-| CONVFMT     | conversion format (default: "%.6g")                                  |     |      | Yes  |
-| ERRNO       | Current error after getline failure                                  |     |      | Yes  |
-| FIELDWIDTHS | list of field widths (instead of using FS)                           |     |      | Yes  |
-| BINMODE     | Binary Mode (Windows)                                                |     |      | Yes  |
-| LINT        | Turns --lint mode on/off                                             |     |      | Yes  |
-| PROCINFO    | Array of informaiton about current AWK program                       |     |      | Yes  |
-| RT          | Record terminator                                                    |     |      | Yes  |
-| TEXTDOMAIN  | Text domain (i.e. localization) of current AWK program               |     |      | Yes  |
