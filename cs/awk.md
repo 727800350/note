@@ -89,7 +89,7 @@ A value of 0 is false, while anything else is true. Undefined variables has the 
 The printf is very similar to the C function with the same name, 用法也一样.
 
 同时可以使用输出重定向
-```
+```awk
 printf("string\n") > "/tmp/file";
 printf("string\n") >> "/tmp/file";
 ```
@@ -142,7 +142,7 @@ strftime("%y_%m_%d_%H_%M_%S")
 
 ## 自定义函数
 Finally, NAWK and GAWK support user defined functions.
-```
+```awk
 function error(message){
     if(FILENAME != "-"){
         printf("%s: ", FILENAME) > "/dev/tty";
