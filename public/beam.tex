@@ -4,6 +4,10 @@
 \usepackage{ctex}
 \usepackage[english]{babel}
 %% \usepackage[french]{babel}
+
+\usepackage{scrextend}
+%% part of KOMA-Script) which allows to choose arbitrary font sizes like 7.5pt -- be sure to use a vector font like Latin Modern
+
 % 汉化
 \renewcommand{\contentsname}{目\qquad 录}
 \renewcommand\listfigurename{插\ 图\ 目\ 录}
@@ -13,9 +17,9 @@
 \renewcommand{\tablename}{表}
 
 \usepackage{amsmath, amsthm, amssymb}
-\usepackage{graphicx}
 
 %图形
+\usepackage{graphicx}
 \usepackage{pstricks}
 \usepackage{graphicx}
 \usepackage{subfigure}
@@ -24,25 +28,19 @@
 \def\pgfsysdriver{pgfsys-dvipdfmx.def}
 \pgfsetxvec{\pgfpoint{10pt}{0}}
 \pgfsetyvec{\pgfpoint{0}{10pt}}
-\tikzset{
-box/.style={rectangle, rounded corners=6pt,
-minimum width=50pt, minimum height=20pt, inner sep=6pt,
-draw=gray,thick, fill=lightgray}
-}
+\tikzset{box/.style={rectangle, rounded corners=6pt, minimum width=50pt, minimum height=20pt, inner sep=6pt, draw=gray,thick, fill=lightgray}}
 \usepackage{ccaption}
 \usepackage{epstopdf} %convert eps to pdf
+
 %% bmp, gif not supported
 \DeclareGraphicsExtensions{.eps,.mps,.pdf,.jpg,.png}
 \DeclareGraphicsRule{*}{eps}{*}{}
 \graphicspath{{figure/}{../figure/}}
 
-\usepackage[colorinlistoftodos]{todonotes}
-
-
 %% \setbeameroption{show notes on second screen = left} needs the following package
 \usepackage{pgfpages}
 
-%% code
+% code
 %% verbatim 中不能使用\textbf 等格式, alltt可以使用
 \usepackage{alltt}
 
@@ -78,9 +76,7 @@ draw=gray,thick, fill=lightgray}
 	mathescape=false,
 }
 
-\newcommand{\fun}[1]{\textit{#1}}
-
-%% 编译通不过, 加了CJKbookmarks=true 之后可以使用中文
+% 编译通不过, 加了CJKbookmarks=true 之后可以使用中文
 \hypersetup{colorlinks,linkcolor=blue,urlcolor=green,anchorcolor=red,citecolor=green,CJKbookmarks=true}
 
 %表格
@@ -95,21 +91,11 @@ draw=gray,thick, fill=lightgray}
 
 %颜色
 \usepackage{color}
-%\definecolor{name}{system}{definition}
-\definecolor{Gray}{gray}{0.9}
-\definecolor{LightCyan}{rgb}{0.88,1,1}
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
-
 \def\red#1{\textcolor[rgb]{1.00,0.00,0.00}{#1}}
 \def\yellow#1{\textcolor[rgb]{1.00,1.00,0.00}{#1}}
-\def\lime#1{\textcolor[rgb]{0.00,1.00,0.00}{#1}}
-
-
 
 %% 化学
-\usepackage[version=3]{mhchem}
+%% \usepackage[version=3]{mhchem}
 %% ex: Ammonium sulphate is \ce{(NH4)2SO4}.
 
 \usepackage{fixltx2e}
@@ -119,10 +105,6 @@ draw=gray,thick, fill=lightgray}
 %% Macro
 \def\vecteur#1{(#1_1,~#1_2,~\ldots,~#1_n)}
 %% \def\vecteur#1{\ensuremath{(#1_1,~#1_2,~\ldots,~#1_n)}}
-
-%随机数
-%\usepackage[first=0,last=9]{lcg}
-%\newcommand{\ra}{\rand0.\arabic{rand}}
 
 \newcommand{\R}{\mathbb{R}}   %the real number set
 %% \newcommand{\C}{\mathbb{C}} %xelatex says \C has already been used.
