@@ -97,6 +97,7 @@ Beamer provides `\logo{<logo code>}` to set the logo(s)
 	- lof - figure
 	- lot - table
 - entry: the text of the entry.
+
 eg:
 ```
 \chapter*{结论与展望}\addcontentsline{toc}{chapter}{结论与展望}

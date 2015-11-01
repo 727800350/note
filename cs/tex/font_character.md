@@ -5,14 +5,17 @@
 我们通常会遇到别人规定:"正文用小四,宋体",但是 LaTeX 并没有小四,只有 pt,因此下表为字号对应的转换表:
 比如:`\fontsize{12pt}{18pt}\selectfont` 就设置了 小四,且 1.5 倍行距.
 
-| ?字号                       | 初号   | 小初   | 一号   | 小一   | 二号   | 小二   | 三号   | 小三     | 四号   | 小四   | 五号      | 小五   | 六号    | 小六     | 七号     | 小七    |
-|---------------------------|------|------|------|------|------|------|------|--------|------|------|---------|------|-------|--------|--------|-------|
-| 大小                        | 42pt | 36pt | 26pt | 24pt | 22pt | 18pt | 16pt | 15pt   | 14pt | 12pt | 10.5pt  | 9pt  | 7.5pt | 6.5pt  | 5.5pt  | 5pt   |
-| 1.5行距时的 \baselineskip 设置值 | 63pt | 54pt | 39pt | 36pt | 33pt | 27pt | 24pt | 22.5pt | 21pt | 18pt | 15.75pt | 13.5 | 11.25 | 9.75pt | 8.25pt | 7.5pt |
+|**字号**|初号|小初|一号|小一|二号|小二 |三号|小三|四号|小四|五号  |小五|六号 |小六  |七号   |小七|
+|--------|----|----|----|----|----|-----|----|----|----|----|------|----|-----|------|-------|----|
+|**大小**|42pt|36pt|26pt|24pt|22pt| 18pt|16pt|15pt|14pt|12pt|10.5pt| 9pt|7.5pt| 6.5pt| 5.5pt | 5pt|
 
 Latex 设置字体大小命令由小到大依次为:
+`\tiny, \scriptsize, \footnotesize, \small, \normalsize, \large, \Large, \LARGE, \huge, \Huge`
+
+对于beamer, 可以通过使用 package scrextend, 来设置任意大小的字
 ```
-\tiny, \scriptsize, \footnotesize, \small, \normalsize, \large, \Large, \LARGE, \huge, \Huge
+\usepackage{scrextend}
+\changefontsizes{6pt}
 ```
 
 # Special Characters
