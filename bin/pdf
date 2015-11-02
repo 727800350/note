@@ -5,19 +5,28 @@ set -x
 dir=`pwd`
 cd $dir
 
-tex=`ls *.tex`
-tex=`echo $tex | awk -F. '{print $1}'`
-
-xelatex $tex || exit 1
-
-if [ -f *.bib ]
+if [ $# -eq 1 ]
 then
-	echo "bib file exists" >&2
-	bibtex $tex || exit 1
-	xelatex $tex || exit 1
+	texs=$1
+else
+	texs=`ls *.tex`
 fi
 
-xelatex $tex || exit 1
+for tex in ${texs}
+do
+	tex=`echo $tex | awk -F. '{print $1}'`
+	
+	xelatex $tex || exit 1
+	
+	if [ -f *.bib ]
+	then
+		echo "bib file exists" >&2
+		bibtex $tex || exit 1
+		xelatex $tex || exit 1
+	fi
+	
+	xelatex $tex || exit 1
+done
 
 echo "Generate pdf done" >&2
 echo "removing generated intermediate files" >&2
