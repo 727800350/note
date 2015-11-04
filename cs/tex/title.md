@@ -109,3 +109,10 @@ eg:
 如果是book 类或者用了openright 参数的report 类文档,新的章总是从奇数页开始,则要把命令改成 `\cleardoublepage`.  
 如果使用了hyperref 宏包来生成PDF 文件的书签链接,则还需要在上面的命令后再加上 `\phantomsection`
 
+插入空白页
+```
+\newpage
+\thispagestyle{empty}
+\mbox{}
+\newpage
+```
