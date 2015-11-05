@@ -23,7 +23,8 @@
 1. R 中时没有续行符的, 所以要注意[ref](http://yihui.name/en/2007/12/be-careful-with-the-value-returned-in-r-functions/), [demo](../demo/r/line_continuation.r)
 
 # IO
-- `read.table(file, header = FALSE, sep = "")`
+- `read.table(file, header = FALSE, sep = "", skip = 0, blank.lines.skip = TRUE)`
+	- skip: 跳过前面多少行, 数据集的描述
 - `read.csv(file, header = TRUE, sep = ",", dec = ".", fill = TRUE, comment.char = "", ...)`
 - 'scan' Read data into a vector or list from the console or file
 
