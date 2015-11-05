@@ -52,6 +52,10 @@ sink()   #取消显示到文件
 使用参数append=TRUE可以将文本追加到文件后  
 参数split=TRUE可将输出同时发送到屏幕和输出文件中
 
+设置
+
+- `options(digits=3)`: 设置小数位数, 但是设置只对print 有效, 对 write.table 等函数无效, 所以最好的处理方式, 是使用print 输出到stdout, 然后再linux 下通过awk 等工具来格式化输出
+
 # Data Types
 ## every is object
 R是一种基于对象(Object)的语言,在R语言中接触到的每样东西都是一个对象,一串数值向量是一个对象,一个函数是一个对象,一个图形也是一个对象.
