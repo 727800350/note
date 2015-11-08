@@ -30,7 +30,7 @@ Python 的注释只能使用一个#, 而不能使用两个##, 否则会报错.
 
 代码中可以有_, 但是注释中不能有, 否则需要使用math mode
 
-- language: C, C++, bash, Python
+- language: C, C++, bash, Python, SQL
 - firstline, lastline: 自定义显示代码文件的中那些行
 - firstnumber: 在生成的pdf 文件中代码的起始编号
 - title={<text>}: set an **unnumbered and unlabelled** title. If <text> contains a comma or equal sign, make sure you enclose <text> in curly braces { and }.
