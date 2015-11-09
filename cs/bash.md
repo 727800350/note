@@ -155,6 +155,11 @@ caiyuanj pts/10   bb-sns-relay03.b 10:10   17:43   0.42s  0.01s sshd: caiyuanjun
 `ps -ef` 可以查看pid, ppid
 
 # 网络
+使用netstst命令查看正在监听状态的端口:
+
+- `netstat -nupl`: n表示用数字形式显示端口号, u/t,表示UDP/TCP协议类型, p是程序PID, l表示处于监听状态的
+- `lsof -i:80`: 这个需要root 权限, 如果有显示说明80端口已经开放了，如果没有显示说明没有开放
+
 **ss**
 socket statistics (show apps using the Internet)
 
@@ -662,7 +667,7 @@ To select all video and the third audio stream from an input file:
 `ffmpeg -i INPUT -map 0:v -map 0:a:2 OUTPUT`
 
 ## 合并视频与音频
-现在有个视频video.avi，有个音频 audio.mp3，将其合并成output.avi
+现在有个视频video.avi,有个音频 audio.mp3,将其合并成output.avi
 ```
 ffmpeg -i video.avi -vcodec copy -an video2.avi   
 ffmpeg -i video2.avi -i audio.mp3 -vcodec copy -acodec copy output.avi
@@ -687,7 +692,7 @@ It is useful for changing the container format or modifying container-level meta
 可以用file 命令查看一下源文件的信息
 
 ## 切头去尾
-`ffmpeg -ss 00:00:10 -t 00:01:22 -i 五月天-突然好想你.mp3  output.mp3` 只要从第10秒开始截取,共截取1：22时长的内容
+`ffmpeg -ss 00:00:10 -t 00:01:22 -i 五月天-突然好想你.mp3  output.mp3` 只要从第10秒开始截取,共截取1:22时长的内容
 
 ## 视频文件的连接
 好像必须先将文件转成mpg, dv 等格式的文件后才能进行连接
