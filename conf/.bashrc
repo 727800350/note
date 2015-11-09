@@ -52,8 +52,8 @@ then
 	alias mv='amv -g'
 fi
 
-gcc -v 2>&1 | grep -i "version 4." > /dev/null
-if [ $? -eq 0 ]
+version=`gcc -v 2>&1 | tail -n 1 | awk '{print $3}'`
+if [[ $version > "4.7" ]]
 then
 	alias g++='g++ -std=c++11 -g -Wall'
 	alias clang++='clang++ -std=c++11 -g -Wall'
