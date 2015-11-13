@@ -23,6 +23,12 @@ AWK also has associative arrays, which are incredible useful, and is a feature m
 `${variable:-defaultvalue}` 注意那个减号
 例如: `column = ${1:-1}`
 
+## 格式化
+awk 的输出列由于内容长度不一样, 经常不是对齐的, 看起来不太美观, 两种解决办法
+
+1. 使用C语言的方式, printf 进行控制
+1. 使用 `column -t` 命令
+
 # Patterns
 语法模式: `pattern {action}`
 
