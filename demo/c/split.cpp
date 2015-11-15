@@ -9,7 +9,7 @@
 
 int usage(){
 	char program[] = "split";
-	fprintf(stderr, "%s -f file -l length -u unit(KB|MB|GB)\n", program);
+	fprintf(stderr, "%s -f file -l length -u unit(B|KB|MB|GB)\n", program);
 	return 0;
 }
 
@@ -44,6 +44,12 @@ int main(int argc, char *argv[]){
 		default:
 			abort();
 		}
+	}
+
+	if(file == NULL or len == 0 or unit == NULL){
+		fprintf(stderr, "wrong args\n");
+		usage();
+		return 1;
 	}
 
 	fprintf(stderr, "file: %s, len: %d, unit: %s\n", file, len, unit);
