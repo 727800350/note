@@ -22,6 +22,9 @@ else
 	export PATH=$PATH:${HOME}/.jumbo/bin/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/samba/lib/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/hadoop-client/java6/jre/lib/amd64/server/:~/hadoop-client/hadoop/libhdfs/
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/utils/gmp/lib/
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/utils/mpc/lib/
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/utils/mpfr/lib/
 
 	## hadoop client
 	export HADOOP_HOME="${HOME}/hadoop-client/hadoop/"
