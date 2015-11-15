@@ -32,7 +32,6 @@ int main(int argc, char *argv[]){
 			break;
 		 case 'u':
 			unit = optarg;
-			unit[0] = tolower(unit[0]);
 			break;
 		 case '?':
 			if(isprint(optopt))
@@ -54,6 +53,7 @@ int main(int argc, char *argv[]){
 
 	fprintf(stderr, "file: %s, len: %d, unit: %s\n", file, len, unit);
 
+	unit[0] = tolower(unit[0]);
 	if(unit[0] == 'b'){
 		;
 	}
