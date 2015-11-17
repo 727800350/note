@@ -10,8 +10,8 @@
 int usage(){
 	char program[] = "kv_coding";
 	fprintf(stderr, "usage: read from stdin and write to stdout\n");
-	fprintf(stderr, "%s -o encode -k key -l content_length(in bytes)\n", program);
-	fprintf(stderr, "%s -o decode\n", program);
+	fprintf(stderr, "cat source | ./%s -o encode -k key -l content_length(in bytes) > target\n", program);
+	fprintf(stderr, "cat source | ./%s -o decode > target\n", program);
 	return 0;
 }
 
@@ -46,6 +46,12 @@ int main(int argc, char *argv[]){
 		default:
 			abort();
 		}
+	}
+
+	if(op == NULL){
+		fprintf(stderr, "wrong args");
+		usage();
+		return 1;
 	}
 
 	if(strcmp(op, "encode") == 0){
