@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h> // getopt
 #include <ctype.h> // isprint
+#include <sys/types.h>
 
 // The default stack max size is 1 MB
 #define BUFFER_SIZE 1024
@@ -15,7 +16,7 @@ int usage(){
 
 int main(int argc, char *argv[]){
 	char *file = NULL;
-	int len = 0;
+	u_int64_t len = 0;
 	char *unit = NULL;
 	char buffer[BUFFER_SIZE];
 
@@ -51,7 +52,7 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
-	fprintf(stderr, "file: %s, len: %d, unit: %s\n", file, len, unit);
+	fprintf(stderr, "file: %s, len: %lu, unit: %s\n", file, len, unit);
 
 	unit[0] = tolower(unit[0]);
 	if(unit[0] == 'b'){
@@ -75,7 +76,7 @@ int main(int argc, char *argv[]){
 	char outfile[100] = {0};
 	FILE *output = NULL;
 	int num = 0;
-	int sum = 0;
+	u_int64_t sum = 0;
 
 	memset(outfile, 0, 100);
 	// 4 is for ".xx\0"
