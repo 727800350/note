@@ -343,9 +343,8 @@ newdata <- leadership[leadership$date >= startdate & leadership$date <= enddate,
 
 ## 随机抽样 sample
 `sample(x, size, replace = FALSE, prob = NULL)`  
+x 为vector, 不能是data frame, data frame 需要通过: `df[sample(1:nrow(df), 3, replace=FALSE), ]`  
 replace(FALSE) 表示无放回抽样; prob 的和可以不为1, 只要保证每个元素非负就可以了
-
-随机抽取大小为3的样本: `mysample <- leadership[sample(1:nrow(leadership), 3, replace=FALSE), ]`
 
 我们想从1到10中随机抽取5个数字,那么这样来做:首先产生一个序列,然后用sample函数进行无放回抽取: `sample(c(1:10),size=5)`
 
