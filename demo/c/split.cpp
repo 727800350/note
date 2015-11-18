@@ -6,7 +6,7 @@
 #include <sys/types.h>
 
 // The default stack max size is 1 MB
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE (1024 * 1024)
 
 int usage(){
 	char program[] = "split";
@@ -19,11 +19,11 @@ int main(int argc, char *argv[]){
 	char *file = NULL;
 	u_int64_t len = 0; // length of each split part
 	char *unit = NULL;
-	char buffer[BUFFER_SIZE];
+	char buffer[BUFFER_SIZE] = {0};
 
 	int ret = -1;
 
-	char c;
+	char c = 0;
 	while ((c = getopt(argc, argv, "ef:l:u:")) != -1){
 		switch(c){
 		 case 'e':
