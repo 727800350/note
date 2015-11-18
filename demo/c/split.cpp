@@ -15,16 +15,20 @@ int usage(){
 }
 
 int main(int argc, char *argv[]){
+	bool encryption = false; // whether encryption
 	char *file = NULL;
-	u_int64_t len = 0;
+	u_int64_t len = 0; // length of each split part
 	char *unit = NULL;
 	char buffer[BUFFER_SIZE];
 
 	int ret = -1;
 
 	char c;
-	while ((c = getopt(argc, argv, "f:l:u:")) != -1){
+	while ((c = getopt(argc, argv, "ef:l:u:")) != -1){
 		switch(c){
+		 case 'e':
+			encryption = true;
+			break;
 		 case 'f':
 			file = optarg;
 			break;
@@ -52,7 +56,7 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
-	fprintf(stderr, "file: %s, len: %lu, unit: %s\n", file, len, unit);
+	fprintf(stderr, "file: %s, len: %lu, unit: %s, encryption: %d\n", file, len, unit, encryption);
 
 	unit[0] = tolower(unit[0]);
 	if(unit[0] == 'b'){
@@ -83,6 +87,26 @@ int main(int argc, char *argv[]){
 	snprintf(outfile, strlen(file) + 4, "%s.%02d", file, num);
 	fprintf(stderr, "output file: %s\n", outfile);
 	output = fopen(outfile, "wb");
+
+	if(encryption){
+		ret = fread(buffer, sizeof(char), sizeof(buffer), input);
+		if(ret < 0){
+			fprintf(stderr, "read error\n");
+			return ret;
+		}
+		if(ret == 0){
+			fprintf(stderr, "eof\n");
+			return 0;
+		}
+		ret = fwrite(buffer, sizeof(char), ret, output);
+
+		fclose(output);	
+		memset(outfile, 0, 100);
+		num ++;
+		snprintf(outfile, strlen(file) + 4, "%s.%02d", file, num);
+		fprintf(stderr, "output file: %s\n", outfile);
+		output = fopen(outfile, "wb");
+	}
 
 	while(true){
 		ret = fread(buffer, sizeof(char), sizeof(buffer), input);
