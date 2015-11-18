@@ -181,8 +181,9 @@ https://github.com/rails/rails/compare/master@{2014-10-04}...master
 
 1. 错误提交了一个commit, 需要把它撤销掉, **只适用于刚提交的commit**
 
-	1. `git reset --hard <commit_id>`  ##  commit_id 为这个commit 之前的一个commit_id
-	1. `git push origin HEAD --force` ## 可以使用`HEAD~1` 表示刚刚commit 的 commit_id
+	1. `git reset --hard <commit_id>`  ##  commit_id 为这个commit 之前的一个commit_id, 可以使用`HEAD~1` 表示刚刚commit 的 commit_id
+	1. `git push origin HEAD --force`
+之后, 修改的内容也会别擦除, 所以操作之前需要先保存修改的结果.
 
 1. Checkout all files except one.  
 When I do a git status, I see files like this:
