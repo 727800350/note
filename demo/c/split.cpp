@@ -88,26 +88,6 @@ int main(int argc, char *argv[]){
 	fprintf(stderr, "output file: %s\n", outfile);
 	output = fopen(outfile, "wb");
 
-	if(encryption){
-		ret = fread(buffer, sizeof(char), sizeof(buffer), input);
-		if(ret < 0){
-			fprintf(stderr, "read error\n");
-			return ret;
-		}
-		if(ret == 0){
-			fprintf(stderr, "eof\n");
-			return 0;
-		}
-		ret = fwrite(buffer, sizeof(char), ret, output);
-
-		fclose(output);	
-		memset(outfile, 0, 100);
-		num ++;
-		snprintf(outfile, strlen(file) + 4, "%s.%02d", file, num);
-		fprintf(stderr, "output file: %s\n", outfile);
-		output = fopen(outfile, "wb");
-	}
-
 	while(true){
 		ret = fread(buffer, sizeof(char), sizeof(buffer), input);
 		if(ret < 0){
@@ -120,7 +100,7 @@ int main(int argc, char *argv[]){
 		}
 		ret = fwrite(buffer, sizeof(char), ret, output);
 		sum += ret;
-		if(sum >= len){
+		if(encryption or sum >= len){
 			fclose(output);	
 			sum = 0;
 
@@ -129,6 +109,9 @@ int main(int argc, char *argv[]){
 			snprintf(outfile, strlen(file) + 4, "%s.%02d", file, num);
 			fprintf(stderr, "output file: %s\n", outfile);
 			output = fopen(outfile, "wb");
+
+			// disable encryption for the rest of file
+			encryption = false;
 		}
 	}
 
