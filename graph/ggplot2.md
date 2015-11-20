@@ -107,7 +107,7 @@ Another Approach
 - geom_point
 - geom_density
 - geom_histogram
-- geom_bar\\
+- geom_bar
 	- color 改变的只是框的颜色, fill 才是填充色
 	- `geom_bar(width = 0.5)`: 控制宽度
 	- 当要改变geom_bar 的y 轴的范围时, 通过 `p + scale_y_continuous(limits=c(5, 15))`, bars 会完全消失(但是不明白为什么). 但是通过`p + coord_cartesian(ylim=c(5,15))` 是可以设置ylim的
