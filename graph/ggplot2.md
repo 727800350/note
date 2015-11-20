@@ -101,14 +101,17 @@ Another Approach
 - `ggplot(mtcars, aes(factor(cyl)))`, x 就是只有4, 6, 8三个
 
 # geom
-对于 geom_bar
-color 改变的只是框的颜色
-fill 才是填充色
+常用的geom
 
-geom_bar(width = 0.5)  控制宽度
-
-当要改变geom_bar 的y 轴的范围时, 通过 `p + scale_y_continuous(limits=c(5, 15))`, bars 会完全消失(但是不明白为什么).
-但是通过`p + coord_cartesian(ylim=c(5,15))` 是可以设置ylim的
+- geom_line
+- geom_point
+- geom_density
+- geom_histogram
+- geom_bar\\
+	- color 改变的只是框的颜色, fill 才是填充色
+	- `geom_bar(width = 0.5)`: 控制宽度
+	- 当要改变geom_bar 的y 轴的范围时, 通过 `p + scale_y_continuous(limits=c(5, 15))`, bars 会完全消失(但是不明白为什么). 但是通过`p + coord_cartesian(ylim=c(5,15))` 是可以设置ylim的
+- geom_smooth
 
 # group
 Oxboys records the heights(height) and centered ages(age) of 26 boys(Subject), measured on nine occasions(Occasion).
