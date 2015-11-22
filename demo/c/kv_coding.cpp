@@ -9,32 +9,33 @@
 
 int usage(){
 	char program[] = "kv_coding";
-	fprintf(stderr, "usage: read from stdin and write to stdout\n");
-	fprintf(stderr, "cat source | ./%s -o encode -k key -l content_length(in bytes) > target\n", program);
-	fprintf(stderr, "cat source | ./%s -o decode > target\n", program);
+	fprintf(stderr, "%s -f file -o encode -k key > target\n", program);
+	fprintf(stderr, "%s -f file -o decode > target\n", program);
 	return 0;
 }
 
 int main(int argc, char *argv[]){
+	char *file = NULL;
+	FILE *input = NULL;
 	char *op = NULL;
-	char *key = {0};
+	char *key = NULL;
 	int kl = 0;
 	char buffer[BUFFER_SIZE];
 	int vl = 0;
 
 	int ret = -1;
 
-	char c;
-	while ((c = getopt(argc, argv, "o:k:l:")) != -1){
+	char c = 0;
+	while ((c = getopt(argc, argv, "f:o:k:")) != -1){
 		switch(c){
+		 case 'f':
+			file = optarg;
+			break;
 		 case 'o':
 			op = optarg;
 			break;
 		 case 'k':
 			key = optarg;
-			break;
-		 case 'l':
-			vl = atoi(optarg);
 			break;
 		 case '?':
 			if(isprint(optopt))
@@ -48,31 +49,31 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	if(op == NULL){
-		fprintf(stderr, "wrong args");
+	if(file == NULL or op == NULL){
+		fprintf(stderr, "wrong args\n");
 		usage();
 		return 1;
 	}
 
 	if(strcmp(op, "encode") == 0){
-		if(key == NULL or vl == 0){
-			usage();
-			return -1;
+		if(key == NULL){
+			key = file;
 		}
 	}
-	else if(strcmp(op, "decode") == 0){
-		// do not have a pass statement, so ...
-		key = NULL;
-		vl = 0;
-	}
-	else{
+	else if(strcmp(op, "decode") != 0){
 		usage();
 		return -1;
 	}
 
+	input = fopen(file, "rb");
+	if(input == NULL){
+		fprintf(stderr, "%s open error.\n", file);
+		return 1;
+	}
+
 	if(strcmp(op, "encode") == 0){
 		// write out key length
-		kl = strlen(key) + 1;
+		kl = strlen(key);
 		ret = fwrite(&kl, sizeof(int), 1, stdout);
 		if(ret < 1){
 			fprintf(stderr, "write key length error\n");
@@ -85,6 +86,11 @@ int main(int argc, char *argv[]){
 			fprintf(stderr, "write key error\n");
 			return -1;
 		}
+		
+		// get value length
+		fseek(input, 0, SEEK_END);
+		vl = ftell(input);
+		fseek(input, 0, SEEK_SET);
 
 		// write out value length
 		ret = fwrite(&vl, sizeof(int), 1, stdout);
@@ -98,7 +104,7 @@ int main(int argc, char *argv[]){
 
 	if(strcmp(op, "decode") == 0){
 		// read in key length
-		ret = fread(&kl, sizeof(int), 1, stdin);
+		ret = fread(&kl, sizeof(int), 1, input);
 		if(ret < 1){
 			fprintf(stderr, "read key length error\n");
 			return -1;
@@ -106,14 +112,14 @@ int main(int argc, char *argv[]){
 
 		// read in key
 		key = (char *)malloc(sizeof(char) * kl);
-		ret = fread(key, sizeof(char), kl, stdin);
+		ret = fread(key, sizeof(char), kl, input);
 		if(ret < kl){
 			fprintf(stderr, "read key error\n");
 			return -1;
 		}
 
 		// read in value length
-		ret = fread(&vl, sizeof(int), 1, stdin);
+		ret = fread(&vl, sizeof(int), 1, input);
 		if(ret < 1){
 			fprintf(stderr, "read value length error\n");
 			return -1;
@@ -128,24 +134,27 @@ int main(int argc, char *argv[]){
 	int sum_read = 0;
 	int sum_write = 0;
 	while(true){
-		ret = fread(buffer, sizeof(char), BUFFER_SIZE, stdin);
+		ret = fread(buffer, sizeof(char), BUFFER_SIZE, input);
 		if(ret < 0){
-			fprintf(stderr, "read error");
+			fprintf(stderr, "read error\n");
 			return ret;
 		}
 		if(ret == 0){
 			fprintf(stderr, "reach EOF\n");
 			break;
 		}
-		vl = ret;
-		sum_read += vl;
+		sum_read += ret;
 
 		ret = fwrite(buffer, sizeof(char), vl, stdout);
-		sum_write += ret;
-		if(ret < vl){
-			fprintf(stderr, "write error");
-			return -1;
+		if(ret < 0){
+			fprintf(stderr, "write error\n");
+			return ret;
 		}
+		if(ret == 0){
+			fprintf(stderr, "write None\n");
+			break;
+		}
+		sum_write += ret;
 	}
 	fprintf(stderr, "value    read: %d bytes\n", sum_read);
 	fprintf(stderr, "value written: %d bytes\n", sum_write);
