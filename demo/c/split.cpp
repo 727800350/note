@@ -10,7 +10,7 @@
 
 int usage(){
 	char program[] = "split";
-	fprintf(stderr, "%s -f file -l length -u unit(B|KB|MB|GB)\n", program);
+	fprintf(stderr, "%s -f file -l length -u unit(B|KB|MB|GB) -e\n", program);
 	return 0;
 }
 
