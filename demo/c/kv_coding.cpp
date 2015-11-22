@@ -11,6 +11,7 @@ int usage(){
 	char program[] = "kv_coding";
 	fprintf(stderr, "%s -f file -o encode -k key > target\n", program);
 	fprintf(stderr, "%s -f file -o decode > target\n", program);
+	fprintf(stderr, "cat file | %s -o decode > target\n", program);
 	return 0;
 }
 
@@ -43,32 +44,50 @@ int main(int argc, char *argv[]){
 			else
 				fprintf(stderr, "Unknown option character `\\x%x'.\n", optopt);
 			usage();
-			return 1;
+			return -1;
 		default:
 			abort();
 		}
 	}
 
-	if(file == NULL or op == NULL){
+	// check args
+	if(op == NULL){
 		fprintf(stderr, "wrong args\n");
-		usage();
-		return 1;
-	}
-
-	if(strcmp(op, "encode") == 0){
-		if(key == NULL){
-			key = file;
-		}
-	}
-	else if(strcmp(op, "decode") != 0){
 		usage();
 		return -1;
 	}
 
-	input = fopen(file, "rb");
-	if(input == NULL){
-		fprintf(stderr, "%s open error.\n", file);
-		return 1;
+	if(strcmp(op, "encode") == 0){
+		if(file == NULL){
+			fprintf(stderr, "wrong args\n");
+			usage();
+			return -1;
+		}
+
+		input = fopen(file, "rb");
+		if(input == NULL){
+			fprintf(stderr, "%s open error.\n", file);
+			usage();
+			return -1;
+		}
+
+		if(key == NULL){
+			key = file;
+		}
+	}else if(strcmp(op, "decode") == 0){
+		if(file == NULL){
+			input = stdin;
+		}else{
+			input = fopen(file, "rb");
+			if(input == NULL){
+				fprintf(stderr, "%s open error.\n", file);
+				usage();
+				return -1;
+			}
+		}
+	}else{
+		usage();
+		return -1;
 	}
 
 	if(strcmp(op, "encode") == 0){
