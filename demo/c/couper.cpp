@@ -9,7 +9,7 @@
 #define BUFFER_SIZE (1024 * 1024)
 
 int usage(){
-	char program[] = "split";
+	char program[] = "couper";
 	fprintf(stderr, "%s -f file -l length -u unit(B|KB|MB|GB) -e\n", program);
 	return 0;
 }
