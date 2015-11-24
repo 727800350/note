@@ -55,7 +55,7 @@ git statsh pop
 - git tag -a v1.4 -m 'my version 1.4'  // 含附注标签
 - git show v1.4
 - git push origin v1.5
-- git push origin --tags
+- git pull/push origin --tags
 
 Git 使用的标签有两种类型:轻量级的(lightweight)和含附注的(annotated).
 
