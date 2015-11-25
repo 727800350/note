@@ -168,7 +168,7 @@ while(true){
 ```
 - `size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);`
 
-- `int snprintf(char *str, size_t size, const char *format, ...);`: can not write more than size bytes(including the trailing '\0').
+- `int snprintf(char *str, size_t size, const char *format, ...);`: write at most size bytes(including the trailing '\0').
 
 printf使用的格式字符如下
 
@@ -181,6 +181,27 @@ printf使用的格式字符如下
 - f:输出一个浮点数
 - e:以科学表示法输出浮点数
 - g:输出%f与%e中占用位数较短的一个
+
+对齐
+
+- `printf("%15s/n",insertTime);`: 右对齐,15位长度,不够补空格
+- `printf("%015s/n",insertTime);`: 右对齐,15位长度,不够补0
+- `printf("%-15.2f/n",insertTime1);`: 左对齐,15位长度,带两位小数,不够补空格
+
+文件位置跳转
+
+`int fseek(FILE *stream, long offset, int base)`: 函数设置文件指针stream的位置(从base偏移offset字节).
+
+- SEEK_SET: 文件开头
+- SEEK_CUR: 当前位置
+- SEEK_END: 文件结尾
+
+获得文件长度
+```C
+fseek(fp, 0, SEEK_END);
+len = ftell(fp);
+fseek(fp, 0, SEEK_SET);
+```
 
 # Time
 ```
