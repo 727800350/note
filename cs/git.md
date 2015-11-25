@@ -57,6 +57,11 @@ git statsh pop
 - git push origin v1.5
 - git pull/push origin --tags
 
+删除tag
+
+1. git tag -d v1.5
+1. git push origin :refs/tags/v1.5
+
 Git 使用的标签有两种类型:轻量级的(lightweight)和含附注的(annotated).
 
 - 轻量级标签(-lw)就像是个不会变化的分支,实际上它就是个指向特定提交对象的引用.
