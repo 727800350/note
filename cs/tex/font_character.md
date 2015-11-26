@@ -1,13 +1,8 @@
-# 字体大小
-`\fontsize{字号}{行距}`  
-这个命令对其后所有文本都起作用,在使用此命令后需要用 `\selectfont` 才能使字体大小设置起作用.
+# 字体
+## 大小
+`\fontsize{字号}{行距}`: 这个命令对其后所有文本都起作用, 在使用此命令后需要用 `\selectfont` 才能使字体大小设置起作用.
 
-我们通常会遇到别人规定:"正文用小四,宋体",但是 LaTeX 并没有小四,只有 pt,因此下表为字号对应的转换表:
-比如:`\fontsize{12pt}{18pt}\selectfont` 就设置了 小四,且 1.5 倍行距.
-
-|**字号**|初号|小初|一号|小一|二号|小二 |三号|小三|四号|小四|五号  |小五|六号 |小六  |七号   |小七|
-|--------|----|----|----|----|----|-----|----|----|----|----|------|----|-----|------|-------|----|
-|**大小**|42pt|36pt|26pt|24pt|22pt| 18pt|16pt|15pt|14pt|12pt|10.5pt| 9pt|7.5pt| 6.5pt| 5.5pt | 5pt|
+`\fontsize{12pt}{18pt}\selectfont`: 就设置了小四 1.5 倍行距.
 
 Latex 设置字体大小命令由小到大依次为:
 `\tiny, \scriptsize, \footnotesize, \small, \normalsize, \large, \Large, \LARGE, \huge, \Huge`
@@ -17,6 +12,17 @@ Latex 设置字体大小命令由小到大依次为:
 \usepackage{scrextend}
 \changefontsizes{6pt}
 ```
+
+## win字体
+需要把字体安装到系统的字体库中(比如使用tex编辑文档时,通常会需要使用宋体或楷体),其实就是把字体拷贝到系统存放字体文件的地方,然后运行一下更新字体缓存之类的命令,通常如下:
+
+1. $ sudo mv win_fonts /usr/share/fonts/truetype/
+1. $ sudo mkfontscale
+1. $ sudo mkfontdir
+1. $ sudo fc-cache
+
+这里假设在win_fonts目录中存放着从windows拷贝过来的ttf字体文件.
+如果不出意外的话,因该就可以使用这些新安装的字体文件了,比如在主题中改改系统字体设置之类的.
 
 # Special Characters
 ## [french characters](http://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped codes)
