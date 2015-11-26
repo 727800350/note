@@ -258,12 +258,6 @@ rsync --delete -a --progress /home/eric/git/tool/analyse/ /mnt/analyse/
 ```
 最后面的 / 不能丢
 
-**mail**  
-[ref](http://www.cnblogs.com/JemBai/archive/2012/01/24/2329136.html)
-```
-echo "mail content" | mail -s subject someone@mail.com
-```
-
 # File System
 iotop: i/o stats
 
