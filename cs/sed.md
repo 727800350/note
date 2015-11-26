@@ -71,6 +71,9 @@ a命令就是append, i命令就是insert,它们是用来添加行的
 - 删除匹配行: `$ sed '/fish/d' my.txt`
 - 删除第二行: `$ sed '2d' my.txt`
 - 从第二行开始删除: `$ sed '2,$d' my.txt`
+- `sed '/start/,/end/d'`: 从start 匹配行开始, end 匹配行结束执行删除, 包括边界的两行
+
+暂时还不知道如何实现`sed '/start/,/end/-1 d'`: 从start 匹配行开始, end 匹配行的上一行结束执行删除
 
 ## p: 打印
 类似 grep
