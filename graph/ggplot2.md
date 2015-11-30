@@ -341,6 +341,8 @@ Output of experssion will be formatted according to TeX-like rule
 设置legend 的位置
 - `+ theme(legend.position = "top")` ## top, right, left, bottom
 - `+ theme(legend.position = c(0.15, 0.15))` ## (0, 0) 为左下角
+- `+ theme(panel.background=element_rect(fill='transparent', color='black')`: 图片主面板背景透明, 然后用一个黑色长方形的边框将主面板框起来, [ref](http://www.plob.org/2014/01/27/7735.html)
+- `+ theme(panel.background=element_rect(fill='transparent', color='NA')`: 图片主面板背景透明, 没有框
 
 # qplot
 ```
