@@ -104,7 +104,9 @@ Another Approach
 常用的geom
 
 - geom_line
+	- alpha, colour, linetype, size
 - geom_point
+	- alpha, colour, fill, shape, size
 - geom_density
 - geom_histogram
 - [geom_bar](http://docs.ggplot2.org/current/geom_bar.html)
