@@ -25,6 +25,8 @@ Leland Wilkinson的著作在理论上改善了这种状况,他提出了一套图
 
 Without the grammer, there is no underlying theory and existing graphics packages are just a big collection of special cases.
 
+Windows上 3.2.2 版本安装ggplot2 失败, 3.1.2 成功.
+
 ## ggplot2 绘图概述
 A statistical graphic is a **mapping** from **data** to **aesthetic** attributes(colour, shape, size) of **geometric** objects(points, lines, bars)
 此外, 图形中还可能包含数据的统计变换(statistical transformation, 缩写为stats),
