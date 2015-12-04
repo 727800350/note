@@ -3,7 +3,4 @@
 	email = wangchaogo1990@gmail.com
 [core]
 	editor = vim
-[http]
-	proxy = 127.0.0.1:8087
-	sslVerify = false
 
