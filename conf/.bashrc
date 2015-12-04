@@ -14,7 +14,7 @@ user=`whoami`
 ## my own pc
 if [ ${user} = "eric" ]
 then
-	export TEXLIVE=/usr/local/texlive/2015/
+	export TEXLIVE=${HOME}/opt/texlive/2015/
 	ulimit -c unlimited
 ## enterprise
 else
