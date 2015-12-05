@@ -43,8 +43,10 @@ setbeamertemplate
 
 ![enumerate demo](http://i.imgbox.com/4YJKY9Gl.png)
 
-"左边界"到"1"的距离为labelindent, "1." 占用的宽度为 labelwidth, "1.0" 与 "网络性能"之间的距离为 labelsep
-"左边界"到"网络性能"的距离为 itemindent
+- "左边界"到"1"的距离为labelindent;
+- "1." 占用的宽度为 labelwidth;
+- "1.0" 与 "网络性能"之间的距离为 labelsep;
+- "左边界"到"网络性能"的距离为 itemindent.
 
 下面的设置可以达到这样的效果
 ```Latex
