@@ -50,6 +50,7 @@ setbeamertemplate
 
 下面的设置可以达到这样的效果
 ```Latex
+\usepackage{enumitem}
 \setlist[enumerate,1]{label=\arabic*.} %% label style
 \setlist[enumerate]{
 	topsep=0pt,
@@ -63,5 +64,8 @@ setbeamertemplate
 	leftmargin=!,
 }
 ```
+- `topsep=0pt`: 第一个item和前面版落间的距离 and the last item with the netxt pargraph
+- `itemsep=0pt`: vertical space between spaces
+- `partopsep`: 当在一个新页开始时加到 \topsep 的额外空间
 - `leftmargin=!`: automatically calculate what the leftmargin should be based on the provided parameters labelindent, labelwidth, labelsep etc
 
