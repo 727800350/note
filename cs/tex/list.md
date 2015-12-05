@@ -37,3 +37,28 @@ setbeamertemplate
 3.  由beamer 自动分页, `\begin{frame}[allowframebreaks]`\\
 有时这种方法给出的自动分页不是很好, 好不如自己手动分页, 这样可以控制在那里断开
 
+# article
+## 自定义list style
+`labelindent + labelwidth + labelsep  = itemindent`
+
+![enumerate demo](http://imgbox.com/4YJKY9Gl)
+"左边界"到"1"的距离为labelindent, "1." 占用的宽度为 labelwidth, "1.0" 与 "网络性能"之间的距离为 labelsep
+"左边界"到"网络性能"的距离为 itemindent
+
+下面的设置可以达到这样的效果
+```Latex
+\setlist[enumerate,1]{label=\arabic*.} %% label style
+\setlist[enumerate]{
+	topsep=0pt,
+	itemsep=0pt,
+	partopsep=0pt,
+	parsep=\parskip,
+	labelindent=\parindent, %% \parindent is usually 2em
+	labelwidth=.7em,
+	labelsep=.3em,
+	itemindent=3em,
+	leftmargin=!,
+}
+```
+- `leftmargin=!`: automatically calculate what the leftmargin should be based on the provided parameters labelindent, labelwidth, labelsep etc
+
