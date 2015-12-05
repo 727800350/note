@@ -47,6 +47,7 @@ setbeamertemplate
 - "1." 占用的宽度为 labelwidth;
 - "1.0" 与 "网络性能"之间的距离为 labelsep;
 - "左边界"到"网络性能"的距离为 itemindent.
+- "数据的开头"与"网络性能的开头之间"的距离为leftindent, leftindent = 0em时, 两者是对齐的
 
 下面的设置可以达到这样的效果
 ```Latex
