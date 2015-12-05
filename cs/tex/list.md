@@ -5,9 +5,11 @@ If you want each item of a list to appear in order, use the `[<+->]` option. (i.
 \item<1-| alert@1> Suppose $p$ were the largest prime number.
 \item<2-> Let $q$ be the product of the first $p$ numbers.
 \item<3-> Then $q+1$ is not divisible by any of them.
-\item<1-> But $q + 1$ is greater than $1$, thus divisible by some prime number not in the first $p$ numbers.\qedhere
 \end{enumerate}
 ```
+- `| alert@1`: 表示只有在第一页是alert
+- `| alert@1,3`: 表示只有在第1和3两页是alert
+- `| alert@1-3`: 表示从第1到第3页都是alert
 
 setbeamertemplate
 ```Latex
@@ -25,6 +27,7 @@ setbeamertemplate
 \item good morning....
 \end{enumerate}
 ```
+会生成 step 1..., step 2 etc, 类似的, 也可以采用 `[step i]`
 
 ## FAQ 溢出
 如果一页溢出,考虑以下解决方法:
