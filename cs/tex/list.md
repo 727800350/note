@@ -39,6 +39,11 @@ setbeamertemplate
 
 # article
 ## 自定义list style
+[ref1](http://tex.stackexchange.com/questions/184780/can-someone-please-explain-the-enumitem-horizontal-spacing-parameters)
+[ref2](http://tex.stackexchange.com/questions/29322/how-to-make-enumerate-items-align-at-left-margin)
+[ref3](http://tex.stackexchange.com/questions/78167/indentation-within-an-itemized-list)
+[ref4](http://tex.stackexchange.com/questions/79938/hanging-indent-inside-list)
+
 `labelindent + labelwidth + labelsep  = itemindent`
 
 ![enumerate demo](http://i.imgbox.com/4YJKY9Gl.png)
@@ -70,3 +75,4 @@ setbeamertemplate
 - `partopsep`: 当在一个新页开始时加到 \topsep 的额外空间
 - `leftmargin=!`: automatically calculate what the leftmargin should be based on the provided parameters labelindent, labelwidth, labelsep etc
 
+同样可以为itemize和description进行类似的设置
