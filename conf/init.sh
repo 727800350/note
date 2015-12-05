@@ -3,8 +3,15 @@ set -x
 
 source ${HOME}/git/note/conf/func.sh || exit 1
 
-version="7"
+user=`whoami`
+if [ ${user} != "root" ]
+then
+	echo "must be root" >&2
+	exit 1
+fi
 
+# repo config
+version="7"
 yum install -y yum-plugin-priorities
 CHK_RET WARNING "install yum plugin priorities error"
 
@@ -33,6 +40,52 @@ yum repolist
 
 yum clean all
 yum makecache
+
+# packages
+yum -y install fuse-ntfs-3g
+CHK_RET FATAL "fuse-ntfs-3g error"
+
+yum -y install unrar
+CHK_RET FATAL "unrar error"
+
+## bash ./install_advp
+## CHK_RET WARNING "advp error"
+
+## bash ./install_chrome
+## CHK_RET FATAL "chrome error"
+
+yum -y localinstall http://kdl.cc.ksosoft.com/wps-community/download/a19/wps-office-9.1.0.4975-1.a19p1.x86_64.rpm
+CHK_RET FATAL "wps error"
+
+yum -y install unix2dos dos2unix
+CHK_RET FATAL "unix2dos error"
+
+yum -y install pdfgrep
+CHK_RET FATAL "pdfgrep error"
+
+yum -y install cmake clang installer golang valgrind
+CHK_RET FATAL "dev error"
+
+yum -y install mariadb-server mariadb-devel
+CHK_RET FATAL "mysql error"
+
+yum -y install php php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml php-xmlrpc
+CHK_RET FATAL "php error"
+
+yum -y install python-pip numpy scipy python-matplotlib
+CHK_RET FATAL "python lib error"
+
+yum -y install R
+CHK_RET FATAL "R error"
+
+yum -y install wiznote ## Stable version  
+CHK_RET FATAL "wiznote error"
+
+yum -y install alacarte ## set desktop menu
+CHK_RET FATAL "alacarte error"
+
+## yum -y install ffmpeg ## video and audio convertor
+## yum -y install shutter ## screen capture
 
 exit 0
 
