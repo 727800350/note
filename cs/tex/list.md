@@ -41,7 +41,8 @@ setbeamertemplate
 ## 自定义list style
 `labelindent + labelwidth + labelsep  = itemindent`
 
-![enumerate demo](http://imgbox.com/4YJKY9Gl)
+![enumerate demo](http://i.imgbox.com/4YJKY9Gl.png)
+
 "左边界"到"1"的距离为labelindent, "1." 占用的宽度为 labelwidth, "1.0" 与 "网络性能"之间的距离为 labelsep
 "左边界"到"网络性能"的距离为 itemindent
 
