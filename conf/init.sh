@@ -63,7 +63,7 @@ CHK_RET FATAL "unix2dos error"
 yum -y install pdfgrep
 CHK_RET FATAL "pdfgrep error"
 
-yum -y install cmake clang installer golang valgrind
+yum -y install cmake clang golang valgrind
 CHK_RET FATAL "dev error"
 
 yum -y install mariadb-server mariadb-devel
