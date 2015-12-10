@@ -19,6 +19,7 @@ yum -y localinstall http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-
 CHK_RET FATAL "install repo rpmforge error"
 
 yum -y localinstall http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+## http://www.elrepo.org/elrepo-release-6-6.el6.elrepo.noarch.rpm
 CHK_RET FATAL "install repo elrepo error"
 
 yum -y localinstall http://dl.fedoraproject.org/pub/epel/epel-release-latest-${version}.noarch.rpm
