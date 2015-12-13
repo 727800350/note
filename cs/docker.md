@@ -90,6 +90,8 @@ The operator can identify a container in three ways:
 当前目录下包含Dockerfile, 使用命令build来创建新的image:
 `docker build -t image:tag PATH`
 
+注意: Docker Client会默认发送Dockerfile同级目录下的所有文件到Docker daemon中, 所以无关的文件不要出现在同级目录
+
 ### 发布镜像
 1. 在本地 docker 环境中输入以下命令进行登录: `sudo docker login index.tenxcloud.com`
 1. 对这个image进行标记,在命令中输入: `sudo docker tag image:tag index.tenxcloud.com/username/image:tag(自定义仓库名)`
