@@ -71,20 +71,31 @@ The operator can identify a container in three ways:
 - docker load -i app_box.tar 该命令从tar文件中载入镜像或仓库到STDIN
 - docker save image 类似于load,该命令保存镜像为tar文件并发送到STDOUT
 
-将容器的状态保存为镜像,使用以下命令:
-docker commit [container]  job1
-注意,镜像名称只能取字符[a-z]和数字[0-9].
-最后,使用以下命令将镜像推送到registry:
-docker push (image_name)
-非常重要的一点是,你必须要知道存储库不是根存储库,它应该使用此格式(user)/(repo_name).
+### 下载镜像
+在本地 docker 环境中输入以下命令,就可以pull一个镜像到本地了.                    
+`sudo docker pull index.tenxcloud.com/<namespace>/<repository>:<tag>`
 
-build:
+注意:为了在本地方便使用,下载后您可以修改tag成短标签,比如
+`sudo docker tag index.tenxcloud.com/mysql:latst mysql:latest`
 
-如之前所讨论的,可以使用Dockerfile来构建镜像.简单的构建命令如下:
-docker build [options] PATH | URL
+除了docker官方的镜像仓库之外,还有很多第三方的docker镜像下载站点.
+国内的docker镜像站点有:DockerPool,阿里云,对于国内用户来说,这些站点的速度要快很多.
 
-还有一些Docker提供的额外选项,如:
---rm=true表示构建成功后,移除所有中间容器
---no-cache=false表示在构建过程中不使用缓存
+- dockerpull: http://dockerpool.com/
+- 阿里云: http://help.aliyun.com/knowledge_detail/5974865.html
 
+### 创建镜像
+#### 通过container
+`docker commit [container] image:tag`
+
+#### 通过docker file
+`docker build [options] PATH | URL`
+
+- --rm=true表示构建成功后,移除所有中间容器
+- --no-cache=false表示在构建过程中不使用缓存
+
+### 发布镜像
+1. 在本地 docker 环境中输入以下命令进行登录: `sudo docker login index.tenxcloud.com`
+1. 对这个image进行标记,在命令中输入: `sudo docker tag image:tag index.tenxcloud.com/username/image:tag(自定义仓库名)`
+1. push到镜像仓库中: `sudo docker push index.tenxcloud.com/username/image:tag`
 
