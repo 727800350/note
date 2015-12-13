@@ -68,8 +68,6 @@ The operator can identify a container in three ways:
 ## image
 - docker rmi image_id: 删除image
 - docker diff 它可以列出容器内发生变化的文件和目录.这些变化包括添加(A-add),删除(D-delete),修改(C-change).
-- docker load -i app_box.tar 该命令从tar文件中载入镜像或仓库到STDIN
-- docker save image 类似于load,该命令保存镜像为tar文件并发送到STDOUT
 
 ### 下载镜像
 在本地 docker 环境中输入以下命令,就可以pull一个镜像到本地了.                    
@@ -98,6 +96,22 @@ The operator can identify a container in three ways:
 1. 在本地 docker 环境中输入以下命令进行登录: `sudo docker login index.tenxcloud.com`
 1. 对这个image进行标记,在命令中输入: `sudo docker tag image:tag index.tenxcloud.com/username/image:tag(自定义仓库名)`
 1. push到镜像仓库中: `sudo docker push index.tenxcloud.com/username/image:tag`
+
+#### 导入导出
+容器
+```Bash
+docker export [container] > container.tar
+cat container.tar | docker import - image-export:latest
+```
+
+镜像
+```Bash
+docker save [image] > image.tar
+docker load < image.tar
+```
+
+- 导出后再导入(exported-imported)的镜像会丢失所有的历史, 意味着将无法回滚到之前的层(layer)
+- 保存后再加载(saveed-loaded)的镜像没有丢失历史和层(layer), 就可以做到层回滚(可以执行docker tag <LAYER ID> <IMAGE NAME>来回滚之前的层)
 
 # install
 1. yum install docker-devel docker
