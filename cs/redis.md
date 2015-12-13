@@ -59,3 +59,21 @@ The elements are always taken sorted(正序排列的) by their score, so unlike 
 it is possible, using special commands, to handle String values like an array of bits:
 you can set and clear individual bits, count all the bits set to 1, find the first set or unset bit, and so forth
 
+# config
+配置文件: `/etc/redis.conf`
+
+- daemonize: 是否以后台daemon方式运行, 默认为 否
+- port: 监听的端口号, 6379
+- loglevel: log信息级别, notice
+- logfile: log文件位置, `/var/log/redis/redis.log`
+- rdbcompression: 是否使用压缩, yes
+- dbfilename: 数据快照文件名(只是文件名,不包括目录), dump.rdb
+- dir: 数据快照的保存目录(这个是目录), `/var/lib/redis/`
+ 
+# install
+https://console.tenxcloud.com/docker-registry/detail?imageName=tenxcloud/redis
+
+1. 下载: `docker pull index.tenxcloud.com/tenxcloud/redis`
+1. 启动server: `docker run -d -p 6379:6379 -e REDIS_PASS="None" --name server redis`, redis_dir: /data, 可以通过-v 进行挂载本地路径
+1. client(另外一个具有redis-cli 的container): `redis-cli -h server -p 7379 -a "None"`
+
