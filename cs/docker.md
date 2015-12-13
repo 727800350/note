@@ -99,3 +99,8 @@ The operator can identify a container in three ways:
 1. 对这个image进行标记,在命令中输入: `sudo docker tag image:tag index.tenxcloud.com/username/image:tag(自定义仓库名)`
 1. push到镜像仓库中: `sudo docker push index.tenxcloud.com/username/image:tag`
 
+# install
+1. yum install docker-devel docker
+1. 启动docker 服务需要关闭selinux, 编辑/etc/selinux/config, 找到SELINUX 行修改成为:SELINUX=disabled, 之后重启系统
+1. systemctl start docker
+
