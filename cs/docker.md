@@ -92,6 +92,40 @@ The operator can identify a container in three ways:
 
 注意: Docker Client会默认发送Dockerfile同级目录下的所有文件到Docker daemon中, 所以无关的文件不要出现在同级目录
 
+```
+FROM centos71:repo
+
+## author info
+MAINTAINER xxx, xxx@gmail.com
+
+## install soft
+RUN yum-config-manager --disable system-container
+RUN yum install -y gcc 
+
+## add new user
+RUN useradd eric
+USER eric ## default user is root
+WORKDIR /home/eric
+CMD /bin/bash
+```
+
+所有的 Dockerfile 命令格式都是: `INSTRUCTION arguments`
+
+- `FROM image:tag`: 这个设置基本的镜像
+- `MAINTAINER name, email`: author info
+- `RUN <shell command>`: 执行命令
+- `USER eric`: 指定运行用户,
+- `EXPOSE <port> [<port>...]`: EXPOSE 命令可以设置一个端口在运行的镜像中暴露在外, docker run 时仍然需要进行端口映射
+	`docker run -d -p 127.0.0.1:33301:22 centos6-ssh`: container ssh服务的22端口被映射到主机的33301端口
+- `ENV <key> <value>`: 用于设置环境变量, 设置了后,后续的RUN命令都可以使用.
+- `ADD <src> <dest>`: 从src复制文件到container的dest路径, <src> 为主机的相对路径, <dest> 是container中的绝对路径
+- `VOLUME <mountpoint>`: 创建一个挂载点用于共享目录, 但是如果想把本地的目录挂载到这个目录, 还是需要在docker run的时候, 使用 -v 参数来显示的指定
+- `WORKDIR /path/to/workdir`: 配置RUN, CMD, ENTRYPOINT 工作路径, 可以设置多次,如果是相对路径,则相对前一个 WORKDIR 命令.
+- `ENTRYPOINT cmd param1 param2 ...`: 设置在容器启动时执行命令
+- `CMD command param1 param2`: 一个Dockerfile里只能有一个CMD,如果有多个,只有最后一个生效.
+	Without entrypoint, CMD is command that is executed,  With entrypoint, CMD is passed to entrypoint as argument.
+	所以一般就不用写entrypoint, 直接写CMD, 且一般写为`CMD /bin/bash`
+
 ### 发布镜像
 1. 在本地 docker 环境中输入以下命令进行登录: `sudo docker login index.tenxcloud.com`
 1. 对这个image进行标记,在命令中输入: `sudo docker tag image:tag index.tenxcloud.com/username/image:tag(自定义仓库名)`
@@ -119,75 +153,4 @@ docker load < image.tar
 1. yum install docker-devel docker
 1. 启动docker 服务需要关闭selinux, 编辑/etc/selinux/config, 找到SELINUX 行修改成为:SELINUX=disabled, 之后重启系统
 1. systemctl start docker
-
-# Dockerfile
-所有的 Dockerfile 命令格式都是: `INSTRUCTION arguments`
-
-## FROM 命令
-这个设置基本的镜像,为后续的命令使用,所以应该作为Dockerfile的第一条指令. 
-```
-FROM <image>
-FROM <image>:<tag>
-```
-比如: `FROM ubuntu`
-如果没有指定 tag ,则默认tag是latest,如果都没有则会报错.
-
-## RUN 命令
-RUN命令会在上面FROM指定的镜像里执行任何命令,然后提交(commit)结果,提交的镜像会在后面继续用到.
-
-`RUN <shell command>`
-
-RUN命令等价于:
-```
-docker run image command
-docker commit container_id
-```
-
-## MAINTAINER
-MAINTAINER name, email
-
-## ENTRYPOINT 命令
-ENTRYPOINT 命令设置在容器启动时执行命令.  
-
-`ENTRYPOINT cmd param1 param2 ...`
-
-## USER 命令
-指定运行用户, eg: `USER eric`
-
-## EXPOSE 命令
-EXPOSE 命令可以设置一个端口在运行的镜像中暴露在外.
-`EXPOSE <port> [<port>...]`
-
-container内部服务开启的端口.主机上要用还得在启动container时,做host-container的端口映射: `docker run -d -p 127.0.0.1:33301:22 centos6-ssh`.
-container ssh服务的22端口被映射到主机的33301端口
-
-## ENV 命令
-用于设置环境变量, 设置了后,后续的RUN命令都可以使用.
-`ENV <key> <value>`
-
-## ADD 命令
-从src复制文件到container的dest路径: `ADD <src> <dest>`
-
-- <src> 是相对被构建的源目录的相对路径,可以是文件或目录的路径,也可以是一个远程的文件url
-- <dest> 是container中的绝对路径
-
-## VOLUME 命令
-创建一个挂载点用于共享目录, `VOLUME <mountpoint>`.
-但是如果想把本地的目录挂载到这个目录, 还是需要在docker run的时候, 使用 -v 参数来显示的指定
-
-## WORKDIR 命令
-配置RUN, CMD, ENTRYPOINT 工作路径, 可以设置多次,如果是相对路径,则相对前一个 WORKDIR 命令.
-
-`WORKDIR /path/to/workdir`
-
-比如: `WORKDIR /a WORKDIR b WORKDIR c RUN pwd`, 其实是在 /a/b/c 下执行 pwd
-
-## CMD 命令
-一个Dockerfile里只能有一个CMD,如果有多个,只有最后一个生效.
-`CMD command param1 param2`
-
-与entrypoint 的关系
-
-- Without entrypoint, CMD is command that is executed.
-- With entrypoint, CMD is passed to entrypoint as argument.
 
