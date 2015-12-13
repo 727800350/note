@@ -61,12 +61,12 @@ The operator can identify a container in three ways:
 - docker top [container] 查看 container 进程列表
 - docker inspect [container] 查看 container 详细信息	
 - docker start/stop/restart [container]
-- docker rm [container]: 删除container之前, 需要stop
+- docker rm [container]: 删除container之前, 需要stop, `docker rm $(docker ps -a -q)` 删除所有容器
 
 命令中需要指定 container 时, 既可使用其名称, 也可使用其id.
 
 ## image
-- docker rmi image_id: 删除image
+- docker rmi image_id: 删除image, `docker rmi $(docker images -q -a)`删除所有的
 - docker diff 它可以列出容器内发生变化的文件和目录.这些变化包括添加(A-add),删除(D-delete),修改(C-change).
 
 ### 下载镜像
@@ -88,10 +88,7 @@ The operator can identify a container in three ways:
 
 #### 通过docker file
 当前目录下包含Dockerfile, 使用命令build来创建新的image:
-`docker build -t image PATH`
-
-- --rm=true表示构建成功后,移除所有中间容器
-- --no-cache=false表示在构建过程中不使用缓存
+`docker build -t image:tag PATH`
 
 ### 发布镜像
 1. 在本地 docker 环境中输入以下命令进行登录: `sudo docker login index.tenxcloud.com`
@@ -171,9 +168,8 @@ container ssh服务的22端口被映射到主机的33301端口
 - <dest> 是container中的绝对路径
 
 ## VOLUME 命令
-创建一个挂载点用于共享目录, `VOLUME ["<mountpoint>"]`.
-
-如: `VOLUME ["/data"]`
+创建一个挂载点用于共享目录, `VOLUME <mountpoint>`.
+但是如果想把本地的目录挂载到这个目录, 还是需要在docker run的时候, 使用 -v 参数来显示的指定
 
 ## WORKDIR 命令
 配置RUN, CMD, ENTRYPOINT 工作路径, 可以设置多次,如果是相对路径,则相对前一个 WORKDIR 命令.
