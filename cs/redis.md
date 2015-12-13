@@ -75,5 +75,5 @@ https://console.tenxcloud.com/docker-registry/detail?imageName=tenxcloud/redis
 
 1. 下载: `docker pull index.tenxcloud.com/tenxcloud/redis`
 1. 启动server: `docker run -d -p 6379:6379 -e REDIS_PASS="None" --name server redis`, redis_dir: /data, 可以通过-v 进行挂载本地路径
-1. client(另外一个具有redis-cli 的container): `redis-cli -h server -p 7379 -a "None"`
+1. client(另外一个具有redis-cli 的container): `redis-cli -h server -p 7379 -a "None"`, 这里的server 就是第二步骤中container 名字为server 的redis server container
 
