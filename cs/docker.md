@@ -87,6 +87,7 @@ The operator can identify a container in three ways:
 `docker commit [container] image:tag`
 
 #### 通过docker file
+当前目录下包含Dockerfile, 使用命令build来创建新的image:
 `docker build -t image PATH`
 
 - --rm=true表示构建成功后,移除所有中间容器
@@ -133,10 +134,7 @@ FROM <image>:<tag>
 ## RUN 命令
 RUN命令会在上面FROM指定的镜像里执行任何命令,然后提交(commit)结果,提交的镜像会在后面继续用到.
 
-两种格式:
-
-- RUN <command> (the command is run in a shell - `/bin/sh -c`)
-- RUN ["executable", "param1", "param2" ... ]  (exec form)
+`RUN <shell command>`
 
 RUN命令等价于:
 ```
@@ -149,39 +147,22 @@ MAINTAINER name, email
 
 ## ENTRYPOINT 命令
 ENTRYPOINT 命令设置在容器启动时执行命令.  
-有两种语法格式,一种就是上面的(shell方式):
 
-- shell 形式: ENTRYPOINT cmd param1 param2 ...
-- exec 形式: ENTRYPOINT ["cmd", "param1", "param2"...]
-
-如: `ENTRYPOINT ["echo", "Whale you be my container"]`
+`ENTRYPOINT cmd param1 param2 ...`
 
 ## USER 命令
-比如指定 memcached 的运行用户,可以使用上面的 ENTRYPOINT 来实现:
-
-ENTRYPOINT ["memcached", "-u", "daemon"]
-
-更好的方式是:
-```
-ENTRYPOINT ["memcached"]
-USER daemon
-```
+指定运行用户, eg: `USER eric`
 
 ## EXPOSE 命令
-EXPOSE 命令可以设置一个端口在运行的镜像中暴露在外
-
+EXPOSE 命令可以设置一个端口在运行的镜像中暴露在外.
 `EXPOSE <port> [<port>...]`
 
-比如memcached使用端口 11211,可以把这个端口暴露在外,这样容器外可以看到这个端口并与其通信.
-
-EXPOSE 11211
+container内部服务开启的端口.主机上要用还得在启动container时,做host-container的端口映射: `docker run -d -p 127.0.0.1:33301:22 centos6-ssh`.
+container ssh服务的22端口被映射到主机的33301端口
 
 ## ENV 命令
-用于设置环境变量
-
-ENV <key> <value>
-
-设置了后,后续的RUN命令都可以使用
+用于设置环境变量, 设置了后,后续的RUN命令都可以使用.
+`ENV <key> <value>`
 
 ## ADD 命令
 从src复制文件到container的dest路径: `ADD <src> <dest>`
@@ -190,27 +171,23 @@ ENV <key> <value>
 - <dest> 是container中的绝对路径
 
 ## VOLUME 命令
-创建一个挂载点用于共享目录
-
-`VOLUME ["<mountpoint>"]`
+创建一个挂载点用于共享目录, `VOLUME ["<mountpoint>"]`.
 
 如: `VOLUME ["/data"]`
 
 ## WORKDIR 命令
-配置RUN, CMD, ENTRYPOINT 工作路径, 可以设置多次,如果是相对路径,则相对前一个 WORKDIR 命令
+配置RUN, CMD, ENTRYPOINT 工作路径, 可以设置多次,如果是相对路径,则相对前一个 WORKDIR 命令.
 
 `WORKDIR /path/to/workdir`
 
 比如: `WORKDIR /a WORKDIR b WORKDIR c RUN pwd`, 其实是在 /a/b/c 下执行 pwd
 
 ## CMD 命令
-有三种格式:
-
-- CMD ["executable","param1","param2"] (like an exec, preferred form)
-- CMD ["param1","param2"] (as default parameters to ENTRYPOINT)
-- CMD command param1 param2 (as a shell)
-
 一个Dockerfile里只能有一个CMD,如果有多个,只有最后一个生效.
-Without entrypoint, CMD is command that is executed.
-With entrypoint, CMD is passed to entrypoint as argument.
+`CMD command param1 param2`
+
+与entrypoint 的关系
+
+- Without entrypoint, CMD is command that is executed.
+- With entrypoint, CMD is passed to entrypoint as argument.
 
