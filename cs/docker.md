@@ -87,7 +87,7 @@ The operator can identify a container in three ways:
 `docker commit [container] image:tag`
 
 #### 通过docker file
-`docker build [options] PATH | URL`
+`docker build -t image PATH`
 
 - --rm=true表示构建成功后,移除所有中间容器
 - --no-cache=false表示在构建过程中不使用缓存
@@ -117,4 +117,100 @@ docker load < image.tar
 1. yum install docker-devel docker
 1. 启动docker 服务需要关闭selinux, 编辑/etc/selinux/config, 找到SELINUX 行修改成为:SELINUX=disabled, 之后重启系统
 1. systemctl start docker
+
+# Dockerfile
+所有的 Dockerfile 命令格式都是: `INSTRUCTION arguments`
+
+## FROM 命令
+这个设置基本的镜像,为后续的命令使用,所以应该作为Dockerfile的第一条指令. 
+```
+FROM <image>
+FROM <image>:<tag>
+```
+比如: `FROM ubuntu`
+如果没有指定 tag ,则默认tag是latest,如果都没有则会报错.
+
+## RUN 命令
+RUN命令会在上面FROM指定的镜像里执行任何命令,然后提交(commit)结果,提交的镜像会在后面继续用到.
+
+两种格式:
+
+- RUN <command> (the command is run in a shell - `/bin/sh -c`)
+- RUN ["executable", "param1", "param2" ... ]  (exec form)
+
+RUN命令等价于:
+```
+docker run image command
+docker commit container_id
+```
+
+## MAINTAINER
+MAINTAINER name, email
+
+## ENTRYPOINT 命令
+ENTRYPOINT 命令设置在容器启动时执行命令.  
+有两种语法格式,一种就是上面的(shell方式):
+
+- shell 形式: ENTRYPOINT cmd param1 param2 ...
+- exec 形式: ENTRYPOINT ["cmd", "param1", "param2"...]
+
+如: `ENTRYPOINT ["echo", "Whale you be my container"]`
+
+## USER 命令
+比如指定 memcached 的运行用户,可以使用上面的 ENTRYPOINT 来实现:
+
+ENTRYPOINT ["memcached", "-u", "daemon"]
+
+更好的方式是:
+```
+ENTRYPOINT ["memcached"]
+USER daemon
+```
+
+## EXPOSE 命令
+EXPOSE 命令可以设置一个端口在运行的镜像中暴露在外
+
+`EXPOSE <port> [<port>...]`
+
+比如memcached使用端口 11211,可以把这个端口暴露在外,这样容器外可以看到这个端口并与其通信.
+
+EXPOSE 11211
+
+## ENV 命令
+用于设置环境变量
+
+ENV <key> <value>
+
+设置了后,后续的RUN命令都可以使用
+
+## ADD 命令
+从src复制文件到container的dest路径: `ADD <src> <dest>`
+
+- <src> 是相对被构建的源目录的相对路径,可以是文件或目录的路径,也可以是一个远程的文件url
+- <dest> 是container中的绝对路径
+
+## VOLUME 命令
+创建一个挂载点用于共享目录
+
+`VOLUME ["<mountpoint>"]`
+
+如: `VOLUME ["/data"]`
+
+## WORKDIR 命令
+配置RUN, CMD, ENTRYPOINT 工作路径, 可以设置多次,如果是相对路径,则相对前一个 WORKDIR 命令
+
+`WORKDIR /path/to/workdir`
+
+比如: `WORKDIR /a WORKDIR b WORKDIR c RUN pwd`, 其实是在 /a/b/c 下执行 pwd
+
+## CMD 命令
+有三种格式:
+
+- CMD ["executable","param1","param2"] (like an exec, preferred form)
+- CMD ["param1","param2"] (as default parameters to ENTRYPOINT)
+- CMD command param1 param2 (as a shell)
+
+一个Dockerfile里只能有一个CMD,如果有多个,只有最后一个生效.
+Without entrypoint, CMD is command that is executed.
+With entrypoint, CMD is passed to entrypoint as argument.
 
