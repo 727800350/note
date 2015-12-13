@@ -79,8 +79,8 @@ The operator can identify a container in three ways:
 除了docker官方的镜像仓库之外,还有很多第三方的docker镜像下载站点.
 国内的docker镜像站点有:DockerPool,阿里云,对于国内用户来说,这些站点的速度要快很多.
 
-- dockerpull: http://dockerpool.com/
-- 阿里云: http://help.aliyun.com/knowledge_detail/5974865.html
+- dockerpull: http://dockerpool.com/.  修改/etc/sysconfig/docker文件，修改OPTIONS='--selinux-enabled --insecure-registry dl.dockerpool.com:5000'
+- 阿里云: http://help.aliyun.com/knowledge_detail/5974865.html, 暂时还没有连接成功
 
 ### 创建镜像
 #### 通过container
@@ -94,6 +94,8 @@ The operator can identify a container in three ways:
 1. 在本地 docker 环境中输入以下命令进行登录: `sudo docker login index.tenxcloud.com`
 1. 对这个image进行标记,在命令中输入: `sudo docker tag image:tag index.tenxcloud.com/username/image:tag(自定义仓库名)`
 1. push到镜像仓库中: `sudo docker push index.tenxcloud.com/username/image:tag`
+
+注: 删除remote tag, docker client 还没有实现, [ref](https://github.com/docker/docker/issues/8759)
 
 #### 导入导出
 容器
