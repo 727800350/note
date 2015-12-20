@@ -32,7 +32,10 @@ CHK_RET FATAL "git clone note error"
 ln -sf ${HOME}/git/note/conf/.bashrc ${HOME}/.bashrc \
 	&& ln -sf ${HOME}/git/note/conf/.vimrc ${HOME}/.vimrc \
 	&& ln -sf ${HOME}/git/note/conf/.gitconfig ${HOME}/.gitconfig \
-	&& ln -sf ${HOME}/git/note/conf/.tmux.conf ${HOME}/.tmux.conf
+	&& ln -sf ${HOME}/git/note/conf/.tmux.conf ${HOME}/.tmux.conf \
+	&& ln -sf ${HOME}/git/note/conf/.guile ${HOME}/.guile \
+	&& ln -sf ${HOME}/git/note/conf/.Rprofile ${HOME}/.Rprofile \
+	&& ln -sf ${HOME}/git/note/conf/hosts /etc/hosts
 CHK_RET FATAL "create soft link error"
 
 wget http://kdl.cc.ksosoft.com/wps-community/download/a19/wps-office_9.1.0.4975~a19p1_amd64.deb -O wps.deb && dpkg -i wps.deb
