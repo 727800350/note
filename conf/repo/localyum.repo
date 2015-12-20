@@ -1,6 +1,0 @@
-[localyum]
-priority=1
-Name=localyum
-baseurl=file:///home/eric/opt/yum
-enable=1
-gpgcheck=0
