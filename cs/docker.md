@@ -79,7 +79,7 @@ The operator can identify a container in three ways:
 除了docker官方的镜像仓库之外,还有很多第三方的docker镜像下载站点.
 国内的docker镜像站点有:DockerPool,阿里云,对于国内用户来说,这些站点的速度要快很多.
 
-- dockerpull: http://dockerpool.com/.  修改/etc/sysconfig/docker文件，修改OPTIONS='--selinux-enabled --insecure-registry dl.dockerpool.com:5000'
+- dockerpull: http://dockerpool.com/.  修改/etc/sysconfig/docker文件,修改OPTIONS='--selinux-enabled --insecure-registry dl.dockerpool.com:5000'
 - 阿里云: http://help.aliyun.com/knowledge_detail/5974865.html, 暂时还没有连接成功
 
 ### 创建镜像
@@ -118,7 +118,10 @@ CMD /bin/bash
 - `EXPOSE <port> [<port>...]`: EXPOSE 命令可以设置一个端口在运行的镜像中暴露在外, docker run 时仍然需要进行端口映射
 	`docker run -d -p 127.0.0.1:33301:22 centos6-ssh`: container ssh服务的22端口被映射到主机的33301端口
 - `ENV <key> <value>`: 用于设置环境变量, 设置了后,后续的RUN命令都可以使用.
-- `ADD <src> <dest>`: 从src复制文件到container的dest路径, <src> 为主机的相对路径, <dest> 是container中的绝对路径
+- `COPY/ADD <src> <dest>`: 从src复制文件到container的dest路径, <src> 为主机的相对路径, <dest> 是container中的绝对路径
+	ADD 多了2个功能, 下载URL和解压, 其他都一样.
+	如果你不希望压缩文件拷贝到container后会被解压的话, 那么使用COPY.
+	如果需要自动下载URL并拷贝到container的话, 请使用ADD.
 - `VOLUME <mountpoint>`: 创建一个挂载点用于共享目录, 但是如果想把本地的目录挂载到这个目录, 还是需要在docker run的时候, 使用 -v 参数来显示的指定
 - `WORKDIR /path/to/workdir`: 配置RUN, CMD, ENTRYPOINT 工作路径, 可以设置多次,如果是相对路径,则相对前一个 WORKDIR 命令.
 - `ENTRYPOINT cmd param1 param2 ...`: 设置在容器启动时执行命令
