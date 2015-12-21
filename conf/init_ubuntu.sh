@@ -16,7 +16,9 @@ CHK_RET FATAL "update error"
 apt-get -y upgrade
 CHK_RET FATAL "upgrade error"
 
-apt-get install -y fcitx \
+## open terminals in arbitrary path
+apt-get install -y nautilus-open-terminal \
+	fcitx \
 	vim \
 	git \
 	unrar \
