@@ -5,6 +5,11 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+## source docker func
+if [ -f $HOME/.dockerfunc ]; then
+	source $HOME/.dockerfunc
+fi
+
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
