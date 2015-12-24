@@ -61,3 +61,16 @@ libreoffice(){
 		ubuntu:libreoffice
 }
 
+tor(){
+	del_stopped tor
+
+	docker run -d \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-v /dev/snd:/dev/snd \
+		-e DISPLAY=unix$DISPLAY \
+		-e GDK_SCALE \
+		-e GDK_DPI_SCALE \
+		--name tor \
+		debian:tor-browser
+}
+
