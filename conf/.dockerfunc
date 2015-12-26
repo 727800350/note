@@ -47,12 +47,55 @@ dev(){
 		ubuntu:dev
 }
 
+rstudio(){
+	del_stopped rstudio
+
+	docker run -d \
+		-v /etc/localtime:/etc/localtime:ro \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-e DISPLAY=unix$DISPLAY \
+		-v $HOME:/root \
+		-e GDK_SCALE \
+		-e GDK_DPI_SCALE \
+		--name rstudio \
+		$index/rstudio:latest
+}
+
+wiznote(){
+	docker run -d \
+		-v /etc/localtime:/etc/localtime:ro \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-v /usr/share/fonts:/usr/share/fonts \
+		-e DISPLAY=unix$DISPLAY \
+		-v $HOME/.wiznote:/root/.wiznote \
+		-e GDK_SCALE \
+		-e GDK_DPI_SCALE \
+		--name wiznote \
+		$index/wiznote:latest
+}
+
+wpsoffice(){
+	del_stopped wps
+
+	docker run -d \
+		-v /etc/localtime:/etc/localtime:ro \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-v /usr/share/fonts:/usr/share/fonts \
+		-e DISPLAY=unix$DISPLAY \
+		-v $HOME:/root \
+		-e GDK_SCALE \
+		-e GDK_DPI_SCALE \
+		--name wps \
+		$index/wps:latest
+}
+
 libreoffice(){
 	del_stopped libreoffice
 
 	docker run -d \
 		-v /etc/localtime:/etc/localtime:ro \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-v /usr/share/fonts:/usr/share/fonts \
 		-e DISPLAY=unix$DISPLAY \
 		-v $HOME:/root \
 		-e GDK_SCALE \
