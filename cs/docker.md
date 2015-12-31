@@ -148,6 +148,7 @@ cat container.tar | docker import - image-export:latest
 docker save [image] > image.tar
 docker load < image.tar
 ```
+注意: save 的image 不能通过import 的方式来导入, 只能使用load的方式
 
 - 导出后再导入(exported-imported)的镜像会丢失所有的历史, 意味着将无法回滚到之前的层(layer)
 - 保存后再加载(saveed-loaded)的镜像没有丢失历史和层(layer), 就可以做到层回滚(可以执行docker tag <LAYER ID> <IMAGE NAME>来回滚之前的层)
