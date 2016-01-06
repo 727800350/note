@@ -31,12 +31,12 @@ cd $HOME \
 	&& git clone git@github.com:ericuni/note.git
 CHK_RET FATAL "git clone note error"
 
-ln -sf ${HOME}/git/note/conf/.bashrc ${HOME}/.bashrc \
-	&& ln -sf ${HOME}/git/note/conf/.vimrc ${HOME}/.vimrc \
-	&& ln -sf ${HOME}/git/note/conf/.gitconfig ${HOME}/.gitconfig \
-	&& ln -sf ${HOME}/git/note/conf/.tmux.conf ${HOME}/.tmux.conf \
-	&& ln -sf ${HOME}/git/note/conf/.guile ${HOME}/.guile \
-	&& ln -sf ${HOME}/git/note/conf/.Rprofile ${HOME}/.Rprofile \
+ln -f ${HOME}/git/note/conf/.bashrc ${HOME}/.bashrc \
+	&& ln -f ${HOME}/git/note/conf/.vimrc ${HOME}/.vimrc \
+	&& ln -f ${HOME}/git/note/conf/.gitconfig ${HOME}/.gitconfig \
+	&& ln -f ${HOME}/git/note/conf/.tmux.conf ${HOME}/.tmux.conf \
+	&& ln -f ${HOME}/git/note/conf/.guile ${HOME}/.guile \
+	&& ln -f ${HOME}/git/note/conf/.Rprofile ${HOME}/.Rprofile \
 	&& ln -sf ${HOME}/git/note/conf/hosts /etc/hosts
 CHK_RET FATAL "create soft link error"
 
