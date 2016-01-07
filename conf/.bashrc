@@ -19,11 +19,9 @@ user=`whoami`
 ## my own pc
 if [ ${user} = "eric" ]
 then
-	export TEXLIVE=${HOME}/opt/texlive/2015/
 	ulimit -c unlimited
 ## enterprise
 else
-	export TEXLIVE=${HOME}/program/texlive/2015/
 	export PATH=$PATH:${HOME}/.jumbo/bin/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/samba/lib/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/hadoop-client/java6/jre/lib/amd64/server/:~/hadoop-client/hadoop/libhdfs/
@@ -37,9 +35,28 @@ else
 	alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
 	alias nanling='${HOME}/hadoop-client/hadoop-nanling/bin/hadoop'
 	export local_hadoop="${HADOOP_HOME}/bin/hadoop"
+
+	## svn
+	export PATH=$PATH:$HOME/opt/tools/tools/svn/1.6.5/64/bin
+	export PATH=$PATH:$HOME/opt/tools/tools/scmtools/usr/bin
+	export PATH=$PATH:$HOME/opt/tools/tools/../bin/64
+	export PATH=$PATH:$HOME/opt/tools/tools/maven/apache-maven-2.2.0/bin
+	export PATH=$PATH:$HOME/opt/tools/tools/ant/apache-ant-1.6.5/bin
+	export PATH=$PATH:$HOME/opt/tools/tools/ant/apache-ant-1.7.1/bin
+	export PATH=$PATH:$HOME/opt/tools/tools/php/5.2.17/64/bin
+	
+	## MANPATH=:/tools/baidu_manpage/man
+	export JAVA_HOME_1_5=$HOME/opt/tools/tools/java/jdk1.5.0_07
+	export JAVA_HOME_1_6=$HOME/opt/tools/tools/java/jdk1.6.0_20
+	export ANT_HOME=$HOME/opt/tools/tools/ant/apache-ant-1.6.5
+	export ANT_HOME_1_7=$HOME/opt/tools/tools/ant/apache-ant-1.7.1
+	export MAVEN_2_2_1=$HOME/opt/tools/tools/maven/apache-maven-2.2.1/bin
+	export MAVEN_3_0_4=$HOME/opt/tools/tools/maven/apache-maven-3.0.4/bin
+	export MAC=64
 fi
 
 ## texlive env
+export TEXLIVE=${HOME}/opt/texlive/2015/
 export PATH=$PATH:$TEXLIVE/bin/x86_64-linux/
 export MANPATH=$MANPATH:$TEXLIVE/texmf/doc/man/
 export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info/
