@@ -31,10 +31,11 @@ else
 
 	## hadoop client
 	export HADOOP_HOME="${HOME}/hadoop-client/hadoop/"
+	export local_hadoop="${HADOOP_HOME}/bin/hadoop"
 	alias hadoop='${HADOOP_HOME}/bin/hadoop'
 	alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
 	alias nanling='${HOME}/hadoop-client/hadoop-nanling/bin/hadoop'
-	export local_hadoop="${HADOOP_HOME}/bin/hadoop"
+	alias spider='${HOME}/hadoop-client/hadoop-spider/bin/hadoop'
 
 	## svn
 	export PATH=$PATH:$HOME/opt/tools/tools/svn/1.6.5/64/bin
