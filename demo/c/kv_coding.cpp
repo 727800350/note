@@ -164,7 +164,7 @@ int main(int argc, char *argv[]){
 		}
 		sum_read += ret;
 
-		ret = fwrite(buffer, sizeof(char), vl, stdout);
+		ret = fwrite(buffer, sizeof(char), ret, stdout);
 		if(ret < 0){
 			fprintf(stderr, "write error\n");
 			return ret;
