@@ -36,6 +36,7 @@ else
 	alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
 	alias nanling='${HOME}/hadoop-client/hadoop-nanling/bin/hadoop'
 	alias spider='${HOME}/hadoop-client/hadoop-spider/bin/hadoop'
+	alias temps='${HOME}/hadoop-client/hadoop-temps/bin/hadoop'
 
 	## svn
 	export PATH=$PATH:$HOME/opt/tools/tools/svn/1.6.5/64/bin
