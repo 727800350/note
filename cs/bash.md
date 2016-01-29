@@ -120,6 +120,11 @@ $ date +%Y%m%d_%H_%M_%S
 
 $ date +"%F %T"
 2015-06-11 15:11:49
+
+$ date "+%Y%m%d"
+20160129
+$ date -d "1 day ago" "+%Y%m%d"
+20160128
 ```
 
 sort
@@ -152,12 +157,10 @@ wangchao pts/9    bb-sns-relay03.b 09:21    0.00s  0.06s  0.01s sshd: wangchao34
 caiyuanj pts/10   bb-sns-relay03.b 10:10   17:43   0.42s  0.01s sshd: caiyuanjun [priv]
 ```
 
-`ps -ef` 可以查看pid, ppid
-
 # 网络
 使用netstst命令查看正在监听状态的端口:
 
-- `netstat -nupl`: n表示用数字形式显示端口号, u/t,表示UDP/TCP协议类型, p是程序PID, l表示处于监听状态的
+- `netstat -anupl`: a表示all, n表示用数字形式显示端口号, u/t,表示UDP/TCP协议类型, p是程序PID, l表示处于监听状态的
 - `lsof -i:80`: 这个需要root 权限, 如果有显示说明80端口已经开放了，如果没有显示说明没有开放
 
 **ss**
@@ -327,6 +330,19 @@ To obtain better compression, concatenate all input files before compressing the
 tar -xvf foo.tar.gz -C /to
 ```
 
+split - split a file into pieces
+`split [OPTION] [INPUT [PREFIX]]`
+
+- -a, --suffix-length=N, use suffixes of length N (default 2)
+- -d, --numeric-suffixes, use numeric suffixes instead of alphabetic
+- -l, --lines=NUMBER, put NUMBER lines per output file
+
+paste: merge lines of files(以列为对象), With no FILE, or when FILE is -, read standard input
+
+wget
+如果是一个目录
+`wget  -r ftp://xxx_path_xxx ./`
+
 # OS
 **设置默认的runlevel**
 编辑 `/etc/inittab` 中设置
@@ -399,6 +415,12 @@ nohup command > myout.file 2>&1 &
 
 **kill**
 当给多个进程号的时候, 可以同时杀死多个进行
+
+killall sh
+
+ps x: An alternate description is that this option causes ps to list all processes owned by you (same EUID as ps)
+
+`ps -ef` 可以查看pid, ppid
 
 pstree: shows processes in a tree
 
