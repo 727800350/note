@@ -116,6 +116,13 @@ pointer = new type [number_of_elements]
 delete [] pointer;
 ```
 
+`new (std:nothrow)`:
+对于比较健壮的代码来说,nothrow使用的情况比直接new多.
+直接new如果失败要抛出异常的, 结果就是为了健壮性代码里到处都是try. 另外new出现异常, 表示内存几经到达边缘了, 再用try+catch来消耗内存也是无济于事
+所以一般健壮的分配方式都用new (nothrow) xxx的(当然也有用malloc等的),之后判断NULL就OK
+
+demo: `g_stmola = new (std::nothrow) select_mola[mola_num];`
+
 [**Pointers to functions**](../demo/c++/pointer_function.cpp)  
 
 ## 二维数组
