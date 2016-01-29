@@ -75,6 +75,7 @@ outfile.write()
 - `size()` or `length()`: Return length of string
 - `std::string::c_str`: Returns a pointer to an internal array that contains a null-terminated sequence of characters (i.e., a C-string).
 A program shall **not alter** any of the characters in this sequence.
+c_str()返回的是一个分配给const char*的地址,其内容已设定为不可变更,如果再把此地址赋给一个可以变更内容的char*变量,就会产生冲突
 
 scan in values from a string
 
