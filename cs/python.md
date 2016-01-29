@@ -124,6 +124,12 @@ f.seek (-3, 2) # Go to the 3rd byte before the end
 f.read(1) // read 'd'
 ```
 
+混合使用file.readline() and file.next()要注意:  
+When a file is used as an iterator, typically in a for loop (for example, `for line in f: print line.strip()`), the next() method is called repeatedly.
+In order to make a for loop the most efficient way, the next() method uses a **hidden read-ahead buffer**.
+也就是说,next()方法会预加载后面的内容, 这时如果使用readline()方法则会与next()方法的预加载产生冲突.
+However, using seek() to reposition the file to an absolute position will flush the read-ahead buffer.
+
 ## [二进制](http://www.cnblogs.com/gala/archive/2011/09/22/2184801.html)
 有的时候需要用python处理二进制数据,比如,存取文件,socket操作时.这时候,可以使用python的struct模块来完成.可以用 struct来处理c语言中的结构体.
 
