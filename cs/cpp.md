@@ -516,6 +516,9 @@ implemented as doubly-linked lists
 - push_front: 在头插入
 - push_back: 在尾插入
 
+## [std::map]
+- `size_type std::map::count(const key_type& k) const`: Count elements with a specific key
+
 # boost
 安装
 
