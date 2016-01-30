@@ -842,6 +842,31 @@ SymPy是Python的一个数学符号计算库.
 它目的在于成为一个富有特色的计算机代数系统.
 它保证自身的代码尽可能的简单,且易于理解,容易扩展.SymPy完全由Python写成,不需要额外的库.
 
+## import subprocess as sp
+[ref1](https://docs.python.org/2/library/subprocess.html)
+[ref2](http://blog.chinaunix.net/uid-14833587-id-76547.html)
+
+Execute a child program in a new process:
+`subprocess.Popen(args, bufsize=0, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, cwd=None,env=None,universal_newlines=False)`
+
+- args: should be a sequence of program arguments or else a single string
+- shell: (defaults to False) specifies whether to use the shell as the program to execute. If True, pass args as a string rather than as a sequence.
+- bufsize: If you experience performance issues, it is recommended that you try to enable buffering by setting bufsize to either -1 or a large value (such as 4096).
+- stdin, stdout and stderr: valid values are PIPE, an existing file descriptor (a positive integer), an existing file object, and None. 
+- cwd: 工作目录
+- universal_newlines: if True, '\n' for the Unix end-of-line convention; '\r' for the old Macintosh convention or '\r\n' for the Windows convention,都被作为'\n'处理
+
+```
+p = sp.Popen("./subprocess_demo", stdin = sp.PIPE, stdout = sp.PIPE, stderr = sp.PIPE, shell = False)
+## 这里将p的stdin, stdout, sterr都设置为pipe,稍后我们就可以通过往这些pipe写数据往subprocess_demo程序的输入写入数据
+
+## write to p.stdin, so that app can read from stdin
+p.stdin.write('3\n')
+p.stdin.write('4\n')
+sys.stdout.write(p.stdout.read())
+```
+[subprocess_demo.cpp](../demo/python/subprocess_demo.cpp)
+
 ## xlutils, xlrd, xlwt
 module for excel
 rd: read, wt: write
@@ -896,23 +921,6 @@ wb = copy(rb)
 ws = wb.get_sheet(0)
 ```
 对于excel 03的格式, 可以使用 `rb = xlrd.open_workbook(path, formatting_info = True)`, 这样可以将path的格式保留下来, 但是这个功能在excel 07还没有实现
-
-### subprocess
-```
-import subprocess
-uname = "uname"
-arg = "-a"
-print "gatherign info"
-subprocess.call([uname,arg])
-```
-
-当需要使用pipe 的demo
-
-	import subprocess as sp
-	ps_process = sp.Popen(["ps", "-A"], stdout = sp.PIPE)
-	grep_process = sp.Popen(["grep", query], stdin = ps_process.stdout, stdout = sp.PIPE)
-	ps_process.stdout.close()  # Allow ps_process to receive a SIGPIPE if grep_process exits.
-	output = grep_process.communicate()[0]
 
 # FP
 在函式编程中,最著名的特色就是高序(High Order).简单地说,就是定制一个算法,

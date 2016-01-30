@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
 import sys
-import subprocess
+import subprocess as sp
 
 def main():
-	p = subprocess.Popen("./subprocess_demo", stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = False)
+	p = sp.Popen("./subprocess_demo", stdin = sp.PIPE, stdout = sp.PIPE, stderr = sp.PIPE, shell = False)
 	## p.stdin is the stdin of ./app
 
 	## write to p.stdin, so that app can read from stdin
