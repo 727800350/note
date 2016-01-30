@@ -7,9 +7,6 @@ list, tuple, 字符串都属于sequence
 
 # 参数
 ## 系统参数
-```
-import sys
-```
 `sys.argv` 获取参数列表  
 如果需要获取参数列表的长度, 需要通过`len(sys.argv)`.  
 参数依次为: `sys.argv[0]`(第一个参数为本文件的名字), `sys.argv[1]`
@@ -731,7 +728,6 @@ help, dir, type, id, hasattr, getattr, callable, isinstance
 ## import sys
 - sys.path #系统目录
 - sys.argv  #可执行文件名是第一个参数
-```
 
 ## import time
 - `time.time()`用ticks计时单位返回从12:00am, January 1, 1970(epoch) 开始的记录的当前操作系统时间
