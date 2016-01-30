@@ -125,6 +125,21 @@ demo: `g_stmola = new (std::nothrow) select_mola[mola_num];`
 
 [**Pointers to functions**](../demo/c++/pointer_function.cpp)  
 
+`std::copy(val.begin(), val.end(), std::ostream_iterator<int>(std::cout, ", "))`  
+The Iterator concept describes types that can be used to identify and traverse the elements of a container.
+Iterator is the base concept used by other iterator types: InputIterator, OutputIterator, ForwardIterator,BidirectionalIterator, and RandomAccessIterator.
+Iterators can be thought of as an abstraction of pointers.
+
+- An OutputIterator is an Iterator that can write to the pointed-to element.
+- An InputIterator is an Iterator that can read from the pointed-to element.
+	InputIterators only guarantee validity for single pass algorithms:
+	once an InputIterator i has been incremented, all copies of its previous value may be invalidated.
+- A ForwardIterator is an Iterator that can read data from the pointed-to element.
+	Unlike an InputIterator, it guarantees validity when used in multipass algorithms.
+- A BidirectionalIterator is a ForwardIterator that can be moved in both directions (i.e. incremented and decremented).
+- A RandomAccessIterator is a BidirectionalIterator that can be moved to point to any element in constant time.
+	A standard pointer is an example of a type that satisfies this concept.
+
 ## 二维数组
 [C++二维数组new小结(zz)](http://www.cnblogs.com/beyondstorm/archive/2008/08/26/1276278.html)
 
