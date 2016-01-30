@@ -118,7 +118,9 @@ for line in f:
 
 文件中定位
 这个函数的格式如下(单位是bytes):`f.seek(offset, from_what)`
-from_what表示开始读取的位置,offset表示从from_what再移动一定量的距离,比如`f.seek(10, 3)`表示定位到第三个字符并再后移10个字符.from_what值为0时表示文件的开始,它也可以省略,缺省是0即文件开头
+from_what表示开始读取的位置,
+offset表示从from_what再移动一定量的距离,比如`f.seek(10, 3)`表示定位到第三个字符并再后移10个字符.
+from_what值为0时表示文件的开始,它也可以省略,缺省是0即文件开头
 ```
 f = open('/tmp/workfile', 'r+')
 f.write('0123456789abcdef')
@@ -139,7 +141,8 @@ However, using seek() to reposition the file to an absolute position will flush 
 
 binascii模块包含很多在二进制和ASCII编码的二进制表示转换的方法
 
-- binascii.hexlify(data): Return the hexadecimal representation of the binary data. Every byte of data is converted into the corresponding 2-digit hex representation(因此变为原来的两倍长)
+- binascii.hexlify(data): Return the hexadecimal representation of the binary data. 
+	Every byte of data is converted into the corresponding 2-digit hex representation(因此变为原来的两倍长)
 - binascii.unhexlify(hexstr): Return the binary data represented by the hexadecimal string hexstr. hexstr 必须为偶数个16 进制digits, otherwise a TypeError is raised.
 ```
 bin = struct.pack(i, 23) ## bin 为 '\x17\x00\x00\x00' 占4 个bytes
@@ -226,11 +229,12 @@ binfile=open(filepath,'wb')    写二进制文件
 - `random.random()`用于生成一个0到1的随机符点数: 0 <= n < 1.0
 - `random.uniform(a, b)`,指定范围内的随机符点数. 如果a > b,则生成的随机数n: a <= n <= b.如果 a <b, 则 b <= n <= a.
 - `random.randint(a, b)`,指定范围内的整数, 生成的随机数n: a <= n <= b
-- `random.randrange([start], stop[, step])`,从指定范围内,按指定基数递增的集合中 获取一个随机数  
-如:random.randrange(10, 100, 2),结果相当于从[10, 12, 14, 16, ... 96, 98]序列中获取一个随机数.random.randrange(10, 100, 2)在结果上与 random.choice(range(10, 100, 2) 等效.
+- `random.randrange([start], stop[, step])`,从指定范围内,按指定基数递增的集合中 获取一个随机数.
+	如:random.randrange(10, 100, 2),结果相当于从[10, 12, 14, 16, ... 96, 98]序列中获取一个随机数.
+	random.randrange(10, 100, 2)在结果上与 random.choice(range(10, 100, 2) 等效.
 - `random.choice(sequence)`从序列中获取一个随机元素  
-- `random.shuffle(x[, random])`,Shuffle the sequence x in place.   
-The optional argument random is a 0-argument function returning a random float in [0.0, 1.0); by default, this is the function random().
+- `random.shuffle(x[, random])`,Shuffle the sequence x in place.
+	The optional argument random is a 0-argument function returning a random float in [0.0, 1.0); by default, this is the function random().
 - `random.sample(sequence, k)`,从指定序列中随机获取指定长度的片断.sample函数不会修改原有序列
 
 ```
@@ -277,7 +281,8 @@ print x # might print something different
 
 Python represents all its data as objects.
 Some of these objects like lists and dictionaries are mutable, meaning you can change their content without changing their identity.
-Other objects like integers, floats, strings and tuples ... are objects that can not be changed. An easy way to understand that is if you have a look at an objects ID.
+Other objects like integers, floats, strings and tuples ... are objects that can not be changed. 
+An easy way to understand that is if you have a look at an objects ID.
 
 Below you see a string that is immutable. You can not change its content. It will through an error at you, if you try to change it. 
 Also, if we assign new content, a new object is created instead of the contents being modified.
@@ -375,7 +380,7 @@ If default is not given, it defaults to None, so that this method **never raises
 - heapq.heappushpop(heap, item): The combined action runs more efficiently than heappush() followed by a separate call to heappop().
 - heapq.heapify(x) Transform list x into a heap, in-place, in linear time.
 - heapq.heapreplace(heap, item): Pop and return the smallest item from the heap, and also push the new item. more efficient than a heappop() followed by heappush() 
-- heapq.nlargest(n, iterable[, key]) Return a list with the n largest elements from the dataset defined by iterable. key, if provided, specifies a function of one argument that is used to extract a comparison key from each element in the iterable: key=str.lower Equivalent to: sorted(iterable, key=key, reverse=True)[:n]
+- heapq.nlargest(n, iterable[, key]) Return a list with the n largest elements from the dataset defined by iterable.
 - heapq.nsmallest(n, iterable[, key])
 
 ## Numeric
@@ -429,19 +434,13 @@ Return the number of non-overlapping occurrences of substring sub in the range [
 把字符从 unicode 转换成二进制编码,当然是要 encode
 [encoding demo](../demo/python/encoding.py)
 
-- `str.decode([encoding[, errors]])`
-Decodes the string using the codec registered for encoding. encoding defaults to the default string encoding. errors may be given to set a different error handling scheme. The default is 'strict', meaning that encoding errors raise UnicodeError. Other possible values are 'ignore','replace' and any other name registered via codecs.register_error(), see section Codec Base Classes.
-- `str.encode([encoding[, errors]])`
-Return an encoded version of the string. Default encoding is the current default string encoding. errors may be given to set a different error handling scheme. The default for errors is 'strict', meaning that encoding errors raise a UnicodeError. Other possible values are 'ignore','replace', 'xmlcharrefreplace', 'backslashreplace' and any other name registered via codecs.register_error(), see section Codec Base Classes. For a list of possible encodings, see section Standard Encodings.
+- `str.decode([encoding[, errors]])`: Decodes the string using the codec registered for encoding.
+- `str.encode([encoding[, errors]])`: Return an encoded version of the string.
 
 **查找**
-- `str.endswith(suffix[, start[, end]])`
-Return True if the string ends with the specified suffix, otherwise return False. suffix can also be a tuple of suffixes to look for. With optional start, test beginning at that position. With optional end, stop comparing at that position.
-
-- `str.find(sub[, start[, end]])`
-Return the lowest index in the string where substring sub is found, such that sub is contained in the slice s[start:end]. Optional argumentsstart and end are interpreted as in slice notation. Return -1 if sub is not found.
-Note: **The find() method should be used only if you need to know the position of sub. To check if sub is a substring or not, use the `in` operator**
-
+- `str.endswith(suffix[, start[, end]])`: Return True if the string ends with the specified suffix, otherwise return False.
+- `str.find(sub[, start[, end]])`: Return the lowest index in the string where substring sub is found, such that sub is contained in the slice s[start:end].
+	Note: **The find() method should be used only if you need to know the position of sub. To check if sub is a substring or not, use the `in` operator**
 - `str.index(sub[, start[, end]])` Like find(), but raise ValueError when the substring is not found.
 
 **boolean**
@@ -459,21 +458,22 @@ Note: **The find() method should be used only if you need to know the position o
 - `str.upper()`
 
 **分隔合并**
-- `str.lstrip([chars])` Return a copy of the string with leading characters removed. The chars argument is a string specifying the set of characters to be removed. If omitted or None, the chars argument defaults to removing whitespace. The chars argument is not a prefix; rather, all combinations of its values are stripped:
+- `str.lstrip([chars])` Return a copy of the string with leading characters removed. The chars argument is a string specifying the set of characters to be removed.
 
-- `str.partition(sep)`
-Split the string at the first occurrence of sep, and return a 3-tuple containing the part before the separator, the separator itself, and the part after the separator. If the separator is not found, return a 3-tuple containing the string itself, followed by two empty strings.
+- `str.partition(sep)`: Split the string at the first occurrence of sep, 
+	and return a 3-tuple containing the part before the separator, the separator itself, and the part after the separator. 
+	If the separator is not found, return a 3-tuple containing the string itself, followed by two empty strings.
 
-- `str.replace(old, new[, count])`
-Return a copy of the string with all occurrences of substring old replaced by new. If the optional argument count is given, only the firstcount occurrences are replaced.
+- `str.replace(old, new[, count])`: Return a copy of the string with all occurrences of substring old replaced by new. 
+	If the optional argument count is given, only the firstcount occurrences are replaced.
 
-- `str.split([sep[, maxsplit]])`
-Return a list of the words in the string, using sep as the delimiter string. If maxsplit is given, at most maxsplit splits are done. 
-当要对一个str 对象按照多个分隔符分隔时, 最好是进行多次分隔, 即一次指用一个字符分隔, 不知道为什么不能一次性处理
+- `str.split([sep[, maxsplit]])`: Return a list of the words in the string, using sep as the delimiter string.
+	当要对一个str 对象按照多个分隔符分隔时, 最好是进行多次分隔, 即一次指用一个字符分隔, 不知道为什么不能一次性处理
 
-- `str.join(iterable)` Return a string which is the concatenation of the strings in the iterable iterable. The separator between elements is the string providing this method.
-string.join() 的参数是一个iterable的object, 例如一个list
-":".join(["this","is"]) 生成 "this:is"
+- `str.join(iterable)`: Return a string which is the concatenation of the strings in the iterable iterable. 
+	The separator between elements is the string providing this method.
+	string.join() 的参数是一个iterable的object, 例如一个list
+	`":".join(["this","is"])` 生成 `this:is`
 
 ### 原始字符串
 原始字符串是python中一类比较特殊的字符串, 以大写字母R或者小写字母r开始.
@@ -591,7 +591,8 @@ print sw['a'](2) ## 输出2
 print sw['b'](2) ## 输出3
 print sw['c'](2) ## 输出4
 ```
-不管从可读性(这是显然的),性能(哈希表 vs 普通查找)上都更好.另外最后一种做法将参数与行为的映射完全独立出来了,一来修改起来极其方便,到时候也很容易将它们分离到配置文件中去. 
+不管从可读性(这是显然的),性能(哈希表 vs 普通查找)上都更好.
+另外最后一种做法将参数与行为的映射完全独立出来了,一来修改起来极其方便,到时候也很容易将它们分离到配置文件中去. 
 
 ```
 sw= {
@@ -660,7 +661,8 @@ print t.name # {'name': 'notus'}
 ```
 按照上面的讨论可知,数据属性和类属性不需要预先定义,当数据属性初次被使用时,它即被创建并赋值
 
-如果想要在类实例化后立刻使用这些属性,那就应该把这些属性的初始放在__init__()方法中,前面说过了,__init__()方法在类的实例化结束后立刻被自动调用.所以我们的例子程序可以改成这样
+如果想要在类实例化后立刻使用这些属性,那就应该把这些属性的初始放在__init__()方法中,
+前面说过了,__init__()方法在类的实例化结束后立刻被自动调用.所以我们的例子程序可以改成这样
 ```
 import sys
 class Test:
@@ -690,7 +692,8 @@ class 中特殊方法
 - `__len__(self)` 对序列对象使用内建的len()函数的时候调用
 
 Note: Remember that a double underscore (`__`) around a method name indicates that the method has special meaning to Python, 
-even though it can be used and overridden like any other method. Python has some special conventions for calling such methods; for example, `len(x)` makes Python call `x.__len__()`.
+even though it can be used and overridden like any other method. 
+Python has some special conventions for calling such methods; for example, `len(x)` makes Python call `x.__len__()`.
 
 ## Help
 ```
@@ -739,7 +742,9 @@ $ pip show --files SomePackage
 ```
 import os
 os.listdir(path) #列出当前路径下的文件
-os.getcwd() #get current working directory
+os.getcwd() #get current working directory, 绝对目录
+os.path.dirname(path):返回文件所在目录
+os.path.basename(path):返回文件名
 ```
 
 下面列出了一些在os模块中比较有用的部分.它们中的大多数都简单明了.
@@ -870,18 +875,12 @@ data example
  [ 0., 1., 2.]]
 ```
 
-- ndarray.ndim
-number of dimensions
-- ndarray.shape 
-the dimensions of the array, a tuple of integers 
-- ndarray.size
-the total number of elements of the array. This is equal to the product of the elements of shape.
-- ndarray.dtype
-an object describing the type of the elements in the array. One can create or specify dtype using standard Python types. Additionally NumPy provides types of its own. numpy.int32, numpy.int16, and numpy.float64 are some examples.
-- ndarray.itemsize
-the size in bytes of each element of the array. For example, an array of elements of type float64 has itemsize 8 (=64/8), while one of type complex32 has itemsize 4 (=32/8). It is equivalent to ndarray.dtype.itemsize.
-- ndarray.data
-the buffer containing the actual elements of the array. Normally, we will not need to use this attribute because we will access the elements in an array using indexing facilities.
+- ndarray.ndim: number of dimensions
+- ndarray.shape： the dimensions of the array, a tuple of integers 
+- ndarray.size: the total number of elements of the array. This is equal to the product of the elements of shape.
+- ndarray.dtype: an object describing the type of the elements in the array. numpy.int32, numpy.int16 and numpy.float64 are some examples.
+- ndarray.itemsize: the size in bytes of each element of the array, equivalent to ndarray.dtype.itemsize.
+- ndarray.data: the buffer containing the actual elements of the array.
 
 [Array Creation demo](../demo/python/numpy_array_create.py)
 
@@ -899,7 +898,9 @@ The copy method makes a complete copy of the array and its data.
 `numpy.loadtxt(fname, dtype=<type 'float'>, comments='#', delimiter=None, converters=None, skiprows=0,usecols=None, unpack=False, ndmin=0)`
 delimiter : str, optional. By default, this is any whitespace.
 converters : dict, optional
-A dictionary mapping column number to a function that will convert that column to a float. E.g., if column 0 is a date string: converters = {0: datestr2num}. Converters can also be used to provide a default value for missing data (but see also genfromtxt): converters = {3: lambda s:float(s.strip() or 0)}. Default: None.
+A dictionary mapping column number to a function that will convert that column to a float. 
+E.g. if column 0 is a date string: converters = {0: datestr2num}.
+Converters can also be used to provide a default value for missing data, converters = {3: lambda s:float(s.strip() or 0)}. Default: None.
 
 example.txt file looks like the following
 ```
@@ -916,8 +917,10 @@ print table[0]
 In NumPy, files can be accessed in binary format using `numpy.save` and `numpy.load`.
 The primary limitation is that the binary format is only readable to other systems that are using NumPy. 
 If you want to read and write files in a more portable format, then `scipy.io` will do the job.
+
 NumPy to read and write Matlab-supported files (using scipy.io.loadmat and scipy.savemat)
-Last but not least, you can query, read, and write Matrix Market files. These are very commonly used to share matrix data structures that are written in ASCII format. This format is well supported in other languages like C, Fortran, and Matlab, so it is a good format to use due to its universality and user readability. It is also suitable for sparse matrices.
+Last but not least, you can query, read, and write Matrix files. These are very commonly used to share matrix data structures that are written in ASCII format. 
+This format is well supported in other languages like C, Fortran, and Matlab, so it is a good format to use due to its universality and user readability.
 
 numpy.matrix object Matrix library (numpy.matlib)
 Unlike the ndarray objects, matrix objects can and only will be two dimensional.
@@ -938,7 +941,8 @@ boolean
 when using NumPy arrays, you can only use & and | as this allows fast comparisons of boolean values.
 
 ### scipy
-The optimization and minimization tools that NumPy and SciPy provide are great, but they do not have Markov Chain Monte Carlo (MCMC) capabilities—in other words, Bayesian analysis. 
+The optimization and minimization tools that NumPy and SciPy provide are great, 
+but they do not have Markov Chain Monte Carlo (MCMC) capabilities—in other words, Bayesian analysis. 
 There are several popular MCMC Python packages like PyMC, a rich package with many options, and emcee,[12] an affine invariant MCMC ensemble sampler
 (meaning that large scales are not a problem for it).
 
@@ -992,8 +996,8 @@ table.write(0, 0, 'some bold Times text', style) # 使用样式
 style.num_format_str = "mm/dd/yyyy"
 ```
 
-如果要编辑现有的excel 表格, 只能采取迂回的策略, 即用xlrd 打开workbook, 然后用xlutils 提供的copy 工具将打开的workbook 复制一份, 被复制的是xlwt格式, 可以进行编辑, 最后再将复制的workbook保存下来.
-
+如果要编辑现有的excel 表格, 只能采取迂回的策略, 
+即用xlrd 打开workbook, 然后用xlutils 提供的copy 工具将打开的workbook 复制一份, 被复制的是xlwt格式, 可以进行编辑, 最后再将复制的workbook保存下来.
 
 ```
 rb = xlrd.open_workbook(path)
@@ -1062,9 +1066,10 @@ print filter(foo,range(100))
 `reduce(func, iter, [initial_value])`
 func must be a function that takes two elements and returns a single value. 
 reduce() takes the first two elements A and B returned by the iterator and calculates func(A, B). 
-It then requests the third element, C, calculates func(func(A, B), C), combines this result with the fourth element returned, and continues until the iterable is exhausted. 
+It then requests the third element, C, calculates func(func(A, B), C), 
+combines this result with the fourth element returned, and continues until the iterable is exhausted. 
 If the iterable returns no values at all, a TypeError exception is raised. 
-If the initial value is supplied, it's used as a starting point and func(initial_value, A) is the first calculation.
+If the initial value is supplied, it is used as a starting point and func(initial_value, A) is the first calculation.
 
 **lambda**
 lambda 参数列表: 表达式
@@ -1075,16 +1080,22 @@ print map(lambda x: x* * 2, range(10))
 ```
 
 # 反射(自省)
-有时候我们会碰到这样的需求,需要执行对象的某个方法,或是需要对对象的某个字段赋值,而方法名或是字段名在编码代码时并不能确定,需要通过参数传递字符串的形式输入.举个具体的例子:当我们需要实现一个通用的DBM框架时,可能需要对数据对象的字段赋值,但我们无法预知用到这个框架的数据对象都有些什么字段,换言之,我们在写框架的时候需要通过某种机制访问未知的属性.
+有时候我们会碰到这样的需求,需要执行对象的某个方法,或是需要对对象的某个字段赋值,而方法名或是字段名在编码代码时并不能确定,需要通过参数传递字符串的形式输入.
+举个具体的例子:当我们需要实现一个通用的DBM框架时,可能需要对数据对象的字段赋值,但我们无法预知用到这个框架的数据对象都有些什么字段,
+换言之,我们在写框架的时候需要通过某种机制访问未知的属性.
 
-这个机制被称为反射(反过来让对象告诉我们他是什么),或是自省(让对象自己告诉我们他是什么,好吧我承认括号里是我瞎掰的- -#),用于实现在运行时获取未知对象的信息.反射是个很吓唬人的名词,听起来高深莫测,在一般的编程语言里反射相对其他概念来说稍显复杂,一般来说都是作为高级主题来讲,但在Python中反射非常简单,用起来几乎感觉不到与其他的代码有区别,使用反射获取到的函数和方法可以像平常一样加上括号直接调用,获取到类后可以直接构造实例,不过获取到的字段不能直接赋值,因为拿到的其实是另一个指向同一个地方的引用,赋值只能改变当前的这个引用而已.
+这个机制被称为反射(反过来让对象告诉我们他是什么),或是自省(让对象自己告诉我们他是什么,好吧我承认括号里是我瞎掰的),用于实现在运行时获取未知对象的信息.
+反射是个很吓唬人的名词,听起来高深莫测,在一般的编程语言里反射相对其他概念来说稍显复杂,一般来说都是作为高级主题来讲,
+但在Python中反射非常简单,用起来几乎感觉不到与其他的代码有区别,使用反射获取到的函数和方法可以像平常一样加上括号直接调用,获取到类后可以直接构造实例,
+不过获取到的字段不能直接赋值,因为拿到的其实是另一个指向同一个地方的引用,赋值只能改变当前的这个引用而已.
 
 **访问对象的属性**
 [demo](../demo/python/reflection.py)
 
 - `dir([obj])`:
 调用这个方法将返回包含obj大多数属性名的列表(会有一些特殊的属性不包含在内).obj的默认值是当前的模块对象.
-当你对一个你构造的对象使用dir()时,可能会发现列表中的很多属性并不是你定义的.这些属性一般保存了对象的元数据,比如类的__name__属性保存了类名.大部分这些属性都可以修改,不过改动它们意义并不是很大
+当你对一个你构造的对象使用dir()时,可能会发现列表中的很多属性并不是你定义的.这些属性一般保存了对象的元数据,比如类的__name__属性保存了类名.
+大部分这些属性都可以修改,不过改动它们意义并不是很大
 - `hasattr(obj, attr)`: 
 这个方法用于检查obj是否有一个名为attr的值的属性,返回一个布尔值.
 - `getattr(obj, attr)`: 
@@ -1099,7 +1110,8 @@ print map(lambda x: x* * 2, range(10))
 isinstance(object, classinfo):
 ```
 检查object是不是classinfo中列举出的类型,返回布尔值.classinfo可以是一个具体的类型,也可以是多个类型的元组或列表.
-types模块中仅仅定义了类型,而inspect模块中封装了很多检查类型的方法,比直接使用types模块更为轻松,所以这里不给出关于types的更多介绍,如有需要可以直接查看types模块的文档说明.本文第3节中介绍了inspect模块.
+types模块中仅仅定义了类型,而inspect模块中封装了很多检查类型的方法,比直接使用types模块更为轻松,所以这里不给出关于types的更多介绍,
+如有需要可以直接查看types模块的文档说明.本文第3节中介绍了inspect模块.
 
 模块(module)
 
