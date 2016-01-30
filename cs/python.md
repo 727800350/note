@@ -643,43 +643,6 @@ python中类里的属性变量以:
 在使用实例化方法后,将会创建一个空的类实例,一般的python类的定义中会有一个特殊的方法来初始化, 
 这个方法就是`__init__()`,当调用了类的实例化方法后,`__init__()`方法会立刻被这个类的实例调用.也就是说,`__init__()`不是构造函数,而是一个普通的方法.
 
-数据属性
-**数据属性不需要预先定义**!当数据属性初次被使用时,它即被创建并赋值(they spring into existence when they are first assigned to)
-看下面的例子 
-```
-class Test:
-    pass
-
-## 测试用例
-print Test.__dict__   #{'__module__': '__main__', '__doc__': None}
-Test.mode = 'auto'
-print Test.__dict__   #{'__module__': '__main__', '__doc__': None, 'mode': 'auto'}
-t=Test()
-print t.__dict__   #{}
-t.name='notus'
-print t.name # {'name': 'notus'}
-```
-按照上面的讨论可知,数据属性和类属性不需要预先定义,当数据属性初次被使用时,它即被创建并赋值
-
-如果想要在类实例化后立刻使用这些属性,那就应该把这些属性的初始放在__init__()方法中,
-前面说过了,__init__()方法在类的实例化结束后立刻被自动调用.所以我们的例子程序可以改成这样
-```
-import sys
-class Test:
-    def __init__(self):
-        self.name='notus'
-        Test.mode='auto'
-    def ask(self):
-        self.date='2008'
-## print Test.mode  #这个时候, Test 类还没有mode 属性, 所以这个print 会报错
-t=Test() #这个时候, Test 类有了mode 属性
-print t.name
-print Test.mode
-## print t.date  # 调用ask方法之前, t 不含有date 属性
-t.ask()
-print t.date
-```
-
 class 中特殊方法
 - `__init__` initialize an instance  每边都是两个下划线
 - `__str__` print an instance out
@@ -713,117 +676,65 @@ help, dir, type, id, hasattr, getattr, callable, isinstance
 - hasattr( ) 和 getattr( ) 分别判断对象是否有某个属性及获得某个属性值
 - hasattr (object, "split" )
 - callable() 判断对象是否可以被调用
-- is instance() 可以确认某个变量是否有某种类型 isinstance( a, str ) 
+- isinstance() 可以确认某个变量是否有某种类型 isinstance(a, str)
 
-## 模块
-```
-import module  #将整个模块导入
-import module as alias
-from module import function #只导入module中的一个函数,使用的时候可以直接使用, 而不需要用 module.function
-from module import *  #导入所有函数
-```
+# 模块
+包管理工具[PIP](http://lesliezhu.github.io/public/2014-11-08-pip.html)
 
-### 包管理工具[PIP](http://lesliezhu.github.io/public/2014-11-08-pip.html)
-```
-$ pip search SomePackage
-$ pip install SomePackage
-$ pip show SomePackage ## 可以查看软件版本
-$ pip list --outdated
-$ pip install --upgrade SomePackage
-$ pip uninstall SomePackage
-```
+- $ pip search SomePackage
+- $ pip install SomePackage
+- $ pip show SomePackage ## 可以查看软件版本
+- $ pip list --outdated
+- $ pip install --upgrade SomePackage
+- $ pip uninstall SomePackage
+- $ pip show --files SomePackage: 查看具体的安装文件
 
-查看具体的安装文件
-```
-$ pip show --files SomePackage
-```
+## import os
+- os.listdir(path) #列出当前路径下的文件
+- os.getcwd() #get current working directory, 绝对目录
+- os.path.dirname(path):返回文件所在目录
+- os.path.basename(path):返回文件名
 
-### os
-```
-import os
-os.listdir(path) #列出当前路径下的文件
-os.getcwd() #get current working directory, 绝对目录
-os.path.dirname(path):返回文件所在目录
-os.path.basename(path):返回文件名
-```
-
-下面列出了一些在os模块中比较有用的部分.它们中的大多数都简单明了.
-```
-os.sep可以取出操作系统特定的路径分割符
-linux /
-windows \\
-MacOS :
-os.linesep字符串给出当前平台使用的行终止符.例如,Windows使用'\r\n', Linux使用'\n'而Mac使用'\r'.
-os.name字符串指示你正在使用的平台.比如对于Windows,它是'nt',而对于Linux/ Unix用户,它是'posix'.
-os.getcwd()函数得到当前工作目录,即当前Python脚本工作的目录路径.
-os.getenv()和os.putenv()函数分别用来读取和设置环境变量.
-os.listdir()返回指定目录下的所有文件和目录名.
-os.system()函数用来运行shell命令.
-os.path.split()函数返回一个路径的目录名和文件名.["/dir","file.ext"]
-os.path.splitext() 得到文件的其他部分和后缀, 例如"/dir/file.ext", ["/dir/file",".ext"]
-os.path.getsize(path) Return the size, in bytes, of path. Raise os.error if the file does not exist or is inaccessible.
-```
-
+- os.sep可以取出操作系统特定的路径分割符, `linux /`, `windows \\`, `MacOS :`
+- os.linesep字符串给出当前平台使用的行终止符.例如,Windows使用'\r\n', Linux使用'\n'而Mac使用'\r'.
+- os.name字符串指示你正在使用的平台.比如对于Windows,它是'nt',而对于Linux/ Unix用户,它是'posix'.
+- os.getcwd()函数得到当前工作目录,即当前Python脚本工作的目录路径.
+- os.getenv()和os.putenv()函数分别用来读取和设置环境变量.
+- os.listdir()返回指定目录下的所有文件和目录名.
+- os.system()函数用来运行shell命令.
+- os.path.split()函数返回一个路径的目录名和文件名.["/dir","file.ext"]
+- os.path.splitext() 得到文件的其他部分和后缀, 例如"/dir/file.ext", ["/dir/file",".ext"]
+- os.path.getsize(path) Return the size, in bytes, of path. Raise os.error if the file does not exist or is inaccessible.
 
 对文件,文件夹的操作需要涉及到os模块和shutil模块.
-创建文件:
-```
-1. os.mknod("test.txt") 创建空文件
-2. open("test.txt",w)           直接打开一个文件,如果文件不存在则创建文件
-```
-创建目录:
-```
-os.mkdir("file")                   创建目录
-```
-复制文件:
-```
-shutil.copyfile("oldfile","newfile")       oldfile和newfile都只能是文件, 不能同名
-shutil.copy("oldfile","newfile")            oldfile只能是文件夹,newfile可以是文件(可以同名, 会覆盖),也可以是目标目录
-shutil.copy2(src, dst)   Similar to shutil.copy(), but metadata is copied as well – in fact, this is just shutil.copy() followed by copystat(). This is similar to the Unix command cp -p.
-```
-复制文件夹:
-```
-shutil.copytree("olddir","newdir")        olddir和newdir都只能是目录,且newdir必须不存在
-```
-重命名文件(目录)
-```
-os.rename("oldname","newname")       文件或目录都是使用这条命令
-```
-移动文件(目录)
-```
-shutil.move("oldpos","newpos")   
-```
-删除文件
-```
-os.remove("file")
-```
-删除目录
-```
-os.rmdir("dir") 只能删除空目录
-shutil.rmtree("dir")    空目录,有内容的目录都可以删
-```
-转换目录
-```
-os.chdir("path")    换路径
-```
+
+- os.mknod("test.txt"): 创建空文件
+- open("test.txt",w): 直接打开一个文件,如果文件不存在则创建文件
+- os.mkdir("file"): 创建目录
+- shutil.copyfile("oldfile","newfile"): oldfile和newfile都只能是文件, 不能同名
+- shutil.copy("oldfile","newfile"): oldfile只能是文件夹,newfile可以是文件(可以同名, 会覆盖),也可以是目标目录
+- shutil.copy2(src, dst): Similar to shutil.copy(), but metadata is copied as well – in fact, this is just shutil.copy() followed by copystat()
+- shutil.copytree("olddir","newdir"): 复制文件夹, olddir和newdir都只能是目录,且newdir必须不存在
+- os.rename("oldname","newname")       文件或目录都是使用这条命令
+- shutil.move("oldpos","newpos")   移动文件(目录)
+- os.remove("file") 删除文件
+- os.rmdir("dir") 只能删除空目录
+- shutil.rmtree("dir")    空目录,有内容的目录都可以删
+- os.chdir("path")    换路径
+
 判断目标
-```
-os.path.exists("goal")    判断目标是否存在
-os.path.isdir("goal")     判断目标是否目录
-os.path.isfile("goal")    判断目标是否文件   
+
+- os.path.exists("goal")    判断目标是否存在
+- os.path.isdir("goal")     判断目标是否目录
+- os.path.isfile("goal")    判断目标是否文件
+
+## import sys
+- sys.path #系统目录
+- sys.argv  #可执行文件名是第一个参数
 ```
 
-### sys
-```
-import sys
-sys.path #系统目录
-sys.argv  #可执行文件名是第一个参数
-```
-
-### time
-`import time`
-
-`time.time()`用ticks计时单位返回从12:00am, January 1, 1970(epoch) 开始的记录的当前操作系统时间
+## import time
+- `time.time()`用ticks计时单位返回从12:00am, January 1, 1970(epoch) 开始的记录的当前操作系统时间
 
 上述也就是struct_time元组.这种结构具有如下属性:
 ```
@@ -839,13 +750,11 @@ sys.argv  #可执行文件名是第一个参数
 8	tm_isdst	-1, 0, 1, -1是决定是否为夏令时的旗帜
 ```
 
-`time.localtime(time.time())` 将秒数转化为struct_time 形式的时间
+- `time.localtime(time.time())` 将秒数转化为struct_time 形式的时间
+- `time.asctime(time.localtime(time.time()))` 获取格式化的时间
+- `import calendar` 日历处理模块
 
-`time.asctime(time.localtime(time.time()))` 获取格式化的时间
-
-`import calendar` 日历处理模块
-
-### pickle 序列化反序列化
+## pickle 序列化反序列化
 [ref](http://www.cnblogs.com/pzxbc/archive/2012/03/18/2404715.html)
 
 python的pickle模块实现了基本的数据序列和反序列化.
@@ -868,7 +777,7 @@ python的pickle模块实现了基本的数据序列和反序列化.
 可以将多个对象dump 到同一个文件中(追加的形式)
 依次进行load可以得到原来dump的对象
 
-### numpy
+## import numpy as np
 data example
 ```
 [[ 1., 0., 0.],
