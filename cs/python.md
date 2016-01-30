@@ -801,46 +801,35 @@ array 的创建
 array 的操作
 
 - np.reshape(x, shape): Gives a new shape to an array without changing its data, 例如把[3, 4] 的shape变为[2, 6]的
-- np.dot: dot product
-- np.transpose: 矩阵转置
+- np.dot(x, y): dot product
+- np.transpose(x): 矩阵转置
+- np.copy(x): makes a complete copy of the array and its data.
+	```
+	>>> x = np.array([1, 2, 3])
+	>>> y = x
+	>>> z = np.copy(x)
+	```
+	Note that, when we modify x, y changes, but not z:
 
-The copy method makes a complete copy of the array and its data.
-
-使用数组的方法函数`tofile`可以方便地将数组中数据以二进制的格式写进文件.
-tofile输出的数据没有格式,因此用numpy.fromfile读回来的时候需要自己格式化数据, 例如修改shape
-[File IO demo](../demo/python/numpy_file.py)
-
-**loadtxt**
-`numpy.loadtxt(fname, dtype=<type 'float'>, comments='#', delimiter=None, converters=None, skiprows=0,usecols=None, unpack=False, ndmin=0)`
-delimiter : str, optional. By default, this is any whitespace.
-converters : dict, optional
-A dictionary mapping column number to a function that will convert that column to a float. 
-E.g. if column 0 is a date string: converters = {0: datestr2num}.
-Converters can also be used to provide a default value for missing data, converters = {3: lambda s:float(s.strip() or 0)}. Default: None.
-
-example.txt file looks like the following
-```
-# XR21 32.789 1
-# XR22 33.091 2
-import numpy as np
-table = np.loadtxt('example.txt',dtype={'names':('ID', 'Result', 'Type'),'formats': ('S4', 'f4', 'i2')})
-print table
-     # [('XR21', 32.78900146484375, 1) ('XR22', 33.090999603271484, 2)]
-print table["ID"]  # ['XR21' 'XR22']
-print table[0]
-```
-
-- numpy.where
-- numpy.delete: `new_a = np.delete(a, index)` # 删除index 位置的element
+- `np.loadtxt(fname, dtype=<type 'float'>, delimiter=None, converters=None, skiprows=0)`
+	- delimiter : str, optional. By default, this is any whitespace.
+	- converters : optional, A dictionary mapping column number to a function that will convert that column to a float. 
+		E.g. if column 0 is a date string: converters = {0: datestr2num}.
+		Converters can also be used to provide a default value for missing data, converters = {3: lambda s:float(s.strip() or 0)}. Default: None.
+		```
+		XR21 32.789 1
+		XR22 33.091 2
+		table = np.loadtxt('example.txt',dtype={'names':('ID', 'Result', 'Type'),'formats': ('S4', 'f4', 'i2')})
+		# [('XR21', 32.78900146484375, 1) ('XR22', 33.090999603271484, 2)]
+		```
+	- for row in data, data 为 loadtxt 的结果
+	- for column in data.T
 
 boolean
 when using NumPy arrays, you can only use & and | as this allows fast comparisons of boolean values.
 
-### scipy
-The optimization and minimization tools that NumPy and SciPy provide are great, 
-but they do not have Markov Chain Monte Carlo (MCMC) capabilities—in other words, Bayesian analysis. 
-There are several popular MCMC Python packages like PyMC, a rich package with many options, and emcee,[12] an affine invariant MCMC ensemble sampler
-(meaning that large scales are not a problem for it).
+## scipy
+SciPy是一款方便,易于使用,专为科学和工程设计的Python工具包.它包括统计,优化,整合,线性代数模块,傅里叶变换,信号和图像处理,常微分方程求解器等等.
 
 There are several ways to fit data with a linear regression. In this section we will use `curve_fit`, which is a χ2-based method (in other words, a best-fit method)
 
@@ -848,7 +837,12 @@ There are several ways to fit data with a linear regression. In this section we 
 
 [interpolation](../demo/python/scipy_interpolation.py)
 
-### xlutils, xlrd, xlwt
+## import sympy
+SymPy是Python的一个数学符号计算库.
+它目的在于成为一个富有特色的计算机代数系统.
+它保证自身的代码尽可能的简单,且易于理解,容易扩展.SymPy完全由Python写成,不需要额外的库.
+
+## xlutils, xlrd, xlwt
 module for excel
 rd: read, wt: write
 
