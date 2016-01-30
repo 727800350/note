@@ -63,6 +63,34 @@
 - -D mapred.map.max.attempts="10": 单个任务重试次数
 - -D mapred.dynamic.input (false): 是否启用了dynamic input
 
+## partitioner
+默认的 partitioner 为KeyFieldBasedPartitioner(`org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner`),
+即使 reduce 的数目多余 partition, 也有可能不同的 key 会被分到同一个 reduce 上.
+使用百度提供的`com.baidu.sos.mapred.lib.IntHashPartitioner` 则可以避免这种情况
+
+map输出每一行为:`N \space key \t value`,这个输出经过IntHashPartitioner后被传给第N个reducer处理, N是大于等于0的int
+reducer的输入格式为:`N \space key \t value`. 到达reduce 的值是按照key 排好序的.
+
+### 分隔符
+```
+hadoop streaming
+-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner
+-D stream.map.output.field.separator= . ## map输出分隔符为., 而不是默认的\t
+-D stream.num.map.output.key.fields=4 ## map的输出行第4个英文句号"."之前为key,后面为value
+-D map.output.key.field.separator=.  ## 指定key的内部用英文句号"."分隔
+-D num.key.fields.for.partition=2  ## 指定将key分隔出来的前两个部分而不是整个key用于Partitioner做partition
+```
+例如Map的输出如下,第4个句号前的数字部分是key,后面是value:
+```
+raw input ==> <key, value> ==> <partition key, the rest of key, value>
+11.12.1.2.value3 ==> <11.12.1.2, value3> ==> <11.12, 1.2, value3>
+11.14.2.3.value5 ==> <11.14.2.3, value5> ==> <11.14, 2.3, value5>
+11.10.4.1.value1 ==> <11.10.4.1, value1> ==> <11.10, 4.1, value1>
+11.12.1.1.value2 ==> <11.12.1.1, value2> ==> <11.12, 1.1, value2>
+11.14.2.2.value4 ==> <11.14.2.2, value4> ==> <11.14, 2.2, value4>
+```
+partition key有 11.10, 11.12, 11.14三种, 所以会被分到三个reducer上(如果不同的partition key分到不同的reducer上)
+
 ## 分发文件
 ### -file <fileNameURI>
 一般的脚本文件, 可执行文件, 配置文件等
@@ -83,3 +111,12 @@ Streaming程序通过./linkname访问文件.
 本地打包时要进入目录app而不是在app的上层目录打包,否则要通过app/app/mapper.pl才能访问到mapper.pl文件.
 hadoop支持zip, jar, tar.gz格式的压缩包,由于Java解压zip压缩包时会丢失文件权限信息而且遇到中文文件名会出错,所见建议采用tar.gz压缩包.
 
+## streaming and bistreaming
+input 一行一个数字
+```
+1
+2
+3
+```
+- 如果是 streaming, 那么 mapper 获取到的是 key value, 其中key 是偏移量, value 是输入文件中的数字
+- 如果是 bistreamling, 那么mapper 获取到的是其他编码的数据
