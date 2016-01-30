@@ -29,7 +29,7 @@
 
 	-overwrite 将强行覆盖dst目录中和src重名的文件
 	-update 将比较同名文件大小,若不一致则覆盖
-	-f 可以将待传输的文件或目录写到平台上存放的一个文件中, 作为输入，多目录可以采用这种方式
+	-f 可以将待传输的文件或目录写到平台上存放的一个文件中, 作为输入,多目录可以采用这种方式
 	-p参数是保留dst文件的权限位是否与src集群的文件权限位一致,若不加此选项则在dst集群上生成的文件的权限信息将于distcp的ugi信息一致.
 	-i 若在拷贝的过程中出现错误,则忽略此错误,否则就会进行4次重试直到整个任务失败.
 
@@ -166,4 +166,38 @@ mapred.line.input.format.line.is.file=true 告诉框架你的输入每一行都�
 
 **多路数据输出**:
 先将文件上传到临时目录`$mapred_work_output_dir`中, 任务结束后hadoop自动将其移动到最终输出目录, 这样能保证不同的mapper或 reducer上传数据不会冲突
+
+# 任务优化
+优化场景1:任务长尾问题严重,最后几个task上耗时比较严重
+分析:
+(1)对于存在Reduce过程的任务,查看Partition是否均匀
+(2)配置慢节点I/O检测参数,在启动任务的命令中添加,不支持任务运行后动态调整
+```
+-jobconf dfs.client.slow.write.limit=5242880
+-jobconf dfs.client.slow.read.limit=5242880
+```
+意义:由于集群机器性能配置不一,不同计算结点的处理能力不一样,设置该参数是为了跳过慢节点,选择更好节点处理task.
+这里对map和reduce设置了至少5M的读写速度限制, 小于该值就会切换节点. 可根据自己业务的具体情况设置,切忌设置过大值,可能会引起节点频繁切换导致任务失败.
+
+如果程序没问题,怎么处理hadoop的长尾?
+个人经验:
+1. 打开预测执行,会有2-3台机器执行同样的任务,输入,执行过程,输出路径完全一样,哪个先执行完毕就用哪个
+```
+mapred.map.tasks.speculative.execution=true
+mapred.reduce.tasks.speculative.execution=true
+```
+如果有put文件到hdfs上的操作,且存在预执行,则会有两个任务同时写一个文件, 可能会出现问题，
+这时可以将文件put到${mapred_work_output_dir}目录下, 每个预执行的attempts,其$mapred_work_output_dir是不一样的,
+但是其mapred_output_dir是相同的,在该任务结束后,仍然取最先完成的attempts, 同时,mapred_work_output_dir下的数据,会移动到mapred_output_dir中
+1. 加入超时参数以及允许失败比例的参数,丢弃这些长尾数据
+1. 利用之前提到的, 设置节点的最慢数据拷贝速度,使得任务调度到执行速度快的机器上
+
+场景2:任务数据量很小,但文件很多,导致启动了很多task-map
+有时会对一些中间产出数据进行处理,这些数据的数据量不大,但是文件却超过几千个,如果不经过任何设置,有多少个文件就会启动多少个mapper,这样非常浪费计算资源,可设置参数:
+```
+-inputformat org.apache.hadoop.mapred.CombineTextInputFormat \
+-jobconf mapred.max.split.size=5368709120
+```
+第一个参数告诉调度器我需要合并输入文件
+第二个参数设置了每个mapper或者reducer最大处理的数据量, 单位为byte
 
