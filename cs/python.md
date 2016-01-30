@@ -772,35 +772,42 @@ python的pickle模块实现了基本的数据序列和反序列化.
 
 `pickle.load(file)`: 从file中读取一个字符串,并将它重构为原来的python对象.
 
-	- file:类文件对象,有read()和readline()接口.
+- file:类文件对象,有read()和readline()接口.
 
 可以将多个对象dump 到同一个文件中(追加的形式)
 依次进行load可以得到原来dump的对象
 
 ## import numpy as np
-data example
-```
-[[ 1., 0., 0.],
- [ 0., 1., 2.]]
-```
+numpy can perform operations on whole arrays at once. 就像Matlab一样,因此可以避免显式的循环.
+
+array 的属性
 
 - ndarray.ndim: number of dimensions
-- ndarray.shape： the dimensions of the array, a tuple of integers 
+- ndarray.shape: the dimensions of the array, a tuple of integers 
 - ndarray.size: the total number of elements of the array. This is equal to the product of the elements of shape.
 - ndarray.dtype: an object describing the type of the elements in the array. numpy.int32, numpy.int16 and numpy.float64 are some examples.
 - ndarray.itemsize: the size in bytes of each element of the array, equivalent to ndarray.dtype.itemsize.
 - ndarray.data: the buffer containing the actual elements of the array.
 
-[Array Creation demo](../demo/python/numpy_array_create.py)
+array 的创建
 
-```
-array, zeros, zeros_like, ones, ones_like, empty, empty_like, arange, linspace, rand, randn, fromfunction, fromfile
-numpy.dot and numpy.transpose
-```
+- np.array([1, 2, 3])
+- np.zeros(3), np.ones([3,2]), np.empty([2,2]), empty 的元素值是随机的
+- np.zeros_like([1,2,3]), np.ones_like([[1,2,3], [2,3,4]]), empty_like()
+- np.arange(x) 相当于 np.array(range(x))
+- mp.linspace(start, stop, num=50, endpoint=True): endpoint(true) 表示最后一个点为stop
+- np.fromfunction(): Construct an array by executing a function over each coordinate, therefore has a value `fn(x, y, z)` at coordinate `(x, y, z)`
+
+array 的操作
+
+- np.reshape(x, shape): Gives a new shape to an array without changing its data, 例如把[3, 4] 的shape变为[2, 6]的
+- np.dot: dot product
+- np.transpose: 矩阵转置
 
 The copy method makes a complete copy of the array and its data.
 
-使用数组的方法函数`tofile`可以方便地将数组中数据以二进制的格式写进文件.tofile输出的数据没有格式,因此用numpy.fromfile读回来的时候需要自己格式化数据, 例如修改shape
+使用数组的方法函数`tofile`可以方便地将数组中数据以二进制的格式写进文件.
+tofile输出的数据没有格式,因此用numpy.fromfile读回来的时候需要自己格式化数据, 例如修改shape
 [File IO demo](../demo/python/numpy_file.py)
 
 **loadtxt**
@@ -823,28 +830,8 @@ print table["ID"]  # ['XR21' 'XR22']
 print table[0]
 ```
 
-In NumPy, files can be accessed in binary format using `numpy.save` and `numpy.load`.
-The primary limitation is that the binary format is only readable to other systems that are using NumPy. 
-If you want to read and write files in a more portable format, then `scipy.io` will do the job.
-
-NumPy to read and write Matlab-supported files (using scipy.io.loadmat and scipy.savemat)
-Last but not least, you can query, read, and write Matrix files. These are very commonly used to share matrix data structures that are written in ASCII format. 
-This format is well supported in other languages like C, Fortran, and Matlab, so it is a good format to use due to its universality and user readability.
-
-numpy.matrix object Matrix library (numpy.matlib)
-Unlike the ndarray objects, matrix objects can and only will be two dimensional.
-```
->>> x = np.array([[1, 2], [3, 4]])
->>> m = np.asmatrix(x)
-```
-
-Index
-```
-numpy.where
-
-numpy.delete
-new_a = np.delete(a, index)  #删除index 位置的element
-```
+- numpy.where
+- numpy.delete: `new_a = np.delete(a, index)` # 删除index 位置的element
 
 boolean
 when using NumPy arrays, you can only use & and | as this allows fast comparisons of boolean values.
