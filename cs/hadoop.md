@@ -72,6 +72,13 @@ map输出每一行为:`N \space key \t value`,这个输出经过IntHashPartition
 reducer的输入格式为:`N \space key \t value`. 到达reduce 的值是按照key 排好序的.
 
 ### 分隔符
+默认情况下Streaming框架将map输出的每一行第一个"\t"之前的部分作为key,之后的部分作为value,key\tvalue又作为 reduce的输入.
+
+- -D stream.map.output.field.separator=":": 指定使用冒号":"将map输出的一行分隔为key/value
+- -D stream.num.map.output.key.fields=2: 指定在第二个冒号处进行分隔,也就是第二个冒号之前的作为key,之后的作为value.如果没有冒号或冒号少于两个,则key为整行,value为空
+- -D stream.reduce.output.field.separator
+- -D stream.num.reduce.output.key.fields定制key/value分隔方式
+
 ```
 hadoop streaming
 -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner
@@ -120,3 +127,8 @@ input 一行一个数字
 ```
 - 如果是 streaming, 那么 mapper 获取到的是 key value, 其中key 是偏移量, value 是输入文件中的数字
 - 如果是 bistreamling, 那么mapper 获取到的是其他编码的数据
+
+# IO
+**多路数据输出**:
+先将文件上传到临时目录`$mapred_work_output_dir`中, 任务结束后hadoop自动将其移动到最终输出目录, 这样能保证不同的mapper或 reducer上传数据不会冲突
+
