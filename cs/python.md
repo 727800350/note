@@ -836,6 +836,29 @@ sys.argv  #可执行文件名是第一个参数
 
 `import calendar` 日历处理模块
 
+### pickle 序列化反序列化
+[ref](http://www.cnblogs.com/pzxbc/archive/2012/03/18/2404715.html)
+
+python的pickle模块实现了基本的数据序列和反序列化.
+通过pickle模块的序列化操作我们能够将程序中运行的对象信息保存到文件中去,永久存储,
+通过pickle模块的反序列化操作,我们能够从文件中创建上一次程序保存的对象.
+
+`pickle.dump(obj, file, [,protocol])` :将对象obj保存到文件file中去.
+
+- protocol为序列化使用的协议版本
+	- 0: ASCII协议,所序列化的对象使用可打印的ASCII码表示,
+	- 1: 老式的二进制协议,
+	- 2: 2.3版本引入的新二进制协议,较以前的更高效.其中协议0和1兼容老版本的python.protocol默认值为0.
+- file:对象保存到的类文件对象. file必须有write()接口, file可以是一个以'w'方式打开的文件或者一个StringIO对象或者其他任何实现write()接口的对象.
+如果protocol>=1,文件对象需要是二进制模式打开的.
+
+`pickle.load(file)`: 从file中读取一个字符串,并将它重构为原来的python对象.
+
+	- file:类文件对象,有read()和readline()接口.
+
+可以将多个对象dump 到同一个文件中(追加的形式)
+依次进行load可以得到原来dump的对象
+
 ### numpy
 data example
 ```
