@@ -1,3 +1,8 @@
+因为实际计算是分布在系统中执行的,通常是在好几千台计算机上进行,并且是由master机器进行动态调度的任务,
+所以在把用户程序提交给MapReduce平台之前,在上述分模块(Mapper,Reducer)调试通过后,可以先在本地机器上按MapReduce操作顺序将程序执行一遍.
+
+`cat input | ./mapper.sh | sort | reducer.sh > output`
+
 # hadoop cmd
 ## 文件命令
 - hadoop dfs -mkdir path: 相当于linux shell 中的 mkdir -p
@@ -8,6 +13,25 @@
 - 统计出目录数,文件数及指定路径下文件的大小, `hadoop fs -count [-q] <paths>` 输出列为: `DIR_COUNT, FILE_COUNT, CONTENT_SIZE FILE_NAME`.
 	带上-q选项后的输出列为: QUOTA, REMAINING_QUOTA, SPACE_QUOTA, REMAINING_SPACE_QUOTA, DIR_COUNT, FILE_COUNT, CONTENT_SIZE, FILE_NAME.
 	但是这个命令的效率很低
+
+- DistCp(分布式拷贝)是用于大规模集群内部和集群之间拷贝的工具.
+	它使用方便,传输高效,并且能错误处理和断点续传.
+	它使用Map/Reduce实现文件分发,错误处理和恢复,以及报告生成.
+	它把文件和目录的列表作为map任务的输入,每个任务会完成源列表中部分文件的拷贝.
+
+		hadoop distcp \
+			-D mapred.max.map.failures.percent=5 \
+			-D mapred.job.map.capacity=20 \
+			-su user,passwd \
+			-du user,passwd \
+			hdfs://host:port/path \
+			hdfs://host:port/path
+
+	-overwrite 将强行覆盖dst目录中和src重名的文件
+	-update 将比较同名文件大小,若不一致则覆盖
+	-f 可以将待传输的文件或目录写到平台上存放的一个文件中, 作为输入，多目录可以采用这种方式
+	-p参数是保留dst文件的权限位是否与src集群的文件权限位一致,若不加此选项则在dst集群上生成的文件的权限信息将于distcp的ugi信息一致.
+	-i 若在拷贝的过程中出现错误,则忽略此错误,否则就会进行4次重试直到整个任务失败.
 
 ## 任务管理
 - 调整map并发:hadoop job -set-map-capacity JOB_ID number(Reduce同样)
@@ -129,6 +153,17 @@ input 一行一个数字
 - 如果是 bistreamling, 那么mapper 获取到的是其他编码的数据
 
 # IO
+**NLineInputFormat**:
+重写了FileInputFormat的getSplits方法,不依赖分片大小和行的长度根据文件进行切分,而是根据行数来划分分片,
+可以通过`mapred.line.input.format.linespermap`来设置每个mapper处理的行数.
+适用于每次要处理多行数据的场景,如将几行的内容合并处理.需要注意,当输入文件行数特别大,可能要考虑统计行数,计算启动map的时间的开销.
+```
+-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat \
+-jobconf mapred.line.input.format.line.is.file=true \
+```
+mapred.line.input.format.line.is.file=true 告诉框架你的输入每一行都是文件,方便它做本地化调度
+当不是普通文件, 而是目录时, 指定mapred.line.input.format.line.is.file=true 时, 出错, 不知道为什么
+
 **多路数据输出**:
 先将文件上传到临时目录`$mapred_work_output_dir`中, 任务结束后hadoop自动将其移动到最终输出目录, 这样能保证不同的mapper或 reducer上传数据不会冲突
 
