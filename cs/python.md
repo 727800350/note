@@ -818,7 +818,7 @@ array 的操作
 		table = np.loadtxt('example.txt',dtype={'names':('ID', 'Result', 'Type'),'formats': ('S4', 'f4', 'i2')})
 		# [('XR21', 32.78900146484375, 1) ('XR22', 33.090999603271484, 2)]
 		```
-	- for row in data, data 为 loadtxt 的结果
+	- for row in data, data 为 numpy array
 	- for column in data.T
 
 boolean
