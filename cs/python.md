@@ -820,6 +820,7 @@ array 的操作
 		```
 	- for row in data, data 为 numpy array
 	- for column in data.T
+- np.vstack(tup): Stack arrays in sequence vertically (row wise), 也就是上下放置
 
 boolean
 when using NumPy arrays, you can only use & and | as this allows fast comparisons of boolean values.
