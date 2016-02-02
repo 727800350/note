@@ -70,7 +70,7 @@ Triangulations arise when dealing with spatial locations.
 Apart from showing distances between points and neighborhood relationships, triangulation plots can be a convenient way to represent maps.
 
 # Customizing the Color and Styles
-## color
+## color, c
 - Triplets: RGB
 - Quadruplets: These work as triplets, and the fourth component defines a transparency value(also be in the [0, 1] interval).
 - Predefined names: "red" will be interpreted as a bright red. A few colors have a one-letter alias
@@ -84,7 +84,7 @@ Apart from showing distances between points and neighborhood relationships, tria
 	- w White
 - Gray-level strings: matplotlib will interpret a string representation of a floating point value as a shade of gray, such as 0.75 for a medium light gray.
 
-## line styles
+## line styles, ls
 The linestyle parameter is available for all the commands that involve line rendering.
 
 - Solid
@@ -92,7 +92,7 @@ The linestyle parameter is available for all the commands that involve line rend
 - Dotted
 - Dashdot
 
-## line width
+## line width, lw
 Likewise, the linewidth parameter will change the thickness of lines.
 By default, the thickness is set to 1 unit.
 
@@ -120,4 +120,70 @@ Markers can be specified in various ways as follows:
 - Start polygon: It represents a triplet (N, 1, angle) for an N sided regular star, with a rotation of angle degrees
 
 通过变量s可以控制marker的大小
+
+# Annotations
+LaTeX-notation feature can be used for any annotation.
+
+The LaTeX language relies heavily on the escape character, \ , which also happens to be the string escape character for Python.
+Thus, where you would use one \ character in a LaTeX text, put two in your Python string.
+To avoid fumbling with escape characters, you can prefix your string with r and you will not need any escape characters.
+Thus, '$f(x)=\\frac{1}{4} (x+4)(x+1)(x-2)$' and r'$f(x)=\frac{1}{4}(x+4)(x+1)(x-2)$' are equivalent.
+
+- plt.title()
+- plt.xlabel()
+- plt.ylabel()
+- plt.legend(): 需要在plt.plot(lable = 'str'), 其他的plot也一样
+	- 'loc': location 'best'(default), 'upper left', 'lower left', 'lower right', 'right', 'center left', 'center right', 'lower center', 'upper center', 'center'
+	- 'shadow': either True or False, and it renders the legend with a shadow effect.
+	- 'fancybox': either True or False and renders the legend with a rounded box.
+	- 'title': This renders the legend with the title passed as a parameter.
+	- 'ncol': This forces the passed value to be the number of columns for the legend.
+- plt.grid(True, lw = 2, ls = '--', c = '.75')
+- plt.text(x, y, str)
+	- The position is given in the graphic coordinates, specifying the position of the left border and the vertical baseline of the text.
+
+## add line
+```
+N = 16
+for i in range(N):
+	plt.gca().add_line(plt.Line2D((0, i), (N - i, 0), color = '.75'))
+plt.grid(True)
+plt.axis('scaled')
+plt.show()
+```
+- pyplot.Line2D(): function creates a new Line2D object.
+- pyplot.gca().add_line(): render the line object
+- The pyplot.axis('scaled') function is required to ensure that the figure uses a uniform scale: the same scale as the one used on the x and y axes.
+
+## add shapes
+```
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+
+# Circle
+shape = patches.Circle((0, 0), radius = 1., color = '.75')
+plt.gca().add_patch(shape)
+
+# Rectangle
+shape = patches.Rectangle((2.5, -.5), 2., 1., color = '.75')
+plt.gca().add_patch(shape)
+
+# Ellipse
+shape = patches.Ellipse((0, -2.), 2., 1., angle = 45., color = '.75')
+plt.gca().add_patch(shape)
+
+# Fancy box
+shape = patches.FancyBboxPatch((2.5, -2.5), 2., 1., boxstyle = 'sawtooth', color = '.75')
+plt.gca().add_patch(shape)
+
+# Display all
+plt.grid(True)
+plt.axis('scaled')
+plt.show()
+```
+
+- Circle: This takes the coordinates of its center and the radius as the parameters
+- Rectangle: This takes the coordinates of its lower-left corner and its size as the parameters
+- Ellipse: This takes the coordinates of its center and the half-length of its two axes as the parameters
+- FancyBox: like a rectangle but takes an additional boxstyle parameter (either 'larrow' , 'rarrow' , 'round' , 'round4' , 'roundtooth' , 'sawtooth' , or 'square' )
 
