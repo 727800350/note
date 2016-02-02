@@ -36,3 +36,8 @@ Boxplot allows you to compare distributions of values by conveniently showing th
 - The upper whisker extends to the highest value within 1.5 IQR from the upper quartile.
 - Values further from the whiskers are shown with a cross marker.
 
+triangulation
+[example](./triplot.py)
+Triangulations arise when dealing with spatial locations.
+Apart from showing distances between points and neighborhood relationships, triangulation plots can be a convenient way to represent maps.
+
