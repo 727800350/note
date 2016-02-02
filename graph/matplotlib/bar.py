@@ -7,6 +7,7 @@ data = [[5., 25., 50., 20.],
 	[4., 23., 51., 17.],
 	[6., 22., 52., 19.]]
 
+# Plotting multiple bar charts
 ## hard code of position
 def plot_static():
 	X = np.arange(4)
@@ -27,6 +28,7 @@ def plot_dynamic():
 		plt.bar(X + i * gap, row, width = gap, color = color)
 	plt.show()
 
+# Plotting stacked bar charts
 ## plot B upon A
 def plot_upside():
 	A = [5., 30., 45., 22.]
@@ -46,9 +48,20 @@ def plot_upside_dynamic():
 		plt.bar(X, data[i], bottom = np.sum(data[:i], axis = 0), color = color_list[i % len(color_list)])
 	plt.show()
 
+# Plotting back-to-back bar charts
+def plot_back2back():
+	women_pop = np.array([5., 30., 45., 22.])
+	men_pop = np.array( [5., 25., 50., 20.])
+	X = np.arange(4)
+	plt.barh(X, women_pop, color = 'r')
+	plt.barh(X, -men_pop, color = 'b')
+	plt.show()
+
 ## plot_static()
 ## plot_dynamic()
 
 ## plot_upside()
-plot_upside_dynamic()
+## plot_upside_dynamic()
+
+plot_back2back()
 
