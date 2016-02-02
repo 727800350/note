@@ -4,9 +4,24 @@
 
 plt.plot(x, y)
 
+The marker style is also accessible for pyplot.plot() using the same marker parameter.
+Using one marker for each data point can be a problem as it will display more points than we want to.
+The markevery parameter allows you to display only one marker for every N points.
+
 ## scatter point
 [example](./scatter.py)
 plt.scatter(x, y)
+
+### color in scatter
+pyplot.scatter() offers two options to control the colors of dots
+
+- Common color for all the dots: all the dots will appear in that color.
+- Individual color for each dot: If the color parameter is a sequence of colors, the ith dot will appear in the ith color.
+
+具体是通过下面的两个变量
+
+- color parameter controls the color of the dots
+- edgecolor parameter controls the color of the edge of the dots.
 
 ## bar chart
 [example](./bar.py)
@@ -68,4 +83,41 @@ Apart from showing distances between points and neighborhood relationships, tria
 	- k Black
 	- w White
 - Gray-level strings: matplotlib will interpret a string representation of a floating point value as a shade of gray, such as 0.75 for a medium light gray.
+
+## line styles
+The linestyle parameter is available for all the commands that involve line rendering.
+
+- Solid
+- Dashed
+- Dotted
+- Dashdot
+
+## line width
+Likewise, the linewidth parameter will change the thickness of lines.
+By default, the thickness is set to 1 unit.
+
+## fill pattern
+Rendering function filling volumes, such as pyplot.bar(), accept an optional parameter, hatch. 
+This parameter can take the following values:
+
+- /
+- \
+- |
+- -
+- +
+- x
+- o
+- O
+- .
+- *
+
+## marker style
+Markers can be specified in various ways as follows:
+
+- Predefined markers: They can be predefined shapes, represented as a number in the [0, 8] range, or some strings
+- Vertices list: This is a list of value pairs, used as coordinates for the path of a shape
+- Regular polygon: It represents a triplet (N, 0, angle) for an N sided regular polygon, with a rotation of angle degrees
+- Start polygon: It represents a triplet (N, 1, angle) for an N sided regular star, with a rotation of angle degrees
+
+通过变量s可以控制marker的大小
 

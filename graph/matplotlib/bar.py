@@ -57,11 +57,22 @@ def plot_back2back():
 	plt.barh(X, -men_pop, color = 'b')
 	plt.show()
 
-## plot_static()
-## plot_dynamic()
+def plot_fillPattern():
+	N = 8
+	A = np.random.random(N)
+	B = np.random.random(N)
+	X = np.arange(N)
+	plt.bar(X, A, color = 'w', hatch = 'x')
+	plt.bar(X, A + B, bottom = A, color = 'w', hatch = '/')
+	plt.show()
 
-## plot_upside()
-## plot_upside_dynamic()
+plot_static()
+plot_dynamic()
+
+plot_upside()
+plot_upside_dynamic()
 
 plot_back2back()
+
+plot_fillPattern()
 

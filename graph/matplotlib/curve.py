@@ -25,7 +25,16 @@ def plot_plynomial():
 	plt.plot(X, Y)
 	plt.show()
 
+def marker():
+	X = np.linspace(-6, 6, 1024)
+	Y1 = np.sinc(X)
+	Y2 = np.sinc(X) + 1
+	plt.plot(X, Y1, marker = 'o', color = '.75')
+	plt.plot(X, Y2, marker = 'o', color = 'k', markevery = 32)
+	plt.show()
+
 plot_sin()
 plot_cos()
 plot_plynomial()
+marker()
 
