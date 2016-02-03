@@ -216,6 +216,21 @@ Once the subregion is defined, we have an Axes instance in which we create a fig
 Then, we need to call pyplot.setp() on our Axes instance as follows: `plt.setp(sub_axes)`
 在这样的小图上插入title 不会
 
+plt.xscale('log')
 plt.yscale('log')
 [example](./log_scale.py)
+
+突出细节, 又能观察全局
+Using a logarithmic scale can also be useful to zoom in on one small range over data with a very large range.
+```
+X = np.linspace(-100, 100, 4096)
+plt.xscale('symlog', linthreshx=6.)
+plt.plot(X, np.sinc(X), c = 'k')
+plt.show()
+```
+The central part of the curve (the [-6, 6] range) is shown with a linear scale, while the other parts are shown with a logarithmic scale.
+
+polaire
+`plt.axes(polar = True)`
+[example](./polaire.py)
 
