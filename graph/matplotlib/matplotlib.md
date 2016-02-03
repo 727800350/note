@@ -141,6 +141,7 @@ Thus, '$f(x)=\\frac{1}{4} (x+4)(x+1)(x-2)$' and r'$f(x)=\frac{1}{4}(x+4)(x+1)(x-
 - plt.grid(True, lw = 2, ls = '--', c = '.75')
 - plt.text(x, y, str)
 	- The position is given in the graphic coordinates, specifying the position of the left border and the vertical baseline of the text.
+- plt.ylim(-.5, 1.5)
 
 ## add line
 ```
@@ -187,3 +188,18 @@ plt.show()
 - Ellipse: This takes the coordinates of its center and the half-length of its two axes as the parameters
 - FancyBox: like a rectangle but takes an additional boxstyle parameter (either 'larrow' , 'rarrow' , 'round' , 'round4' , 'roundtooth' , 'sawtooth' , or 'square' )
 
+# Working with Figures
+Compositing multiple figures
+[example](./subplot2grid.py)
+
+pyplot.subplot2grid(grid, coordinate, [rowspan], [colspan])
+
+- grid: the number of rows and columns of the grid, passed as a tuple. If we want a grid of R rows and C columns, we would pass (R, C).
+- coordinate: coordinate in the grid, in rows and columns, also passed as a tuple.
+- rowspan: defines how many rows the figure will span.
+- colspan: defines how many columns the figure will span.
+
+By default, matplotlib 对于x, y轴会使用不一样的标度.
+通过`plt.axes().set_aspect('equal')` 可以强制设置一样的标度.
+The pyplot.axes() function returns an instance of the Axes object, the object in charge of the axes.
+[example](./axe_scale.py)
