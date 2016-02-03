@@ -205,8 +205,9 @@ The pyplot.axes() function returns an instance of the Axes object, the object in
 [example](./axe_scale.py)
 
 Setting the aspect ratio
-应该是调整图片的大小
+应该是调整图片的大小 figure size
 plt.figure(figsize=(10.24, 2.56))
+默认为figsize=(8, 6)
 
 Inserting subfigures
 create a subregion on the figure as follows: `sub_axes = plt.axes([.6, .6, .25, .25])`
@@ -214,7 +215,10 @@ The region is in figure-wise coordinates; that is, (0, 0) is the bottom-left cor
 The subregion is defined by four values: the coordinates of the bottom-left corner of the region and its dimensions.
 Once the subregion is defined, we have an Axes instance in which we create a figure.
 Then, we need to call pyplot.setp() on our Axes instance as follows: `plt.setp(sub_axes)`
-在这样的小图上插入title 不会
+
+- axe.set_xlabel()
+- axe.set_ylabel()
+- axe.set_title()
 
 plt.xscale('log')
 plt.yscale('log')
@@ -233,4 +237,15 @@ The central part of the curve (the [-6, 6] range) is shown with a linear scale, 
 polaire
 `plt.axes(polar = True)`
 [example](./polaire.py)
+
+## 保存图片
+plt.savefig('sinc.png')
+支持PNG, EPS, SVG, and PDF, 可以根据后缀自己选择相应的引擎.
+transparent = True: 背景透明
+dpi = 300: (figsize 为默认的8,6时)2400 x 1800 pixels, 默认情况下为100dpi,  800 x 600 pixels
+
+By default, matplotlib will output a figure of 8 x 6 spatial units—a 4/3 aspect ratio.
+In matplotlib, 1 spatial unit equals to 100 pixels.
+Thus, by default, matplotlib will give a picture file of 800 x 600 pixels.
+If we use dpi = 300, the picture size will be 8 * 300 x 6 * 300, that is, 2400 x 1800 pixels.
 
