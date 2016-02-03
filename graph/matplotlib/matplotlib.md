@@ -203,3 +203,19 @@ By default, matplotlib 对于x, y轴会使用不一样的标度.
 通过`plt.axes().set_aspect('equal')` 可以强制设置一样的标度.
 The pyplot.axes() function returns an instance of the Axes object, the object in charge of the axes.
 [example](./axe_scale.py)
+
+Setting the aspect ratio
+应该是调整图片的大小
+plt.figure(figsize=(10.24, 2.56))
+
+Inserting subfigures
+create a subregion on the figure as follows: `sub_axes = plt.axes([.6, .6, .25, .25])`
+The region is in figure-wise coordinates; that is, (0, 0) is the bottom-left corner and (1, 1) is the top-right corner of the overall figure.
+The subregion is defined by four values: the coordinates of the bottom-left corner of the region and its dimensions.
+Once the subregion is defined, we have an Axes instance in which we create a figure.
+Then, we need to call pyplot.setp() on our Axes instance as follows: `plt.setp(sub_axes)`
+在这样的小图上插入title 不会
+
+plt.yscale('log')
+[example](./log_scale.py)
+
