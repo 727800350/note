@@ -14,7 +14,7 @@ plt.title('sin')
 
 sub_axes = plt.axes([.6, .6, .25, .25])
 sub_axes.plot(X_detail, Y_detail, c = 'k')
-## sub_axes.title('sin detail') ## this will cause error
+sub_axes.set_title('sin detail') ## this will cause error
 plt.setp(sub_axes)
 
 plt.show()
