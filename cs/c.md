@@ -142,6 +142,20 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 - `int fclose(FILE *stream);`
 
 - `int fgetc(FILE *stream);`: 
+- `ssize_t getline(char **lineptr, size_t *n, FILE *stream);`, *lineptr 的内容包含回车符`\n`
+```c
+#define _GNU_SOURCE
+char *line = NULL;
+size_t len = 0;
+ssize_t read;
+
+while ((read = getline(&line, &len, stdin)) != -1) {
+	printf("Retrieved line of length %zu :\n", read);
+	printf("%s", line);
+}
+```
+
+- `ssize_t getdelim(char **lineptr, size_t *n, int delim, FILE *stream);`
 - `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储`\0`作为字符串的结尾.
 ```c
 while(!feof(stdin)){
@@ -167,7 +181,8 @@ while(true){
 }
 ```
 - `size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);`
-
+- `void setbuf(FILE *steam, char *buf);` 将buf设置为stream 的缓冲区. 为了关闭缓冲,可以将buf参数设置为NULL.
+- `void setlinebuf(FILE *stream);`
 - `int snprintf(char *str, size_t size, const char *format, ...);`: write at most size bytes(including the trailing '\0').
 
 printf使用的格式字符如下
