@@ -126,6 +126,9 @@ If ECHO is ON, the comment is displayed. Otherwise, it is ignored
 - `=MATCH(MAX(range), range, 0)`: 最大值所在的位置, 最后一个参数 0 表示range 里面的数据时无序的, 有序时使用1(asc, 默认) 或者 -1(desc)
 - `concatenate(x, y)` 或者 `x&y`: 字符串拼接
 - 行列转换, excel中在选择"编辑"菜单,点击"选择性粘贴", 选中"装置", 在google sheets 中为 "edit" --> "paste special" --> "paste transpose"
+- transpose(目标区域),神奇的转置,把行变成列,把列变成行
+- F4,对,你没看错,就是F4!重复上一步操作,比如,插入行,设置格式等等频繁的操作,F4简直逆天!
+- ~ 比如输入网址的时候,一般输入完会自动变为超链接,在网址前输入"~"就解决咯
 
 ### Count
 COUNTIF in Excel - count if not blank, greater than, duplicate or unique
