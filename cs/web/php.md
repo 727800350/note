@@ -106,6 +106,7 @@ PHP FIG中提及: All PHP files MUST end with a single blank line. -- 来源
 ```
 echo getcwd()."<br/>";
 echo dirname(__FILE__);
+echo basename(__FILE__);
 ```
 
 ## 输出
@@ -117,6 +118,16 @@ echo dirname(__FILE__);
 - `print_r()`, `var_dump()`可以输出数组,对调试很有好处
 
 # data type
+- `global $var;`: 申明变量$var为global全局变量
+- Constants are referred to by their identifiers and are set using the define() function
+```PHP
+define('PUBLISHER', "O'Reilly & Associates");
+echo PUBLISHER;
+```
+
+- `bool empty(mixed var)`: 如果 var 是非空或非零的值,则 empty() 返回 FALSE. 换句话说,"",0,"0",NULL,FALSE, array(),以及没有任何属性的对象都将被认为是空的
+- `bool isset (mixed var [, mixed var [, ...]] )`: 如果 var 存在则返回 TRUE,否则返回 FALSE, 如果已经使用 unset() 释放了一个变量之后,它将不再是 isset()
+
 ## map
 A map is a type that associates values to keys. 
 This type is optimized for several different uses; 
@@ -161,6 +172,23 @@ foreach (array_expression as $key => $value)
 - `strip_tags()`: HTML,XML 以及 PHP 的标签.
 - `stripos()`: 返回字符串在另一字符串中第一次出现的位置(大小写不敏感)
 - `strlen()`: 返回字符串的长度.
+
+# 内置变量
+__FILE__ 当前文件
+__LINE__
+__FUNCTION__
+
+$_SERVER 是一个包含诸如头信息(header),路径(path)和脚本位置(script locations)的数组.它是 PHP 中一个超级全局变量,我们可以在 PHP 程序的任何地方直接访问它.
+
+- $_SERVER['PATH']:环境变量 PATH 路径.
+- $_SERVER['CLASSPATH']:系统 CLASSPATH 路径.
+- $_SERVER['LIB']:系统 LIB 库路径.
+- $_SERVER['INCLUDE']:系统 Include 路径,注意与 PHP 的包含路径是不一样的.
+- $_SERVER['OS']:操作系统类型.
+- $_SERVER['LANG']:系统语言,如 en_US 或 zh_CN.
+- $_SERVER['PWD']:当前工作目录.
+
+$_ENV 是一个包含服务器端环境变量的数组.它是 PHP 中一个超级全局变量,我们可以在 PHP 程序的任何地方直接访问它.
 
 # Form 
 ```
