@@ -19,6 +19,20 @@ columns 分栏
 \end{columns}
 ```
 
+frame的布局
+```Latex
+\begin{frame}[<alignment>]
+\end{frame}
+```
+The alignment options
+
+- [c]: default
+- [t]: top align
+- [b]: bottom align
+- [plain]: headlines, footlines, and sidebars to be suppressed, useful for showing large pictures.
+- [fragile]: 可以对代码, list 自动分页
+
+
 摘录
 
 - `\begin{quote} \end{quote}`: 引文两端都缩进
