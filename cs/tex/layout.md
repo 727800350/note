@@ -8,7 +8,25 @@ block
 \begin{block}{text}
 \end{block}
 ```
-text可以为空, 也可以使用\small{text} 等
+text可以为空, 也可以使用`\small{text}` 等
+定制区块环境例如,下面的代码修改了区块环境的样式: `\setbeamertemplate{blocks}[rounded]`
+
+区块环境用圆角带阴影的矩形来表示`[shadow=true]`
+```Latex
+\setbeamercolor{blocktitle}{fg=yellow,bg=gray!50!black}
+\setbeamercolor{blockbody}{bg=gray}
+```
+
+与区块环境类似地还有一个提醒环境(红色)和例子环境
+```Latex
+\begin{alertblock}{重要提醒}
+2012年12月21日是世界末日.
+\end{alertblock}
+
+\begin{exampleblock}{重要例子}
+2012年12月21日是世界末日.
+\end{exampleblock}
+```
 
 columns 分栏
 ```Latex
