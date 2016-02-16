@@ -183,3 +183,28 @@ SF: start finish
 FF: finish finish
 
 一般不超过七层
+
+# VS(Visual Studio)
+- ctrl+space  code hinting完成单词
+- 在用到if while for,函数等需要大括号的时候,连续按下两次tab键可以快速输入
+
+- ctrl+k,ctrl+c注释选中内容
+- ctrl+k,ctrl+u取消注释选中内容
+
+- ctrl+u 转换为小写
+- ctrl+shift+u 转换为大写
+
+- ctrl+] 在匹配的括号之间切换
+- F12切换到定义处, 再按下Ctrl+- 回到按F12的地方
+
+
+- ctrl+k,ctrl+d 设置文档的格式
+
+- ctrl+k,ctrl+k 添加书签,删除书签
+- F2下一个书签
+
+- ctrl+j 查看成员
+- F3 查找下一个
+
+- 重定向在调试的命令行参数,对于C#文件要放到debug文件夹下
+
