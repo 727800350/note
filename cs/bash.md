@@ -262,6 +262,8 @@ rsync --delete -a --progress /home/eric/git/tool/analyse/ /mnt/analyse/
 最后面的 / 不能丢
 
 # File System
+垃圾箱位置: .local/share/Trash/
+
 iotop: i/o stats
 
 `du`: 查看目录大小  
@@ -276,7 +278,7 @@ iotop: i/o stats
 `df`: 查看磁盘使用情况  
 于du不同的是,du是面向文件的命令,只计算被文件占用的空间.不计算文件系统metadata 占用的空间.df则是基于文件系统总体来计算,通过文件系统中未分配空间来确定系统中已经分配空间的大小
 
-`dd`: 转换和拷贝文件(包括二进制文件)
+`dd`: 转换和拷贝文件(包括二进制文件, mbr文件)
 参数
 ```
 if=filename:输入的文件名
