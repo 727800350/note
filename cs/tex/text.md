@@ -22,6 +22,15 @@ Latex 设置字体大小命令由小到大依次为:
 - \textit{text}: 斜体
 - \color{green} text: 加颜色
 
+对于beamer, 还可以控制在哪些页码上显示特定的样式, 例如下面的.
+
+- \alert{Alert on all slides}
+- \alert<3>{Alert on slide 3}
+- \alert<1,3>{Alert on slides 1 and 3}
+- \alert<-2,4>{Alert on slides 1,2 and 4}
+
+除了alert, emph, textbf等也有同样的功能
+
 text border example(\usepackage{fancybox}):
 
 - shadowbox{text}
