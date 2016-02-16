@@ -13,6 +13,23 @@ Latex 设置字体大小命令由小到大依次为:
 \changefontsizes{6pt}
 ```
 
+## beamer text
+字体
+
+- \alert{text}: 红色突出
+- \emph{text}: 强调, 但是区别度不是很大
+- \textbf{text}: 黑体
+- \textit{text}: 斜体
+- \color{green} text: 加颜色
+
+text border example(\usepackage{fancybox}):
+
+- shadowbox{text}
+- fbox{text}
+- doublebox{text}
+- ovalbox{text}
+- Ovalbox{text}
+
 ## win字体
 需要把字体安装到系统的字体库中(比如使用tex编辑文档时,通常会需要使用宋体或楷体),其实就是把字体拷贝到系统存放字体文件的地方,然后运行一下更新字体缓存之类的命令,通常如下:
 
