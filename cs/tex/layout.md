@@ -1,18 +1,33 @@
-摘录
+手动调整间距
+
+- `\vspace*{-0.7cm}`: 竖直距离
+- `\hspace*{0.7cm}`: 水平距离
+
+block
 ```Latex
-\begin{quote}
-引文两端都缩进
-\end{quote}
+\begin{block}{text}
+\end{block}
+```
+text可以为空, 也可以使用\small{text} 等
 
-\begin{quotation}
-引文两端都缩进且引文的首行继续缩进
-\end{quotation}
-
-\begin{verse}
-引文两端都缩进, 且引文的第二行继续缩进
-\end{verse}
+columns 分栏
+```Latex
+\begin{columns}
+\column{.4\textwidth}
+\column{.3\textwidth}
+\column{.3\textwidth}
+\end{columns}
 ```
 
-**对齐方式**
-`flushleft, flushright, center` 三个环境
+摘录
+
+- `\begin{quote} \end{quote}`: 引文两端都缩进
+- `\begin{quotation} \end{quotation}`: 引文两端都缩进且引文的首行继续缩进
+- `\begin{verse} \end{verse}`: 引文两端都缩进, 且引文的第二行继续缩进
+
+对齐方式
+
+- flushleft
+- flushright
+- center
 
