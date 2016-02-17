@@ -29,6 +29,30 @@ setbeamertemplate
 ```
 会生成 step 1..., step 2 etc, 类似的, 也可以采用 `[step i]`
 
+在beamer 中使用下面的列表时, 如果又在一个block里面, 文字会显得特别大, 看起来不太协调
+```Latex
+\begin{block}
+	\begin{itemize}
+	\end{itemize}
+\end{block}
+```
+但是改成下面的这种, 虽然文字变小了, 但是 itemsep 会显得很大, 使用 enumitem 中 setlist 修改itemsep, 又会改变原来beamer 中的list 模板设置(例如 label 没了, 等)
+```Latex
+\begin{block}
+	\changefontsizes{7.5pt}
+	\begin{itemize}
+	\end{itemize}
+\end{block}
+```
+但是把\changefontsizes{7.5pt} 放到里面就可以两全其美, 虽然代码看起来有点怪
+```Latex
+\begin{block}
+	\begin{itemize}
+	\changefontsizes{7.5pt}
+	\end{itemize}
+\end{block}
+```
+
 ## FAQ 溢出
 如果一页溢出,考虑以下解决方法:
 
