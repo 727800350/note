@@ -90,6 +90,45 @@ label-1 & label-2 & label-3 & label-4 & label-5 \\ \hline
 \begin{tabular}{c|g|c|g|c|g|c|g}
 ```
 
+longtable
+```latex
+%% \usepackage{longtable}
+\begin{longtable}{|l|l|l|}
+% 表格的首个表头
+\caption{长表格示例\label{tab-long-example}} \\
+\hline
+\multicolumn{1}{|c|}{\textbf{Time (s)}} &
+\multicolumn{1}{c|}{\textbf{Triple chosen}} &
+\multicolumn{1}{c|}{\textbf{Other feasible triples}} \\ \hline
+\endfirsthead
+% 表格的其他表头
+\multicolumn{3}{l}{{\bfseries\tablename\ \thetable{} --接\,上\,页}} \\
+\hline
+\multicolumn{1}{|c|}{\textbf{Time (s)}} &
+\multicolumn{1}{c|}{\textbf{Triple chosen}} &
+\multicolumn{1}{c|}{\textbf{Other feasible triples}} \\ \hline
+\endhead
+% 表格的其他表尾
+\hline
+\multicolumn{3}{|r|}{{接\,下\,页}} \\ \hline
+\endfoot
+% 表格的最后表尾
+\hline \hline
+\endlastfoot
+0      & (1, 11, 13725) & (1, 12, 10980), (1, 13, 8235), (2, 2, 0) \\
+2745   & (1, 12, 10980) & (1, 13,  8235), (2,  2,    0), (2, 3, 0) \\
+5490   & (1, 12, 13725) & (2,  2,  2745), (2,  3,    0), (3, 1, 0) \\
+8235   & (1, 12, 16470) & (1, 13, 13725), (2,  2, 2745), (2, 3, 0) \\
+10980  & (1, 12, 16470) & (1, 13, 13725), (2,  2, 2745), (2, 3, 0) \\
+13725  & (1, 12, 16470) & (1, 13, 13725), (2,  2, 2745), (2, 3, 0) \\
+16470  & (1, 13, 16470) & (2,  2,  2745), (2,  3,    0), (3, 1, 0) \\
+19215  & (1, 12, 16470) & (1, 13, 13725), (2,  2, 2745), (2, 3, 0) \\
+21960  & (1, 12, 16470) & (1, 13, 13725), (2,  2, 2745), (2, 3, 0) \\
+24705  & (1, 12, 16470) & (1, 13, 13725), (2,  2, 2745), (2, 3, 0) \\
+27450  & (1, 12, 16470) & (1, 13, 13725), (2,  2, 2745), (2, 3, 0) \\
+\end{longtable}
+```
+
 图表混排
 ```
 \makeatletter\def\@captype{figure}\makeatother
