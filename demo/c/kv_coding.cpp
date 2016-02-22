@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
 	char *key = NULL;
 	int kl = 0;
 	char buffer[BUFFER_SIZE];
-	int vl = 0;
+	u_int64_t vl = 0;
 
 	int ret = -1;
 
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]){
 			fprintf(stderr, "write value length error\n");
 			return -1;
 		}
-		fprintf(stderr, "op:%s, k:%s, kl:%u, vl:%u\n", op, key, kl, vl);
+		fprintf(stderr, "op:%s, k:%s, kl:%d, vl:%lu\n", op, key, kl, vl);
 	}
 
 
@@ -143,15 +143,15 @@ int main(int argc, char *argv[]){
 			fprintf(stderr, "read value length error\n");
 			return -1;
 		}
-		fprintf(stderr, "op:%s, k:%s, kl:%u, vl:%u\n", op, key, kl, vl);
+		fprintf(stderr, "op:%s, k:%s, kl:%u, vl:%lu\n", op, key, kl, vl);
 
 		free(key);
 		key = NULL;
 	}
 
 	// process value
-	int sum_read = 0;
-	int sum_write = 0;
+	u_int64_t sum_read = 0;
+	u_int64_t sum_write = 0;
 	while(true){
 		ret = fread(buffer, sizeof(char), BUFFER_SIZE, input);
 		if(ret < 0){
@@ -175,8 +175,8 @@ int main(int argc, char *argv[]){
 		}
 		sum_write += ret;
 	}
-	fprintf(stderr, "value    read: %d bytes\n", sum_read);
-	fprintf(stderr, "value written: %d bytes\n", sum_write);
+	fprintf(stderr, "value    read: %lu bytes\n", sum_read);
+	fprintf(stderr, "value written: %lu bytes\n", sum_write);
 	return 0;
 }
 
