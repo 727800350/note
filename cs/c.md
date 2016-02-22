@@ -138,6 +138,8 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 - `void print((void *)arr, int rows, int cols)`: 自己进行位移
 
 # IO
+同一个文件可以用fopen同时打开多次, 读取是独立的, 各个FILE指针是不相互干扰的.
+
 - `FILE *fopen(const char *path, const char *mode);`
 - `int fclose(FILE *stream);`
 
