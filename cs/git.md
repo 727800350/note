@@ -108,6 +108,19 @@ git push origin :refs/tags/tag_name
 - git reset <commit> 将HEAD重置到上一次提交的版本,并将之后的修改标记为未添加到缓存区的修改:
 - git reset --keep <commit> 将HEAD重置到上一次提交的版本,并保留未提交的本地修改:
 
+## patch 补丁
+例如，我们想导出历史上的某个commit之后的所有commits为一序列的补丁序列，那么可以这么做。
+```bash
+$ git log | grep ^commit | head -5
+commit a11c7fd5839ddac9a19edadc245522f606a9e067
+commit a718cbdc3ea9c72e05dd3beb5c58bfac91fe1a76
+commit b5345a1b077259958fa56cb7c4dea82694214247
+commit 380f57ad3157b644bb822995dcd85d73504a75d8
+commit 68a0c4b66d619f816ded5b83f5e8c526e43bdf3e
+$ git format-patch 68a0c4b66d619f816ded5b83f5e8c526e43bdf3e
+$ git am 68a0c4b66d619f816ded5b83f5e8c526e43bdf3e    ## 应用patch
+```
+
 # repo
 ## Create repo
 创建 git 仓库
