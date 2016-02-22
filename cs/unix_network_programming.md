@@ -235,7 +235,6 @@ I/O 复用(select/pull);
 - 非阻塞式IO  
 ![非阻塞式IO](http://images.cnblogs.com/cnblogs_com/yjf512/201205/201205310957235923.jpg)
 
-
 - IO复用模型  
 ![IO复用模型](http://blog.chinaunix.net/attachment/201206/20/10275706_1340176181jjx0.jpg)
 

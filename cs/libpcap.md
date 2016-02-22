@@ -4,7 +4,7 @@ The file has a global header containing some global information followed by zero
 Global Header Packet Header Packet Data Packet Header Packet Data Packet Header Packet Data ... 
 ```
 Global Header 
-```
+```c
 typedef struct pcap_hdr_s {
         u_int32_t magic_number;   /* magic number */
         u_int16_t version_major;  /* major version number */
@@ -29,7 +29,7 @@ For nanosecond-resolution files, the writing application writes 0xa1b23c4d, with
 libpcap捕获时，使用pcap_loop之类的函数，在调用处理的handle的时候，返回的第一个参数的类型为pcap_pkthdr，第二个参数为uint8_t的指针，前者中有两个数据域的东东：caplen和len，如下：
 
 Packet Header 
-```
+```c
 struct pcap_pkthdr {
 	u_int32_t ts_sec;    /* time stamp */
 	u_int32_t ts_usec;
@@ -48,7 +48,7 @@ delay us 微秒 1 * 10^{-6} second
 ```
 #include <pcap/pcap.h>
 const u_char *pcap_next(pcap_t *p, struct pcap_pkthdr *h);
-```
+```c
 read the next packet (by calling `pcap_dispatch()` with a cnt of 1) and 
 returns a `u_char` pointer to the data in that packet.   
 The `pcap_pkthdr` structure pointed to by h is filled in with the appropriate values for the packet.  
@@ -60,9 +60,9 @@ if the code needs it to remain valid, it must make a copy of it.
 each time the returned pkt value is the same, meaning that libpcap library use a fiexed buffer to store the packet content.  
 and when reading from a pcap file, when the EOF is reached, the returned value is NULL, so NULL could be used to test this event.
 
-```
+```c
 #include <pcap/pcap.h>
-typedef void (*pcap_handler)(u_char *user, const struct pcap_pkthdr *h, const u_char *bytes);
+typedef void ( *pcap_handler)(u_char *user, const struct pcap_pkthdr *h, const u_char *bytes);
 
 int pcap_loop(pcap_t *p, int cnt, pcap_handler callback, u_char *user);
 int pcap_dispatch(pcap_t *p, int cnt, pcap_handler callback, u_char *user);
