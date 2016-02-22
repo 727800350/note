@@ -11,6 +11,7 @@
 #define GAP 20 // 2 GB for a split part
 // bool encryption = false; // whether encryption
 
+// global variable
 char *file = NULL;
 u_int64_t gap = GAP;
 
@@ -21,15 +22,18 @@ int usage(){
 	return 0;
 }
 
+// extract the ith part of file
 void *extract(void *i){
 	int part = *(int *)i;
 	fprintf(stderr, "part %d of %s\n", part, file);
 
+	// open input file
 	FILE *input = NULL;
 	input = fopen(file, "rb");
 	assert(input != NULL);
 	fseek(input, gap * part, SEEK_SET);
 
+	// pen output file
 	char outfile[100] = {'\0'};
 	// 4 is for ".xx\0"
 	snprintf(outfile, strlen(file) + 4, "%s.%02d", file, part);
