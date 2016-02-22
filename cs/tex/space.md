@@ -69,6 +69,11 @@ Note: `\linewidth` also appears to work in table columns, not just text columns.
 
 - `parskip`: 段落前后间距, `\setlength{\parskip}{.5\baselineskip}`, 
 
+段落首行缩进
+
+- 局部取消: `\noindent`
+- 全局取消: `\setlength{\parindent}{0pt}`
+
 页边距
 http://www.52souji.net/set-the-margin-header-footer-of-latex/
  
