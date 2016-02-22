@@ -8,8 +8,7 @@
 #include <pthread.h>
 
 #define BUFFER_SIZE (1024 * 1024) // 1MB buffer
-#define GAP 20 // 2 GB for a split part
-// bool encryption = false; // whether encryption
+#define GAP 2 // 2 GB for a split part
 
 // global variable
 char *file = NULL;
@@ -33,7 +32,7 @@ void *extract(void *i){
 	assert(input != NULL);
 	fseek(input, gap * part, SEEK_SET);
 
-	// pen output file
+	// open output file
 	char outfile[100] = {'\0'};
 	// 4 is for ".xx\0"
 	snprintf(outfile, strlen(file) + 4, "%s.%02d", file, part);
@@ -49,7 +48,7 @@ void *extract(void *i){
 		ret = fread(buffer, sizeof(char), sizeof(buffer), input);
 		if(ret < 0){
 			fprintf(stderr, "read error\n");
-			return NULL;
+			break;
 		}
 		if(ret == 0){
 			fprintf(stderr, "reach eof\n");
@@ -76,11 +75,8 @@ int main(int argc, char *argv[]){
 	u_int64_t size = 0;
 
 	char c = 0;
-	while ((c = getopt(argc, argv, "ef:")) != -1){
+	while ((c = getopt(argc, argv, "f:")) != -1){
 		switch(c){
-		 case 'e':
-// 			encryption = true;
-			break;
 		 case 'f':
 			file = optarg;
 			break;
@@ -109,7 +105,7 @@ int main(int argc, char *argv[]){
 	size = ftell(input);
 	fprintf(stderr, "%s has %lu bytes\n", file, size);
 
-	gap = gap * 1024 * 1024;
+	gap = gap * 1024 * 1024 * 1024;
 	fprintf(stderr, "gap = %lu\n", gap);
 
 	int num = size / gap + 1;
@@ -124,6 +120,7 @@ int main(int argc, char *argv[]){
 	for(int i = 0; i < num; i++){
 		pthread_join(thread[i], NULL);
 	}
+	free(thread);
 
 	return 0;
 }
