@@ -40,9 +40,10 @@ provides a method for a program to wait for a value at a given address to change
 ## 系统控制
 `getrlimit, setrlimit` 获取, 设置系统资源上限
 
-`void exit_group(int status);` equivalent to exit(2) except that it terminates not only the calling thread, but all threads in the calling process's thread group
+`void exit_group(int status);` equivalent to exit(2) except that it terminates not only the calling thread, but all threads in the calling process thread group
 
 ## 用户管理
 `getuid, setuid` 获取, 设置用户标志号
 
 ## 信号
+
