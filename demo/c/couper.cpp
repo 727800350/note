@@ -1,42 +1,84 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include <unistd.h> // getopt
 #include <ctype.h> // isprint
 #include <sys/types.h>
+#include <pthread.h>
 
-// The default stack max size is 1 MB
-#define BUFFER_SIZE (1024 * 1024)
+#define BUFFER_SIZE (1024 * 1024) // 1MB buffer
+#define GAP 20 // 2 GB for a split part
+// bool encryption = false; // whether encryption
+
+char *file = NULL;
+u_int64_t gap = GAP;
 
 int usage(){
 	char program[] = "couper";
-	fprintf(stderr, "%s -f file -l length -u unit(B|KB|MB|GB) -e\n", program);
+	fprintf(stderr, "%s -f file\n", program);
+
 	return 0;
 }
 
-int main(int argc, char *argv[]){
-	bool encryption = false; // whether encryption
-	char *file = NULL;
-	u_int64_t len = 0; // length of each split part
-	char *unit = NULL;
-	char buffer[BUFFER_SIZE] = {0};
+void *extract(void *i){
+	int part = *(int *)i;
+	fprintf(stderr, "part %d of %s\n", part, file);
 
-	int ret = -1;
+	FILE *input = NULL;
+	input = fopen(file, "rb");
+	assert(input != NULL);
+	fseek(input, gap * part, SEEK_SET);
+
+	char outfile[100] = {'\0'};
+	// 4 is for ".xx\0"
+	snprintf(outfile, strlen(file) + 4, "%s.%02d", file, part);
+	fprintf(stderr, "output file: %s\n", outfile);
+	FILE *output = NULL;
+	output = fopen(outfile, "wb");
+	assert(output != NULL);
+
+	char buffer[BUFFER_SIZE] = {'\0'};
+	u_int64_t sum = 0;
+	int ret = 0;
+	while(true){
+		ret = fread(buffer, sizeof(char), sizeof(buffer), input);
+		if(ret < 0){
+			fprintf(stderr, "read error\n");
+			return NULL;
+		}
+		if(ret == 0){
+			fprintf(stderr, "reach eof\n");
+			break;
+		}
+		ret = fwrite(buffer, sizeof(char), ret, output);
+		sum += ret;
+		if(sum >= gap){
+			break;
+		}
+	}
+
+	if(input != NULL){
+		fclose(input);
+	}
+	if(output != NULL){
+		fclose(output);
+	}
+
+	return NULL;
+}
+
+int main(int argc, char *argv[]){
+	u_int64_t size = 0;
 
 	char c = 0;
-	while ((c = getopt(argc, argv, "ef:l:u:")) != -1){
+	while ((c = getopt(argc, argv, "ef:")) != -1){
 		switch(c){
 		 case 'e':
-			encryption = true;
+// 			encryption = true;
 			break;
 		 case 'f':
 			file = optarg;
-			break;
-		 case 'l':
-			len = atoi(optarg);
-			break;
-		 case 'u':
-			unit = optarg;
 			break;
 		 case '?':
 			if(isprint(optopt))
@@ -50,76 +92,33 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	if(file == NULL or len == 0 or unit == NULL){
+	if(file == NULL){
 		fprintf(stderr, "wrong args\n");
 		usage();
 		return 1;
 	}
 
-	fprintf(stderr, "file: %s, len: %lu, unit: %s, encryption: %d\n", file, len, unit, encryption);
+	FILE *input = NULL;
+	input = fopen(file, "r");
+	assert(input != NULL);
+	fseek(input, 0, SEEK_END);
+	size = ftell(input);
+	fprintf(stderr, "%s has %lu bytes\n", file, size);
 
-	unit[0] = tolower(unit[0]);
-	if(unit[0] == 'b'){
-		;
-	}
-	else if(unit[0] == 'k'){
-		len = len * 1024;
-	}
-	else if(unit[0] == 'm'){
-		len = len * 1024 * 1024;
-	}
-	else if(unit[0] == 'g'){
-		len = len * 1024 * 1024 * 1024;
-	}
-	else{
-		fprintf(stderr, "unit %s not supported.\n", unit);
-		return 1;
-	}
+	gap = gap * 1024 * 1024;
+	fprintf(stderr, "gap = %lu\n", gap);
 
-	FILE *input = fopen(file, "rb");
-	char outfile[100] = {0};
-	FILE *output = NULL;
-	int num = 0;
-	u_int64_t sum = 0;
+	int num = size / gap + 1;
+	fprintf(stderr, "%s needs %d parts\n", file, num);
 
-	memset(outfile, 0, 100);
-	// 4 is for ".xx\0"
-	snprintf(outfile, strlen(file) + 4, "%s.%02d", file, num);
-	fprintf(stderr, "output file: %s\n", outfile);
-	output = fopen(outfile, "wb");
-
-	while(true){
-		ret = fread(buffer, sizeof(char), sizeof(buffer), input);
-		if(ret < 0){
-			fprintf(stderr, "read error\n");
-			return ret;
-		}
-		if(ret == 0){
-			fprintf(stderr, "eof\n");
-			break;
-		}
-		ret = fwrite(buffer, sizeof(char), ret, output);
-		sum += ret;
-		if(encryption or sum >= len){
-			fclose(output);	
-			sum = 0;
-
-			num ++;
-			memset(outfile, 0, 100);
-			snprintf(outfile, strlen(file) + 4, "%s.%02d", file, num);
-			fprintf(stderr, "output file: %s\n", outfile);
-			output = fopen(outfile, "wb");
-
-			// disable encryption for the rest of file
-			encryption = false;
-		}
+	pthread_t *thread = (pthread_t *)malloc(num * sizeof(pthread_t));
+	for(int i = 0; i < num; i++){
+		pthread_create(thread + i, NULL, &extract, (void *)&i);
+		sleep(1);
 	}
 
-	if(input != NULL){
-		fclose(input);
-	}
-	if(output != NULL){
-		fclose(output);
+	for(int i = 0; i < num; i++){
+		pthread_join(thread[i], NULL);
 	}
 
 	return 0;
