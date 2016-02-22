@@ -77,6 +77,8 @@ Note: `\linewidth` also appears to work in table columns, not just text columns.
 页边距
 http://www.52souji.net/set-the-margin-header-footer-of-latex/
  
+- `\hrule` 画一条水平标尺
+- `\vrule` 竖直标尺
  
 # floats
 [ref](http://techshangrila.blogspot.com/2014/01/reduce-space-around-floats-algorithm.html)

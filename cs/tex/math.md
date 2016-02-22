@@ -1,4 +1,3 @@
-# Math
 `$\not\in$`
 
 数学公式中输入中文 可以把中文用`\text{}`或是`\mbox{}`引起来  
@@ -9,7 +8,10 @@ For example, let us say I want to write the `$n^{th}$` element, but without the 
 And what if I still want the n to be in math mode, but the th outside?  
 `$n$\textsuperscript{th}`
 
-## 分数
+latex 中输入点不能使用`\dot`, 而应该直接使用 "."
+
+分数
+
 - `\frac` 自动调整字号,比如在行间公式中小一点,在独立公式则大一点.
 - `\dfrac` 命令把分数的字号显式设置为独立公式中的大小,
 - `\tfrac` 命令则把字号设为行间公式中的大小.
@@ -37,44 +39,45 @@ generate:
 **多重积分**  
 `\iint, \iiint, \iiiint, \idotsint`
 
-## 多行公式
+# 多行公式
 有多种条件的公式组用cases 次环境
+```latex
+$$
+f(n) = 
+\begin{cases}
+ n/2 & \mbox{if } n \equiv 0 \\
+(3n +1)/2 & \mbox{if } n \equiv 1.
+\end{cases}
+$$
 
-	$$
-	f(n) = 
-	\begin{cases}
-	 n/2 & \mbox{if } n \equiv 0 \\ 
-	(3n +1)/2 & \mbox{if } n \equiv 1. 
-	\end{cases}
-	$$
+\begin{equation} 或者 $$
+\begin{aligned}
+\end{aligned}
+\end{equation}
+	
+\begin{equation} 不能使用$$, 不知道为什么
+\begin{split}
+\end{split}
+\end{equation}
+	
+\begin{align}
+\end{align}
+align 一行一个公式序号
 
-	\begin{equation} 或者 $$
-	\begin{aligned}
-	\end{aligned}
-	\end{equation}
+\begin{gather}
+\end{gather}
+gather 一行一个公式序号
+不需要对齐的公式组用 gather 环境,需要对齐的用align
 	
-	\begin{equation} 不能使用$$, 不知道为什么
-	\begin{split}
-	\end{split}
-	\end{equation}
-	
-	\begin{align}
-	\end{align}
-	align 一行一个公式序号
-
-	\begin{gather}
-	\end{gather}
-	gather 一行一个公式序号
-	不需要对齐的公式组用 gather 环境,需要对齐的用align
-	
-	\begin{eqarray}
-	\end{eqarray}
+\begin{eqarray}
+\end{eqarray}
+```
 
 [Avoid eqnarray](https://tug.org/pracjourn/2006-4/madsen/madsen.pdf)
 
 公式中对齐
 
-```
+```latex
 \begin{equation}  fst_a(A)\triangleq 
 \left\{
       \begin{aligned}
@@ -88,7 +91,7 @@ generate:
 \href{http://i.imgbox.com/JGSKOgTs.png}{result}
 
 
-```
+```latex
 \begin{equation}  fst_a(A)\triangleq 
 \left\{
       \begin{aligned}
@@ -101,10 +104,10 @@ generate:
 ```
 \href{http://i.imgbox.com/mcWpxQK9.png}{将if放在单独一格的result}
 
-## Matrix
+# Matrix
 pmatrix,bmatrix,Bmatrix,vmatrix和Vmatrix
 
-## 数学字体
+# 数学字体
 - \mathrm 罗马直立
 - \mathit 罗马斜体
 - \mathbf 直立粗体
@@ -116,14 +119,8 @@ pmatrix,bmatrix,Bmatrix,vmatrix和Vmatrix
 
 `$$n+1 \choose 3$$` 生成$C_{n+1}^3$ 的括号形式
 
-**括号**
-`(), [], \{\}, \langle\rangle, \lvert\rvert, \lVert\rVert`
-我们可以在上述分隔符前面加`\big \Big \bigg \Bigg` 等命令来调整
+括号
 
-Beamer 中也定义了各种定理环境,而且默认是用区块环境的样式来显示的.  
-例如下面的代码
-	
-	\begin{theorem}
-	微积分基本公式:$\int_a^b f(x)\mathrm{d}x=F(b)-F(a)$.
-	\end{theorem}
+- `(), [], \{\}, \langle\rangle, \lvert\rvert, \lVert\rVert`
+- 同时可以在上述分隔符前面加`\big \Big \bigg \Bigg` 等命令来进一步调整大小
 

@@ -59,3 +59,9 @@ Using beamer+biblatex you could also write
 	{the title of chapter(section et .)\protect\upcite{keywords}}
 即可是在章节标题中引用参考文献.
 
+index
+
+1. `\usepackage{makeidx}`
+1. 在导言区使用`\makeindex`激活导言
+1. 索引的内容通过`\index{key}`
+

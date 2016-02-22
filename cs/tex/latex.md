@@ -62,13 +62,8 @@ Files can also be linked using the url or the href commands. You simply have to 
 \cleardoublepage
 ```
 
-# Commands
-**index**  
-`\usepackage{makeidx}`  
-在导言区使用`\makeindex`激活导言  
-索引的内容通过`\index{key}`
-
-`\cleardoublepage`: ends the current page and causes all figures and tables that have so far appeared in the input to be printed. In a two-sided printing style, it also makes the next page a right-hand (odd-numbered) page, producing a blank page if necessary.
+`\cleardoublepage`: ends the current page and causes all figures and tables that have so far appeared in the input to be printed.
+	In a two-sided printing style, it also makes the next page a right-hand (odd-numbered) page, producing a blank page if necessary.
 
 `\todo[inline, color=green!40]{This is an inline comment.}`
 
@@ -83,18 +78,6 @@ Files can also be linked using the url or the href commands. You simply have to 
 \fi
 ```
 
-```
-\setcounter{page}{1}
-\renewcommand{\thepage}{A\arabicpage}}
-```
-可改变页码的格式为A1,A2,...的型式,直到进行下一次改变为止.
-
-Set noindent for entire file
-`\setlength{\parindent}{0pt}`
-
-\hrule  画一条水平标尺
-\vrule 竖直标尺
-
 # Error
 **Dimension too large**
 
@@ -105,39 +88,31 @@ As explained below this specific JPG seems to be incompatible with XeTeX.
 Apparently XeTeX has issues reading the size from the meta-data from the JPG, which somehow leads to the "too-large" error.  
 用一个可以编辑图形的软件打开图形, 然后重新保存图形
 
-**`\dot`的使用**  
-latex 中输入点 不能使用\dot, 而应该直接使用 "."
-
-# Other
+```latex
 \usepackage{blindtext}
-%% \blindtext %随机生成该语言的字符
+\blindtext % 随机生成该语言的字符
+```
 
-**多文档组织**  
-`\input{abc}`: 把abc.tex中内容包含在当前源文件中,如同在此处直接输入进来
-一般把常用的导言设置放到一个单独文件中
-也可以用`\input abc`
+多文档组织
 
-`\include{abc}` **新开始一页**,然后把文件如同调用`\input{abc}`一样包含进来
-每个文件为一章
+- `\input{abc}`: 把abc.tex中内容包含在当前源文件中,如同在此处直接输入进来一般把常用的导言设置放到一个单独文件中,也可以用`\input abc`
+- `\include{abc}` **新开始一页**,然后把文件如同调用`\input{abc}`一样包含进来每个文件为一章
 
 当文档很长时,编译一遍也会很花时间,我们可以用syntonly 宏包.
 这样编译时就**只检查语法,而不生成结果文件**.  
 `\usepackage{syntonly}`
 
-**编码**
+编码
+```latex
+\usepackage[utf8]{inputenc}
+% In this area The UTF-8 encoding is specified.
 
-	\usepackage[utf8]{inputenc}
-	% ...
-	% In this area
-	% The UTF-8 encoding is specified.
-	% ...
-	\inputencoding{latin1}
-	% ...
-	% Here the text encoding is specified as ISO Latin-1.
-	% ...
-	\inputencoding{utf8}
-	% Back to the UTF-8 encoding.
-	% ...
+\inputencoding{latin1}
+% Here the text encoding is specified as ISO Latin-1.
+
+\inputencoding{utf8}
+% Back to the UTF-8 encoding.
+```
 
 XETEX默认使用UTF-8 编码,但为了照顾兼容性,可以用参数来控制输入文件的编码,
 而不用更改整个输入文件的编码.

@@ -30,4 +30,5 @@
 %% 设置目录
 \pagenumbering{arabic}
 \setcounter{page}{1}
+\renewcommand{\thepage}{A\arabicpage}} %% 可改变页码的格式为A1,A2,...的型式,直到进行下一次改变为止.
 ```
