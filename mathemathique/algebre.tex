@@ -1,16 +1,19 @@
 % !Mode:: "TeX:UTF-8"
-\documentclass{article}
+\documentclass{book}
 \input{../public/package}
-\input{../public/article}
+\input{../public/book}
 \input{../public/math}
+
 \begin{document}
 \title{Alg\`ebre}
+\author{Eric Wang}
+
 \maketitle
 \tableofcontents
 \newpage
 
 %############################################################## Algebre 1 第一章 #########################################################################
-\section{Logique et ensembles}
+\chapter{Logique et ensembles}
 La relation $1+1 \neq 2$ est fausse,la double n\'egation est la relation $1+1=2$. Elle est vraie.
 \newline
 disjonction 或,析取 \newline
@@ -45,7 +48,7 @@ $$
 $$
 
 %############################################################## Algebre 1 第二章 #########################################################################
-\section{Groupes. Anneaux. Corps}
+\chapter{Groupes. Anneaux. Corps}
 $$
 \begin{array}{l|llll}
 groupe & ajouter & soustraire &&\\
@@ -60,7 +63,7 @@ $$
 Si A est un anneau, on appelle  {\bf groupe des inversibles de} $A$ l'ensemble des \'el\'ements inversibles de $A$, muni de la deuxi\`eme op\'eration de $A$. On note ce groupe $A^o$
 
 %############################################################## Algebre 1 第三章 #########################################################################
-\section{Espace vectoriel}
+\chapter{Espace vectoriel}
 \begin{theorem}
   On a une d\'ecomposition en somme directe de deux sous-espaces $ V = W_1 \bigoplus W_2$  si et seulment si
   $$
@@ -179,7 +182,7 @@ que $V$ et $W$ sont isomorphes.
 \end{proof}
 
 %############################################################## Algebre 2 第一章 #########################################################################
-\section{Matrices}
+\chapter{Matrices}
 \begin{definition}
   Soient $V,W$ deux espaces vectoriels sur un corps communitatif $K$ avec dim$V=n$,dim$W=p$,\newline
   soit $e=(e_1,\ldots,e_n)$ une base de $V$, et $f=(f_1,\ldots,f_n)$ une base de $W$. \newline
@@ -200,8 +203,8 @@ que $V$ et $W$ sont isomorphes.
  $ {\cal M}_f^e(u)\cdot {\cal P}_{e\rightarrow e'}= {\cal M}_f^e(u)\cdot {\cal M}_e^{e'}(id_V)={\cal M}_f^{e'}(u)$
 \end{note}
 
-\subsection{矩阵的运算}
-\subsubsection{列向量组}
+\section{矩阵的运算}
+\subsection{列向量组}
 若$A$的列向量组为$\alpha_1,\ldots,\alpha_n$,那么我们可以把$A$写成:$A=(\alpha_1,\ldots,\alpha_n)$ \newline
 设$A=(a_{ij})_{s\times n},B=(b_{ij})_{n\times m},A$ 的列向量组为$\alpha_1,\ldots,\alpha_n$. \newline
 $AB$的第$j\in [[1,m]]$列为: \newline
@@ -234,7 +237,7 @@ $=(b_{11}\alpha_1+b_{21}\alpha_2+\dots+b_{n1}\alpha_n,b_{12}\alpha_1+b_{22}\alph
   A乘以B可以看做把A的列向量组分别与B的每一列的对应元素的成绩之和作为AB的相应的列向量.
 \end{note}
 
-\subsubsection{行向量组}
+\subsection{行向量组}
 设B的行向量组为$r_1,r_2,\ldots,r_n$,则
 $$
 AB=
@@ -290,8 +293,8 @@ $A\times B$可以看做把A的每一行元素与B的行向量组的对应的行�
   $$
 \end{proof}
 
-\subsection{特殊矩阵}
-\subsubsection{对角矩阵}
+\section{特殊矩阵}
+\subsection{对角矩阵}
 la matrice diagonale,$diag(d_1,\ldots,d_n)$ \newline
 用一个对角矩阵{\bf 左(右) }乘一个矩阵A,就相当于用对角矩阵的主对角元素分别去乘A相应的{\bf 行(列)}.
 %对角矩阵左乘一个矩阵
@@ -336,13 +339,13 @@ $$
 
 特别的,两个n级对角矩阵的乘积还是n级对角矩阵,并且是把相应的主对角元相乘
 
-\subsubsection{三角矩阵}
+\subsection{三角矩阵}
 上三角矩阵(上面的三角不为0,而下面的三角为零的矩阵) \newline
 下三角矩阵(下面的三角不为0,而上面的三角为零的矩阵)
 \begin{note}
   用初等矩阵左(右)乘一个矩阵A,就相当于对A进行了一次相应的初等行(列)变换
 \end{note}
-\subsubsection{基本矩阵}
+\subsection{基本矩阵}
 只有一个元素为1,其余元素均为0的矩阵 \newline
 (i,j)元为1的基本矩阵记为$E_{ij}$
 任意一个矩阵A都可以记为$A=\sum_{i=1}^s {\sum_{j=1}^n {a_{ij}E_{ij}}}$
@@ -396,16 +399,16 @@ $$
     \end{bmatrix}
     =J$
 \end{proof}
-\subsection{Rang 秩}
+\section{Rang 秩}
 $$rang(AB)\leqslant rang(A)$$
 $$rang(A+B)\leqslant rang(A)+rang(B)$$
 $$  \mathrm{si} ~k \neq 0, rang(kA)=rang(A)$$
 
 
 %############################################################## Algebre 2 第二章 #########################################################################
-\section{D\'etermiants}
+\chapter{D\'etermiants}
 
-\section{Espace}
+\chapter{Espace}
 \textbf{Espace m\'etrique}
 On appelle $(E, d)$ un espace m\'etrique si $ E$  est un ensemble et d une distance sur $E$ .
 
@@ -509,7 +512,7 @@ $$
 $-\laplace $ admet une base de fonctions propres $v_k$, $k \in N$,
 orthonormales pour le produit scalaire de $L^2(\Omega)$
 
-\section{Max-plus algebra}
+\chapter{Max-plus algebra}
 A max-plus algebra is a \textbf{semiring(demi-anneau):(半环是类似于环但没有加法逆元的代数结构)} over the union of real numbers and
 $\varepsilon = -\infty$, equipped with maximum and addition as the two binary operations.
 
@@ -541,7 +544,7 @@ $$ [A \otimes B]_{ij} = \bigoplus_{k = 1}^p [A]_{ik} \otimes [B]_{kj} = \max([A]
 	\end{itemize}
 \end{itemize}
 
-\section{SVD}
+\chapter{SVD}
 \begin{theorem}
 \textbf{Singular value decomposition}\\
 Suppose $A$ is an $m \times n$ matrix whose entries come from the field $K$, which is either the field of real numbers or the field of complex numbers.
@@ -640,7 +643,7 @@ and the columns of $V$ , which are just the eigenvectors of $A^T A$, are called 
 Any arbitrary matrix $X$ can be converted to an orthogonal matrix, a diagonal matrix and another orthogonal matrix
 (or a rotation, a stretch and a second rotation)
 
-\section{Elliptic curve 椭圆曲线}
+\chapter{Elliptic curve 椭圆曲线}
 En mathématiques, une courbe elliptique est un cas particulier de courbe algébrique,
 Contrairement à ce que son nom pourrait laisser croire, l'ellipse n'est pas une courbe elliptique.
 
