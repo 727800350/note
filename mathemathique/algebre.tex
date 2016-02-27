@@ -66,6 +66,62 @@ On note ce groupe $A^o$
 
 %############################################################## Algebre 1 第三章 #########################################################################
 \chapter{Espace vectoriel}
+\section{基坐标与坐标变换}
+\begin{question}
+设$V$为域$F$上的$n$维线性空间, 给定$V$的两个基$\alpha, \beta$.
+$\alpha = (\alpha_1, \alpha_2, \ldots, \alpha_n)$,
+$\beta = (\beta_1, \beta_2, \ldots, \beta_n)$.
+设$V$中向量$v$在这两个基底的坐标分别为$X = (x_1, x_2, \ldots, x_n)^t, Y = (y_1, y_2, \ldots, y_n)^t$. \\
+则$X$与$Y$之间有什么样的关系?
+\end{question}
+\begin{answer}
+$\alpha$ 为$V$的一个基底, 因此有
+$$
+\begin{cases}
+\begin{aligned}
+\beta_1 & = a_{11} \alpha_1 + a_{21} \alpha_2 + \cdots + a_{n1} \alpha_n \\
+\beta_2 & = a_{12} \alpha_1 + a_{22} \alpha_2 + \cdots + a_{n2} \alpha_n \\
+		\vdots \\
+\beta_n & = a_{1n} \alpha_1 + a_{2n} \alpha_2 + \cdots + a_{nn} \alpha_n \\
+\end{aligned}
+\end{cases}
+$$
+$$
+\Rightarrow
+(\beta_1, \beta_2, \ldots, \beta_n) = (\alpha_1, \alpha_2, \ldots, \alpha_n)
+\begin{bmatrix}
+a_{11} & a_{12}  & \cdots & a_{1n} \\
+a_{21} & a_{22}  & \cdots & a_{2n} \\
+	\vdots \\
+a_{n1} & a_{n2}  & \cdots & a_{nn} \\
+\end{bmatrix}
+$$
+最后一个大矩阵记为$P_{\alpha \rightarrow \beta}$, 意思是从$\alpha$基底变换到$\beta$基底.
+$$\Rightarrow (\beta_1, \beta_2, \ldots, \beta_n) = (\alpha_1, \alpha_2, \ldots, \alpha_n) \cdot P_{\alpha \rightarrow \beta} $$
+
+$$v = (\alpha_1, \alpha_2, \ldots, \alpha_n) \cdot X$$
+$$v = (\beta_1, \beta_2, \ldots, \beta_n) \cdot Y = (\alpha_1, \alpha_2, \ldots, \alpha_n) \cdot P_{\alpha \rightarrow \beta} \cdot Y $$
+$$\Rightarrow X = P_{\alpha \rightarrow \beta} Y$$
+\end{answer}
+
+\begin{question}
+设$\alpha = (\alpha_1, \alpha_2, \ldots, \alpha_n)$为$V$的一个基底, 且另一向量组$\beta = (\beta_1, \beta_2, \ldots, \beta_n)$满足
+$(\beta_1, \beta_2, \ldots, \beta_n) = (\alpha_1, \alpha_2, \ldots, \alpha_n) \cdot P$.\\
+证明: $\beta = (\beta_1, \beta_2, \ldots, \beta_n)$为$V$的一个基底的充要条件是$P$ inversible.
+\end{question}
+\begin{proof}
+$\beta = (\beta_1, \beta_2, \ldots, \beta_n)$ 为$V$的一个base \\
+$\Leftrightarrow$ 从 $k_1 \beta_1 + k_2 \beta_2 + \cdots + k_n \beta_n = 0$ 可以推出 $k_1 = k_2 = \cdots = k_n = 0$ \\
+$\Leftrightarrow$ 从 $(\beta_1, \beta_2, \ldots, \beta_n) \begin{bmatrix}k_1 \\ k_2 \\ \vdots \\ k_n\end{bmatrix} = 0$
+	可以推出$\begin{bmatrix}k_1 \\ k_2 \\ \vdots \\ k_n\end{bmatrix} = 0$ \\
+$\Leftrightarrow$ 从 $(\alpha_1, \alpha_2, \ldots, \alpha_n) \cdot P \cdot (k_1, k_2, \cdots, k_n)^t = 0$ 可以推出$(k_1, k_2, \cdots, k_n)^t = 0$ \\
+$\Leftrightarrow$ 从 $P \cdot (k_1, k_2, \cdots, k_n)^t = 0$ 可以推出$(k_1, k_2, \cdots, k_n)^t = 0$  \eqnote{因为$\alpha$为一个base}\\
+$\Leftrightarrow$ $Px = 0$只有零解 \\
+$\Leftrightarrow$ $detP = 0$ \\
+$\Leftrightarrow$ $P$ inversible
+\end{proof}
+
+\section{子空间的直和}
 \begin{theorem}
   On a une d\'ecomposition en somme directe de deux sous-espaces $ V = W_1 \bigoplus W_2$  si et seulment si
   $$
