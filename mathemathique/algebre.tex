@@ -11,6 +11,7 @@
 \maketitle
 \tableofcontents
 \newpage
+\setlength{\parindent}{0pt} %% set golbal noindent
 
 %############################################################## Algebre 1 第一章 #########################################################################
 \chapter{Logique et ensembles}
@@ -572,6 +573,8 @@ $$rang(AB)\leqslant rang(A)$$
 $$rang(A+B)\leqslant rang(A) + rang(B)$$
 $$\si k \neq 0, rang(kA) = rang(A)$$
 
+\section{D\'etermiants}
+
 \section{可逆矩阵}
 \begin{itemize}
 \item Si $A$ inversible, alors $A^t$ inversible et $(A^t)^{-1} = (A^{-1})^t$
@@ -605,8 +608,73 @@ $$\Rightarrow |I + AB| = 0$$
 因此$A + B, I + AB$ 都不可逆.
 \end{proof}
 
-%############################################################## Algebre 2 第二章 #########################################################################
-\chapter{D\'etermiants}
+\begin{note}
+任意一个矩阵, 若有以下三个性质的任意两个, 则第三个也必然成立
+\begin{enumerate}
+\item 对称矩阵: $A^t = A$
+\item 正交矩阵: $A^t \cdot A = I$
+\item 对合矩阵: $A^2 = I$
+\end{enumerate}
+\end{note}
+
+\section{矩阵的分块}
+\begin{remark}
+设$A \in M_{s \times n}(K), B \in M_{n \times m}(K)$
+
+$B$的列向量为$(\beta_1, \beta_2, \ldots, \beta_m)$, 则
+$$AB = A(\beta_1, \beta_2, \ldots, \beta_m) = (A\beta_1, A\beta_2, \ldots, A\beta_m)$$
+
+$A$的行向量组为$(r_1, r_2, \ldots, r_s)$, 则
+$$
+AB =
+\begin{bmatrix}
+r_1 \\
+r_2 \\
+\vdots \\
+r_s
+\end{bmatrix}
+B =
+\begin{bmatrix}
+r_1 \cdot B \\
+r_2 \cdot B \\
+\vdots \\
+r_s \cdot B
+\end{bmatrix}
+$$
+\end{remark}
+
+\begin{corollary}
+设$A_{s \times n} \neq 0, B_{n \times m}$的列向量组$(\beta_1, \beta_2, \ldots, \beta_m)$, $C_{n \times m}$的列向量组为$(\delta_1, \delta_2, \ldots, \delta_m)$.
+则
+$$ AB = C \Leftrightarrow \beta_j \eqnote{为} Ax = \delta_j \eqnote{的一个解}, j = 1, 2, \ldots, m $$
+\end{corollary}
+\begin{proof}
+$$
+\begin{aligned}
+		AB & = C \\
+		AB & = A(\beta_1, \beta_2, \ldots, \beta_m) = (A\beta_1, A\beta_2, \ldots, A\beta_m) \\
+		C & = (\delta_1, \delta_2, \ldots, \delta_m) \\
+		\Rightarrow A \beta_j & = \delta_j,~ \forall j \in [[1, m]]
+\end{aligned}
+$$
+\end{proof}
+
+利用前面的推论, 可以使用线性方程组来求可逆矩阵的逆矩阵. \\
+$A \cdot A^{-1} = I$, 设$A^{-1} = (x_1, x_2, \ldots, x_n), I = (\delta_1, \delta_2, \ldots, \delta_n)$. 则,
+$$
+\begin{aligned}
+& A (x_1, x_2, \ldots, x_n) = (\delta_1, \delta_2, \ldots, \delta_n) \\
+& \Leftrightarrow A x_i = \delta_i,~ \forall i \in [[1, n]] \\
+& \Leftrightarrow x_i \eqnote{为} A x_i = \delta_i 的一个解 ,~ \forall i \in [[1, n]] \\
+\end{aligned}
+$$
+
+\section{正交矩阵 matrice orthogonal}
+正交矩阵的集合用$O(n)$表示.
+
+\begin{question}
+设
+\end{question}
 
 \chapter{Max-plus algebra}
 A max-plus algebra is a \textbf{semiring(demi-anneau):(半环是类似于环但没有加法逆元的代数结构)} over the union of real numbers and
