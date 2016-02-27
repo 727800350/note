@@ -28,16 +28,16 @@ Un th\'eor\`eme est simplement une phrase vraie. \newline
 %当且仅当
 P si et seulement si Q: \newline
 P si Q, c'est si Q, alors P.\quad $Q \Rightarrow P$ \newline
-P seulement si Q: c'est si P, alors Q. \quad $P \Rightarrow Q$
-\\
+P seulement si Q: c'est si P, alors Q. \quad $P \Rightarrow Q$ \\
 $P \Rightarrow (Q \Rightarrow R)\Leftrightarrow (P \Rightarrow Q)\rightarrow (P \Rightarrow R)$ \newline
-La diff\'erence sym\'etrique de deux ensembles $E,F$. C'est l'ensemble des \'el\'ements qui appartient \^a exactement un des ensembles $E,F$. On le note $ E \Delta F $.
-\newline
+La diff\'erence sym\'etrique de deux ensembles $E,F$.
+C'est l'ensemble des \'el\'ements qui appartient \^a exactement un des ensembles $E,F$. On le note $E \Delta F$. \\
 $
 E \Delta F=\{x|x\in E ~\mathrm{et} ~x \not \in F\}\cup\{x|x\in F et x \not \in E\}=(E-F)\cup(F-E)
 $
 
-Une application est la m\^eme chose qu'une famille \`a valeurs dans $F$ index\'ee par $E$. Si on note ${\cal F}(E,F)$ l'ensemble de toutes les applications de $E$ vers $F$, on a bien s\^ur
+Une application est la m\^eme chose qu'une famille \`a valeurs dans $F$ index\'ee par $E$.
+Si on note ${\cal F}(E,F)$ l'ensemble de toutes les applications de $E$ vers $F$, on a bien s\^ur
 $$
 {\cal F}(E,F)=F^E
 $$
@@ -60,7 +60,8 @@ corps & ajouter & soustraire & multiplication & division
 $$
 
 
-Si A est un anneau, on appelle  {\bf groupe des inversibles de} $A$ l'ensemble des \'el\'ements inversibles de $A$, muni de la deuxi\`eme op\'eration de $A$. On note ce groupe $A^o$
+Si A est un anneau, on appelle  {\bf groupe des inversibles de} $A$ l'ensemble des \'el\'ements inversibles de $A$, muni de la deuxi\`eme op\'eration de $A$.
+On note ce groupe $A^o$
 
 %############################################################## Algebre 1 第三章 #########################################################################
 \chapter{Espace vectoriel}
@@ -97,25 +98,14 @@ Si A est un anneau, on appelle  {\bf groupe des inversibles de} $A$ l'ensemble d
 
 \begin{theorem}
 
-1. Soit $V$ un espace vectoriel de dimension finie $n$ sur le corps commutatif $K$. \\
-Alors il existe un isomorphisme de $K^n$ vers $V$.
-\medskip
-
-2. S'il existe un isomorphisme de $K^n$ vers $V$, alors $V$ est de dimension $n$.
-
-\medskip
-
-
-3. Soient $V$ et $W$ deux espaces vectoriels isomorphes (il existe un isomorphisme de $V$ vers $W$ et un isomorphisme de $W$ vers $V$). On suppose que l'un des deux espaces est de dimension finie. Alors $V$ et $W$ ont la m\^eme dimension.
-
-\medskip
-
-4. Si $V,W$ sont de dimension finie, et $\dim V = \dim W$, alors $V$ et $W$ sont isomorphes.
-
+\begin{enumerate}
+\item Soit $V$ un espace vectoriel de dimension finie $n$ sur le corps commutatif $K$.  Alors il existe un isomorphisme de $K^n$ vers $V$.
+\item S'il existe un isomorphisme de $K^n$ vers $V$, alors $V$ est de dimension $n$.
+\item Soient $V$ et $W$ deux espaces vectoriels isomorphes (il existe un isomorphisme de $V$ vers $W$ et un isomorphisme de $W$ vers $V$).
+	On suppose que l'un des deux espaces est de dimension finie. Alors $V$ et $W$ ont la m\^eme dimension.
+\item Si $V,W$ sont de dimension finie, et $\dim V = \dim W$, alors $V$ et $W$ sont isomorphes.
+\end{enumerate}
 \end{theorem}
-
-
-\bigskip
 
 \begin{proof}
 
@@ -125,12 +115,11 @@ u(\lambda_1,\dots ,\lambda_n) = \sum_{i=1}^n \lambda_i \cdot e_i
 $$
 Il est \'evident que $u$ est une application lin\'eaire. Comme $(e_i)$ est une famille g\'en\'eratrice de $V$, il est
 \'egalement clair que $u$ est surjective. Reste \`a montrer l'injectivit\'e de $u$.
-
 \medskip
 
 Par lin\'earit\'e de $u$, il suffit de montrer que si $u(\lambda_1,\dots ,\lambda_n) = 0_V$, alors
-tous les $\lambda_i$ sont nuls. Or cela est vrai, puisque la famille $(e_i)$ est libre. Comme $u$ est une application lin\'eaire surjective et injective, il s'agit d'un isomorphisme d'espaces vectoriels.
-
+tous les $\lambda_i$ sont nuls. Or cela est vrai, puisque la famille $(e_i)$ est libre.
+Comme $u$ est une application lin\'eaire surjective et injective, il s'agit d'un isomorphisme d'espaces vectoriels.
 \medskip
 
 2. Soit $u: K^n \to V$ un isomorphisme. On consid\`ere une base $(e_1,\dots ,e_n)$ de $K^n$ (par exemple la
@@ -140,7 +129,6 @@ $$
 $$
 Pour montrer que $V$ est de dimension $n$, il suffit de se convaincre que la famille $(f_i)$ est une base de $V$.
 Montrons d'abord qu'elle est libre.
-
 \medskip
 
 Si $\sum_{i=1}^n \lambda_i \cdot f_i = \sum_{i=1}^n \lambda_i \cdot u(e_i) =0_V$, alors par lin\'earit\'e de $u$ on aura
@@ -150,14 +138,13 @@ $$
 Or $u$ est un isomorphisme, donc en particulier c'est une injection. Et comme $u(0)=0$, on doit avoir
 $$
  \sum_{i=1}^n \lambda_i \cdot e_i  = 0
- $$
- Mais la famille $(e_i)$ est en particulier une famille libre, donc tous les $\lambda_i$ sont nuls.
- Nous avons prouv?que la famille $(f_i)$ est libre.
+$$
+Mais la famille $(e_i)$ est en particulier une famille libre, donc tous les $\lambda_i$ sont nuls.
+Nous avons prouv?que la famille $(f_i)$ est libre.
+\medskip
 
- \medskip
-
- Montrons maintenant que la famille $(f_i)$ est g\'en\'eratrice. Soit $v$ vecteur quelconque de $V$. Puisque
- $u$ est une surjection, il existe un vecteur $t \in K^n$ avec $u(t)=v$. Comme $(e_i)$ est une famille g\'en\'eratrice
+Montrons maintenant que la famille $(f_i)$ est g\'en\'eratrice. Soit $v$ vecteur quelconque de $V$. Puisque
+$u$ est une surjection, il existe un vecteur $t \in K^n$ avec $u(t)=v$. Comme $(e_i)$ est une famille g\'en\'eratrice
 de $K^n$, il existe des scalaires $(\lambda_1, \dots, \lambda_n)$ avec
 $$
 t = \sum_{i=1}^n \lambda_i \cdot e_i
@@ -168,17 +155,14 @@ v= u(t) = u\left(  \sum_{i=1}^n \lambda_i \cdot e_i \right) = \sum_{i=1}^n \lamb
 = \sum_{i=1}^n \lambda_i f_i
 $$
 Nous avons montr\'e que $(f_i)$ est bien une famille g\'en\'eratrice. Cette famille est bien une base de $V$.
-
 \bigskip
 
 3. C'est une cons\'equence imm\'ediate de 1. et 2.
-
 \bigskip
 
 4. Soit $n$ la dimension commune de $V$ et $W$. Par 1. les deux espaces vectoriels sont alors isomorphes
 \`a l'espace vectoriel $K^n$. Puisque la composition de deux isomorphismes est encore un isomorphisme, on en d\'eduit
 que $V$ et $W$ sont isomorphes.
-
 \end{proof}
 
 \textbf{Espace m\'etrique}
@@ -187,12 +171,14 @@ On appelle $(E, d)$ un espace m\'etrique si $ E$  est un ensemble et d une dista
 \textbf{Espace complet}
 Un espace m\'etrique $ M$  est dit complet si toute suite de Cauchy de $ M$  a une limite dans $ M$  (c'est-\`a-dire qu'elle converge dans $M$ ).\newline
 Intuitivement, un espace est complet s'il n'a pas de trou, s'il n'a aucun point manquant. \newline
-Par exemple, les nombres rationnels ne forment pas un espace complet, puisque $\sqrt{2}$ n'y figure pas alors qu'il existe une suite de Cauchy de nombres rationnels ayant cette limite.
+Par exemple, les nombres rationnels ne forment pas un espace complet,
+puisque $\sqrt{2}$ n'y figure pas alors qu'il existe une suite de Cauchy de nombres rationnels ayant cette limite.
 
 Il est toujours possible de remplir les trous amenant ainsi \`a la compl\'etion d'un espace donn\'e.
 
 \textbf{Espace euclidien}
- il est d\'efini par la donn\'ee d'un espace vectoriel sur le corps des r\'eels, de dimension finie, muni d'un produit scalaire, qui permet de mesurer distances et angles.
+il est d\'efini par la donn\'ee d'un espace vectoriel sur le corps des r\'eels, de dimension finie, muni d'un produit scalaire,
+qui permet de mesurer distances et angles.
 
 \textbf{Espace hermitien}
 En math\'ematiques, un espace hermitien est un espace vectoriel sur le corps commutatif des complexes de dimension finie et muni d'un produit scalaire.
@@ -212,33 +198,40 @@ En math\'ematiques, un espace pr\'ehilbertien est d\'efini comme un espace vecto
 Un espace pr\'ehilbertien $(E,\langle\cdot,\cdot\rangle)$ est alors un espace vectoriel E muni d'un produit scalaire $\langle\cdot,\cdot\rangle$.
 
 \textbf{Espace de Hilbert}
-C'est un espace pr\'ehilbertien complet, c'est-\`a-dire un espace de Banach dont la norme $\parallel\bullet\parallel$d\'ecoule d'un produit scalaire ou hermitien $\langle\cdot,\cdot\rangle$ par la formule
- $$\parallel x\parallel = \sqrt{\langle x,x \rangle}$$
+C'est un espace pr\'ehilbertien complet, c'est-\`a-dire un espace de Banach dont
+la norme $\parallel\bullet\parallel$ d\'ecoule d'un produit scalaire ou hermitien $\langle\cdot,\cdot\rangle$ par la formule
+$$\parallel x\parallel = \sqrt{\langle x,x \rangle}$$
 C'est la g\'en\'eralisation en dimension quelconque d'un espace euclidien ou hermitien.
 \bigskip
 
 \textbf{Application hermitien's eigenvalues are real values}.
 \begin{proof}
-Soient A une matrice autoadjointe (r\'eelle ou complexe), $\lambda$ une racine de son polyn\^ome caract\'eristique (il en existe au moins une, mais a priori complexe), et $X$ une matrice colonne complexe non nulle telle que
+Soient A une matrice autoadjointe (r\'eelle ou complexe), $\lambda$ une racine de son polyn\^ome caract\'eristique (il en existe au moins une,
+mais a priori complexe), et $X$ une matrice colonne complexe non nulle telle que
 $AX=\lambda X$. Alors
 $$ \overline\lambda X^*.X=(AX)^*.X=X^*.A^*.X=X^*.A.X=\lambda X^*.X $$
 or $X*.X$ est non nul, donc $\lambda$ est r\'eel.
 \end{proof}
 
-\begin{theorem}
-Th\'eor\`eme spectral en dimension finie, pour les endomorphismes —  Tout endomorphisme auto-adjoint d'un espace euclidien ou hermitien est diagonalisable dans une base orthonormale et ses valeurs propres sont toutes r\'eelles.
-
-Th\'eor\`eme spectral pour les matrices —  Soit $A$ une matrice sym\'etrique r\'eelle (resp. hermitienne complexe), alors il existe une matrice $P$ orthogonale (resp. unitaire) et une matrice $D$ diagonale dont tous les coefficients sont r\'eels, telles que la matrice $A = P.D.P^{-1}$
+\begin{theorem}[Th\'eor\`eme spectral en dimension finie, pour les endomorphismes]
+Tout endomorphisme auto-adjoint d'un espace euclidien ou hermitien est diagonalisable dans une base orthonormale et ses valeurs propres sont toutes r\'eelles.
 \end{theorem}
 
-\begin{theorem}
-Diagonalisation d'un endomorphisme autoadjoint et d'une matrice autoadjointe — \\
-Un endomorphisme d'un espace euclidien ou hermitien est autoadjoint si et seulement s'il existe une base orthonormale de vecteurs propres, avec valeurs propres toutes r\'eelles.\\
+\begin{theorem}[Th\'eor\`eme spectral pour les matrices]
+Soit $A$ une matrice sym\'etrique r\'eelle(resp. hermitienne complexe),
+alors il existe une matrice $P$ orthogonale (resp. unitaire) et une matrice $D$ diagonale dont tous les coefficients sont r\'eels,
+telles que la matrice $A = P.D.P^{-1}$
+\end{theorem}
+
+\begin{theorem}[Diagonalisation d'un endomorphisme autoadjoint et d'une matrice autoadjointe]
+Un endomorphisme d'un espace euclidien ou hermitien est autoadjoint
+si et seulement s'il existe une base orthonormale de vecteurs propres, avec valeurs propres toutes r\'eelles.\\
 Une matrice carr\'ee complexe $A$ est autoadjointe si et seulement s'il existe une matrice unitaire $U$ telle que $U.A.U^{-1}$ soit diagonale et r\'eelle.\\
-Une matrice carr\'ee r\'eelle $A$ est \textbf{sym\'etrique} si et seulement s'il existe une \textbf{matrice orthogonale} P telle que $P.A.P^{-1}$ soit diagonale et r\'eelle.
+Une matrice carr\'ee r\'eelle $A$ est \textbf{sym\'etrique} si et seulement s'il existe une \textbf{matrice orthogonale} $P$
+telle que $P.A.P^{-1}$ soit diagonale et r\'eelle.
 \end{theorem}
 Rappel:
-Une matrice carr\'ee $A$ (n lignes, n colonnes) \`a coefficients r\'eels est dite \textbf{orthogonale}正交矩阵 si $A^t A = I_n$, c'est-\`a-dire que $A^t = A^{-1}$
+Une matrice carr\'ee $A$(n lignes, n colonnes) \`a coefficients r\'eels est dite \textbf{orthogonale}正交矩阵 si $A^t A = I_n$, c'est-\`a-dire que $A^t = A^{-1}$
 
 \textbf{Th\'eor\`eme de Riesz (Fr\'echet-Riesz)}\newline
 un th\'eor\`eme qui repr\'esente les \'el\'ements du dual d'un espace de Hilbert comme produit scalaire par un vecteur de l'espace.
@@ -252,22 +245,26 @@ $$
 \exists\,!\ y \in H\,, \quad \forall x\in H\,, \quad f(x) = \langle y,x\rangle
 $$
 \underline{Extension aux formes bilin\'eaires}\newline
-Si a est une forme bilin\'eaire continue sur un espace de Hilbert r\'eel H (ou une forme sesquilin\'eaire complexe continue sur un Hilbert complexe), alors il existe une unique application A de H dans H telle que, pour tout $(u, v) \in H \times H$, on ait $a(u, v) = <Au, v>$. De plus, A est lin\'eaire et continue, de norme \'egale \`a celle de a.
-$$
-\exists !\,A\in\mathcal{L}(H),\ \forall (u,v)\in H\times H,\ a(u,v)=\langle Au,v \rangle.
-$$
-Cela r\'esulte imm\'ediatement de l'isomorphisme canonique (isom\'etrique) entre l'espace norm\'e des formes bilin\'eaires continues sur $H \times H$ et celui des applications lin\'eaires continues de H dans son dual, et de l'isomorphisme ci-dessus entre ce dual et H lui-m\^eme.
+Si $a$ est une forme bilin\'eaire continu\'e sur un espace de Hilbert r\'eel $\mathcal{H}$ (ou une forme sesquilin\'eaire complexe continue sur un Hilbert complexe),
+alors il existe une unique application $A$ de $\mathcal{H}$ dans $\mathcal{H}$ telle que,
+pour tout $(u, v) \in \mathcal{H} \times \mathcal{H}$, on ait $a(u, v) = <Au, v>$.
+De plus, A est lin\'eaire et continue, de norme \'egale \`a celle de a.
+$$ \exists !\,A\in\mathcal{L}(H),\ \forall (u,v)\in H\times H,\ a(u,v)=\langle Au,v \rangle $$
+Cela r\'esulte imm\'ediatement de l'isomorphisme canonique(isom\'etrique) entre l'espace norm\'e des formes bilin\'eaires continues sur
+$\mathcal{H} \times \mathcal{H}$ et celui des applications lin\'eaires continues de H dans son dual, et de l'isomorphisme ci-dessus entre ce dual et H lui-m\^eme.
 \bigskip
 
 \textbf{Th\'eor\`eme de Lax-Milgram}\newline
-Appliqu\'e \`a certains probl\`emes aux d\'eriv\'ees partielles exprim\'es sous une formulation faible (appel\'ee \'egalement formulation variationnelle). Il est notamment l'un des fondements de la m\'ethode des \'el\'ements finis.
+Appliqu\'e \`a certains probl\`emes aux d\'eriv\'ees partielles exprim\'es sous une formulation faible (appel\'ee \'egalement formulation variationnelle).
+Il est notamment l'un des fondements de la m\'ethode des \'el\'ements finis.
 Soient :
 \begin{itemize}
 \item $\mathcal{H}$ un espace de Hilbert r\'eel ou complexe muni de son produit scalaire not\'e $\langle.,.\rangle$, de norme associ\'ee not\'ee $\|.\|$
 \item a(.\, ,\,.) une forme bilin\'eaire (ou une forme sesquilin\'eaire si $\mathcal{H}$ est complexe) qui est
 	\begin{itemize}
 	\item continue sur $\mathcal{H}\times\mathcal{H} : \exists\,c>0, \forall (u,v)\in \mathcal{H}^2\,,\ |a(u,v)|\leq c\|u\|\|v\|$
-	\item coercive sur $\mathcal{H}$ (certains auteurs disent plut\^ot $\mathcal{H}$-elliptique) : $\exists\,\alpha>0, \forall u\in\mathcal{H}\,,\ a(u,u) \geq \alpha\|u\|^2$
+	\item coercive sur $\mathcal{H}$ (certains auteurs disent plut\^ot $\mathcal{H}$-elliptique):
+		$\exists\,\alpha>0, \forall u\in\mathcal{H}\,,\ a(u,u) \geq \alpha\|u\|^2$
 	\end{itemize}
 \item $L(.)$ une forme lin\'eaire continue sur $\mathcal{H}$
 \end{itemize}
@@ -275,7 +272,8 @@ Sous ces hypoth\`eses il existe un unique $u$ de $\mathcal{H}$ tel que l'\'equat
 $$
 \quad \exists!\ u \in \mathcal{H},\ \forall v\in\mathcal{H},\quad a(u,v)=L(v)
 $$
-Si de plus la forme bilin\'eaire a est sym\'etrique, alors  $u$  est l'unique \'el\'ement de $\mathcal{H}$ qui minimise la fonctionnelle $J:\mathcal{H}\rightarrow\R$ d\'efinie par $J(v) = \tfrac{1}{2}a(v,v)-L(v)$ pour tout $v$ de $\mathcal{H}$, c'est-\`a-dire :
+Si de plus la forme bilin\'eaire a est sym\'etrique, alors $u$ est l'unique \'el\'ement de $\mathcal{H}$ qui
+minimise la fonctionnelle $J:\mathcal{H}\rightarrow\R$ d\'efinie par $J(v) = \tfrac{1}{2}a(v,v)-L(v)$ pour tout $v$ de $\mathcal{H}$, c'est-\`a-dire :
 $$
 \quad \exists!\ u \in \mathcal{H},\quad J(u) = \min_{v\in\mathcal{H}}\ J(v)
 $$
@@ -534,7 +532,8 @@ A max-plus algebra is a \textbf{semiring(demi-anneau):(半环是类似于环但�
 $\varepsilon = -\infty$, equipped with maximum and addition as the two binary operations.
 
 \textbf{Scalar operations}\\
-Let a and b be real scalars or $\varepsilon$. Then the operations maximum (implied by the max operator  $\oplus$) and addition (plus operator  $\otimes$) for these scalars are defined as
+Let a and b be real scalars or $\varepsilon$.
+Then the operations maximum(implied by the max operator $\oplus$) and addition(plus operator $\otimes$) for these scalars are defined as
 $$ a \oplus b = \max(a,b) $$
 $$ a \otimes b = a + b $$
 Similar to the conventional algebra, all $\otimes$ - operations have a higher precedence than $\oplus$ - operations.
