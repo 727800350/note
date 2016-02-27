@@ -572,6 +572,39 @@ $$rang(AB)\leqslant rang(A)$$
 $$rang(A+B)\leqslant rang(A) + rang(B)$$
 $$\si k \neq 0, rang(kA) = rang(A)$$
 
+\section{可逆矩阵}
+\begin{itemize}
+\item Si $A$ inversible, alors $A^t$ inversible et $(A^t)^{-1} = (A^{-1})^t$
+$$
+A \cdot A^{-1} = 1
+\Rightarrow (A \cdot A^{-1})^t = 1^t = 1
+\Rightarrow (A^{-1})^t \cdot A^t = 1
+\Rightarrow (A^t)^{-1} = (A^{-1})^t
+$$
+\item 用一个可逆矩阵左(右)乘一个矩阵$A$, 不改变$A$的rang.
+\end{itemize}
+
+\begin{question}
+Si $A$ une matrice carr\'ee et $A^2 = I$, 称$A$为对合矩阵. 设$A, B \in M_{n \times n}(K)$.
+证明: 若$A, B$都为对合矩阵, 且 $|A| + |B| = 0$, 那么 $A + B, I + AB$ 都不可逆. \\
+\end{question}
+\begin{proof}
+这里的绝对值符号应该是表示 det 的意思.
+$$
+A^2 = I
+\Rightarrow det(A^2) = det(I) = 1
+\Rightarrow (det(A))^2 = 1
+\Rightarrow det(A) = +1 \ou -1
+$$
+不妨设 $det(A) = 1, det(B) = -1$.
+$$|A| \cdot |A + B| = |A(A + B)| = |A^2 + AB| = |I + AB|$$
+$$|A + B| \cdot |B| = |(A + B)B| = |AB + B^2| = |AB + I|$$
+因此 $$|A + B| = |A| \cdot |A + B| = |A + B| \cdot |B| = -|A + B|$$
+$$\Rightarrow |A + B| = 0$$
+$$\Rightarrow |I + AB| = 0$$
+因此$A + B, I + AB$ 都不可逆.
+\end{proof}
+
 %############################################################## Algebre 2 第二章 #########################################################################
 \chapter{D\'etermiants}
 
