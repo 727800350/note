@@ -307,6 +307,21 @@ orthonormales pour le produit scalaire de $L^2(\Omega)$
 \end{note}
 
 \section{矩阵的运算}
+$$
+A \times B = 
+\begin{bmatrix}
+	A_1 & A_2
+\end{bmatrix}
+\times
+\begin{bmatrix}
+	B_1 \\
+	B_2
+\end{bmatrix}
+=
+A_1 \times B_1 + A_2 \times B_2
+$$
+$B$对$A$进行列变换, $A$对$B$进行行变换.
+
 \subsection{列向量组}
 若$A$的列向量组为$\alpha_1,\ldots,\alpha_n$,那么我们可以把$A$写成:$A=(\alpha_1,\ldots,\alpha_n)$ \newline
 设$A=(a_{ij})_{s\times n},B=(b_{ij})_{n\times m},A$ 的列向量组为$\alpha_1,\ldots,\alpha_n$. \newline
@@ -336,8 +351,8 @@ AB=(\alpha_1,\ldots,\alpha_n)
 $$
 $=(b_{11}\alpha_1+b_{21}\alpha_2+\dots+b_{n1}\alpha_n,b_{12}\alpha_1+b_{22}\alpha_2+\dots+b_{n2}\alpha_n,\ldots,b_{1m}\alpha_1+b_{2m}\alpha_2+\dots+b_{nm}\alpha_n,)$
 \begin{note}
-  B对A进行列变换 \newline
-  A乘以B可以看做把A的列向量组分别与B的每一列的对应元素的成绩之和作为AB的相应的列向量.
+B对A进行列变换 \newline
+A乘以B可以看做把A的列向量组分别与B的每一列的对应元素的成绩之和作为AB的相应的列向量.
 \end{note}
 
 \subsection{行向量组}
@@ -443,22 +458,25 @@ $$
 特别的,两个n级对角矩阵的乘积还是n级对角矩阵,并且是把相应的主对角元相乘
 
 \subsection{三角矩阵}
+\noindent
 上三角矩阵(上面的三角不为0,而下面的三角为零的矩阵) \newline
 下三角矩阵(下面的三角不为0,而上面的三角为零的矩阵)
 \begin{note}
   用初等矩阵左(右)乘一个矩阵A,就相当于对A进行了一次相应的初等行(列)变换
 \end{note}
+
 \subsection{基本矩阵}
-只有一个元素为1,其余元素均为0的矩阵 \newline
-(i,j)元为1的基本矩阵记为$E_{ij}$
-任意一个矩阵A都可以记为$A=\sum_{i=1}^s {\sum_{j=1}^n {a_{ij}E_{ij}}}$
-\newline
-用$E_{ij}$左(右)乘一个矩阵A,相当于把A的第j行搬到第i行(第i 列搬到第j 列)的位置,然后乘积所得矩阵的其余行均为0 \newline
+只有一个元素为1,其余元素均为0的矩阵, (i,j)元为1的基本矩阵记为$E_{ij}$
+\begin{itemize}
+\item 任意一个矩阵A都可以记为$A=\sum_{i=1}^s {\sum_{j=1}^n {a_{ij}E_{ij}}}$
+\item 用$E_{ij}$左乘一个矩阵A,相当于把A的第j行搬到第i行的位置,然后乘积所得矩阵的其余行均为0
+\item 用$E_{ij}$右乘一个矩阵A,相当于把A的第i列搬到第j列的位置,然后乘积所得矩阵的其余列均为0
+\end{itemize}
 $$
 E_{ij}E_{kl}=
 \begin{cases}
-  E_{il} & si~ k=j \\
-  0 & si k ~\neq j
+  E_{il} & \si k=j \\
+  0 & \si k \neq j
 \end{cases}
 $$
 
