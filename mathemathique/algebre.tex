@@ -725,6 +725,44 @@ $$ D^t = (P^{-1} \cdot A \cdot P)^t = P^t \cdot A^t \cdot (P^{-1})^t = P^t \cdot
 $$ \Rightarrow D^t \sim A^t \Rightarrow A \sim D \sim D^t \sim A^t \Rightarrow A \sim A^t $$
 \end{proof}
 
+\section{矩阵的特征值与特征向量}
+设$A \in M_n(K)$, 则$A$的特征多项式为 $det(\lambda I - A)$ 为一个$n$次多项式 \\
+$\lambda^n$的系数为$1$,
+$\lambda^{n - 1}$的系数为$-tr(A)$,
+常数项为 $(-1)^{detA}$
+
+\begin{example}
+证明: 幂零矩阵一定有特征值, 并且它的特征值一定为0
+\end{example}
+\begin{proof}
+设幂零矩阵$A$的幂零指数为$l$, 则$A^l = 0$.
+
+存在性:
+$$
+\Rightarrow det(A^l) = 0
+\Rightarrow (detA)^l = 0
+\Rightarrow detA = 0
+\Rightarrow det(0 \cdot I - A) = (-1)^n detA = 0
+\Rightarrow 0 \in SpecA
+$$
+
+唯一性:
+设$\lambda \in SpecA$, 那么
+$\exists x \in K^n \et x \neq 0$, 使得 $A x = \lambda x$.
+$$\Rightarrow A^2 x = A \cdot \lambda x = \lambda (Ax) = \lambda^2 x$$
+以此类推得到
+$$ A^l x = \lambda^l x \Rightarrow \lambda^l x = 0$$
+而$x \neq 0$, 所以$\lambda^l = 0 \Rightarrow \lambda = 0$
+\end{proof}
+
+\begin{example}
+证明: 幂等矩阵一定有特征值, 且为1或者0.
+\end{example}
+\begin{proof}
+幂等矩阵$A$, $A^2 = A$
+$$ \lambda x = A x = A^2 x = A \cdot Ax = A \cdot \lambda x = \lambda Ax = \lambda^2 x \Rightarrow \lambda = 1 \ou 0$$
+\end{proof}
+
 \chapter{Max-plus algebra}
 A max-plus algebra is a \textbf{semiring(demi-anneau):(半环是类似于环但没有加法逆元的代数结构)} over the union of real numbers and
 $\varepsilon = -\infty$, equipped with maximum and addition as the two binary operations.
