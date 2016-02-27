@@ -470,6 +470,55 @@ $$
 \item 用$E_{ij}$左乘一个矩阵A,相当于把A的第j行搬到第i行的位置,然后乘积所得矩阵的其余行均为0
 \item 用$E_{ij}$右乘一个矩阵A,相当于把A的第i列搬到第j列的位置,然后乘积所得矩阵的其余列均为0
 \end{itemize}
+
+矩阵$A$的行向量组为$r_1, r_2, \ldots, r_s$, 列向量组为$c_1, c_2, \ldots, c_n$, 则
+$$
+E_{ij} \times A
+=
+\begin{bmatrix}
+	0 & 0 & \cdots & 0 & 0 \\
+	0 & 0 & \cdots & 0 & 0 \\
+	0 & 0 & \cdots & 1_{ij} & 0\\
+	0 & 0 & \cdots & 0 & 0\\
+\end{bmatrix}
+\times
+\begin{bmatrix}
+	r_1 \\
+	r_2 \\
+	\vdots \\
+	r_s \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	0 \\
+	\vdots \\
+	0_{i - 1} \\
+	r_j \\
+	0_{i + 1} \\
+	\vdots \\
+	0 \\
+\end{bmatrix}
+$$
+
+$$
+A \times E_{ij}
+=
+\begin{bmatrix}
+	c_1 & c_2 & \cdots & c_n
+\end{bmatrix}
+\times
+\begin{bmatrix}
+	0 & 0 & \cdots & 0 & 0 \\
+	0 & 0 & \cdots & 0 & 0 \\
+	0 & 0 & \cdots & 1_{ij} & 0\\
+	0 & 0 & \cdots & 0 & 0\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	0 & \cdots & 0_{j - 1} & c_i & 0_{j + 1} & \cdots & 0
+\end{bmatrix}
+$$
+
 $$
 E_{ij}E_{kl}=
 \begin{cases}
@@ -520,9 +569,8 @@ $$
 \end{proof}
 \section{Rang 秩}
 $$rang(AB)\leqslant rang(A)$$
-$$rang(A+B)\leqslant rang(A)+rang(B)$$
-$$  \mathrm{si} ~k \neq 0, rang(kA)=rang(A)$$
-
+$$rang(A+B)\leqslant rang(A) + rang(B)$$
+$$\si k \neq 0, rang(kA) = rang(A)$$
 
 %############################################################## Algebre 2 第二章 #########################################################################
 \chapter{D\'etermiants}
