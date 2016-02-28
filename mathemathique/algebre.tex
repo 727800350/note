@@ -327,7 +327,10 @@ $\forall x \in Img B$, 从上面的结论可知: $x = B x,~ A x = 0$ \\
 $$\therefore A = P_U,~ U = Img A;~ B = P_W,~ W = Img B$$
 \end{proof}
 
-\section{线性映射的核与像 Ker et Img}
+\section{endormorphisme}
+Si $u$ est un endomorphisme diagonalisable, alors $tr(u)$ est la some des valeurs propres de $u$ compt\'ees avec leurs multiplicit\'es.
+
+\section{核与像 Ker et Img}
 \begin{theorem}
 Soit $f:V \rightarrow W$ une application lin\'eaire. Soit $w \in W$ un vecteur donn\'e. On note
 $$ S=\{x \in V|f(x)=w\} $$
@@ -336,6 +339,61 @@ Alors $S$ est soit l'ensemble vide, soit un ensemble de la forme $\{x_0+v|v \in 
 \begin{note}
 想一想解线性微分方程的时候,我们也用到了这种思想,先找通解,然后再找一个特解,组合在一起,就构成了微分方程的完整解.
 \end{note}
+
+\begin{theorem}
+设$A: V \rightarrow W$ application lineaire, $dim V = n$.
+在$KerA$中取一个base $(\alpha_1, \alpha_2, \ldots, \alpha_m)$.
+然后把它扩充成为$V$的一个base,即$(\alpha_1, \alpha_2, \ldots, \alpha_m, \alpha_{m + 1}, \alpha_{m + 2}, \ldots, \alpha_n)$.
+于是$Img A = Vect(A \alpha_{m + 1}, A \alpha_{m + 2}, \ldots, A \alpha_n)$.
+\end{theorem}
+\begin{proof}
+$$Ker A = Vect(\alpha_1, \alpha_2, \ldots, \alpha_m)$$
+$$V = Vect(\alpha_1, \alpha_2, \ldots, \alpha_m, \alpha_{m + 1}, \alpha_{m + 2}, \ldots, \alpha_n)$$
+$$dim Ker A + dim Img A = dim V \Rightarrow dim Img A = n - m$$
+$$A \alpha_i \in Img A,~ \forall i \in [[1, n]]$$
+$$A \alpha_i = 0,~ \forall i \in [[1, m]]$$
+$\alpha_i,~ i \in [[m + 1, n]]$ 刚好有$n - m$个, 猜测$A \alpha_i,~ i \in [[m + 1, n]]$就是$Img A$的一个base. \\
+只需要证明$(A \alpha_{m + 1}, A \alpha_{m + 2}, \ldots, A \alpha_n)$是一个famille libre 就可以了. \\
+也就是需要能够从 $k_{m + 1} A \alpha_{m + 1} + k_{m + 2} A \alpha_{m + 2} + \ldots + k_n A \alpha_n = 0$中推断出 $k_{m + 1} = k_{m + 2} = \cdots = k_n = 0$.
+
+$$k_{m + 1} A \alpha_{m + 1} + k_{m + 2} A \alpha_{m + 2} + \ldots + k_n A \alpha_n = 0$$
+$$A(k_{m + 1} \alpha_{m + 1} + k_{m + 2} \alpha_{m + 2} + \ldots + k_n \alpha_n) = 0$$
+$$k_{m + 1} \alpha_{m + 1} + k_{m + 2} \alpha_{m + 2} + \ldots + k_n \alpha_n \in Ker A$$
+$$k_{m + 1} \alpha_{m + 1} + k_{m + 2} \alpha_{m + 2} + \ldots + k_n \alpha_n \in Vect(\alpha_1, \alpha_2, \ldots, \alpha_m)$$
+而$(\alpha_1, \alpha_2, \ldots, \alpha_m, \alpha_{m + 1}, \alpha_{m + 2}, \ldots, \alpha_n)$是$V$的一个base, 所以是famille libre
+$$\therefore k_{m + 1} = k_{m + 2} = \cdots = k_n = 0$$
+所以$Img A = Vect(A \alpha_{m + 1}, A \alpha_{m + 2}, \ldots, A \alpha_n)$.
+\end{proof}
+
+\begin{example}
+设$V$和$V'$分别为域$F$上$n$维, $s$维的线性空间, $A$为$V$到$V'$的一个线性映射, 它在$V$的一个base与$V'$的一个base下的矩阵为$M(A)$.
+证明:
+\begin{enumerate}
+\item $A$是injective $\Leftrightarrow M(A)$为列满秩矩阵
+\item $A$是surjective $\Leftrightarrow M(A)$为行满秩矩阵
+\end{enumerate}
+\end{example}
+\begin{proof}
+$$
+\begin{aligned}
+A \eqnote{est injective} & \Leftrightarrow Ker A = 0 \\
+& \Leftrightarrow dim(Img A) = dim V - dim(Ker A) = n \\
+& \Leftrightarrow rang(A) = n \\
+& \Leftrightarrow rang(M(A)) = n
+\end{aligned}
+$$
+由于$M(A)$为$s \times n$矩阵, 因此$M(A)$为列满秩矩阵.
+
+$$
+\begin{aligned}
+A \eqnote{est surjective} & \Leftrightarrow Img A = V' \\
+& \Leftrightarrow dim(Img A) = dim V' = s \\
+& \Leftrightarrow rank(A) = s \\
+& \Leftrightarrow rank(M(A)) = s \\
+\end{aligned}
+$$
+由于$M(A)$为$s \times n$矩阵, 因此$M(A)$为行满秩矩阵.
+\end{proof}
 
 \textbf{Espace m\'etrique}
 On appelle $(E, d)$ un espace m\'etrique si $ E$  est un ensemble et d une distance sur $E$ .
