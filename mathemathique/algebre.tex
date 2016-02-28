@@ -294,6 +294,39 @@ $$
 $$
 因此$\sigma$是一个 isomorphisme, $C(A) \cong C(B) \Rightarrow dim C(A) = dim C(B)$
 
+\section{正交线性映射}
+\begin{definition}
+线性空间$V$上的两个线性变换$A, B$, 如果满足 $AB = BA = 0$, 那么称$A$与$B$是正交的.
+\end{definition}
+
+\begin{lemma}
+设$U$和$W$为域$F$上线性空间$V$的两个子空间, 且$V = U \bigoplus W$, 则
+$P_U$(le projecteur sur $U$ parall\`element \`a $W$) 与
+$P_W$(le projecteur sur $W$ parall\`element \`a $U$)是正交的幂等变换, 且他们的和为恒等变换, 反之也成立.
+即: 若$A^2 = A, B^2 = B, A + B = I, AB = BA = 0$, 那么$A, B$分别为投影.
+\end{lemma}
+\begin{proof}
+首先需要找到$V$的子空间$U$和$W$, 使得$V = U \bigoplus W$. \\
+$\forall \alpha \in V$, 由$A + B = I$, 得到$\alpha  = I \alpha = (A + B) \alpha = A \alpha + B \alpha$. \\
+因此猜想$U = ImgA, W = ImgB$. \\
+由$A(0) = 0$得到 $Img A \neq \emptyset$ \\
+$A \alpha + A r = A(\alpha + r) \in Img A$ \\
+$k A \alpha = A(k \alpha) \in Img A$ \\
+所以$ImgA$是$V$的一个sous-espace vectoriel. \\
+同理$ImgB$是$V$的一个sous-espace vectoriel.
+
+$\forall \alpha \in V$ 有 $\alpha  = A \alpha + B \alpha$. 因此$V = Img A + Img B$ \\
+任取$x \in (Img A) \cap (Img B)$, 则$\exists \alpha \in Img A, \beta \in Img B$, 使得 $x = A \alpha, x = B \beta$ \\
+$$x = A \alpha = A^2 \alpha = A \cdot A \alpha = A \cdot x = A \cdot B \beta = AB \beta = 0 \cdot \beta = 0 $$
+$$\Rightarrow Img A \cap Img B = 0$$
+结合 $V = Img A + Img B$ 得到:
+$$V = Img A \bigoplus Img B$$
+
+$\forall x \in Img A$, 从上面的结论可知: $x = A x,~ B x = 0$ \\
+$\forall x \in Img B$, 从上面的结论可知: $x = B x,~ A x = 0$ \\
+$$\therefore A = P_U,~ U = Img A;~ B = P_W,~ W = Img B$$
+\end{proof}
+
 \section{线性映射的核与像 Ker et Img}
 \begin{theorem}
 Soit $f:V \rightarrow W$ une application lin\'eaire. Soit $w \in W$ un vecteur donn\'e. On note
