@@ -327,8 +327,32 @@ $\forall x \in Img B$, 从上面的结论可知: $x = B x,~ A x = 0$ \\
 $$\therefore A = P_U,~ U = Img A;~ B = P_W,~ W = Img B$$
 \end{proof}
 
-\section{endormorphisme}
+\section{endomorphisme}
 Si $u$ est un endomorphisme diagonalisable, alors $tr(u)$ est la some des valeurs propres de $u$ compt\'ees avec leurs multiplicit\'es.
+
+\begin{example}
+\end{example}
+Soit $p: E \rightarrow E$ un endomorphisme et $p \circ p \circ p = p$.
+证明: $p$ est un projecteur
+\begin{proof}
+$$
+\begin{aligned}
+\forall x \in E,~ p \circ p \circ p(x) = p(x)
+& \Leftrightarrow p(p \circ p(x)) - p(x) = 0 \\
+& \Leftrightarrow p(p \circ p(x) - x) = 0 \\
+& \Leftrightarrow p \circ p(x) - x \in Ker p \\
+\end{aligned}
+$$
+$$\forall x \in E,~ x = (x - p \circ p(x)) + p \circ p(x)$$
+$$(x - p \circ p(x)) \in Ker p \et p \circ p(x) \in Img p$$
+$$\therefore E = Ker p + Img p$$
+
+Si $v \in Ker p \cap Img p$, alors $\exists w \in E$, telle que $p(w) = v$ et $p(v) = 0$
+$$p(p(w)) = p(v) = 0$$
+$$v = p(w) = p \circ p \circ p(w) = p(0) = 0$$
+$$\therefore Ker p \cap Img p = {0} \Rightarrow E = Ker p \oplus Img p$$
+Donc $p$ est un projecteur sur $Img p$.
+\end{proof}
 
 \section{核与像 Ker et Img}
 \begin{theorem}
