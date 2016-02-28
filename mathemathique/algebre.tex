@@ -143,6 +143,25 @@ $\Leftrightarrow$ $P$ inversible
 \end{attention}
 
 \chapter{线性映射 Application lin\`eaire}
+$f$ application lin\`eaire de $V$ \`a $W$, alors:
+\begin{enumerate}
+\item $f$ injective, $\alpha_1, \alpha_2, \ldots, \alpha_r$ libre $\Rightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r)$ libre.
+	$f$ n'est pas injective时, 可以把线性无关的向量组映射为现行相关的向量组
+\item $f$ surjective, $\alpha_1, \alpha_2, \ldots, \alpha_r$ g\'en\'eratrice $\Rightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r)$ g\'en\'eratrice 
+\item $f$ isomorphisme
+	$$
+	\begin{cases}
+	\begin{aligned}
+			\alpha_1, \alpha_2, \ldots, \alpha_r \eqnote{libre} & \Leftrightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r) \eqnote{libre} \\
+	\alpha_1, \alpha_2, \ldots, \alpha_r \eqnote{li\'ees} & \Leftrightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r) \eqnote{li\'ees} \\
+	\alpha_1, \alpha_2, \ldots, \alpha_r \eqnote{g\'en\'eratrice} & \Leftrightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r) \eqnote{g\'en\'eratrice} \\
+	\alpha_1, \alpha_2, \ldots, \alpha_r \eqnote{base de} V & \Leftrightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r) \eqnote{base de} W
+	\end{aligned}
+	\end{cases}
+	$$
+\item $\alpha_1, \alpha_2, \ldots, \alpha_r$ li\'ees $\Rightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r)$ li\'ees
+\end{enumerate}
+
 \section{域$F$上线性空间的同构 - isomorphisme}
 $\sigma: V \rightarrow V'$, $\sigma$ est un isomorphisme entre $V$ et $V'$, 记作$V \cong V'$(latex 符号 \verb+\cong+), alors
 \begin{enumerate}
@@ -246,6 +265,34 @@ $\Rightarrow \beta_j$在$(\alpha_1, \alpha_2, \ldots, \alpha_n)$的坐标为$A$�
 $$ \Rightarrow \sigma(\beta_1, \beta_2, \ldots, \beta_s) = (A_1, A_2, \ldots, A_s) $$
 $$ dim(\beta_1, \beta_2, \ldots, \beta_s) = dim \sigma(\beta_1, \beta_2, \ldots, \beta_s) = dim(A_1, A_2, \ldots, A_s) = rank(A) $$
 \end{proof}
+
+\begin{example}
+设$A, B \in M_n(F)$ \\
+证明: 若$A \sim B$, 则$C(A) \cong C(B)$, 从而 $dim C(A) = dim C(B)$.\\
+$C(A)$: 与$A$可交换的矩阵.
+\end{example}
+\begin{proof}
+\end{proof}
+$A \sim B \Rightarrow \exists P \in M_n(F)$ inversible telle que $B = P^{-1} \cdot A \cdot P$. 于是
+$$
+\begin{aligned}
+\forall x \in C(A)
+& \Leftrightarrow xA = Ax \\
+& \Leftrightarrow P^{-1} \cdot xA \cdot P = P^{-1} \cdot Ax \cdot P \\
+& \Leftrightarrow P^{-1} \cdot x \cdot P P^{-1} \cdot A \cdot P = P^{-1} \cdot A \cdot P P^{-1} \cdot x \cdot P \\
+& \Leftrightarrow P^{-1} \cdot x \cdot P B = B P^{-1} \cdot x \cdot P \\
+& \Leftrightarrow (P^{-1} \cdot x \cdot P) B = B (P^{-1} \cdot x \cdot P) \\
+& \Leftrightarrow (P^{-1} \cdot x \cdot P) \in C(B)
+\end{aligned}
+$$
+所以可以令
+$$
+\begin{aligned}
+\sigma: C(A) & \rightarrow C(B) \\
+		 x   & \rightarrow P^{-1} x P
+\end{aligned}
+$$
+因此$\sigma$是一个 isomorphisme, $C(A) \cong C(B) \Rightarrow dim C(A) = dim C(B)$
 
 \section{线性映射的核与像 Ker et Img}
 \begin{theorem}
