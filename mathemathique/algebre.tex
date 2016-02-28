@@ -927,6 +927,114 @@ $$
 $$
 \end{proof}
 
+\subsection{最小二乘解}
+最佳逼近元: 设$U$为实内积空间$V$的一个子空间, 对于$\alpha \in V$, 如果存在$\delta \in V$,使得
+$$\forall r \in U, d(\alpha, \delta) \leq d(\alpha, r)$$
+那么称$\delta$为$\alpha$在$U$上的最佳逼近元.
+(若$U$为有限维的, 则$\delta$为$\alpha$在$U$上的正交投影)
+
+实际应用: 在许多实际问题中, 需要研究一个变量$y$与其他一些变量$x_1, x_2, \ldots, x_n$之间的关系. \\
+经过实际的观测和分析, 假定变量$y$与$x_1, x_2, \ldots, x_n$之间呈线性关系:
+$y = k_1 x_1 + k_2 x_2 + \ldots + k_n x_n$.\\
+为了去顶$k_1, K_2, \ldots, k_n$, 需要观测$m$次, 得到下面数值:
+
+\begin{center}
+\begin{tabular}{c|cccc}
+$y$ & $x_1$ & $x_2$ & $\ldots$ & $x_n$ \\ \hline
+$b_1$ & $a_{11}$ & $a_{12}$ & $\ldots$ & $a_{1n}$ \\
+$b_2$ & $a_{21}$ & $a_{22}$ & $\ldots$ & $a_{2n}$ \\
+		$\vdots$ \\
+$b_m$ & $a_{m1}$ & $a_{m2}$ & $\ldots$ & $a_{mn}$
+\end{tabular}
+\end{center}
+如果观测绝对精确, 只需要方程个数$m$与未知数个数$n$相等即可.
+但是观测中, 肯定会有误差, 因此需要 $m > n$, 将上面的数据写成方程组的形式如下:
+$$
+\begin{cases}
+\begin{aligned}
+a_{11} k_1 + a_{12} k_2 + \ldots + a_{1n} k_n & = b_1 \\
+a_{21} k_1 + a_{22} k_2 + \ldots + a_{2n} k_n & = b_2 \\
+\vdots & \\
+a_{m1} k_1 + a_{m2} k_2 + \ldots + a_{mn} k_n & = b_m \\
+\end{aligned}
+\end{cases}
+$$
+方程个数$m >$未知数个数$n$, 这时方程组可能无解. \\
+这时, 我们就像找一组数$(c_1, c_2, \ldots, c_n)$, 使得$\forall k_1, k_2, \ldots, k_n \in R$.
+\begin{equation}
+\sum_{i = 1}^m (a_{i1} c_1 + a_{i2} c_2 + \ldots + a_{in} c_n - b_i)^2
+\leq
+\sum_{i = 1}^m (a_{i1} k_1 + a_{i2} k_2 + \ldots + a_{in} k_n - b_i)^2
+\label{eq.least_square.def}
+\end{equation}
+此时, 我们把$(c_1, c_2, \ldots, c_n)'$称为线性方程组的最小二乘解. \\
+我们将方程组的系数矩阵记为$A$, 同时令
+$x = (k_1, k_2, \ldots, k_n)^t$,
+$\alpha = (c_1, c_2, \ldots, c_n)^t$,
+$\beta = (b_1, b_2, \ldots, b_m)^t$
+$$
+\begin{cases}
+\begin{aligned}
+a_{11} c_1 + a_{12} c_2 + \ldots + a_{1n} c_n - b_1 \\
+a_{21} c_1 + a_{22} c_2 + \ldots + a_{2n} c_n - b_2 \\
+\vdots \\
+a_{m1} c_1 + a_{m2} c_2 + \ldots + a_{mn} c_n - b_m \\
+\end{aligned}
+\end{cases}
+$$
+上面的方程组可以写成矩阵的形式:
+$$A \alpha - \beta$$
+\eqref{eq.least_square.def}的左边为向量$A \alpha - \beta$的长度的平方, 也就是向量$\beta$ 与 向量 $A \alpha$的距离的平方. \\
+令$U = Vect(A_1, A_2, \ldots, A_n)$, 则
+$$
+A \cdot \alpha
+=
+\begin{bmatrix}
+A_1 & A_2 & \cdots & A_n
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+c_1 \\
+c_2 \\
+\vdots \\
+c_n
+\end{bmatrix}
+= c_1 A_1 + c_2 A_2 + \ldots + c_n A_n \in U
+$$
+
+$$
+A \cdot x
+=
+\begin{bmatrix}
+A_1 & A_2 & \cdots & A_n
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+k_1 \\
+k_2 \\
+\vdots \\
+k_n
+\end{bmatrix}
+= k_1 A_1 + k_2 A_2 + \ldots + k_n A_n \in U,~ \forall k_1, k_2, \ldots, k_n \in R
+$$
+
+于是:
+$$
+\begin{aligned}
+\alpha \eqnote{为线性方程组} A x = \beta \eqnote{的最小二乘解}
+& \Leftrightarrow \norm{A \alpha - \beta}^2 \leq \norm{A x - \beta}^2,~ \forall x \in R^m \\
+& \Leftrightarrow d(A \alpha, \beta) \leq d(r, \beta),~ \forall r \in U \\
+& \Leftrightarrow A \alpha \eqnote{为} \beta \eqnote{在} U \eqnote{上的正交投影} \\
+& \Leftrightarrow \beta - A \alpha \in U^{\perp} \\
+& \Leftrightarrow <\beta - A \alpha, \alpha_j> = 0,~ j = 1,2, \ldots, n \\
+& \Leftrightarrow \alpha_j^{'} (\beta - A \alpha) = 0,~ j = 1,2, \ldots, n \\
+& \Leftrightarrow A^t (\beta - A \alpha) = 0 \\
+& \Leftrightarrow A^t A \alpha = A^t \beta \\
+& \Leftrightarrow \alpha \eqnote{为线性方程组} A^t A x = A^t \beta \eqnote{的解}
+\end{aligned}
+$$
+这样, 我们就把求线性方程组$A x = \beta$最小二乘解的问题化为求解线性方程组$A^t A x = A^t \beta$的解($A^t A$为方阵).
+
 \section{$K^n$到$K^s$的线性映射}
 设$A \in M_{s \times n}(K)$, $A$的列向量组为$(\alpha_1, \alpha_2, \ldots, \alpha_n)$.
 则
