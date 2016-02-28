@@ -142,19 +142,35 @@ $\Leftrightarrow$ $P$ inversible
   implique $ V = W_1 \bigoplus \dots \bigoplus W_n$
 \end{attention}
 
-\begin{theorem}
-  Soit $f:V \rightarrow W$ une application lin\'eaire. Soit $w \in W$ un vecteur donn\'e. On note
-  $$
-  S=\{x \in V|f(x)=w\}
-  $$
-  Alors $S$ est soit l'ensemble vide, soit un ensemble de la forme $\{x_0+v|v \in ker f\}$, o\`u $x_0$ est une solution particuli\`ere de l'\'equation $f(x_0)=w$.
+\chapter{线性映射 Application lin\`eaire}
+\section{域$F$上线性空间的同构 - isomorphisme}
+$\sigma: V \rightarrow V'$, $\sigma$ est un isomorphisme entre $V$ et $V'$, 记作$V \cong V'$(latex 符号 \verb+\cong+), alors
+\begin{enumerate}
+\item 若$\alpha = (\alpha_1, \alpha_2, \ldots, \alpha_n)$为$V$的一个base, 则$\beta = (\sigma(\alpha_1), \sigma(\alpha_2), \ldots, \sigma(\alpha_n))$为$V'$的一个base.
+\item 若$v \in V$在base $\alpha$下的坐标为$(a_1, a_2, \ldots, a_n)^t$,
+	那么向量$\sigma(v) \in V'$在base $\beta$下的坐标为$(\sigma(a_1), \sigma(a_2), \ldots, \sigma(a_n))^t$
+\item $V$中向量组$x_1, x_2, \ldots, x_s$线性相关, 当且仅当$\sigma(x_1), \sigma(x_2), \ldots, \sigma(x_s)$线性相关.
+	\begin{proof}
+	$$dim(x_1, x_2, \ldots, x_s) = dim(\sigma(x_1), \sigma(x_2), \ldots, \sigma(x_s))$$
+	\end{proof}
+\item 若$U$为$V$的sous-espace vectoriel, 那么$\sigma(U)$为$V'$的一个sous-espace vectoriel;
+		同时如果$U$为有限维的, 那么$dim \sigma(U) = dim U$
+\end{enumerate}
+
+\begin{theorem}[维数决定同构]
+域$F$上两个有限维线性空间同构的充要条件是他们的维数相等.
 \end{theorem}
-\begin{note}
-  想一想解线性微分方程的时候,我们也用到了这种思想,先找通解,然后再找一个特解,组合在一起,就构成了微分方程的完整解.
-\end{note}
+根据上面的定理, 域$F$上任何一个$n$维线性空间$V$都与$F^n$同构, 并且可建立如下$V$到$F^n$的一个同构.\\
+取$V$的一个base $(\alpha_1, \alpha_2, \ldots, \alpha_n)$, 取$F^n$的标准基base canonique, 令
+$$
+\begin{aligned}
+\sigma: V & \rightarrow F^n \\
+v = \sum_{i = 1}^n a_i \alpha_i & \rightarrow \sum_{i = 1}^n a_i \epsilon_i = \begin{bmatrix}a_1 \\ a_2 \\ \vdots \\ a_n \end{bmatrix}
+\end{aligned}
+$$
+即把$V$中每一个向量$v$对应到它在$V$的一个base canonique下的坐标.
 
 \begin{theorem}
-
 \begin{enumerate}
 \item Soit $V$ un espace vectoriel de dimension finie $n$ sur le corps commutatif $K$.  Alors il existe un isomorphisme de $K^n$ vers $V$.
 \item S'il existe un isomorphisme de $K^n$ vers $V$, alors $V$ est de dimension $n$.
@@ -165,11 +181,8 @@ $\Leftrightarrow$ $P$ inversible
 \end{theorem}
 
 \begin{proof}
-
 1. Soit $(e_1,\dots, e_n)$ une base de $V$. On d\'efinit l'application $u : K^n \to V$ comme suit:
-$$
-u(\lambda_1,\dots ,\lambda_n) = \sum_{i=1}^n \lambda_i \cdot e_i
-$$
+$$ u(\lambda_1,\dots ,\lambda_n) = \sum_{i=1}^n \lambda_i \cdot e_i $$
 Il est \'evident que $u$ est une application lin\'eaire. Comme $(e_i)$ est une famille g\'en\'eratrice de $V$, il est
 \'egalement clair que $u$ est surjective. Reste \`a montrer l'injectivit\'e de $u$.
 \medskip
@@ -181,21 +194,15 @@ Comme $u$ est une application lin\'eaire surjective et injective, il s'agit d'un
 
 2. Soit $u: K^n \to V$ un isomorphisme. On consid\`ere une base $(e_1,\dots ,e_n)$ de $K^n$ (par exemple la
 base canonique). On regarde maintenant la famille
-$$
-(f_1,\dots ,f_n) = (u(e_1), \dots, u(e_n))
-$$
+$$ (f_1,\dots ,f_n) = (u(e_1), \dots, u(e_n)) $$
 Pour montrer que $V$ est de dimension $n$, il suffit de se convaincre que la famille $(f_i)$ est une base de $V$.
 Montrons d'abord qu'elle est libre.
 \medskip
 
 Si $\sum_{i=1}^n \lambda_i \cdot f_i = \sum_{i=1}^n \lambda_i \cdot u(e_i) =0_V$, alors par lin\'earit\'e de $u$ on aura
-$$
-u\left( \sum_{i=1}^n \lambda_i \cdot e_i \right) = 0_V.
-$$
+$$ u\left( \sum_{i=1}^n \lambda_i \cdot e_i \right) = 0_V.  $$
 Or $u$ est un isomorphisme, donc en particulier c'est une injection. Et comme $u(0)=0$, on doit avoir
-$$
- \sum_{i=1}^n \lambda_i \cdot e_i  = 0
-$$
+$$ \sum_{i=1}^n \lambda_i \cdot e_i  = 0 $$
 Mais la famille $(e_i)$ est en particulier une famille libre, donc tous les $\lambda_i$ sont nuls.
 Nous avons prouv?que la famille $(f_i)$ est libre.
 \medskip
@@ -203,12 +210,13 @@ Nous avons prouv?que la famille $(f_i)$ est libre.
 Montrons maintenant que la famille $(f_i)$ est g\'en\'eratrice. Soit $v$ vecteur quelconque de $V$. Puisque
 $u$ est une surjection, il existe un vecteur $t \in K^n$ avec $u(t)=v$. Comme $(e_i)$ est une famille g\'en\'eratrice
 de $K^n$, il existe des scalaires $(\lambda_1, \dots, \lambda_n)$ avec
-$$
-t = \sum_{i=1}^n \lambda_i \cdot e_i
-$$
+$$ t = \sum_{i=1}^n \lambda_i \cdot e_i $$
 Mais alors
 $$
-v= u(t) = u\left(  \sum_{i=1}^n \lambda_i \cdot e_i \right) = \sum_{i=1}^n \lambda_i \cdot u(e_i)
+v
+= u(t)
+= u\left(\sum_{i=1}^n \lambda_i \cdot e_i \right)
+= \sum_{i=1}^n \lambda_i \cdot u(e_i)
 = \sum_{i=1}^n \lambda_i f_i
 $$
 Nous avons montr\'e que $(f_i)$ est bien une famille g\'en\'eratrice. Cette famille est bien une base de $V$.
@@ -221,6 +229,33 @@ Nous avons montr\'e que $(f_i)$ est bien une famille g\'en\'eratrice. Cette fami
 \`a l'espace vectoriel $K^n$. Puisque la composition de deux isomorphismes est encore un isomorphisme, on en d\'eduit
 que $V$ et $W$ sont isomorphes.
 \end{proof}
+
+\begin{example}
+设$(\alpha_1, \alpha_2, \ldots, \alpha_n)$是域$F$上$n$维线性空间$V$的一个base, $(\beta_1, \beta_2, \ldots, \beta_s)$为$V$的一个向量组, 并且
+$(\beta_1, \beta_2, \ldots, \beta_s) = (\alpha_1, \alpha_2, \ldots, \alpha_n) \cdot A$ \\
+证明: $dim(\beta_1, \beta_2, \ldots, \beta_s) = rank(A)$
+\end{example}
+\begin{proof}
+$(\alpha_1, \alpha_2, \ldots, \alpha_n)$为$V$的一个base $\Rightarrow dimV = n \Rightarrow v \cong F^n$. \\
+设$\sigma: \alpha = \sum_{i = 1}^n a_i \alpha_i \rightarrow (a_1, a_2, \ldots, a_n)^t$ 为$V \rightarrow F^n$的一个isomorphisme. \\
+$\sigma$的作用就是取坐标.
+
+$(\beta_1, \beta_2, \ldots, \beta_s) = (\alpha_1, \alpha_2, \ldots, \alpha_n) \cdot A$
+$\Rightarrow \beta_j$在$(\alpha_1, \alpha_2, \ldots, \alpha_n)$的坐标为$A$的第$j$列$A_j$, \\
+因此$\sigma(\beta_j) = A_j,~ j \in [[1, s]]$
+$$ \Rightarrow \sigma(\beta_1, \beta_2, \ldots, \beta_s) = (A_1, A_2, \ldots, A_s) $$
+$$ dim(\beta_1, \beta_2, \ldots, \beta_s) = dim \sigma(\beta_1, \beta_2, \ldots, \beta_s) = dim(A_1, A_2, \ldots, A_s) = rank(A) $$
+\end{proof}
+
+\section{线性映射的核与像 Ker et Img}
+\begin{theorem}
+Soit $f:V \rightarrow W$ une application lin\'eaire. Soit $w \in W$ un vecteur donn\'e. On note
+$$ S=\{x \in V|f(x)=w\} $$
+Alors $S$ est soit l'ensemble vide, soit un ensemble de la forme $\{x_0+v|v \in ker f\}$, o\`u $x_0$ est une solution particuli\`ere de l'\'equation $f(x_0)=w$.
+\end{theorem}
+\begin{note}
+想一想解线性微分方程的时候,我们也用到了这种思想,先找通解,然后再找一个特解,组合在一起,就构成了微分方程的完整解.
+\end{note}
 
 \textbf{Espace m\'etrique}
 On appelle $(E, d)$ un espace m\'etrique si $ E$  est un ensemble et d une distance sur $E$ .
