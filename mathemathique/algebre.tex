@@ -123,7 +123,7 @@ $\Leftrightarrow$ $P$ inversible
 
 \section{子空间的直和}
 \begin{theorem}
-  On a une d\'ecomposition en somme directe de deux sous-espaces $ V = W_1 \bigoplus W_2$  si et seulment si
+  On a une d\'ecomposition en somme directe de deux sous-espaces $ V = W_1 \oplus W_2$  si et seulment si
   $$
     \begin{cases}
     V=W_1+W_2 \\
@@ -139,7 +139,7 @@ $\Leftrightarrow$ $P$ inversible
     \forall i \neq j,W_i\cap W_j=\{0\}
     \end{cases}
   $$
-  implique $ V = W_1 \bigoplus \dots \bigoplus W_n$
+  implique $ V = W_1 \oplus \dots \oplus W_n$
 \end{attention}
 
 \chapter{线性映射 Application lin\`eaire}
@@ -300,13 +300,13 @@ $$
 \end{definition}
 
 \begin{lemma}
-设$U$和$W$为域$F$上线性空间$V$的两个子空间, 且$V = U \bigoplus W$, 则
+设$U$和$W$为域$F$上线性空间$V$的两个子空间, 且$V = U \oplus W$, 则
 $P_U$(le projecteur sur $U$ parall\`element \`a $W$) 与
 $P_W$(le projecteur sur $W$ parall\`element \`a $U$)是正交的幂等变换, 且他们的和为恒等变换, 反之也成立.
 即: 若$A^2 = A, B^2 = B, A + B = I, AB = BA = 0$, 那么$A, B$分别为投影.
 \end{lemma}
 \begin{proof}
-首先需要找到$V$的子空间$U$和$W$, 使得$V = U \bigoplus W$. \\
+首先需要找到$V$的子空间$U$和$W$, 使得$V = U \oplus W$. \\
 $\forall \alpha \in V$, 由$A + B = I$, 得到$\alpha  = I \alpha = (A + B) \alpha = A \alpha + B \alpha$. \\
 因此猜想$U = ImgA, W = ImgB$. \\
 由$A(0) = 0$得到 $Img A \neq \emptyset$ \\
@@ -320,7 +320,7 @@ $\forall \alpha \in V$ 有 $\alpha  = A \alpha + B \alpha$. 因此$V = Img A + I
 $$x = A \alpha = A^2 \alpha = A \cdot A \alpha = A \cdot x = A \cdot B \beta = AB \beta = 0 \cdot \beta = 0 $$
 $$\Rightarrow Img A \cap Img B = 0$$
 结合 $V = Img A + Img B$ 得到:
-$$V = Img A \bigoplus Img B$$
+$$V = Img A \oplus Img B$$
 
 $\forall x \in Img A$, 从上面的结论可知: $x = A x,~ B x = 0$ \\
 $\forall x \in Img B$, 从上面的结论可知: $x = B x,~ A x = 0$ \\
@@ -1137,7 +1137,7 @@ Similar to the conventional algebra, all $\otimes$ - operations have a higher pr
 
 \textbf{Matrix operations}\\
 $$ [A \oplus B]_{ij} = [A]_{ij} \oplus [B]_{ij} = \max([A]_{ij} , [B]_{ij}) $$
-$$ [A \otimes B]_{ij} = \bigoplus_{k = 1}^p [A]_{ik} \otimes [B]_{kj} = \max([A]_{i1} + [B]_{1j}, \dots, [A]_{ip} + [B]_{pj}) $$
+$$ [A \otimes B]_{ij} = \oplus_{k = 1}^p [A]_{ik} \otimes [B]_{kj} = \max([A]_{i1} + [B]_{1j}, \dots, [A]_{ip} + [B]_{pj}) $$
 
 \textbf{Algebra properties}\\
 \begin{itemize}
