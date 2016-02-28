@@ -426,6 +426,35 @@ $$
 由于$M(A)$为$s \times n$矩阵, 因此$M(A)$为行满秩矩阵.
 \end{proof}
 
+\subsection{Hyperplan 超平面}
+Les hyperplans sont exactement les noyaux des formes lin\'eaire non nulles. \\
+C'est-\`a-dire: $H$ est un hyperplan de $E \Leftrightarrow \exists \phi \in E^*\backslash\{0\}$ telle que $H = Ker \phi$ 
+\begin{proof}
+$\Rightarrow$ \\
+Soit $H$ un hyperplan de $E$, on cherche \`a construire une forme lin\'eaire non nulle $\phi$, telle que $H = Ker \phi$. \\
+$H$ est hyperplan, donc il admet un suppl\'ementaire dans $E$ de dimension $1$.
+C'est donc une droite engendr'e par un $x_0 \in E - H$ avec $x_0 \neq 0$.
+Donc: $$E = H \oplus k x_0$$
+$$\forall x \in E, \exists ! x_H \in H \et \lambda \in K, \eqnote{telle que} x = x_H + \lambda x_0$$
+On d\'efinit
+$$
+\begin{aligned}
+\phi: E & \rightarrow k \\
+	x   & \rightarrow \lambda
+\end{aligned}
+$$
+Puis, on doit d\'emontrer $Ker \phi = H$.
+\footnote{undone}
+
+$\Leftarrow$ \\
+$\phi$ non nulle, donc $\exists x_0 \in E$, telle que $\phi(x_0) \neq 0$ \\
+Montrons alors $E = H \oplus k x_0$
+$$\forall x \in E,~ x = (x - \dfrac{\phi(x)}{\phi(x_0)} x_0) + \dfrac{\phi(x)}{\phi(x_0)} x_0$$
+$$(x - \dfrac{\phi(x)}{\phi(x_0)} x_0) \in Ker \phi = H,~ \dfrac{\phi(x)}{\phi(x_0)} x_0 \in k x_0$$
+$$E = H + k x_0 \eqnote{再证交集为} \{0\} \Rightarrow E = H \oplus k x_0$$
+Donc $H$ est un hyperplan.
+\end{proof}
+
 \textbf{Espace m\'etrique}
 On appelle $(E, d)$ un espace m\'etrique si $ E$  est un ensemble et d une distance sur $E$ .
 
