@@ -6,17 +6,16 @@
 - `\eqref{}`: 引用equation , 相当于 (\ref{}), `\lasteq`(自定义的)
 
 参考文献
-```
+```latex
 \bibliographystyle{plain}
 \bibliography{mybib}
 ```
-
 其中`mybib.bib` 是参考文献的数据库
 
 使用
 
-- \cite{item1, item2} %一个地方同时引用item1和item2
-- \cite{item}
+- `\cite{item1, item2}` %一个地方同时引用item1和item2
+- `\cite{item}`
 
 编译步骤
 
@@ -26,7 +25,7 @@
 1. xelatex paper.tex ## 在正文中正确地显示引用.
 
 引用的目录问题
-```
+```latex
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{References}
@@ -54,9 +53,10 @@ Using beamer+biblatex you could also write
 
 **如何在章节标题中应用参考文献?**  
 为实现章节标题中对参考文献的引用,采取保护脆弱命令的措施,如下所示:
-
-	\subsection[the title of chapter(section et .)]
-	{the title of chapter(section et .)\protect\upcite{keywords}}
+```latex
+\subsection[the title of chapter(section et .)]
+{the title of chapter(section et .)\protect\upcite{keywords}}
+```
 即可是在章节标题中引用参考文献.
 
 index

@@ -1,16 +1,25 @@
 # 字体
-## 大小
-`\fontsize{字号}{行距}`: 这个命令对其后所有文本都起作用, 在使用此命令后需要用 `\selectfont` 才能使字体大小设置起作用.
+大小
 
-`\fontsize{12pt}{18pt}\selectfont`: 就设置了小四 1.5 倍行距.
-
-Latex 设置字体大小命令由小到大依次为:
-`\tiny, \scriptsize, \footnotesize, \small, \normalsize, \large, \Large, \LARGE, \huge, \Huge`
-
-对于beamer, 可以通过使用 package scrextend, 来设置任意大小的字
-```
+- `\fontsize{字号}{行距}`: 这个命令对其后所有文本都起作用, 在使用此命令后需要用 `\selectfont` 才能使字体大小设置起作用.
+	`\fontsize{12pt}{18pt}\selectfont`: 就设置了小四 1.5 倍行距.
+- Latex 设置字体大小命令由小到大依次为: `\tiny, \scriptsize, \footnotesize, \small, \normalsize, \large, \Large, \LARGE, \huge, \Huge`
+- 对于beamer, 可以通过使用 package scrextend, 来设置任意大小的字
+```latex
 \usepackage{scrextend}
 \changefontsizes{6pt}
+```
+
+颜色
+
+使用`\definecolor{name}{system}{definition}`来定义颜色
+```latex
+\usepackage{color}
+\definecolor{Gray}{gray}{0.9}
+\definecolor{LightCyan}{rgb}{0.88,1,1}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
 ```
 
 ## beamer text
