@@ -3,30 +3,6 @@
 \usepackage{ctex}
 \usepackage{amsmath, amsthm, amssymb}
 
-%%%%%%%%%% header & footer %%%%%%%%%%
-\newif\ifheader
-\headerfalse
-\ifheader
-	\setlength\textheight{100.0pt}
-	\setlength\textwidth{430.0pt}
-	\usepackage{fancyhdr}
-	\usepackage{lastpage} %% \pageref{LastPage} 获取最后一页的页码
-	\usepackage{pdfpages}
-	\usepackage{layout}
-	\footskip = 20pt
-	\pagestyle{fancy}
-	\fancyhead{} %clear all fields
-%% 	\newsavebox{\headpic}
-%% 	\sbox{\headpic}{\includegraphics[height=1cm]{logo}} %设置页眉logo页眉
-%% 	\lhead{\usebox{\headpic}}
-	\rhead{\small\leftmark}
-	\fancyfoot{} %clear all fields
-	\cfoot{\thepage}
-	\renewcommand{\headrulewidth}{1pt}  %页眉线宽,设为0可以去页眉线
-	\setlength{\skip\footins}{0.5cm}    %脚注与正文的距离
-	\renewcommand{\footnotesize}{}      %设置脚注字体大小
-\fi
-
 % Figure
 \usepackage{graphicx}
 \usepackage{float} %% H can fix the location
@@ -36,17 +12,16 @@
 \captionsetup[subfigure]{subrefformat=simple,labelformat=simple,listofformat=subsimple}
 \renewcommand\thesubfigure{(\alph{subfigure})}
 
-\usepackage{epstopdf} %convert eps to pdf
+\usepackage{epstopdf} %% convert eps to pdf
 \DeclareGraphicsExtensions{.eps,.mps,.pdf,.jpg,.png} %% bmp, gif not supported
 \DeclareGraphicsRule{*}{eps}{*}{}
-\graphicspath{{figure/}{../figure/}}
+\graphicspath{{figure/}{../figure/}} %% fig directorys
 
 %% \usepackage{pstricks} %% a set of macros that allow the inclusion of PostScript drawings directly inside TeX or LaTeX code
 %% \usepackage{wrapfig} %% Wrapping text around figures
 
 % Table
-%% allow the use of \toprule, \midrule, and \bottomrule
-\usepackage{booktabs}
+\usepackage{booktabs} %% allow the use of \toprule, \midrule, and \bottomrule
 \usepackage{tabularx}
 \usepackage{multirow}
 \usepackage{colortbl}
@@ -56,9 +31,9 @@
 \usepackage[colorinlistoftodos]{todonotes}
 
 % Geometry
-\usepackage[paper=a4paper, top=.5cm, bottom=1.5cm, left=2cm, right=1cm]{geometry} % ms word
-%% \usepackage[paper=a4paper, top=2.54cm, bottom=2.54cm, left=3.18cm, right=3.18cm]{geometry} % ms word
-%% \usepackage[top=0.1cm, bottom=0.1cm, left=0.1cm, right=0.1cm, paperwidth=9cm, paperheight=11.7cm]{geometry} % kindle
+\usepackage[paper=a4paper, top=.5cm, bottom=1.5cm, left=2cm, right=1cm]{geometry}
+%% \usepackage[paper=a4paper, top=2.54cm, bottom=2.54cm, left=3.18cm, right=3.18cm]{geometry} %% ms word
+%% \usepackage[top=0.1cm, bottom=0.1cm, left=0.1cm, right=0.1cm, paperwidth=9cm, paperheight=11.7cm]{geometry} %% kindle
 
 % Code
 %% \textbf can be used in alltt, but not in verbatim
@@ -77,7 +52,7 @@
     showspaces=false,
     showstringspaces=false,
     showtabs=false,
-    stepnumber=1, %% 设置每多少行显示一次行号
+    stepnumber=1, %% interval of lines to display the line number
     rulecolor=\color{black},
     tabsize=2,
     texcl=true,
@@ -93,28 +68,16 @@
     stringstyle=\color{mauve},
 }
 
-% Hyper Reference
-\usepackage[colorlinks, linkcolor=blue, anchorcolor=red, citecolor=green, CJKbookmarks=true]{hyperref}
-
+% Reference
 %% \bibliographystyle{plain} % reference style
 
-%\usepackage{dirtree}  %% 目录结构图
-
 % Color
+\usepackage[colorlinks, linkcolor=blue, anchorcolor=red, citecolor=green, CJKbookmarks=true]{hyperref}
 \usepackage{color}
-%% \definecolor{name}{system}{definition}
-\definecolor{Gray}{gray}{0.9}
-\definecolor{LightCyan}{rgb}{0.88,1,1}
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
-
 \def\red#1{\textcolor[rgb]{1.00,0.00,0.00}{#1}}
-\def\yellow#1{\textcolor[rgb]{1.00,1.00,0.00}{#1}}
-\def\lime#1{\textcolor[rgb]{0.00,1.00,0.00}{#1}}
-
 \newcommand\warning[1]{\red{#1}}
-\newcommand\obey[1]{\thicksim{#1}}
 
-%% \usepackage{fixltx2e} %% 默认情况下只能使用\textsuperscript,加了这个package之后可以使用\textsubscript
+% Other
+%% \usepackage{fixltx2e} %% for use of \textsubscript
+%% \usepackage{dirtree}  %% directory structure, like the result of command tree in bash shell
 

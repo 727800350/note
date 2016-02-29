@@ -23,3 +23,27 @@
 \newtheorem*{answer}{Answer}
 \newtheorem{fact}{Fact}
 
+%%%%%%%%%% header & footer %%%%%%%%%%
+\newif\ifheader
+\headerfalse
+\ifheader
+	\setlength\textheight{100.0pt}
+	\setlength\textwidth{430.0pt}
+	\usepackage{fancyhdr}
+	\usepackage{lastpage} %% \pageref{LastPage} 获取最后一页的页码
+	\usepackage{pdfpages}
+	\usepackage{layout}
+	\footskip = 20pt
+	\pagestyle{fancy}
+	\fancyhead{} %clear all fields
+%% 	\newsavebox{\headpic}
+%% 	\sbox{\headpic}{\includegraphics[height=1cm]{logo}} %设置页眉logo页眉
+%% 	\lhead{\usebox{\headpic}}
+	\rhead{\small\leftmark}
+	\fancyfoot{} %clear all fields
+	\cfoot{\thepage}
+	\renewcommand{\headrulewidth}{1pt}  %页眉线宽,设为0可以去页眉线
+	\setlength{\skip\footins}{0.5cm}    %脚注与正文的距离
+	\renewcommand{\footnotesize}{}      %设置脚注字体大小
+\fi
+
