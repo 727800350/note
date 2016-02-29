@@ -27,9 +27,9 @@
 	\renewcommand{\footnotesize}{}      %设置脚注字体大小
 \fi
 
-%图形
+% Figure
 \usepackage{graphicx}
-\usepackage{float} %% 可以使用H固定图片的位置
+\usepackage{float} %% H can fix the location
 \usepackage{caption}
 \usepackage[format=hang,singlelinecheck=0,font={sf,small},labelfont=bf]{subfig}
 \usepackage[noabbrev]{cleveref}
@@ -44,8 +44,8 @@
 %% \usepackage{pstricks} %% a set of macros that allow the inclusion of PostScript drawings directly inside TeX or LaTeX code
 %% \usepackage{wrapfig} %% Wrapping text around figures
 
-%表格
-%allow the use of \toprule, \midrule, and \bottomrule
+% Table
+%% allow the use of \toprule, \midrule, and \bottomrule
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{multirow}
@@ -55,13 +55,13 @@
 
 \usepackage[colorinlistoftodos]{todonotes}
 
-%尺寸
-\usepackage[top=2.54cm, bottom=2.54cm, left=3.18cm, right=3.18cm]{geometry} % ms word
-%% \usepackage[a4paper]{geometry}
+% Geometry
+\usepackage[paper=a4paper, top=.5cm, bottom=1.5cm, left=2cm, right=1cm]{geometry} % ms word
+%% \usepackage[paper=a4paper, top=2.54cm, bottom=2.54cm, left=3.18cm, right=3.18cm]{geometry} % ms word
 %% \usepackage[top=0.1cm, bottom=0.1cm, left=0.1cm, right=0.1cm, paperwidth=9cm, paperheight=11.7cm]{geometry} % kindle
 
-%% code
-%% verbatim 中不能使用\textbf 等格式, alltt可以使用
+% Code
+%% \textbf can be used in alltt, but not in verbatim
 %% \usepackage{alltt}
 
 \usepackage{listings}
@@ -71,8 +71,8 @@
     breakatwhitespace=false,
     breaklines=true,
     captionpos=tt,
-    frame=single, %% Frame: 这个命令能让代码周围显示边框. 它的值可以是 none|leftline|topline|bottomline|lines|single|shadowbox 中的任意一个
-    numbers=left, %% numbers 的值可以是 left, right, none, 分别代表了将行号放在代码的左边, 右边和不显示
+    frame=single, %% Frame: show a box around, possible values are: none|leftline|topline|bottomline|lines|single|shadowbox
+    numbers=left, %% possible values are: left, right, none
     numbersep=5pt,
     showspaces=false,
     showstringspaces=false,
@@ -93,19 +93,16 @@
     stringstyle=\color{mauve},
 }
 
-\newcommand{\fun}[1]{\textit{#1}}
+% Hyper Reference
+\usepackage[colorlinks, linkcolor=blue, anchorcolor=red, citecolor=green, CJKbookmarks=true]{hyperref}
 
-%% hyper reference
-%% 使用hyperref包,section,subsection,subsubsection命名中使用中文出现问题, 编译通不过, 加了CJKbookmarks=true 之后可以使用中文
-\usepackage[colorlinks,linkcolor=blue,anchorcolor=red,citecolor=green,CJKbookmarks=true]{hyperref}
+%% \bibliographystyle{plain} % reference style
 
-%% \bibliographystyle{plain} % 参考文献格式
+%\usepackage{dirtree}  %% 目录结构图
 
-%\usepackage{dirtree}  %目录结构图
-
-%颜色
+% Color
 \usepackage{color}
-%\definecolor{name}{system}{definition}
+%% \definecolor{name}{system}{definition}
 \definecolor{Gray}{gray}{0.9}
 \definecolor{LightCyan}{rgb}{0.88,1,1}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
@@ -116,10 +113,8 @@
 \def\yellow#1{\textcolor[rgb]{1.00,1.00,0.00}{#1}}
 \def\lime#1{\textcolor[rgb]{0.00,1.00,0.00}{#1}}
 
-
 \newcommand\warning[1]{\red{#1}}
 \newcommand\obey[1]{\thicksim{#1}}
 
-%% \usepackage{fixltx2e}
-%% 默认情况下只能使用\textsuperscript,加了这个package之后可以使用\textsubscript
+%% \usepackage{fixltx2e} %% 默认情况下只能使用\textsuperscript,加了这个package之后可以使用\textsubscript
 
