@@ -12,24 +12,30 @@
 
 \chapter{微分方程与边值问题}
 \section{一阶微分方程}
-\begin{theorem}
-  ({\bf 解的存在性和唯一性})假设函数$f(x,y)$和他的偏导数$\frac{\partial f}{\partial y}$, 在xy平面上含有点$(a,b)$ 的某一矩形区域上连续,那么初始问题
-  \begin{equation}
-    \frac{dy}{dx}=f(x,y),y(a)=b
-  \end{equation}
-  在含有点a 的开区间I 上有且仅有定义在区间I 上的一个解.
-  \label{existence et unicite}
+\begin{theorem}[解的存在性和唯一性]
+假设函数$f(x,y)$和他的偏导数$\frac{\partial f}{\partial y}$, 在xy平面上含有点$(a,b)$ 的某一矩形区域上连续,那么初始问题
+\begin{equation}
+\frac{dy}{dx}=f(x,y),y(a)=b
+\end{equation}
+在含有点a 的开区间I 上有且仅有定义在区间I 上的一个解.
+\label{existence et unicite}
 \end{theorem}
+
 \begin{example}
-  在微分方程$dy/dx=-y$中,函数$f(x,y)=-y$和偏导数$\frac{\partial f}{\partial y}=-1$在整个xy平面上连续,因此由定理\ref{existence et unicite} 知,对任意的初始值(a,b) 都有唯一解,尽管定理肯定了解存在于含有x=a 的某一个区间上,但是对于所有x 来讲$y(x)=Ce^{-x}$ 都被定义为解.
+在微分方程$dy/dx=-y$中,函数$f(x,y)=-y$和偏导数$\frac{\partial f}{\partial y}=-1$在整个xy平面上连续,
+因此由定理\ref{existence et unicite} 知,对任意的初始值(a,b) 都有唯一解,尽管定理肯定了解存在于含有x=a 的某一个区间上,但是对于所有x 来讲$y(x)=Ce^{-x}$ 都被定义为解.
 \end{example}
+
 \begin{note}
-  之前,我们讨论了非常简单的微分方程$\frac{dy}{dx}=y^2$, 这里$f(x,y)=y^2,\frac{\partial f}{\partial y}=2y$. 这两个函数在xy平面上都连续,特别在矩形$-2<x<2,0<y<2 $ 上也连续.由于点(0,1) 属于该矩形,所以根据定理\ref{existence et unicite}, 初值问题
-  \begin{equation}
-    \frac{dy}{dx}=y^2,y(0)=1
-  \end{equation}
-  在含有a=0的某个区间上有唯一解,确实,他就是我们之前求过的解$$y(x)=\frac{1}{1-x}$$
-  但是,在x=1处,1/(1-x)不连续,所以在整个区间$-2<x<2 $上不存在唯一连续解,这样,定理\ref{existence et unicite}中的解区间I可能不像矩形$-2<x<2,0<y<2$ 那么宽,该矩形上函数 f(x,y)和偏导数$\frac{\partial f}{\partial y}$ 都连续. 从几何上讲,其原因是定理给出的解曲线在它达到区间的又给或两个端点之前,可能离开了矩形,而在矩形内部的解一定存在 \newline
+之前,我们讨论了非常简单的微分方程$\frac{dy}{dx}=y^2$, 这里$f(x,y)=y^2,\frac{\partial f}{\partial y}=2y$.
+这两个函数在xy平面上都连续,特别在矩形$-2<x<2,0<y<2 $ 上也连续.由于点(0,1) 属于该矩形,所以根据定理\ref{existence et unicite}, 初值问题
+\begin{equation}
+\frac{dy}{dx}=y^2,y(0)=1
+\end{equation}
+在含有a=0的某个区间上有唯一解,确实,他就是我们之前求过的解$$y(x)=\frac{1}{1-x}$$.
+但是,在x=1处,1/(1-x)不连续,所以在整个区间$-2<x<2 $上不存在唯一连续解,这样,定理\ref{existence et unicite}中的解区间I可能不像矩形$-2<x<2,0<y<2$ 那么宽,
+该矩形上函数 f(x,y)和偏导数$\frac{\partial f}{\partial y}$ 都连续.
+从几何上讲,其原因是定理给出的解曲线在它达到区间的又给或两个端点之前,可能离开了矩形,而在矩形内部的解一定存在 \newline
 \includegraphics[width=200pt]{1-3-8}\\
 图中解曲线在到达区间I的右端点之前离开矩形I
 \end{note}
@@ -120,16 +126,17 @@
 \subsection{改进的欧拉方法}
 已知初值问题
 \begin{equation}
-  \frac{dy}{dx}=f(x,y),y(x_0)=y_0.
+  \frac{dy}{dx}=f(x,y),y(x_0)=y_0
 \end{equation}
-假设对步长h执行n步以后,已经得到在$x_n=x_0+nh$ 点解的真值$y(x_n)$ 逼近值$y_n$, 可应用欧拉方法来获得在点$x_{n+1}=x_n+h$ 的解的真值的一个初步估计,即称之为$u_{n+1}$ 而不是$y_{n+1}$ ,则
+假设对步长h执行n步以后,已经得到在$x_n=x_0+nh$ 点解的真值$y(x_n)$ 逼近值$y_n$,
+可应用欧拉方法来获得在点$x_{n+1}=x_n+h$ 的解的真值的一个初步估计,即称之为$u_{n+1}$ 而不是$y_{n+1}$ ,则
 \begin{equation}
   u_{n+1}=y_n+hf(x_n,y_n)=y_n+hk_1. \quad k_1=f(x_n,y_n)
 \end{equation}
 既然$u_{n+1}\thickapprox y(x_{n+1})$, 可取$k_2=f(x_{n+1},y_{n+1})$ 作为解曲线$y=f(x)$在$x=x_{x+1}$ 点的斜率的第二个估计. \newline
-当然,我们已经求出在$x=x_n$的近似斜率$k_1=f(x_n,y_n)$. 为了获得在整个区间$[x_n,x_{x+1}]$ 上解曲线平均斜率的更加精确的估计,为什么不平均这两个斜率呢? \newline 这个思想就是改进的欧拉方法的本质.
-\begin{theorem}
-  {\bf 算法~~~改进的欧拉方法} \newline
+当然,我们已经求出在$x=x_n$的近似斜率$k_1=f(x_n,y_n)$. 为了获得在整个区间$[x_n,x_{x+1}]$ 上解曲线平均斜率的更加精确的估计,为什么不平均这两个斜率呢? \newline
+这个思想就是改进的欧拉方法的本质.
+\begin{theorem}[算法~~~改进的欧拉方法]
 给定初值问题
 \begin{equation}
   \frac{dy}{dx}=f(x,y),y(x_0)=y_0.
@@ -166,36 +173,27 @@ Une fonction f d\'efinie sur un espace norm\'e X \`a valeurs dans $ \bar{\R}:=\R
 $$ \lim_{\mytop{\| x\| \to +\infty}{x\in P}}f(x)=+\infty $$
 
 ou de mani\`ere plus pr\'ecise
-$$
-\forall\,\nu\in\R,\quad \exists\,\rho\geqslant0:\quad (x\in X ~\mbox{et}~ \|x\|\geqslant\rho) \quad\Longrightarrow\quad f(x)\geqslant\nu.
-$$
+$$ \forall\,\nu\in\R,\quad \exists\,\rho\geqslant0:\quad (x\in X ~\mbox{et}~ \|x\|\geqslant\rho) \quad\Longrightarrow\quad f(x)\geqslant\nu.  $$
 
 Il revient au m\^eme de dire que les intersections avec P des ensembles de sous-niveau de la fonction sont born\'ees :
-$$
-\forall\,\nu\in\R,\qquad\{x\in P: f(x)\leqslant\nu\}~\mbox{est born\'e.}
-$$
+$$ \forall\,\nu\in\R,\qquad\{x\in P: f(x)\leqslant\nu\}~\mbox{est born\'e.} $$
 Si l'on ne sp\'ecifie pas la partie P, il est sous-entendu que P=X.
 
 \underline{Cas d'une forme bilin\'eaire} \newline
 Plus sp\'ecifiquement, une forme bilin\'eaire $a:X\times X\to\R$ est dite coercive si elle v\'erifie :
-$$
-\exists\,\alpha>0,\quad\forall\,x\in X:\qquad a(x,x) \geqslant \alpha\|x\|^2.
-$$
-Certains auteurs pr\'ef\`erent utiliser l'appellation X-elliptique pour cette derni\`ere d\'efinition. Celle-ci intervient entre autres dans le th\'eor\`eme de Lax-Milgram et la th\'eorie des op\'erateurs elliptiques, accessoirement dans la m\'ethode des \'el\'ements finis.
+$$ \exists\,\alpha>0,\quad\forall\,x\in X:\qquad a(x,x) \geqslant \alpha\|x\|^2.  $$
+Certains auteurs pr\'ef\`erent utiliser l'appellation X-elliptique pour cette derni\`ere d\'efinition.
+Celle-ci intervient entre autres dans le th\'eor\`eme de Lax-Milgram et la th\'eorie des op\'erateurs elliptiques,
+accessoirement dans la m\'ethode des \'el\'ements finis.
 
 \underline{Lien entre les d\'efinitions}\newline
-Dans le cas où a est une forme bilin\'eaire, en posant $f(u)=a(u,u)$ on a \'equivalence entre la coercivit\'e de a et celle de $f$. En effet, $\scriptstyle\lim_{\| x\|\to\infty}f(x)=+\infty $implique qu'il existe $R>0 $tel que $\scriptstyle\|x\|\geqslant R\Rightarrow f(x)\geqslant 1$. Ainsi:
-$$
-\left(\frac{R}{\|u\|}\right)^2a(u,u)=a\left(\frac{R}{\|u\|}u,\frac{R}{\|u\|}u\right)=f\left(\frac{R}{\|u\|}u\right)\geqslant 1
-$$
+Dans le cas o\`u a est une forme bilin\'eaire, en posant $f(u)=a(u,u)$ on a \'equivalence entre la coercivit\'e de a et celle de $f$.
+En effet, $\scriptstyle\lim_{\| x\|\to\infty}f(x)=+\infty $implique qu'il existe $R>0 $tel que $\scriptstyle\|x\|\geqslant R\Rightarrow f(x)\geqslant 1$. Ainsi:
+$$ \left(\frac{R}{\|u\|}\right)^2a(u,u)=a\left(\frac{R}{\|u\|}u,\frac{R}{\|u\|}u\right)=f\left(\frac{R}{\|u\|}u\right)\geqslant 1 $$
 et
-$$
-a(u,u)\geqslant\left(\frac{\|u\|}{R}\right)^2.
-$$
+$$ a(u,u)\geqslant\left(\frac{\|u\|}{R}\right)^2.  $$
 维基百科上没有直接给出coercivit\'e的定义, 但是按照维基百科的解释, 我觉得coercivit\'e的定义是
-$$
- \alpha=\left(\frac{1}{R}\right)^2
-$$
+$$ \alpha=\left(\frac{1}{R}\right)^2 $$
 
 \bigskip
 \textbf{Application contractante}\newline
@@ -203,7 +201,9 @@ Une application contractante, ou contraction, est une application k-lipschitzien
 \bigskip
 
 \textbf{Th\'eor\`eme du point fixe pour une application contractante}\newline
-Soient $ E$  un espace m\'etrique complet (non vide) et $ f$  une application $ k$ -contractante de $ E$  dans $ E$ . Il existe un point fixe unique $x^*$ de f (c'est-\`a-dire un $x^*$ dans $ E$  tel que $ f(x^* ) = x^*)$ . De plus, toute suite d'\'el\'ements de E v\'erifiant la r\'ecurrence
+Soient $ E$  un espace m\'etrique complet (non vide) et $ f$  une application $ k$ -contractante de $E$ dans $E$.
+Il existe un point fixe unique $x^*$ de f (c'est-\`a-dire un $x^*$ dans $E$ tel que $f(x^*) = x^*)$.
+De plus, toute suite d'\'el\'ements de E v\'erifiant la r\'ecurrence
 $$x_{n+1}=f(x_n)$$
 v\'erifie la majoration
 $$d(x_n,x^*) \le \frac {k^n}{1-k} d(x_0,x_1)$$
@@ -214,20 +214,20 @@ donc converge vers $x^*$
 un r\'esultat de la th\'eorie des espaces de Sobolev\\
 Cette in\'egalit\'e permet de borner une fonction \`a partir d'une estimation sur ses d\'eriv\'ees et de la g\'eom\'etrie de son domaine de d\'efinition\\
 L'in\'egalit\'e de Poincar\'e classique
-Soit $p$, tel que $ 1 \leq p < \infinity$  et $\Omega$ un ouvert de largeur finie (born\'e dans une direction). Alors il existe une constante  $  C$  , d\'ependant uniquement de $\Omega$ et $p$, telle que, pour toute fonction $u$   de l'espace de Sobolev $W_0^{1,p(\Omega)}$
-$$
-\| u \|_{L^{p} (\Omega)} \leq C \| \nabla u \|_{L^{p} (\Omega)}
-$$
+Soit $p$, tel que $1 \leq p < \infinity$ et $\Omega$ un ouvert de largeur finie (born\'e dans une direction).
+Alors il existe une constante $C$, d\'ependant uniquement de $\Omega$ et $p$, telle que, pour toute fonction $u$ de l'espace de Sobolev $W_0^{1,p(\Omega)}$
+$$ \| u \|_{L^{p} (\Omega)} \leq C \| \nabla u \|_{L^{p} (\Omega)} $$
 
 \chapter{Variation}
 \section{Fundamental lemma of variation}
 \begin{theorem}
-    Soit une fonction $f(x)$ est continue sur $[a,b]$,$ \forall \eta(x)$ sur $\in C^{n}[a,b]$,et $\exists m>0$,tel que $\eta^{k}(a)=\eta^{k}(b)=0 (\forall k \in [[0,n]])$ \newline
-    si$ \int_{a}^{b}f(x)\eta(x)=0$ est toujours vrai, \newline
-    alors, sur $[a,b],f(x)\equiv 0$ \newline
-    (证明时用反证法,且需要构造$\eta(x)$为特殊的形式)
-    $\exists \xi,f(\xi)>0 \Rightarrow \exists $une intervale $[a_0,b_0]$,tel que sur $[a_0,b_0],f(x)$ est positive \newline
- on peut construire $\eta(x)$ comme cidessous:
+Soit une fonction $f(x)$ est continue sur $[a,b]$,
+$\forall \eta(x)$ sur $\in C^{n}[a,b]$,et $\exists m>0$,telle que $\eta^{k}(a)=\eta^{k}(b)=0 (\forall k \in [[0,n]])$ \newline
+si$ \int_{a}^{b}f(x)\eta(x)=0$ est toujours vrai, \newline
+alors, sur $[a,b],f(x)\equiv 0$ \newline
+(证明时用反证法,且需要构造$\eta(x)$为特殊的形式)
+$\exists \xi,f(\xi)>0 \Rightarrow \exists $une intervale $[a_0,b_0]$,tel que sur $[a_0,b_0],f(x)$ est positive \newline
+on peut construire $\eta(x)$ comme cidessous:
 $\eta(x)=
     \left\{
       \begin{array}{ll}
@@ -240,27 +240,27 @@ $\eta(x)=
 
 \textbf{Quand m=n=0}
 \begin{theorem}
-    Soit une fonction $f(x)$ est continue sur $[a,b]$,$ \forall \eta(x)$ sur $\in C^{0}[a,b]$,et $\exists m>0$,tel que $\eta(a)=\eta(b)=0$ \newline
-    si$ \int_{a}^{b}f(x)\eta(x)=0$ est toujours vrai, \newline
-    alors, sur $[a,b],f(x)\equiv 0$
+Soit une fonction $f(x)$ est continue sur $[a,b]$,$ \forall \eta(x)$ sur $\in C^{0}[a,b]$,et $\exists m>0$,tel que $\eta(a)=\eta(b)=0$ \newline
+si$ \int_{a}^{b}f(x)\eta(x)=0$ est toujours vrai, \newline
+alors, sur $[a,b],f(x)\equiv 0$
 \end{theorem}
 
 \begin{theorem}
-    Soit une fonction $f(x)$ est continue sur $[a,b]$,$ \forall \eta(x)$ sur $\in C^{1}[a,b]$,et $\eta(a)=\eta(b)=0$ \newline
-    si$ \int_{a}^{b}f(x)\eta'(x)=0$ est toujours vrai, \newline
-    alors, sur $[a,b],f(x)\equiv Constante$
+Soit une fonction $f(x)$ est continue sur $[a,b]$,$ \forall \eta(x)$ sur $\in C^{1}[a,b]$,et $\eta(a)=\eta(b)=0$ \newline
+si$ \int_{a}^{b}f(x)\eta'(x)=0$ est toujours vrai, \newline
+alors, sur $[a,b],f(x)\equiv Constante$
 \end{theorem}
 
 \begin{theorem}
-    Soit une fonction $f(x,y)$ est continue sur $D$,$ \forall \eta(x,y)$ sur $\in C^{1}[a,b]$,et 在D的边界上, $\eta(x,y)=0$\newline
-    si$ \int_{a}^{b}f(x,y)\eta(x,y)=0$ est toujours vrai, \newline
-    alors, sur $D,f(x,y)\equiv 0$
+Soit une fonction $f(x,y)$ est continue sur $D$,$ \forall \eta(x,y)$ sur $\in C^{1}[a,b]$,et 在D的边界上, $\eta(x,y)=0$\newline
+si$ \int_{a}^{b}f(x,y)\eta(x,y)=0$ est toujours vrai, \newline
+alors, sur $D,f(x,y)\equiv 0$
 \end{theorem}
 
 \section{Variational Problems with Fixed Boudaries}
-\begin{definition}
-  \textbf{n阶距离}:Soit deux foncitons $y(x)$ et $y_0(x)\in C^{n}[a,b]$,则这两个函数从0到n阶导数之差的绝对值中的最大值称为 $y(x)$ et $y_0(x)$在区间$[a,b]$上的n阶距离或n级距离
-  $d_n[y(x),y_0(x)]=max_{0 \leqslant i \leqslant n}max_{a \leqslant x \leqslant b}|y^{(i)}(x)-y_0^{(i)}(x)|$
+\begin{definition}[n阶距离]
+Soit deux foncitons $y(x)$ et $y_0(x)\in C^{n}[a,b]$,则这两个函数从0到n阶导数之差的绝对值中的最大值称为 $y(x)$ et $y_0(x)$在区间$[a,b]$上的n阶距离或n级距离
+$d_n[y(x),y_0(x)]=max_{0 \leqslant i \leqslant n}max_{a \leqslant x \leqslant b}|y^{(i)}(x)-y_0^{(i)}(x)|$
 \end{definition}
 特别地,当$n=0$时,为0阶距离;当$n=1$时,为1阶距离
 
@@ -268,12 +268,12 @@ $\eta(x)=
 \textbf{n阶领域}:函数$y_0(x)$在区间$[a,b]$上的n阶领域,记为$N_n[\delta,y_0(x)]$,表示为\newline
 $N_n[\delta,y_0(x)]=\{y(x)|y(x)\in C^{n}[a,b],d_n[y(x),y_0(x)] < \delta \}$
 \end{definition}
-\begin{definition}
-\textbf{变分}:对于任意定值$x \in [x_0,x_1]$,可取函数$y(x)$ 与另一个可取函数 $y_0(x)$ 之差$y(x)-y_0(x)$ 称为函数$y(x)$在 $y_0(x)$ 处的变分或函数的变分,记作$\delta y$,$\delta$称作变分符号或变分算子,这时有\\
-$\delta y=y(x)-y_0(x)=\epsilon\eta(x)$ \newline
+\begin{definition}[变分]
+对于任意定值$x \in [x_0,x_1]$,可取函数$y(x)$ 与另一个可取函数 $y_0(x)$ 之差$y(x)-y_0(x)$ 称为函数$y(x)$在 $y_0(x)$ 处的变分或函数的变分,
+记作$\delta y$,$\delta$称作变分符号或变分算子,这时有$\delta y=y(x)-y_0(x)=\epsilon\eta(x)$ \newline
 式中$\epsilon$为朗格朗日引进的一个小参数,但是不是x的函数,而$\eta(x)$为x的任意函数
 \end{definition}
-由于可取函数都通过区间的固定端点,即他们在区间的端点的值相等,且由于端点是固定的,所以在端点处的变分为零. \newline
+由于可取函数都通过区间的固定端点,即他们在区间的端点的值相等,且由于端点是固定的,所以在端点处的变分为零.
 
 可取函数$y(x)$ 是泛函$J[y(x)]$的宗量,故也可以这样定义变分:泛函的宗量$y(x)$与另一个宗量 $y_0(x)$ 之差$y(x)-y_0(x)$ 称为宗量$y(x)$在 $y_0(x)$ 处的变分.
 
@@ -300,9 +300,9 @@ That is to say:函数导数的变分等于函数变分的倒数,换句话说,求
 \subsection{最简泛函的变分与极值的必要条件}
 Soit $F(x,y(x),y'(x))$ une fonction connue de trois variables $x,y(x),y'(x)$ sur $[x_0,x_1]$, et F 二阶连续可微,其中$y(x),y'(x)$是x的未知函数,则泛函 \newline
 $$J[y(x)]=\int_{x_0}^{x_1}F(x,y(x),y'(x))dx$$
-称为最简单的积分型泛函,简称最简泛函,$J[y(x)]$ 是$y(x)$的泛函,由上面的式子知,$J[y(x)]$不仅是$y(x)$的函数,而且还是$x,y'(x)$, 但是只要求出了$y(x)$, $y'(x)$也就能够求出来了, 于是泛函只是写成$J[y(x)]$的形式
-\newline
-最简泛函的增量也称为泛函的全变分
+称为最简单的积分型泛函,简称最简泛函,$J[y(x)]$ 是$y(x)$的泛函,由上面的式子知,$J[y(x)]$不仅是$y(x)$的函数,而且还是$x,y'(x)$,
+但是只要求出了$y(x)$, $y'(x)$也就能够求出来了, 于是泛函只是写成$J[y(x)]$的形式 \newline
+最简泛函的增量也称为泛函的全变分.
 \begin{equation}
 \begin{split}
   \Delta J=J[y_1(x)]-J[y(x)]=J[y(x)+\delta y]-J[y(x)]= \\
@@ -332,48 +332,55 @@ $$
 $$
 泛函的变分$\delta J$是泛函增量$\Delta J$的线性主要部分,即线性主部
 
-变分记号$\delta$有下列基本运算性质\\
-1.$\delta (F_1+F_2)=\delta F_1+\delta F_2$ \\
-2.$\delta (F_1*F_2)=F_1\delta F_2+F_2\delta F_1$\\
-3.$\delta (F^{n})=nF^{n-1}\delta F$\\
-4.$\delta (\frac{F_1}{F_2})=\frac{F_2\delta F_1-F_1\delta F_2}{F_2^{2}}$\\
-5.$\delta (F^{(n)})=(\delta F)^{n}$\\
-6.$\delta \int_{x_0}^{x_1}F(x,y,y')dx=\int_{x_0}^{x_1}\delta F(x,y,y')dx$\\
+变分记号$\delta$有下列基本运算性质
+\begin{enumerate}
+\item $\delta (F_1+F_2)=\delta F_1+\delta F_2$
+\item $\delta (F_1*F_2)=F_1\delta F_2+F_2\delta F_1$
+\item $\delta (F^{n})=nF^{n-1}\delta F$
+\item $\delta (\frac{F_1}{F_2})=\frac{F_2\delta F_1-F_1\delta F_2}{F_2^{2}}$
+\item $\delta (F^{(n)})=(\delta F)^{n}$
+\item $\delta \int_{x_0}^{x_1}F(x,y,y')dx=\int_{x_0}^{x_1}\delta F(x,y,y')dx$
+\end{enumerate}
 
-全变分$\Delta$有下列基本运算性质\\
-1.$\Delta (F_1+F_2)=\Delta F_1+\Delta F_2$ \\
-2.$\Delta (F_1*F_2)=F_1\Delta F_2+F_2\Delta F_1$\\
-3.$\Delta (F^{n})=nF^{n-1}\Delta F$\\
-4.$\Delta (\frac{F_1}{F_2})=\frac{F_2\Delta F_1-F_1\Delta F_2}{F_2^{2}}$\\
-5.$(\Delta F^{(n)})'=\Delta( F^{(n+1)})+F^{(n+1)}(\Delta x)'$ (微分与全变分的运算次序不能交换)\\
-6.$\Delta \int_{x_0}^{x_1}Fdx=\delta \int_{x_0}^{x_1}Fdx + (F\delta x)|_{x_0}^{x_1}=\int_{x_0}^{x_1}(\delta F + F\frac{d}{dx}\delta x)dx $  \\性质6表明,当$\frac{d}{dx}\delta x\neq 0$时,积分与全变分的运算也不能交换顺序 \\
-7.$d(\Delta x) = \Delta(dx)$
+全变分$\Delta$有下列基本运算性质
+\begin{enumerate}
+\item $\Delta (F_1+F_2)=\Delta F_1+\Delta F_2$ \\
+\item $\Delta (F_1*F_2)=F_1\Delta F_2+F_2\Delta F_1$\\
+\item $\Delta (F^{n})=nF^{n-1}\Delta F$\\
+\item $\Delta (\frac{F_1}{F_2})=\frac{F_2\Delta F_1-F_1\Delta F_2}{F_2^{2}}$\\
+\item $(\Delta F^{(n)})'=\Delta( F^{(n+1)})+F^{(n+1)}(\Delta x)'$ (微分与全变分的运算次序不能交换)\\
+	\begin{proof}
+	$$
+	(\Delta F^{(n)})'
+	=[F^{(n+1)} \Delta x + \delta (F^{(n)})]'
+	=F^{(n+2)}\Delta x + F^{(n+1)}(\Delta x)'+ \delta (F^{(n+1)})
+	=\Delta (F^{(n+1)}) + F^{(n+1)}(\Delta x)'
+	$$
+	\end{proof}
+\item $\Delta \int_{x_0}^{x_1}Fdx=\delta \int_{x_0}^{x_1}Fdx + (F\delta x)|_{x_0}^{x_1}=\int_{x_0}^{x_1}(\delta F + F\frac{d}{dx}\delta x)dx $  \\
+	性质6表明,当$\frac{d}{dx}\delta x\neq 0$时,积分与全变分的运算也不能交换顺序 \\
+	\begin{proof}
+	$$\Delta \int_{0}^{x}Fdx=\delta \int_{0}^{x}Fdx + F \Delta x$$
+	将上式中的积分上限x分别用$x_0,x_1$替换,可得到两个类似的关系式,然后将两个式子作差,可得到下面的关系式:
+	$$\Delta \int_{x_0}^{x_1}Fdx=\delta \int_{x_0}^{x_1}Fdx + (F \Delta x)|_{x_0}^{x_1}$$
+	and
+	$$\delta \int_{x_0}^{x_1}Fdx=\int_{x_0}^{x_1}\delta Fdx=\int_{x_0}^{x_1}(\Delta F -F' \Delta x)dx $$
+	$$(F \Delta x)|_{x_0}^{x_1}=\int_{x_0}^{x_1}d(F \Delta x)$$
+	将上面的两个式子代入到上面的第三个式子中得到:
+	$$\Delta \int_{0}^{x}Fdx=\int_{x_0}^{x_1}(\Delta F -F' \Delta x)dx +\int_{x_0}^{x_1}d(F \Delta x)=\int_{x_0}^{x_1}[\Delta F + F (\Delta x)']dx$$
+	\end{proof}
+\item $d(\Delta x) = \Delta(dx)$
+\end{enumerate}
 对自变量而言，全变分和微分的运算次序具有交换性
 
-5.preuve: \\
-$(\Delta F^{(n)})'=[F^{(n+1)} \Delta x + \delta (F^{(n)})]'=F^{(n+2)}\Delta x + F^{(n+1)}(\Delta x)'+ \delta (F^{(n+1)})=\Delta (F^{(n+1)}) + F^{(n+1)}(\Delta x)'$
-
-6.preuve: \\
-$$\Delta \int_{0}^{x}Fdx=\delta \int_{0}^{x}Fdx + F \Delta x$$
-将上式中的积分上限x分别用$x_0,x_1$替换,可得到两个类似的关系式,然后将两个式子作差,可得到下面的关系式:
-$$\Delta \int_{x_0}^{x_1}Fdx=\delta \int_{x_0}^{x_1}Fdx + (F \Delta x)|_{x_0}^{x_1}$$
-and
-$$\delta \int_{x_0}^{x_1}Fdx=\int_{x_0}^{x_1}\delta Fdx=\int_{x_0}^{x_1}(\Delta F -F' \Delta x)dx $$
-$$(F \Delta x)|_{x_0}^{x_1}=\int_{x_0}^{x_1}d(F \Delta x)$$
-将上面的两个式子代入到上面的第三个式子中得到:
-$$\Delta \int_{0}^{x}Fdx=\int_{x_0}^{x_1}(\Delta F -F' \Delta x)dx +\int_{x_0}^{x_1}d(F \Delta x)=\int_{x_0}^{x_1}[\Delta F + F (\Delta x)']dx$$
 \subsection{最简泛函的欧拉方程}
 \begin{theorem}
 使最简泛函
 $$J[y(x)]=\int_{x_0}^{x_1}F(x,y(x),y'(x))dx$$
 取极值且满足固定边界条件
-$$
-y(x_0)=y_0,y(x_1)=y_1
-$$
+$$ y(x_0)=y_0,y(x_1)=y_1 $$
 的极值曲线$y=y(x)$应满足\textbf{必要条件}(欧拉方程)
-$$
-F_y - \frac{d}{dx}F_{y'} =0
-$$
+$$ F_y - \frac{d}{dx}F_{y'} =0 $$
 的解,式中$F$是$x,y,y'$的已知函数并有二阶连续偏导数
 取得极值 $\Leftrightarrow \delta J = \int_{x_0}^{x_1}(F_y \delta y + F_{y'} \delta y')dx=0$
 \end{theorem}
@@ -381,9 +388,7 @@ $$
 \subsection{依赖于多个一元函数的变分问题}
 \begin{theorem}
 使泛函$$J[y(x),z(x)]=\int_{x_0}^{x_1}F(x,y,y',z,z')dx$$取得极值且满足固定边界条件
-$$
-y(x_0)=y_0,y(x_1)=y_1,z(x_0)=z_0,z(x_1)=z_1
-$$
+$$ y(x_0)=y_0,y(x_1)=y_1,z(x_0)=z_0,z(x_1)=z_1 $$
 的极值曲线$y=y(x),z=z(x)$必满足欧拉方程组
 $$
 \left\{
@@ -409,9 +414,7 @@ $$F_{y_i} -  \frac{d}{dx}F_{y_i'}=0 ~(i=1,2,\dots,n)$$
 使泛函
 $$J[y(x)]=\int_{x_0}^{x_1}F(x,y,y',y'')dx$$
 取极值且满足固定边界条件
-$$
-y(x_0)=y_0,y(x_1)=y_1,y'(x_0)=y_0',y'(x_1)=y_1'
-$$
+$$ y(x_0)=y_0,y(x_1)=y_1,y'(x_0)=y_0',y'(x_1)=y_1' $$
 的极值曲线$y=y(x)$必满足微分方程
 $$F_y - \frac{d}{dx}F_y' + \frac{d^2}{dx^2}F_{y''} = 0 $$
 \end{theorem}
@@ -420,9 +423,7 @@ $$F_y - \frac{d}{dx}F_y' + \frac{d^2}{dx^2}F_{y''} = 0 $$
 使依赖于未知函数$y(x)$的n阶导数的泛函
 $$J[y]=\int_{x_0}^{x_1}F(x,y,y',y'', \ldots , y^{(n)})dx$$
 取极值且满足固定边界条件
-$$
-y^{(k)}(x_0)=y_0^{(k)}, y^{(k)}(x_1)=y_1^{(k)} ~ (k= 0,1,\ldots , n-1)
-$$
+$$ y^{(k)}(x_0)=y_0^{(k)}, y^{(k)}(x_1)=y_1^{(k)} ~ (k= 0,1,\ldots , n-1) $$
 的极值曲线$y=y(x)$必满足欧拉-泊松方程
 $$F_y - \frac{d}{dx}F_{y'} + \frac{d^2}{dx^2}F_{y''} - \dots + (-1)^{n}\frac{d^n}{dx^n}F_{y^{(n)}}=0  $$
 式中F具有n+1阶连续导数,y具有2n阶连续导数,这是一个2n阶微分方程,它的通解中含有2n个特定常数,可由2n个边界来确定
@@ -432,12 +433,8 @@ $$F_y - \frac{d}{dx}F_{y'} + \frac{d^2}{dx^2}F_{y''} - \dots + (-1)^{n}\frac{d^n
 使依赖于两个未知函数$y(x)$的m阶导数,$z(x)$的n阶导数的泛函
 $$J[y(x),z(x)]=\int_{x_0}^{x_1}F(x,y,y',y'', \ldots , y^{(m)},z,z',z'', \ldots , z^{(n)})dx$$
 取极值且满足固定边界条件
-$$
-y^{(k)}(x_0)=y_0^{(k)}, y^{(k)}(x_1)=y_1^{(k)} ~ (k= 0,1,\ldots , m-1)
-$$
-$$
-z^{(k)}(x_0)=z_0^{(k)}, z^{(k)}(x_1)=z_1^{(k)} ~ (k= 0,1,\ldots , n-1)
-$$
+$$ y^{(k)}(x_0)=y_0^{(k)}, y^{(k)}(x_1)=y_1^{(k)} ~ (k= 0,1,\ldots , m-1) $$
+$$ z^{(k)}(x_0)=z_0^{(k)}, z^{(k)}(x_1)=z_1^{(k)} ~ (k= 0,1,\ldots , n-1) $$
 的极值曲线$y=y(x),z=z(x)$必满足欧拉-泊松方程
 $$
 \left\{
@@ -447,40 +444,37 @@ $$
   \end{array}
 \right.
 $$
-式中F具有n+1阶连续导数,y,z具有2n阶连续导数
-\\
+式中F具有n+1阶连续导数,y,z具有2n阶连续导数 \\
 当然我们还可以推论到更多个未知函数的情况
 \end{corollary}
 
 \subsection{依赖于多元函数的变分问题}
 \begin{theorem}
 设D是平面区域,$(x,y) \in D ,u(x,y) \in C^2(D)$,使泛函
-$$
-J[u(x,y)]=\int\int_{D}F(x,y,u_x,u_y)dxdy
-$$
+$$ J[u(x,y)]=\int\int_{D}F(x,y,u_x,u_y)dxdy $$
 取极值且在区域D的边界线L上取已知的极值函数$u=u(x,y)$必须满足偏微分方程
-$$
-F_u -\frac{\partial}{\partial x}F_{u_x}-\frac{\partial}{\partial y}F_{u_y} = 0
-$$
+$$ F_u -\frac{\partial}{\partial x}F_{u_x}-\frac{\partial}{\partial y}F_{u_y} = 0 $$
 这个方程称为奥斯特罗格拉茨基方程,简称奥氏方程,有时也称之为欧拉方程
 \end{theorem}
 
 \begin{corollary}
 设D是平面区域,$(x,y) \in D ,u(x,y) \in C^4(D),F(x,y,u,u_x,u_y,u_{xx},u_{xy},u_{yy}) \in C^3$,则泛函
-$$
-J[u(x,y)]=\int\int_{D}F(x,y,u,u_x,u_y,u_{xx},u_{xy},u_{yy})dxdy
-$$
+$$ J[u(x,y)]=\int\int_{D}F(x,y,u,u_x,u_y,u_{xx},u_{xy},u_{yy})dxdy $$
 的奥氏方程为
 $$
-F_u -\frac{\partial}{\partial x}F_{u_x}-\frac{\partial}{\partial y}F_{u_y}+ \frac{\partial^2}{\partial x^2}F_{u_{xx}} + \frac{\partial^2}{\partial x \partial y}F_{u_{xy}} + \frac{\partial^2}{\partial y^2}F_{u_{yy}} = 0
+F_u 
+- \frac{\partial}{\partial x}F_{u_x}
+- \frac{\partial}{\partial y}F_{u_y}
++ \frac{\partial^2}{\partial x^2}F_{u_{xx}}
++ \frac{\partial^2}{\partial x \partial y}F_{u_{xy}}
++ \frac{\partial^2}{\partial y^2}F_{u_{yy}}
+= 0
 $$
 \end{corollary}
 
 \begin{corollary}
 设D是平面区域,$(x,y) \in D, u(x,y) \in C^{2n}(D),F \in C^{n+1}(D)$,则泛函
-$$
-J[u(x,y)]=\int\int_{D}F(x,t,u,u_x,u_y,u_{xx},u_{yy}, \ldots , u_{\underbrace{xx \dots x}_{n}},u_{\underbrace{yy \dots y}_{n}})dxdy
-$$
+$$ J[u(x,y)]=\int\int_{D}F(x,t,u,u_x,u_y,u_{xx},u_{yy}, \ldots , u_{\underbrace{xx \dots x}_{n}},u_{\underbrace{yy \dots y}_{n}})dxdy $$
 的奥氏方程为
 $$
 \begin{array}{c}
@@ -498,9 +492,7 @@ $$
 
 \begin{corollary}
 设D是平面区域,$(x,y) \in D ,u(x,y) \in C^2(D),v(x,y) \in C^2(D)$,使泛函
-$$
-J[u(x,y),v(x,y)]=\int\int_{D}F(x,y,,u,v,u_x,,v_x,u_y,v_y)dxdy
-$$
+$$ J[u(x,y),v(x,y)]=\int\int_{D}F(x,y,,u,v,u_x,,v_x,u_y,v_y)dxdy $$
 的奥氏方程组为
 $$
 \left\{
@@ -516,7 +508,7 @@ $$
 \subsection{最简泛函的变分问题}
 设泛函
 \begin{equation}
-  J[y(x)]=\int_{x_0}^{x_1}F(x,y,y')dx
+J[y(x)]=\int_{x_0}^{x_1}F(x,y,y')dx
 \label{equation.function.simple-general}
 \end{equation}
 
@@ -527,9 +519,7 @@ $$
 若函数$y=y(x)$能在可动边界的容许函数类中使泛函(\ref{equation.function.simple-general})取得极值，
 那么必能在固定边界的容许函数类中使泛函取得极值，这是因为可动边界泛函的容许曲线类的范围扩大了，当然包含了固定边界泛函的容许曲线，
 而在固定边界情况下使泛函取得极值的函数必须满足欧拉方程，所以函数(\ref{equation.function.simple-general})在可动边界情况下也应当满足欧拉方程
-$$
-F_y - \frac{d}{dx}F_{y'} =0
-$$
+$$ F_y - \frac{d}{dx}F_{y'} =0 $$
 欧拉方程的解含有两个任意常数,它的一般解形式为
 $$y=y(x,c_1,c_2)$$
 在端点固定的情况下,这两个常数可以解出来,在可动边界条件下,他们都是$x_0,x_1$的函数,确定他们的条件就是泛函取得极值的必要条件$\delta J=0$
@@ -544,7 +534,7 @@ $$y=y(x,c_1,c_2)$$
 略去高阶无穷小量后剩下一阶变分为
 \begin{equation}
 \begin{split}
-     &  \delta J=\int_{x_0}^{x_1}(F_y - \frac{d}{dx}F_{y'} )\delta y dx + F|_{x=x_1}\delta x_1 + F_{y'}|_{x=x_1}[\delta y_1 - y'(x_1)\delta x_1] \\
+    &  \delta J=\int_{x_0}^{x_1}(F_y - \frac{d}{dx}F_{y'} )\delta y dx + F|_{x=x_1}\delta x_1 + F_{y'}|_{x=x_1}[\delta y_1 - y'(x_1)\delta x_1] \\
     & =\int_{x_0}^{x_1}(F_y - \frac{d}{dx}F_{y'} )\delta y dx + (F-y'F_{y'})|_{x=x_1}\delta x_1 +F_{y'}|_{x=x_1}\delta y_1
 \end{split}
 \end{equation}
@@ -583,15 +573,12 @@ F_{y'}=0
 \begin{proof}
  对已知曲线$y=\psi(x)$取变分,得到 $\delta y=\psi'(x)\delta x$,在右端点处,$\delta y_1=\psi'(x_1)\delta x_1$ \\
 将之代入到(\ref{equation.result.general})可以得到
-$$
-[F + (\psi' - y')F_{y'}]|_{x=x_1}\delta x_1=0
-$$
+$$ [F + (\psi' - y')F_{y'}]|_{x=x_1}\delta x_1=0 $$
 又因为$\delta x_1$是任意的,所以可以得到
 $[F + (\psi' - y')F_{y'}]|_{x=x_1}=0$
 \end{proof}
 上式建立了极值曲线$y = y ( x )$与已知曲线：$y = \psi(x)$在交点B 处的$y'$与$\psi'$两斜率
-之间的关系，这样的关系称为横截(性）条件、贯截条件或斜截条件。这两条曲线较小的那个交角称
-为斜截角。
+之间的关系，这样的关系称为横截(性）条件、贯截条件或斜截条件。这两条曲线较小的那个交角称为斜截角。
 
 \begin{theorem}
 \label{theorem.limit.two}
@@ -620,9 +607,7 @@ $A(x_0,y_0,z_0)$固定,右端点 $B(x_1,y_1,z_1)$待定
 \begin{equation}
 \begin{array}{c}
   \Delta J=\int_{x_0}^{x_1+\delta x_1}F(x,y+\delta y,z+\delta z,y'+\delta y',z'+\delta z')dx-\int_{x_0}^{x_1}F(x,y,z,y',z')dx\\
-\\
   = \int_{x_1}^{x_1+\delta x_1}F(x,y+\delta y,z+\delta z,y'+\delta y',z'+\delta z')dx +\\
-\\
 \int_{x_0}^{x_1}[F(x,y+\delta y,z+\delta z,y'+\delta y',z'+\delta z')-F(x,y,z,y',z')]dx
 \end{array}
 \end{equation}
@@ -640,7 +625,8 @@ $$
   \end{array}
 \right.
 $$
-这个方程组的通解中含有四个任意常数,由于B点可以变动,又多了一个未知量$x_1$,为了使泛函(\ref{equation.general.space})有唯一一组解,就需要确定五个常数.因为A点固定,由$y(x_0)=y_0,z(x_0)=z_0$可以定出两个常数,其余三个常数可根据泛函的极值条件$\delta J=0$确定
+这个方程组的通解中含有四个任意常数,由于B点可以变动,又多了一个未知量$x_1$,为了使泛函(\ref{equation.general.space})有唯一一组解,就需要确定五个常数.
+因为A点固定,由$y(x_0)=y_0,z(x_0)=z_0$可以定出两个常数,其余三个常数可根据泛函的极值条件$\delta J=0$确定
 将欧拉方程组代入得到
 \begin{equation}
  \delta J=F|_{x=x_1}\delta x_1 +F_{y'}\delta y|_{x=x_1} +F_{z'}\delta z|_{x=x_1}=0
@@ -666,21 +652,15 @@ $$
   \end{array}
 \right.
 $$
-此时,如果把后两式代入第一个式子中,则有$F|_{x=x_1}=0$,即泛函的被积函数为零,一般来说这样的变分问题无意义
-\\
-(2)若边界点$B(x_1,y_1,z_1)$沿着某一曲线
-$y_1=\varphi(x_1),z_1=\psi(x_1)$
-变动时,则
+此时,如果把后两式代入第一个式子中,则有$F|_{x=x_1}=0$,即泛函的被积函数为零,一般来说这样的变分问题无意义 \\
+(2)若边界点$B(x_1,y_1,z_1)$沿着某一曲线 $y_1=\varphi(x_1),z_1=\psi(x_1)$ 变动时,则
 $\delta y_1=\varphi'(x_1)\delta x_1,\delta z_1=\psi'(x_1)\delta x_1$
 将他们代入(\ref{equation.cases})并整理,同时注意到$\delta x_1$是任意的,得
 \begin{equation}
  [F + (\varphi' - y')F_{y'} + (\psi' -z')F_{z'}]|_{x=x_1}=0
 \label{equation.case2}
 \end{equation}
-式(\ref{equation.case2})称为泛函$J[y,z]$的极值曲线与端点曲线及极值问题的横截条件,它与方程
-$y_1=\varphi(x_1),z_1=\phi(x_1)$
-一起就能确定欧拉方程组的通解中的任意常数
-\\
+式(\ref{equation.case2})称为泛函$J[y,z]$的极值曲线与端点曲线及极值问题的横截条件,它与方程$y_1=\varphi(x_1),z_1=\phi(x_1)$一起就能确定欧拉方程组的通解中的任意常数 \\
 (3)若边界点$B(x_1,y_1,z_1)$沿着某一曲面$\phi(x_1,y_1,z_1)=0$变动,则
 \begin{equation}
  \phi_{x_1}\delta x_1+
@@ -705,8 +685,7 @@ $y_1=\varphi(x_1),z_1=\phi(x_1)$
 \right.
 \label{equation.case3}
 \end{equation}
-将(\ref{equation.case3})与曲面方程$\phi(x_1,y_1,z_1)=0$联立,即可求出极值曲线
-\\
+将(\ref{equation.case3})与曲面方程$\phi(x_1,y_1,z_1)=0$联立,即可求出极值曲线 \\
 (4)若边界点$B(x_1,y_1,z_1)$可在空间平面$x=x_1$上变动,则$\delta x_1=0$,$\delta y_1,\delta z_1$可任意取值,自然边界条件为
 \begin{equation}
 F_{y'}|_{x=x_1}=0,
@@ -790,7 +769,8 @@ y_j(x_0)=y_{jo},y_j(x_1)=y_{j1}~ (j=1,2,\cdots ,n)
 \end{equation}
 的极值问题
 \begin{theorem}
-拉格朗日定理:在完整约束~\ref{equation.condition.constraint}和边界约束~\ref{equation.condition.limit}下使目标泛函~\ref{equation.fonctionGenerale}取得极值,则存在待定函数$\lambda_i(x)$,使得函数$y_1,y_2,\cdots,y_n$满足由下列泛函
+拉格朗日定理:在完整约束~\ref{equation.condition.constraint}和边界约束~\ref{equation.condition.limit}下使目标泛函~\ref{equation.fonctionGenerale}取得极值,
+则存在待定函数$\lambda_i(x)$,使得函数$y_1,y_2,\cdots,y_n$满足由下列泛函
 \begin{equation}
 J^{*}[y]=\int_{x_0}^{x_1}[F+\sum_{i=1}^{m}\lambda_i(x)\varphi_i]dx=\int_{x_0}^{x_1}Hdx
 \label{equation.fonctionGenerale.help}
@@ -803,11 +783,8 @@ $$H_{y_j} - \frac{d}{dx}H_{y_{j}'}=0 ~ (j=1,2,\cdots,n)$$
 微分,等周等其他约束也可以采用拉格朗日乘数法解决
 
 \section{参数形式的变分问题}
-正n次齐次函数
-具有
-$$
-f(x,y,k\dot{x},k\dot{y})=k^nf(x,y,\dot{x},\dot{y})
-$$
+正n次齐次函数具有
+$$ f(x,y,k\dot{x},k\dot{y})=k^nf(x,y,\dot{x},\dot{y}) $$
 性质的函数称为关于$\dot{x},\dot{y}$的n次齐次函数\\
 如果k是正数,则这样的函数称为关于$\dot{x},\dot{y}$的正n次齐次函数
 
@@ -909,7 +886,8 @@ $$
 $$
 对x求一阶偏导数，则
 $$
-\frac{\partial}{\partial x}(- \frac{\partial \gamma_{yz}}{\partial x} +\frac{\partial \gamma_{zx}}{\partial y} +\frac{\partial \gamma_{xy}}{\partial z} ) = 2 \frac{\partial^2 \varepsilon_x}{\partial y\partial z}
+\frac{\partial}{\partial x}(- \frac{\partial \gamma_{yz}}{\partial x} +\frac{\partial \gamma_{zx}}{\partial y} +\frac{\partial \gamma_{xy}}{\partial z} )
+= 2 \frac{\partial^2 \varepsilon_x}{\partial y\partial z}
 $$
 分别轮换x,y,z，则可得如下六个关系式
 
@@ -1033,7 +1011,8 @@ Z=\overline{Z}
 \label{equation.limit.contraint}
 \end{equation}
 其中$X_i=n_j \sigma_{ij}$
-如果弹性体的位移满足物体内部的连续性条件即几何方程(\ref{equation.cauchy})和$S_u$上的位移边界条件 (\ref{equation.limit.displacement}) ，则称为弹性体的可能位移或容许位移，记作$u_i^p$与可能位移相对应的应变称为可能应变 或容许应变，记作$\varepsilon_{ij}^p$
+如果弹性体的位移满足物体内部的连续性条件即几何方程(\ref{equation.cauchy})和$S_u$上的位移边界条件 (\ref{equation.limit.displacement}),
+则称为弹性体的可能位移或容许位移，记作$u_i^p$与可能位移相对应的应变称为可能应变 或容许应变，记作$\varepsilon_{ij}^p$
 
 如果弹性体的应力满足平衡微分方程(\ref{equation.move.equilibre})和$S_{\sigma}$上的应力边界条件(\ref{equation.limit.contraint})，则称为弹
 性体的可能应力或容许应力，记作 因为可能应力状态是与给定体积力和表面力（或惯性力）相
@@ -1084,7 +1063,11 @@ Z=\overline{Z}
 值得指出的是，虽然上面从物体弹性平衡的角度导出了虚位移原理的表达式，但是一般说来，虚位移原理具有普遍意义。它可以适用于一切结构，不论材料是线性还是非线性、弹性还是塑性、静载还是动载等均能适用
 
 \subsection{最小势能原理}
-弹性体在平衡位置时，其总势能有极值。研究结果表明，在稳定的平衡位置弹 性体的势能具有极小值。于是，对于位移和变形都很小的弹性体，最小势能原理可以叙述为:弹性体 在给定的外力作用下，在满足变形相容条件和位移边界条件的所有可能位移中，真实位移使弹性体 总势能取得极小值。根据最小势能原理，可以把求位移微分方程的边值问题转化为求总势能泛函的变分问题。求出了弹性体的位移，就可以求得应力，以分析弹性体的强度。
+弹性体在平衡位置时，其总势能有极值。
+研究结果表明，在稳定的平衡位置弹 性体的势能具有极小值.
+于是，对于位移和变形都很小的弹性体，最小势能原理可以叙述为:
+弹性体在给定的外力作用下，在满足变形相容条件和位移边界条件的所有可能位移中，真实位移使弹性体 总势能取得极小值.
+根据最小势能原理，可以把求位移微分方程的边值问题转化为求总势能泛函的变分问题。求出了弹性体的位移，就可以求得应力，以分析弹性体的强度。
 
 \subsection{哈密顿原理及其应用}
 \subsubsection{质点系的哈密顿原理}
@@ -1092,9 +1075,9 @@ Z=\overline{Z}
 \begin{equation}
 \sum_{i=1}^n R_i \cdot \delta r_i =0
 \end{equation}
-则这种约束称为理想约束. 式中$R_i$表示作用于系统中任意一质点$i$上的约束反力,$\delta r_i$表示该质点的任意虚位移.
-\\
-设$n$个质点组成的系统受到理约束并处于运动状态，其中第$i$个质点$P_i$, 所受的主动力的合 力为$F_i$,约束反力的合力为$R_i$,质量为$m_i$,具有加速度$a_i$,且在初始时刻$t_0$和纟f 了时刻$t_l$,系统的 正路和旁路在同一位置上。根据牛顿第二定律，在任一瞬时，有
+则这种约束称为理想约束. 式中$R_i$表示作用于系统中任意一质点$i$上的约束反力,$\delta r_i$表示该质点的任意虚位移.  \\
+设$n$个质点组成的系统受到理约束并处于运动状态，其中第$i$个质点$P_i$, 所受的主动力的合 力为$F_i$,约束反力的合力为$R_i$,质量为$m_i$,
+具有加速度$a_i$,且在初始时刻$t_0$和纟f 了时刻$t_l$,系统的 正路和旁路在同一位置上。根据牛顿第二定律，在任一瞬时，有
 \begin{equation}
  m_i a_i = F_i + R_i  ~(i=1,2,\ldots,n)
 \end{equation}
@@ -1110,7 +1093,9 @@ Z=\overline{Z}
 \end{equation}
 
 式 (\ref{equation.dynamic.general})
-称为\textbf{动力学普遍方程}，或称为\textbf{达朗贝尔一拉格朗日方程}，有时也称为达朗贝尔原 理的拉格朗日形式。该方程可表述为:\textbf{具有理想约束的质点系运动时，在任意时刻,主动力和惯性力 在任意虚位移上所做的元功之和为零。}全部动力学的定理和方程都可由动力学普遍方程推导出来。显然，在动力学普遍方程中，理想约束的约束反力没有出现。
+称为\textbf{动力学普遍方程}，或称为\textbf{达朗贝尔一拉格朗日方程}，有时也称为达朗贝尔原 理的拉格朗日形式。
+该方程可表述为:\textbf{具有理想约束的质点系运动时，在任意时刻,主动力和惯性力 在任意虚位移上所做的元功之和为零。}
+全部动力学的定理和方程都可由动力学普遍方程推导出来。显然，在动力学普遍方程中，理想约束的约束反力没有出现。
 
 式 (\ref{equation.dynamic.general})
 第一项可写成
@@ -1119,13 +1104,9 @@ Z=\overline{Z}
  \label{eq.travail.virtual}
 \end{equation}
 式中，$\delta'W$为给定力系在虚位移上所作的元功即虚功。需要指出是，第$i$个质点受到的主动力的合力$F_i$可能依赖于$r_i,\dot{r}_i,t$,
-但虚功表达式中并不包含带有$\dot{r}_i$的项。因此虚功$\delta 'W$ 一般情况下并不表示总功$W$的变分，也就是说，在得到力的功的表达式以后，一般不能由该表达式求变分而得到该力的虚功。只是数量积$\sum_{i=1}^n F_i \cdot \delta r_i$的简写，它并不一定是$W$的变分。
-\\
-惯性力的虚功
-$
--m_ia_i\cdot \delta r_i
-$
-可改写成
+但虚功表达式中并不包含带有$\dot{r}_i$的项。因此虚功$\delta 'W$ 一般情况下并不表示总功$W$的变分，
+也就是说，在得到力的功的表达式以后，一般不能由该表达式求变分而得到该力的虚功。只是数量积$\sum_{i=1}^n F_i \cdot \delta r_i$的简写，它并不一定是$W$的变分。 \\
+惯性力的虚功 $ -m_ia_i\cdot \delta r_i $ 可改写成
 \begin{equation}
 -m_ia_i\cdot \delta r_i=-m_i \frac{dv_i}{dt} \cdot \delta r_i = - \frac{d}{dt}(m_i v_i \cdot \delta r_i) + m_i v_i \cdot \frac{d}{dt}\delta r_i
 \label{equation.travail.virtual}
@@ -1143,18 +1124,18 @@ $
   & = -\frac{d}{dt}(\sum_{i=1}^n m_i v_i \cdot \delta r_i) + \delta T
  \end{split}
 \end{equation}
-式中,$T=\sum_{i=1}^n \frac{m_i v_i \cdot v_i}{2}$成为系统的总动能
-\\
+式中,$T=\sum_{i=1}^n \frac{m_i v_i \cdot v_i}{2}$成为系统的总动能 \\
 把式\eqref{eq.travail.virtual}和\lasteq 代入\eqref{equation.dynamic.general},得
 \begin{equation}
  \delta T + \delta 'W =\frac{d}{dt}\sum_{i=1}^n (m_i v_i \cdot \delta r_i)
 \end{equation}
-对式 \lasteq 从$t_0$至$t_1$时刻积分,并注意到当
-$t=t_0$ 和 $t=t_1$
-时正路和旁路占有相同的位置 $M_0$ 和 $M_1$ ,即
+对式 \lasteq 从$t_0$至$t_1$时刻积分,并注意到当 $t=t_0$ 和 $t=t_1$ 时正路和旁路占有相同的位置 $M_0$ 和 $M_1$ ,即
 $ \delta r_i|_{t=t_0}= \delta r_i|_{t=t_1}= 0 $,则
 \begin{equation}
- \int_{t_0}^{t_1}(\delta T + \delta ' W)dt=\int_{t_0}^{t_1}\frac{d}{dt}(\sum_{i=1}^n m_i v_i \cdot \delta r_i)dt=\sum_{i=1}^n m_i v_i \cdot \delta r_i|_{t=t_0}^{t=t_1}=0
+\int_{t_0}^{t_1}(\delta T + \delta ' W)dt
+= \int_{t_0}^{t_1}\frac{d}{dt}(\sum_{i=1}^n m_i v_i \cdot \delta r_i)dt
+= \sum_{i=1}^n m_i v_i \cdot \delta r_i|_{t=t_0}^{t=t_1}
+= 0
 \end{equation}
 或
 \begin{equation}
@@ -1182,7 +1163,10 @@ $ \delta r_i|_{t=t_0}= \delta r_i|_{t=t_1}= 0 $,则
 \end{equation}
 
 哈密顿原理虽未指明真实路径使泛函取极大值还是极小值，但一般情况下，哈密顿原理所涉及的泛函在真实路径上都是取极小值。
-哈密顿原理又称为稳定作用量原理或最小作(量）用原理。\emph{该原理是力学中的基本原理，与动 力学普遍方程等价，它把力学原理化为更一般的形式，并且与坐标系的选择无关，在理论上具有意 义的普遍性，在应用上具有广泛的适应性.}哈密顿原理只涉及两个动力学函数，即系统的动能和势能。 若把T、V 和L 分别看作质点系在时刻$t$的动能密度(即单位体积的动能)、势能密度和拉格朗日密度函数，则哈密顿原理可写成如下形式
+哈密顿原理又称为稳定作用量原理或最小作(量）用原理。
+\emph{该原理是力学中的基本原理，与动 力学普遍方程等价，它把力学原理化为更一般的形式，并且与坐标系的选择无关，在理论上具有意 义的普遍性，在应用上具有广泛的适应性.}
+哈密顿原理只涉及两个动力学函数，即系统的动能和势能。 
+若把T、V 和L 分别看作质点系在时刻$t$的动能密度(即单位体积的动能)、势能密度和拉格朗日密度函数，则哈密顿原理可写成如下形式
 \begin{equation}
  \delta J=\delta \int_{t_0}^{t_1} \iiint_V (T-V)dVdt=\delta \int_{t_0}^{t_1} \iiint_V LdVdt =0
 \end{equation}
@@ -1196,7 +1180,8 @@ L'équation d'une courbe elliptique définie sur le corps des nombres réels peu
 $$ y^2 = x^3 + ax + b $$
 où les coefficients a, b sont des nombres réels.
 其是无奇点的,亦即,其图形没有尖点或自相交
-Selon le choix de ces coefficients, les graphes correspondants ont essentiellement deux \href{http://upload.wikimedia.org/wikipedia/commons/d/d0/ECClines-3.svg}{formes possibles}.
+Selon le choix de ces coefficients, les graphes correspondants ont essentiellement deux
+\href{http://upload.wikimedia.org/wikipedia/commons/d/d0/ECClines-3.svg}{formes possibles}.
 
 Les courbes représentées ont une tangente bien définie en chaque point, n'ont ni point double, ni point de rebroussement.
 Algébriquement, ceci se traduit par le fait que le discriminant de la courbe ne s'annule pas.
@@ -1283,13 +1268,9 @@ $$
 0(x^n)
 $$
 
-$$
-\frac{ 1}{1+x}= 1 -x +x^2-x^3+\ldots +(-1)^n x^n +0(x^n)=\sum_{k=0}^{+\infty}(-1)^kx^k
-$$
+$$ \frac{ 1}{1+x}= 1 -x +x^2-x^3+\ldots +(-1)^n x^n +0(x^n)=\sum_{k=0}^{+\infty}(-1)^kx^k $$
 
-$$
-\frac{ 1}{1-x}= 1 +x +x^2-x^3+\ldots +x^n +0(x^n)=\sum_{k=0}^{+\infty}x^k
-$$
+$$ \frac{ 1}{1-x}= 1 +x +x^2-x^3+\ldots +x^n +0(x^n)=\sum_{k=0}^{+\infty}x^k $$
 
 $$
 \sqrt{1+x}= 1+\frac{ x}{2}-\frac{ 1}{2\cdot 4}x^2+ \frac{ 1\cdot3}{2\cdot4\cdot6}x^3
@@ -1356,39 +1337,22 @@ x-\frac{ 1}{2\cdot3}x^3+\frac{1\cdot3}{2\cdot4\cdot5}x^5
 \frac{ (-1)^n \cdot1\cdot3\cdot(2n-1)}{2\cdot4\cdot(2n)\cdot(2n+1)}x^{2n+1}+0(x^{2n+2})
 $$
 
-$$
-\tan x=
-x+\frac{ x^3}{3}+\frac{2}{15}x^5+\frac{ 11}{315}x^7+0(x^8)
-$$
+$$ \tan x= x+\frac{ x^3}{3}+\frac{2}{15}x^5+\frac{ 11}{315}x^7+0(x^8) $$
 
+\section{有限项数项级数}
+$$ 1^2 + 2^2 +3^2+\ldots+n^2=\frac{ n(n+1)(n+2)}{6} $$
 
-\section{常用的初等数学公式}
-\subsection{有限项数项级数}
-$$
-1^2 + 2^2 +3^2+\ldots+n^2=\frac{ n(n+1)(n+2)}{6}
-$$
+$$ 1^3 + 2^3 +3^3+\ldots+n^3=\frac{ n^2(n+1)^2}{4} $$
 
-$$
-1^3 + 2^3 +3^3+\ldots+n^3=\frac{ n^2(n+1)^2}{4}
-$$
+$$ 1^2+3^2+5^2+\ldots+(2n-1)^2=\frac{n(4n^2-1)}{3} $$
 
-$$
-1^2+3^2+5^2+\ldots+(2n-1)^2=\frac{n(4n^2-1)}{3}
-$$
+$$ 1^3 + 3^3 +5^3+\ldots+(2n-1)^3=n^2(2n^2-1) $$
 
-$$
-1^3 + 3^3 +5^3+\ldots+(2n-1)^3=n^2(2n^2-1)
-$$
+\section{双曲函数}
+$$ \sh x=\frac{e^x - e^{-x}}{2}, \quad \ch x=\frac{e^x+e^{-x}}{2}, \quad \dth x = \frac{ \sh x}{\ch x}=\frac{e^x-e^{-x}}{e^x + e^{-x}} $$
 
-\subsection{双曲函数}
-$$
-\sh x=\frac{e^x - e^{-x}}{2}, \quad \ch x=\frac{e^x+e^{-x}}{2}, \quad \dth x = \frac{ \sh x}{\ch x}=\frac{e^x-e^{-x}}{e^x + e^{-x}}
-$$
-
-\subsection{三角}
-$$
-\sin ^2 \alpha + \cos^2 \alpha=1
-$$
+\section{三角}
+$$ \sin ^2 \alpha + \cos^2 \alpha=1 $$
 
 $$
 \frac{ \sin x}{\cos x}=\tan x, \quad
@@ -1408,9 +1372,7 @@ dx=\frac{2}{1+t^2}dx
 $$
 
 和差公式
-$$
-\sin(x\pm y)=\sin x \cos y \pm \cos x \sin y,\quad \cos(x \pm y)=\cos x \cos y \mp \sin x \sin y
-$$
+$$ \sin(x\pm y)=\sin x \cos y \pm \cos x \sin y,\quad \cos(x \pm y)=\cos x \cos y \mp \sin x \sin y $$
 
 $$
 \tan(x \pm y)=\frac{\tan x \pm \tan y}{1 \mp \tan x \tan y}, \quad
@@ -1427,22 +1389,14 @@ $$
 \cos x-\cos y=2\sin \frac{x+y}{2} \sin \frac{ x -y }{2}
 $$
 
-$$
-\cos x \cos y=\frac{ 1}{2}[\cos(x-y)+\cos(x+y)]
-$$
+$$ \cos x \cos y=\frac{ 1}{2}[\cos(x-y)+\cos(x+y)] $$
 
-$$
-\sin x \sin y=\frac{ 1}{2}[\cos(x-y)-\cos(x+y)]
-$$
+$$ \sin x \sin y=\frac{ 1}{2}[\cos(x-y)-\cos(x+y)] $$
 
-$$
-\sin x \cos y=\frac{ 1}{2}[\sin(x-y)+\sin(x+y)]
-$$
+$$ \sin x \cos y=\frac{ 1}{2}[\sin(x-y)+\sin(x+y)] $$
 
-被角公式
-$$
-\sin 2x=2\sin x \cos x,\quad \cos 2x=\cos^2 x-\sin ^2 x=1-2\sin^2 x=2\cos^2 x -1
-$$
+倍角公式
+$$ \sin 2x=2\sin x \cos x,\quad \cos 2x=\cos^2 x-\sin ^2 x=1-2\sin^2 x=2\cos^2 x -1 $$
 
 任意三角形的基本关系
 $$
@@ -1452,15 +1406,11 @@ $$
 2R(\mbox{正弦定理})
 $$
 
-$$
-a^2=b^2+c^2-2bc\cos A (\mbox{余弦定理})
-$$
+$$ a^2=b^2+c^2-2bc\cos A (\mbox{余弦定理}) $$
 
-$$
-S= \frac{ 1}{2}ab\sin C=\sqrt{p(p-a)(p-b)(p-c)}~\mbox{where}~p=\frac{1}{2}(a+b+c)~ (\mbox{面积公式})
-$$
+$$ S= \frac{ 1}{2}ab\sin C=\sqrt{p(p-a)(p-b)(p-c)}~\mbox{where}~p=\frac{1}{2}(a+b+c)~ (\mbox{面积公式}) $$
 
-\subsection{初等几何}
+\section{初等几何}
 \textbf{扇形:}
 弧长$l=\alpha \cdot R$, \quad
 面积$S=\dfrac{1}{2}l\cdot R=\dfrac{1}{2}\alpha R^2$
@@ -1474,11 +1424,12 @@ $$
 体积$V=\dfrac{\pi h}{3}(R^2+r^2+Rr)$, \quad
 侧面积$S=\pi l(R+r)$
 
-\subsection{中值定理}
+\section{中值定理}
 拉格朗日中值定理: $f(b)-f(a)=f'(\xi)(b-a)$
 
 柯西中值定理: $$\frac{f(b)-f(a)}{g(b)-g(a)}=\frac{f'(\xi) }{g'(\xi)}$$
-\subsection{曲率}
+
+\section{曲率}
 弧微分公式: $ds=\sqrt{1+y'^2}dx$,其中$y'=\tan \alpha$
 
 平均曲率: $K=|\frac{\Delta\alpha}{\Delta s}|$ 其中$\Delta \alpha$:从$M$点到$M'$点,切线斜率的倾角变化量; $\Delta s$:$MM'$弧长
@@ -1505,44 +1456,26 @@ $$
 (\arccot x)'=-\frac{1}{1+x^2}
 $$
 
-$$
-d(\frac{1}{|x|})=-\frac{1}{x|x|}dx, \quad |x|=sgn(x)\cdot x
-$$
+$$ d(\frac{1}{|x|})=-\frac{1}{x|x|}dx, \quad |x|=sgn(x)\cdot x $$
 
 \textbf{含有$ax+b$的积分}
 
-$$
-\int \frac{dx}{ax+b}=\frac{1}{a}\ln|ax+b|+C
-$$
+$$ \int \frac{dx}{ax+b}=\frac{1}{a}\ln|ax+b|+C $$
 
-$$
-\int \frac{dx}{x(ax+b)}=-\frac{1}{b}\ln|\frac{ax+b}{x}|+C
-$$
+$$ \int \frac{dx}{x(ax+b)}=-\frac{1}{b}\ln|\frac{ax+b}{x}|+C $$
 
-$$
-\int \frac{dx}{x^2(ax+b)}=-\frac{ 1}{bx}+\frac{ a}{b^2}\ln |\frac{ax+b}{x}|+C
-$$
+$$ \int \frac{dx}{x^2(ax+b)}=-\frac{ 1}{bx}+\frac{ a}{b^2}\ln |\frac{ax+b}{x}|+C $$
 
 \textbf{含有$\sqrt{ax+b}$的积分}
-$$
-\int \sqrt{ax+b}dx=\frac{2}{3a}\sqrt{(ax+b)^3}+C
-$$
+$$ \int \sqrt{ax+b}dx=\frac{2}{3a}\sqrt{(ax+b)^3}+C $$
 
-$$
-\int x\sqrt{ax+b}dx=\frac{2}{15a^2}(3ax-2b)\sqrt{(ax+b)^3}+C
-$$
+$$ \int x\sqrt{ax+b}dx=\frac{2}{15a^2}(3ax-2b)\sqrt{(ax+b)^3}+C $$
 
-$$
-\int \frac{x}{\sqrt{ax+b}}dx=\frac{2}{3a^2}(ax-2b)\sqrt{ax+b}+C
-$$
+$$ \int \frac{x}{\sqrt{ax+b}}dx=\frac{2}{3a^2}(ax-2b)\sqrt{ax+b}+C $$
 
 \textbf{含有$x^2 \pm a^2$的积分}
-$$
-\int \frac{dx}{x^2+a^2}=\frac{1}{a}\arctan \frac{x}{a}+C
-$$
-$$
-\int \frac{dx}{x^2-a^2}=\frac{1}{2a}\ln |\frac{x-a}{x+a}|+C
-$$
+$$ \int \frac{dx}{x^2+a^2}=\frac{1}{a}\arctan \frac{x}{a}+C $$
+$$ \int \frac{dx}{x^2-a^2}=\frac{1}{2a}\ln |\frac{x-a}{x+a}|+C $$
 \textbf{含有$ax^2+b(a>0)$的积分}
 $$
 \int \frac{dx}{ax^2+b}=
@@ -1554,13 +1487,9 @@ $$
 		\right.
 $$
 
-$$
-\int \frac{x}{ax^2+b}dx=\frac{1}{2a}\ln |ax^2+b|+C
-$$
+$$ \int \frac{x}{ax^2+b}dx=\frac{1}{2a}\ln |ax^2+b|+C $$
 
-$$
-\int \frac{dx}{x(ax^2+b)}=\frac{1}{2b}\ln \frac{x^2}{|ax^2+b|}+C
-$$
+$$ \int \frac{dx}{x(ax^2+b)}=\frac{1}{2b}\ln \frac{x^2}{|ax^2+b|}+C $$
 
 \textbf{含有$ax^2+bx+c(a>0)$的积分}
 $$
@@ -1573,116 +1502,62 @@ $$
 		\right.
 $$
 
-$$
-\int \frac{x}{ax^2+bx+c}dx=\frac{1}{2a}\ln|ax^2+bx+c|-\frac{b}{2a}\int \frac{dx}{ax^2+bx+c}
-$$
+$$ \int \frac{x}{ax^2+bx+c}dx=\frac{1}{2a}\ln|ax^2+bx+c|-\frac{b}{2a}\int \frac{dx}{ax^2+bx+c} $$
 
 \textbf{含有$\sqrt{x^2+a^2}(a>0)$的积分}
-$$
-\int \frac{dx}{\sqrt{x^2+a^2}}=\arcsh \frac{x}{a}+C_1=\ln(x+\sqrt{x^2+a^2})+C,\quad \big( \ln(x+\sqrt{1+x^2})\big)'=\frac{1}{\sqrt{1+x^2}}
-$$
+$$ \int \frac{dx}{\sqrt{x^2+a^2}}=\arcsh \frac{x}{a}+C_1=\ln(x+\sqrt{x^2+a^2})+C,\quad \big( \ln(x+\sqrt{1+x^2})\big)'=\frac{1}{\sqrt{1+x^2}} $$
 
-$$
-\int \sqrt{x^2+a^2}dx=\frac{x}{2}\sqrt{x^2+a^2}+\frac{a^2}{2}\ln(x+\sqrt{x^2+a^2})+C
-$$
+$$ \int \sqrt{x^2+a^2}dx=\frac{x}{2}\sqrt{x^2+a^2}+\frac{a^2}{2}\ln(x+\sqrt{x^2+a^2})+C $$
 
 \textbf{含有$\sqrt{x^2-a^2}(a<0)$的积分}
-$$
-\int \frac{dx}{\sqrt{x^2-a^2}}=\frac{x}{|x|}\arch \frac{|x|}{a}+C_1=
-\ln|x+\sqrt{x^2-a^2}|+C
-$$
+$$ \int \frac{dx}{\sqrt{x^2-a^2}}=\frac{x}{|x|}\arch \frac{|x|}{a}+C_1= \ln|x+\sqrt{x^2-a^2}|+C $$
 
-$$
-\int \frac{x}{\sqrt{x^2-a^2}}dx=\sqrt{x^2-a^2}+C
-$$
+$$ \int \frac{x}{\sqrt{x^2-a^2}}dx=\sqrt{x^2-a^2}+C $$
 
-$$
-\int \frac{dx}{x\sqrt{x^2-a^2}}=\frac{1}{a}\arccos \frac{a}{|x|}+C
-$$
+$$ \int \frac{dx}{x\sqrt{x^2-a^2}}=\frac{1}{a}\arccos \frac{a}{|x|}+C $$
 
 \textbf{含有$\sqrt{a^2-x^2}(a>0)$的积分}
-$$
-\int \frac{dx}{\sqrt{a^2-x^2}}=\arcsin \frac{x}{a}+C
-$$
+$$ \int \frac{dx}{\sqrt{a^2-x^2}}=\arcsin \frac{x}{a}+C $$
 
-$$
-\int \frac{x}{\sqrt{a^2-x^2}}dx=-\sqrt{a^2 - x^2}+C
-$$
+$$ \int \frac{x}{\sqrt{a^2-x^2}}dx=-\sqrt{a^2 - x^2}+C $$
 
-$$
-\int \frac{dx}{x\sqrt{a^2-x^2}}=\frac{1}{a}\ln \frac{a-\sqrt{a^2 - x^2}}{|x|}+C
-$$
+$$ \int \frac{dx}{x\sqrt{a^2-x^2}}=\frac{1}{a}\ln \frac{a-\sqrt{a^2 - x^2}}{|x|}+C $$
 
 \textbf{含有$\sqrt{\pm ax^2+bx+c}(a>0)$的积分}
-$$
-\int \frac{dx}{\sqrt{ax^2+bx+c}}=\frac{1}{\sqrt{a}}
-\ln|2ax+b+2\sqrt{a}\sqrt{ax^2+bx+c}+C|
-$$
-$$
-\int \sqrt{ax^2+bx+c}dx=\frac{2ax+b}{4a}\sqrt{ax^2+bx+c}+
-\frac{4ac-b^2}{8\sqrt{a^3}}
-\ln|2ax+b+2\sqrt{a}\sqrt{ax^2+bx+c}+C|
-$$
+$$ \int \frac{dx}{\sqrt{ax^2+bx+c}}=\frac{1}{\sqrt{a}} \ln|2ax+b+2\sqrt{a}\sqrt{ax^2+bx+c}+C| $$
+
+$$ \int \sqrt{ax^2+bx+c}dx=\frac{2ax+b}{4a}\sqrt{ax^2+bx+c}+ \frac{4ac-b^2}{8\sqrt{a^3}} \ln|2ax+b+2\sqrt{a}\sqrt{ax^2+bx+c}+C| $$
+
 \textbf{含有$\sqrt{\pm \frac{x-a}{x-b}}$或$\sqrt{(x-a)(x-b)}$的积分}
-$$
-\int \sqrt{\frac{x-a}{x-b}}dx=(x-b)\sqrt{\frac{x-a}{x-b}}+
-(b-a)\ln (\sqrt{|x-a|}+\sqrt{|x-b|})+C
-$$
+$$ \int \sqrt{\frac{x-a}{x-b}}dx=(x-b)\sqrt{\frac{x-a}{x-b}}+ (b-a)\ln (\sqrt{|x-a|}+\sqrt{|x-b|})+C $$
 
-$$
-\int \sqrt{\frac{x-a}{b-x}}dx=(x-b)\sqrt{\frac{x-a}{b-x}}+
-(b-a)\arcsin \sqrt{\frac{x-a}{b-a}}+C
-$$
+$$ \int \sqrt{\frac{x-a}{b-x}}dx=(x-b)\sqrt{\frac{x-a}{b-x}}+ (b-a)\arcsin \sqrt{\frac{x-a}{b-a}}+C $$
 
-$$
-\int \frac{dx}{\sqrt{(x-a)(b-x)}}=2\arcsin \sqrt{\frac{x-a}{b-a}}+C \quad(a<b)
-$$
+$$ \int \frac{dx}{\sqrt{(x-a)(b-x)}}=2\arcsin \sqrt{\frac{x-a}{b-a}}+C \quad(a<b) $$
 
-$$
-\int \sqrt{(x-a)(b-x)}=\frac{2x-a-b}{4}\sqrt{(x-a)(b-x)}
-+ \frac{(b-a)^2}{4}\arcsin \sqrt{\frac{x-a}{b-a}}+C \quad(a<b)
-$$
+$$ \int \sqrt{(x-a)(b-x)}=\frac{2x-a-b}{4}\sqrt{(x-a)(b-x)} + \frac{(b-a)^2}{4}\arcsin \sqrt{\frac{x-a}{b-a}}+C \quad(a<b) $$
+
 \textbf{含有三角函数的积分}
-$$
-\int \sin xdx=-\cos x +C
-$$
+$$ \int \sin xdx=-\cos x +C $$
 
-$$
-\int \cos xdx =\sin x +C
-$$
+$$ \int \cos xdx =\sin x +C $$
 
-$$
-\int \tan xdx=-\ln|\cos x|+C
-$$
+$$ \int \tan xdx=-\ln|\cos x|+C $$
 
-$$
-\int \cot xdx=\ln|\sin x|+C
-$$
+$$ \int \cot xdx=\ln|\sin x|+C $$
 
-$$
-\int \sec xdx=\ln|\tan(\frac{\pi}{4}+\frac{x}{2})|+C=\ln|\sec x+ \tan x|+C
-$$
+$$ \int \sec xdx=\ln|\tan(\frac{\pi}{4}+\frac{x}{2})|+C=\ln|\sec x+ \tan x|+C $$
 
-$$
-\int \csc xdx=\ln|\tan \frac{x}{2}|=\ln|\csc x-\cot x|+C
-$$
+$$ \int \csc xdx=\ln|\tan \frac{x}{2}|=\ln|\csc x-\cot x|+C $$
 
 
-$$
-\int \sin^n x dx=-\frac{1}{n}\sin^{n-1}x \cos x + \frac{n-1}{n}\int \sin^{n-2}x dx
-$$
-$$
-\int \cos^n x dx=\frac{1}{n}\cos^{n-1}x \sin x + \frac{n-1}{n}\int \cos^{n-2}x dx
-$$
+$$ \int \sin^n x dx=-\frac{1}{n}\sin^{n-1}x \cos x + \frac{n-1}{n}\int \sin^{n-2}x dx $$
 
+$$ \int \cos^n x dx=\frac{1}{n}\cos^{n-1}x \sin x + \frac{n-1}{n}\int \cos^{n-2}x dx $$
 
-$$
-\int \frac{dx}{a+b\sin x}=\frac{2}{\sqrt{a^2-b^2}}\arctan \frac{a \tan \frac{x}{2}+b}{\sqrt{a^2-b^2}}+C \quad(a^2>b^2)
-$$
+$$ \int \frac{dx}{a+b\sin x}=\frac{2}{\sqrt{a^2-b^2}}\arctan \frac{a \tan \frac{x}{2}+b}{\sqrt{a^2-b^2}}+C \quad(a^2>b^2) $$
 
-$$
-\int \frac{dx}{a+b\cos x}=\frac{2}{a+b} \sqrt{\frac{a+b}{a-b}}\arctan(\sqrt{\frac{a-b}{a+b}}\tan \frac{x}{2})+C \quad (a^2>b^2)
-$$
+$$ \int \frac{dx}{a+b\cos x}=\frac{2}{a+b} \sqrt{\frac{a+b}{a-b}}\arctan(\sqrt{\frac{a-b}{a+b}}\tan \frac{x}{2})+C \quad (a^2>b^2) $$
 
 
 $$
@@ -1691,65 +1566,41 @@ $$
 $$
 
 \textbf{含有反三角函数的积分(其中($a>0$))}
-$$
-\int \arcsin \frac{x}{a}dx=x\arcsin \frac{x}{a}+\sqrt{a^2-x^2}+C
-$$
+$$ \int \arcsin \frac{x}{a}dx=x\arcsin \frac{x}{a}+\sqrt{a^2-x^2}+C $$
 
-$$
-\int x\arcsin \frac{x}{a}dx=(\frac{x^2}{2}-\frac{ a^2}{4})\arcsin \frac{x}{a}+ \frac{x}{4}\sqrt{a^2-x^2}+C
-$$
+$$ \int x\arcsin \frac{x}{a}dx=(\frac{x^2}{2}-\frac{ a^2}{4})\arcsin \frac{x}{a}+ \frac{x}{4}\sqrt{a^2-x^2}+C $$
 
-$$
-\int \arccos \frac{x}{a}dx=x \arccos \frac{x}{a}-\sqrt{a^2-x^2}+C
-$$
+$$ \int \arccos \frac{x}{a}dx=x \arccos \frac{x}{a}-\sqrt{a^2-x^2}+C $$
 
-$$
-\int x\arccos \frac{x}{a}dx=(\frac{x^2}{2}-\frac{ a^2}{4})\arccos \frac{x}{a}- \frac{x}{4}\sqrt{a^2-x^2}+C
-$$
+$$ \int x\arccos \frac{x}{a}dx=(\frac{x^2}{2}-\frac{ a^2}{4})\arccos \frac{x}{a}- \frac{x}{4}\sqrt{a^2-x^2}+C $$
 
-$$
-\int \arctan \frac{x}{a}dx=x \arctan \frac{x}{a}-\frac{a}{2}\ln(a^2+x^2)+C
-$$
+$$ \int \arctan \frac{x}{a}dx=x \arctan \frac{x}{a}-\frac{a}{2}\ln(a^2+x^2)+C $$
 
-$$
-\int x \arctan \frac{x}{a}dx=\frac{1}{2}(a^2+x^2)\arctan \frac{x}{a}- \frac{a}{2}x+C
-$$
+$$ \int x \arctan \frac{x}{a}dx=\frac{1}{2}(a^2+x^2)\arctan \frac{x}{a}- \frac{a}{2}x+C $$
+
 \textbf{含有指数函数的积分}
-$$
-\int a^xdx=\frac{1}{\ln a}a^x+C
-$$
-$$
-\int e^{ax}dx=\frac{ 1}{a}e^{ax}+C
-$$
+$$ \int a^xdx=\frac{1}{\ln a}a^x+C $$
+$$ \int e^{ax}dx=\frac{ 1}{a}e^{ax}+C $$
 
 \textbf{含有对数函数的积分}
-$$
-\int \ln xdx=x\ln x-x +C
-$$
+$$ \int \ln xdx=x\ln x-x +C $$
 
-$$
-\int (\ln x)^n dx=x(\ln x)^n -n \int (\ln x)^{n-1}dx
-$$
+$$ \int (\ln x)^n dx=x(\ln x)^n -n \int (\ln x)^{n-1}dx $$
+
 \textbf{含有双曲函数的积分}
-$$
-\int \sh xdx=\ch x+C
-$$
+$$ \int \sh xdx=\ch x+C $$
 
-$$
-\int \ch xdx=\sh x+C
-$$
+$$ \int \ch xdx=\sh x+C $$
 
-$$
-\int \dth xdx=\ln \ch x+C
-$$
+$$ \int \dth xdx=\ln \ch x+C $$
+
 \textbf{定积分}
 $$
 \int_{-\pi}^{\pi} \cos nx dx=
 \int_{-\pi}^{\pi} \sin nx dx=0
 $$
-$$
-\int_{-\pi}^{\pi} \cos mx\sin nx dx=0
-$$
+
+$$ \int_{-\pi}^{\pi} \cos mx\sin nx dx=0 $$
 
 $$
 \int_{-\pi}^{\pi} \cos mx\cos nx dx=
@@ -1782,10 +1633,7 @@ $$
 		\right.
 $$
 
-$$
-I_n=\int_{0}^{\pi/2} \sin^n xdx=\int_{0}^{\pi/2}\cos^n xdx=\frac{n-1}{n}I_{n-2},\quad
-I_1=1, I_0=\frac{ \pi}{2}
-$$
+$$ I_n=\int_{0}^{\pi/2} \sin^n xdx=\int_{0}^{\pi/2}\cos^n xdx=\frac{n-1}{n}I_{n-2},\quad I_1=1, I_0=\frac{ \pi}{2} $$
 
 \section{Transformations}
 \subsection{Dirac}
@@ -1835,7 +1683,9 @@ $k=0$时,\eqref{serie.fourrier.fonction} 式中对应的这一项称为直流分
 $k=\pm 1$时具有基波频率$\omega_0=\frac{2\pi}{T}$,称为一次谐波或基波,类似的有二次谐波,三次谐波等等。
 
 \textbf{三角函数族的正交性}
-所谓的两个不同向量正交是指它们的内积为0，这也就意味着这两个向量之间没有任何相关性,例如，在三维欧氏空间中，互相垂直的向量之间是正交的。事实上，正交是垂直在数学上的一种抽象化和一般化。一组n个互相正交的向量必然是线性无关的，所以必然可以张成一个n维空间，也就是说，空间中的任何一个向量可以用它们来线性表出。三角函数族的正交性用公式表示出来就是：
+所谓的两个不同向量正交是指它们的内积为0，这也就意味着这两个向量之间没有任何相关性,例如，在三维欧氏空间中，互相垂直的向量之间是正交的。
+事实上，正交是垂直在数学上的一种抽象化和一般化。
+一组n个互相正交的向量必然是线性无关的，所以必然可以张成一个n维空间，也就是说，空间中的任何一个向量可以用它们来线性表出。三角函数族的正交性用公式表示出来就是：
 $$\int _{0}^{2\pi}\sin (nx)\cos (mx) \,dx=0;$$
 $$\int _{0}^{2\pi}\sin (nx)\sin (mx) \,dx=0;(m\ne n)$$
 $$\int _{0}^{2\pi}\cos (nx)\cos (mx) \,dx=0;(m\ne n)$$
@@ -1887,9 +1737,14 @@ Cart\'esien: $$\laplace f = \sum_{i=1}^n \frac{\partial^2 f }{\partial x_i^2} $$
 函数的拉普拉斯算子也是该函数的黑塞矩阵的迹 $\laplace f = tr(H(f))$
 
 极坐标下的拉普拉斯算子表示法
-$$\laplace f = \frac{ 1}{\rho}\frac{\partial  }{\partial \rho}(\rho \frac{\partial  f}{\partial \rho}) + \frac{ 1}{\rho^2}\frac{\partial ^2 f}{\partial\theta^2} + \frac{\partial^2 f}{\partial z^2}$$
-
+$$
+\laplace f
+= \frac{1}{\rho}\frac{\partial}{\partial \rho}(\rho \frac{\partial f}{\partial \rho})
++ \frac{1}{\rho^2}\frac{\partial ^2 f}{\partial\theta^2}
++ \frac{\partial^2 f}{\partial z^2}
+$$
 \bigskip
+
 \textbf{Equation de poisson}
 $$\laplace \varphi = f$$
 si $f=0$, 那么泊松方程就会变成一个齐次方程, 称为拉普拉斯方程
@@ -1905,12 +1760,8 @@ $$
 \int\!\!\!\!\int_{\Sigma}\!\!\!\!\!\!\!\!\!\!\!\!\!\!\;\;\;\bigcirc\,\,\mathbf{A}\cdot d\mathbf{S}
 $$
 其中Σ是空间闭区域Ω的边界曲面,而
-$$
-A_n=\mathbf{A}\cdot\mathbf{n}=P\cos\alpha+Q\cos\beta+R\cos\gamma
-$$
-$$
-d\mathbf{S}=\mathbf{n}\cdot S
-$$
+$$ A_n=\mathbf{A}\cdot\mathbf{n}=P\cos\alpha+Q\cos\beta+R\cos\gamma $$
+$$ d\mathbf{S}=\mathbf{n}\cdot S $$
 $n$是向量$A$在曲面$\Sigma$的外侧法向量上的投影。
 
 \bigskip
@@ -1918,14 +1769,17 @@ $n$是向量$A$在曲面$\Sigma$的外侧法向量上的投影。
 \textbf{斯托克斯公式}
 
 $\mathbf{R}^3$上的斯托克斯公式
-设$S$是分片光滑的有向曲面,$S$的边界为有向闭曲线$Γ$,即$\Gamma=\partial S$,且$Γ$的正向与$S$的侧符合右手规则: 函数$P(x,y,z),Q(x,y,z),R(x,y,z)$都是定义在"曲面$S$连同其边界$Γ$"上且都具有一阶连续偏导数的函数,则有
-$$\iint\limits_{S}(\frac{\partial R}{\partial y}-\frac{\partial Q}{\partial z})dydz+(\frac{\partial P}{\partial z}-\frac{\partial R}{\partial x})dzdx+(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y})dxdy
-=\oint\limits_{\Gamma}Pdx+Qdy+Rdz$$
+设$S$是分片光滑的有向曲面,$S$的边界为有向闭曲线$Γ$,即$\Gamma=\partial S$,且$Γ$的正向与$S$的侧符合右手规则:
+函数$P(x,y,z),Q(x,y,z),R(x,y,z)$都是定义在"曲面$S$连同其边界$Γ$"上且都具有一阶连续偏导数的函数,则有
+$$
+\iint\limits_{S}(\frac{\partial R}{\partial y}-\frac{\partial Q}{\partial z})dydz
++ (\frac{\partial P}{\partial z}-\frac{\partial R}{\partial x})dzdx
++ (\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y})dxdy
+= \oint\limits_{\Gamma}Pdx+Qdy+Rdz
+$$
 
 这个公式叫做$\mathbf{R}^3$上的斯托克斯公式或开尔文－斯托克斯定理、旋度定理。这和函数的旋度有关,用梯度算符可写成
-$$
- \int_{S} \nabla \times \mathbf{F} \cdot d\mathbf{S} = \oint_{\partial S} \mathbf{F} \cdot d \mathbf{r}
-$$
+$$ \int_{S} \nabla \times \mathbf{F} \cdot d\mathbf{S} = \oint_{\partial S} \mathbf{F} \cdot d \mathbf{r} $$
 
 通过以下公式可以在"对坐标的"曲线积分""和对面积的"面积积分""之间相互转换：
 $$
@@ -1951,9 +1805,7 @@ $$\iiint_{\Omega} u\laplace v dxdydz
 其中$\Sigma$是闭区域$\Omega$的整个边界曲面,$\frac{\partial v}{\partial n}$为函数$v(x,y,z)$沿$\Sigma$的外法线方向的方向导数
 
 更加简洁的写法:
-$$
-\int_{\Omega}u \laplace v d\Omega = \int_{\Sigma}u \frac{\partial v}{\partial n}d\Sigma - \int_{\Omega} \vec{\mbox{grad}}u \cdot \vec{\mbox{grad}} v d\Omega
-$$
+$$ \int_{\Omega}u \laplace v d\Omega = \int_{\Sigma}u \frac{\partial v}{\partial n}d\Sigma - \int_{\Omega} \vec{\mbox{grad}}u \cdot \vec{\mbox{grad}} v d\Omega $$
 也可以用int\'egration par partie 来理解:
 div是二次微分, grad是一次微分, div可以看成是在grad的基础上再来一次微分, 而
 $ \frac{\partial  v}{\partial n} = <\vec{\mbox{grad}} v,\vec{n}>$, 所以
@@ -1961,7 +1813,8 @@ $\frac{\partial  v}{\partial n}$ 可以理解成一次微分
 
 \bigskip
 \textbf{格林第二公式}
-设$u(x,y,z)$、$v(x,y,z)$是两个定义在闭区域$\Omega$上的具有二阶连续偏导数的函数,$\frac{\partial u}{\partial n},\frac{\partial v}{\partial n}$依次表示$u(x,y,z)$、$v(x,y,z)$沿$\Sigma$的外法线方向的方向导数,则有
+设$u(x,y,z)$、$v(x,y,z)$是两个定义在闭区域$\Omega$上的具有二阶连续偏导数的函数,
+$\frac{\partial u}{\partial n},\frac{\partial v}{\partial n}$依次表示$u(x,y,z)$、$v(x,y,z)$沿$\Sigma$的外法线方向的方向导数,则有
 $$\iiint\limits_{\Omega}(u\Delta v - v\Delta u)dxdydz=\oint\!\oint_{\Sigma}(u \frac{\partial v}{\partial n}-v\frac{\partial u}{\partial n})dS$$
 
 \section{Other}
