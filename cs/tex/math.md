@@ -1,14 +1,11 @@
-`$\not\in$`
-
-数学公式中输入中文 可以把中文用`\text{}`或是`\mbox{}`引起来  
-在`\text{}` 仍然可以使用`$$` 符号进行数学输入
-
-`\textsuperscript`  
-For example, let us say I want to write the `$n^{th}$` element, but without the math mode automatic italicization of the th. 
-And what if I still want the n to be in math mode, but the th outside?  
-`$n$\textsuperscript{th}`
-
-latex 中输入点不能使用`\dot`, 而应该直接使用 "."
+- 否定: `$\not \in$`
+- 排列组合: `$$n+1 \choose 3$$` 生成$C_{n+1}^3$ 的括号形式
+- 输入点不能使用`\dot`, 而应该直接使用 "."
+- 公式中输入普通文字, 可以用`\text{}`或是`\mbox{}`, 或者自己定义的`\eqnote{}`
+- 在`\text{}` 仍然可以使用`$$` 符号进行数学输入
+- Matrix env: pmatrix, bmatrix, Bmatrix, vmatrix, Vmatrix
+- 数学字体: \mathrm 罗马直立, \mathit 罗马斜体, \mathbf 直立粗体, \mathcal 花体, \mathtt, \mathsf
+- 多重积分: `\iint, \iiint, \iiiint, \idotsint`
 
 分数
 
@@ -36,17 +33,14 @@ generate
 generate:  
 ![xrightarrow](http://i.imgbox.com/0zbtS5lV.png)
 
-**多重积分**  
-`\iint, \iiint, \iiiint, \idotsint`
-
 # 多行公式
 有多种条件的公式组用cases 次环境
 ```latex
 $$
 f(n) = 
 \begin{cases}
- n/2 & \mbox{if } n \equiv 0 \\
-(3n +1)/2 & \mbox{if } n \equiv 1.
+n/2 & \mbox{if} n \equiv 0 \\
+(3n +1)/2 & \mbox{if} n \equiv 1.
 \end{cases}
 $$
 
@@ -104,23 +98,17 @@ gather 一行一个公式序号
 ```
 \href{http://i.imgbox.com/mcWpxQK9.png}{将if放在单独一格的result}
 
-# Matrix
-pmatrix,bmatrix,Bmatrix,vmatrix和Vmatrix
-
-# 数学字体
-- \mathrm 罗马直立
-- \mathit 罗马斜体
-- \mathbf 直立粗体
-- \mathcal 花体
-- \mathtt
-- \mathsf
-
 ![数学注音符号](http://i.imgbox.com/I7RSbdFC.jpg)
-
-`$$n+1 \choose 3$$` 生成$C_{n+1}^3$ 的括号形式
 
 括号
 
 - `(), [], \{\}, \langle\rangle, \lvert\rvert, \lVert\rVert`
 - 同时可以在上述分隔符前面加`\big \Big \bigg \Bigg` 等命令来进一步调整大小
 
+theorem 的样式
+
+There are three basic styles provided:
+
+1. The 'plain' style produces bold headings and italic body text;
+1. the 'definition' style produces bold headings and normal body text;
+1. the 'remark' style produces italic headings and normal body text. eg: `\theoremstyle{remark}\newtheorem*{answer}{Answer}`
