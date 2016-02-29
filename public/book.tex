@@ -27,3 +27,12 @@
 \theoremstyle{remark}\newtheorem*{answer}{Answer}
 \newtheorem{fact}{Fact}
 
+% Header and Footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[RE]{\normalfont\small\rmfamily\nouppercase{\leftmark}}
+\fancyhead[LO]{\normalfont\small\rmfamily\nouppercase{\rightmark}}
+\fancyhead[LE,RO]{\thepage}
+\fancyfoot[LE,LO]{\small by Eric Wang}
+
