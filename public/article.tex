@@ -1,17 +1,13 @@
 % !Mode:: "TeX:UTF-8"
-%+++++++++++++++++++++++++++++++++++article+++++++++++++++++++++++++++++++++
-%customize the numbering of equation, to make it like section-subsection-equation style, for example,1-2-3
-\makeatletter\@addtoreset{equation}{subsection}\makeatother
-\renewcommand\theequation{%
-\thepart\arabic{section}%
--\thepart\arabic{subsection}%
--\thepart\arabic{equation}%
-}
-%theorem
-\newtheorem{definition}{D\'efintion} %% 整篇文章的全局编号
+% Equation Number
+\makeatletter\@addtoreset{equation}{subsection}\makeatother %% reset the equation number in subsection
+\renewcommand\theequation{\thepart\arabic{section}-\thepart\arabic{subsection}-\thepart\arabic{equation}} %% section-subsection-equation style
+
+% Theorem
+\newtheorem{definition}{D\'efintion} %% document global number
 \newtheorem*{thmwn}{Thm} %% without numbers
-\newtheorem{theorem}{Th\'eor\`eme}[section] %% 从属于section编号
-\newtheorem{corollary}{Corollary}[theorem] %% 从属于theorem编号
+\newtheorem{theorem}{Th\'eor\`eme}[section] %% section-theorem style
+\newtheorem{corollary}{Corollary}[theorem] %% theorem-corollary style
 \newtheorem{lemma}{Lemma}
 \newtheorem{proposition}{Proposition}[section]
 \newtheorem*{attention}{Attention}
@@ -23,27 +19,27 @@
 \newtheorem*{answer}{Answer}
 \newtheorem{fact}{Fact}
 
-%%%%%%%%%% header & footer %%%%%%%%%%
+% Header and Footer
 \newif\ifheader
 \headerfalse
 \ifheader
 	\setlength\textheight{100.0pt}
 	\setlength\textwidth{430.0pt}
 	\usepackage{fancyhdr}
-	\usepackage{lastpage} %% \pageref{LastPage} 获取最后一页的页码
+	\usepackage{lastpage} %% \pageref{LastPage}: get the last page
 	\usepackage{pdfpages}
 	\usepackage{layout}
 	\footskip = 20pt
 	\pagestyle{fancy}
-	\fancyhead{} %clear all fields
+	\fancyhead{} %% clear all fields
 %% 	\newsavebox{\headpic}
-%% 	\sbox{\headpic}{\includegraphics[height=1cm]{logo}} %设置页眉logo页眉
+%% 	\sbox{\headpic}{\includegraphics[height=1cm]{logo}} %% set header logo
 %% 	\lhead{\usebox{\headpic}}
 	\rhead{\small\leftmark}
-	\fancyfoot{} %clear all fields
+	\fancyfoot{} %% clear all fields
 	\cfoot{\thepage}
-	\renewcommand{\headrulewidth}{1pt}  %页眉线宽,设为0可以去页眉线
-	\setlength{\skip\footins}{0.5cm}    %脚注与正文的距离
-	\renewcommand{\footnotesize}{}      %设置脚注字体大小
+	\renewcommand{\headrulewidth}{1pt}  %% header line width, can be set 0 to get rid of it
+	\setlength{\skip\footins}{0.5cm}    %% distance between of footnote and body text
+	\renewcommand{\footnotesize}{}      %% footnote size
 \fi
 

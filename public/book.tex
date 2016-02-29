@@ -1,21 +1,21 @@
 % !Mode:: "TeX:UTF-8"
-%+++++++++++++++++++++++++++++++++++book++++++++++++++++++++++++++++++++++++
-%have chapters numbered without interruption (numbering through parts)
-%% \makeatletter\@addtoreset{chapter}{part}\makeatother
-%addtoreset: everytime section number changes, reset the number of equation, that is to say recounter equation
 
-%customize the numbering of equation, to make it like chapter-section-equation style, for example,1-2-3
+% Chapter
+%% \makeatletter\@addtoreset{chapter}{part}\makeatother %% have chapters numbered without interruption (numbering through parts)
+
+% Equation
 \makeatletter\@addtoreset{equation}{section}\makeatother 
 \renewcommand\theequation{%
 \thepart\arabic{chapter}%
 -\thepart\arabic{section}%
 -\thepart\arabic{equation}%
 }
-%theorem
-\newtheorem{definition}{D\'efintion} %% 整篇文章的全局编号
-\newtheorem*{thmwn}{Thm} %% without numbers
-\newtheorem{theorem}{Th\'eor\`eme}[chapter] %% 从属于chapter 编号
-\newtheorem{corollary}{Corollary}[theorem] %% 从属于theorem编号
+
+% Theorem
+\newtheorem{definition}{D\'efintion}
+\newtheorem*{thmwn}{Thm}
+\newtheorem{theorem}{Th\'eor\`eme}[chapter]
+\newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}{Lemma}
 \newtheorem{proposition}{Proposition}[chapter]
 \newtheorem*{attention}{Attention}
