@@ -30,10 +30,10 @@ text可以为空, 也可以使用`\small{text}` 等
 
 columns 分栏
 ```Latex
-\begin{columns}
-\column{.4\textwidth}
-\column{.3\textwidth}
-\column{.3\textwidth}
+\begin{columns}[c]
+\column{.4\textwidth} ...
+\column{.3\textwidth} ...
+\column{.3\textwidth} ...
 \end{columns}
 ```
 
