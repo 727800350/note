@@ -58,9 +58,9 @@ Note: `\linewidth` also appears to work in table columns, not just text columns.
 ```
 ![width](http://i.imgbox.com/8YWL2rG5.jpg)
 
-- `\hfill`:  insert a horizontal stretched space in a line so that the rest gets "pushed" toward the right margin.  
+- `\hfill`:  insert a horizontal stretched space in a line so that the rest gets "pushed" toward the right margin.
+	\hfill 用在`\newline`后没有效果.
 - `\vfill`: you can insert vertical stretched space with 
-
 
 正文间距
 
