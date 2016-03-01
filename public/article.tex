@@ -20,26 +20,11 @@
 \newtheorem{fact}{Fact}
 
 % Header and Footer
-\newif\ifheader
-\headerfalse
-\ifheader
-	\setlength\textheight{100.0pt}
-	\setlength\textwidth{430.0pt}
-	\usepackage{fancyhdr}
-	\usepackage{lastpage} %% \pageref{LastPage}: get the last page
-	\usepackage{pdfpages}
-	\usepackage{layout}
-	\footskip = 20pt
-	\pagestyle{fancy}
-	\fancyhead{} %% clear all fields
-%% 	\newsavebox{\headpic}
-%% 	\sbox{\headpic}{\includegraphics[height=1cm]{logo}} %% set header logo
-%% 	\lhead{\usebox{\headpic}}
-	\rhead{\small\leftmark}
-	\fancyfoot{} %% clear all fields
-	\cfoot{\thepage}
-	\renewcommand{\headrulewidth}{1pt}  %% header line width, can be set 0 to get rid of it
-	\setlength{\skip\footins}{0.5cm}    %% distance between of footnote and body text
-	\renewcommand{\footnotesize}{}      %% footnote size
-\fi
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[RE]{\normalfont\small\rmfamily\nouppercase{\leftmark}}
+\fancyhead[LO]{\normalfont\small\rmfamily\nouppercase{\rightmark}}
+\fancyhead[LE,RO]{\thepage}
+\fancyfoot[LE,LO]{\small by Eric Wang}
 
