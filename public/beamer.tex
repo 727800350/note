@@ -1,20 +1,11 @@
 % !Mode:: "TeX:UTF-8"
-%% \usepackage{metalogo}
-%% \usepackage{doc}
 \usepackage[UTF8]{ctex}
 \usepackage[english]{babel}
 %% \usepackage[french]{babel}
 \usepackage{amsmath, amsthm, amssymb}
 
+% Font
 \usepackage{scrextend} %% allows to choose arbitrary font sizes like 7.5pt
-
-% Chinese Localization
-\renewcommand{\contentsname}{目\qquad 录}
-\renewcommand\listfigurename{插\ 图\ 目\ 录}
-\renewcommand\listtablename{表\ 格\ 目\ 录}
-\renewcommand\bibname{参\ 考\ 文\ 献}
-\renewcommand{\figurename}{图}
-\renewcommand{\tablename}{表}
 
 % Figure
 \usepackage{graphicx}
@@ -33,8 +24,6 @@
 \DeclareGraphicsRule{*}{eps}{*}{}
 \graphicspath{{figure/}{../figure/}}
 
-\usepackage{pgfpages} %% needed by \setbeameroption{show notes on second screen = left}
-
 % Table
 \usepackage{booktabs} %% allow the use of \toprule, \midrule, and \bottomrule
 \usepackage{tabularx}
@@ -45,25 +34,20 @@
 
 % Code
 %% \usepackage{alltt} %% \textbf can be used in alltt, but not in verbatim
-
 \usepackage{listings}
 \lstset{
-    backgroundcolor=\color{white},
-%%     basicstyle=\wuhao\ttfamily,
     columns=flexible,
     breakatwhitespace=false,
     breaklines=true,
-    captionpos=n, %% none
-%%     captionpos=b, %% bottom
-%%     frame=single,
-    numbers=left,
+    captionpos=tt,
+    numbers=left, %% possible values are: left, right, none
     numbersep=5pt,
     showspaces=false,
     showstringspaces=false,
     showtabs=false,
-    stepnumber=1,
+    stepnumber=1, %% interval of lines to display the line number
     rulecolor=\color{black},
-    tabsize=4,
+    tabsize=2,
     texcl=true,
     title=\lstname,
     escapeinside={\%*}{*)},
@@ -75,57 +59,36 @@
     keywordstyle=\color{blue},
     commentstyle=\color{dkgreen},
     stringstyle=\color{mauve},
-	mathescape=false,
 }
 
 \hypersetup{colorlinks,linkcolor=blue,urlcolor=green,anchorcolor=red,citecolor=green,CJKbookmarks=true}
-
 %% \usepackage{dirtree}  %% directory structure, like the result of command tree in bash shell
 %% \usepackage{fixltx2e} %% for use of \textsubscript
+%% \usepackage{pgfpages} %% needed by \setbeameroption{show notes on second screen = left}
+%% \usepackage{metalogo}
+%% \usepackage{doc}
 
-% Beamer theme
+% Theme
 \usetheme{Darmstadt}
 \usecolortheme{seahorse}
 \usefonttheme{professionalfonts}
 \useinnertheme{rectangles}
 
-%% \setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
-\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
-
-\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
-
-%% set the subbody and subsubbody font size
-\setbeamerfont{itemize/enumerate body}{size=\normalsize}
+% List Customization
+\setbeamerfont{itemize/enumerate body}{size=\normalsize} %% set font size
 \setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}
 \setbeamerfont{itemize/enumerate subsubbody}{size=\scriptsize}
 
-%% set itemize leading symbol
-\setbeamertemplate{itemize item}{\normalsize \hbox{\donotcoloroutermaths$\blacktriangleright$}}
+\setbeamertemplate{itemize item}{\normalsize \hbox{\donotcoloroutermaths$\blacktriangleright$}} %% set itemize leading symbol
 \setbeamertemplate{itemize subitem}{\footnotesize \hbox{\donotcoloroutermaths$\diamondsuit$}}
 \setbeamertemplate{itemize subsubitem}{\scriptsize \hbox{\donotcoloroutermaths$\bullet$}}
 
-%% set enumerate leading symbol
-\setbeamertemplate{enumerate item}{\insertenumlabel.}
+\setbeamertemplate{enumerate item}{\insertenumlabel.} %% set enumerate leading symbol
 \setbeamertemplate{enumerate subitem}{\insertenumlabel.\insertsubenumlabel}
 \setbeamertemplate{enumerate subsubitem}{\insertenumlabel.\insertsubenumlabel.\insertsubsubenumlabel}
 \setbeamertemplate{enumerate mini template}{\insertenumlabel}
 
-%% 设置页脚字体和背景颜色
-%% \setbeamercolor{footcolor}{fg=black,bg=red!40}
-
-\setbeamertemplate{footline}{%
-  \leavevmode%
-  \hbox{%
-%%   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
-%%     \usebeamerfont{author in head/foot}\insertshortauthor~~(\insertshortinstitute)
-%%   \end{beamercolorbox}%
-%%   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
-%%     \usebeamerfont{title in head/foot}\insertshorttitle
-%%   \end{beamercolorbox}%
-    \begin{beamercolorbox}[wd=.126\paperwidth,ht=2.25ex,dp=2ex,right]{footcolor}%
-%%        \insertframenumber{} / \inserttotalframenumber\hspace*{5ex} %% 当前页码/总页码
-       \insertframenumber{}\hspace*{5ex} %%	只显示当前页码
-    \end{beamercolorbox}}%
-  \vskip0pt%
-}
+% Footline
+\setbeamertemplate{navigation symbols}{} %% remove the navigation symbols from the bottom of all slides
+\setbeamertemplate{footline}[page number] %% display current number/total number in the right corner
 
