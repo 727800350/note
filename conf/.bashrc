@@ -22,6 +22,7 @@ then
 	ulimit -c unlimited
 ## enterprise
 else
+	export TMOUT= ## #turn off auto-logout (user session will not auto-logout due to session inactivity)
 	export PATH=$PATH:${HOME}/.jumbo/bin/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/samba/lib/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/hadoop-client/java6/jre/lib/amd64/server/:~/hadoop-client/hadoop/libhdfs/
