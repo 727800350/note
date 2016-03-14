@@ -189,7 +189,7 @@ set termencoding=gb2312,utf-8
 set encoding=utf-8
 
 set nu
-colorscheme evening
+"colorscheme evening
 set showmatch
 "set laststatus=2 "always show status line
 set shortmess=atI "shortens messages"

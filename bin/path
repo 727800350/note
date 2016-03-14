@@ -17,7 +17,7 @@ then
 	do
 		echo "`pwd`/${target}"
 	done
-elif [ "x$method" = "xwget" ]
+elif [ "x$method" = "xftp" ]
 then
 	for target in $list
 	do
