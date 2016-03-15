@@ -499,16 +499,10 @@ crontab
 
 eg:
 
-1. `9 9 * * * /usr/local/bin/cvsb`
-表示每天早上9点9分执行目录/usr/local/bin/中的cvsb文件
-2. `3 3 * * 0 /usr/local/bin/qbbak`
-表示每周日凌晨3时3分执行目录/usr/local/bin中的qbbak文件
-3. `* */6 * * * /usr/local/bin/esbbak`
-表示每6小时执行一次,执行时间从第一次执行起计算,当然也可以自定义执行时间,比如0 */6 * * *那程序就会在整点执行
-4. `20,30 * * * /usr/local/bin/esbak`
-表示在每小时20分和30分时执行
-5. `* 23 * * 2-5 /usr/local/bin/esbbak`
-表示在星期二到星期五每天的23点执行
+1. `3 3 * * 0 /usr/local/bin/qbbak`: 表示每周日凌晨3时3分执行目录/usr/local/bin中的qbbak文件
+1. `* */6 * * * /usr/local/bin/esbbak`: 表示每6小时执行一次,0的时候执行一次, 6的时候执行第二次, 如果协程1-23/6, 那么就是1的时候执行第一次, 7的时候执行第二次
+1. `20,30 * * * /usr/local/bin/esbak`: 表示在每小时20分和30分时执行
+1. `* 23 * * 2-5 /usr/local/bin/esbbak`: 表示在星期二到星期五每天的23点执行
 
 ## iptables
 iptables,但更正确的名称是 iptables／netfilter.
