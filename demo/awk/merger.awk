@@ -18,7 +18,7 @@ BEGIN{
 	has_value = 0;
 }
 {
-	#contsign 0,0 线上不处理
+	## do not process contsign 0,0
 	if($1 == "0,0")
 	{
 		if($2 == "1")
@@ -28,32 +28,32 @@ BEGIN{
 	}
 	else
 	{
-		#处理第一行时，n=0，也不输出
+		## the first line, n = 0, do not print out
 		if(lastkey != $1 || n > 20000){
-			for(i=0; i<n; i++){
+			for(i = 0; i < n; i ++){
 				printf("%s\t%s\t%s\t%s\t%s\n", fls[i], lines[i], lastkey, has_value, value);
 			}
 			n = 0;
 			value = default;
 			has_value = 0;
-			lastkey="";
+			lastkey = "";
 		}
-		#考虑求交的5种情况
+		## 5 cases of merge
 		if(lastkey == "" || lastkey == $1)
 		{
-			#通过flag来表示数据源
+			## use flat to indicate the data source
 			if($2 == "1"){
-			#只有contsign.0数据时，value=0
-				fls[n]=$3;
-				lines[n]=$4;
+			## value = 0 when there is only contsign.0
+				fls[n] = $3;
+				lines[n] = $4;
 				n += 1;
-				if ((n%10000)==0){
+				if ((n % 10000) == 0){
 					printf("%s same %d\n", $1, n) > "/dev/stderr";
 				}
 			}else if($2 == "0"){
-			#只有dumptnbl数据的情况,n=0
+				## n = 0 when there is only dumptnbl
 				if(has_value == 1){
-				#TODO由于存在僵尸记录（有key无value的记录），会导致算法不稳定
+				## TODO: when the record has a key and it has not the vlaue, it will destabilize the algo
 					printf("same contsign: %s values: %s value2: %s\n", lastkey, value, $3) > "/dev/stderr";
 				}
 				value = $3;
@@ -68,7 +68,7 @@ BEGIN{
 	}
 }
 END{
-	#输出最后一组
+	## print out the last record
 	for(i=0; i<n; i++){
 		printf("%s\t%s\t%s\t%s\t%s\n", fls[i], lines[i], lastkey, has_value, value);
 	}
