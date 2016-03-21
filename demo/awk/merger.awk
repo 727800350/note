@@ -47,18 +47,19 @@ BEGIN{
 				fls[n]=$3;
 				lines[n]=$4;
 				n += 1;
-				if ((n%10000)==0)			
-					system("echo ' " $1 "same : " n " ' 1>&2");
+				if ((n%10000)==0){
+					printf("%s same %d\n", $1, n) > "/dev/stderr";
+				}
 			}else if($2 == "0"){
 			#只有dumptnbl数据的情况,n=0
 				if(has_value == 1){
 				#TODO由于存在僵尸记录（有key无value的记录），会导致算法不稳定
-					system("echo '""same contsign: " lastkey  " value1: " value  " value2: " $3" ' 1>&2");
+					printf("same contsign: %s values: %s value2: %s\n", lastkey, value, $3) > "/dev/stderr";
 				}
 				value = $3;
 				has_value = 1;
 			}else{
-				system("echo ' " "format err : " $0 " ' 1>&2");
+				printf("format error: %s\n", $0) > "/dev/stderr";
 				exit;
 			}
 		}
