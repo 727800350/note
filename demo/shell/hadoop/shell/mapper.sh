@@ -23,5 +23,8 @@ else
 	hadoop_fs="$cluster_hadoop_fs"
 fi
 
+source $conf/common.conf || exit 1
+source $conf/func.sh || exit 1
+
 exit 0
 

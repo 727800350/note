@@ -21,26 +21,17 @@ then
 	${local_hadoop} dfs -mkdir ${top_dir}
 fi
 
-${local_hadoop} dfs -rmr ${input}
-${local_hadoop} dfs -mkdir ${input}
-
 ${local_hadoop} dfs -rmr ${output}
 
 ${local_hadoop} dfs -rmr ${result}
 ${local_hadoop} dfs -mkdir ${result}
 
-## generate input list and put it to hdfs
-${local_hadoop} dfs -put input.list ${input}/input.list
-CHK_RET FATAL "put input.list failed"
-
 ${local_hadoop} streaming \
-	-input ${input}/input.list \
+	-input ${input} \
 	-output ${output} \
 	-mapper "bash mapper.sh 0" \
 	-reducer "bash reducer.sh 0" \
 	-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner \
-	-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat \
-	-jobconf mapred.line.input.format.linespermap="1" \
 	-jobconf mapred.map.tasks="$mapper_num" \
 	-jobconf mapred.job.map.capacity="$mapper_capacity" \
 	-jobconf mapred.map.over.capacity.allowed="false" \
@@ -52,6 +43,7 @@ ${local_hadoop} streaming \
 	-jobconf mapred.map.tasks.speculative.execution="false" \
 	-jobconf mapred.map.max.attempts="10" \
 	-jobconf mapred.job.name="${jobname}" \
+	-jobconf mapreduce.job.priority="${priority}" \
 	-file ./shell/mapper.sh \
 	-file ./shell/reducer.sh \
 	-file ./conf/common.conf \
