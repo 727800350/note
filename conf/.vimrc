@@ -153,11 +153,6 @@ map <C-P> "+p
 " raw copy, do not use auto indent etc.
 set pastetoggle=<F9>
 
-"save file and stay in insert mode
-imap jj <ESC>:w<CR>li
-"go back to Normal mode from insertion mode
-imap kk <ESC>l
-
 "===============================auto completion===============================
 imap <c-\> <c-p>
 " c-j auto completion, c-j,k go up and down to choose
