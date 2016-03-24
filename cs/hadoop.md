@@ -33,6 +33,8 @@
 	-p参数是保留dst文件的权限位是否与src集群的文件权限位一致,若不加此选项则在dst集群上生成的文件的权限信息将于distcp的ugi信息一致.
 	-i 若在拷贝的过程中出现错误,则忽略此错误,否则就会进行4次重试直到整个任务失败.
 
+- `hadoop fs -dus /path/to/directory`: 显示的文件大小表示的是文件占用的逻辑空间, 这个空间是没有考虑备份数的.
+
 ## 任务管理
 - 调整map并发:hadoop job -set-map-capacity JOB_ID number(Reduce同样)
 - 调整reduce并发:hadoop job -set-reduce-capacity JOB_ID number
