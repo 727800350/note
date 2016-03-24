@@ -29,6 +29,13 @@ awk 的输出列由于内容长度不一样, 经常不是对齐的, 看起来不
 1. 使用C语言的方式, printf 进行控制
 1. 使用 `column -t` 命令
 
+# IO
+- `print $0 >> “file”`: 输出重定向到名为file的文件
+- `print $0 > “/dev/stdout”`: 显示的将输出输出到标准输出, 类似的就可以输出到 "/dev/stderr".
+- `printf(“%s, $0) > “/dev/stderr”`: 使用printf 也可以
+
+之后就可以正常的在awk 最外面使用重定向了
+
 # Patterns
 语法模式: `pattern {action}`
 
