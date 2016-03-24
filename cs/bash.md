@@ -332,6 +332,15 @@ To obtain better compression, concatenate all input files before compressing the
 tar -xvf foo.tar.gz -C /to
 ```
 
+排除特定文件进行打包
+```
+dir0/dir1
+dir0/dir2
+dir0/file
+dir0/dir3
+```
+`tar cvzf all.tar.gz dir0  --exclude dir1 --exclude file`: 排除dir0下面的dir1和file
+
 split - split a file into pieces
 `split [OPTION] [INPUT [PREFIX]]`
 
