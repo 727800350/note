@@ -74,16 +74,6 @@ export PATH=$PATH:${HOME}/git/note/bin/
 export PATH=$PATH:${HOME}/bin/
 
 # aliases
-## cp and mv
-if [ -e /usr/local/bin/acp ]
-then
-	alias cp='acp -g'
-fi
-if [ -e /usr/local/bin/amv ]
-then
-	alias mv='amv -g'
-fi
-
 version=`gcc -v 2>&1 | tail -n 1 | awk '{print $3}'`
 if [[ $version > "4.7" ]]
 then
