@@ -6,8 +6,8 @@ if [ -f /etc/bashrc ]; then
 fi
 
 ## source docker func
-if [ -f $HOME/.dockerfunc ]; then
-	source $HOME/.dockerfunc
+if [ -f $HOME/git/docker/.dockerfunc ]; then
+	source $HOME/git/docker/.dockerfunc
 fi
 
 user=`whoami`
