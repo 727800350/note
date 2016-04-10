@@ -38,13 +38,14 @@ else
 	export HADOOP_HOME="${HOME}/hadoop-client/hadoop/"
 	export local_hadoop="${HADOOP_HOME}/bin/hadoop"
 	alias hadoop='${HADOOP_HOME}/bin/hadoop'
+	alias tiny='${HOME}/hadoop-client/hadoop-tiny/bin/hadoop'
 	alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
 	alias nanling='${HOME}/hadoop-client/hadoop-nanling/bin/hadoop'
 	alias spider='${HOME}/hadoop-client/hadoop-spider/bin/hadoop'
-	alias temps='${HOME}/hadoop-client/hadoop-temps/bin/hadoop'
 
 	## svn
 	export PATH=$PATH:$HOME/opt/tools/tools/svn/1.6.5/64/bin
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/opt/tools/tools/svn/1.6.5/64/lib
 	export PATH=$PATH:$HOME/opt/tools/tools/scmtools/usr/bin
 	export PATH=$PATH:$HOME/opt/tools/tools/../bin/64
 	export PATH=$PATH:$HOME/opt/tools/tools/maven/apache-maven-2.2.0/bin
