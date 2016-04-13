@@ -168,13 +168,11 @@ set complete-=k complete+=k
 "Ctrl-X Ctrl-S completion for spelling correction
 "Ctrl-X Ctrl-D completion by macro and definition name defined by #define
 "Ctrl-X Ctrl-I searches forward through the current file and included files defined by #include <somefile.h>
-"F3 switches between two windows after a split
-map <F3> <c-w>w
+"
 "enable backspace
 set backspace=2
-let g:vimrc_author='Eric'
-
 set nocompatible
+set mouse-=a "disable visual mode
 
 "=============================== font and encoding ===============================
 set guifont=Lucida\ Console:h10
@@ -183,10 +181,9 @@ set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set termencoding=gb2312,utf-8
 set encoding=utf-8
 
-set nu
-"colorscheme evening
-set showmatch
-"set laststatus=2 "always show status line
+set nu "show number
+set showmatch "colorscheme evening
+set laststatus=2 "always show status line
 set shortmess=atI "shortens messages"
 set showcmd
 set ruler
@@ -195,8 +192,7 @@ set ic "ignore case
 set hlsearch
 set incsearch				" when searching book, when type /b will automatically find in c search
 
-" hightlight the current line
-" set cursorline
+" set cursorline " hightlight the current line
 syntax enable
 syntax on
 filetype indent on
