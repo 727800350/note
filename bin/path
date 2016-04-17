@@ -3,7 +3,7 @@
 if [ $# -lt 2 ]
 then
 	echo "wrong args" >&2
-	echo "usage: $0 local|wget|ssh files" >&2
+	echo "usage: $0 local|ftp|ssh files" >&2
 	exit 1
 fi
 
