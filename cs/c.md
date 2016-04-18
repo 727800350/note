@@ -207,7 +207,7 @@ printf使用的格式字符如下
 
 文件位置跳转
 
-`int fseek(FILE *stream, long offset, int base)`: 函数设置文件指针stream的位置(从base偏移offset字节).
+`int fseek(FILE *stream, long offset, int base)`: 函数设置**文件**指针stream的位置(从base偏移offset字节). stream 不能为stdin, stdin 是流式的.
 
 - SEEK_SET: 文件开头
 - SEEK_CUR: 当前位置
@@ -477,6 +477,10 @@ The operator `##` concatenates two arguments **leaving no blank spaces** between
 	 char* str = ToString(123132);就成了str="123132";
 
 `realloc`: 重新分配内存, 但是原来的内容保留下来
+
+- 当realloc 执行失败时, 返回null, 但是原来的内容不会被更改, 所以不能将realloc的返回指针复制给原来的指针,否则会覆盖掉原来的内容,
+	而且也不能通过判断原来的指针是否为null来判断realloc窒息你给成功与否**
+- 当执行成功时, realloc 会将原来的内存释放掉, 返回的指针可能和原来的不一样, 所以我们只需要负责释放realloc 返回的内存就可以了, 之前的内存不用管了.
 
 # Linux
 ## [Example of Parsing Arguments with getopt](http://www.gnu.org/software/libc/manual/html_node/Getopt.html)
