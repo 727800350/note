@@ -43,7 +43,7 @@ ${local_hadoop} streaming \
 	-jobconf mapred.map.tasks.speculative.execution="false" \
 	-jobconf mapred.map.max.attempts="10" \
 	-jobconf mapred.job.name="${jobname}" \
-	-jobconf mapreduce.job.priority="${priority}" \
+	-jobconf mapred.job.priority="${priority}" \
 	-file ./shell/mapper.sh \
 	-file ./shell/reducer.sh \
 	-file ./conf/common.conf \

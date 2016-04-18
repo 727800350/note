@@ -15,16 +15,23 @@ then
 	conf="./conf/"
 	bin="./bin/"
 	shell="./shell/"
-	hadoop_fs="$local_hadoop dfs"
 else
 	conf="./"
 	bin="./"
 	shell="./"
-	hadoop_fs="$cluster_hadoop_fs"
 fi
 
 source $conf/common.conf || exit 1
 source $conf/func.sh || exit 1
+
+if [ $local -eq 1 ]
+then
+	hadoop_fs="$local_hadoop dfs"
+else
+	hadoop_fs="$cluster_hadoop_fs"
+fi
+
+chmod +x $bin/*
 
 exit 0
 
