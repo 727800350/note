@@ -170,6 +170,7 @@ mapred.line.input.format.line.is.file=true 告诉框架你的输入每一行都�
 先将文件上传到临时目录`$mapred_work_output_dir`中, 任务结束后hadoop自动将其移动到最终输出目录, 这样能保证不同的mapper或 reducer上传数据不会冲突
 
 # 任务优化
+## 打开预测执行
 优化场景1:任务长尾问题严重,最后几个task上耗时比较严重
 分析:
 (1)对于存在Reduce过程的任务,查看Partition是否均匀
@@ -194,12 +195,31 @@ mapred.reduce.tasks.speculative.execution=true
 1. 加入超时参数以及允许失败比例的参数,丢弃这些长尾数据
 1. 利用之前提到的, 设置节点的最慢数据拷贝速度,使得任务调度到执行速度快的机器上
 
+## 合并小文件
 场景2:任务数据量很小,但文件很多,导致启动了很多task-map
 有时会对一些中间产出数据进行处理,这些数据的数据量不大,但是文件却超过几千个,如果不经过任何设置,有多少个文件就会启动多少个mapper,这样非常浪费计算资源,可设置参数:
 ```
 -inputformat org.apache.hadoop.mapred.CombineTextInputFormat \
--jobconf mapred.max.split.size=5368709120
+-jobconf mapred.max.split.size=5368709120 \ ## (5GB)
 ```
 第一个参数告诉调度器我需要合并输入文件
 第二个参数设置了每个mapper或者reducer最大处理的数据量, 单位为byte
+
+## 使用压缩
+经过测试在时间性能上：lzo>gzip>lzma，即lzo压缩运行时间最短，gzip次之，运行最长的是lzma。
+在压缩比上：刚好相反，lzma压缩比最大，试验中压缩比为3.83/1；gzip的压缩比为2.75/1，lzo压缩比为1.6/1
+Lzo一般用于内置轻量级压缩，用在中间结果压缩，不建议外部使用，即适合map的输出进行压缩，不建议作为作业reduce最终输出的压缩。
+
+- 适合中间结果
+	- org.apache.hadoop.io.compress.LzoCodec
+	- org.apache.hadoop.io.compress.QuickLzCodec
+	- 使用
+		- `-jobconf mapred.compress.map.output="true"`
+		- `-jobconf mapred.map.output.compression.codec="org.apache.hadoop.io.compress.QuickLzCodec"`
+- 适合输入输出
+	- org.apache.hadoop.io.compress.GzipCodec
+	- org.apache.hadoop.io.compress.LzmaCodec
+	- 使用
+		- `-jobconf mapred.output.compress="true"`
+		- `-jobconf mapred.output.compression.codec="org.apache.hadoop.io.compress.GzipCodec"`
 
