@@ -33,5 +33,10 @@ fi
 
 chmod +x $bin/*
 
+cat - > input.reducer
+wc -l input.reducer >&2
+ls -l input.reducer >&2
+head input.reducer >&2
+
 exit 0
 

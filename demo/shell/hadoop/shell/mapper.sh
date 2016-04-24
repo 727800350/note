@@ -33,5 +33,10 @@ fi
 
 chmod +x $bin/*
 
+cat - > input.mapper
+wc -l input.mapper >&2
+ls -l input.mapper >&2
+head input.mapper >&2
+
 exit 0
 
