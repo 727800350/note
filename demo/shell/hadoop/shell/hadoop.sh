@@ -32,6 +32,10 @@ ${local_hadoop} streaming \
 	-mapper "bash mapper.sh 0" \
 	-reducer "bash reducer.sh 0" \
 	-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner \
+	-inputformat org.apache.hadoop.mapred.CombineTextInputFormat \
+	-jobconf mapred.max.split.size="1073741824" \
+	-jobconf mapred.compress.map.output="true" \
+	-jobconf mapred.map.output.compression.codec="org.apache.hadoop.io.compress.QuickLzCodec" \
 	-jobconf mapred.map.tasks="$mapper_num" \
 	-jobconf mapred.job.map.capacity="$mapper_capacity" \
 	-jobconf mapred.map.over.capacity.allowed="false" \
