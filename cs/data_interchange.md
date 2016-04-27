@@ -72,6 +72,60 @@ apt-get install protobuf-compiler ## protocol compiler
 apt-get install python-protobuf ## protobuf runtime for Python
 apt-get install libprotobuf-dev ## protobuf runtime for C++
 
+## Encoding
+### varint
+Varints are a method of serializing integers using one or more bytes.
+Smaller numbers take a smaller number of bytes.
+Varint 中的每个byte的第一个bit(the most significant bit(msb)) 如果为1, 表示后面的一个byte仍然是当前这个数据的一个byte, 如果为0, 就表示这个byte已经是最后一个了.
+每个byte中剩下的7个bits就是实际的数据内容.
+
+字节序(比如int a = 0x05060708)
+
+- BIG-ENDIAN: 05 06 07 08
+- LITTLE-ENDIAN: 08 07 06 05
+
+剩下每个byte中的7个bits 是按照little endian 来组织的.
+
+1. 原始数据`1010 1100 0000 0010`
+1. 首先第一个byte的第一个bit为1, 表示后面的一个byte 仍然是数据的一部分; 第二个byte的第一个bit为0, 表示这个byte是数据的末尾.
+	去掉数据的各个byte的第一个bit之后, 成为`010 1100 0000 010`
+1. 由于数据是按照little endian组织的, 所以转换为一般的数据序列为: `0000 010 010 1100`, 也就是`1 0010 1100`, 等于 2^8 + 2^5 + 2^3 + 2^2 = 300
+
+### message structure
+A protocol buffer message is a series of **key-value pairs**.
+The binary version of a message just uses the field number as the key. 所以对于decode一方, 需要有对应.proto 文件才能正确解析.
+
+The "key" for each pair is actually a **variant** composing of two values
+
+1. the field number from .proto file
+1. a wire type that provides just enough information to find the length of the value.
+
+```
+key = (field_number << 3) | wire_type
+```
+也就是说key的最后3个bits 存储的是wire type.
+
+
+6 种wire type
+
+1. 0: Varint	int32, int64, uint32, uint64, sint32, sint64, bool, enum
+1. 1: 64-bit	fixed64, sfixed64, double
+1. 2: Length-delimited	string, bytes, embedded messages, packed repeated fields
+1. 3: Start group	groups (deprecated)
+1. 4: End group	groups (deprecated)
+1. 5: 32-bit	fixed32, sfixed32, float
+
+ex: 0x9601
+
+1. `0x089601 = 0000 1000 1001 0110 0000 0001`
+1. 第一个byte 为 `0000 1000`, 由于第一个bit 为0, 因此这个kv pair的key就是一个byte, 为`0000 1000`
+1. key的最后3个bits 为 `000`, 因此这个kv pair的value 是一个varint 类型数据.
+1. 从第二个byte开始为value部分, 然后第二个byte的第一个bit为1, 第三个byte的第一个bit 为0, 因此value 为 `1001 0110 0000 0001`.
+1. 去掉value 的每个byte的第一个bit, 剩下 `001 0110 000 0001`
+1. single endien 到一般序列, 结果为: 000 0001 001 0110 = 1001 0110 = 2^7 + 2^4 + 2^2 + 2^1 = 150
+
+### string
+
 # gRPC
 In gRPC a client application can directly call methods on a server application on a different machine as if it was a local object,
 making it easier for you to create distributed applications and services.
