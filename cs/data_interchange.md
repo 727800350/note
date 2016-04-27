@@ -87,3 +87,24 @@ On the client side, the client has a stub that provides exactly the same methods
 
 thrift -r --gen cpp/python <Thrift filename>
 
+# Message Queue(MQ)
+- RabbitMQ是一个AMQP实现,传统的messaging queue系统实现,基于Erlang.老牌MQ产品了.AMQP协议更多用在企业系统内,对数据一致性,稳定性和可靠性要求很高的场景,对性能和吞吐量还在其次.
+	不单单做到了简单的数据转发功能,还保证了单个队列上的数据有序,即便是有多个消费者和多个生产者.
+	- RabbitMQ的消息应当尽可能的小,并且只用来处理实时且要高可靠性的消息.
+	- 消费者和生产者的能力尽量对等,否则消息堆积会严重影响RabbitMQ的性能.
+	- 集群部署,使用热备,保证消息的可靠性.
+- Kafka是linkedin开源的MQ系统,主要特点是基于Pull的模式来处理消息消费,追求高吞吐量,一开始的目的就是用于日志收集和传输.
+	0.8开始支持复制,不支持事务,适合产生大量数据的互联网服务的数据收集业务.
+	- 应当有一个非常好的运维监控系统,不单单要监控Kafka本身,还要监控Zookeeper.
+	- 对消息顺序不依赖,且不是那么实时的系统.
+	- 对消息丢失并不那么敏感的系统.
+- ZeroMQ只是一个网络编程的Pattern库, 将常见的网络请求形式(分组管理,链接管理,发布订阅等)模式化,组件化,简而言之socket之上,MQ之下.
+	对于MQ来说,网络传输只是它的一部分,更多需要处理的是消息存储,路由,Broker服务发现和查找,事务,消费模式(ack,重投等),集群服务等.
+
+## RabbitMQ
+AMQP,即Advanced Message Queuing Protocol, 一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计.
+基于此协议的客户端与消息中间件可传递消息,并不受客户端/中间件不同产品,不同开发语言等条件的限制.
+Erlang中的实现有 RabbitMQ等.
+
+## Apache Kafka
+
