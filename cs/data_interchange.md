@@ -88,6 +88,15 @@ On the client side, the client has a stub that provides exactly the same methods
 thrift -r --gen cpp/python <Thrift filename>
 
 # Message Queue(MQ)
+消息队列可驻留在内存或磁盘上, 队列存储消息直到它们被应用程序消费.
+
+message queue的通讯模式
+
+- 点对点通讯: 点对点方式是最为传统和常见的通讯方式,它支持一对一,一对多,多对多,多对一等多种配置方式,支持树状,网状等多种拓扑结构.
+- 多点广播: 能够将消息发送到多个目标站点 (Destination List).可以使用一条 MQ 指令将单一消息发送到多个目标站点,并确保为每一站点可靠地提供信息.
+- 发布/订阅(publish/subscribe)模式: 使消息按照特定的主题甚至内容进行分发,用户或应用程序可以根据主题或内容接收到所需要的消息
+- 集群: 为了简化点对点通讯模式中的系统配置,MQ 提供 Cluster(群集) 的解决方案.群集类似于一个域 (Domain),群集内部的队列管理器之间通讯时,不需要两两之间建立消息通道,而是采用群集 (Cluster) 通道与其它成员通讯,从而大大简化了系统配置.
+
 - RabbitMQ是一个AMQP实现,传统的messaging queue系统实现,基于Erlang.老牌MQ产品了.AMQP协议更多用在企业系统内,对数据一致性,稳定性和可靠性要求很高的场景,对性能和吞吐量还在其次.
 	不单单做到了简单的数据转发功能,还保证了单个队列上的数据有序,即便是有多个消费者和多个生产者.
 	- RabbitMQ的消息应当尽可能的小,并且只用来处理实时且要高可靠性的消息.
