@@ -35,7 +35,7 @@ ${local_hadoop} streaming \
 	-inputformat org.apache.hadoop.mapred.CombineTextInputFormat \
 	-jobconf mapred.max.split.size="1073741824" \
 	-jobconf mapred.compress.map.output="true" \
-	-jobconf mapred.map.output.compression.codec="org.apache.hadoop.io.compress.QuickLzCodec" \
+	-jobconf mapred.map.output.compression.codec="org.apache.hadoop.io.compress.LzoCodec" \
 	-jobconf mapred.map.tasks="$mapper_num" \
 	-jobconf mapred.job.map.capacity="$mapper_capacity" \
 	-jobconf mapred.map.over.capacity.allowed="false" \
@@ -46,7 +46,7 @@ ${local_hadoop} streaming \
 	-jobconf mapred.max.map.failures.percent="5" \
 	-jobconf mapred.map.tasks.speculative.execution="false" \
 	-jobconf mapred.map.max.attempts="10" \
-	-jobconf mapred.job.name="${jobname}" \
+	-jobconf mapred.job.name="${job_name}" \
 	-jobconf mapred.job.priority="${priority}" \
 	-file ./shell/mapper.sh \
 	-file ./shell/reducer.sh \
