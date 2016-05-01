@@ -202,6 +202,8 @@ AMQP,即Advanced Message Queuing Protocol, 一个提供统一消息服务的应�
 基于此协议的客户端与消息中间件可传递消息,并不受客户端/中间件不同产品,不同开发语言等条件的限制.
 Erlang中的实现有 RabbitMQ等.
 
+[rabbitmq-tutorials](https://github.com/rabbitmq/rabbitmq-tutorials)
+
 - $ sudo rabbitmqctl list_queues name messages_ready messages_unacknowledged
 - $ sudo rabbitmqctl list_exchanges
 - $ sudo rabbitmqctl list_bindings
@@ -277,6 +279,14 @@ There are a few exchange types available: direct, topic, headers and fanout.
 
 ### RPC
 [rpc example](http://www.rabbitmq.com/tutorials/tutorial-six-python.html)
+
+What if we need to run a function on a remote computer and wait for the result?
+Well, that is a different story. This pattern is commonly known as Remote Procedure Call or RPC.
+
+To illustrate how an RPC service could be used.
+we are going to create a simple client class.
+A client sends a request message and a server replies with a response message.
+The client is going to expose a method named call which **sends an RPC request and blocks until the answer is received**.
 
 ## Apache Kafka
 
