@@ -125,6 +125,38 @@ ex: 0x9601
 1. single endien 到一般序列, 结果为: 000 0001 001 0110 = 1001 0110 = 2^7 + 2^4 + 2^2 + 2^1 = 150
 
 ### string
+A wire type of 2(length-delimited) means that the value is a **varint encoded length** followed by the specified number of bytes of data.
+```
+message Test2{
+	required string b = 2;
+}
+```
+setting the value of b to "testing" gives us: `0x 12 07 74 65 73 74 69 6e 67`
+
+1. `12 = 0001 0010`, 最后三个bits为`010 = 2`, 表示wire type 等于2, `0001 0`是field number, 也是2
+1. `07 = 0000 0111`, value 部分的第一个byte 的第一个bit为0, 意味着这个表示data length的varint类型数据只有一个byte, 值为7, 也就是说后面紧跟着的7个bytes为value的data部分
+1. `74 65 73 74 69 6e 67` 分别为 `t e s t i n g` 7个字符
+
+### Embedded Messages
+```
+message Test1{
+	required int32 a = 1;
+}
+message Test3{
+	required Test1 c = 3;
+}
+```
+令c中的a 为 150, 会被编码为:`1a 03 08 96 01`
+
+1. `1a = 0001 1010`, wire type = `010` = 2, field number = `0001 1` = 3
+1. `03 = 0000 0011`, data lenght 就一个byte的varint, 值为3
+1. `08 96 01` 为一个Test1 类型的message
+1. `08 = 0000 1000`, wire type = 0, field number = 1
+1. `96 01 = 1001 0110 0000 0001`, 去掉msb, 倒过来就是`000 0001 001 0110` = 150
+
+### Optional and repeated elements
+These repeated values do not have to appear consecutively, they may be interleaved with other fields.
+The order of the elements with respect to each other is preserved when parsing.
 
 # gRPC
 In gRPC a client application can directly call methods on a server application on a different machine as if it was a local object,
@@ -149,7 +181,8 @@ message queue的通讯模式
 - 点对点通讯: 点对点方式是最为传统和常见的通讯方式,它支持一对一,一对多,多对多,多对一等多种配置方式,支持树状,网状等多种拓扑结构.
 - 多点广播: 能够将消息发送到多个目标站点 (Destination List).可以使用一条 MQ 指令将单一消息发送到多个目标站点,并确保为每一站点可靠地提供信息.
 - 发布/订阅(publish/subscribe)模式: 使消息按照特定的主题甚至内容进行分发,用户或应用程序可以根据主题或内容接收到所需要的消息
-- 集群: 为了简化点对点通讯模式中的系统配置,MQ 提供 Cluster(群集) 的解决方案.群集类似于一个域 (Domain),群集内部的队列管理器之间通讯时,不需要两两之间建立消息通道,而是采用群集 (Cluster) 通道与其它成员通讯,从而大大简化了系统配置.
+- 集群: 为了简化点对点通讯模式中的系统配置, MQ 提供 Cluster(群集)的解决方案.
+	群集类似于一个域 (Domain),群集内部的队列管理器之间通讯时,不需要两两之间建立消息通道,而是采用群集 (Cluster) 通道与其它成员通讯,从而大大简化了系统配置.
 
 - RabbitMQ是一个AMQP实现,传统的messaging queue系统实现,基于Erlang.老牌MQ产品了.AMQP协议更多用在企业系统内,对数据一致性,稳定性和可靠性要求很高的场景,对性能和吞吐量还在其次.
 	不单单做到了简单的数据转发功能,还保证了单个队列上的数据有序,即便是有多个消费者和多个生产者.
@@ -168,6 +201,8 @@ message queue的通讯模式
 AMQP,即Advanced Message Queuing Protocol, 一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计.
 基于此协议的客户端与消息中间件可传递消息,并不受客户端/中间件不同产品,不同开发语言等条件的限制.
 Erlang中的实现有 RabbitMQ等.
+
+Channels: 虚拟连接.它建立在TCP连接中. 数据流动都是在Channel中进行的. 也就是说,一般情况是程序起始建立TCP连接,第二步就是建立这个Channel.
 
 ## Apache Kafka
 
