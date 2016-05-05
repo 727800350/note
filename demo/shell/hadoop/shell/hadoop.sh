@@ -53,6 +53,9 @@ ${local_hadoop} streaming \
 	-file ./conf/common.conf \
 	-file ./conf/func.sh
 
+## 	-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat \
+## 	-jobconf mapred.line.input.format.line.is.file=true \
+
 CHK_RET FATAL "$jobname failed"
 
 exit 0
