@@ -1,11 +1,11 @@
 import sys
 
 ## input
-## tn: cs \t 0
-## img: cs \t 1 \t objurl
+## tn: key \t 0
+## img: key \t 1 \t objurl
 ## output:
-## cs \t 1 \t objurl if objurl found
-## cs \t 0 if none
+## key \t 1 \t objurl if objurl found
+## key \t 0 if none
 
 d = {}
 
@@ -21,35 +21,35 @@ def process_dict(dictionary, key):
 			del dictionary[key]
 
 def main():
-	cs_old = ''
+	key_old = ''
 	flag_old = ''
 	value_old = ''
-	cs = ''
+	key = ''
 	flag = ''
 	value = ''
 	
 	for line in sys.stdin:
 		line = line.strip()
 		terms = line.split('\t')
-		cs = terms[0]
+		key = terms[0]
 		flag = terms[1]
 		if flag == '1':
 			value = terms[2]
 		
-		if cs not in d and flag == '0':
-			d[cs] = []
+		if key not in d and flag == '0':
+			d[key] = []
 
-		if cs in d and flag == '1':
-			d[cs].append(value)
+		if key in d and flag == '1':
+			d[key].append(value)
 	
-		if cs_old == '':
-			cs_old = cs
+		if key_old == '':
+			key_old = key
 			flag_old = flag
 			value_old = value
 	
-		if cs != cs_old:
-			process_dict(d, cs_old)
-			cs_old = cs
+		if key != key_old:
+			process_dict(d, key_old)
+			key_old = key
 			flag_old = flag
 			value_old = value
 ## 		print d, len(d)
