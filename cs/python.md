@@ -353,6 +353,12 @@ list2=list1,那么这两个list指向的是同一个list对象, 当我们改变�
 
 定义和访问时,key必须用引号引起来. 使用{}定义,使用[]访问,即`c['a']`
 
+```
+for key in dictonary.keys():
+	do something
+```
+[for key in dictionary 会出错](http://www.cnblogs.com/codeape/archive/2012/11/21/2780534.html)
+
 对字典key 的要求:  
 dictionaries are indexed by keys, which can be any immutable type; strings and numbers can always be keys.
 
