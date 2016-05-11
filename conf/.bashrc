@@ -30,9 +30,6 @@ else
 	export PATH=$PATH:${HOME}/.jumbo/bin/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/samba/lib/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/hadoop-client/java6/jre/lib/amd64/server/:~/hadoop-client/hadoop/libhdfs/
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/utils/gmp/lib/
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/utils/mpc/lib/
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/utils/mpfr/lib/
 
 	## hadoop client
 	export HADOOP_HOME="${HOME}/hadoop-client/hadoop/"
@@ -55,12 +52,8 @@ else
 	export PATH=$PATH:$HOME/opt/tools/tools/php/5.2.17/64/bin
 	
 	## MANPATH=:/tools/baidu_manpage/man
-	export JAVA_HOME_1_5=$HOME/opt/tools/tools/java/jdk1.5.0_07
-	export JAVA_HOME_1_6=$HOME/opt/tools/tools/java/jdk1.6.0_20
 	export ANT_HOME=$HOME/opt/tools/tools/ant/apache-ant-1.6.5
-	export ANT_HOME_1_7=$HOME/opt/tools/tools/ant/apache-ant-1.7.1
-	export MAVEN_2_2_1=$HOME/opt/tools/tools/maven/apache-maven-2.2.1/bin
-	export MAVEN_3_0_4=$HOME/opt/tools/tools/maven/apache-maven-3.0.4/bin
+	export MAVEN=$HOME/opt/tools/tools/maven/apache-maven-3.0.4/bin
 	export MAC=64
 fi
 
