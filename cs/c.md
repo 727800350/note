@@ -739,156 +739,33 @@ typedef int __sig_atomic_t;
 同时,指针(地址)类型也一定是原子性的. 该类型在所有gnu c库支持的系统和支持posix的系统中都有定义.
 
 # GCC
+高版本的gcc glibc 编译后在低版本的glibc上运行导致,可能导致Floating Point Exception运行时错误.
+这是由于现在的gcc在link的时候默认会采用选项--hash-style=gnu,而使用这种Hash表的方式可以大大提升动态链结时的效率.
+而老版本的glibc本并未支持,我们只要在在程序连接选项中加上-Wl,--hash-style=sysv就可以解决这个问题了
+
 ## Useful GCC flags for C
 Those marked * sometimes give too many spurious warnings, so I use them on as-needed basis.
 
-- Wextra, -Wall: essential.
-- Wfloat-equal: useful because usually testing floating-point numbers for equality is bad.
-- Wundef: warn if an uninitialized identifier is evaluated in an #if directive.
-- Wshadow: warn whenever a local variable shadows another local variable, parameter or global variable or whenever a built-in function is shadowed.
-- Wpointer-arith: warn if anything depends upon the size of a function or of void.
-- Wcast-align: warn whenever a pointer is cast such that the required alignment of the target is increased. For example, warn if a char * is cast to an int * on machines where integers can only be accessed at two- or four-byte boundaries.
-- Wstrict-prototypes: warn if a function is declared or defined without specifying the argument types.
-- Wstrict-overflow=5: warns about cases where the compiler optimizes based on the assumption that signed overflow does not occur. (The value 5 may be too strict, see the manual page.)
-- Wwrite-strings: give string constants the type const char[length] so that copying the address of one into a non-const char * pointer will get a warning.
-- Waggregate-return: warn if any functions that return structures or unions are defined or called.
-- Wcast-qual: warn whenever a pointer is cast to remove a type qualifier from the target type*.
-- Wswitch-default: warn whenever a switch statement does not have a default case*.
-- Wswitch-enum: warn whenever a switch statement has an index of enumerated type and lacks a case for one or more of the named codes of that enumeration*.
-- Wconversion: warn for implicit conversions that may alter a value*.
-- Wunreachable-code: warn if the compiler detects that code will never be executed*.
+- extra, -Wall: essential.
+- float-equal: useful because usually testing floating-point numbers for equality is bad.
+- undef: warn if an uninitialized identifier is evaluated in an #if directive.
+- shadow: warn whenever a local variable shadows another local variable, parameter or global variable or whenever a built-in function is shadowed.
+- pointer-arith: warn if anything depends upon the size of a function or of void.
+- cast-align: warn whenever a pointer is cast such that the required alignment of the target is increased.
+	For example, warn if a char * is cast to an int * on machines where integers can only be accessed at two- or four-byte boundaries.
+- strict-prototypes: warn if a function is declared or defined without specifying the argument types.
+- strict-overflow=5: warns about cases where the compiler optimizes based on the assumption that signed overflow does not occur.
+	(The value 5 may be too strict, see the manual page.)
+- write-strings: give string constants the type const char[length] so that copying the address of one into a non-const char * pointer will get a warning.
+- aggregate-return: warn if any functions that return structures or unions are defined or called.
+- cast-qual: warn whenever a pointer is cast to remove a type qualifier from the target type*.
+- switch-default: warn whenever a switch statement does not have a default case*.
+- switch-enum: warn whenever a switch statement has an index of enumerated type and lacks a case for one or more of the named codes of that enumeration*.
+- conversion: warn for implicit conversions that may alter a value*.
+- unreachable-code: warn if the compiler detects that code will never be executed*.
 
 # User related
 - `getpwnam()` function returns a pointer to a structure containing the broken-out fields of the record in the **password database** (e.g., the local password file /etc/passwd, NIS, and LDAP) that matches the username name.
 - `getpwuid()` function returns a pointer to a structure containing the broken-out fields of the record in the password database that matches the user ID uid.
 - `chroot` change root directory
-
-# Object orientation of C
-[Object-Orientation in C](http://stackoverflow.com/questions/415452/object-orientation-in-c)
-
-I would advise against preprocessor (ab)use to try and make C syntax more like that of another more object-oriented language. At the most basic level, you just use plain structs as objects and pass them around by pointers:
-
-	struct monkey{
-	    float age;
-	    bool is_male;
-	    int happiness;
-	};
-
-	void monkey_dance(struct monkey *monkey){
-	    /* do a little dance */
-	}
-To get things like inheritance and polymorphism, you have to work a little harder. You can do manual inheritance by having the first member of a structure be an instance of the superclass, and then you can cast around pointers to base and derived classes freely:
-
-	struct base{
-	    /* base class members */
-	};
-
-	struct derived{
-	    struct base super;
-	    /* derived class members */
-	};
-
-struct derived d;
-struct base *base_ptr = (struct base *)&d;  // upcast
-struct derived derived_ptr = (struct derived *)base_ptr;  // downcast
-To get polymorphism (i.e. virtual functions), you use function pointers, and optionally function pointer tables, also known as virtual tables or vtables:
-
-	struct base;
-	struct base_vtable{
-	    void (*dance)(struct base *);
-	    void (*jump)(struct base *, int how_high);
-	};
-
-	struct base{
-	    struct base_vtable *vtable;
-	    /* base members */
-	};
-
-	void base_dance(struct base *b){
-	    b->vtable->dance(b);
-	}
-
-	void base_jump(struct base *b, int how_high){
-	    b->vtable->jump(b, how_high);
-	}
-
-	struct derived1{
-	    struct base super;
-	    /* derived1 members */
-	};
-
-	void derived1_dance(struct derived1 *d){
-	    /* implementation of derived1's dance function */
-	}
-
-	void derived1_jump(struct derived1 *d, int how_high){
-	    /* implementation of derived 1's jump function */
-	}
-
-	/* global vtable for derived1 */
-	struct base_vtable derived1_vtable ={
-	    &derived1_dance, /* you might get a warning here about incompatible pointer types */
-	    &derived1_jump   /* you can ignore it, or perform a cast to get rid of it */
-	};
-
-	void derived1_init(struct derived1 *d){
-	    d->super.vtable = &derived1_vtable;
-	    /* init base members d->super.foo */
-	    /* init derived1 members d->foo */
-	}
-
-	struct derived2{
-	    struct base super;
-	    /* derived2 members */
-	};
-
-	void derived2_dance(struct derived2 *d){
-	    /* implementation of derived2's dance function */
-	}
-
-	void derived2_jump(struct derived2 *d, int how_high){
-	    /* implementation of derived2's jump function */
-	}
-
-	struct base_vtable derived2_vtable ={
-	   &derived2_dance,
-	   &derived2_jump
-	};
-
-	void derived2_init(struct derived2 *d){
-	    d->super.vtable = &derived2_vtable;
-	    /* init base members d->super.foo */
-	    /* init derived1 members d->foo */
-	}
-
-	int main(void){
-	    /* OK!  We are done with our declarations, now we can finally do some
-	       polymorphism in C */
-	    struct derived1 d1;
-	    derived1_init(&d1);
-	
-	    struct derived2 d2;
-	    derived2_init(&d2);
-	
-	    struct base *b1_ptr = (struct base *)&d1;
-	    struct base *b2_ptr = (struct base *)&d2;
-	
-	    base_dance(b1_ptr);  /* calls derived1_dance */
-	    base_dance(b2_ptr);  /* calls derived2_dance */
-	
-	    base_jump(b1_ptr, 42);  /* calls derived1_jump */
-	    base_jump(b2_ptr, 42);  /* calls derived2_jump */
-	
-	    return 0;
-	}
-
-And that is how you do polymorphism in C. It ai not pretty, but it does the job. 
-There are some sticky issues involving pointer casts between base and derived classes, which are safe as long as 
-**the base class is the first member of the derived class**. 
-Multiple inheritance is much harder - in that case, in order to case between base classes other than the first, 
-you need to manually adjust your pointers based on the proper offsets, which is really tricky and error-prone.
-
-Another (tricky) thing you can do is change the dynamic type of an object at runtime! You just reassign it a new vtable pointer. 
-You can even selectively change some of the virtual functions while keeping others, creating new hybrid types. 
-Just be careful to create a new vtable instead of modifying the global vtable, otherwise you will accidentally affect all objects of a given type.
 
