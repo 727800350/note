@@ -39,12 +39,13 @@ ${local_hadoop} streaming \
 	-jobconf mapred.map.tasks="$mapper_num" \
 	-jobconf mapred.job.map.capacity="$mapper_capacity" \
 	-jobconf mapred.map.over.capacity.allowed="false" \
+	-jobconf mapred.map.tasks.speculative.execution="false" \
 	-jobconf mapred.reduce.tasks="$reducer_num" \
 	-jobconf mapred.job.reduce.capacity="$reducer_capacity" \
 	-jobconf mapred.reduce.over.capacity.allowed="false" \
+	-jobconf mapred.reduce.tasks.speculative.execution="false" \
 	-jobconf stream.memory.limit="800" \
 	-jobconf mapred.max.map.failures.percent="5" \
-	-jobconf mapred.map.tasks.speculative.execution="false" \
 	-jobconf mapred.map.max.attempts="10" \
 	-jobconf mapred.job.name="${job_name}" \
 	-jobconf mapred.job.priority="${priority}" \
