@@ -36,6 +36,7 @@ else
 	export JAVA_HOME="${HADOOP_HOME}/../java6/"
 	export local_hadoop="${HADOOP_HOME}/bin/hadoop"
 	alias hadoop='${HADOOP_HOME}/bin/hadoop'
+	alias yq='${HOME}/hadoop-client/hadoop-yq/bin/hadoop'
 	alias tiny='${HOME}/hadoop-client/hadoop-tiny/bin/hadoop'
 	alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
 	alias nanling='${HOME}/hadoop-client/hadoop-nanling/bin/hadoop'

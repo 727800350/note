@@ -39,11 +39,11 @@ ${local_hadoop} streaming \
 	-jobconf mapred.map.tasks="$mapper_num" \
 	-jobconf mapred.job.map.capacity="$mapper_capacity" \
 	-jobconf mapred.map.over.capacity.allowed="false" \
-	-jobconf mapred.map.tasks.speculative.execution="false" \
+	-jobconf mapred.map.tasks.speculative.execution="true" \
 	-jobconf mapred.reduce.tasks="$reducer_num" \
 	-jobconf mapred.job.reduce.capacity="$reducer_capacity" \
 	-jobconf mapred.reduce.over.capacity.allowed="false" \
-	-jobconf mapred.reduce.tasks.speculative.execution="false" \
+	-jobconf mapred.reduce.tasks.speculative.execution="true" \
 	-jobconf stream.memory.limit="800" \
 	-jobconf mapred.max.map.failures.percent="5" \
 	-jobconf mapred.map.max.attempts="10" \
@@ -54,6 +54,7 @@ ${local_hadoop} streaming \
 	-file ./conf/common.conf \
 	-file ./conf/func.sh
 
+## 	-reducer "NONE" \
 ## 	-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat \
 ## 	-jobconf mapred.line.input.format.line.is.file=true \
 
