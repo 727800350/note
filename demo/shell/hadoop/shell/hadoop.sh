@@ -47,7 +47,7 @@ ${local_hadoop} streaming \
 	-jobconf stream.memory.limit="800" \
 	-jobconf mapred.max.map.failures.percent="5" \
 	-jobconf mapred.map.max.attempts="10" \
-	-jobconf mapred.job.name="${job_name}" \
+	-jobconf mapred.job.name="${owner}_${job_name}" \
 	-jobconf mapred.job.priority="${priority}" \
 	-file ./shell/mapper.sh \
 	-file ./shell/reducer.sh \
