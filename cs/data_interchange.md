@@ -288,5 +288,31 @@ we are going to create a simple client class.
 A client sends a request message and a server replies with a response message.
 The client is going to expose a method named call which **sends an RPC request and blocks until the answer is received**.
 
+
+Use the term node to refer to a RabbitMQ server instance.
+In reality, what a node really describes is an Erlang node running an Erlang application.
+
+```
+root@dev:~/git# rabbitmqctl stop_app
+Stopping node rabbit@dev ...
+root@dev:~/git# rabbitmqctl start_app
+Starting node rabbit@dev ...
+root@dev:~/git# rabbitmqctl stop
+Stopping and halting node rabbit@dev ...
+```
+
+rabbitmqctl add_user user passwd
+rabbitmqctl delete_user user
+rabbitmqctl list_users
+rabbitmqctl change_password <username> <newpassword>
+
+Mnesia的设计要求如下：
+1.快速实时的键(key)/值(value)查找
+2.主要用于运营和维护的非实时复杂查询
+3.由于分布式应用导致的分布式数据
+4.高容错
+5.动态重配置
+6.复杂对象
+
 ## Apache Kafka
 

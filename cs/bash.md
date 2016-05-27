@@ -8,6 +8,9 @@
 - CTRL-Y: 将之前已经清除的文本粘贴回来(主要针对CTRL-U或CTRL-W)
 - CTRL-/: 撤消操作,Undo.
 
+- `echo *`: 会输出当前目录的文件
+- `echo "*"`: 才会输出*
+
 # Help
 man
 
