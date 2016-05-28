@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]
+then
+	echo "wrong args" >&2
+	echo "usage: $0 file count" >&2
+	exit 1
+fi
+
+input=$1
+count=$2
+
+total=`cat $input | wc -l | awk '{print $1}'`
+
+## get digits number of total
+digits=1
+tmp=$total
+while [ `expr $tmp / 10` -gt 0 ]
+do
+	tmp=`expr $tmp / 10`	
+	digits=`expr $digits + 1`
+done
+
+cat /dev/urandom | tr -dc '0-9' | fold -w $digits | head -n $count | while read line
+do
+	num=`expr $line % $total + 1`	
+	cat $input | sed -n "${num}p"
+done
+
+exit 0
+
