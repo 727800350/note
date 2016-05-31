@@ -333,8 +333,20 @@ list2=list1,那么这两个list指向的是同一个list对象, 当我们改变�
 - list.pop(i)
 - list.index(x): Return the index in the list of the first item whose value is x. It is an error if there is no such item.
 - list.count(x): Return the number of times x appears in the list.
-- list.sort(): Sort the items of the list, in place. 会改变原列表.
 - list.reverse(): Reverse the elements of the list, in place. 会改变原列表.
+
+#### list 的排序
+- list.sort(): Sort the items of the list, in place. 会改变原列表. 还可以加参数 list.sort(reverse=True)
+- sorted(list): 返回一个排好序的对象, 原来的list不会改变
+
+[list sort](http://www.educity.cn/wenda/353925.html)
+```
+L = [('b',6),('a',1),('c',3),('d',4)]
+L.sort(lambda x,y:cmp(x[1],y[1]))
+L.sort(key=lambda x:x[1])
+import operator; L.sort(key=operator.itemgetter(1))
+L.sort(key=lambda x:(x[1],x[0])): 多关键字排序, 先用第二列的数字, 然后再用第一列的字母
+```
 
 ### 列表推导式
 	>>>vec = [ 2, 4, 6] 
