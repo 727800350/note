@@ -251,18 +251,14 @@ secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的�
 
 而如果压缩包里含有中文文件名, 从windows 传输到linux下, 解压之后, 中文文件会乱码.
 
-scp拷贝的另一个命令 rsync就可以实现意外中断后,下次继续传,命令如下:
-```
-rsync -P --rsh=ssh home.tar 192.168.0.34:/home/home.tar
-```
--P: 是包含了 "–partial –progress", 部分传送和显示进度  
--rsh=ssh 表示使用ssh协议传送数据
+scp拷贝的另一个命令 rsync就可以实现意外中断后,下次继续传,命令如下: `rsync -av src dst`
 
-将src 目录完全同步到 dst 目录
-```
-rsync --delete -a --progress /home/eric/git/tool/analyse/ /mnt/analyse/
-```
-最后面的 / 不能丢
+- `-av`: 保证src 是dst 的子集
+	1. 如果在src 删除了文件, 不会将删除文件的操作同步到 dst
+	1. 如果在dst 删除了src 中存在的文件, 那么再次执行 rsync -av 后, 被删除的文件会再次出现在dst
+	1. 如果在dst 中增加了文件, 那么再次执行 rsync -av 之后, 增加的文件不会被删除
+- `rsync -av a b/`: 将a这个目录整体同步到b下面, 得到 b/a 这样的文件结构
+- `rsync -av a/ b/`: 将a下面的文件同步到b下面, 得到 b/files_of_a 这样的文件结构
 
 # File System
 垃圾箱位置: .local/share/Trash/
