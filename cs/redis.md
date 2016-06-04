@@ -77,3 +77,16 @@ https://console.tenxcloud.com/docker-registry/detail?imageName=tenxcloud/redis
 1. 启动server: `docker run -d -p 6379:6379 -e REDIS_PASS="None" --name server redis`, redis_dir: /data, 可以通过-v 进行挂载本地路径
 1. client(另外一个具有redis-cli 的container): `redis-cli -h server -p 7379 -a "None"`, 这里的server 就是第二步骤中container 名字为server 的redis server container
 
+# 扩展写性能和内存容量
+[Redis实战：如何构建类微博的亿级社交平台](http://www.tuicool.com/articles/eyAfeyq)
+
+随着被缓存的数据越来越多,当数据没办法被存储到单台机器上面的时候,我们就需要想办法把数据分割存储到由多台机器组成的集群里面.
+如果用尽了一切方法降低内存占用并且尽可能地提高性能之后,问题仍然未解决,那么说明我们已经遇到了只使用单台机器带来的瓶颈,是时候将数据分片到多台机器上面了.
+
+本文介绍的数据分片方法要求用户使用固定数量的 Redis 服务器.
+举个例子,如果写入量预计每 6 个月就会增加 4 倍,那么我们可以将数据预先分片(preshard)到 256 个分片里面,从而拥有一个在接下来的 2 年时间里面都能够满足预期写入量增长的分片方案
+具体要规划多长远的方案要由你自己决定).
+在为了应对未来可能出现的流量增长而对系统进行预先分片的时候,我们可能会陷入这样一种处境:目前拥有的数据实在太少,按照预先分片方法计算出的机器数量去存储这些数据只会得不偿失.
+为了能够如常地对数据进行分割,我们可以在单台机器上面运行多个 Redis 服务器,并将每个服务器用作一个分片.
+注意,在同一台机器上面运行多个 Redis 服务器的时候,请记得让每个服务器都监听不同的端口,并确保所有服务器写入的都是不同的快照文件或 AOF 文件.
+
