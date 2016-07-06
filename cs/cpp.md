@@ -28,7 +28,7 @@ implemented as doubly-linked lists
 - push_front: 在头插入
 - push_back: 在尾插入
 
-## std::unordered_map
+## [std::unordered_map](http://www.cplusplus.com/reference/unordered_map/unordered_map/)
 Internally, the elements are not sorted in any particular order, but organized into buckets depending on their hash values
 to allow for fast access to individual elements directly by their key values (with a constant average time complexity on average).
 
@@ -44,7 +44,7 @@ although they are generally less efficient for range iteration through a subset 
 - `std::unordered_map::find`: Searches the container for an element with k as key and returns an iterator to it if found,
 	otherwise it returns an iterator to unordered_map::end (the element past the end of the container).
 
-## [std::map]
+## [std::map](http://www.cplusplus.com/reference/map/map/)
 - `size_type std::map::count(const key_type& k) const`: Count elements with a specific key
 
 # 参数传递
@@ -59,64 +59,6 @@ You can also choose to pass a pointer to a vector void `foo(vector<int> *bar)`,
 but unless you know what you know exactly what are doing, do not do this.
 
 [confusion demo](../demo/cpp/confusion.cpp)
-
-# IO
-- `std::cin extern std::istream`
-- `std::cout extern std::ostream`
-- `std::cerr extern std::ostream`
-- ios_base <--- ios <--- istream(ostream) <--- ifstream(ofstream)
-
-ifstream: input file stream
-
-
-```
-std::cin >> in;
-std::cout << out;
-```
-But when reading a string, `std::cin >> in` stops reading as soon as it encounters any black space character(a space or new line etc.)
-You may want to use getline to get a entire line of input from the console, `std::getline(std::cin, in)`
-```
-istream& getline (istream& is, string& str, char delim);
-istream& getline (istream& is, string& str);
-```
-Extracts characters from is and stores them into str until the delimitation character delim is found (or the newline character '\n' for the second usage).
-The **encountered delimiter is extracted and discarded**, i.e. it is not stored and the next input operation will begin after it.
-
-You use the same methods with a file (when dealing with non binary data).
-std::ofstream ofs('myfile.txt');
-
-[标准输入, 输出](../demo/cpp/stdio_demo.cpp)
-
-- `istream& read (char* s, streamsize n);`: Extracts n characters from the stream and stores them in the array pointed to by s.
-	This function simply copies a block of data, without checking its contents nor appending a null character at the end.
-- `ostream& write (const char* s, streamsize n);`: Inserts the first n characters of the array pointed by s into the stream.
-	This function simply copies a block of data, without checking its contents:
-	The array may contain null characters, which are also copied without stopping the copying process.
-
-[二进制标准输入, 输出](../demo/cpp/stdio_binary_demo.cpp)
-
-## File IO
-- fwrite is still (usually) buffered I/O(and that is a good thing)
-- ofstream is a perfectly good interface for doing formatted output to a file
-and ostream (and thus all of its derived classes) have the write member which serves the same purpose as fwrite.
-
-```
-#include <fstream>      // std::ofstream
-int main (){
-	std::ofstream ofs ("output.txt", std::ofstream::out);
-	ofs << "lorem ipsum";
-	ofs.close();
-	return 0;
-}
-```
-
-二进制io [ex](http://www.cplusplus.com/reference/ostream/ostream/write/)
-```
-std::ifstream infile("input.txt", std::ifstream::binary);
-infile.read()
-std::ofstream outfile("output.txt", std::ofstream::binary);
-outfile.write()
-```
 
 # [std::string](http://www.cplusplus.com/reference/string/string/)
 - `size()` or `length()`: Return length of string
