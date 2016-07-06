@@ -739,3 +739,5 @@ ffmpeg -i inputfile_all.mpg -sameq outputfile.avi
 - -sameq 表示相同的质量(可能指的是画面, 不太清楚)
 - -r 指频率, frame rate
 
+如果你的文件数量太大，rm提示超出参数列表长度的话，可以用下列命令来删除：`find . -name "*" -exec rm {} \; -print`
+

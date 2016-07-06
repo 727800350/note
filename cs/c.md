@@ -72,6 +72,12 @@ It returns a pointer to **newly allocated memory** into which it has copied the 
 - `int strcmp(const char *s1, const char *s2);`
 - `strcasecmp, strncasecmp`: **ignoring case**
 
+- `char *strtok(char *s, const char *delim);` strtok()用来将字符串分割成一个个片段.
+参数s 指向欲分割的字符串,参数delim 则为分割字符串,当strtok()在参数s 的字符串中发现到参数delim 的分割字符时则会将该字符改为\0 字符.
+在第一次调用时,strtok()必需给予参数s 字符串.  往后的调用则将参数s 设置成NULL.  每次调用成功则返回下一个分割后的字符串指针.
+[ex](http://c.biancheng.net/cpp/html/175.html)
+[demo](../demo/c/strtok.cpp)
+
 #### stdlib.h
 - `int atoi(const char *nptr)`
 - `long int atol(const char *nptr)`, atoll

@@ -1,12 +1,61 @@
+# STL 标准模板库
+- vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素,从尾部追加
+- list封装了链表, 以链表形式实现的
+
+## [vector](http://www.cplusplus.com/reference/vector/vector/)
+- push_back: 将要push_back的元素拷贝到新分配的内存中, 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容.
+对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针,
+所以即使原来的object被删除了, vector中的仍然可以正常访问.
+
+- erase: 删除元素, 如果元素是指向某个对象的指针, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
+- back:  Returns a reference to the last element in the vector.
+- empty()用来检测容器是否为空的.
+- clear()可以清空所有元素.但是即使clear(),vector所占用的内存空间依然如故,无法保证内存的回收
+
+[vector push_back operation demo](../demo/cpp/stl/vector-push_back.cpp)
+
+由于vector的内存占用空间只增不减,比如你首先分配了10,000个字节,然后erase掉后面9,999个,留下一个有效元素,但是内存占用仍为10,000个(capacity 仍然很大).
+所有内存空间是在vector析构时候才能被系统回收.
+
+如果需要空间动态缩小,可以考虑使用deque.
+如果vector,可以用swap()来帮助你释放内存.具体方法如下:
+
+	vector<Point>().swap(pointVec); //或者pointVec.swap(vector<Point> ())
+
+## [std::list](http://www.cplusplus.com/reference/list/list)
+implemented as doubly-linked lists
+
+- push_front: 在头插入
+- push_back: 在尾插入
+
+## std::unordered_map
+Internally, the elements are not sorted in any particular order, but organized into buckets depending on their hash values
+to allow for fast access to individual elements directly by their key values (with a constant average time complexity on average).
+
+unordered_map containers are faster than map containers to access individual elements by their key,
+although they are generally less efficient for range iteration through a subset of their elements.
+
+尽量不要使用`char *` 作为key, 而要使用string.
+`char *`是一个地址, 也就是一个unsigned int, 所以实际上的key 是一个unsigned int 类型的值
+
+- `std::unordered_map::operator[]`: If k matches the key of an element in the container, the function returns a reference to its mapped value.
+	If k does not match the key of any element in the container, the function inserts a new element with that key(值为mapped value 的类型的默认值) and
+	returns a reference to its mapped value. 反应在map.size() 上
+- `std::unordered_map::find`: Searches the container for an element with k as key and returns an iterator to it if found,
+	otherwise it returns an iterator to unordered_map::end (the element past the end of the container).
+
+## [std::map]
+- `size_type std::map::count(const key_type& k) const`: Count elements with a specific key
+
 # 参数传递
-Things are passed by value unless you specify otherwise using the &-operator 
+Things are passed by value unless you specify otherwise using the &-operator
 (note that this operator is also used as the 'address-of' operator, but in a different context).
 ```
 void foo(vector<int> bar); // by value
 void foo(vector<int> &bar); // by reference (non-const, so modifyable inside foo
 void foo(vector<int> const &bar); // by const-reference
 ```
-You can also choose to pass a pointer to a vector void `foo(vector<int> *bar)`, 
+You can also choose to pass a pointer to a vector void `foo(vector<int> *bar)`,
 but unless you know what you know exactly what are doing, do not do this.
 
 [confusion demo](../demo/cpp/confusion.cpp)
@@ -38,13 +87,11 @@ std::ofstream ofs('myfile.txt');
 
 [标准输入, 输出](../demo/cpp/stdio_demo.cpp)
 
-- `istream& read (char* s, streamsize n);`  
-Extracts n characters from the stream and stores them in the array pointed to by s.
-This function simply copies a block of data, without checking its contents nor appending a null character at the end.
-- `ostream& write (const char* s, streamsize n);`  
-Inserts the first n characters of the array pointed by s into the stream.
-This function simply copies a block of data, without checking its contents: 
-The array may contain null characters, which are also copied without stopping the copying process.
+- `istream& read (char* s, streamsize n);`: Extracts n characters from the stream and stores them in the array pointed to by s.
+	This function simply copies a block of data, without checking its contents nor appending a null character at the end.
+- `ostream& write (const char* s, streamsize n);`: Inserts the first n characters of the array pointed by s into the stream.
+	This function simply copies a block of data, without checking its contents:
+	The array may contain null characters, which are also copied without stopping the copying process.
 
 [二进制标准输入, 输出](../demo/cpp/stdio_binary_demo.cpp)
 
@@ -123,12 +170,11 @@ delete [] pointer;
 
 demo: `g_stmola = new (std::nothrow) select_mola[mola_num];`
 
-[**Pointers to functions**](../demo/c++/pointer_function.cpp)  
+[**Pointers to functions**](../demo/c++/pointer_function.cpp)
 
-`std::copy(val.begin(), val.end(), std::ostream_iterator<int>(std::cout, ", "))`  
-The Iterator concept describes types that can be used to identify and traverse the elements of a container.
-Iterator is the base concept used by other iterator types: InputIterator, OutputIterator, ForwardIterator,BidirectionalIterator, and RandomAccessIterator.
-Iterators can be thought of as an abstraction of pointers.
+`std::copy(val.begin(), val.end(), std::ostream_iterator<int>(std::cout, ", "))`: describes types that can be used to identify and traverse the elements of a container.
+	Iterator is the base concept used by other iterator types: InputIterator, OutputIterator, ForwardIterator,BidirectionalIterator, and RandomAccessIterator.
+	Iterators can be thought of as an abstraction of pointers.
 
 - An OutputIterator is an Iterator that can write to the pointed-to element.
 - An InputIterator is an Iterator that can read from the pointed-to element.
@@ -148,7 +194,7 @@ Iterators can be thought of as an abstraction of pointers.
 
 对象作为参数传递时是传值, 而不是传递对象的地址,如果需要传递地址,需要明确指出.
 
-private, public or protected.  
+private, public or protected.
 These specifiers modify the access rights that the members following
 them acquire:
 
@@ -160,7 +206,7 @@ them acquire:
 
 [class demo](../demo/cpp/class_demo.cpp)
 
-**Constructors**  
+**Constructors**
 Objects generally need to initialize variables or assign dynamic memory during their process of creation to become
 operative and to avoid returning unexpected values during their execution.
 
@@ -175,11 +221,11 @@ moment of being destroyed we want to release the memory that the object was allo
 ## Overloading operators
 [class overload operator](../demo/cpp/class_overload_operator.cpp)
 
-**keyword this**  
+**keyword this**
 The keyword this represents a pointer to the object whose member function is being executed. It is a pointer to
 the object itself.
 
-**Static members**  
+**Static members**
 A class can contain static members, either data or functions.
 
 Static data members of a class are also known as "class variables", because there is **only one unique value for all
@@ -188,14 +234,14 @@ the objects of that same class**. Their content is not different from one object
 For example, it may be used for a variable within a class that can contain a counter with the number of objects of
 that class that are currently allocated.
 
-**类成员函数中const的使用**  
+**类成员函数中const的使用**
 一般放在函数体后,形如:
 	
 	void fun() const;
-如果一个成员函数的不会修改数据成员,那么最好将其声明为const,因为const成员函数中不允许对数据成员进行修改,如果修改,编译器将报错,这大大提高了程序的健壮性  
+如果一个成员函数的不会修改数据成员,那么最好将其声明为const,因为const成员函数中不允许对数据成员进行修改,如果修改,编译器将报错,这大大提高了程序的健壮性
 (const 的其他用法见[const in c](./c.md))
 
-**const object**  
+**const object**
 const对象不能调用非const函数
 
 上面关于const的示例[const demo](../demo/cpp/const.cpp)
@@ -226,14 +272,14 @@ class 派生类名:继承方式 基类名1, 继承方式 基类名2,...,继承�
 ```
 继承方式规定了如何访问基类继承的成员.继承方式有public, private, protected.
 如果不显示给出继承方式,默认为private继承.
-继承方式指定了派生类成员以及类外对象对于从基类继承来的成员的访问权限.  
+继承方式指定了派生类成员以及类外对象对于从基类继承来的成员的访问权限.
 **不管是哪种继承方式, 基类的私有成员都不能访问**
 
-- 公有继承  
+- 公有继承
 **基类的公有和保护成员的访问属性在派生类中不变**,
 即基类的公有成员和保护成员被继承到派生类中仍作为派生类的公有成员和保护成员.派生类的其他成员可以直接访问它们.
 无论派生类的成员还是派生类的对象都无法访问基类的私有成员.
- 
+
 - 私有继承  
 **基类中的公有成员和保护成员都以私有成员身份出现在派生类中**,
 基类的公有成员和保护成员被继承后作为派生类的私有成员,派生类的其他成员可以直接访问它们,但是在类外部通过派生类的对象无法访问.
@@ -508,39 +554,6 @@ Notice how the type that typeid considers for pointers is the pointer type itsel
 可能是我习惯了C#的风格,我比较喜欢把它们都写在类内部,也因为在开发过程中,所使用的编辑器都有一个强大的功能:代码折叠.
 
 当然还有其他原因就是写在类外部,对于每一个函数成员的实现都需要把模板类型作为限定符写一遍,把类名限定符也要写一遍.
-
-# STL 标准模板库
-- vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素,从尾部追加
-- list封装了链表, 以链表形式实现的
-
-## [vector](http://www.cplusplus.com/reference/vector/vector/)
-- push_back: 将要push_back的元素拷贝到新分配的内存中, 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容.
-对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针, 
-所以即使原来的object被删除了, vector中的仍然可以正常访问.
-
-- erase: 删除元素, 如果元素是指向某个对象的指针, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
-- back:  Returns a reference to the last element in the vector.
-- empty()用来检测容器是否为空的.  
-- clear()可以清空所有元素.但是即使clear(),vector所占用的内存空间依然如故,无法保证内存的回收
-
-[vector push_back operation demo](../demo/cpp/stl/vector-push_back.cpp)
-
-由于vector的内存占用空间只增不减,比如你首先分配了10,000个字节,然后erase掉后面9,999个,留下一个有效元素,但是内存占用仍为10,000个(capacity 仍然很大).
-所有内存空间是在vector析构时候才能被系统回收.  
-
-如果需要空间动态缩小,可以考虑使用deque.  
-如果vector,可以用swap()来帮助你释放内存.具体方法如下:
-
-	vector<Point>().swap(pointVec); //或者pointVec.swap(vector<Point> ())
-
-## [std::list](http://www.cplusplus.com/reference/list/list)
-implemented as doubly-linked lists
-
-- push_front: 在头插入
-- push_back: 在尾插入
-
-## [std::map]
-- `size_type std::map::count(const key_type& k) const`: Count elements with a specific key
 
 # boost
 安装
