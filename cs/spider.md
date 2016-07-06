@@ -1,8 +1,11 @@
 # Beautiful Soup
-```
+```python
 from bs4 import BeautifulSoup as bs
 soup = BeautifulSoup(html)
 soup = BeautifulSoup(open('index.html'))
+
+from urllib.request import urlopen
+soup = bs(urlopen(url).read())
 ```
 
 ```html
@@ -92,13 +95,19 @@ if type(soup.a.string) == bs4.element.Comment:
 
 兄弟节点
 
-- `.next\_sibling, .previous\_sibling` 属性
-- `.next\_siblings, .previous\_siblings` 全部兄弟节点, `for sibling in soup.a.next_siblings:`
+- `.next_sibling, .previous_sibling` 属性
+- `.next_siblings, .previous_siblings` 全部兄弟节点, `for sibling in soup.a.next_siblings:`
+
+	```python
+	for sibling in soup.table.tr.next_siblings:
+		print sibling
+	```
+	 soup.table.tr 得到是标题行, 所以soup.table.tr.next_siblings 遍历的就是正文
 
 前后节点
 
-- `.next\_element, .previous\_element` 属性
-- `.next\_elements, .previous\_elements` 全部前后节点, `for element in soup.a.next_elements:`
+- `.next_element, .previous_element` 属性
+- `.next_elements, .previous_elements` 全部前后节点, `for element in soup.a.next_elements:`
 
 ## 搜索文档树
 `find_all(name, attrs, recursive, text, **kwargs)`
