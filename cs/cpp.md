@@ -43,14 +43,41 @@ although they are generally less efficient for range iteration through a subset 
 	returns a reference to its mapped value. 反应在map.size() 上
 - `std::unordered_map::find`: Searches the container for an element with k as key and returns an iterator to it if found,
 	otherwise it returns an iterator to unordered_map::end (the element past the end of the container).
+- `map.insert(pair)`: 向map 中添加元素
+	- `std::pair<std::string,double> myshopping ("baking powder",0.3);`
+	- `std::make_pair<std::string,double>("eggs",6.0)`
+
+将整个container 作为一个整体:
+```C++
+for(auto it = mymap.begin(); it != mymap.end(); ++it){
+	std::cout << " " << it->first << ":" << it->second << std::endl;
+}
+```
+
+分bucket单独遍历:
+```C++
+std::cout << "mymap's buckets contain:\n";
+for(unsigned i = 0;i < mymap.bucket_count(); ++i){
+	for(auto local_it = mymap.begin(i); local_it!= mymap.end(i); ++local_it ){
+		std::cout << " " << local_it->first << ":" << local_it->second << std::endl;
+	}
+}
+```
 
 ## [std::map](http://www.cplusplus.com/reference/map/map/)
 - `size_type std::map::count(const key_type& k) const`: Count elements with a specific key
 
+```C++
+for(std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it){
+	std::cout << it->first << " => " << it->second << '\n';
+}
+```
+
+
 # 参数传递
 Things are passed by value unless you specify otherwise using the &-operator
 (note that this operator is also used as the 'address-of' operator, but in a different context).
-```
+```C++
 void foo(vector<int> bar); // by value
 void foo(vector<int> &bar); // by reference (non-const, so modifyable inside foo
 void foo(vector<int> const &bar); // by const-reference
@@ -78,7 +105,7 @@ if(sscanf(str.c_str(),"%lf,%lf", &val1, &val2) == 2){
 ```
 
 使用boost
-```
+```C++
 #include <spirit.hpp>
 using namespace boost::spirit;
 boost::fusion::vector < double, double > value_;
