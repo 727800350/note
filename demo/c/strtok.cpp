@@ -6,10 +6,11 @@ int main(){
 	char *delim = "-: ";
 	char *p = NULL;
 	p = strtok(s, delim);
-	fprintf(stdout, "first: %s\n", p);
+	fprintf(stdout, "first:%s\n", p);
 	while((p = strtok(NULL, delim)) != NULL){
-		printf("%s\n", p);
+		fprintf(stdout, "%s\n", p);
 	}
+	fprintf(stderr, "s:%s\n", s);
 	return 0;
 }
 
