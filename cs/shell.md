@@ -216,6 +216,10 @@ $ echo $c
 
 - `>`: 大于
 - `\>`: 不大于, 也就是小于等于
+- =     两字符串相等
+- !=    两字符串不等
+- -z   空串
+- -n   非空串
 
 ### 获取字符串长度 String Length
 ```
@@ -362,24 +366,6 @@ num_items=${#array_name[*]}
 ## 条件判断
 - `-o`: 逻辑或
 - `-a`: 逻辑和
-
-### 字符串测试
-五种格式: 
-```
-test  "string"
-test  string_operator  "string"
-test  "string"  string_operator  "string"
-[ string_operator  "string" ]
-[ "string"  string_operator  "string" ]
-```
-所以`test`和`[]`是等价的
-
-其中string_operator可以为:
-
-    =     两字符串相等
-    !=    两字符串不等
-    -z   空串
-    -n   非空串
 
 ### 数值测试
 **数值的运算最好通过awk 来进行, shell 本身只支持整数运算**
@@ -573,29 +559,24 @@ return后跟数值n( n 的范围必须在0-255之间, 如果n>255, 返回的实�
 [变量作用域demo](../demo/shell/function_variable_scope.sh)
 
 1. 定义函数可以与系统命令相同, 自定义的函数命令比系统自带的命令优先级高
-2. 需要获得函数值,通过$?获得
-3. 如果需要传出其它类型函数值,可以在函数调用之前,定义变量(这个就是全局变量),在函数内部就可以直接修改,然后在执行函数就可以修改
-4. 如果需要定义local变量,可以在函数中定义:`local 变量=值`, 这时变量就是内部变量,它的修改,不会影响函数外部相同变量的值
+1. 如果需要传出其它类型函数值,可以在函数调用之前,定义变量(这个就是全局变量),在函数内部就可以直接修改,然后在执行函数就可以修改
+1. 如果需要定义local变量,可以在函数中定义:`local 变量=值`, 这时变量就是内部变量,它的修改,不会影响函数外部相同变量的值
 
-## 文件包含
-可以使用source和.关键字,如:
+cat a.sh
+```bash
+name="a"
+echo $name
+```
 
-	source ./function.sh
-	. ./function.sh
+cat b.sh
+```bash
+name="b"
+echo $name
+operation ./a.sh
+echo $name
+```
+- 当operation 为 bash 时, 最后一个 $name 仍为 "b", 也就是说bash ./a.sh 是在另外一个shell 环境中运行的.
+- 当operation 为source时, 最后一个 $name 仍为 "a", 也就是说source ./a.sh 是将a.sh 引入到当前的shell 中运行.
 
-在bash里,source和.是等效的,他们都是读入function.sh的内容并执行其内容(类似PHP里的include),为了更好的可移植性,推荐使用第二种写法.
-
-包含一个文件和在执行一个文件一样,也要写这个文件的路径,不能光写文件名,比如上述例子中:
-
-	. ./function.sh
-
-不可以写作:
-
-	. function.sh
-
-如果function.sh是用户传入的参数,如何获得它的绝对路径呢?方法是:
-
-	## $1是用户输入的参数,如function.sh
-	real_path=`readlink -f $1`
-	. $real_path
+real_path=`readlink -f ./file`: 获得决定路径
 
