@@ -21,6 +21,13 @@ then
 	${local_hadoop} dfs -mkdir ${top_dir}
 fi
 
+## ${local_hadoop} dfs -ls ${input} | awk '{if(NF == 8) print $NF}' > file.list
+## CHK_RET FATAL "generate file.list error"
+## ${local_hadoop} dfs -rm ${top_dir}/file.list
+## ${local_hadoop} dfs -put file.list ${top_dir}/file.list
+## CHK_RET FATAL "put file.list error"
+## 	-input ${top_dir}/file.list \
+
 ${local_hadoop} dfs -rmr ${output}
 
 ${local_hadoop} dfs -rmr ${result}
@@ -32,10 +39,6 @@ ${local_hadoop} streaming \
 	-mapper "bash mapper.sh 0" \
 	-reducer "bash reducer.sh 0" \
 	-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner \
-	-inputformat org.apache.hadoop.mapred.CombineTextInputFormat \
-	-jobconf mapred.max.split.size="1073741824" \
-	-jobconf mapred.compress.map.output="true" \
-	-jobconf mapred.map.output.compression.codec="org.apache.hadoop.io.compress.LzoCodec" \
 	-jobconf mapred.map.tasks="$mapper_num" \
 	-jobconf mapred.job.map.capacity="$mapper_capacity" \
 	-jobconf mapred.map.over.capacity.allowed="false" \
@@ -54,11 +57,19 @@ ${local_hadoop} streaming \
 	-file ./conf/common.conf \
 	-file ./conf/func.sh
 
+CHK_RET FATAL "$jobname failed"
+
 ## 	-reducer "NONE" \
 ## 	-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat \
 ## 	-jobconf mapred.line.input.format.line.is.file=true \
 
-CHK_RET FATAL "$jobname failed"
+## 	-partitioner com.baidu.sos.mapred.lib.IntHashPartitioner \
+
+## 	-inputformat org.apache.hadoop.mapred.CombineTextInputFormat \
+## 	-jobconf mapred.max.split.size="1073741824" \
+
+## 	-jobconf mapred.compress.map.output="true" \
+## 	-jobconf mapred.map.output.compression.codec="org.apache.hadoop.io.compress.LzoCodec" \
 
 exit 0
 
