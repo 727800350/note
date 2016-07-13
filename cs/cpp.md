@@ -1,12 +1,10 @@
 # STL 标准模板库
-- vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素,从尾部追加
-- list封装了链表, 以链表形式实现的
-
 ## [vector](http://www.cplusplus.com/reference/vector/vector/)
-- push_back: 将要push_back的元素拷贝到新分配的内存中, 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容.
-对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针,
-所以即使原来的object被删除了, vector中的仍然可以正常访问.
+vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素,从尾部追加
 
+- push_back: 将要push_back的元素拷贝到新分配的内存中, 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容.
+	对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针,
+	所以即使原来的object被删除了, vector中的仍然可以正常访问.
 - erase: 删除元素, 如果元素是指向某个对象的指针, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
 - back:  Returns a reference to the last element in the vector.
 - empty()用来检测容器是否为空的.
@@ -66,13 +64,14 @@ for(unsigned i = 0;i < mymap.bucket_count(); ++i){
 
 ## [std::map](http://www.cplusplus.com/reference/map/map/)
 - `size_type std::map::count(const key_type& k) const`: Count elements with a specific key
+- `size_type erase (const key_type& k);`: 删除元素, 返回1
 
 ```C++
+#include <map>
 for(std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it){
 	std::cout << it->first << " => " << it->second << '\n';
 }
 ```
-
 
 # 参数传递
 Things are passed by value unless you specify otherwise using the &-operator
@@ -89,7 +88,7 @@ but unless you know what you know exactly what are doing, do not do this.
 
 # [std::string](http://www.cplusplus.com/reference/string/string/)
 - `size()` or `length()`: Return length of string
-- `std::string::c_str`: Returns a pointer to an internal array that contains a null-terminated sequence of characters (i.e., a C-string).
+- `std::string::c_str()`: Returns a pointer to an internal array that contains a null-terminated sequence of characters (i.e., a C-string).
 A program shall **not alter** any of the characters in this sequence.
 c_str()返回的是一个分配给const char*的地址,其内容已设定为不可变更,如果再把此地址赋给一个可以变更内容的char*变量,就会产生冲突
 

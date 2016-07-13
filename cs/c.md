@@ -66,7 +66,7 @@ The functions `strcpy` and `strncpy` are part of the **C standard library** and 
 By constrast, `strdup` is a **Posix function**, and it performs **dynamic memory allocation** for you. 
 It returns a pointer to **newly allocated memory** into which it has copied the string. But you are now responsible for this memory and **must eventually free it**.
 
-- `char *strchr(const char *s, int c);` 第一次出现
+- `char *strchr(const char *s, int c);` 第一次出现, 没有找到返回NULL
 - `char *strrchr(const char *s, int c);`; 最后一次出现
 
 - `int strcmp(const char *s1, const char *s2);`
