@@ -33,6 +33,12 @@ ${local_hadoop} dfs -rmr ${output}
 ${local_hadoop} dfs -rmr ${result}
 ${local_hadoop} dfs -mkdir ${result}
 
+files=""
+for file in `ls bin/* conf/* shell/*`
+do
+	files="$files -file $file"
+done
+
 ${local_hadoop} streaming \
 	-input ${input} \
 	-output ${output} \
@@ -52,10 +58,7 @@ ${local_hadoop} streaming \
 	-jobconf mapred.map.max.attempts="10" \
 	-jobconf mapred.job.name="${owner}_${job_name}" \
 	-jobconf mapred.job.priority="${priority}" \
-	-file ./shell/mapper.sh \
-	-file ./shell/reducer.sh \
-	-file ./conf/common.conf \
-	-file ./conf/func.sh
+	$files
 
 CHK_RET FATAL "$jobname failed"
 
