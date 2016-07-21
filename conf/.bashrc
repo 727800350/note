@@ -4,7 +4,7 @@
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
-export PS1="[\u@\H:\w]\n\$ "
+export PS1="[\u@\h:\W]\$ "
 
 ## source docker func
 if [ -f $HOME/git/docker/.dockerfunc ]; then
