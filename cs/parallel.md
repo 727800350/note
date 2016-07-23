@@ -78,6 +78,21 @@ OpenMP provides a number of directives for synchronization.
 	Atomic only protects the read/update of X
 - !$OMP BARRIER: enforce every thread to wait at the barrier until all threads have reached the barrier
 
+	```c
+	#pragma omp parallel shared(A, B, C) private(id)
+	{
+		id = omp_get_thread_num();
+		A[id] = big_calc1(id);
+		#pragma omp barrier // explicit barrier
+		#pragma omp for
+		for(i = 0; i < N; i++){ C[i] = big_calc3(i, A); } // implicit barrier at the end of a for worksharing construct
+		#pragma omp for nowait
+		for(i = 0; i < N; i++){ B[i] = big_calc2(i, C); } // no implicit barrier due to nowait
+		A[id] = big_calc4(id);
+
+	}
+	```
+
 ### IF
 OpenMP provides another useful clause to decide at run time if a parallel region should actually be run in parallel (multiple threads) or just by the master thread:
 
