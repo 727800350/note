@@ -62,7 +62,7 @@ OpenMP programs use shared variables to communicate.
 We need to make sure these variables are not accessed at the same time by different threads (will cause race conditions).
 OpenMP provides a number of directives for synchronization.
 
-- #pragma omp do nowait { }: For situations where we do not need or want to synchronize at the end OpenMP provides the NOWAIT clause
+- `#pragma omp do nowait { }`: For situations where we do not need or want to synchronize at the end OpenMP provides the NOWAIT clause
 - !$OMP SINGLE: Only one thread(not neccesarily master) executes the block, other threads will wait(can remove the implicit barrier with a nowait clause),
 	useful for thread-unsafe code and I/O operations.
 
@@ -87,16 +87,16 @@ OpenMP provides a number of directives for synchronization.
 		do_many_other_things();
 	}
 	```
-- #pragma opm critical: 在任何时候只能有一个thread 运行, 这块代码
+- `#pragma opm critical`: 在任何时候只能有一个thread 运行, 这块代码
 
 	```c
-	#pragma opm critical 
+	#pragma omp critical
 	consume(B, res); // Threads wait their turn – only one at a only one at a time calls time calls consume()}
 	```
-- #pragma opm atomic: only used for the update of a memory location. Sometimes !$OMP ATOMIC is also refered to as a mini critical section.
+- `#pragma opm atomic`: only used for the update of a memory location. Sometimes !$OMP ATOMIC is also refered to as a mini critical section.
 
 	```c
-	#pragma opm atomic
+	#pragma omp atomic
 	X += tmp; // Atomic only protects the read/update of X
 	```
 - !$OMP BARRIER: enforce every thread to wait at the barrier until all threads have reached the barrier
@@ -119,10 +119,10 @@ OpenMP provides a number of directives for synchronization.
 ### IF
 OpenMP provides another useful clause to decide at run time if a parallel region should actually be run in parallel (multiple threads) or just by the master thread:
 
-- $!OMP PARALLEL IF(n > 100000) (fortran)
-- #pragma omp parallel if (n>100000) (C/C++)
+- `$!OMP PARALLEL IF(n > 100000)` (fortran)
+- `#pragma omp parallel if (n>100000)` (C/C++)
 
-This will only run the parallel region when n> 100000
+This will only run the parallel region when `n > 100000`
 
 Math libraries have very specialized and optimized version of many functions and many of them have been parallelized using OpenMP.
 On EOS we have the [Intel Math Kernel Library (MKL)](http://sc.tamu.edu/help/eos/mathlib.php)
@@ -182,7 +182,7 @@ Message Passing Interface
 MPI是一种消息传递编程模型,并成为这种编程模型的代表.事实上,标准MPI虽然 很庞大,但是它的最终目的是服务于进程间通信这一目标的 
 MPICH是影响最大,用户最多的MPI实现
 
-```
+```c
 #include <mpi.h>
 #include <stdio.h>
 
