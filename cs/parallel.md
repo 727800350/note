@@ -278,3 +278,47 @@ CUDA(Compute Unified Device Architecture)
 	图形运算的特点是大量同类型数据的密集运算-如图形数据的矩阵运算,GPU的微架构就是面向适合于矩阵类型的数值 计算而设计的,大量重复设计的计算单元,
 	这类计算可以分成众多独立的数值计算-大量数值运 算的线程,而且数据之间没有像程序执行的那种逻辑关联性. 
 
+# Issues
+## False Sharing
+[ref1](http://www.codeproject.com/Articles/51553/Concurrency-Hazards-False-Sharing)
+[ref2](https://software.intel.com/en-us/articles/avoiding-and-identifying-false-sharing-among-threads/)
+
+False sharing is also known as cache-line ping-ponging.
+It is caused by one or more cores repeatedly invalidating the caches of the other cores, even while accessing isolated state.
+This forces the other cores to read data from main memory instead of their local cache, which slows them down considerably.
+
+### Cache lines
+The data in a cache is grouped into blocks called cache-lines, which are typically 64 or 128 bytes wide.
+These are the smallest units of memory that can be read from, or written to, main memory.
+This works well in most programs as data that is close in memory is often needed close in time by a particular thread.
+However, this is the root of the false sharing problem.
+
+### Cache coherence
+When a program writes a value to memory, it goes firstly to the cache of the core that ran the code.
+If any other caches hold a copy of that cache line, their copy is marked as invalid and cannot be used.
+The new value is written to main memory, and the other caches must re-read it from there if they need it.
+Although this synchronization is implemented in hardware, it still takes time. And, of course, reading from main memory takes a few hundred clock cycles by itself.
+Modern processors use the MESI protocol to implement cache coherence.
+This basically means each cache line can be in one of four states:
+
+- M odified
+- E xclusive
+- S hared
+- I nvalid
+
+When a core modifies any data in a cache line, it transitions to "Modified", and any other caches that hold a copy of the same cache line are forced to "Invalid".
+The other cores must then reread the data from main memory next time they need it.
+
+### [False sharing的发生](../demo/parallel/openmp/false_sharing.cpp)
+Imagine two different variables are being used by two different threads on two different cores.
+This appears to be embarrassingly parallel, as the different threads are using isolated data.
+However, if the two variables are located in the same cache line and at least one is being written, then there will be contention for that cache line.
+This is false sharing.
+It is called false sharing because even though the different threads are not sharing data, they are, unintentionally, sharing a cache line.
+
+![cache line](https://software.intel.com/sites/default/files/m/d/4/1/d/8/5-4-figure-1.gif)
+
+Since compilers are aware of false sharing, they do a good job of eliminating instances where it could occur.
+For example, when the above code is compiled with optimization options, the compiler eliminates false sharing using thread-private temporal variables.
+Run-time false sharing from the above code will be only an issue if the code is compiled with optimization disabled.
+
