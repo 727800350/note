@@ -1,11 +1,33 @@
 import sys
 
-## input
-## tn: key \t 0
-## img: key \t 1 \t objurl
-## output:
-## key \t 1 \t objurl if objurl found
-## key \t 0 if none
+'''
+input:
+key \t 0
+key \t 1 \t value
+
+output:
+key \t 1 \t value if value found
+key \t 0
+the key in the output is from the data source with flag 0
+
+ex:
+input
+k1 \t 0
+k1 \t 1 \t v1
+k2 \t 0
+k2 \t 1 \t v2
+k3 \t 0
+k4 \t 1 \t v4
+
+output:
+k1 \t 1 \t v1
+k2 \t 1 \t v2
+k3 \t 0
+
+when using hadoop
+-jobconf stream.num.map.output.key.fields=2 \
+-jobconf num.key.fields.for.partition=1 \
+'''
 
 d = {}
 

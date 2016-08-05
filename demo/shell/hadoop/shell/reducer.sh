@@ -32,11 +32,8 @@ else
 fi
 
 chmod +x $bin/*
-
-cat - > input
-wc -l input >&2
-ls -l input >&2
-head input >&2
+## ${mapred_task_partition}
+## ${mapred_work_output_dir}
 
 exit 0
 

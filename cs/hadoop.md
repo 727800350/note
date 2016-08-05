@@ -1,7 +1,9 @@
-因为实际计算是分布在系统中执行的,通常是在好几千台计算机上进行,并且是由master机器进行动态调度的任务,
-所以在把用户程序提交给MapReduce平台之前,在上述分模块(Mapper,Reducer)调试通过后,可以先在本地机器上按MapReduce操作顺序将程序执行一遍.
+单机测试: `cat input | ./mapper.sh | sort | reducer.sh > output`
 
-`cat input | ./mapper.sh | sort | reducer.sh > output`
+# streaming and bistreaming
+- streaming 处理明文的数据, 如果要处理带seq 头的文件, 可以用文件列表作为输入(注意, mapper 读到的key 是字节偏移, value 才是文件路径, 所以需要使用awk取$NF), 然后get 到本地, 手动去seq 头(若要输出seq头的文件, 则相反处理)
+- bistreaming 处理二进制的数据, 输入与输出都是带seq头的kv 数据, 一个kv 是一个record, 对于用户的程序, 输入与输出均为kv 格式, 去seq 与加seq 头都是bistreaming 框架自动完成.
+	如果要输出明文数据, 需要put 到hdfs 上
 
 # hadoop cmd
 ## 文件命令
@@ -24,8 +26,8 @@
 			-D mapred.job.map.capacity=20 \
 			-su user,passwd \
 			-du user,passwd \
-			hdfs://host:port/path \
-			hdfs://host:port/path
+			hdfs://host:port/src_path \
+			hdfs://host:port/dst_path
 
 	- -overwrite 将强行覆盖dst目录中和src重名的文件
 	- -update 将比较同名文件大小,若不一致则覆盖
@@ -47,33 +49,35 @@
 - 获取状态 hadoop job -status jobid
 
 # 环境变量
-- mapred_task_partition: 当前任务是全局map或reduce中的第几个,例如0号reduce,则该变量为0, 3号map,则该变量为3
-- map_input_file: 当前map读入的文件, map_input_file="hdfs://yx-mapred-a001.yx01.baidu.com:64310/user/spider/index-analysis/data/css/csspacktest"
-- mapred_work_output_dir: 就是启动MapReduce 任务时设置的 output 目录
+- mapred_task_partition: 当前任务是全局map或reduce中的第几个,例如0号reduce,则该变量为0, 3号map,则该变量为3, 一般用这个数字来标记put 的文件名字
+- map_input_file: 当前map读入的文件绝对路径
+- mapred_work_output_dir: 计算临时输出路径, 多路数据输出时, 先将文件上传到临时目录`$mapred_work_output_dir`中(文件名字需要和标准输出的part 区分开来), 任务结束后hadoop平台自动将其移动到最终输出目录$mapred_output_dir中, 
+	这样能保证在预测执行打开的情况下, 一个task 的多个attempt不会相互冲突
+- mapred_output_dir: 就是启动MapReduce 任务时设置的 output 目录
 - mapred_job_id: 当前作业ID, mapred_job_id="job_200902192042_0075"
 - mapred_job_name: 当前作业名, mapred_job_name="ps_spider_css_mapreduce_job_setp1"
 - mapred_tip_id: 当前任务ID, mapred_tip_id="task_200902192042_0075_m_000000"
 - mapred_task_id: 当前任务是TIP的第几次重试, mapred_task_id="attempt_200902192042_0075_m_000000_0"
 - mapred_task_is_map: 当前任务是map还是reduce, mapred_task_is_map="true"
-- mapred_output_dir: 计算输出路径, mapred_output_dir="hdfs://yx-mapred-a001.yx01.baidu.com:64310/user/spider/index-analysis/data/outputTest"
 - mapred_map_tasks, 计算的map任务数, mapred_map_tasks="2"
 - mapred_reduce_tasks, 计算的reduce任务数, mapred_reduce_tasks="1"
 
 # job config
+## IO
+- -inputformat org.apache.hadoop.mapred.lib.NLineInputFormat 一行一行地处理, `while read line; do echo $line; done`
+
 ## map 与 reduce 数目
 - -D mapred.map.tasks: 这个参数决定了任务个数,但不绝对等于任务个数,还取决于输入文件的大小,分片大小等因素
-- -D mapred.min.split.size: 最小分片大小(单位B),通过增大此值,可以减少Map数量
-- -D mapred.map.capacity.per.tasktracker=1
-- -D mapred.job.map.capacity: map并行度, 最多同时运行map任务数
-
 - -D mapred.reduce.tasks: reduce任务数, 这个是绝对相等的
+- -D mapred.job.map.capacity: map并行度, 最多同时运行map任务数
 - -D mapred.job.reduce.capacity: reduce并行度, 最多同时运行reduce任务数
-
 - -D mapred.map.over.capacity.allowed (true): 是否允许当有空余资源时超过并发限制
 - -D mapred.reduce.over.capacity.allowed (true) 
 
+- -D mapred.min.split.size: 最小分片大小(单位B),通过增大此值,可以减少Map数量
+
 ## 内存资源
-- -D stream.memory.limit="12345" #设置map/reduce中slaver启动实例占用内存, 默认情况下mapper与reducer都为 800MB
+- -D stream.memory.limit="12345" #设置map/reduce中slaver启动实例占用内存, 默认都为800MB
 - -D mapred.map.memory.limit="12345"
 - -D mapred.reduce.memory.limit="12345"
 
@@ -90,12 +94,11 @@
 - -D mapred.dynamic.input (false): 是否启用了dynamic input
 
 ## partitioner
-默认的 partitioner 为KeyFieldBasedPartitioner(`org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner`),
-即使 reduce 的数目多余 partition, 也有可能不同的 key 会被分到同一个 reduce 上.
-使用百度提供的`com.baidu.sos.mapred.lib.IntHashPartitioner` 则可以避免这种情况
+- -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 一般使用的partitioner, **即使 reduce 的数目大于 partition key的种类, 也有可能不同的 key 会被分到同一个 reduce 上**
 
-map输出每一行为:`N \space key \t value`,这个输出经过IntHashPartitioner后被传给第N个reducer处理, N是大于等于0的int
-reducer的输入格式为:`N \space key \t value`. 到达reduce 的值是按照key 排好序的.
+- -partitioner com.baidu.sos.mapred.lib.IntHashPartitioner 严格按照int[0, num_reducer - 1] 值进行partition
+	- map输出每一行为:`N \space key \t value`, 这个输出经过IntHashPartitioner后被传给第N个reducer处理, N是大于等于0的int
+	- reducer的输入格式为:`N \space key \t value`. 到达reduce 的值是按照key 排好序的.
 
 ### 分隔符
 默认情况下Streaming框架将map输出的每一行第一个"\t"之前的部分作为key,之后的部分作为value,key\tvalue又作为 reduce的输入.
@@ -107,11 +110,11 @@ reducer的输入格式为:`N \space key \t value`. 到达reduce 的值是按照k
 
 ```
 hadoop streaming
--partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner
--D stream.map.output.field.separator= . ## map输出分隔符为., 而不是默认的\t
--D stream.num.map.output.key.fields=4 ## map的输出行第4个英文句号"."之前为key,后面为value
--D map.output.key.field.separator=.  ## 指定key的内部用英文句号"."分隔
--D num.key.fields.for.partition=2  ## 指定将key分隔出来的前两个部分而不是整个key用于Partitioner做partition
+	-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner
+	-D stream.map.output.field.separator= . ## map输出分隔符为., 而不是默认的\t
+	-D stream.num.map.output.key.fields=4 ## map的输出行第4个英文句号"."之前为key,后面为value
+	-D map.output.key.field.separator=.  ## 指定key的内部用英文句号"."分隔
+	-D num.key.fields.for.partition=2  ## 指定将key分隔出来的前两个部分而不是整个key用于Partitioner做partition
 ```
 例如Map的输出如下,第4个句号前的数字部分是key,后面是value:
 ```
@@ -125,90 +128,41 @@ raw input ==> <key, value> ==> <partition key, the rest of key, value>
 partition key有 11.10, 11.12, 11.14三种, 所以会被分到三个reducer上(如果不同的partition key分到不同的reducer上)
 
 ## 分发文件
-### -file <fileNameURI>
-一般的脚本文件, 可执行文件, 配置文件等
-如果要分发的文件在本地且没有目录结构,可以使用-file /path/to/FILENAME选项分发文件,将本地文件/path/to/FILENAME分发到每个计算节点.
-在Streaming程序中通过./FILENAME就可以访问该文件.
-
-对于本地可执行的文件,除了指定的mapper或reducer程序外,可能分发后没有可执行权限,
-所以需要在包装程序如mapper.sh中运行chmod +x ./FILENAME设置可执行权限
-
-### -cacheFile <fileNameURI> 
-如果文件(如字典文件)存放在HDFS中,希望计算时在每个计算节点上将文件当作本地文件处理,
-可以使用`-cacheFile hdfs://host:port/path/to/file#linkname`选项在计算节点缓存文件,
-Streaming程序通过./linkname访问文件.
-一般不便于分发的大文件可以采用这种方式让计算节点访问到.
-
-### -cacheArchive <fileNameURI>
-如果要分发的文件有目录结构,可以先将整个目录打包,然后上传到HDFS,再用`-cacheArchive hdfs://host:port/path/to/archivefile#linkname`分发压缩包.
-本地打包时要进入目录app而不是在app的上层目录打包,否则要通过app/app/mapper.pl才能访问到mapper.pl文件.
-hadoop支持zip, jar, tar.gz格式的压缩包,由于Java解压zip压缩包时会丢失文件权限信息而且遇到中文文件名会出错,所见建议采用tar.gz压缩包.
-
-## streaming and bistreaming
-input 一行一个数字
-```
-1
-2
-3
-```
-- 如果是 streaming, 那么 mapper 获取到的是 key value, 其中key 是偏移量, value 是输入文件中的数字
-- 如果是 bistreamling, 那么mapper 获取到的是其他编码的数据
-
-# IO
-**NLineInputFormat**:
-重写了FileInputFormat的getSplits方法,不依赖分片大小和行的长度根据文件进行切分,而是根据行数来划分分片,
-可以通过`mapred.line.input.format.linespermap`来设置每个mapper处理的行数.
-适用于每次要处理多行数据的场景,如将几行的内容合并处理.需要注意,当输入文件行数特别大,可能要考虑统计行数,计算启动map的时间的开销.
-```
--inputformat org.apache.hadoop.mapred.lib.NLineInputFormat \
--jobconf mapred.line.input.format.line.is.file=true \
-```
-mapred.line.input.format.line.is.file=true 告诉框架你的输入每一行都是文件,方便它做本地化调度
-当不是普通文件, 而是目录时, 指定mapred.line.input.format.line.is.file=true 时, 出错, 不知道为什么
-
-**多路数据输出**:
-先将文件上传到临时目录`$mapred_work_output_dir`中, 任务结束后hadoop自动将其移动到最终输出目录, 这样能保证不同的mapper或 reducer上传数据不会冲突
+- -file <fileNameURI> 一般的脚本文件, 可执行文件, 配置文件等, 上传后都在当前目录, 且没有x 权限, 需手动chmod
+- -cacheArchive <fileNameURI> 如果要分发的文件有目录结构,可以先将整个目录打包,然后上传到HDFS,再用`-cacheArchive hdfs://host:port/path/to/archivefile.tar.gz#linkname`分发压缩包.
 
 # 任务优化
-## 打开预测执行
-优化场景1:任务长尾问题严重,最后几个task上耗时比较严重
-分析:
-(1)对于存在Reduce过程的任务,查看Partition是否均匀
-(2)配置慢节点I/O检测参数,在启动任务的命令中添加,不支持任务运行后动态调整
-```
--jobconf dfs.client.slow.write.limit=5242880
--jobconf dfs.client.slow.read.limit=5242880
-```
-意义:由于集群机器性能配置不一,不同计算结点的处理能力不一样,设置该参数是为了跳过慢节点,选择更好节点处理task.
+- -mapred.reduce.slowstart.completed.maps 如果你设置为0.6, 那么reduce将在map完成60%后进入运行态.如果设置的map和reduce数量都很大,势必造成map和reduce争抢资源,造成有些进程饥饿,超时出错,最大的可能就是socket.timeout的出错,网络过于繁忙.
+	所以说,这些需要根据集群的性能,适当调试添加和减少,以达到最好的效果. 如果你发现reduce在33%时,map正好提早一点点到100%,那么这将是最佳的配比,因为reduce是在33%的时候完成了数据copy阶段,
+	也就是说,map需要再reduce到达33%之前完成所有的map任务,准备好数据.千万不能让reduce在等待,但是可以让map先完成.
+
+- -io.sort.mb 设置一个map sort的可用buffer大小是多少,如果map在内存中sort的结果达到一个特定的值,就会被spill进入硬盘.具体这个值是等于mb*io.sort.spill.percent.
+	按照通常的设置方式,为了让jvm发挥最佳性能,一般设置JVM的最大可用内存量为mb设置的内存量的两倍.
+	如果一个map的结果数据量为600M,那么如果你设置的mb*io.sort.spill.percent=200M,那么将进行3次spill进入硬盘,然后map完成后再将数据从硬盘上取出进行copy.
+	mb设置如果是600M的话,那么就不需要进行这次硬盘访问了,节省了很多时间. 但是最大的问题是内存耗费很大.如果mb是600M,那么jvm.opts将需要设置为1G以上
+
+打开预测执行
+
+- -mapred.map.tasks.speculative.execution=true
+- -mapred.reduce.tasks.speculative.execution=true
+
+配置慢节点I/O检测参数,在启动任务的命令中添加,不支持任务运行后动态调整.
+由于集群机器性能配置不一, 不同计算结点的处理能力不一样,设置该参数是为了跳过慢节点,选择更好节点处理task.
 这里对map和reduce设置了至少5M的读写速度限制, 小于该值就会切换节点. 可根据自己业务的具体情况设置,切忌设置过大值,可能会引起节点频繁切换导致任务失败.
 
-如果程序没问题,怎么处理hadoop的长尾?
-个人经验:
-1. 打开预测执行,会有2-3台机器执行同样的任务,输入,执行过程,输出路径完全一样,哪个先执行完毕就用哪个
-```
-mapred.map.tasks.speculative.execution=true
-mapred.reduce.tasks.speculative.execution=true
-```
-如果有put文件到hdfs上的操作,且存在预执行,则会有两个任务同时写一个文件, 可能会出现问题，
-这时可以将文件put到${mapred_work_output_dir}目录下, 每个预执行的attempts,其$mapred_work_output_dir是不一样的,
-但是其mapred_output_dir是相同的,在该任务结束后,仍然取最先完成的attempts, 同时,mapred_work_output_dir下的数据,会移动到mapred_output_dir中
-1. 加入超时参数以及允许失败比例的参数,丢弃这些长尾数据
-1. 利用之前提到的, 设置节点的最慢数据拷贝速度,使得任务调度到执行速度快的机器上
+- -jobconf dfs.client.slow.write.limit=5242880
+- -jobconf dfs.client.slow.read.limit=5242880
 
-## 合并小文件
-场景2:任务数据量很小,但文件很多,导致启动了很多task-map
-有时会对一些中间产出数据进行处理,这些数据的数据量不大,但是文件却超过几千个,如果不经过任何设置,有多少个文件就会启动多少个mapper,这样非常浪费计算资源,可设置参数:
-```
--inputformat org.apache.hadoop.mapred.CombineTextInputFormat \
--jobconf mapred.max.split.size=5368709120 \ ## (5GB)
-```
-第一个参数告诉调度器我需要合并输入文件
-第二个参数设置了每个mapper或者reducer最大处理的数据量, 单位为byte
 
-## 使用压缩
-经过测试在时间性能上：lzo>gzip>lzma，即lzo压缩运行时间最短，gzip次之，运行最长的是lzma。
-在压缩比上：刚好相反，lzma压缩比最大，试验中压缩比为3.83/1；gzip的压缩比为2.75/1，lzo压缩比为1.6/1
-Lzo一般用于内置轻量级压缩，用在中间结果压缩，不建议外部使用，即适合map的输出进行压缩，不建议作为作业reduce最终输出的压缩。
+合并小文件
+
+- -inputformat org.apache.hadoop.mapred.CombineTextInputFormat \
+- -jobconf mapred.max.split.size=5368709120 \ ## (5GB)
+
+使用压缩  
+经过测试在时间性能上:lzo>gzip>lzma,即lzo压缩运行时间最短,gzip次之,运行最长的是lzma.
+在压缩比上:刚好相反,lzma压缩比最大,试验中压缩比为3.83/1,gzip的压缩比为2.75/1,lzo压缩比为1.6/1
+Lzo一般用于内置轻量级压缩,用在中间结果压缩,不建议外部使用,即适合map的输出进行压缩,不建议作为作业reduce最终输出的压缩.
 
 - 适合中间结果
 	- org.apache.hadoop.io.compress.LzoCodec

@@ -64,7 +64,6 @@ CHK_RET FATAL "$jobname failed"
 
 ## 	-reducer "NONE" \
 ## 	-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat \
-## 	-jobconf mapred.line.input.format.line.is.file=true \
 
 ## 	-partitioner com.baidu.sos.mapred.lib.IntHashPartitioner \
 

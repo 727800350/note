@@ -291,6 +291,8 @@ TCP中80端口为HTTP,表明HTTP仍占据着TCP的主要部分.占据TCP端口�
 ## DNS
 DNS 使用TCP和UDP端口53
 
+[DNS 原理入门](http://www.ruanyifeng.com/blog/2016/06/dns.html)
+
 ### [DNS报文格式(RFC1035)](http://blog.csdn.net/tigerjibo/article/details/6827736)
 dns请求和应答都是用相同的报文格式,分成5个段(有的报文段在不同的情况下可能为空),如下:
 
