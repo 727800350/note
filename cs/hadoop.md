@@ -3,7 +3,8 @@
 # streaming and bistreaming
 - streaming 处理明文的数据, 如果要处理带seq 头的文件, 可以用文件列表作为输入(注意, mapper 读到的key 是字节偏移, value 才是文件路径, 所以需要使用awk取$NF), 然后get 到本地, 手动去seq 头(若要输出seq头的文件, 则相反处理)
 - bistreaming 处理二进制的数据, 输入与输出都是带seq头的kv 数据, 一个kv 是一个record, 对于用户的程序, 输入与输出均为kv 格式, 去seq 与加seq 头都是bistreaming 框架自动完成.
-	如果要输出明文数据, 需要put 到hdfs 上
+	如果要输出明文数据, 需要put 到hdfs 上.
+	必须加上`-inputformat "org.apache.hadoop.mapred.SequenceFileAsBinaryInputFormat" -outputformat "org.apache.hadoop.mapred.SequenceFileAsBinaryOutputFormat"`
 
 # hadoop cmd
 ## 文件命令

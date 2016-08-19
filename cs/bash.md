@@ -109,12 +109,7 @@ looks through the currently running processes and **lists the process IDs** whic
 zgrep: grep within compressed files
 zless: look at compressed files
 
-**strings**  
-returns each string of printable characters in files. Its main uses are to determine the contents of and to extract text from binary files (i.e., non-text files).
-
 `printf "%05o\n" 65` (5 characters width, padded with zeros)
-
-uniq: 去重
 
 时间:
 ```
@@ -130,13 +125,6 @@ $ date -d "1 day ago" "+%Y%m%d"
 20160128
 ```
 
-sort
-
-- -n   依照数值的大小排序
-- -r   以相反的顺序来排序
-- -t<分隔字符>   指定排序时所用的栏位分隔字符
-- -k  选择以哪个区间进行排序, 一般与 -t 一起使用
-
 [cut](http://www.thegeekstuff.com/2013/06/cut-command-examples/)
 
 - `$ cut -c1-3` ## 第1到第3个字符
@@ -149,16 +137,6 @@ Uppercase to lowercase:
 `$ tr '[:upper:]' '[:lower:]' < input` or `tr '[A-Z]' '[a-z]' < input`
 
 `tr -d'\n'` 删除回车符
-
-w命令用于显示已经登录系统的用户的名称,以及他们正在做的事.该命令所使用的信息来源于/var/run/utmp文件
-```
-[wangchao34@cp01-rdqa04-dev123.cp01.baidu.com ~]$ w
- 17:21:42 up 84 days,  5:08, 17 users,  load average: 0.20, 0.26, 2.45
-USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
-zhuchong pts/1    bb-sns-relay04.b 17:08   12:48   0.01s  0.01s bash -l
-wangchao pts/9    bb-sns-relay03.b 09:21    0.00s  0.06s  0.01s sshd: wangchao34 [priv]
-caiyuanj pts/10   bb-sns-relay03.b 10:10   17:43   0.42s  0.01s sshd: caiyuanjun [priv]
-```
 
 # 网络
 使用netstst命令查看正在监听状态的端口:
@@ -225,24 +203,6 @@ Window->Translation->Remote character set: UTF-8
 1. 将putty key generator 界面上的公钥复制到`~/.ssh/authorized_keys`文件中
 1. 打开putty, 在connection->ssh->auth 的private key file for authentication中将上面保存的putty专用的密钥写到这里
 1. over
-
-**PSCP**, the PuTTY Secure Copy client, and it is a command line application
-
-The format for pscp is straight forward:
-
-```
-pscp [options] source destination
-```
-To copy a Windows file to Linux system, at the DOS prompt, type
-
-```
-pscp c:/music.mp3  ubuntu@10.0.0.3:/home/ubuntu/Music
-```
-The reverse works as well (copy Linux file to Windows)
-
-```
-pscp ubuntu@10.0.0.3:/home/ubuntu/Music/music.mp3 c:/
-```
 
 **scp**  
 secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的命令有cp,不过cp只是在本机进行拷贝不能跨服务器,而且scp传输是加密的.可能会稍微影响一下速度.
@@ -357,43 +317,6 @@ wget
 **设置默认的runlevel**
 编辑 `/etc/inittab` 中设置
 
-**开机自动启动**  
-例如要开机后自动启动mysql,apache,vsftpd服务,用以下命令即可: `chkconfig mysqld on`
-
-要关闭自动启动的话,把on改为off就行了: `chkconfig mysqld off`
-
-不过要注意的是,如果某个服务尚未被添加到chkconfig列表中,则现需要使用–add参数将其添加进去: `chkconfig –add postfix`
-
-如果要查询当前自动启动的服务,可以输入:
-```
-chkconfig –list
-chkconfig –list httpd
-```
-
-临时设置环境变量
-
-1. 直接用export命令:
-```
-#export PATH=$PATH:/home/xyz/Tesseract/bintesseract可执行文件目录
-#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH://home/xyz/Tesseract/lib其依赖库lept的路径
-#export TESSDATA_PREFIX=/home/xyz/Tesseract/share其依赖的训练数据文件所在路径
-```
-查看是否已经设好,可用命令export查看: `# export 或者#echo $PATH`
-
-1. 若crontab后台运行程序,也可在sh脚本进行临时设置
-```
-#! /bin/sh
-#export PATH=$PATH:/home/xyz/Tesseract/bintesseract可执行文件目录
-#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH://home/xyz/Tesseract/lib其依赖库lept的路径
-#export TESSDATA_PREFIX=/home/xyz/Tesseract/share其依赖的训练数据文件所在路径
-```
-
-打开terminal的命令方式:  
-`Alt+F2`后在出现"运行应用程序"中输入`x-terminal-emulator`(一般在你输入到`x-term`后系统会自己显示全部)或者输入`gnome-terminal`
-
-
-有两个常用的ftp工具ncftpget和ncftpput,可以实现ftp上传和下载,我们可以利用nohup命令在后台实现文件的上传和下载.
-
 **time**  
 
 1. 实际时间(real time): 从command命令行开始执行到运行终止的消逝时间
@@ -471,24 +394,6 @@ STAT狀態位常見的狀態字符
 - l 多进程的(使用 CLONE_THREAD, 类似 NPTL pthreads),
 - + 位于后台的进程组
 
-**进程优先级**  
-其范围从 -20 (最高优先级)到 19 (最低优先级).默认情况下,进程的优先级是 0 ("基本"调度优先级)  
-一般用户只能降低它们自己进程的优先级别,并限于 0 到 19 之间.超级用户(root)可以将任何进程的优先级设定为任何值.
-
-```
-renice 优先级 [[-p] pid ...] [[-g] pgrp ...] [[-u] 用户名 ...]
-```
-假定您运行了一个执行长时间科学运算的进程(其 PID 为 785),但是您又想要玩一个游戏而想要释放一些系统资源.那么您可以:
-
-```
-$ renice +15 785
-```
-按照指定的优先级执行命令
-在某些装配标准 IDE CD-ROM 的系统上,复制大量信息的进程将消耗过多系统资源.要避免复制操作阻碍其他进程,您可以用如下命令在一个比较低的优先级上启动该进程:
-```
-$ nice -n 19 dd if=/dev/cdrom of=~/mdk1.iso
-```
-
 **定时任务crontab**
 
 cron把命令行保存在/etc/crontab文件里,每个系统用户如果设置了自己的cron,那都会在/var/spool/cron下面有对应用户名的crontab.
@@ -563,22 +468,6 @@ iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
 安装完Ubuntu后忽然意识到没有设置root密码. Ubuntu的默认root密码是随机的,即每次开机都有一个新的root密码.  
 设置一个新的固定的root密码的方法: `$sudo passwd`,然后输入当前用户的密码,enter,终端会提示我们输入新的密码并确认,此时的密码就是root新密码
 
-**rpm 解包**  
-RPM包括是使用cpio格式打包的,因此可以先转成cpio然后解压,如下所示:
-
-rpm2cpio xxx.rpm | cpio -div
-
-# 软件管理
-提示错误: `There are unfinished transactions remaining. You might consider running yum-complete-transaction first to finish them.`
-```
-sudo yum install yum-utils
-
-## 如果想继续完成上次未完成的
-sudo yum-complete-transaction
-
-## 如果想将上次未完成的清理掉
-sudo yum-complete-transaction --cleanup-only
-```
 umask指定的是**该默认值需要减掉的权限**.因为r,w,x分别是4,2,1.  
 所以,当要去掉能写的权限,就是输入2,而如果要去掉能读的权限,也就是4,那么要去掉读与写的权限,也就是6,而要去掉执行与写入的权限,也就是3.  
 So, when creating a new file, the permission is: `the default - umask = -rw-rw-rw- - 0002 = -rw-rw-r--`
@@ -634,45 +523,6 @@ nbrew 是用来管理多版本 python 的利器一枚
 - 清理陈旧的源码目录和档案包: pythonbrew cleanup
 - 升级到pythonbrew到最新版本: pythonbrew update
 - 禁用pythonbrew(即切换回原始环境): pythonbrew off
-
-# systemd
-**修改默认运行级别**  
-以前Fedora版本中修改运行级别方法为:  
-以root身份登入,编辑`/etc/inittab`文件  
-找到 `id:5:initdefault:`这一行,将默认运行级别5(图形模式)改为3(文本模式),即 `id:3:initdefault:`  
-然后重启
-
-但Fedora15之后使用systemd创建符号链接指向默认运行级别
-```
-rm /etc/systemd/system/default.target
-ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
-reboot
-```
-ln -f remove existing destination files
-
-启动
-```
-#systemctl start mysqld.service
-#systemctl restart mysqld.service
-```
-
-设置开机自启动, 在新版的REHL中使用mariadb
-```
-#systemctl enable mysqld.service
-```
-
-停止开机自启动
-```
-#systemctl disable mysqld.service
-#systemctl status mysqld.service
-```
-与原来的chkconfig可以兼容, `chkconfig mysqld off`
-
-hostname centos 7
-```
-sudo hostnamectl set-hostname human.earth
-sudo hostnamectl status
-```
 
 # [ffmpeg](http://blog.csdn.net/jixiuffff/article/details/5709976)
 格式转换(将file.avi 转换成output.flv)
