@@ -101,37 +101,12 @@ grep -R --include="*.c" keyword directory
 - ^ 符号输出所有以某指定模式开头的行
 - $ 符号输出所有以指定模式结尾的行, `^$` 就表示空行
 
-pgrep  
-looks through the currently running processes and **lists the process IDs** which matches the selection criteria to stdout. All the criteria have to match.  
-`-n`: Select only the newest (most recently started) of the matching processes.  
-`shell> strace -c -p $(pgrep -n php-cgi)`
-
-zgrep: grep within compressed files
-zless: look at compressed files
-
-`printf "%05o\n" 65` (5 characters width, padded with zeros)
-
 时间:
 ```
-$ date +%Y%m%d_%H_%M_%S
-20150519_16_12_32
-
-$ date +"%F %T"
-2015-06-11 15:11:49
-
-$ date "+%Y%m%d"
-20160129
-$ date -d "1 day ago" "+%Y%m%d"
-20160128
+date +%Y%m%d_%H%M%S ## 20150519_161232
+date +%Y%m%d        ## 显示前天年月日
+date +%Y%m%d --date="+1 day"  ## 显示后一天的日期, day, week, month, year
 ```
-
-[cut](http://www.thegeekstuff.com/2013/06/cut-command-examples/)
-
-- `$ cut -c1-3` ## 第1到第3个字符
-- `$ cut -c3-` ## 第3个字符一直到最后一个字符
-- `$ cut -d':' -f1`
-- `$ cut -d':' -f1,6`
-- `$ cut -d':' --complement -s -f7` ## Select All Fields Except the Specified Fields
 
 Uppercase to lowercase:
 `$ tr '[:upper:]' '[:lower:]' < input` or `tr '[A-Z]' '[a-z]' < input`
@@ -187,31 +162,7 @@ sudo service sshd status
 sudo ssh-keygen -A
 ```
 
-**putty 中文乱码**  
-Window->Appearance->Font: 选择Courier New  
-Window->Translation->Remote character set: UTF-8  
-之后, 在Session->Saved Sessions 中起一个名字, 然后Save, 下次使用的时候, 直接load, 就可以了
-
-如果要从A远程登录到B, 把A 的公钥追加到 B的 `$HOME/.ssh/authorized_keys` 文件中  
-但是使用putty 还有一点不同, 具体的操作步骤如下:
-
-1. 按照正常的方式在机器A上生成密钥对, id_rsa and id_rsa.pub 两个文件
-1. 打开[puttygen](http://the.earth.li/~sgtatham/putty/latest/x86/puttygen.exe)
-1. 通过conversions->import key 导入私钥
-1. 点击save private key, 保存到.ssh目录下
-1. 在机器上新建`~/.ssh/authorized_keys`, 并修改`~/.ssh`和`~/.ssh/authorized_keys`文件的权限: `chmod 700 ~/.ssh` and `chmod 600 ~/.ssh/authorized_keys`
-1. 将putty key generator 界面上的公钥复制到`~/.ssh/authorized_keys`文件中
-1. 打开putty, 在connection->ssh->auth 的private key file for authentication中将上面保存的putty专用的密钥写到这里
-1. over
-
-**scp**  
-secure copy, 用于在Linux下进行远程拷贝文件的命令,和它类似的命令有cp,不过cp只是在本机进行拷贝不能跨服务器,而且scp传输是加密的.可能会稍微影响一下速度.
-
-通过scp.exe 将文件从windows 传输到linux, 如果文件名中含有中文, scp.exe 会将中文从默认的gbk编码转换为utf-8
-
-而如果压缩包里含有中文文件名, 从windows 传输到linux下, 解压之后, 中文文件会乱码.
-
-scp拷贝的另一个命令 rsync就可以实现意外中断后,下次继续传,命令如下: `rsync -av src dst`
+`rsync -av src dst`
 
 - `-av`: 保证src 是dst 的子集
 	1. 如果在src 删除了文件, 不会将删除文件的操作同步到 dst
@@ -314,9 +265,6 @@ wget
 `wget  -r ftp://xxx_path_xxx ./`
 
 # OS
-**设置默认的runlevel**
-编辑 `/etc/inittab` 中设置
-
 **time**  
 
 1. 实际时间(real time): 从command命令行开始执行到运行终止的消逝时间
@@ -344,18 +292,6 @@ Linux在启动一个进程时,系统会在/proc下创建一个以PID命名的文
 - cmdline: 就是程序运行时输入的命令行命令
 - environ: 记录了进程运行时的环境变量
 - fd: 目录下是进程打开或使用的文件的符号连接
-
-nohup命令:
-如果你正在运行一个进程,而且你觉得在退出帐户时该进程还不会结束,那么可以使用nohup命令.该命令可以在你退出帐户/关闭终端之后继续运行相应的进程.nohup就是不挂断的意思( no hang up).
-该命令的一般形式为:`nohup command &`  
-如果使用nohup命令提交作业,那么在缺省情况下该作业的所有输出都被重定向到一个名为nohup.out的文件中,除非另外指定了输出文件:
-```
-nohup command > myout.file 2>&1 &
-```
-在上面的例子中,0 – stdin (standard input),1 – stdout (standard output),2 – stderr (standard error) ,
-2>&1是将标准错误(2)重定向到标准输出(&1),标准输出(&1)再被重定向输入到myout.file文件中.
-使用 jobs 查看任务.
-使用 fg %n　关闭.
 
 **kill**
 当给多个进程号的时候, 可以同时杀死多个进行
@@ -502,11 +438,6 @@ drwxrwxr-x. 2 eric eric    4096 May 19 12:39 dir
 
 - 若用户建立为"文件"则默认"没有可执行(x)项目",即只有rw这两个项目,也就是最大为666分,默认属性如下: `-rw-rw-rw-`
 - 若用户建立为"目录",则由于x与是否可以进入此目录有关,因此默认为所有权限均开放,即为777分,默认属性如下: `drwxrwxrwx`
-
-**tkgvizmakefile**  
-create Tk graphs from Makefiles
-
-tkgvizmakefile -f Makefile -T ps -o graph.ps
 
 [pythonbrew](http://www.pythoner.cn/home/blog/python-version-switch-pythonbrew/)  
 nbrew 是用来管理多版本 python 的利器一枚  

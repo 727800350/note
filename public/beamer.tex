@@ -94,5 +94,20 @@
 
 % Footline
 \setbeamertemplate{navigation symbols}{} %% remove the navigation symbols from the bottom of all slides
+
+\defbeamertemplate{footline}{left page number}
+{
+	\hskip 5pt
+	\insertpagenumber\,/\,\insertpresentationendpage%
+	\vskip 4pt
+}
+
+\defbeamertemplate{footline}{centered page number}
+{%
+  \hspace*{\fill}%
+  \insertpagenumber\,/\,\insertpresentationendpage%
+  \hspace*{\fill}\vskip 2pt%
+}
 \setbeamertemplate{footline}[page number] %% display current number/total number in the right corner
+%% \setbeamertemplate{footline}[left page number]
 

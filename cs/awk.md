@@ -23,6 +23,13 @@ AWK also has associative arrays, which are incredible useful, and is a feature m
 `${variable:-defaultvalue}` 注意那个减号
 例如: `column = ${1:-1}`
 
+变量的嵌套使用
+```awk
+id=2
+cat - | awk '{print $’$id’}'
+```
+这样就可以输出第二列
+
 ## 格式化
 awk 的输出列由于内容长度不一样, 经常不是对齐的, 看起来不太美观, 两种解决办法
 
@@ -32,7 +39,7 @@ awk 的输出列由于内容长度不一样, 经常不是对齐的, 看起来不
 # IO
 - `print $0 >> “file”`: 输出重定向到名为file的文件
 - `print $0 > “/dev/stdout”`: 显示的将输出输出到标准输出, 类似的就可以输出到 "/dev/stderr".
-- `printf(“%s, $0) > “/dev/stderr”`: 使用printf 也可以
+- `printf(“%s\n, $1) > “/dev/stderr”`: 使用printf 也可以
 
 之后就可以正常的在awk 最外面使用重定向了
 
@@ -69,6 +76,7 @@ AWK is line oriented.
 ```
 
 `BEGIN { x=5; }{print x, $x}`: 会输出5和第5个field的value.
+- next: 直接跳过之后的模式处理, 读入下一行, 类似于C 里面的continue
 
 # 运算符
 Binary Operators
@@ -100,16 +108,8 @@ A value of 0 is false, while anything else is true. Undefined variables has the 
 - ORS - The Output Record Separator Variable
 - FILENAME - The Current Filename Variable
 
-## prinf
-The printf is very similar to the C function with the same name, 用法也一样.
-
-同时可以使用输出重定向
-```awk
-printf("string\n") > "/tmp/file";
-printf("string\n") >> "/tmp/file";
-```
-
 # String Functions
+- 比较: 直接用 `<, ==, >` 比较符比较, eg: `"abc" < "abcd"`, `"b" > "a"`
 - index(string,search)	AWK, NAWK, GAWK
 - length(string)	AWK, NAWK, GAWK
 - split(string,array,separator)	AWK, NAWK, GAWK

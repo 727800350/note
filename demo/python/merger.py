@@ -38,7 +38,7 @@ sep: field seperator between value from data source 0 and data source 1 if both 
 '''
 flag_0 = True
 flag_1 = True
-sep = " "
+sep = ":"
 
 def process_dict(dictionary, key):
 	if key in dictionary:
