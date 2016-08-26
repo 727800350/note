@@ -25,8 +25,8 @@ k2 \t 1 \t v2
 k3 \t 0
 
 when using hadoop
--jobconf stream.num.map.output.key.fields=2 \
--jobconf num.key.fields.for.partition=1 \
+	-jobconf stream.num.map.output.key.fields=2 \
+	-jobconf num.key.fields.for.partition=1 \
 '''
 
 d = {}

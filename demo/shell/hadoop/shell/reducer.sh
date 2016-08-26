@@ -32,8 +32,7 @@ else
 fi
 
 chmod +x $bin/*
-## ${mapred_task_partition}
-## ${mapred_work_output_dir}
+## ${mapred_work_output_dir}/res.${mapred_task_partition}
 
 exit 0
 

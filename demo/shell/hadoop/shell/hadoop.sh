@@ -44,7 +44,7 @@ ${local_hadoop} streaming \
 	-output ${output} \
 	-mapper "bash mapper.sh 0" \
 	-reducer "bash reducer.sh 0" \
-	-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner \
+	-partitioner "org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner" \
 	-jobconf mapred.map.tasks="$mapper_num" \
 	-jobconf mapred.job.map.capacity="$mapper_capacity" \
 	-jobconf mapred.map.over.capacity.allowed="false" \
