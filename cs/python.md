@@ -743,6 +743,16 @@ help, dir, type, id, hasattr, getattr, callable, isinstance
 - os.path.isdir("goal")     判断目标是否目录
 - os.path.isfile("goal")    判断目标是否文件
 
+
+## import logging
+- logging.basicConfig(level = logging.DEBUG, format = "%(levelname)s %(asctime)s [%(filename)s][%(lineno)d][%(funcName)s] %(message)s")
+	用默认日志格式Formatter为日志系统建立一个默认的流处理器StreamHandler, 设置基础配置(如日志级别等)并加到root logger(根Logger)中这几个logging模块级别的函数
+- log = logging.getLogger(name):返回一个logger对象，如果没有指定名字将返回root logger
+- log.debug(), log.info(), log.warnning(), log.error(), log.critical(), eg: log.debug('this is %s', 'Eric Wang')
+
+默认的log 会打印到stderr, 也可以设置 file|stream handler, formatter, filter etc.
+参考[Python logging模块详解](http://blog.csdn.net/zyz511919766/article/details/25136485)
+
 ## import sys
 - sys.path #系统目录
 - sys.argv  #可执行文件名是第一个参数
