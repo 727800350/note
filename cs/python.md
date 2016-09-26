@@ -704,6 +704,32 @@ help, dir, type, id, hasattr, getattr, callable, isinstance
 - $ pip uninstall SomePackage
 - $ pip show --files SomePackage: 查看具体的安装文件
 
+## [import argparse](http://blog.xiayf.cn/2013/03/30/argparse/)
+argparse内置6种动作可以在解析到一个参数时进行触发：
+
+- store 保存参数值，可能会先将参数值转换成另一个数据类型。若没有显式指定动作，则默认为该动作。
+- store_ture/store_false 保存相应的布尔值。这两个动作被用于实现布尔开关。
+- store_const: 类似于store_true/false, 有了这个标记, 就把dest 设置为 const, `parser.add_argument('-c', action='store_const', dest='constant_value', const='value-to-store', help='Store a constant value')`
+- append 将值保存到一个列表中。若参数重复出现，则保存多个值。
+- append_const 将一个定义在参数规格中的值保存到一个列表中。
+- version 打印关于程序的版本信息，然后退出
+
+```python
+import argparse
+parser = argparse.ArgumentParser(description='Short sample app')
+parser.add_argument('-a', action="store_true", default=False, help = 'used as a flag')
+parser.add_argument('-c', action="store", dest="c", type=int, help = 'store a int')
+arg = parser.parse_args() 的返回值是一个命名空间，包含传递给命令的参数
+```
+
+而argparse是一个全面的命令行参数解析工具，也处理非选项参数。
+```python
+parser.add_argument('count', action="store", type=int, help = 'number of apples')
+parser.add_argument('units', action="store")
+python ./cmd.py 3 inches
+Namespace(count=3, units='inches')
+```
+
 ## import os
 - os.listdir(path) #列出当前路径下的文件
 - os.getcwd() #get current working directory, 绝对目录
