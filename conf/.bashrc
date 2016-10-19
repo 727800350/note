@@ -57,6 +57,8 @@ else
 	export ANT_HOME=$HOME/opt/tools/tools/ant/apache-ant-1.6.5
 	export MAVEN=$HOME/opt/tools/tools/maven/apache-maven-3.0.4/bin
 	export MAC=64
+
+	alias vi="~/.jumbo/bin/vim"
 fi
 
 ## texlive env

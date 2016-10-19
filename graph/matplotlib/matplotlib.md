@@ -239,13 +239,12 @@ polaire
 [example](./polaire.py)
 
 ## 保存图片
-plt.savefig('sinc.png')
-支持PNG, EPS, SVG, and PDF, 可以根据后缀自己选择相应的引擎.
-transparent = True: 背景透明
-dpi = 300: (figsize 为默认的8,6时)2400 x 1800 pixels, 默认情况下为100dpi,  800 x 600 pixels
+`plt.savefig('sinc.png')`: 支持PNG, EPS, SVG, and PDF, 可以根据后缀自己选择相应的引擎.
 
-By default, matplotlib will output a figure of 8 x 6 spatial units—a 4/3 aspect ratio.
-In matplotlib, 1 spatial unit equals to 100 pixels.
-Thus, by default, matplotlib will give a picture file of 800 x 600 pixels.
-If we use dpi = 300, the picture size will be 8 * 300 x 6 * 300, that is, 2400 x 1800 pixels.
+- transparent = True: 背景透明
+- dpi = 300: (figsize 为默认的8,6时)2400 x 1800 pixels, 默认情况下为100dpi, 800 x 600 pixels.
+	By default, matplotlib will output a figure of 8 x 6 spatial units—a 4/3 aspect ratio.
+	In matplotlib, 1 spatial unit equals to 100 pixels.
+	Thus, by default, matplotlib will give a picture file of 800 x 600 pixels.
+	If we use dpi = 300, the picture size will be 8 * 300 x 6 * 300, that is, 2400 x 1800 pixels.
 
