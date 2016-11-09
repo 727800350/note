@@ -1,6 +1,6 @@
 """"""""""""""""""""""""""""""
 "Chinese Punctuation
-"usage: ctrl-s or :%call CheckChineseMark(), could use Tab for completion
+"usage: ctrl-s or :%call CheckChineseMark, could use Tab for completion
 """"""""""""""""""""""""""""""
 function! CheckChineseMark()
 	"check one by one
