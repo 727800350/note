@@ -853,6 +853,9 @@ array 的操作
 - np.reshape(x, shape): Gives a new shape to an array without changing its data, 例如把[3, 4] 的shape变为[2, 6]的
 - np.dot(x, y): dot product
 - np.transpose(x): 矩阵转置
+- `x[:,1]`: 取第二列
+- `x[x>1]`: 取所有大于1的值
+- `x.cumsum()`: 累积和, axis = 0 or 1 控制横纵方向
 - np.copy(x): makes a complete copy of the array and its data.
 	```
 	>>> x = np.array([1, 2, 3])
