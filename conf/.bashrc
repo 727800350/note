@@ -39,7 +39,7 @@ else
 	alias hadoop='${HADOOP_HOME}/bin/hadoop'
 	alias yq='${HOME}/hadoop-client/hadoop-yq/bin/hadoop'
 	alias tiny='${HOME}/hadoop-client/hadoop-tiny/bin/hadoop'
-	alias mulan='${HOME}/hadoop-client/hadoop-mulan/bin/hadoop'
+	alias shitu='${HOME}/hadoop-client/hadoop-shitu/bin/hadoop'
 	alias nl='${HOME}/hadoop-client/hadoop-nanling/bin/hadoop'
 	alias spider='${HOME}/hadoop-client/hadoop-spider/bin/hadoop'
 
