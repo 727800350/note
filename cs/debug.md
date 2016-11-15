@@ -305,8 +305,6 @@ Valgrind is a programming tool for memory debugging, memory leak detection, and 
 ## Memcheck
 The problems Memcheck can detect and warn about include the following:
 
-[Memory debugger](http://en.wikipedia.org/wiki/Memory_debugger)
-
 - Use of uninitialized memory
 - Reading/writing memory after it has been freed
 - Reading/writing off the end of malloced blocks
@@ -315,6 +313,7 @@ The problems Memcheck can detect and warn about include the following:
 [memcheck demo](https://www.ibm.com/developerworks/community/blogs/6e6f6d1b-95c3-46df-8a26-b7efd8ee4b57/entry/detect_memory_leaks_with_memcheck_tool_provided_by_valgrind_part_i8?lang=zh_cn)
 
 ### report error examples
+valgrind --leak-check=yes cmd
 ```
 ==25832== Invalid read of size 4
 ==25832==
@@ -336,14 +335,14 @@ occurred most frequently.
 ==26866==    by 0x4E3DE1D: ??? (in /usr/lib64/libpcap.so.1.5.3)
 ```
 The name ??? is used if the file name and/or function name could not be determined from debugging information. 
-If most of the entries have the form ???:??? the program probably wasn't compiled with -g.
+If most of the entries have the form ???:??? the program probably was not compiled with -g.
 包括库的函数
 
 ## Scheduling and Multi-Thread Performance 
 Threaded programs are fully supported.  
 Valgrind **serialises execution** so that only one (kernel) thread is running at a time. 
 but it does mean that threaded apps never use more than one CPU simultaneously, even if you have a multiprocessor or multicore machine.
-Valgrind doesn't schedule the threads itself. It merely ensures that only one thread runs at once, using a simple locking scheme. 
+Valgrind does not schedule the threads itself. It merely ensures that only one thread runs at once, using a simple locking scheme. 
 The actual thread scheduling remains under control of the OS kernel. 
 This is both because Valgrind is serialising the threads, and because the code runs so much slower than normal.  
 if you have some kind of concurrency, critical race, locking, or similar, bugs. 
@@ -351,7 +350,7 @@ In that case you might consider using the tools Helgrind and/or DRD to track the
 
 ## Handling of Signals
 Valgrind has a fairly complete signal implementation. It should be able to cope with any POSIX-compliant use of signals.
-If you're using signals in clever ways (for example, catching SIGSEGV, modifying page state and restarting the instruction), you're probably relying on precise exceptions.
+If you are using signals in clever ways (for example, catching SIGSEGV, modifying page state and restarting the instruction), you are probably relying on precise exceptions.
 In this case, you will need to use
 ```
 --vex-iropt-register-updates=allregs-at-mem-access
@@ -361,7 +360,7 @@ or
 --vex-iropt-register-updates=allregs-at-each-insn.
 ```
 If your program dies as a result of a fatal core-dumping signal, Valgrind will generate its own core file
-(vgcore.NNNNN) containing your program's state.  
+(vgcore.NNNNN) containing your program state.  
 You may use this core file for post-mortem debugging with GDB or similar.  
 In the unlikely event that Valgrind itself crashes, the operating system will create a core dump in the usual way.
 

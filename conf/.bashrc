@@ -22,7 +22,7 @@ fi
 
 # Path
 ## my own pc
-if [ ${user} = "eric" ]
+if [ "x$user" = "xeric" -o "x$user" = "xwangchao34" ]
 then
 	ulimit -c unlimited
 ## enterprise
