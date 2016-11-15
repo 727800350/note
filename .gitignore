@@ -3,6 +3,7 @@
 a.out
 .DS_Store
 ._.DS_Store
+conf/.vim/.netrwhist
 
 ## tex
 *.aux
