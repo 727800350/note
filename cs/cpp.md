@@ -1,24 +1,20 @@
 # STL 标准模板库
-## [vector](http://www.cplusplus.com/reference/vector/vector/)
+## [std::vector](http://www.cplusplus.com/reference/vector/vector/)
 vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素,从尾部追加
+
+Do not use pointers to std::vector, 也就是说直接使用std::vector这个对象,而不要使用这个对应的指针.
+This class already manage memory allocation and deallocation. 在超出变量的scope, 会自动调用它的析构函数来释放内存
 
 - push_back: 将要push_back的元素拷贝到新分配的内存中, 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容.
 	对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针,
 	所以即使原来的object被删除了, vector中的仍然可以正常访问.
 - erase: 删除元素, 如果元素是指向某个对象的指针, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
-- back:  Returns a reference to the last element in the vector.
-- empty()用来检测容器是否为空的.
-- clear()可以清空所有元素.但是即使clear(),vector所占用的内存空间依然如故,无法保证内存的回收
+- back: Returns a reference to the last element in the vector.
+- empty: 用来检测容器是否为空的.
+- clear: 可以清空所有元素, 也就是改变vector 的size, 但是capacity 一般不会改变.
+- swap: vector<T>().swap(x); 改变x 占用内存的方式, 实际上是把x 的内存交换给一个新的vector<T>()对象
 
 [vector push_back operation demo](../demo/cpp/stl/vector-push_back.cpp)
-
-由于vector的内存占用空间只增不减,比如你首先分配了10,000个字节,然后erase掉后面9,999个,留下一个有效元素,但是内存占用仍为10,000个(capacity 仍然很大).
-所有内存空间是在vector析构时候才能被系统回收.
-
-如果需要空间动态缩小,可以考虑使用deque.
-如果vector,可以用swap()来帮助你释放内存.具体方法如下:
-
-	vector<Point>().swap(pointVec); //或者pointVec.swap(vector<Point> ())
 
 ## [std::list](http://www.cplusplus.com/reference/list/list)
 implemented as doubly-linked lists
@@ -124,10 +120,12 @@ in the second case, when using double quotes, '\0' is appended automatically.
 
 # Memory
 ```
+单个元素
 pointer = new type
 delete pointer;
 
-pointer = new type [number_of_elements]
+数组
+pointer = new type[number_of_elements]
 delete [] pointer;
 ```
 
@@ -156,6 +154,10 @@ demo: `g_stmola = new (std::nothrow) select_mola[mola_num];`
 
 ## 二维数组
 [C++二维数组new小结(zz)](http://www.cnblogs.com/beyondstorm/archive/2008/08/26/1276278.html)
+
+# other
+c++ 中不要使用 goto, 在goto 之后是不允许定义的新的变量的, 局部变量也不行.
+[crosses initialization error](http://stackoverflow.com/questions/14274225/statement-goto-can-not-cross-pointer-definition)
 
 # Class
 定义class的结尾}后需要一个分号,和结构体的定义一样.

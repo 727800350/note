@@ -127,6 +127,8 @@ iftop: visually show network traffic
 ## 远程主机相关的
 ssh
 
+`ssh -o StrictHostKeyChecking=no`: RSA key fingerprint is xxx, Are you sure you want to continue connecting (yes/no)?, 避免手动输入yes
+
 登陆一台机器, 并在登录后的机器上执行命令
 ```
 ssh user@ip "bash shell.sh" < /dev/null
