@@ -52,8 +52,8 @@
 # 环境变量
 - mapred_task_partition: 当前任务是全局map或reduce中的第几个,例如0号reduce,则该变量为0, 3号map,则该变量为3, 一般用这个数字来标记put 的文件名字
 - map_input_file: 当前map读入的文件绝对路径
-- mapred_work_output_dir: 计算临时输出路径, 多路数据输出时, 先将文件上传到临时目录`$mapred_work_output_dir`中(文件名字需要和标准输出的part 区分开来), 任务结束后hadoop平台自动将其移动到最终输出目录$mapred_output_dir中, 
-	这样能保证在预测执行打开的情况下, 一个task 的多个attempt不会相互冲突
+- mapred_work_output_dir: 计算临时输出路径, 多路数据输出时, 先将文件上传到临时目录`$mapred_work_output_dir`中(文件名字需要和标准输出的part 区分开来),
+	任务结束后hadoop平台自动将其移动到最终输出目录$mapred_output_dir中, 这样能保证在预测执行打开的情况下, 一个task 的多个attempt不会相互冲突
 - mapred_output_dir: 就是启动MapReduce 任务时设置的 output 目录
 - mapred_job_id: 当前作业ID, mapred_job_id="job_200902192042_0075"
 - mapred_job_name: 当前作业名, mapred_job_name="ps_spider_css_mapreduce_job_setp1"
@@ -95,7 +95,8 @@
 - -D mapred.dynamic.input (false): 是否启用了dynamic input
 
 ## partitioner
-- -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 一般使用的partitioner, **即使 reduce 的数目大于 partition key的种类, 也有可能不同的 key 会被分到同一个 reduce 上**
+- -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 一般使用的partitioner,
+	**即使 reduce 的数目大于 partition key的种类, 也有可能不同的 key 会被分到同一个 reduce 上**
 
 - -partitioner com.baidu.sos.mapred.lib.IntHashPartitioner 严格按照int[0, num_reducer - 1] 值进行partition
 	- map输出每一行为:`N \space key \t value`, 这个输出经过IntHashPartitioner后被传给第N个reducer处理, N是大于等于0的int
@@ -133,8 +134,10 @@ partition key有 11.10, 11.12, 11.14三种, 所以会被分到三个reducer上(�
 - -cacheArchive <fileNameURI> 如果要分发的文件有目录结构,可以先将整个目录打包,然后上传到HDFS,再用`-cacheArchive hdfs://host:port/path/to/archivefile.tar.gz#linkname`分发压缩包.
 
 # 任务优化
-- -mapred.reduce.slowstart.completed.maps 如果你设置为0.6, 那么reduce将在map完成60%后进入运行态.如果设置的map和reduce数量都很大,势必造成map和reduce争抢资源,造成有些进程饥饿,超时出错,最大的可能就是socket.timeout的出错,网络过于繁忙.
-	所以说,这些需要根据集群的性能,适当调试添加和减少,以达到最好的效果. 如果你发现reduce在33%时,map正好提早一点点到100%,那么这将是最佳的配比,因为reduce是在33%的时候完成了数据copy阶段,
+- -mapred.reduce.slowstart.completed.maps 如果你设置为0.6, 那么reduce将在map完成60%后进入运行态.
+	如果设置的map和reduce数量都很大,势必造成map和reduce争抢资源,造成有些进程饥饿,超时出错,最大的可能就是socket.timeout的出错,网络过于繁忙.
+	所以说,这些需要根据集群的性能,适当调试添加和减少,以达到最好的效果.
+	如果你发现reduce在33%时,map正好提早一点点到100%,那么这将是最佳的配比,因为reduce是在33%的时候完成了数据copy阶段,
 	也就是说,map需要再reduce到达33%之前完成所有的map任务,准备好数据.千万不能让reduce在等待,但是可以让map先完成.
 
 - -io.sort.mb 设置一个map sort的可用buffer大小是多少,如果map在内存中sort的结果达到一个特定的值,就会被spill进入硬盘.具体这个值是等于mb*io.sort.spill.percent.
@@ -154,6 +157,7 @@ partition key有 11.10, 11.12, 11.14三种, 所以会被分到三个reducer上(�
 - -jobconf dfs.client.slow.write.limit=5242880
 - -jobconf dfs.client.slow.read.limit=5242880
 
+- -jobconf mapred.task.timeout=600000 The number of milliseconds before a task will be terminated if it neither reads an input, writes an output, nor updates its status string
 
 合并小文件
 

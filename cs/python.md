@@ -1,25 +1,8 @@
-脚本里面退出: `sys.exit(1)`
-
-# Python sequence
-sequence在python不是一种特定的类型,而是泛指一系列的类型
-
-list, tuple, 字符串都属于sequence
-
 # 参数
 ## 系统参数
 `sys.argv` 获取参数列表  
 如果需要获取参数列表的长度, 需要通过`len(sys.argv)`.  
 参数依次为: `sys.argv[0]`(第一个参数为本文件的名字), `sys.argv[1]`
-
-## 可变长参数
-使用可变长参数的函数, 将其所有参数保存在一个元组里, 在函数中可以使用for循环来处理
-以 `*` 开头定义一个参数即可
-```
-def mylistappend(L,*list):
-    for i in list:
-        L.extend(i)
-    return L
-```
 
 ## 参数引用
 在C语言中,可以通知在参数中使用指针已达到改变参数值的作用
@@ -58,14 +41,14 @@ def fun(x):
 ```
 
 # IO
-```
+```python
 print >>sys.stdout, 'sth'
 print >>sys.stderr, 'sth'
 print >> sys.stdout, ("pass: %2d, avg_cost: %f"%(num, avg_cost))
 ```
 
 print 默认输出的时候会自动换行, 在末尾加一个逗号可以避免换行
-```
+```python
 print 'sth',
 sys.stdout.write('sth')  ## 用这个也可以达到同样的效果
 ```
@@ -80,25 +63,13 @@ pprint 模块(pretty printer)
 If the end of the file has been reached, f.read() will return an empty string ("").  
 `a = ""` 可以使用 `a == ""` 或者 `not a` 来进行判断, 两者都为True
 
-## 重定向
-
-	import sys
-	out = open("out.txt","w")
-	sys.stdout = out  //之后的print语句就会输出到out 指向的文件中
-	print .....
-	out.close()
-
-记住,如果你还想在控制台打印一些东西的话,最好先将原始的控制台对象引用保存下来,向文件中打印之后再恢复 sys.stdout
-
 输出到文件
+```python
+out = open("out.txt","w")  //w is write, a+ 追加
+print>>out, "string", integer
 
-	out = open("out.txt","w")  //w is write, a+ 追加
-	print>>out,"string",integer //输出到out中
-	sys.stdout  //sys模块中
-或者
-```
-f.write(string)  将一个字符串写入文件,如果写入结束,必须在字符串后面加上"\n"
-f.close()
+out.write(string)
+out.close()
 ```
 
 ## 文件
@@ -130,7 +101,7 @@ f.read(1) // read 'd'
 混合使用file.readline() and file.next()要注意:  
 When a file is used as an iterator, typically in a for loop (for example, `for line in f: print line.strip()`), the next() method is called repeatedly.
 In order to make a for loop the most efficient way, the next() method uses a **hidden read-ahead buffer**.
-也就是说,next()方法会预加载后面的内容, 这时如果使用readline()方法则会与next()方法的预加载产生冲突.
+也就是说,next()方法会预加载后面的内容, 这时如果交叉使用readline()方法则会与next()方法的预加载产生冲突.
 However, using seek() to reposition the file to an absolute position will flush the read-ahead buffer.
 
 ## [二进制](http://www.cnblogs.com/gala/archive/2011/09/22/2184801.html)
@@ -246,73 +217,9 @@ print list #原有序列并没有改变
 - two non-scalar type: **tuple and string are immutable**
 
 ## mutable vs immutable
-immutable
-```
-x = something
-func(x)
-print x # prints the same thing 
-```
-
-mutable
-```
-x = something # 
-func(x)
-print x # might print something different, that means func can change the real x
-```
-
-```
-x = something # immutable type 
-y = x 
-print x 
-# some statement that operates on y
-print x # prints the same thing 
-```
-
-```
-x = something # mutable type 
-y = x 
-print x 
-# some statement that operates on y
-print x # might print something different
-```
-
-Python represents all its data as objects.
-Some of these objects like lists and dictionaries are mutable, meaning you can change their content without changing their identity.
+lists and dictionaries are mutable, meaning you can change their content without changing their identity.
 Other objects like integers, floats, strings and tuples ... are objects that can not be changed. 
-An easy way to understand that is if you have a look at an objects ID.
 
-Below you see a string that is immutable. You can not change its content. It will through an error at you, if you try to change it. 
-Also, if we assign new content, a new object is created instead of the contents being modified.
-
-```
->>> s = "abc"
->>>id(s) 4702124
->>> s[0] 'a'
->>> s[0] = "o"
-Traceback (most recent call last): File "<stdin>", line 1, in <module>TypeError: 'str' object does not support item assignment 
-```
-
-```
->>> s = "xyz"
->>>id(s) 4800100
->>> s += "uvw"
->>>id(s)4800500
-```
-
-### Iterate
-file, list, tuple, dict 的迭代, 可以使用for 来进行统一形式的迭代, 其中dict迭代的是key
-
-	for i in seq:
-	    do_something_to(i)
-实际上是这样工作的:
-
-	fetch = iter(seq)
-	while True:
-		try:
-			i = fetch.next()
-		except StopIteration:
-			break
-		do_something_to(i)
 在使用`for x in seq`结构循环中, 不能改变seq, 否则会出现不可预知的问题.
 
 ## List
@@ -320,10 +227,10 @@ list 不是线程安全的, dequeue 是线程安全的
 
 要注意列表中的列表不会被打散,如 `a=[1,2], b=[a,3,4]`,结果就是 `b=[[1,2],3,4]`
 
-列表赋值是引用赋值.要想拷贝,必须用切片:`b = a[:]`
+列表赋值是引用赋值, 要想拷贝, 必须用切片:`b = a[:]`
 
 list是对所指向对象的一个引用
-list2=list1,那么这两个list指向的是同一个list对象, 当我们改变一个中的元素的时候, 另一个也随之改变
+list2 = list1; 那么这两个list指向的是同一个list对象, 当我们改变一个中的元素的时候, 另一个也随之改变
 
 ### List API
 - list.append(x)
@@ -365,7 +272,7 @@ L.sort(key=lambda x:(x[1],x[0])): 多关键字排序, 先用第二列的数字, 
 
 定义和访问时,key必须用引号引起来. 使用{}定义,使用[]访问,即`c['a']`
 
-```
+```python
 for key in dictonary.keys():
 	do something
 ```
@@ -379,7 +286,7 @@ dictionaries are indexed by keys, which can be any immutable type; strings and n
 - `key not in d`: Equivalent to not key in d
 - `len(d)`
 - `get(key[, default])`: Return the value for key if key is in the dictionary, else default. 
-If default is not given, it defaults to None, so that this method **never raises a KeyError**.
+	If default is not given, it defaults to None, so that this method **never raises a KeyError**.
 - `pop(key[, default])`
 - `del d[key]`: Raises a KeyError if key is not in the map
 
@@ -426,10 +333,6 @@ If default is not given, it defaults to None, so that this method **never raises
 	'3'
 	>>> "%.1f" % 3.45
 	'3.5'
-	>>> "%.2f" % 3.45
-	'3.45'
-	>>> "%.3f" % 3.45
-	'3.450'
 
 ### math module
 - `math.floor()`
@@ -439,6 +342,11 @@ If default is not given, it defaults to None, so that this method **never raises
 **以下函数并不改变字符串本身, 而是返回修改后的新的字符串 string immutable**
 一旦声明了一个字符串, 则该字符串中的每个字符都有了自己固定的位置,可以使用`[index]`来访问
 python还允许以负数来访问字符串中字符,负数表示从字符串的尾部开始计算,此时最后一个字符的序号为-1, 例如 `string[-2] #倒数第2个字符`
+
+字符
+
+- chr(num): 将num 转换为对应的字符;
+- ord(c): c 语言中可以直接使用数字来表示char, 但是python 不行, 与chr 相对的一个函数为 ord(c)
 
 **计数**
 - `str.count(sub[, start[, end]])`
@@ -451,6 +359,7 @@ Return the number of non-overlapping occurrences of substring sub in the range [
 
 - `str.decode([encoding[, errors]])`: Decodes the string using the codec registered for encoding.
 - `str.encode([encoding[, errors]])`: Return an encoded version of the string.
+eg: '我'.decode('utf8').encode('gbk')
 
 **查找**
 - `str.endswith(suffix[, start[, end]])`: Return True if the string ends with the specified suffix, otherwise return False.
@@ -576,27 +485,11 @@ The readonly argument can be True to start the transaction in READ ONLY mode or 
 	'58.120.0.0'
 
 # General
-应该尽量避免使用Python全局变量.
-在文件开头声明Python全局变量variable, 在具体函数中使用该变量时,需要事先声明 global variable,否则系统将该变量视为局部变量. CONSTANT = 0  (将全局变量大写便于识别)
-
 ## 基本程序结构
-条件
-```
-if condition:
-    do something
-```
-
-循环
-```
-for sth in sths:
-    do something
-while condition:
-     do something
-```
 
 switch
 python中不支持switch, 可以通过if来完成, 当然还有一种更加优雅的方式
-```
+```python
 sw = {
     'a': lambda x: x,
     'b': lambda x: x + 1,
@@ -609,7 +502,7 @@ print sw['c'](2) ## 输出4
 不管从可读性(这是显然的),性能(哈希表 vs 普通查找)上都更好.
 另外最后一种做法将参数与行为的映射完全独立出来了,一来修改起来极其方便,到时候也很容易将它们分离到配置文件中去. 
 
-```
+```python
 sw= {
   '10':'age 10',
   '20':'age 20',
@@ -620,24 +513,9 @@ age = '10'
 print  sw.get(age,'age is deault') ## 如果sw中不含有age, 则sw[age] = 'age is deault'
 ```
 
-函数
-```
-def functionname():    
-    do something
-    return something
-```
-
-异常处理
-```
-try:    suite
-except:    suite
-    except IOError: suite
-finally:    suite
-```
-
-`assert expression, 'text'`  #如果expression为假,则将text输出,并且报AssertionError
+`assert expression, 'text'`: 如果expression为假, 则将text输出,并且报AssertionError
 例如:
-```
+```python
 a=4
 assert a>0, 'a must be positive'  # do nothing
 assert a<0, 'a must be negative' #输出a must be negative
@@ -659,6 +537,7 @@ python中类里的属性变量以:
 这个方法就是`__init__()`,当调用了类的实例化方法后,`__init__()`方法会立刻被这个类的实例调用.也就是说,`__init__()`不是构造函数,而是一个普通的方法.
 
 class 中特殊方法
+
 - `__init__` initialize an instance  每边都是两个下划线
 - `__str__` print an instance out
 - `__cmp__` compare the instances
@@ -857,7 +736,7 @@ array 的操作
 - `x[x>1]`: 取所有大于1的值
 - `x.cumsum()`: 累积和, axis = 0 or 1 控制横纵方向
 - np.copy(x): makes a complete copy of the array and its data.
-	```
+	```python
 	>>> x = np.array([1, 2, 3])
 	>>> y = x
 	>>> z = np.copy(x)
@@ -869,7 +748,7 @@ array 的操作
 	- converters : optional, A dictionary mapping column number to a function that will convert that column to a float. 
 		E.g. if column 0 is a date string: converters = {0: datestr2num}.
 		Converters can also be used to provide a default value for missing data, converters = {3: lambda s:float(s.strip() or 0)}. Default: None.
-		```
+		```python
 		XR21 32.789 1
 		XR22 33.091 2
 		table = np.loadtxt('example.txt',dtype={'names':('ID', 'Result', 'Type'),'formats': ('S4', 'f4', 'i2')})
