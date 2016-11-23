@@ -25,6 +25,7 @@ k2 \t 1 \t v2
 k3 \t 0
 
 when using hadoop
+	-partitioner "org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner" \
 	-jobconf stream.num.map.output.key.fields=2 \
 	-jobconf num.key.fields.for.partition=1 \
 '''
