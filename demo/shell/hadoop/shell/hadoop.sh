@@ -4,14 +4,14 @@ set -x
 source ./conf/common.conf
 if [ $? -ne 0 ]
 then
-	echo source common.conf failed 1>&2
+	echo "source common.conf error" >&2
 	exit 1
 fi
 
 source ./conf/func.sh
 if [ $? -ne 0 ]
 then
-	echo source func.sh failed 1>&2
+	echo "source func.sh error" >&2
 	exit 1
 fi
 
@@ -21,14 +21,13 @@ then
 	${local_hadoop} dfs -mkdir ${top_dir}
 fi
 
-${local_hadoop} dfs -rmr ${output}
-
 files=""
 for file in `ls bin/* conf/* shell/*`
 do
 	files="$files -file $file"
 done
 
+${local_hadoop} dfs -rmr ${output}
 ${local_hadoop} streaming \
 	-input ${input} \
 	-output ${output} \
@@ -50,7 +49,7 @@ ${local_hadoop} streaming \
 	-jobconf mapred.job.priority="${priority}" \
 	$files
 
-CHK_RET FATAL "$jobname failed"
+CHK_RET FATAL "$job_name error"
 
 exit 0
 
