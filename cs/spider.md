@@ -1,11 +1,12 @@
 # Beautiful Soup
+获得beautifulsoup 对象的几种方式
 ```python
 from bs4 import BeautifulSoup as bs
-soup = BeautifulSoup(html)
-soup = BeautifulSoup(open('index.html'))
+soup = bs(html) ## from a python object
+soup = bs(open('index.html')) ## from a local file
 
 from urllib.request import urlopen
-soup = bs(urlopen(url).read())
+soup = bs(urlopen(url).read()) ## from web url
 ```
 
 ```html

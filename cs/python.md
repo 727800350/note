@@ -7,7 +7,7 @@
 ## 参数引用
 在C语言中,可以通知在参数中使用指针已达到改变参数值的作用
 在python中,可以在参数中使用可变对象,如列表和字典来达到改变参数的目的
-```
+```python
 传值
 def changevalue(x):
 	x=x**2
@@ -20,21 +20,20 @@ def changevalue2(x):
 在Python中,无论你把对象做为参数传递,做为函数返回值,都是引用传递的.  
 你想复制一个对象.  
 标准库中的copy模块提供了两个方法来实现拷贝.一个方法是copy,它返回和参数包含内容一样的对象.
-```
+```python
 import copy
 new_list = copy.copy(existing_list)
 ```
 
 有些时候,你希望对象中的属性也被复制, 尤其是当有list 等对象时,可以使用deepcopy方法:
-```
+```python
 import copy
 new_list_of_dicts = copy.deepcopy(existing_list_of_dicts)
 ```
 [demo](../demo/python/copy_deepcopy.py)
 
-
 ## global
-```
+```python
 def fun(x):
 	global a #说明a是全局变量,可以直接使用, 需要确保在使用之前a 确实是存在的一个全局变量
 	return a+x
@@ -42,9 +41,9 @@ def fun(x):
 
 # IO
 ```python
-print >>sys.stdout, 'sth'
-print >>sys.stderr, 'sth'
-print >> sys.stdout, ("pass: %2d, avg_cost: %f"%(num, avg_cost))
+print >> sys.stdout, 'sth'
+print >> sys.stderr, 'sth'
+print >> sys.stdout, 'pass: %2d, avg_cost: %f' % (num, avg_cost)
 ```
 
 print 默认输出的时候会自动换行, 在末尾加一个逗号可以避免换行
@@ -53,9 +52,10 @@ print 'sth',
 sys.stdout.write('sth')  ## 用这个也可以达到同样的效果
 ```
 
-pprint 模块(pretty printer)
-用于打印 Python 数据结构.
-当你在命令行下打印特定数据结构时你会发现它很有用(输出格式比较整齐, 便于阅读).
+pprint 模块(pretty printer), 打印 Python 数据结构, 输出格式比较整齐, 便于阅读
+```python
+from pprint import pprint as pretty
+```
 
 [(非二进制)从stdin 读入, 输出到stdout](../demo/python/io/stdin_stdout.py)  
 [(二进制)从stdin 读入, 输出到stdout](../demo/python/io/stdin_stdout_binary.py)
@@ -74,22 +74,22 @@ out.close()
 
 ## 文件
 读取文件
-```
-f = open("d:\test.txt", "w")
+```python
+f = open("./data.txt", "r")
 for line in f:
     print line
 ```
 
-`f.read(size)`   //参数size表示读取的字节数,可以省略.如果省略size参数,则表示读取文件所有内容.
-`f.readline()`  读取文件一行的内容
-`f.readlines()`  读取所有的行到一个数组list里面.在避免将所有文件内容加载到内存中,这种方法常常使用,便于提高效率.
+- `f.read(size)`: 参数size表示读取的字节数,可以省略.如果省略size参数,则表示读取文件所有内容.
+- `f.readline()`: 读取文件一行的内容
+- `f.readlines()`: 读取所有的行到一个数组list里面.在避免将所有文件内容加载到内存中,这种方法常常使用,便于提高效率.
 
 文件中定位
 这个函数的格式如下(单位是bytes):`f.seek(offset, from_what)`
 from_what表示开始读取的位置,
 offset表示从from_what再移动一定量的距离,比如`f.seek(10, 3)`表示定位到第三个字符并再后移10个字符.
 from_what值为0时表示文件的开始,它也可以省略,缺省是0即文件开头
-```
+```python
 f = open('/tmp/workfile', 'r+')
 f.write('0123456789abcdef')
 f.seek(5) # Go to the 6th byte in the file
@@ -112,7 +112,7 @@ binascii模块包含很多在二进制和ASCII编码的二进制表示转换的�
 - binascii.hexlify(data): Return the hexadecimal representation of the binary data. 
 	Every byte of data is converted into the corresponding 2-digit hex representation(因此变为原来的两倍长)
 - binascii.unhexlify(hexstr): Return the binary data represented by the hexadecimal string hexstr. hexstr 必须为偶数个16 进制digits, otherwise a TypeError is raised.
-```
+```python
 bin = struct.pack(i, 23) ## bin 为 '\x17\x00\x00\x00' 占4 个bytes
 binascii.hexlify(bin) ## 返回'17000000', 占 8 个bytes
 ```

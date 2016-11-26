@@ -11,7 +11,6 @@ set termencoding=gb2312,utf-8
 set encoding=utf-8
 "=============================== font and encoding ===============================
 
-set cursorline "hightlight the current line
 set nu "show number
 set showmatch "colorscheme evening
 set laststatus=2 "always show status line
