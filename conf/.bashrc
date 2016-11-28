@@ -58,7 +58,10 @@ else
 	export MAVEN=$HOME/opt/tools/tools/maven/apache-maven-3.0.4/bin
 	export MAC=64
 
-	alias vi="~/.jumbo/bin/vim"
+	if [ -f "~/.jumbo/bin/vim" ]
+	then
+		alias vi="~/.jumbo/bin/vim"
+	fi
 fi
 
 ## texlive env
