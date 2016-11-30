@@ -84,11 +84,10 @@ Normally, the exit status is 0 if selected lines are found and 1 otherwise.
 But the exit status is 2 if an error occurred, unless the -q or --quiet or --silent option is used and a selected line is found
 
 在directory及其子目录下的c 文件中查找keyword
-```
+```bash
 grep -R --include="*.c" keyword directory
 ```
 
-- -l参数列出包含指定模式的文件的文件名
 - -n参数,在文件中查找指定模式并显示匹配行的行号(同时会列出文件名)
 - -v参数输出不包含指定模式的行
 - -i: 不区分大小写
@@ -102,7 +101,7 @@ grep -R --include="*.c" keyword directory
 - $ 符号输出所有以指定模式结尾的行, `^$` 就表示空行
 
 时间:
-```
+```bash
 date +%Y%m%d_%H%M%S ## 20150519_161232
 date +%Y%m%d        ## 显示前天年月日
 date +%Y%m%d --date="+1 day"  ## 显示后一天的日期, day, week, month, year

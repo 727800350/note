@@ -83,10 +83,10 @@ but unless you know what you know exactly what are doing, do not do this.
 [confusion demo](../demo/cpp/confusion.cpp)
 
 # [std::string](http://www.cplusplus.com/reference/string/string/)
+- `string (const char* s)`
+- `string (const char* s, size_t n)`: 当用字符数组表示的二进制串中可能含有 0 字符时, 需要明确二机制串的长度
 - `size()` or `length()`: Return length of string
-- `std::string::c_str()`: Returns a pointer to an internal array that contains a null-terminated sequence of characters (i.e., a C-string).
-A program shall **not alter** any of the characters in this sequence.
-c_str()返回的是一个分配给const char*的地址,其内容已设定为不可变更,如果再把此地址赋给一个可以变更内容的char*变量,就会产生冲突
+- `std::string::c_str()`: 返回一个分配给`const char*`的地址,其内容已设定为**不可变更**
 
 scan in values from a string
 
