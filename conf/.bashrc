@@ -53,7 +53,6 @@ else
 	export PATH=$PATH:$HOME/opt/tools/tools/ant/apache-ant-1.7.1/bin
 	export PATH=$PATH:$HOME/opt/tools/tools/php/5.2.17/64/bin
 	
-	## MANPATH=:/tools/baidu_manpage/man
 	export ANT_HOME=$HOME/opt/tools/tools/ant/apache-ant-1.6.5
 	export MAVEN=$HOME/opt/tools/tools/maven/apache-maven-3.0.4/bin
 	export MAC=64
