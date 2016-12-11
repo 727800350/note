@@ -10,7 +10,7 @@ y_data = x_data * 0.1 + 0.3
 
 # Try to find values for W and b that compute y_data = W * x_data + b
 # (We know that W should be 0.1 and b 0.3, but TensorFlow will figure that out for us.)
-W = tf.Variable(tf.random_uniform([1], -1.0, 1.0))
+W = tf.Variable(tf.zeros([1]))
 b = tf.Variable(tf.zeros([1]))
 y = W * x_data + b
 
@@ -27,10 +27,12 @@ sess = tf.Session()
 sess.run(init)
 
 # Fit the line.
-for step in range(201):
+for step in range(250):
     sess.run(train)
     if step % 20 == 0:
         print(step, sess.run(W), sess.run(b))
-
+print(step, sess.run(W), sess.run(b))
 # Learns best fit is W: [0.1], b: [0.3]
+
+sess.close()
 
