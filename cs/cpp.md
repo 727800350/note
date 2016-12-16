@@ -5,7 +5,7 @@ vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对�
 Do not use pointers to std::vector, 也就是说直接使用std::vector这个对象,而不要使用这个对应的指针.
 This class already manage memory allocation and deallocation. 在超出变量的scope, 会自动调用它的析构函数来释放内存
 
-- push_back: 将要push_back的元素拷贝到新分配的内存中, 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容.
+- `push_back`: 将要`push_back`的元素拷贝到新分配的内存中, 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容.
 	对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针,
 	所以即使原来的object被删除了, vector中的仍然可以正常访问.
 - erase: 删除元素, 如果元素是指向某个对象的指针, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
@@ -19,8 +19,8 @@ This class already manage memory allocation and deallocation. 在超出变量的
 ## [std::list](http://www.cplusplus.com/reference/list/list)
 implemented as doubly-linked lists
 
-- push_front: 在头插入
-- push_back: 在尾插入
+- `push_front`: 在头插入
+- `push_back`: 在尾插入
 
 ## [std::unordered_map](http://www.cplusplus.com/reference/unordered_map/unordered_map/)
 Internally, the elements are not sorted in any particular order, but organized into buckets depending on their hash values
@@ -119,14 +119,16 @@ that compose the word "Hello" plus a final null character ('\0') which specifies
 in the second case, when using double quotes, '\0' is appended automatically.
 
 # Memory
-```
 单个元素
+```c++
 pointer = new type
 delete pointer;
+```
 
 数组
-pointer = new type[number_of_elements]
-delete [] pointer;
+```c++
+char *p = new char[number_of_elements];
+delete []p;
 ```
 
 `new (std:nothrow)`:

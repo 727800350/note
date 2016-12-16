@@ -1,10 +1,13 @@
 单机测试: `cat input | ./mapper.sh | sort | reducer.sh > output`
 
 # streaming and bistreaming
-- streaming 处理明文的数据, 如果要处理带seq 头的文件, 可以用文件列表作为输入(注意, mapper 读到的key 是字节偏移, value 才是文件路径, 所以需要使用awk取$NF), 然后get 到本地, 手动去seq 头(若要输出seq头的文件, 则相反处理)
-- bistreaming 处理二进制的数据, 输入与输出都是带seq头的kv 数据, 一个kv 是一个record, 对于用户的程序, 输入与输出均为kv 格式, 去seq 与加seq 头都是bistreaming 框架自动完成.
-	如果要输出明文数据, 需要put 到hdfs 上.
-	必须加上`-inputformat "org.apache.hadoop.mapred.SequenceFileAsBinaryInputFormat" -outputformat "org.apache.hadoop.mapred.SequenceFileAsBinaryOutputFormat"`
+- streaming 处理明文的数据
+	- 如果要处理带seq 头的文件, 可以用文件列表作为输入(注意, mapper 读到的key 是字节偏移, value 才是文件路径, 所以需要使用awk取$NF),
+		然后get 到本地, 手动去seq 头(若要输出seq头的文件, 则相反处理)
+- bistreaming 处理二进制的数据, 输入与输出都是带seq头的kv 数据, 一个kv 是一个record
+	- 对于用户的程序, 输入与输出(包括mapper的输出)均为kv 格式, 去seq 与加seq 头都是bistreaming 框架自动完成
+	- 如果要输出明文数据, 需要put 到hdfs 上
+	- 必须加上`-inputformat "org.apache.hadoop.mapred.SequenceFileAsBinaryInputFormat" -outputformat "org.apache.hadoop.mapred.SequenceFileAsBinaryOutputFormat"`
 
 # hadoop cmd
 ## 文件命令
@@ -39,29 +42,29 @@
 - `hadoop fs -dus /path/to/directory`: 显示的文件大小表示的是文件占用的逻辑空间, 这个空间是没有考虑备份数的.
 
 ## 任务管理
-- 调整map并发:hadoop job -set-map-capacity JOB_ID number(Reduce同样)
-- 调整reduce并发:hadoop job -set-reduce-capacity JOB_ID number
-- 调整优先级:hadoop job -set-priority <job-id> <LOW/NORMAL/HIGH/VERY_HIGH>
-- 设置是否运行超过并发数:hadoop job -set-map-over-capacity <job-id> <true/false>
-- 杀掉任务:hadoop job -kill <job-id>
-- 因特殊情况,需要挂起任务:hadoop job -suspend <job-id> <hours>
-- 恢复挂起的任务:hadoop job -recover <job-id>
-- 手动让一个任务失败, 之后hadoop 会再次尝试运行这个任务: hadoop job -fail-task attempt_20150507164539_1386984_m_000236_0
-- 获取状态 hadoop job -status jobid
+- 调整map并发:`hadoop job -set-map-capacity JOB_ID number`(Reduce同样)
+- 调整reduce并发:`hadoop job -set-reduce-capacity JOB_ID number`
+- 调整优先级:`hadoop job -set-priority <job-id> <LOW/NORMAL/HIGH/VERY_HIGH>`
+- 杀掉任务:`hadoop job -kill <job-id>`
+- 因特殊情况,需要挂起任务:`hadoop job -suspend <job-id> <hours>`
+- 恢复挂起的任务:`hadoop job -recover <job-id>`
+- 手动让一个任务失败, 之后hadoop 会再次尝试运行这个任务: `hadoop job -fail-task attempt_20150507164539_1386984_m_000236_0`
+- 获取状态: `hadoop job -status jobid`
+- 获取状态: `hadoop job -info jobid`
 
 # 环境变量
-- mapred_task_partition: 当前任务是全局map或reduce中的第几个,例如0号reduce,则该变量为0, 3号map,则该变量为3, 一般用这个数字来标记put 的文件名字
-- map_input_file: 当前map读入的文件绝对路径
-- mapred_work_output_dir: 计算临时输出路径, 多路数据输出时, 先将文件上传到临时目录`$mapred_work_output_dir`中(文件名字需要和标准输出的part 区分开来),
+- `mapred_task_partition`: 当前任务是全局map或reduce中的第几个,例如0号reduce,则该变量为0, 3号map,则该变量为3, 一般用这个数字来标记put 的文件名字
+- `map_input_file`: 当前map读入的文件绝对路径
+- `mapred_work_output_dir`: 计算临时输出路径, 多路数据输出时, 先将文件上传到临时目录`$mapred_work_output_dir`中(文件名字需要和标准输出的part 区分开来),
 	任务结束后hadoop平台自动将其移动到最终输出目录$mapred_output_dir中, 这样能保证在预测执行打开的情况下, 一个task 的多个attempt不会相互冲突
-- mapred_output_dir: 就是启动MapReduce 任务时设置的 output 目录
-- mapred_job_id: 当前作业ID, mapred_job_id="job_200902192042_0075"
-- mapred_job_name: 当前作业名, mapred_job_name="ps_spider_css_mapreduce_job_setp1"
-- mapred_tip_id: 当前任务ID, mapred_tip_id="task_200902192042_0075_m_000000"
-- mapred_task_id: 当前任务是TIP的第几次重试, mapred_task_id="attempt_200902192042_0075_m_000000_0"
-- mapred_task_is_map: 当前任务是map还是reduce, mapred_task_is_map="true"
-- mapred_map_tasks, 计算的map任务数, mapred_map_tasks="2"
-- mapred_reduce_tasks, 计算的reduce任务数, mapred_reduce_tasks="1"
+- `mapred_output_dir`: 就是启动MapReduce 任务时设置的 output 目录
+- `mapred_job_id`: 当前作业ID, `mapred_job_id="job_200902192042_0075"`
+- `mapred_job_name`: 当前作业名, `mapred_job_name="ps_spider_css_mapreduce_job_setp1"`
+- `mapred_tip_id`: 当前任务ID, `mapred_tip_id="task_200902192042_0075_m_000000"`
+- `mapred_task_id`: 当前任务是TIP的第几次重试, `mapred_task_id="attempt_200902192042_0075_m_000000_0"`
+- `mapred_task_is_map`: 当前任务是map还是reduce, `mapred_task_is_map="true"`
+- `mapred_map_tasks`, 计算的map任务数, `mapred_map_tasks="2"`
+- `mapred_reduce_tasks`, 计算的reduce任务数, `mapred_reduce_tasks="1"`
 
 # job config
 ## IO
