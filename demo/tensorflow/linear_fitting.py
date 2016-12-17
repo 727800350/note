@@ -30,8 +30,8 @@ sess.run(init)
 for step in range(250):
     sess.run(train)
     if step % 20 == 0:
-        print(step, sess.run(W), sess.run(b))
-print(step, sess.run(W), sess.run(b))
+        print(step, sess.run([W, b]))
+print(step, sess.run([W, b]))
 # Learns best fit is W: [0.1], b: [0.3]
 
 sess.close()

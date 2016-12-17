@@ -41,15 +41,11 @@ def fun(x):
 
 # IO
 ```python
+sys.stdout.write()
+sys.stderr.write()
 print >> sys.stdout, 'sth'
 print >> sys.stderr, 'sth'
 print >> sys.stdout, 'pass: %2d, avg_cost: %f' % (num, avg_cost)
-```
-
-print 默认输出的时候会自动换行, 在末尾加一个逗号可以避免换行
-```python
-print 'sth',
-sys.stdout.write('sth')  ## 用这个也可以达到同样的效果
 ```
 
 pprint 模块(pretty printer), 打印 Python 数据结构, 输出格式比较整齐, 便于阅读
@@ -57,20 +53,35 @@ pprint 模块(pretty printer), 打印 Python 数据结构, 输出格式比较整
 from pprint import pprint as pretty
 ```
 
-[(非二进制)从stdin 读入, 输出到stdout](../demo/python/io/stdin_stdout.py)  
-[(二进制)从stdin 读入, 输出到stdout](../demo/python/io/stdin_stdout_binary.py)
-
-If the end of the file has been reached, f.read() will return an empty string ("").  
-`a = ""` 可以使用 `a == ""` 或者 `not a` 来进行判断, 两者都为True
-
 输出到文件
 ```python
-out = open("out.txt","w")  //w is write, a+ 追加
-print>>out, "string", integer
+out = open("out.txt", "w")  //w is write, a+ 追加
+print >> out, "string", integer
 
 out.write(string)
 out.close()
 ```
+
+- `sys.stdin.read(size)`: 读取size个字节, 文件结束, read() will return an empty string (""). 如果省略参数,则读取所有内容.
+
+	```python
+	// kv example
+	while True:
+		kl_byte = sys.stdin.read(4)
+		if kl_byte == "":
+			break
+		kl = st.unpack('i', kl_byte)[0]
+		k = sys.stdin.read(kl)
+		vl = st.unpack('i', sys.stdin.read(4))[0]
+		v = sys.stdin.read(vl)
+
+		sys.stdout.write(st.pack('i', kl))
+		sys.stdout.write(k)
+		sys.stdout.write(st.pack('i', vl))
+		sys.stdout.write(v)
+	```
+- `f.readline()`: 读取文件一行的内容
+- `f.readlines()`: 读取所有的行到一个数组list里面.在避免将所有文件内容加载到内存中,这种方法常常使用,便于提高效率.
 
 ## 文件
 读取文件
@@ -79,10 +90,6 @@ f = open("./data.txt", "r")
 for line in f:
     print line
 ```
-
-- `f.read(size)`: 参数size表示读取的字节数,可以省略.如果省略size参数,则表示读取文件所有内容.
-- `f.readline()`: 读取文件一行的内容
-- `f.readlines()`: 读取所有的行到一个数组list里面.在避免将所有文件内容加载到内存中,这种方法常常使用,便于提高效率.
 
 文件中定位
 这个函数的格式如下(单位是bytes):`f.seek(offset, from_what)`
@@ -103,107 +110,6 @@ When a file is used as an iterator, typically in a for loop (for example, `for l
 In order to make a for loop the most efficient way, the next() method uses a **hidden read-ahead buffer**.
 也就是说,next()方法会预加载后面的内容, 这时如果交叉使用readline()方法则会与next()方法的预加载产生冲突.
 However, using seek() to reposition the file to an absolute position will flush the read-ahead buffer.
-
-## [二进制](http://www.cnblogs.com/gala/archive/2011/09/22/2184801.html)
-有的时候需要用python处理二进制数据,比如,存取文件,socket操作时.这时候,可以使用python的struct模块来完成.可以用 struct来处理c语言中的结构体.
-
-binascii模块包含很多在二进制和ASCII编码的二进制表示转换的方法
-
-- binascii.hexlify(data): Return the hexadecimal representation of the binary data. 
-	Every byte of data is converted into the corresponding 2-digit hex representation(因此变为原来的两倍长)
-- binascii.unhexlify(hexstr): Return the binary data represented by the hexadecimal string hexstr. hexstr 必须为偶数个16 进制digits, otherwise a TypeError is raised.
-```python
-bin = struct.pack(i, 23) ## bin 为 '\x17\x00\x00\x00' 占4 个bytes
-binascii.hexlify(bin) ## 返回'17000000', 占 8 个bytes
-```
- 
-struct模块中最重要的三个函数是pack(), unpack(), calcsize()
-
-- `pack(fmt, v1, v2, ...)`: 按照给定的格式(fmt),把数据封装成字符串(实际上是类似于c结构体的字节流)
-- `unpack(fmt, string)`: 按照给定的格式(fmt)解析字节流string,返回解析出来的tuple
-- `calcsize(fmt)`: 计算给定的格式(fmt)占用多少字节的内存
-
-[binary struct demo](../demo/python/format/pack_unpack.py)
-
-[PyMOTW: Struct](https://pymotwcn.readthedocs.org/en/latest/documents/struct.html)
-
-struct中支持的格式如下表:
-
-big endian or little endian
-
-| Character | Byte order             | Size     | Alignment |
-|-----------|------------------------|----------|-----------|
-| @         | native                 | native   | native    |
-| =         | native                 | standard | none      |
-| <         | little-endian          | standard | none      |
-| >         | big-endian             | standard | none      |
-| !         | network (= big-endian) | standard | none      |
-
-数据是二进制的, 按照big endian 进行的编码, 但是本纪是litte endian, 则按照下面的方法可以正确读取出值
-```
-value = sys.stdin.read(4)
-value = struct.unpack('>i', value)[0]
-```
-
-data type
-
-| Format | C Type             | Python             | 字节数 |
-|--------|--------------------|--------------------|--------|
-| x      | pad byte           | no value           | 1      |
-| c      | char               | string of length 1 | 1      |
-| b      | signed char        | integer            | 1      |
-| B      | unsigned char      | integer            | 1      |
-| ?      | _Bool              | bool               | 1      |
-| h      | short              | integer            | 2      |
-| H      | unsigned short     | integer            | 2      |
-| i      | int                | integer            | 4      |
-| I      | unsigned int       | integer or long    | 4      |
-| l      | long               | integer            | 4      |
-| L      | unsigned long      | long               | 4      |
-| q      | long long          | long               | 8      |
-| Q      | unsigned long long | long               | 8      |
-| f      | float              | float              | 4      |
-| d      | double             | float              | 8      |
-| s      | char[]             | string             | 1      |
-| p      | char[]             | string             | 1      |
-| P      | void *             | long               |        |
-
-注意
-
-1. q和Q只在机器支持64位操作时有意思
-2. 每个格式前可以有一个数字,表示个数
-3. s格式表示一定长度的字符串,4s表示长度为4的字符串,但是p表示的是pascal字符串
-4. P用来转换一个指针,其长度和机器字长相关
-5. 最后一个可以用来表示指针类型的,占4个字节
-
-注意:二进制文件处理时会碰到的问题
-
-我们使用处理二进制文件时,需要用如下方法
-```
-binfile=open(filepath,'rb')    读二进制文件
-binfile=open(filepath,'wb')    写二进制文件
-```
-不同之处有两个地方:
-
-1. 使用'r'的时候如果碰到'0x1A',就会视为文件结束,这就是EOF.
-使用'rb'则不存在这个问题.即,如果你用二进制写入再用文本读出的话,如果其中存在'0X1A',就只会读出文件的一部分.使用'rb'的时候会一直读到文件末尾.
-1. 对于字符串x='abc\ndef',我们可用len(x)得到它的长度为7,\n我们称之为换行符,实际上是'0X0A'.
-当我们用'w'即文本方式写的时候,在windows平台上会自动将'0X0A'变成两个字符'0X0D','0X0A',即文件长度实际上变成8.当用'r'文本方式读取时,又自动的转换成原来的换行符.
-如果换成'wb'二进制方式来写的话,则会保持一个字符不变,读取时也是原样读取.
-所以如果用文本方式写入,用二进制方式读取的话,就要考虑这多出的一个字节了.
-'0X0D'又称回车符.linux下不会变.因为linux只使用'0X0A'来表示换行.
- 
-# random 随机数生成
-- `random.random()`用于生成一个0到1的随机符点数: 0 <= n < 1.0
-- `random.uniform(a, b)`,指定范围内的随机符点数. 如果a > b,则生成的随机数n: a <= n <= b.如果 a <b, 则 b <= n <= a.
-- `random.randint(a, b)`,指定范围内的整数, 生成的随机数n: a <= n <= b
-- `random.randrange([start], stop[, step])`,从指定范围内,按指定基数递增的集合中 获取一个随机数.
-	如:random.randrange(10, 100, 2),结果相当于从[10, 12, 14, 16, ... 96, 98]序列中获取一个随机数.
-	random.randrange(10, 100, 2)在结果上与 random.choice(range(10, 100, 2) 等效.
-- `random.choice(sequence)`从序列中获取一个随机元素  
-- `random.shuffle(x[, random])`,Shuffle the sequence x in place.
-	The optional argument random is a 0-argument function returning a random float in [0.0, 1.0); by default, this is the function random().
-- `random.sample(sequence, k)`,从指定序列中随机获取指定长度的片断.sample函数不会修改原有序列
 
 ```
 list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
@@ -301,7 +207,8 @@ dictionaries are indexed by keys, which can be any immutable type; strings and n
 - heapq.heappop(heap) 弹出最小元素, 同时这个弹出的元素会从heap中被删除
 - heapq.heappushpop(heap, item): The combined action runs more efficiently than heappush() followed by a separate call to heappop().
 - heapq.heapify(x) Transform list x into a heap, in-place, in linear time.
-- heapq.heapreplace(heap, item): Pop and return the smallest item from the heap, and also push the new item. more efficient than a heappop() followed by heappush() 
+- heapq.heapreplace(heap, item): Pop and return the smallest item from the heap, and also push the new item.
+	more efficient than a heappop() followed by heappush() 
 - heapq.nlargest(n, iterable[, key]) Return a list with the n largest elements from the dataset defined by iterable.
 - heapq.nsmallest(n, iterable[, key])
 
@@ -726,6 +633,13 @@ array 的创建
 - np.arange(x) 相当于 np.array(range(x))
 - mp.linspace(start, stop, num=50, endpoint=True): endpoint(true) 表示最后一个点为stop
 - np.fromfunction(): Construct an array by executing a function over each coordinate, therefore has a value `fn(x, y, z)` at coordinate `(x, y, z)`
+
+numpy.random
+
+- np.random.shuffle(): 随机化
+- np.random.permutation(x): 返回x shuffle 的结果; 若x 是整数, 则相当于操作range(x)
+- np.random.randn(n, m): 返回一个 `n * m` 的矩阵, 元素都是标准正态分布的结果
+- np.random.randint(low, high=None, size=None): [low, high), size 可以是整数也可以是一个shape, 比如(3, 4) 表示一个矩阵
 
 array 的操作
 

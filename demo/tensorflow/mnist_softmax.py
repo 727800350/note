@@ -33,7 +33,7 @@ here use matmul(x, W), because x is batched, that is there are many instances in
 W * x is not appropriate
 '''
 
-## loss function using cross_entropy 
+## loss function using cross_entropy
 '''
 The raw formulation of cross-entropy,
     tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(tf.nn.softmax(y)), reduction_indices=[1]))
