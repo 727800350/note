@@ -80,8 +80,6 @@ void foo(vector<int> const &bar); // by const-reference
 You can also choose to pass a pointer to a vector void `foo(vector<int> *bar)`,
 but unless you know what you know exactly what are doing, do not do this.
 
-[confusion demo](../demo/cpp/confusion.cpp)
-
 # [std::string](http://www.cplusplus.com/reference/string/string/)
 - `string (const char* s)`
 - `string (const char* s, size_t n)`: 当用字符数组表示的二进制串中可能含有 0 字符时, 需要明确二机制串的长度
@@ -176,7 +174,7 @@ them acquire:
 
 **By default, all members of a class are private.**
 
-[class demo](../demo/cpp/class_demo.cpp)
+[class demo](../demo/cpp/class/class_demo.cpp)
 
 **Constructors**
 Objects generally need to initialize variables or assign dynamic memory during their process of creation to become
@@ -188,10 +186,10 @@ name but different types or number of parameters.
 The use of destructors is especially suitable when an object assigns dynamic memory during its lifetime and at the
 moment of being destroyed we want to release the memory that the object was allocated.
 
-[class construnctor and destructor](../demo/cpp/class_constructor_destructor.cpp)
+[class construnctor and destructor](../demo/cpp/class/class_constructor_destructor.cpp)
 
 ## Overloading operators
-[class overload operator](../demo/cpp/class_overload_operator.cpp)
+[class overload operator](../demo/cpp/class/class_overload_operator.cpp)
 
 **keyword this**
 The keyword this represents a pointer to the object whose member function is being executed. It is a pointer to
@@ -216,20 +214,20 @@ that class that are currently allocated.
 **const object**
 const对象不能调用非const函数
 
-上面关于const的示例[const demo](../demo/cpp/const.cpp)
+上面关于const的示例[const demo](../demo/cpp/class/const.cpp)
 
 ## Friendship and inheritance
 ### Friend functions
 In principle, private and protected members of a class cannot be accessed from outside the same class in which
 they are declared. However, this rule does not affect friends.
 
-[friend function](../demo/cpp/friend_function.cpp)
+[friend function](../demo/cpp/class/friend_function.cpp)
 
 ### Friend classes
 Just as we have the possibility to define a friend function, we can also define a class as friend of another one,
 granting that first class access to the protected and private members of the second one.
 
-[friend class](../demo/cpp/friend_class.cpp)
+[friend class](../demo/cpp/class/friend_class.cpp)
 
 In this example, we have declared CRectangle as a friend of `CSquare` so that CRectangle member functions could
 have access to the protected and private members of `CSquare`, more concretely to `CSquare::side`, which describes the side width of the square.
@@ -278,7 +276,7 @@ class 派生类名:继承方式 基类名1, 继承方式 基类名2,...,继承�
 1. 调用内嵌成员对象的构造函数,调用顺序按照它们在类中声明的顺序,
 1. 派生类的构造函数体中的内容.
 
-[inheritance construnctor demo](../demo/cpp/inheritance_constructor.cpp)
+[inheritance construnctor demo](../demo/cpp/class/inheritance_constructor.cpp)
 
 派生类的析构函数的功能是在该对象消亡之前进行一些必要的清理工作,析构函数没有类型,也没有参数.
 析构函数的执行顺序与构造函数相反.
@@ -287,28 +285,28 @@ class 派生类名:继承方式 基类名1, 继承方式 基类名2,...,继承�
 1. 调用内嵌成员对象的构造函数,调用顺序按照它们在类中声明的逆顺序
 1. 调用基类构造函数,调用顺序按照它们被继承时声明的逆顺序
 
-[inheritance destrunctor demo](../demo/cpp/inheritance_destructor.cpp)
+[inheritance destrunctor demo](../demo/cpp/class/inheritance_destructor.cpp)
 
 如果某派生类的多个基类拥有同名的成员,同时,派生类又新增这样的同名成员,在这种情况下,派生类成员将覆盖所有基类的同名成员.这就需要显示的指定基类, 才能调用基类的同名成员.
 
-[scope class](../demo/cpp/scope_class.cpp)
+[scope class](../demo/cpp/class/scope_class.cpp)
 
 如果某个派生类的部分或全部直接基类是从另一个共同的基类派生而来,在这些直接基类中,从上一级基类继承来的成员就拥有相同的名称,因此派生类中也就会产生同名现象,
 对这种类型的同名成员也要使用作用域分辨符来唯一标识,而且必须用直接基类进行限定
 
-[scope class2](../demo/cpp/scope_class2.cpp)
+[scope class2](../demo/cpp/class/scope_class2.cpp)
 
 为了解决前面提到的多重拷贝的问题,可以将共同基类设置为**虚基类**,这时从**不同的路径继承过来的同名数据成员在内存中就只有一个拷贝,同一个函数也只有一个映射**.
 虚基类的声明是在派生类的声明过程,其语法形式为:
 ```
 class 派生类名::virtual 继承方式 基类名,
 ```
-[scope virtual class](../demo/cpp/scope_class_virtual.cpp)
+[scope virtual class](../demo/cpp/class/scope_class_virtual.cpp)
 
 虚基类及其派生类的构造函数
 一般而言,派生类只对其直接基类的构造函数传递参数,但是在虚基类中,不管是直接或间接虚基类的所有派生类,都必须在构造函数的成员初始化列表中列出对虚基类的初始化.
 
-[virtual class constructor](../demo/cpp/scope_class_virtual_constructor.cpp)
+[virtual class constructor](../demo/cpp/class/scope_class_virtual_constructor.cpp)
 
 以上例子看上去B0的构造函数好像被调用了三次,但是实际上只有D1类中的D1(int a):B0(a), B1(a), B2(a)
 才是真正的调用了B0构造函数.
@@ -316,7 +314,7 @@ class 派生类名::virtual 继承方式 基类名,
 赋值兼容规则是指在需要基类对象的任何地方都可以使用公有派生类的对象来替代(派生类的对象可以赋值给基类对象)
 在替代之后,派生类对象就可以作为基类的对象使用,但只能使用从基类继承的成员.
 
-[class assignment](../demo/cpp/class_assignment.cpp)
+[class assignment](../demo/cpp/class/class_assignment.cpp)
 
 ### Virtual members
 
