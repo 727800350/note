@@ -67,6 +67,7 @@ out.close()
 	```python
 	// kv example
 	while True:
+		// decode
 		kl_byte = sys.stdin.read(4)
 		if kl_byte == "":
 			break
@@ -75,6 +76,7 @@ out.close()
 		vl = st.unpack('i', sys.stdin.read(4))[0]
 		v = sys.stdin.read(vl)
 
+		// encode
 		sys.stdout.write(st.pack('i', kl))
 		sys.stdout.write(k)
 		sys.stdout.write(st.pack('i', vl))
@@ -88,7 +90,9 @@ out.close()
 ```python
 f = open("./data.txt", "r")
 for line in f:
+	line = line.strip()
     print line
+f.close()
 ```
 
 文件中定位
