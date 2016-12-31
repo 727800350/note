@@ -1,0 +1,61 @@
+图片在内存中的两种形式: Mat(C++ style), IplImage(C style).
+
+Mat
+
+- no longer need to manually allocate its memory and release it as soon as you do not need it. 
+- basically a class with two data parts: 固定大小的matrix header and a pointer to the matrix containing the pixel values 
+- using a reference counting system, each Mat object has its own header, however the matrix may be shared between two instance of them
+	- can create headers which refer to only a subsection of the full data
+	
+		```C++
+		Mat D (A, Rect(10, 10, 100, 100) ); // using a rectangle
+		Mat E = A(Range::all(), Range(1,3)); // using row and column boundaries
+		```
+
+	- 由于默认的赋值操作, 数据部分是共享的, 通过clone() and copyTo() 可以把数据部分也复制
+		```C++
+		Mat B = A.clone();
+		Mat C;
+		A.copyTo(C);
+		```
+
+the OpenCV display system uses BGR colors.
+
+`CV_[The number of bits per item][Signed or Unsigned][Type Prefix]C[The channel number]`
+`CV_8UC3`: unsigned char data type, three channels, so each pixel use 3 unsigned chars
+
+# IO
+
+- `Mat imread(const string& filename, int flags=1)`: loads an image from a file; If the image cannot be read, empty matrix (Mat::data==NULL) is returned.
+	Flags specifying the color type of a loaded image:
+
+	- CV_LOAD_IMAGE_COLOR(> 0)- If set, always convert image to the color one
+	- CV_LOAD_IMAGE_GRAYSCALE(0) - If set, always convert image to the grayscale one
+	- CV_LOAD_IMAGE_UNCHANGED(< 0) loads the image as is (including the alpha channel if present)
+	- CV_LOAD_IMAGE_ANYDEPTH - If set, return 16-bit/32-bit image when the input has the corresponding depth, otherwise convert it to 8-bit.
+
+- `bool imwrite( const string& filename, InputArray img, const vector<int>& params=vector<int>())`
+	- img 可以是Mat 类型
+	- params - This is a int vector to which you have to insert some int parameters specifying the format of the image
+		- JPEG format: You have to puch_back CV_IMWRITE_JPEG_QUALITY first and then a number between 0 and 100 (higher is the better)
+			
+			```C++
+			vector<int> params;  
+		    params.push_back(CV_IMWRITE_JPEG_QUALITY);  
+		    params.push_back(98); 
+			```
+		- PNG format: You have to puch_back CV_IMWRITE_PNG_COMPRESSION first and then a number between 0 and 9 (higher is the better compression, but slower)
+
+			```C++
+			vector<int> params;
+		    params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+		    params.push_back(9);
+			```
+
+时间统计
+```C++
+double t = (double)getTickCount();
+// do something ... 
+t = ((double)getTickCount() - t) / getTickFrequency();
+cout << "Times passed in seconds: " << t << endl;
+```
