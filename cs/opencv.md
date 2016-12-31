@@ -1,6 +1,6 @@
 图片在内存中的两种形式: Mat(C++ style), IplImage(C style).
 
-Mat
+# Mat
 
 - M.rows; 返回图像行数, 也就是图像的宽
 - M.cols; 返回图像列数, 也就是图像的长
@@ -72,3 +72,21 @@ double t = (double)getTickCount();
 t = ((double)getTickCount() - t) / getTickFrequency();
 cout << "Times passed in seconds: " << t << endl;
 ```
+
+Point: a 2D point, specified by its image coordinates x and y
+```C++
+Point pt;
+pt.x = 10;
+pt.y = 8;
+
+Point pt =  Point(10, 8);
+```
+
+Scalar: a 4-element vector. The type Scalar is widely used in OpenCV for passing pixel values.
+`Scalar(a, b, c)` could be defining a BGR color such as: Blue = a, Green = b and Red = c
+
+# Transformation
+- `image.convertTo(new_image, -1, alpha, beta);`: `new_image = alpha * image + beta`.
+- `addWeighted(src1, alpha, src2, beta, r, dst);`: `dst = alpha * src1 + beta * src2 + r`,
+	since we are adding src1 and src2, they both have to be of the same size (width and height) and type.
+
