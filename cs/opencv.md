@@ -2,6 +2,17 @@
 
 Mat
 
+- M.rows; 返回图像行数, 也就是图像的宽
+- M.cols; 返回图像列数, 也就是图像的长
+- M.channels(); 返回通道数. RGB 就是3, 而灰度图像只有一个灰度分量信息, 为1
+- M.depth(); 度量每一个像素中每一个通道的精度, depth数值越大,精度越高.
+	Mat.depth()得到的是一个0~6的数字,分别代表不同的位数,对应关系如下: `enum{CV_8U=0,CV_8S=1,CV_16U=2,CV_16S=3,CV_32S=4,CV_32F=5,CV_64F=6}`
+- M.dims: 矩阵的维度
+- M.elemSize()：矩阵中每一个元素的数据大小(size_t类型), 以Byte 为单位, 例如：type是CV_16SC3，那么elemSize = 3 * 16 / 8 = 6 bytes
+- M.step: 可以理解为Mat矩阵中每一行的"步长", 以字节为基本单位，每一行中所有元素的字节总量，是累计了一行中所有元素、所有通道、所有通道的elemSize1之后的值
+- M.type: 矩阵的类型，包含有矩阵中元素的类型以及通道数信息
+- M.isContinuous(); 返回bool类型表示是否连续存储
+
 - no longer need to manually allocate its memory and release it as soon as you do not need it. 
 - basically a class with two data parts: 固定大小的matrix header and a pointer to the matrix containing the pixel values 
 - using a reference counting system, each Mat object has its own header, however the matrix may be shared between two instance of them
@@ -34,7 +45,9 @@ the OpenCV display system uses BGR colors.
 	- CV_LOAD_IMAGE_UNCHANGED(< 0) loads the image as is (including the alpha channel if present)
 	- CV_LOAD_IMAGE_ANYDEPTH - If set, return 16-bit/32-bit image when the input has the corresponding depth, otherwise convert it to 8-bit.
 
-- `bool imwrite( const string& filename, InputArray img, const vector<int>& params=vector<int>())`
+- `IplImage *img = cvLoadImage("../test_imgs/Lena.jpg");Mat L(img);`: 通过C 的方式读入, 然后再转为Mat
+
+- `bool imwrite(const string& filename, InputArray img, const vector<int>& params=vector<int>())`
 	- img 可以是Mat 类型
 	- params - This is a int vector to which you have to insert some int parameters specifying the format of the image
 		- JPEG format: You have to puch_back CV_IMWRITE_JPEG_QUALITY first and then a number between 0 and 100 (higher is the better)

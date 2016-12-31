@@ -27,3 +27,12 @@ latex/test.tex
 ## metapost
 *.mps
 *.mpx
+
+## opencv
+CMakeFiles
+cmake_install.cmake
+*.jpg
+demo/api/opencv/Makefile
+demo/api/opencv/demo
+demo/api/opencv/demo.cpp
+
