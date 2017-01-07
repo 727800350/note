@@ -191,7 +191,7 @@ while(true){
 - `size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);`
 - `void setbuf(FILE *steam, char *buf);` 将buf设置为stream 的缓冲区. 为了关闭缓冲,可以将buf参数设置为NULL.
 - `void setlinebuf(FILE *stream);`
-- `int snprintf(char *str, size_t size, const char *format, ...);`: write at most size bytes(including the trailing '\0').
+- `int snprintf(char *str, size_t size, const char *format, ...);`: write at most size bytes, including the trailing '\0'('\0' 是自动加的)
 
 printf使用的格式字符如下
 

@@ -165,6 +165,17 @@ c++ 中不要使用 goto, 在goto 之后是不允许定义的新的变量的, �
 
 对象作为参数传递时是传值, 而不是传递对象的地址,如果需要传递地址,需要明确指出.
 
+```C++
+class a{
+public:
+	struct b{
+		int x;
+		int y;
+	};
+};
+```
+要定义一个struct b 类型的变量时, 需要使用namespace, 也就是 `a::b c`;
+
 private, public or protected.
 These specifiers modify the access rights that the members following
 them acquire:
