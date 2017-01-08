@@ -635,6 +635,8 @@ You'll need to parse each backtrace line to extract just the mangled name.
 	sudo tcpdump -i eth1 port 53 -l > dnscap.txt
 TcpDump可以将网络中传送的数据包的"头"完全截获下来提供分析.它支持针对网络层,协议,主机,网络或端口的过滤,并提供and,or,not等逻辑语句来帮助你去掉无用的信息
 
+注意: 如果server 和 client 都在一个机器, 数据包是不经过网卡的, 所以tcpdump 捕获不到.
+
 tcpdump存在于基本的 FreeBSD系统中,由于它需要将网络接口设置为混杂模式,普通用户不能正常执行,但具备root权限的用户可以直接执行它来获取网络上的信息.
 
 ## A short list of the options mostly used
@@ -662,9 +664,7 @@ tcpdump -r input.pcap -C 1000 -w ouput
 但是当tcpdump 从文件读, 而不是从网卡时, -s 选项无效.
 
 ## 表达式 Berkeley Packet Filter (BPF) syntax
-表达式是一个正则表达式,tcpdump利用它作为过滤报文的条件,如果一个报文满足表
-达式的条件,则这个报文将会被捕获.如果没有给出任何条件,则网络上所有的信息包将会
-被截获.
+表达式是一个正则表达式,tcpdump利用它作为过滤报文的条件,如果一个报文满足表达式的条件,则这个报文将会被捕获.如果没有给出任何条件,则网络上所有的信息包将会被截获.
 
 在表达式中一般如下几种类型的关键字,
 
@@ -735,7 +735,8 @@ tcp[13] looks at offset 13 in the TCP header, the number represents the location
 # wireshark
 ## wireshark filter
 - `ip.addr == 10.43.54.65` is equivalent to `ip.src == 10.43.54.65 or ip.dst == 10.43.54.65`
-- Show only SMTP (port 25) and ICMP traffic: `tcp.port eq 25 or icmp`
+- `tcp.port == 25 or icmp`: show only SMTP (port 25) and ICMP traffic
+- `tcp.flags.reset == 1`: 筛选出tcp 包中有reset 标记的
 
 ## process pcap file
 [Linux下如何过滤,分割以及合并 pcap 文件](http://linux.cn/article-4762-1.html)
