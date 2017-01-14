@@ -204,18 +204,32 @@ The value of options is an OR of zero or more of the following constants:
 
 - 阻塞式I/O: 默认情况下, 所有套接字都是阻塞的.
 - 非阻塞式I/O
-- I/O 复用(select/pull)
+- I/O 复用(select/poll/epoll)
 - 信号驱动式I/O(SIGIO)
 - 异步IO
 
 ![模型的比较](https://i.imgbox.com/OsCC0HMm.gif) 
 
 ## IO复用模型
-### Select
-允许进程指示内核等待多个事件中的任何一个发生, 并只在有一个或多个事件发生或经历一段指定的时间(也就是select 超时)后才唤醒它.
-这样就不必为每个client fork 一个子进程来处理. 而是服务任意个客户的单进程程序.
+I/O多路复用通过一种机制, 可以监视多个描述符, 一旦某个描述符就绪(一般是读就绪或者写就绪), 能够通知程序进行相应的读写操作.
+但select, poll, epoll本质上都是同步I/O, 因为他们都需要在读写事件就绪后自己负责进行读写, 也就是说这个读写过程是阻塞的
 
-#### 描述符就绪条件
+[select, poll, epoll之间的区别总结](http://www.cnblogs.com/Anker/p/3265058.html)
+
+### Select
+```C
+while true{
+	select(streams[]);
+    for i in streams[]{
+        if i has data{
+            read or write i;
+		}
+    }
+}
+```
+
+描述符就绪条件
+
 - 满足下面4 个条件中的任何一个时, 一个套接字准备好读
 	1. todo:该套接字接受缓冲区中的数据字节数大于等于套接字接受缓冲区**低水位标记**的当前大小. 对这样的套接字执行读操作不会阻塞并将**返回一个大于0的值**
 	2. 该连接的读半部关闭(也就是接受了FIN的TCP连接). **读不阻塞并返回0**(也就是EOF)(读已经关闭了, 读不了内容, 所以不用阻塞)
@@ -227,7 +241,7 @@ The value of options is an OR of zero or more of the following constants:
 	3. 使用非阻塞式connect 的套接字已建立连接, 或者connect 以失败告终
 	4. 其上有一个套接字错误待处理. 不会阻塞并返回-1, 同时把errno 置为确切的错误条件
 
-Example:
+example:
 
 1. 如果对端TCP发送一个RST(对端主机崩溃并重新启动), 那么该套接字变位可读, 并且read返回-1, 而errno中含有确切的错误代码.
 2. 如果对端TCP发送数据, 那么该套接字变为可读, 并且read 返回一个大于0 的值(即读入数据的字节数).
@@ -241,7 +255,7 @@ Example:
 	ii)如果该值为null, 那么select 会永远等待下去,一直到有一个描述符准备好IO; iii)其他值, select()会等待指定的时间,然后再返回.
 1. 用`FD_ISSET`测试fd_set中的每一个fd ,检查是否有相应的事件发生,如果有,就进行处理.
 
-#### API
+API
 ```C
 #include <sys/select.h>
 int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout); //the nfds 等于关注的fds中的最大值加1  
@@ -253,33 +267,45 @@ void FD_ZERO(fd_set *set); //set the set empty
 example: tcpcliser/tcpservselect01.c; elect/strcliselect02.c
 ```
 
+select的几大缺点:
+
+1. 每次调用select, 都需要把fd集合从用户态拷贝到内核态, 这个开销在fd很多时会很大
+1. 同时每次调用select都需要在内核遍历传递进来的所有fd, 这个开销在fd很多时也很大
+1. select支持的文件描述符数量太小了, 默认是1024
+1. select 正常返回, 仅仅说明有I/O事件发生了, 但并不知道是那几个流, 我们只能无差别轮询所有流, 找出能读出数据, 或者写入数据的流, 对他们进行操作. 因此有O(n)的无差别轮询复杂度.
+
 ### poll
-poll库是在linux2.1.23中引入的,windows平台不支持poll.  
-poll与select的基本方式相同,都是先创建一个关注事件的描述符的集合,然后再去等待这些事件发生,然后再轮询描述符集合,检查有没有事件发生,如果有,就进行处理.
-因此,poll有着与select相似的处理流程:  
-
-1. 创建描述符集合,设置关注的事件  
-1. 调用poll(),等待事件发生.下面是poll的原型: `int poll(struct pollfd *fds, nfds_t nfds, int timeout);`
-1. 轮询描述符集合,检查事件,处理事件.
-
-在这里要说明的是,poll与select的主要区别在与,select需要为读,写,异常事件分配创建一个描述符集合,最后轮询的时候,需要分别轮询这三个集合.
+poll的实现和select非常相似,只是描述fd集合的方式不同,poll使用pollfd结构而不是select的fd_set结构,其他的都差不多.
+poll与select的主要区别在与,select需要为读,写,异常事件分配创建一个描述符集合,最后轮询的时候,需要分别轮询这三个集合.
 而poll只需要一个集合,在每个描述符对应的结构上分别设置读,写,异常事件,最后轮询的时候,可以同时检查三种事件.
 
-#### API
-#include <poll.h>
-- `int poll(struct pollfd *fdarray, unsigend long nfds, int timeout)`
+### epoll
+[我读过的最好的epoll讲解](https://my.oschina.net/dclink/blog/287198)
+
 ```C
-struct pollfd{
-	int fd; //descriptor to check
-	short events; //events of interset on fd
-	short revents; //events that occuring on fd, returend events
-};
+while true{
+	active_stream[] = epoll_wait(epollfd);
+	for i in active_stream[]{
+		read or write i;
+	}
+}
 ```
+epoll提供了三个函数: `#include <sys/epoll.h>`
 
-- timeout值, INFTIM: 永远等待; 0: 立即返回; >0: 等待指定时间
-- return value: 若有就绪描述符, 则为其数目, 若超时则为0, 若出错则为-1
+- `int epoll_create(int size)`: 创建一个epoll句柄, size 要大于 0
+- `int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)`: 注册要监听的事件类型, op指定add, mod, del
+- `int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);` 等待事件的产生
 
-example: tcpcliser/tcpservpoll01.c
+针对select 的4个缺点
+
+1. 对于第一个缺点, epoll的解决方案在epoll_ctl函数中, 每次注册新的事件到epoll句柄中时(在epoll_ctl中指定EPOLL_CTL_ADD), 会把所有的fd拷贝进内核, 而不是在epoll_wait的时候重复拷贝.
+	epoll保证了每个fd在整个过程中只会拷贝一次.
+1. 对于第二个缺点, epoll的解决方案不像select或poll一样每次都把current轮流加入fd对应的设备等待队列中, 而只在epoll_ctl时把current挂一遍(这一遍必不可少)并为每个fd指定一个回调函数,
+	当设备就绪, 唤醒等待队列上的等待者时, 就会调用这个回调函数, 而这个回调函数会把就绪的fd加入一个就绪链表).
+	epoll_wait的工作实际上就是在这个就绪链表中查看有没有就绪的fd(利用schedule_timeout()实现睡一会,判断一会的效果, 和select实现中的第7步是类似的).
+1. 对于第三个缺点, epoll没有这个限制, 它所支持的FD上限是最大可以打开文件的数目, 这个数字一般远大于2048.
+	举个例子,在1GB内存的机器上大约是10万左右,具体数目可以cat /proc/sys/fs/file-max察看,一般来说这个数目和系统内存关系很大.
+1. 对于第四个缺点, epoll 使用回调函数的形式, 避免了全部轮询
 
 # 高级IO函数
 ## 套接字超时
