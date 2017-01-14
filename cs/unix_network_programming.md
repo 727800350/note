@@ -1,25 +1,12 @@
 Unix network Programming note
 
-Note: This markdown file also contains other resources, but it is mostly from UNP.
-
 [Best C/C++ Network Library](http://stackoverflow.com/questions/118945/best-c-c-network-library)  
 Aggregated List of Libraries
 
 - Boost.Asio is really good, though the documentation is scarce.
-- ACE is also good, a bit more mature and has a couple of books to support it.
-- C++ Network Library
-- POCO
-- Qt
-- Raknet
 - ZeroMQ (C++)
-- nanomsg (C Library)
 - Berkeley Sockets
 - libevent
-- Apache APR
-- yield
-- Winsock2(Windows only)
-- wvstreams
-- zeroc
 - libcurl
 
 [C/C++ Web Server Library?](http://stackoverflow.com/questions/175507/c-c-web-server-library)
@@ -59,7 +46,7 @@ TCP标记和他们的意义如下所列:
 * U : URG - 紧急
 * E : ECE - 显式拥塞提醒回应
 * W : CWR - 拥塞窗口减少
-* 
+ 
 # UDP
 We also say that UDP provides a connectionless service, as there need not be any long-term relationship between a UDP client and server. 
 For example, a UDP client can create a socket and send a datagram to a given server and then immediately send another datagram on the same socket to a different server. 
@@ -67,16 +54,17 @@ Similarly, a UDP server can receive several datagrams on a single UDP socket, ea
 
 ![UDP客户/服务器程序所用的套接字函数](http://pic002.cnblogs.com/images/2012/367190/2012081121141279.jpg)  
 如上图所示, 客户不与服务器建立连接, 而是只管使用`sendto`函数给服务器发送数据报, 其中必须指定目的地(即服务器)第地址作为参数. 
-类似的, 服务器不接受来自客户的连接, 而是只管调用`recvfrom` 函数, 等待来自某个客户的数据到达. recvfrom将接收到的数据与client 的地址一并返回, 因此服务器可以把响应发送给正确的客户.
+类似的, 服务器不接受来自客户的连接, 而是只管调用`recvfrom` 函数, 等待来自某个客户的数据到达.
+recvfrom将接收到的数据与client 的地址一并返回, 因此服务器可以把响应发送给正确的客户.
 
-写一个长度为0 的数据报是可行的. 在UDP情况下, 这会形成一个只包含一个IP首部和一个UDP首部而没有数据的IP数据报. 
-这也意味着对于UDP协议, recvfrom返回0 值是可接受的: 
+写一个长度为0 的数据报是可行的. 在UDP情况下, 这会形成一个只包含一个IP首部和一个UDP首部而没有数据的IP数据报. 这也意味着对于UDP协议, recvfrom返回0 值是可接受的.
 他并不像TCP套接字上read 返回0值那样表示对端已关闭连接. 既然UDP是无连接的, 因此也没有诸如关闭一个UDP连接之类的事情.
 
 大多数TCP服务器是并发的, 而大多数UDP服务器是迭代的
 
 ## API
-	inet_pton: presentation to network
+- `int inet_pton(int af, const char *src, void *dst)`: presentation to network, 将点分十进制 －> 二进制整数, dst 的实际类型为`struct in_addr`
+- `const char *inet_ntop(int af, const void *src, char *dst, socklen_t cnt)`: cnt指缓存区dst的大小, 如果缓存区太小无法存储地址的值, 则返回一个空指针, 并将errno置为ENOSPC
 
 # Signal
 就是告知某个进程发生了某个事件的通知, 有时也称为软件中断.
@@ -92,30 +80,23 @@ When a signal is blocked, it can be delivered, but the resulting pending signal 
 
 一般有3 种方式进行操作
 
-1. eg: `signal(SIGINT ,SIG_IGN )`;  
-`SIG_IGN` 代表忽略信号,SIGINT信号代表由`InterruptKey`产生,通常是`CTRL+C` 或者是`DELETE` .发送给所有ForeGround Group的进程.
-2. eg: `signal(SIGINT ,SIG_DFL)`;  
-`SIG_DFL`代表执行系统默认操作,其实对于大多数信号的系统默认动作时终止该进程.这与不写此处理函数是一样的.
+1. `signal(SIGINT ,SIG_IGN)`: `SIG_IGN` 代表忽略信号. SIGINT信号代表由`InterruptKey`产生,通常是`CTRL+C` 或者是`DELETE` .发送给所有ForeGround Group的进程.
+2. `signal(SIGINT ,SIG_DFL)`: `SIG_DFL`代表执行系统默认操作,其实对于大多数信号的系统默认动作时终止该进程.这与不写此处理函数是一样的.
 3.  自定义的信号或是信号处理函数
 
 ## 内核如何实现信号的捕捉
-如果信号的处理动作是用户自定义函数,在信号递达时就调用这个函数,这称为捕捉信号.由于信号处理函数的代码是在用户空间的,处理过程比较复杂,举例如下:[捕捉信号](http://learn.akae.cn/media/ch33s04.html)
+如果信号的处理动作是用户自定义函数, 在信号递达时就调用这个函数, 这称为捕捉信号. 由于信号处理函数的代码是在用户空间的, 处理过程比较复杂:
 
-1. 用户程序注册了`SIGQUIT`信号的处理函数`sighandler`.
-1. 当前正在执行`main`函数,这时发生中断或异常切换到内核态.
-1. 在中断处理完毕后要返回用户态的`main`函数之前检查到有信号`SIGQUIT`递达.
-1. 内核决定返回用户态后不是恢复main函数的上下文继续执行,而是执行`sighandler`函数,**`sighandler`和`main`函数使用不同的堆栈空间,它们之间不存在调用和被调用的关系,是两个独立的控制流程**.
-1. `sighandler`函数返回后自动执行特殊的系统调用`sigreturn`再次进入内核态.
-1. 如果没有新的信号要递达,这次再返回用户态就是恢复`main`函数的上下文继续执行了.
+1. 用户程序注册了SIGQUIT信号的处理函数sighandler.
+1. 当前正在执行main函数,这时发生中断或异常切换到内核态.
+1. 在中断处理完毕后要返回用户态的`main`函数之前检查到有信号SIGQUIT递达.
+1. 内核返回用户态后不是恢复main函数的上下文继续执行, 而是执行sighandler函数. sighandler和main函数使用不同的堆栈空间, 它们之间不存在调用和被调用的关系,是两个独立的控制流程.
+1. sighandler函数返回后自动执行特殊的系统调用sigreturn再次进入内核态.
+1. 如果没有新的信号要递达,这次再返回用户态就是恢复main函数的上下文继续执行了.
 
-当捕捉到信号时,不论进程的主控制流程当前执行到哪儿,都会先跳到信号处理函数中执行,从信号处理函数返回后再继续执行主控制流程.信号处理函数是一个单独的控制流程,因为它和主控制流程是异步的,二者不存在调用和被调用的关系,并且使用不同的堆栈空间.引入了信号处理函数使得一个进程具有多个控制流程,如果这些控制流程访问相同的全局资源(全局变量,硬件资源等),就有可能出现冲突.
-
-When the kernel is returning from an exception handler and is ready to pass control to process p, 
-it **checks the set of unblocked pending signals** (pending & ~blocked) for process p.  
-
-- If this set is empty (the usual case), then the kernel passes control to the next instruction (Inext) in the logical control flow of p.  
-- However, if the set is nonempty, then the kernel chooses some signal k in the set (typically the smallest k) and forces p to receive signal k.  
-The receipt of the signal triggers some action by the process. Once the process completes the action, then control passes back to the next instruction (Inext) in the logical control flow of p. 
+当捕捉到信号时, 不论进程的主控制流程当前执行到哪儿, 都会先跳到信号处理函数中执行, 从信号处理函数返回后再继续执行主控制流程.
+信号处理函数是一个单独的控制流程, 因为它和主控制流程是异步的, 二者不存在调用和被调用的关系,并且使用不同的堆栈空间.
+引入了信号处理函数使得一个进程具有多个控制流程, 如果这些控制流程访问相同的全局资源(全局变量, 硬件资源等), 就有可能出现冲突.
 
 ## Pause
     #include <unistd.h>
@@ -174,7 +155,7 @@ pause函数使调用进程挂起直到有信号递达.
 	从`sig_alrm`函数返回时`SIGALRM`信号自动解除屏蔽.然后自动执行系统调用`sigreturn`再次进入内核,再返回用户态继续执行进程的主控制流程(`main`函数调用的`mysleep`函数).
 1. `pause`函数返回-1,然后调用`alarm(0)`取消闹钟,调用`sigaction`恢复`SIGALRM`信号以前的处理动作.
 
-现在重新审视例 33.2 "mysleep",设想这样的时序:
+现在重新审视上面"mysleep",设想这样的时序:
 
 1. 注册SIGALRM信号的处理函数.
 1. 调用`alarm(nsecs)`设定闹钟.
@@ -191,66 +172,49 @@ pause函数使调用进程挂起直到有信号递达.
 使用`sigsuspend` 代替可以解决`pause` 的问题.
 
 ## API
-函数signal 的正常函数原型:
-`void (\*signal (int signo, void (\* func)(int)))(int);`  
+函数signal 的正常函数原型: `void (*signal (int signo, void (* func)(int)))(int);`  
 为了简化, 我们定义  
-
-	typedef void Sigfunc(int);
-	Sigfunc *signal(int signo, Sigfunc *func); 
-	func 是指向信号处理函数的指针, 返回值也是指向信号处理函数的指针
+```C
+typedef void Sigfunc(int);
+Sigfunc *signal(int signo, Sigfunc *func); 
+func 是指向信号处理函数的指针, 返回值也是指向信号处理函数的指针
+```
 
 僵死进程
-
-    #include <sys/wait.h>
-    pid_t wait(int *status);
-    pid_t waitpid(pid_t pid, int *status, int options);
+```C
+#include <sys/wait.h>
+pid_t wait(int *status);
+pid_t waitpid(pid_t pid, int *status, int options); if pid == -1: meaning wait for any child process.
+```
 
 Used to wait for **state changes** in a child of the calling process, and obtain information about the child whose state has changed.  
 A state change is considered to be: the child terminated; the child was stopped by a signal; or the child was **resumed by a signal**.  
-In the case of a terminated child, performing a wait allows the system to release the resources associated with the child; if a wait is not performed, then the terminated child remains in a "zombie" state
+In the case of a terminated child, performing a wait allows the system to release the resources associated with the child;
+if a wait is not performed, then the terminated child remains in a "zombie" state
 If a child has already changed state, then these calls return immediately.  Otherwise they block until either a child changes state or a signal handler interrupts the call
 
-if pid == -1: meaning wait for any child process.
-
 The value of options is an OR of zero or more of the following constants:
-WNOHANG最常用的选项    return immediately if no child has exited.
-WUNTRACED  also return if a child has stopped 
-WCONTINUED also return if a stopped child has been resumed by delivery of SIGCONT.
+
+- WNOHANG: return immediately if no child has exited, 最常用的选项
+- WUNTRACED: also return if a child has stopped
+- WCONTINUED: also return if a stopped child has been resumed by delivery of SIGCONT
 
 # I/O 模型
-阻塞操作是指在执行设备操作时若不能获得资源则挂起进程,直到满足可操作的条件后再进行操作.
-
 在Unix 下的可用的5 中I/O 模型  
-阻塞式I/O;
-非阻塞式I/O;
-I/O 复用(select/pull);
-信号驱动式I/O(SIGIO);
-异步IO.
 
-- 阻塞式IO模型
-默认情况下, 所有套接字都是阻塞的.
-以数据报套接字为例  
-[阻塞式IO模型](http://www.kankanews.com/ICkengine/wp-content/plugins/wp-o-matic/cache/5415ca1f52_063846-CPcp-255033.jpg)
+- 阻塞式I/O: 默认情况下, 所有套接字都是阻塞的.
+- 非阻塞式I/O
+- I/O 复用(select/pull)
+- 信号驱动式I/O(SIGIO)
+- 异步IO
 
-- 非阻塞式IO  
-![非阻塞式IO](http://images.cnblogs.com/cnblogs_com/yjf512/201205/201205310957235923.jpg)
-
-- IO复用模型  
-![IO复用模型](http://blog.chinaunix.net/attachment/201206/20/10275706_1340176181jjx0.jpg)
-
-- 信号驱动式IO  
-![信号驱动式IO](http://www.kankanews.com/ICkengine/wp-content/plugins/wp-o-matic/cache/5415ca1f52_064039-xaMw-255033.jpg)
-
-- 异步IO模型  
-![异步IO模型](http://images.cnblogs.com/cnblogs_com/yjf512/201205/201205310957257186.jpg)
-
-- 5 中模型的比较  
-![比较](http://hi.csdn.net/attachment/201012/24/0_129318173593Bo.gif) 
+![模型的比较](https://i.imgbox.com/OsCC0HMm.gif) 
 
 ## IO复用模型
 ### Select
-允许进程指示内核等待多个(**我们感兴趣的**)事件中的任何一个发生, 并只在有一个或多个事件发生或经历一段指定的时间后才唤醒它.  
+允许进程指示内核等待多个事件中的任何一个发生, 并只在有一个或多个事件发生或经历一段指定的时间(也就是select 超时)后才唤醒它.
 这样就不必为每个client fork 一个子进程来处理. 而是服务任意个客户的单进程程序.
+
 #### 描述符就绪条件
 - 满足下面4 个条件中的任何一个时, 一个套接字准备好读
 	1. todo:该套接字接受缓冲区中的数据字节数大于等于套接字接受缓冲区**低水位标记**的当前大小. 对这样的套接字执行读操作不会阻塞并将**返回一个大于0的值**
@@ -263,69 +227,59 @@ I/O 复用(select/pull);
 	3. 使用非阻塞式connect 的套接字已建立连接, 或者connect 以失败告终
 	4. 其上有一个套接字错误待处理. 不会阻塞并返回-1, 同时把errno 置为确切的错误条件
 
-Example:  
+Example:
 
-1. 如果对端TCP发送一个RST(对端主机崩溃并重新启动), 那么该套接字变位可读, 并且`read`返回-1, 而`errno`中含有确切的错误代码.
-2. 如果对端TCP发送数据, 那么该套接字变位可读, 并且read 返回一个大雨0 的值(即读入数据的字节数).
+1. 如果对端TCP发送一个RST(对端主机崩溃并重新启动), 那么该套接字变位可读, 并且read返回-1, 而errno中含有确切的错误代码.
+2. 如果对端TCP发送数据, 那么该套接字变为可读, 并且read 返回一个大于0 的值(即读入数据的字节数).
 
-**使用select库的步骤**:
+使用select库的步骤:
 
-1. 创建所关注的事件的描述符集合(`fd_set`),对于一个描述符,可以关注其上面的读(read),写(write),异常(exception)事件,所以通常,要创建三个fd_set, 当如如果不关注, 可以设为`null`, 一个用来收集关注读事件的描述符,一个用来收集关注写事件的描述符,另外一个用来收集关注异常事件的描述符集合
-2. 然后调用`FD_SET` 对集合进程初始化, 然后用`FD_SET` 打开需要关注的事件
-2. 调用select(),等待事件发生.这里需要注意的一点是,select的阻塞与是否设置非阻塞I/O是没有关系的.  
-其中,最后一个参数timeout,可以设置select等待的时间.i)如果该值设置为0,那么,select()在检查描述符后就立即返回.ii)如果该值为`null`;那么select 会永远等待下去,一直到有一个描述符准备好IO; iii)其他, 那么,select()会等待指定的时间,然后再返回.select()的返回值指定了发生事件的fd个数
+1. 创建所关注的事件的描述符集合(`fd_set`),对于一个描述符,可以关注其上面的读(read), 写(write), 异常(exception)事件,所以通常,要创建三个fd_set, 如果不关注, 可以设为null
+1. 然后调用FD_SET 对集合进程初始化, 然后用FD_SET 打开需要关注的事件
+1. 调用select(),等待事件发生. 这里需要注意的一点是,select的阻塞与是否设置非阻塞I/O是没有关系的. select()的返回值指定了发生事件的fd个数.
+	其中,最后一个参数timeout,可以设置select等待的时间.i)如果该值设置为0, select()在检查描述符后就立即返回;
+	ii)如果该值为null, 那么select 会永远等待下去,一直到有一个描述符准备好IO; iii)其他值, select()会等待指定的时间,然后再返回.
 1. 用`FD_ISSET`测试fd_set中的每一个fd ,检查是否有相应的事件发生,如果有,就进行处理.
 
-在批量方式下(将标准输入/输出分别重定向到两个文件, 而标准输入的文件中有很多行).  
-**标准输入中的EOF并不意味着我们同时也完成了从套接字的读入**; 因为可能仍有请求在去往服务器的路上, 或者仍有应答在返回客户的路上(**实际情况中必须考虑带宽**).  
-所以我们需要一种关闭TCP连接其中一半的方法. 也就是说, 我们想给服务器发送一个FIN, 告诉它我们已经完成了数据发送, 但是仍然保持套接字描述符打开以便读取(这样client 可以继续从套接字读数据, server 在读到EOF时, 就意味着client 发给server的数据已经全部读完了). 这个功能将有`shutdown` 完成.
-
-
 #### API
-
-    #include <sys/select.h>
-    int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
-	//the nfds 等于关注的fds中的最大值加1  
-    void FD_CLR(int fd, fd_set *set);
-    int  FD_ISSET(int fd, fd_set *set);  //test
-    void FD_SET(int fd, fd_set *set);
-    void FD_ZERO(fd_set *set); //set the set empty
+```C
+#include <sys/select.h>
+int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout); //the nfds 等于关注的fds中的最大值加1  
+void FD_CLR(int fd, fd_set *set);
+int FD_ISSET(int fd, fd_set *set);  //test
+void FD_SET(int fd, fd_set *set);
+void FD_ZERO(fd_set *set); //set the set empty
 	
-	example: tcpcliser/tcpservselect01.c; elect/strcliselect02.c
-
-当一个服务器在处理多个客户时, 他绝对不能阻塞只与单个客户相关的某个函数调用. 否则可能导致服务器被挂起, 拒绝为所有其他客户提供服务. 这就是所谓的拒绝服务(denial of service)攻击todo: 这个攻击的意思不是耗尽服务器资源吗? 难道是以这种方式耗尽的.
+example: tcpcliser/tcpservselect01.c; elect/strcliselect02.c
+```
 
 ### poll
 poll库是在linux2.1.23中引入的,windows平台不支持poll.  
-poll与select的基本方式相同,都是先创建一个关注事件的描述符的集合,然后再去等待这些事件发生,然后再轮询描述符集合,检查有没有事件发生,如果有,就进行处理.因此,poll有着与select相似的处理流程:  
-(1)创建描述符集合,设置关注的事件  
-(2)调用poll(),等待事件发生.下面是poll的原型:  
-`int poll(struct pollfd *fds, nfds_t nfds, int timeout);`
-类似select,poll也可以设置等待时间,效果与select一样.  
-(3)轮询描述符集合,检查事件,处理事件.
+poll与select的基本方式相同,都是先创建一个关注事件的描述符的集合,然后再去等待这些事件发生,然后再轮询描述符集合,检查有没有事件发生,如果有,就进行处理.
+因此,poll有着与select相似的处理流程:  
 
-在这里要说明的是,poll与select的主要区别在与,select需要为读,写,异常事件分配创建一个描述符集合,最后轮询的时候,需要分别轮询这三个集合.而poll只需要一个集合,在每个描述符对应的结构上分别设置读,写,异常事件,最后轮询的时候,可以同时检查三种事件.
+1. 创建描述符集合,设置关注的事件  
+1. 调用poll(),等待事件发生.下面是poll的原型: `int poll(struct pollfd *fds, nfds_t nfds, int timeout);`
+1. 轮询描述符集合,检查事件,处理事件.
+
+在这里要说明的是,poll与select的主要区别在与,select需要为读,写,异常事件分配创建一个描述符集合,最后轮询的时候,需要分别轮询这三个集合.
+而poll只需要一个集合,在每个描述符对应的结构上分别设置读,写,异常事件,最后轮询的时候,可以同时检查三种事件.
 
 #### API
+#include <poll.h>
+- `int poll(struct pollfd *fdarray, unsigend long nfds, int timeout)`
+```C
+struct pollfd{
+	int fd; //descriptor to check
+	short events; //events of interset on fd
+	short revents; //events that occuring on fd, returend events
+};
+```
 
-    #include<poll.h>
-    int poll(struct pollfd *fdarray, unsigend long nfds, int timeout);
-    返回: 若有就绪描述符, 则为其数目, 若超时则为0, 若出错则为-1
-	
-	struct pollfd{
-		int fd; //descriptor to check
-		short events; //events of interset on fd
-		short revents; //events that occuring on fd, returend events
-	};
+- timeout值, INFTIM: 永远等待; 0: 立即返回; >0: 等待指定时间
+- return value: 若有就绪描述符, 则为其数目, 若超时则为0, 若出错则为-1
 
-    timeout值, 说明
-    INFTIM, 永远等待
-    0, 立即返回
-    >0, 等待指定时间
-
-	example: tcpcliser/tcpservpoll01.c
-
-如果我们不再关心某个特定描述符, 那么可以把与它对应的`pollfd`结构的`fd` 成员设置成一个负值. `poll` 函数将忽略这样的`pollfd` 结构的`events` 成员, 返回时, 将他的`revents`成员的值置为0.
+example: tcpcliser/tcpservpoll01.c
 
 # 高级IO函数
 ## 套接字超时
@@ -335,7 +289,7 @@ poll与select的基本方式相同,都是先创建一个关注事件的描述符
 1. 在`select`中阻塞等待IO(select 有内置的时间限制), 以此代替直接阻塞在read或write调用上
 1. 使用较新的`SO_RECVTIMEO`和`SO_SNDTIMEO`套接字选项(但是并非所有实现都支持这两个套接字).
 
-	example: lib/connect_timeo.c, advio/dgclitimeo.c, lib/readable_timeo.c
+example: lib/connect_timeo.c, advio/dgclitimeo.c, lib/readable_timeo.c
 
 ## 高级轮询技术
 Solaris 上名为`/dev/null`的特殊文件提供了一个可扩展的轮询大量描述符的方法.  
@@ -343,27 +297,21 @@ select 和 poll 存在的一个问题是, 每次调用它们都得传递待查�
 循环等待事件发生, 每次循环回来时不必再次设置该列表.
 
 ### fcntl(file control) 函数
+```C
+#include <unistd.h>
+#include <fcntl.h>
+int fcntl(int fd, int cmd, ... /* arg */ );
 
-    #include <unistd.h>
-    #include <fcntl.h>
-
-    int fcntl(int fd, int cmd, ... /* arg */ );
-
-    F_SETFL, O_NONBLOCK 设置套接字为非阻塞式IO
-    F_SETFL, O_ASYNC 设置套接字为信号驱动式IO
-    
-    F_SETOWN 设置套接字属主
-    F_GETOWN 获取套接字属主
-    
-    使用fcntl开启非阻塞式IO的典型代码:
-    int flags;
-    if((flags = fcntl(fd, F_GETFL,0)) < 0)
-    	err_sys("F_GETFL error");
-    flags |= O_NONBLOCK;
-    if(fcntl(fd, F_SETFL, flags) < 0)
-    	err_sys("F_SETFL error");
-	设置某个文件状态标志的唯一正确的方法是: 先取得当前标志, 与新标志逻辑或后在设置标志. 如果不取得之前的标志而直接设置, 则之前的标志就会丢失
-
+使用fcntl开启非阻塞式IO的典型代码:
+int flags = 0;
+if((flags = fcntl(fd, F_GETFL, 0)) < 0){
+	fprintf(stderr, "F_GETFL error");
+}
+flags |= O_NONBLOCK;
+if(fcntl(fd, F_SETFL, flags) < 0){
+	fprintf(stderr, "F_SETFL error");
+}
+```
 
 ### 可重入函数
 若一个程序或子程序可以"安全的被并行执行(Parallel computing)",则称其为可重入(reentrant或re-entrant)的.
@@ -376,7 +324,8 @@ select 和 poll 存在的一个问题是, 每次调用它们都得传递待查�
 1. 不能依赖于单实例模式资源的锁.
 1. 不能调用(call)不可重入的函数(有呼叫(call)到的函数需满足前述条件).
 
-多"用户/对象/进程优先级"以及多进程,一般会使得对可重入代码的控制变得复杂.同时, **IO代码通常不是可重入的**,因为他们依赖于像磁盘这样共享的,单独的(类似编程中的静态(Static),全域(Global))资源.
+多"用户/对象/进程优先级"以及多进程,一般会使得对可重入代码的控制变得复杂.
+同时, **IO代码通常不是可重入的**,因为他们依赖于像磁盘这样共享的,单独的(类似编程中的静态(Static),全域(Global))资源.
 
 调用了malloc或free,因为malloc也是用**全局链表来管理堆**的  
 调用了标准I/O库函数.标准I/O库的很多实现都以不可重入的方式使用**全局数据结构**.
@@ -384,22 +333,20 @@ select 和 poll 存在的一个问题是, 每次调用它们都得传递待查�
 #### errno 变量
 errno 变量存在不可重入的问题, 这个整型变量历来每个进程各有一个副本. 但是同一个进程的各个线程共享一个errno 变量.
 
-	if(close(fd) < 0){
-		fprintf(stderr,"close error, errno=%d\n", errno);
-		exit(1);
+从close 系统调用返回时把错误代码存入errno到稍后由程序显示errno 的值之间存在一个小的时间窗口. 
+期间同一个进程内的另一个执行线程(例如一个信号处理函数的某次调用) 可能改变了errno 的值.
+就信号处理函数考虑这个问题, 可通过把信号处理函数编写成预先保存并事后恢复errno 的值加以避免, 代码如下:
+```C
+void sig_alarm(int signo){
+	int errno_save;
+	errno_save = errno; //save its value en entry
+	if(write(...) != nbytes){
+		fprintf(stderr, "write error, errno=%d\n,errno);
+		errno = errno_save;
 	}
-	从close 系统调用返回时把错误代码存入errno到稍后由程序显示errno 的值之间存在一个小的时间窗口. 
-	期间同一个进程内的另一个执行线程(例如一个信号处理函数的某次调用) 可能改变了errno 的值.
-	就信号处理函数考虑这个问题, 可通过把信号处理函数编写成预先保存并事后恢复errno 的值加以避免, 代码如下:
-
-    void sig_alarm(int signo){
-    	int errno_save;
-    	errno_save = errno; //save its value en entry
-    	if(write(...) != nbytes){
-    		fprintf(stderr, "write error, errno=%d\n,errno);
-    	errno = errno_save;
-    }
-	这段代码中我们, 在信号处理函数中调用了fpritnf 这个标准IO 函数, 它引入了另外一个重入问题.
+}
+```
+这段代码中我们, 在信号处理函数中调用了fpritnf 这个标准IO 函数, 它引入了另外一个重入问题.
 
 # 守护进程和inetd 超级服务器
 要启动一个守护进程,可以采取以下的几种方式:
