@@ -12,7 +12,7 @@ if [ -f $HOME/git/docker/.dockerfunc ]; then
 fi
 
 user=`whoami`
-uname -a | grep -i macbook 1>/dev/null 2>&1
+uname -a | grep Darwin 1>/dev/null 2>&1
 if [ $? -eq 0 ]
 then
 	os="mac"
