@@ -83,7 +83,7 @@ but unless you know what you know exactly what are doing, do not do this.
 # [std::string](http://www.cplusplus.com/reference/string/string/)
 - `string (const char* s)`
 - `string (const char* s, size_t n)`: 当用字符数组表示的二进制串中可能含有 0 字符时, 需要明确二机制串的长度
-- `size()` or `length()`: Return length of string
+- `size()` or `length()`: Return length of string, `capacity()` 返回的是storage space currently allocated for the string
 - `c_str()`: 返回一个分配给`const char*`的地址,其内容已设定为**不可变更**
 - `find()`: 参数可以为 `string, char, const char*`类型, 若没有找到, 返回std::string::npos
 

@@ -25,8 +25,8 @@
 - 如果传递二维数组 `arr[2][3]`, 那么形参指向 `int ( *)[3]` 类型(行数组)
 
 ```
-#include <sys/types.h>  
-u_int64_t, int64_t, u_int32_t, int32_t, u_int16_t, int16_t, u_int8_t, int8_t ...
+#include <stdint.h>
+uint64_t, int64_t, uint32_t, int32_t, uint16_t, int16_t, uint8_t, int8_t ...
 ```
 
 ## char
