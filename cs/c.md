@@ -1,10 +1,3 @@
-# Intro
-写C代码: 使用C的语法, 但是使用g++ 来进行编译
-
-- C++ 中有true/false 布尔值.
-- 潜在情况下可以使用C++ 的stl 模块库
-- 第三方封装好的C++ 库
-
 # 运算符
 [优先级表](https://www.slyar.com/blog/c-operator-priority.html)
 
@@ -18,11 +11,7 @@
 注: bitand, bitor, xor, and, or 是C++标准中的
 
 # Data Types
-**当把数组作为参数传递给一个函数后, 实际上传递的是一个指针, 所以在函数里面用sizeof和在函数外面对数组用sizeof 得到的结果是不一样的.**
-这个指针的指向类型和数组中元素的类型一样, 例如:
-
-- 如果传递一维数组`int arr[3]`, 那么形参指向int 类型
-- 如果传递二维数组 `arr[2][3]`, 那么形参指向 `int ( *)[3]` 类型(行数组)
+当把数组作为参数传递给函数后, 实际上传递的是一个指针, 所以在函数里面用sizeof和在函数外面对数组用sizeof 得到的结果是不一样的.
 
 ```
 #include <stdint.h>
@@ -30,7 +19,7 @@ uint64_t, int64_t, uint32_t, int32_t, uint16_t, int16_t, uint8_t, int8_t ...
 ```
 
 ## char
-```
+```C
 char b = 'a';
 printf("%lu, %lu", sizeof('a'), sizeof(b)); // OUTPUT: 4,1
 ```
@@ -40,16 +29,16 @@ Note that in C++, a character literal is of type char and so `sizeof('a') == siz
 
 ### [字符数组与字符指针](http://blog.csdn.net/qiumm/article/details/5657120)
 - `char *str1 = "abc";` 字符指针指向的是一个**字符串常量**(存储在程序的常量区)的首地址, str1即指向字符串的首地址.  
-所以尽管str1的类型不是`const char *`,并且`str1[0] = 'x'`;也能编译通过, 但是执行`str1[0] = 'x';`就会发生运行时异常,因为这个语句试图去修改程序常量区中的东西.  
-但是建议的写法应该是**`const char* str1 = "abc";`**, 这样如果后面写`str1[0] = 'x'`, 的话编译器就不会让它编译通过,也就避免了上面说的运行时异常.  
-如果这个语句写在函数体内,那么虽然这里的`"abc/0"`被放在常量区中,但是str1本身只是一个普通的指针变量,所以ptr是被放在栈上的, 只不过是它所指向的东西被放在常量区罢了.  
-**C++ 中这种写法会warning**
+	所以尽管str1的类型不是`const char *`,并且`str1[0] = 'x'`;也能编译通过, 但是执行`str1[0] = 'x';`就会发生运行时异常,因为这个语句试图去修改程序常量区中的东西.  
+	但是建议的写法应该是**`const char* str1 = "abc";`**, 这样如果后面写`str1[0] = 'x'`, 的话编译器就不会让它编译通过,也就避免了上面说的运行时异常.  
+	如果这个语句写在函数体内,那么虽然这里的`"abc"`被放在常量区中,但是str1本身只是一个普通的指针变量,所以ptr是被放在栈上的, 只不过是它所指向的东西被放在常量区罢了.  
+	**C++ 中这种写法会warning**
 
-- `char str2[ ] = "abc";`: str2是字符数组,它存放了一个字符串, 编译会自动在str2 末尾添加`\0`.  
-str2是一个数组,可以改变数组中保存的内容(但是数组的名字str2本身, 它是一个常量, 也就是说str2 is not assignable)
-因为定义的是一个字符数组,所以就相当于定义了一些空间来存放"abc",而又因为字符数组就是把字符一个一个地存放的,
-所以编译器把这个语句解析为 `char str2[3] = {'a','b','c'};`, 然后补零, 所以最终结果是 `char str2[4] = {'a','b','c','/0'};`  
-如果这个语句是在函数内部写的话, 那么这里的`"abc/0"`, 因为不是常量, 所以应该被放在栈上.
+- `char str2[] = "abc";`: str2是字符数组,它存放了一个字符串, 编译会自动在str2 末尾添加`\0`.  
+	str2是一个数组,可以改变数组中保存的内容(但是数组的名字str2本身, 它是一个常量, 也就是说str2 is not assignable)
+	因为定义的是一个字符数组,所以就相当于定义了一些空间来存放"abc",而又因为字符数组就是把字符一个一个地存放的,
+	所以编译器把这个语句解析为 `char str2[3] = {'a','b','c'};`, 然后补零, 所以最终结果是 `char str2[4] = {'a','b','c','\0'};`  
+	如果这个语句是在函数内部写的话, 那么这里的`"abc\0"`, 因为不是常量, 所以应该被放在栈上.
 
 ### API 
 #### string.h
@@ -58,25 +47,24 @@ str2是一个数组,可以改变数组中保存的内容(但是数组的名字st
 - `int memcmp(const void *s1, const void *s2, size_t n);`
 
 - `strcpy(ptr2, ptr1)` is equivalent to `while(\*ptr2++ = *ptr1++)`  
-**So if you want the string which you have copied to be used in another function (as it is created in heap section) you can use `strdup`, else strcpy is enough.**
-The functions `strcpy` and `strncpy` are part of the **C standard library** and **operate on existing memory**.   
+	**So if you want the string which you have copied to be used in another function (as it is created in heap section) you can use `strdup`, else strcpy is enough.**
+	The functions `strcpy` and `strncpy` are part of the **C standard library** and **operate on existing memory**.   
 
 - `char *strdup(const char *s);`相当于 `ptr2 = malloc(strlen(ptr1)+1); strcpy(ptr2, ptr1);`
 - `char *strndup(const char *s, size_t n);`  
-By constrast, `strdup` is a **Posix function**, and it performs **dynamic memory allocation** for you. 
-It returns a pointer to **newly allocated memory** into which it has copied the string. But you are now responsible for this memory and **must eventually free it**.
+	By constrast, `strdup` is a Posix function, and it performs **dynamic memory allocation** for you. 
+	It returns a pointer to **newly allocated memory** into which it has copied the string. But you are now responsible for this memory and **must eventually free it**.
 
 - `char *strchr(const char *s, int c);` 第一次出现, 没有找到返回NULL
 - `char *strrchr(const char *s, int c);`; 最后一次出现
 
-- `int strcmp(const char *s1, const char *s2);`
-- `strcasecmp, strncasecmp`: **ignoring case**
+- `int strcmp(const char *s1, const char *s2);`, strcasecmp, strncasecmp
 
-- `char *strtok(char *s, const char *delim);` strtok()用来将字符串分割成一个个片段.
-参数s 指向欲分割的字符串,参数delim 则为分割字符串,当strtok()在参数s 的字符串中发现到参数delim 的分割字符时则会将该字符改为\0 字符, 也就是说**源字符串会改变**.
-在第一次调用时,strtok()必需给予参数s 字符串.  往后的调用则将参数s 设置成NULL.  每次调用成功则返回下一个分割后的字符串指针.
-[ex](http://c.biancheng.net/cpp/html/175.html)
-[demo](../demo/c/strtok.cpp)
+- `char *strtok(char *s, const char *delim);` 将字符串分割成一个个片段. 参数str 指向欲分割的字符串, 参数delim 则为分割字符串.
+	每次调用strtok()时, 匹配成功的字符会被置为`\0` 字符, 返回当前的字符串, 同时str会指向下一个片段.也就是说**源字符串会改变**.
+	在第一次调用时, 必需给予参数str, 往后的调用则将参数str 设置成NULL.
+	[ex](http://c.biancheng.net/cpp/html/175.html)
+	[demo](../demo/c/strtok.cpp)
 
 #### stdlib.h
 - `int atoi(const char *nptr)`
@@ -91,21 +79,10 @@ It returns a pointer to **newly allocated memory** into which it has copied the 
 - `int isdigit(int c)`
 - `int toupper(int c), tolower, islower, isupper`
 
-## struct
-是可以定义bit 级别的结构体的, 操作方式和一般的结构体没有任何区别.
-```c
-typedef struct _site_t{
-	unsigned char rank:4;
-	unsigned char class:4;
-	int index;
-}site_t;
-```
-
 ## 容易混淆的
 ### 指针数组与数组指针
-
-- 指针的数组: `int *ptr_array[10]`, **每个元素都是指针**, 共10个元素.
-- 指向数组的指针(行数组指针): `int ( *)array_ptr[10]`, **指向一个10元素一维数组的指针**, 所以*array_ptr 为一个一维数组
+- 指针的数组: `int *ptr_array[10]`, 每个元素都是指针, 共10个元素.
+- 指向数组的指针(行数组指针): `int ( *)array_ptr[10]`, 指向一个10元素一维数组的指针, 所以array_ptr 为一个一维数组
 
 ### [二维数组与指针](http://blog.csdn.net/yangchang999/article/details/6664069)
 二维数组其实就是一个一维数组, 在内存中没有二维的概念.
@@ -123,24 +100,17 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 
 第i行j列个元素的表示方法, value 或者point
 
-1. v => arr[i][j]
-1. p => arr[0] + i * 3 + j: arr[0] 是一维数组的名字, 同时是指向该一维数组的第一个元素的指针
-1. p => *(arr + i) + j: arr + i 跳到第i行, 但是arr + i 还是一个指向一维数组的指针
-
-- `sizeof(arr[0])` 得到12, 推出 `arr[0]` 中包含3个int,
-	所以`arr[0]` 是一个一维数组, 且 **arr[0] 为这个一维数组的名字**, 指向这个数组的首地址, arr 也就是一个行数组指针
-- `int *p = arr[0]`, `arr[0]` 为一个一维数组, 所以`p + 1`指向该数组中的第二个元素, 也就是`arr[0][1]`, 所以二维数组arr 中的任何一个元素`arr[i][j]` 为 `p + i*3 + j`
-
-- arr 是二维数组的名字, 其每个元素为一个行数组. 它是以行为移动单位的. 如 `arr + 1` 指向第i 行. 所以*arr 为第0 行的数组, 也就是 *arr 与 arr[0] 完全相同.
-- `sizeof( *arr)` 得到12
+1. `v => arr[i][j]`
+1. `p => arr[0] + i * 3 + j`: arr[0] 是一维数组的名字, 类似于一个`*int`, 所以arr[0] + i 是以int 为单位加的
+1. `p => *(arr + i) + j`: arr 是二维数组的名字, 所以arr的元素是一维数组(3个int组成), arr + i 是以行为单位来偏移, 但是arr + i 还是一个指向一维数组的指针
 
 数组arr 包含2个元素, 分别为`arr[0], arr[1]`, 每个元素为包含3 个int 的一维数组.
-如 `arr[0]`的3个元素为 `arr[0][0], arr[0][1], arr[0][2]`
+如`arr[0]`的3个元素为 `arr[0][0], arr[0][1], arr[0][2]`
 
 二维数组作为函数参数
 
 - `void print(int **arr, int rows)`
-- `void print(int arr[][3], int rows)`, 在函数里面, arr 是一个指向3元素一维数组的指针(也就是arr 是一个行数组指针), *arr 得到这个一维数组.
+- `void print(int arr[][3], int rows)`, 在函数里面, arr 是一个指向3元素一维数组的指针(也就是arr 是一个行数组指针), `*arr` 得到这个一维数组.
 - `void print((void *)arr, int rows, int cols)`: 自己进行位移
 
 # IO
@@ -149,8 +119,8 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 - `FILE *fopen(const char *path, const char *mode);`
 - `int fclose(FILE *stream);`
 
-- `int fgetc(FILE *stream);`: 
-- `ssize_t getline(char **lineptr, size_t *n, FILE *stream);`, *lineptr 的内容包含回车符`\n`
+- `int fgetc(FILE *stream);`
+- `ssize_t getline(char **lineptr, size_t *n, FILE *stream);`, `*lineptr` 的内容包含回车符`\n`
 ```c
 #define _GNU_SOURCE
 char *line = NULL;
@@ -213,11 +183,11 @@ printf使用的格式字符如下
 
 文件位置跳转
 
-`int fseek(FILE *stream, long offset, int base)`: 函数设置**文件**指针stream的位置(从base偏移offset字节). stream 不能为stdin, stdin 是流式的.
+`int fseek(FILE *stream, long offset, int base)`: 设置文件指针stream的位置(从base偏移offset字节). stream 不能为stdin, stdin 是流式的.
 
-- SEEK_SET: 文件开头
-- SEEK_CUR: 当前位置
-- SEEK_END: 文件结尾
+- `SEEK_SET`: 文件开头
+- `SEEK_CUR`: 当前位置
+- `SEEK_END`: 文件结尾
 
 获得文件长度
 ```C
@@ -227,14 +197,14 @@ fseek(fp, 0, SEEK_SET);
 ```
 
 # Time
-```
+```C
 #include <time.h>
 time_t time(time_t *t);
 ```
-returns the time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds  
+returns the time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds.
 If t is non-NULL, the return value is also stored in the memory pointed to by t.
 
-```
+```C
 #include <time.h>
 #ifndef _TM_DEFINED
 struct tm {
@@ -260,7 +230,7 @@ gmtime()和localtime()可以将time()获得的日历时间time_t结构体转换�
 [conversion demo](../demo/c/time.c) 里面还有将时间转化为mysql 的格式的
 
 The struct timeval structure represents an elapsed time. 
-```
+```C
 #include <sys/time.h>
 struct timeval{
 	// the number of whole seconds of elapsed time since the Epoch((00:00:00 UTC, January 1, 1970)
@@ -276,19 +246,10 @@ int gettimeofday(struct timeval *tv, struct timezone *tz);
 `time_t time = (time_t)ut_tv.tv_sec;`  
 Should work, but since you are just looking for a difference, there is always the magic of subtraction.
 
-# Process
-**`_exit`**  
-The function `_exit()` terminates the calling process "immediately".  Any open file descriptors belonging to the process are closed; any children
-of the process are inherited by process 1, init, and the process parent is sent a SIGCHLD signal.  
-The value status is returned to the parent process as the process exit status, and can be collected using one of the wait(2) family of  calls
-The  function `_exit()` is like exit(3), **but does not call any functions registered with `atexit(3)` or `on_exit(3)`**.  
-Whether it flushes standard I/O buffers and removes temporary files created with tmpfile(3) is implementation-dependent.  
-On the other hand, `_exit()` does close open file descriptors, and this may cause an unknown delay, waiting for pending output to finish.  
-If the delay is undesired, it may be useful to call functions like `tcflush(3)` before calling `_exit()`.  
-Whether any pending I/O is canceled, and which pending I/O may be canceled upon `_exit()`, is implementation-dependent.
-
 # 关键字
 ## const
+const in C does not mean something is constant. It just means a variable is read-only.
+
 const最经常的用法
 
 1. 为了防止传递的函数参数不被修改,在调用函数的形参中用const关键字.
@@ -324,63 +285,6 @@ const最经常的用法
 上面的程序把字符串中的每个字符都转换成大写字母了.因为`*String`把地址给了`*Source`,而 `*Source`的值的改变编译器并不干涉,可能有的编译器会发出警告之类.
 上面的程序只是为了说明const并不会阻止参数的修改,如果象上面程序那样,个人感觉没什么意义,只会让人容易混乱而已.
 
-### demo
-	#include <stdio.h>
-	#include <string.h>
-	#include <stdlib.h>
-	
-	void print(int *p, int n){
-		while(n){
-			printf("%d, ", *p);
-			p++;
-			n--;
-		}
-	}
-	int main(){
-		int a =10;
-		int b = 5;
-		int c[]={2,3};
-		print(c,2); // output 2, 3
-	
-	// 	p points to a constant integer, so error, even the new value is the same as 10.
-		const int *p =&a;
-		p = &b; // right
-	// 	*p = 10; // error
-		
-	// 	p1 is a constant pointer, so p can not be changed
-		int *const p1 =&a;
-		*p1 = 1 ; // right, we have not changed p1, but changed *p1
-	// 	p1 = &b; // error
-	
-		int *const p2 = c;
-		*p2 = 1;
-		*(p2 + 1) = 4; // right, we did not change p2
-		print(c,2); // output 1, 4
-	// 	p2 ++; // error
-	
-	// 	p3 is a constant pointer, and it points to a constant integer
-		const int * const p3 = &a;
-	// 	p3 = &b; // error
-	// 	*p3 = 1; // error
-		
-	// 	although a is a constant integer, we can still change its value
-		p = &a;
-		int *p4 = (int *)p;
-		*p4 = 1;
-		printf("%d, %d\n", a, *p); // output: 1, 1
-		printf("over\n");
-		return 0;
-	}
-
-## const faq
-**C (Linux): warning: assignment discards qualifiers from pointer target type**  
-As the compiler states, you are discarding a qualifier (const in this case) from a pointer upon assignment.  
-This happens when you assign a `char *` the value of a `const char *`.
-
-[Why do most C developers use define instead of const?](http://stackoverflow.com/questions/4024318/why-do-most-c-developers-use-define-instead-of-const)  
-There is a very solid reason for this: **const in C does not mean something is constant. It just means a variable is read-only.**  
-In places where the compiler requires a true constant (such as for array sizes for non-VLA arrays), using a const variable, such as fieldWidth is just not possible.
-
 ## extern
 extern可以置于变量或者函数前,以标示变量或者函数的定义在别的文件中,提示编译器遇到此变量和函数时在其他模块中寻找其定义
 
@@ -394,7 +298,7 @@ extern可以置于变量或者函数前,以标示变量或者函数的定义在�
 这提示我们,在使用extern时候要严格对应声明时的格式
 extern用在变量声明中常常有这样一个作用,你在`*.c`文件中声明了一个全局的变量,这个全局的变量如果要被引用,就放在`*.h`中并用extern来声明
 
-常常见extern放在函数的前面成为函数声明的一部分,那么,C语言的关键字extern在函数的声明中起什么作用?  
+常见extern放在函数的前面成为函数声明的一部分,那么,C语言的关键字extern在函数的声明中起什么作用?  
 如果函数的声明中带有关键字extern,仅仅是暗示这个函数可能在别的源文件里定义,没有其它作用.即下述两个函数声明没有明显的区别: `extern int f();` 和`int f();`
 
 C++中const修饰的全局常量据有跟static相同的特性, 即它们只能作用于本编译模块中, 但是const可以与extern连用来声明该常量可以作用于其他编译模块中, 如
@@ -405,9 +309,6 @@ C++中const修饰的全局常量据有跟static相同的特性, 即它们只能�
 ## static
 static 表示静态的变量,分配内存的时候, 存储在静态区,不存储在栈上面.
 
-static 作用范围是内部连接的关系, 和extern有点相反, 只允许对象本身用它. 
-
-具体差别首先,static与extern是一对"水火不容"的家伙,也就是说extern和static不能同时修饰一个变量.  
 其次,static修饰的全局变量声明与定义同时进行,也就是说当你在头文件中使用static声明了全局变量后,它也同时被定义了  
 最后,static修饰全局变量的作用域只能是本身的编译单元,也就是说它的"全局"只对本编译单元有效,其他编译单元则看不到它,如:
 
@@ -499,53 +400,36 @@ optstring中后面的`:`表示需要接值, 如果`::`, 则表示值可有可无
 [parse options demo](../demo/c/parse_options.c)
 
 # Linux 下的动态与静态库
-使用locate命令找到该库的被默认安装的路径,使用方法是先用updatedb更新一下locate命令的索引库,然后"locate libnet.so"查找就可以了
+查询:
+
+1. `ldd program`: 查询program 使用了哪些动态链接库
+1. 使用locate命令找到该库的被默认安装的路径,使用方法是先用updatedb更新一下locate命令的索引库,然后"locate libnet.so"查找就可以了
 
 Linux 中的应用程序以以下两种方式之一链接到外部函数:
 
-- 要么在构建时与静态库( lib*.a)静态地链接,并且将库代码包含在该应用程序的可执行文件里
-- 要么在运行时与共享库( lib*.so(Shared Object))动态地链接.通过动态链接装入器,将动态库映射进应用程序的可执行内存中.
-在启动应用程序之前,动态链接装入器将所需的共享目标库映射到应用程序的内存,或者使用系统共享的目标并为应用程序解析所需的外部引用.
-然后应用程序就可以运行了
+- 要么在构建时与静态库`lib*.a`静态地链接,并且将库代码包含在该应用程序的可执行文件里
+- 要么在运行时与共享库`lib*.so`(Shared Object)动态地链接. 通过动态链接装入器, 将动态库映射进应用程序的可执行内存中.
+	在启动应用程序之前,动态链接装入器将所需的共享目标库映射到应用程序的内存,或者使用系统共享的目标并为应用程序解析所需的外部引用.
+	然后应用程序就可以运行了
 
+- `LIBRARY_PATH` is used by gcc before compilation to search for directories containing libraries that need to be linked to your program
+- `LD_LIBRARY_PATH`: 运行时动态链接库从这个环境变量指定的路径搜索
 
-`LIBRARY_PATH` is used by gcc before compilation to search for directories containing libraries that need to be linked to your program.
-
-`LD_LIBRARY_PATH` is used by your program to search for directories containing the libraries after it has been successfully compiled and linked.
-
-EDIT: As pointed below, your libraries can be static or shared. 
-If it is static then the code is copied over into your program and you do not need to search for the library after your program is compiled and linked. 
-If your library is shared then it needs to be dynamically linked to your program and that is when `LD_LIBRARY_PATH` comes into play.
+当静态库和动态库同名时, gcc 命令将优先使用动态库
 
 需要打印函数调用堆栈时, 都可以使用 `-rdynamic` 来进行, 经过测试都是可以的
 
 ## 动态链接库
 [添加搜索路径方法步骤](http://blog.sciencenet.cn/blog-402211-745740.html)
 
-可以查看程序**执行时**调用动态库的过程:
-
-	# ldd hello
-运行结果:
-
-	[pin@localhost 20090505]$ ldd hello
-	linux-gate.so.1 => (0x00110000)
-	libmyhello.so => /usr/lib/libmyhello.so (0x00111000)
-	libc.so.6 => /lib/libc.so.6 (0x00859000)
-	/lib/ld-linux.so.2 (0x0083a000)
-
-`ld.so.cache` 里面的路径是程序在运行时搜索的路径
-
-修改`/etc/ld.so.conf`,添加路径.  
-在CentOS 6.3下我看到这个文件实际上是包含了`/etc/ld.so.conf.d/`这个目录下的所有`.conf`文件,因此我们可以在这个路径下面创建一个新的文件,其中写上诸如`/usr/local/lib` 等路径,保存退出.  
-切记一定要主动执行命令:`ldconfig`,它会更新记录了系统中有哪些so文件的缓存文件(`/etc /ld.so.cache`)
+1. 修改`/etc/ld.so.conf`
+1. `ldconfig`, 强制更新记录so文件的缓存文件(`/etc/ld.so.cache`)
 
 ldconfig几个需要注意的地方
 
-1. 往/lib和/usr/lib里面加东西,是不用修改/etc/ld.so.conf的,但是完了之后要调一下ldconfig,不然这个library会找不到
-2. `/usr/local/lib` 和 `/usr/local/lib64` 居然不在标准路径之列
-3. 如果想在这两个目录以外放lib,但是又不想在/etc/ld.so.conf中加东西(或者是没有权限加东西).那也可以,就是export一个全局变 量LD_LIBRARY_PATH,然后运行程序的时候就会去这个目录中找library.一般来讲这只是一种临时的解决方案,在没有权限或临时需要的时 候使用.
-4. ldconfig做的这些东西都与运行程序时有关,跟编译时一点关系都没有.编译的时候还是该加-L就得加,不要混淆了.
-5. 总之,就是不管做了什么关于library的变动后,最好都ldconfig一下,不然会出现一些意想不到的结果.不会花太多的时间,但是会省很多的事.
+1. `/lib`和`/usr/lib` 是包含在/etc/ld.so.conf 里面的; `/usr/local/lib` 和 `/usr/local/lib64` 不在标准路径之列
+1. 如果想在这两个目录以外放lib,但是又不想在/etc/ld.so.conf中加东西(或者是没有权限加东西). 可以export一个全局变量`LD_LIBRARY_PATH`
+1. 总之,就是不管做了什么关于library的变动后,最好都ldconfig一下,不然会出现一些意想不到的结果.不会花太多的时间,但是会省很多的事.
 
 ### [Demo](http://www.cppblog.com/deane/archive/2014/05/23/165216.html)
 hello.h
@@ -700,78 +584,13 @@ main.c
     	return 0;
 	}
 
-## 顺序
-我们回过头看看,发现使用静态库和使用动态库编译成目标程序使用的gcc命令完全一样,
-那当静态库和动态库同名时,gcc命令会使用哪个库文件呢?
-
-	# ls
-	hello.c hello.h hello.o libmyhello.a libmyhello.so main.c
-通过上述最后一条ls命令,可以发现静态库文件libmyhello.a和动态库文件libmyhello.so都已经生成,并都在当前目录中
-	
-	# gcc -o hello main.c -L. -lmyhello
-	# ./hello
-	./hello: error while loading shared libraries: libmyhello.so: cannot open shared object file: No such file or directory
-从程序hello运行的结果中很容易知道,当**静态库和动态库同名时, gcc命令将优先使用动态库**.
 
 # 高级
-## volatile 
-volatile 影响编译器编译的结果, volatile 变量是随时可能发生变化的,每次使用时都需要去内存里重新读取它的值,与volatile变量有关的运算,不要进行编译优化,以免出错.
-(VC++ 在产生release版可执行码时会进行编译优化,加volatile关键字的变量有关的运算,将不进行编译优化).
-```
-volatile int i=10;
-int j = i;
-...
-int k = i;
-```
-volatile 告诉编译器i是随时可能发生变化的,每次使用它的时候必须从i的地址中读取,因而编译器生成的可执行码会重新从i的地址读取数据放在k中.  
-而优化做法是,由于编译器发现两次从i读数据的代码之间的代码没有对i进行过操作,它会自动把上次读的数据放在k中.而不是重新从i里面读.
-这样以来,如果i是一个寄存器变量或者表示一个端口数据就容易出错,所以说volatile可以保证对特殊地址的稳定访问,不会出错.
-
-建议使用volatile变量的场所
-
-1. 并行设备的硬件寄存器
-2. 一个中断服务子程序中会访问到的非自动变量(全局变量)
-3. 多线程应用中被几个任务共享的变量
- 
-## sig_atomic_t
-sig_atomic_t: 当把变量声明为该类型是,则会保证该变量在使用或赋值时, 无论是在32位还是64位的机器上都能保证操作是原子的, 它会根据机器的类型自动适应.
-
-通常情况下,int类型的变量通常是原子访问的,也可以认为 sig_atomic_t就是int类型的数据,因为对这些变量要求一条指令完成,所以sig_atomic_t不可能是结构体,只会是数字类型.
-在linux里这样定义:
-```
-typedef int __sig_atomic_t;
-```
-另外gnu c的文档也说比int短的类型通常也是具有原子性的,例如short类型.
-同时,指针(地址)类型也一定是原子性的. 该类型在所有gnu c库支持的系统和支持posix的系统中都有定义.
+- volatile 指示变量随时可能发生变化的, 每次使用时都需要去内存里重新读取它的值, 与该变量有关的运算, 不要进行编译优化
+- `sig_atomic_t`: 保证该变量的操作都是原子的
 
 # GCC
 高版本的gcc glibc 编译后在低版本的glibc上运行导致,可能导致Floating Point Exception运行时错误.
-这是由于现在的gcc在link的时候默认会采用选项--hash-style=gnu,而使用这种Hash表的方式可以大大提升动态链结时的效率.
+这是由于高版本gcc在link的时候默认会采用选项--hash-style=gnu,而使用这种Hash表的方式可以大大提升动态链结时的效率.
 而老版本的glibc本并未支持,我们只要在在程序连接选项中加上-Wl,--hash-style=sysv就可以解决这个问题了
-
-## Useful GCC flags for C
-Those marked * sometimes give too many spurious warnings, so I use them on as-needed basis.
-
-- extra, -Wall: essential.
-- float-equal: useful because usually testing floating-point numbers for equality is bad.
-- undef: warn if an uninitialized identifier is evaluated in an #if directive.
-- shadow: warn whenever a local variable shadows another local variable, parameter or global variable or whenever a built-in function is shadowed.
-- pointer-arith: warn if anything depends upon the size of a function or of void.
-- cast-align: warn whenever a pointer is cast such that the required alignment of the target is increased.
-	For example, warn if a char * is cast to an int * on machines where integers can only be accessed at two- or four-byte boundaries.
-- strict-prototypes: warn if a function is declared or defined without specifying the argument types.
-- strict-overflow=5: warns about cases where the compiler optimizes based on the assumption that signed overflow does not occur.
-	(The value 5 may be too strict, see the manual page.)
-- write-strings: give string constants the type const char[length] so that copying the address of one into a non-const char * pointer will get a warning.
-- aggregate-return: warn if any functions that return structures or unions are defined or called.
-- cast-qual: warn whenever a pointer is cast to remove a type qualifier from the target type*.
-- switch-default: warn whenever a switch statement does not have a default case*.
-- switch-enum: warn whenever a switch statement has an index of enumerated type and lacks a case for one or more of the named codes of that enumeration*.
-- conversion: warn for implicit conversions that may alter a value*.
-- unreachable-code: warn if the compiler detects that code will never be executed*.
-
-# User related
-- `getpwnam()` function returns a pointer to a structure containing the broken-out fields of the record in the **password database** (e.g., the local password file /etc/passwd, NIS, and LDAP) that matches the username name.
-- `getpwuid()` function returns a pointer to a structure containing the broken-out fields of the record in the password database that matches the user ID uid.
-- `chroot` change root directory
 
