@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <string.h>
-#include <string>
-#include <vector>
+#include "util.h"
+
+namespace util{
 
 /**
  * function: split the const c string, return a vector of cpp string
@@ -24,14 +24,5 @@ std::vector<std::string> split(const char *str, const char *delim){
 	return toks;
 }
 
-int main(){
-	char s[] = "- This, a sample string.";
-	char *delim = " ,.-";
-	std::vector<std::string> toks = split(s, delim);
-	for(unsigned int i = 0; i < toks.size(); i++){
-		fprintf(stderr, "%dth token: %s\n", i, toks[i].c_str());
-	}
-
-	return 0;
-}
+};
 
