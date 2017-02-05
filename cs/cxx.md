@@ -104,7 +104,7 @@ This class already manage memory allocation and deallocation. 在超出变量的
 - clear: 可以清空所有元素, 也就是改变vector 的size, 但是capacity 一般不会改变.
 - swap: vector<T>().swap(x); 改变x 占用内存的方式, 实际上是把x 的内存交换给一个新的vector<T>()对象
 
-[vector push_back operation demo](../demo/cpp/stl/vector-push_back.cpp)
+[vector push_back operation demo](../demo/cxx/stl/vector-push_back.cpp)
 
 ## [std::list](http://www.cplusplus.com/reference/list/list)
 implemented as doubly-linked lists
@@ -215,7 +215,6 @@ but unless you know what you know exactly what are doing, do not do this.
 	每次调用strtok()时, 匹配成功的字符会被置为`\0` 字符, 返回当前的字符串, 同时str会指向下一个片段.也就是说**源字符串会改变**.
 	在第一次调用时, 必需给予参数str, 往后的调用则将参数str 设置成NULL.
 	[ex](http://c.biancheng.net/cpp/html/175.html)
-	[demo](../demo/c/strtok.cpp)
 
 #### stdlib.h
 - `int atoi(const char *nptr)`
@@ -313,7 +312,7 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 - `void print(int arr[][3], int rows)`, 在函数里面, arr 是一个指向3元素一维数组的指针(也就是arr 是一个行数组指针), `*arr` 得到这个一维数组.
 - `void print((void *)arr, int rows, int cols)`: 自己进行位移
 
-[Pointers to functions](../demo/c++/pointer_function.cpp)
+[Pointers to functions](../demo/cxx/pointer_function.cpp)
 
 `std::copy(val.begin(), val.end(), std::ostream_iterator<int>(std::cout, ", "))`: describes types that can be used to identify and traverse the elements of a container.
 	Iterator is the base concept used by other iterator types: InputIterator, OutputIterator, ForwardIterator,BidirectionalIterator, and RandomAccessIterator.
@@ -364,7 +363,7 @@ gmtime()和localtime()可以将time()获得的日历时间time_t结构体转换�
 其中gmtime()函数是将日历时间转化为世界标准时间(即格林尼治时间0,并返回一个tm结构体来保存这个时间,
 而localtime()函数是将日历时间转化为本地时间.
 
-[conversion demo](../demo/c/time.c) 里面还有将时间转化为mysql 的格式的
+[conversion demo](../demo/cxx/time.c) 里面还有将时间转化为mysql 的格式的
 
 The struct timeval structure represents an elapsed time. 
 ```C
@@ -428,7 +427,7 @@ optstring中后面的`:`表示需要接值, 如果`::`, 则表示值可有可无
 - `optopt` 存储出错的option(如缺参数),或者不认识的option
 - `optind`, 表示下一次运行getopt时将读取数组第optind个
 
-[parse options demo](../demo/c/parse_options.c)
+[parse options demo](../demo/cxx/parse_options.c)
 
 # GCC
 高版本的gcc glibc 编译后在低版本的glibc上运行导致,可能导致Floating Point Exception运行时错误.

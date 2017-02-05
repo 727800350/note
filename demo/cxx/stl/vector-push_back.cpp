@@ -70,7 +70,7 @@ pointVec.push_back(a);
 pointVec.push_back(b);
 将b插入到vector中, 但是发现vector 空间不够, 自动增长, 并把原来的a copy到新的vector中
 在把b copy到新的vector 中
-所以共三次copy
+所以push_back(b)触发两次copy
 
 一共新建了5个point 对象, 所以一共有5 个 destruction
 第一个destruction 是自动增长, 且copy之后, 原来的vector一份
