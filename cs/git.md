@@ -249,6 +249,7 @@ note branch 是在其他机器上删除的一个分支
 	1. `$ git remote set-head origin -a`: query the remote and automatically set the origin/HEAD pointer to the remote current branch.
 	1. `$ git remote set-head origin -d`: delete the origin/HEAD symbolic ref
 
+1. 比如你同事在Git的remote branch中新增branch xxx, 但是你发现在本地中查看存在的branch时, 并看不到他增加的branch, `git fetch` 可以将远程新的分支拉到本地
 
 
 # git config
