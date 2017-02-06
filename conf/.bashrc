@@ -27,6 +27,7 @@ then
 	ulimit -c unlimited
 ## enterprise
 else
+	export PYTHONIOENCODING=utf8 ## for eagle code style check
 	export TMOUT= ## #turn off auto-logout (user session will not auto-logout due to session inactivity)
 	export PATH=$PATH:${HOME}/.jumbo/bin/
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/samba/lib/
@@ -61,6 +62,11 @@ else
 	then
 		alias vi="~/.jumbo/bin/vim"
 	fi
+
+	ARTISTIC_STYLE_OPTIONS=~/.astylerc
+	alias astyle="astyle --style=attach --convert-tabs --indent=spaces=4 --add-brackets \
+	--pad-header --unpad-paren --pad-oper --max-code-length=100 --formatted --align-pointer=type \
+	--align-reference=type --break-blocks -Y"
 fi
 
 ## texlive env
