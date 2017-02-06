@@ -1,11 +1,9 @@
 #include <stdio.h>
+#include <sstream>
 #include "util.h"
 
 namespace util{
 
-/**
- * function: split the const c string, return a vector of cpp string
- **/
 std::vector<std::string> split(const char *str, const char *delim){
 	std::vector<std::string> toks;
 	char *p = NULL;
@@ -22,6 +20,18 @@ std::vector<std::string> split(const char *str, const char *delim){
 
 	delete []s;
 	return toks;
+}
+
+std::string num2string(int num){
+	std::ostringstream stream;
+	stream << num;
+	return stream.str();
+}
+
+std::string num2string(double num){
+	std::ostringstream stream;
+	stream << num;
+	return stream.str();
 }
 
 };
