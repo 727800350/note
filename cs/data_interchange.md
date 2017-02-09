@@ -104,6 +104,21 @@ Remember to leave some room for frequently occurring elements that might be adde
 	- `const google::protobuf::Map<int32, int32> &weight()`: return an **immutable** map
 	- `google::protobuf::Map<int32, int32>* mutable_weight()`: return a **mutable** map
 
+序列化
+
+- std::string 作为容器
+	- `bool SerializeToString(string* output) const;`
+	- `bool ParseFromString(const string& data);`
+- C char array 作为容器
+	- `bool	SerializeToArray(void * data, int size) const`: size 为 data 的capacity
+	- `bool	ParseFromArray(const void * data, int size)`: size 必须为message 的actual size, 通过 pb.ByteSize() 得到
+- C++ stream
+	- `bool Message::SerializeToOstream(std::ostream * output) const`: `#include <fstream>`
+	- `bool Message::ParseFromIstream(std::istream * input)`
+- C Descriptor
+	- `bool Message::SerializeToFileDescriptor(int file_descriptor) const`: 文件需open 打开, `#include <fcntl.h>, #include <unistd.h>`
+	- `bool Message::ParseFromFileDescriptor(int file_descriptor)`
+
 ## install
 To install protobuf, you need to install the protocol compiler (used to compile .proto files) and the protobuf runtime for your chosen programming language.
 
