@@ -90,21 +90,29 @@ uint64_t, int64_t, uint32_t, int32_t, uint16_t, int16_t, uint8_t, int8_t ...
 
 # STL 标准模板库
 ## [std::vector](http://www.cplusplus.com/reference/vector/vector/)
-vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素,从尾部追加
+vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素, 从尾部追加
 
 Do not use pointers to std::vector, 也就是说直接使用std::vector这个对象,而不要使用这个对应的指针.
 This class already manage memory allocation and deallocation. 在超出变量的scope, 会自动调用它的析构函数来释放内存
 
-- `push_back`: 将要`push_back`的元素拷贝到新分配的内存中, 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容.
+`#include <vector>`
+
+- size(): 容器元素的个数
+- empty(): 用来检测容器是否为空的.
+- `void push_back (const value_type& val)`: 将元素拷贝到新分配的内存中. 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容, 也就是值(指针本身的值)拷贝.
 	对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针,
 	所以即使原来的object被删除了, vector中的仍然可以正常访问.
 - erase: 删除元素, 如果元素是指向某个对象的指针, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
 - back: Returns a reference to the last element in the vector.
-- empty: 用来检测容器是否为空的.
 - clear: 可以清空所有元素, 也就是改变vector 的size, 但是capacity 一般不会改变.
 - swap: vector<T>().swap(x); 改变x 占用内存的方式, 实际上是把x 的内存交换给一个新的vector<T>()对象
 
-[vector push_back operation demo](../demo/cxx/stl/vector-push_back.cpp)
+初始化一个vector
+```
+int array[] = {-1, 1, 2, 7, 11, 15};
+std::vector<int> vec(array, array + sizeof(array) / sizeof(int));
+```
+[vector push back operation demo](../demo/cxx/stl/vector-push_back.cpp)
 
 ## [std::list](http://www.cplusplus.com/reference/list/list)
 implemented as doubly-linked lists
@@ -112,21 +120,22 @@ implemented as doubly-linked lists
 - `push_front`: 在头插入
 - `push_back`: 在尾插入
 
-## [std::unordered_map](http://www.cplusplus.com/reference/unordered_map/unordered_map/)
+## [std::unordered map](http://www.cplusplus.com/reference/unordered_map/unordered_map/)
 Internally, the elements are not sorted in any particular order, but organized into buckets depending on their hash values
 to allow for fast access to individual elements directly by their key values (with a constant average time complexity on average).
 
-unordered_map containers are faster than map containers to access individual elements by their key,
+`unordered_map` containers are faster than map containers to access individual elements by their key,
 although they are generally less efficient for range iteration through a subset of their elements.
 
 尽量不要使用`char *` 作为key, 而要使用string.
 `char *`是一个地址, 也就是一个unsigned int, 所以实际上的key 是一个unsigned int 类型的值
 
+`#include <unordered_map>`
+
 - `std::unordered_map::operator[]`: If k matches the key of an element in the container, the function returns a reference to its mapped value.
 	If k does not match the key of any element in the container, the function inserts a new element with that key(值为mapped value 的类型的默认值) and
 	returns a reference to its mapped value. 反应在map.size() 上
-- `std::unordered_map::find`: Searches the container for an element with k as key and returns an iterator to it if found,
-	otherwise it returns an iterator to unordered_map::end (the element past the end of the container).
+- `std::unordered_map::find(const key_type& k)`: returns an iterator if found, otherwise it returns `map.end()`
 - `map.insert(pair)`: 向map 中添加元素
 	- `std::pair<std::string,double> myshopping ("baking powder",0.3);`
 	- `std::make_pair<std::string,double>("eggs",6.0)`
@@ -158,6 +167,12 @@ for(std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it){
 	std::cout << it->first << " => " << it->second << '\n';
 }
 ```
+
+## [std::priority queue](http://www.cplusplus.com/reference/queue/priority_queue/)
+`#include <queue>`
+
+- `empty()`
+- `const value_type& top() const`: Returns a constant reference to the top element
 
 # 参数传递
 当把数组作为参数传递给函数后, 实际上传递的是一个指针, 所以在函数里面用sizeof和在函数外面对数组用sizeof 得到的结果是不一样的.
