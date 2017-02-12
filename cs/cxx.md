@@ -175,7 +175,9 @@ template<class T,
 	class Compare = std::less<typename Container::value_type>
 	> class priority_queue;
 ```
-默认使用std::less 进行compare, 也就是降序, 因此 top 每次取到的都是最大值
+1. 第一个参数指定元素的类型, 可以是简单的例如int, 也可以是复杂的, `std::pair<int, int>` 等类型
+1. 第二个参数指定 priority queue 使用的底层存储结构
+1. 第三个参数指定排序标准, 默认使用std::less 进行compare, 也就是降序, 因此 top 每次取到的都是最大值
 
 `#include <queue>`
 
@@ -186,6 +188,10 @@ template<class T,
 - `void push (const value_type& val)`
 
 [demo](../demo/cxx/stl/priority_queue.cpp)
+
+## [algorithm](http://www.cplusplus.com/reference/algorithm/)
+- `template <class BidirectionalIterator> void reverse(BidirectionalIterator first, BidirectionalIterator last)`: std::vector 可以直接使用, std::string 不能使用(因为string 是immutable)
+- `template <class RandomAccessIterator, class Compare> void sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp)`: 最后一个参数可选, 对于简单类型的数据, 默认是升序, 不保证stable, `std::stable_sort` 可以保证
 
 # 参数传递
 当把数组作为参数传递给函数后, 实际上传递的是一个指针, 所以在函数里面用sizeof和在函数外面对数组用sizeof 得到的结果是不一样的.
