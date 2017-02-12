@@ -169,10 +169,23 @@ for(std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it){
 ```
 
 ## [std::priority queue](http://www.cplusplus.com/reference/queue/priority_queue/)
+```C++
+template<class T,
+	class Container = std::vector<T>,
+	class Compare = std::less<typename Container::value_type>
+	> class priority_queue;
+```
+默认使用std::less 进行compare, 也就是降序, 因此 top 每次取到的都是最大值
+
 `#include <queue>`
 
 - `empty()`
+- `size_type size() const`
 - `const value_type& top() const`: Returns a constant reference to the top element
+- `void pop()`: Remove top element, 注意, 这个函数没有返回值, 一般和top() 结合使用
+- `void push (const value_type& val)`
+
+[demo](../demo/cxx/stl/priority_queue.cpp)
 
 # 参数传递
 当把数组作为参数传递给函数后, 实际上传递的是一个指针, 所以在函数里面用sizeof和在函数外面对数组用sizeof 得到的结果是不一样的.
