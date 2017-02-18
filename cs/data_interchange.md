@@ -104,14 +104,14 @@ Remember to leave some room for frequently occurring elements that might be adde
 	- `const google::protobuf::Map<int32, int32> &weight()`: return an **immutable** map
 	- `google::protobuf::Map<int32, int32>* mutable_weight()`: return a **mutable** map
 
-序列化
+序列化与反序列化
 
 - std::string 作为容器
 	- `bool SerializeToString(string* output) const;`
 	- `bool ParseFromString(const string& data);`
 - C char array 作为容器
 	- `bool	SerializeToArray(void * data, int size) const`: size 为 data 的capacity
-	- `bool	ParseFromArray(const void * data, int size)`: size 必须为message 的actual size, 通过 pb.ByteSize() 得到
+	- `bool	ParseFromArray(const void * data, int size)`: size 必须为message 的actual size, 通过 `int pb.ByteSize() const` 得到, 在序列化的时候要保存下来
 - C++ stream
 	- `bool Message::SerializeToOstream(std::ostream * output) const`: `#include <fstream>`
 	- `bool Message::ParseFromIstream(std::istream * input)`
