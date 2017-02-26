@@ -124,6 +124,7 @@ Uppercase to lowercase:
 		1. 如果在dst 中增加了文件, 那么再次执行 rsync -av 之后, 增加的文件不会被删除
 	- `rsync -av a b/`: 将a这个目录整体同步到b下面, 得到 b/a 这样的文件结构
 	- `rsync -av a/ b/`: 将a下面的文件同步到b下面, 得到 b/files_of_a 这样的文件结构
+	- `--exclude ignore`: 忽略src/ignore
 - wget 一个目录: `wget  -r ftp://xxx_path_xxx ./`
 
 ## 远程主机相关的
