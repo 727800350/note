@@ -58,9 +58,9 @@ else
 	export MAVEN=$HOME/opt/tools/tools/maven/apache-maven-3.0.4/bin
 	export MAC=64
 
-	if [ -f "~/.jumbo/bin/vim" ]
+	if [ -f "/home/img/.jumbo/bin/vim" ]
 	then
-		alias vi="~/.jumbo/bin/vim"
+		alias vi="/home/img/.jumbo/bin/vim"
 	fi
 
 	ARTISTIC_STYLE_OPTIONS=~/.astylerc
