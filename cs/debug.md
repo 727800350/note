@@ -165,6 +165,10 @@ google pprof
 ## cpu profiler
 [ex](../demo/cxx/gperftools/cpu_profile.cpp)
 
+performance of functions
+
+You can change the sampling frequency with the `CPUPROFILE_FREQUENCY` environment variable. Default value: 100
+
 ## heap profiler
 [ex](../demo/cxx/gperftools/heap_profile.cpp)
 
