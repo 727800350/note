@@ -1645,6 +1645,74 @@ $$
 \section{Logistic Regression}
 For classification, not for regression
 
+\href{http://blog.csdn.net/zouxy09/article/details/20319673}{机器学习算法与Python实践之(七)逻辑回归(Logistic Regression)}
+
+假设我们的样本是$\{x, y\}$,y是0或者1,表示正类或者负类,x是我们的m维的样本特征向量.
+那么这个样本x属于正类,也就是$y = 1$的概率可以通过下面的逻辑函数来表示:
+$$
+P(y = 1| x; \theta) = \sigma(\theta^T x) = \frac{1}{1 + exp(- \theta^T x)}
+$$
+这里$\theta$是模型参数,也就是回归系数,$\sigma$是sigmoid函数.
+实际上这个函数是由下面的对数几率(也就是$x$属于正类的可能性和负类的可能性的比值的对数)变换得到的:
+$$
+log it(x)
+= ln \frac{P(y = 1 | x)}{P(y = 0 | x)}
+= ln \frac{P(y = 1 | x)}{1 - P(y = 1 | x)}
+= \theta^T x
+= \theta_0 + \theta_1 x_1 + \theta_2 x_2 + ... + \theta_m x_m
+$$
+
+模型选好了,只是模型的参数$\theta$还是未知的,我们需要用我们收集到的数据来训练求解得到它.那我们下一步要做的事情就是建立代价函数了.
+LogisticRegression最基本的学习算法是最大似然.
+假设我们有$n$个独立的训练样本$\{(x_1, y_1) ,(x_2, y_2), \ldots ,(x_n, y_n)\},y = \{0, 1\}$.
+那每一个观察到的样本$(x_i, y_i)$出现的概率是:
+$$
+P(x_i, y_i) = P(y_i = 1 | x_i)^{y_i} (1 - P(y_i = 1 | x_i))^{1 - y_i}
+$$
+不管$y_i$是$0$还是$1$,上面得到的数,都是$(x_i, y_i)$出现的概率.
+
+那我们的整个样本集,也就是$n$个独立的样本出现的似然函数为(因为每个样本都是独立的,所以$n$个样本出现的概率就是他们各自出现的概率相乘):
+$$
+L(\theta)
+= \prod_{i = 1}^{n} P(x_i, y_i)
+$$
+
+那最大似然法就是求模型中使得似然函数最大的系数取值$\theta^*$.这个最大似然就是我们的代价函数(cost function)了.
+
+先尝试对上面的代价函数求导,看导数为0的时候可不可以解出来,也就是有没有解析解,有这个解的时候,就皆大欢喜了,一步到位.如果没有就需要通过迭代了,耗时耗力.
+
+对$L$ 取对数, 并将结果重新设为$L$.
+$$
+\begin{aligned}
+L(\theta)
+& = ln \prod_{i = 1}^{n} P(x_i, y_i) \\
+& = ln \prod_{i = 1}^{n} P(y_i = 1 | x_i)^{y_i} (1 - P(y_i = 1 | x_i))^{1 - y_i} \\
+& = \sum_{i = 1}^{n} (y_i ln P(y_i = 1 | x_i) + (1 - y_i) ln (1 - P(y_i = 1 | x_i))) \\
+& = \sum_{i = 1}^{n} (y_i ln \frac{P(y_i = 1 | x_i)}{1 - P(y_i = 1 | x_i)} + ln (1 - P(y_i = 1 | x_i))) \\
+& = \sum_{i = 1}^{n} (y_i (\theta^T x_i) + ln (1 - P(y_i = 1 | x_i))) \\
+& = \sum_{i = 1}^{n} (y_i (\theta^T x_i) + ln (1 - \frac{1}{1 + exp(- \theta^T x_i)})) \\
+& = \sum_{i = 1}^{n} (y_i (\theta^T x_i) - ln (1 + exp(\theta^T x_i)))
+\end{aligned}
+$$
+这里 $\theta$是一个vector, 不能直接对它求导, 但是我们可以把它想象成一个scalaire, 求导之后得到:
+$$
+\frac{\partial L(\theta)}{\partial \theta}
+= \sum_{i = 1}^n (y_i x_i - \frac{exp(\theta^T x_i)}{1 + exp(\theta^T x_i)} x_i)
+= \sum_{i = 1}^n (y_i - \sigma(\theta^T x_i)) x_i
+$$
+然后我们令该导数为$0$, 你会很失望的发现, 它无法解析求解. 所以没办法了, 只能借助迭代来搞定了. 这里选用了经典的梯度下降算法.
+
+对logistic Regression来说, 梯度下降算法如下
+$$
+\theta^{t + 1}
+= \theta^t - \alpha \frac{\partial L(\theta)}{\partial \theta}
+= \theta^t - \alpha \sum_{i = 1}^n (y_i - \sigma(\theta^T x_i)) x_i
+$$
+参数$\alpha$叫学习率
+
+因为本文中是求解的logistic regression 的代价函数是似然函数, 需要最大化似然函数. 所以我们要用的是梯度上升算法, 但原理是一样的, 只是一个是找最大值, 一个是找最小值.
+找最大值的方向就是梯度的方向, 最小值的方向就是梯度的负方向.
+
 \section{K-means Cluestering}
 无监督, greedy algo, a special case of EM algo
 

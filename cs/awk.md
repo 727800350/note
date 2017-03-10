@@ -16,6 +16,7 @@ AWK also has associative arrays, which are incredible useful, and is a feature m
 
 - -F: 指定分隔符, 默认会同时使用 `\t` 和 `\space`
 	- 当指定分隔符为`.`时, 需要使用 `-F.`
+	- 当要指定多个分隔符时, 需使用[], 例如 `[, \t]` 使用`, \space \t` 三个作为分隔符
 - -v: 传递一个变量给awk, 在awk里面可以直接使用 var 变量,它的值为 "value"
 - -f: 指定awk脚本
 
