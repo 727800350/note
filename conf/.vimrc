@@ -41,7 +41,9 @@ set tabstop=4
 set nobackup
 set nowb
 set noswapfile
-set noundofile
+if v:version >= 800
+	set noundofile
+endif
 
 " go back the previvous cursor location
 if has("autocmd")

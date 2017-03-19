@@ -49,14 +49,10 @@ else
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/opt/tools/tools/svn/1.6.5/64/lib
 	export PATH=$PATH:$HOME/opt/tools/tools/scmtools/usr/bin
 	export PATH=$PATH:$HOME/opt/tools/tools/../bin/64
-	export PATH=$PATH:$HOME/opt/tools/tools/maven/apache-maven-2.2.0/bin
-	export PATH=$PATH:$HOME/opt/tools/tools/ant/apache-ant-1.6.5/bin
-	export PATH=$PATH:$HOME/opt/tools/tools/ant/apache-ant-1.7.1/bin
-	export PATH=$PATH:$HOME/opt/tools/tools/php/5.2.17/64/bin
-	
-	export ANT_HOME=$HOME/opt/tools/tools/ant/apache-ant-1.6.5
-	export MAVEN=$HOME/opt/tools/tools/maven/apache-maven-3.0.4/bin
 	export MAC=64
+
+	## php
+	export PATH=$PATH:$HOME/opt/php/bin/
 
 	if [ -f "/home/img/.jumbo/bin/vim" ]
 	then
