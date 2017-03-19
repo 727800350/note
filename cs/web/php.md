@@ -7,14 +7,14 @@
 # php script for shell
 excute external program
 
-- `string system(string $command, int $ret)` 输出并返回最后一行shell结果, 命令的执行状态保存在 $ret 中
-- `string exec(string $command, array $res, int $ret)` 返回最后一行shell结果,所有结果保存到一个返回的数组$res, 状态保存在 $ret 中
+- `string system(string $command, int $status)` 输出并返回最后一行shell结果, 命令的执行状态保存在 $status 中
+- `string exec(string $command, array $res, int $status)` 返回最后一行shell结果,所有结果保存到一个返回的数组$res, 状态保存在 $status 中
 - `void passthru(string $command, int $ret)` 只调用命令,把命令的运行结果原样地直接输出到标准输出设备上
 
 ```PHP
 #!/usr/bin/env php
 <?php
-$v = exec('ls -l', $res, $ret);
+$ret = exec('ls -l', $res, $status);
 die(0);
 ?>
 ```
@@ -48,7 +48,7 @@ STDIN/STDOU/STDERR 也是resource
 - `int fwrite(resource $handle, string $string [, int $length ])`
 
 # data type
-- `global $var;`: 申明变量$var为global全局变量
+- `global $var;`: 申明变量$var为global全局变量, 在自定义函数中使用 全局变量, 必须显示声明变量为 global 
 - Constants are referred to by their identifiers and are set using the define() function
 
 - `bool empty(mixed $var)`: 当var存在，并且是一个非空非零的值时返回 FALSE 否则返回 TRUE.
@@ -75,7 +75,10 @@ it can be treated as an **array, list (vector), hash table (an implementation of
 Array in PHP is actually an ordered map. So the key can either be an integer or a string. The value can be of any type.
 
 - `bool in_array(value, $array)` 检查value 是不是在$array 中, 不是检查key 的
-- `bool array_key_exists ( mixed $key , array $search )`: 检查key
+- `bool array_key_exists(mixed $key, array $search)`: 检查key
+- `int count(mixed $var [, int $mode = COUNT_NORMAL])`: 计算数组中的单元数目或对象中的属性个数.
+	- 可选的 mode 参数设为 `COUNT_RECURSIVE`(或 1), count() 将递归地对数组计数. 对计算多维数组的所有单元尤其有用, count() 识别不了无限递归. mode 的默认值是 0.
+	- sizeof 是count 的别名
 
 ```PHP
 $array = array(
