@@ -135,6 +135,40 @@ function! Uncomment() range
 endfunction
 "==============================comments===================================
 
+"=============================== New File Header ===================================================
+autocmd BufNewFile *.cpp,*.h,*.sh exec ":call SetHeader()"
+func SetHeader()
+	if &filetype == 'sh'
+		call setline(1,"\#########################################################################")
+		call append(line("."), "\# File Name: ".expand("%"))
+		call append(line(".")+1, "\# Author: Eric Wang")
+		call append(line(".")+2, "\# Email: wangchaogo1990 at gmail.com")
+		call append(line(".")+3, "\# Created Time: ".strftime("%Y-%m-%d %H:%M:%S"))
+		call append(line(".")+4, "\#########################################################################")
+		call append(line(".")+5, "\#!/bin/bash")
+		call append(line(".")+6, "\set -x")
+		call append(line(".")+7, "")
+	else
+		call setline(1, "/*************************************************************************")
+		call append(line("."), "	> File Name: ".expand("%"))
+		call append(line(".")+1, "	> Author: Eric Wang")
+		call append(line(".")+2, "	> Email: wangchaogo1990 at gmail.com")
+		call append(line(".")+3, "	> Created Time: ".strftime("%Y-%m-%d %H:%M:%S"))
+		call append(line(".")+4, " ************************************************************************/")
+		call append(line(".")+5, "")
+	endif
+
+	if &filetype == 'cpp'
+		call append(line(".")+6, "#include <iostream>")
+		call append(line(".")+7, "using namespace std;")
+		call append(line(".")+8, "")
+	endif
+
+	"jump to the end of file
+	autocmd BufNewFile * normal G
+endfunc
+"=============================== New File Header ===================================================
+
 "===========================Chinese Punctuation: ctrl-s or :%call CheckChineseMark ==================
 map <C-S> :call CheckChineseMark()<CR>
 imap <C-S> <ESC>:call CheckChineseMark()<CR>
