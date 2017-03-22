@@ -4,29 +4,20 @@
 - `FILE *fopen(const char *path, const char *mode);`
 - `int fclose(FILE *stream);`
 
-- `int fgetc(FILE *stream);`
-- `ssize_t getline(char **lineptr, size_t *n, FILE *stream);`, `*lineptr` 的内容包含回车符`\n`
-```c
-#define _GNU_SOURCE
-char *line = NULL;
-size_t len = 0;
-ssize_t read;
-
-while ((read = getline(&line, &len, stdin)) != -1) {
-	printf("Retrieved line of length %zu :\n", read);
-	printf("%s", line);
-}
-```
-
-- `ssize_t getdelim(char **lineptr, size_t *n, int delim, FILE *stream);`
-- `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储`\0`作为字符串的结尾.
-```c
-while(!feof(stdin)){
-	if(fgets(line, 256, stdin) == NULL){
-		## error or when end of file occurs while no characters have been read
-		break;
+- `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储`\0`作为字符串的结尾, 发生错误或者没有内容可读, 返回NULL
+```C++
+int ret = 0;
+const int MAX_LEN = 1024;
+char *line = new char[MAX_LEN];
+while(fgets(line, MAX_LEN, stdin) != NULL){
+	line[strlen(len) - 1] = '\0'; ## set '\n' to '\0', could also strchr \n first to make sure
+	ret = process(line);
+	if(ret != 0){
+		fprintf(stderr, "process error\n");
+		return -1;
 	}
 }
+delete []line;
 ```
 
 - `size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);`
@@ -48,11 +39,22 @@ while(true){
 - `void setlinebuf(FILE *stream);`
 - `int snprintf(char *str, size_t size, const char *format, ...);`: write at most size bytes, including the trailing '\0'('\0' 是自动加的)
 
+printf是一个行缓冲函数, 先写到缓冲区(默认一般为 1024 bytes), 满足条件后, 才将缓冲区刷到对应文件中, 刷缓冲区的条件如下:
+
+1. 缓冲区填满
+2. 写入的字符中有\n 或者 \r
+3. 调用fflush手动刷新缓冲区.  当我们执行printf的进程或者线程结束的时候会主动调用flush来刷新缓冲区
+4. 调用scanf要从缓冲区中读取数据时，也会将缓冲区内的数据刷新
+
+满足上面4个条件之一缓冲区就会刷新(真正调用write来写入)
+
+注: fork(返回值为0的是子进程) 的时候, 会将缓冲区也一起拷贝到子进程
+
 对齐
 
-- `printf("%15s/n",insertTime);`: 右对齐,15位长度,不够补空格
-- `printf("%015s/n",insertTime);`: 右对齐,15位长度,不够补0
-- `printf("%-15.2f/n",insertTime1);`: 左对齐,15位长度,带两位小数,不够补空格
+- `printf("%15s\n", insertTime);`: 右对齐,15位长度,不够补空格
+- `printf("%015s\n", insertTime);`: 右对齐,15位长度,不够补0
+- `printf("%-15.2f\n", insertTime1);`: 左对齐,15位长度,带两位小数,不够补空格
 
 文件位置跳转
 

@@ -4,6 +4,9 @@ redis 中数据对象都是 string 类型, 但是有时会把string 解释成其
 Redis keys are binary safe, this means that you can use any binary sequence as a key, from a string like "foo" to the content of a JPEG file.
 The empty string is also a valid key.
 
+- FLUSHALL 清空所有数据
+- RANDOMKEY 随机获取一个key
+
 # data type
 ## Binary-safe string
 - `set key value`: 如果key 之前有值, 会被替换掉
@@ -15,6 +18,12 @@ The empty string is also a valid key.
 - `ttl key`: 返回key的仍然有效时间, The -2 means that the key does not exist (anymore), -1 means that it will never expire.
 - `exists key`
 - `type key`, which returns the kind of value stored at the specified key:
+
+C API
+
+- set 返回的`reply->type` 为 `REDIS_REPLY_STATUS`, `reply->str` 为 "OK"
+- del 返回 `reply->type` 为 `REDIS_REPLY_INTEGER`
+- get 返回的type 为 `REDIS_REPLY_STATUS`, 结果在 `reply->str` 中
 
 ## Lists
 collections of string elements sorted according to the order of insertion. They are basically linked lists
@@ -70,13 +79,6 @@ you can set and clear individual bits, count all the bits set to 1, find the fir
 - dbfilename: 数据快照文件名(只是文件名,不包括目录), dump.rdb
 - dir: 数据快照的保存目录(这个是目录), `/var/lib/redis/`
  
-# install
-https://console.tenxcloud.com/docker-registry/detail?imageName=tenxcloud/redis
-
-1. 下载: `docker pull index.tenxcloud.com/tenxcloud/redis`
-1. 启动server: `docker run -d -p 6379:6379 -e REDIS_PASS="None" --name server redis`, redis_dir: /data, 可以通过-v 进行挂载本地路径
-1. client(另外一个具有redis-cli 的container): `redis-cli -h server -p 7379 -a "None"`, 这里的server 就是第二步骤中container 名字为server 的redis server container
-
 # 扩展写性能和内存容量
 [Redis实战：如何构建类微博的亿级社交平台](http://www.tuicool.com/articles/eyAfeyq)
 
