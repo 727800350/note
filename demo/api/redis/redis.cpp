@@ -94,6 +94,39 @@ int test_list(){
 	return 0;
 }
 
+int test_pipeline(){
+	// rpush
+	snprintf(cmd, MAX_LEN, "rpush %s %d %d %d", "key", 1, 2, 3);
+	redisAppendCommand(redis, cmd);
+
+	// rpush
+	snprintf(cmd, MAX_LEN, "rpush %s %d %d", "key", 4, 5);
+	redisAppendCommand(redis, cmd);
+
+	// lpush
+	snprintf(cmd, MAX_LEN, "lpush %s %d %d", "key", 6, 7);
+	redisAppendCommand(redis, cmd);
+
+	redisGetReply(redis, (void **)&reply);
+	freeReplyObject(reply);
+	redisGetReply(redis, (void **)&reply);
+	freeReplyObject(reply);
+	redisGetReply(redis, (void **)&reply);
+	freeReplyObject(reply);
+
+	// why while won't stop
+// 	while(redisGetReply(redis, (void **)&reply) == REDIS_OK){
+// 		process_reply();
+// 	}
+
+	// lrange
+	snprintf(cmd, MAX_LEN, "lrange %s %d %d", "key", 0, -1);
+	reply = (redisReply *)redisCommand(redis, cmd);
+	assert(process_reply() == 0);
+
+	return 0;
+}
+
 int main(){
 	std::string ip = "127.0.0.1";
 	int port = 6379;
@@ -111,6 +144,9 @@ int main(){
 
 	redisCommand(redis, "FLUSHALL");
 	assert(test_list() == 0);
+
+	redisCommand(redis, "FLUSHALL");
+	assert(test_pipeline() == 0);
 
 	delete []cmd;
 	redisFree(redis);
