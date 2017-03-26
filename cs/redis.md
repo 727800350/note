@@ -68,6 +68,20 @@ The elements are always taken sorted(正序排列的) by their score, so unlike 
 it is possible, using special commands, to handle String values like an array of bits:
 you can set and clear individual bits, count all the bits set to 1, find the first set or unset bit, and so forth
 
+# API
+```C++
+typedef struct redisReply {
+    int type; /* REDIS_REPLY_* */
+    long long integer; /* The integer when type is REDIS_REPLY_INTEGER */
+    int len; /* Length of string */
+    char *str; /* Used for both REDIS_REPLY_ERROR and REDIS_REPLY_STRING */
+    size_t elements; /* number of elements, for REDIS_REPLY_ARRAY */
+    struct redisReply **element; /* elements vector for REDIS_REPLY_ARRAY */
+} redisReply;
+```
+
+`redisReply *reply = (redisReply *)redisCommand(redis, cmd);` 每次都需要执行`freeReplyObject(reply);`释放redisCommand 函数为reply 申请的内存
+
 # config
 配置文件: `/etc/redis.conf`
 

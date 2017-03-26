@@ -50,6 +50,71 @@ int test_string(){
 	fprintf(stderr, "cmd[%s] reply->type: %d, reply->str: %s\n", cmd, reply->type, reply->str);
 	freeReplyObject(reply);
 
+	// delete
+	snprintf(cmd, MAX_LEN, "del %s", "key");
+	reply = (redisReply *)redisCommand(redis, cmd);
+	if(reply == NULL){
+		fprintf(stderr, "redisCommand[%s] returned NULL\n", cmd);
+		return -1;
+	}
+	if(redis->err != 0){
+		fprintf(stderr, "after redisCommand[%s] err[%d] and errstr[%s]\n", cmd, redis->err, redis->errstr);
+		return -1;
+	}
+	fprintf(stderr, "cmd[%s] reply->type: %d, reply->integer: %lld\n", cmd, reply->type, reply->integer);
+	freeReplyObject(reply);
+
+	return 0;
+}
+
+int test_list(){
+	// rpush
+	snprintf(cmd, MAX_LEN, "rpush %s %d %d %d", "key", 1, 2, 3);
+	reply = (redisReply *)redisCommand(redis, cmd);
+	if(reply == NULL){
+		fprintf(stderr, "redisCommand[%s] returned NULL\n", cmd);
+		return -1;
+	}
+	if(redis->err != 0){
+		fprintf(stderr, "after redisCommand[%s] err[%d] and errstr[%s]\n", cmd, redis->err, redis->errstr);
+		return -1;
+	}
+	fprintf(stderr, "cmd[%s] reply->type: %d, reply->integer: %lld\n", cmd, reply->type, reply->integer);
+	freeReplyObject(reply);
+
+	// lpop
+	snprintf(cmd, MAX_LEN, "lpop %s", "key");
+	reply = (redisReply *)redisCommand(redis, cmd);
+	if(reply == NULL){
+		fprintf(stderr, "redisCommand[%s] returned NULL\n", cmd);
+		return -1;
+	}
+	if(redis->err != 0){
+		fprintf(stderr, "after redisCommand[%s] err[%d] and errstr[%s]\n", cmd, redis->err, redis->errstr);
+		return -1;
+	}
+	fprintf(stderr, "cmd[%s] reply->type: %d, reply->str: %s\n", cmd, reply->type, reply->str);
+	freeReplyObject(reply);
+
+	// lrange
+	snprintf(cmd, MAX_LEN, "lrange %s %d %d", "key", 0, -1);
+	reply = (redisReply *)redisCommand(redis, cmd);
+	if(reply == NULL){
+		fprintf(stderr, "redisCommand[%s] returned NULL\n", cmd);
+		return -1;
+	}
+	if(redis->err != 0){
+		fprintf(stderr, "after redisCommand[%s] err[%d] and errstr[%s]\n", cmd, redis->err, redis->errstr);
+		return -1;
+	}
+	fprintf(stderr, "cmd[%s] reply->type: %d, reply->elements: %lu\n", cmd, reply->type, reply->elements);
+	for(size_t i = 0; i < reply->elements; i++){
+		redisReply *r = reply->element[i];
+		fprintf(stderr, "r->type: %d, r->str: %s\n", r->type, r->str);
+		freeReplyObject(r);
+	}
+	freeReplyObject(reply);
+
 	return 0;
 }
 
@@ -65,9 +130,14 @@ int main(){
 
 	cmd = new char[MAX_LEN];
 
-	assert(test_string() == 0);
+// 	redisCommand(redis, "FLUSHALL");
+// 	assert(test_string() == 0);
+
+	redisCommand(redis, "FLUSHALL");
+	assert(test_list() == 0);
 
 	delete []cmd;
+	redisFree(redis);
 
 	return 0;
 }
