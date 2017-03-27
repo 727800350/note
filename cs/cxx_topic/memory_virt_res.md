@@ -29,7 +29,7 @@ SHR:
 
 
 ```C++
-#include <iostream>
+#include <stdio.h>
 
 int main(){
 	char *p = new char [1024 * 1024 * 512];
@@ -39,10 +39,12 @@ int main(){
 ```
 VIRT包含了new出来的512MB空间, 但是RES不包含该空间.
 即刚new出来的空间, 如果没有使用, 会放入SWAP中, 并不在内容中真实的分配物理内存.
++++++++++++++++++++++++++++++++++++++
 
 
 ```C++
-#include <iostream>
+#include <stdio.h>
+#include <string.h>
 
 int main(){
 	char *p = new char [1024 * 1024 * 512];
@@ -52,10 +54,11 @@ int main(){
 }
 ```
 VIRT包含new出来的512MB空间,RES包含目前使用的memset的128M空间.即new出来的空间,如果只使用部分,则只分配部分物理内存.
++++++++++++++++++++++++++++++++++++++
 
 
 ```C++
-#include <iostream>
+#include <stdio.h>
 
 int main(){
 	char p[1024 * 1024 * 10];
@@ -64,10 +67,12 @@ int main(){
 }
 ```
 没有使用的栈空间,VIRT会包含(没有使用的栈空间会在SWAP中).
++++++++++++++++++++++++++++++++++++++
 
 
 ```C++
-#include <iostream>
+#include <stdio.h>
+#include <string.h>
 
 int main(){
 	char p[1024 * 1024 * 10];
@@ -77,10 +82,11 @@ int main(){
 }
 ```
 已经使用的栈空间,VIRT和RES都会包含.
-
++++++++++++++++++++++++++++++++++++++
 
 ```C++
-#include <iostream>
+#include <stdio.h>
+#include <string.h>
 
 int main(){
 	char ** pp = new char * [1024];
