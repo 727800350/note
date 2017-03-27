@@ -1,19 +1,8 @@
 #!/bin/bash
 set -x
 
-source ./conf/common.conf
-if [ $? -ne 0 ]
-then
-	echo "source common.conf error" >&2
-	exit 1
-fi
-
-source ./conf/func.sh
-if [ $? -ne 0 ]
-then
-	echo "source func.sh error" >&2
-	exit 1
-fi
+source ./conf/common.conf || exit 1
+source ./conf/func.sh || exit 1
 
 ${local_hadoop} dfs -test -d ${top_dir}
 if [ $? -ne 0 ]
