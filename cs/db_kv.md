@@ -5,8 +5,13 @@ redis 中数据对象都是 string 类型, 但是有时会把string 解释成其
 Redis keys are binary safe, this means that you can use any binary sequence as a key, from a string like "foo" to the content of a JPEG file.
 The empty string is also a valid key.
 
-- FLUSHALL 清空所有数据
-- RANDOMKEY 随机获取一个key
+- FLUSHALL: 清空所有数据
+- RANDOMKEY: 随机获取一个key
+- DBSIZE: 返回当前数据库的 key 的数量
+- INFO: Redis 服务器的各种信息和统计数值
+
+- start: `redis-server redis.conf`
+- stop: `redis-cli shutdown`
 
 ## data type
 ### Binary-safe string
@@ -53,17 +58,12 @@ The elements are always taken sorted(正序排列的) by their score, so unlike 
 - zrangebyscore: `zrangebyscore hackers -inf 1950`
 
 ### Hash
-- hset
-
-		HSET user:1000 name "John Smith"
-		HSET user:1000 email "john.smith@example.com"
-		HSET user:1000 password "s3cret"
-
-	或者和在一起`hmset user:1001 name "Mary Jones" password "hidden" email "mjones@example.com"`
-- `hgetall user:1000`
-- `hget user:1001 name`
-- hdel
-- hincrby
+- `HSET key field1 value1`, 或者合在一起`HMSET key field1 value1 field2 value2 ... fieldn valuen`
+- `HGETALL key`
+- `HGET key fieldi`
+	- C API 中 HGET 不存在的key, 返回的reply type 为 `REDIS_REPLY_NIL`
+- `HDEL key field1 field2 ... fieldn`
+- `HINCRBY key fieldi num`: num 设置为负, 就实现了减
 
 ### Bit arrays (or simply bitmaps)
 it is possible, using special commands, to handle String values like an array of bits:
@@ -82,6 +82,13 @@ typedef struct redisReply {
 ```
 
 `redisReply *reply = (redisReply *)redisCommand(redis, cmd);` 每次都需要执行`freeReplyObject(reply);`释放redisCommand 函数为reply 申请的内存
+
+pipeline
+
+1. redis的底层通信协议对管道(Pipelining)提供了支持,
+2. 通过管道可以一次发送多条命令,并在执行完命令后将结果统一返回,
+3. 当一组命令中每条命令都不依赖于之前命令的执行结果时,就可以将这组命令一起放入管道中发出,
+4. 管道通过减少通信次数,降低往返时延累加造成的性能消耗,从而提升效率,
 
 ## config
 配置文件: `/etc/redis.conf`

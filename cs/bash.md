@@ -11,6 +11,8 @@
 - `echo *`: 会输出当前目录的文件
 - `echo "*"`: 才会输出`*`
 
+- `watch -d -n 1 command`: 间隔1秒钟, 执行一次command, 并将结果的diff 高亮显示
+
 # Help
 man
 
@@ -249,7 +251,6 @@ cron服务器每分钟读取一次/var/crontab/cron目录内的所有文件和/e
 crontab
 
 - `crontab -l`: The current crontab will be displayed on standard output.
-- `crontab -r`: The current crontab will be removed.
 - `crontab -e`: edit the current crontab.  After you exit from the editor, the modified crontab will be installed automatically.
 
 eg:
@@ -258,4 +259,6 @@ eg:
 1. `* */6 * * * /usr/local/bin/esbbak`: 表示每6小时执行一次,0的时候执行一次, 6的时候执行第二次, 如果协程1-23/6, 那么就是1的时候执行第一次, 7的时候执行第二次
 1. `20,30 * * * /usr/local/bin/esbak`: 表示在每小时20分和30分时执行
 1. `* 23 * * 2-5 /usr/local/bin/esbbak`: 表示在星期二到星期五每天的23点执行
+
+crontab 中生成时间必须加转义`date +"\%Y\%m\%d"`
 

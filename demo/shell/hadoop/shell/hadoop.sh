@@ -14,7 +14,8 @@ files=""
 for file in `ls bin/* conf/* shell/*`
 do
 	files="$files -file $file"
-done
+done 1>/dev/null 2>&1
+echo "files=$files"
 
 ${local_hadoop} dfs -rmr ${output}
 ${local_hadoop} streaming \
