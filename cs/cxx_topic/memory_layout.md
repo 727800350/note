@@ -220,3 +220,30 @@ ps->pvf();       // one of the above; calls S::pvf(), 输出 S::pvf
 因此,在S对R虚函数表的拷贝中,pvf函数对应的项,指向的是一个"调整块"的地址,该调整块使用必要的计算,把`R*`转换为需要的`S*`.
 译者注:这就是`thunk1: this -= sdPR; goto S::pvf`干的事.先根据P和R在S中的偏移,调整this为`P*`,也就是`S*`,然后跳转到相应的虚函数处执行.
 
+### 虚继承下的虚函数
+```
+struct P{
+	int p1;
+	void pf();
+	virtual void pvf(){
+		cout << "P::pvf" << endl;
+	};
+};
+
+struct T: virtual P{
+	int t1;
+	void pvf(){
+		cout << "T::pvf" << endl;
+	};
+	virtual void tvf(){
+		cout << "T::tvf" << endl;
+	};
+};
+```
+![内存布局](http://img.my.csdn.net/uploads/201108/9/5419476_1312878510F137.jpg)
+
+T虚继承P,覆盖P的虚成员函数,声明了新的虚函数.
+如果采用在基类虚函数表末尾添加新项的方式,则访问虚函数总要求访问虚基类.
+在VC++中,为了避免获取虚函数表时,转换到虚基类P的高昂代价,T中的新虚函数通过一个新的虚函数表获取,从而带来了一个新的虚函数表指针.该指针放在T实例的顶端.
+因为sizeof(struct T) = 4(T::vfptr) + 4(T::vbptr) + 4(T::t1) + 4(P::vfptr) + 4(P::p1)
+
