@@ -221,7 +221,7 @@ ps->pvf();       // one of the above; calls S::pvf(), 输出 S::pvf
 译者注:这就是`thunk1: this -= sdPR; goto S::pvf`干的事.先根据P和R在S中的偏移,调整this为`P*`,也就是`S*`,然后跳转到相应的虚函数处执行.
 
 ### 虚继承下的虚函数
-```
+```C++
 struct P{
 	int p1;
 	void pf();

@@ -220,11 +220,11 @@ I/O多路复用通过一种机制, 可以监视多个描述符, 一旦某个描�
 ```C
 while true{
 	select(streams[]);
-    for i in streams[]{
-        if i has data{
-            read or write i;
+	for i in streams[]{
+		if i has data{
+			read or write i;
 		}
-    }
+	}
 }
 ```
 
@@ -589,103 +589,9 @@ inetd/daytimetcpserv3.c: 使用daemon_inted 函数的例子
     $ This is the child
     This is the child
 
-
-这个程序的运行过程如下图所示  
-![运行过程](http://learn.akae.cn/media/images/process.fork.png)
-
-这个程序是在Shell下运行的,因此Shell进程是父进程的父进程.父进程运行时Shell进程处于等待状态, 当父进程终止时Shell进程认为命令执行结束了,于是打印Shell提示符,而事实上子进程这时还没结束,所以子进程的消息打印到了Shell提示符后面.最后光标停在This is the child的下一行,这时用户仍然可以敲命令,即使命令不是紧跟在提示符后面,Shell也能正确读取.
-
-一个进程在终止时会关闭所有文件描述符,释放在用户空间分配的内存,但它的PCB还保留着,内核在其中保存了一些信息:如果是正常终止则保存着退出状态,如果是异常终止则保存着导致该进程终止的信号是哪个.  
-这个进程的父进程可以调用wait或waitpid获取这些信息,然后彻底清除掉这个进程.我们知道一个进程的退出状态可以在Shell中用特殊变量$?查看,因为Shell是它的父进程,当它终止时Shell调用wait或waitpid得到它的退出状态同时彻底清除掉这个进程.
-
-如果一个进程已经终止,但是它的父进程尚未调用wait或waitpid对它进行清理,这时的进程状态称为僵尸(Zombie)进程.任何进程在刚终止时都是僵尸进程(在进程终止和父进程执行清理之间有一个时间窗口),正常情况下,僵尸进程都立刻被父进程清理了
-
-    #include <sys/types.h>
-    #include <sys/wait.h>
-    
-    pid_t wait(int *status);
-    pid_t waitpid(pid_t pid, int *status, int options);
-    成功则返回清理掉的子进程id,若出错则返回-1.
-
-父进程调用wait或waitpid时可能会:
-
-- 阻塞(如果它的所有子进程都还在运行).
-- 带子进程的终止信息立即返回(如果一个子进程已终止,正等待父进程读取其终止信息).
-- 出错立即返回(如果它没有任何子进程).
-
-这两个函数的区别是:  
-如果父进程的所有子进程都还在运行,调用wait将使父进程阻塞,而调用waitpid时如果在**options参数中指定WNOHANG可以使父进程不阻塞而立即返回0.**  
-wait等待第一个终止的子进程,而waitpid可以通过pid参数指定等待哪一个子进程.
-
-例如下面的代码:
-    
-    #include <sys/types.h>
-    #include <sys/wait.h>
-    #include <unistd.h>
-    #include <stdio.h>
-    #include <stdlib.h>
-    
-    int main(void)
-    {
-    	pid_t pid;
-    	pid = fork();
-    	if (pid < 0) {
-    		perror("fork failed");
-    		exit(1);
-    	}
-    	if (pid == 0) {
-    		int i;
-    		for (i = 3; i > 0; i--) {
-    			printf("This is the child\n");
-    			sleep(1);
-    		}
-    		exit(3);
-    	} else {
-    		int stat_val;
-    		printf("before waitpidf\n");
-    // 		waitpid(pid, &stat_val, 0);
-    		waitpid(pid, &stat_val, WNOHANG);
-    		printf("after waitpidf\n");
-    		if (WIFEXITED(stat_val))
-    			printf("Child exited with code %d\n", WEXITSTATUS(stat_val));
-    		else if (WIFSIGNALED(stat_val))
-    			printf("Child terminated abnormally, signal %d\n", WTERMSIG(stat_val));
-    	}
-    	return 0;
-    }
-    
-子进程的终止信息在一个int中包含了多个字段,用宏定义可以取出其中的每个字段:
-
-- 如果子进程是正常终止的,WIFEXITED取出的字段值非零,WEXITSTATUS取出的字段值就是子进程的退出状态,
-- 如果子进程是收到信号而异常终止的,WIFSIGNALED取出的字段值非零,WTERMSIG取出的字段值就是信号的编号.
-
-上面程序的输出:
-    
-    when we use waitpid(pid, &stat_val, 0); 阻塞
-    the output is:
-    [Eric@human ~]$ ./test2 
-    before waitpidf
-    This is the child
-    This is the child
-    This is the child
-    after waitpidf
-    Child exited with code 3
-    [Eric@human ~]$
-    
-    when we use waitpid(pid, &stat_val, WNOHANG); 不阻塞
-    the output is:
-    [Eric@human ~]$ ./test2 
-    before waitpidf
-    after waitpidf
-    This is the child
-    Child exited with code 0
-    [Eric@human ~]$ This is the child
-    This is the child
-
-
 # 线程 pthread
 `fork` 是昂贵的. fork要把父进程的内存镜像复制到子进程, 并在子进程中复制所有描述符, 如此, 等等.  
-子进程获取父进程数据空间,堆和栈的副本
+子进程获取父进程数据空间,堆和栈的副本, 包括缓冲区
 
 同一进程内的所有线程共享
 
@@ -717,127 +623,6 @@ Some languages allow you to create private pools of memory, or individual heaps,
 	所以errno 还是看成同一个进程的所有线程共享一个全局的errno.
 1. 信号掩码
 1. 优先级
-
-[Why do threads share the heap space?](http://stackoverflow.com/questions/3318750/why-do-threads-share-the-heap-space)
-
-What do you do when you want to pass data from one thread to another?
-(If you never did that you have be writing separate programs, not one multi-threaded program.) There are two major approaches:
-
-The approach you seem to take for granted is **shared memory**: except for data that has a compelling reason to be thread-specific (such as the stack), 
-all data is accessible to all threads. 
-Basically, there is a shared heap. That gives you **speed**: any time a thread changes some data, other threads can see it. 
-(Limitation: this is not true if the threads are executing on different processors: 
-then the programmer needs to work especially hard to use shared memory correctly and efficiently.) 
-Most major imperative languages, in particular Java and C#, favor this model.
-
-It is possible to have one heap per thread, plus a shared heap. This requires the programmer to decide which data to put where, 
-and that often does not mesh well with existing programming languages.
-
-The dual approach is **message passing**: 
-each thread has its own data space; when a thread wants to communicate with another thread it needs to explicitly send a message to the other thread, 
-so as to copy the data from the sender heap to the recipient heap. 
-In this setting many communities prefer to call the threads processes. That gives you **safety**: 
-since a thread can not overwrite some other thread memory, a lot of bugs are avoided. Another benefit is distribution: 
-you can make your threads run on separate machines without having to change a single line in your program. 
-You can find message passing libraries for most languages but integration tends to be less good. 
-Good languages to understand message passing in are *Erlang* and *JoCaml*.
-
-In fact message passing environments usually use shared memory behind the scene, 
-at least as long as the threads are running on the same machine/processor. 
-This saves a lot of time and memory since passing a message from one thread to another then does not require making a copy of the data. 
-But since the shared memory is not exposed to the programmer, its inherent complexity is confined to the language/library implementation.
-
-## demo
-	/* Includes */
-	#include <unistd.h>     /* Symbolic Constants */
-	#include <sys/types.h>  /* Primitive System Data Types */ 
-	#include <errno.h>      /* Errors */
-	#include <stdio.h>      /* Input/Output */
-	#include <stdlib.h>     /* General Utilities */
-	#include <pthread.h>    /* POSIX Threads */
-	#include <string.h>     /* String handling */
-	
-	/* prototype for thread routine */
-	void print_message_function ( void *ptr );
-	
-	/* struct to hold data to be passed to a thread
-	   this shows how multiple data items can be passed to a thread */
-	typedef struct str_thdata{
-	    int thread_no;
-	    char message[100];
-	} thdata;
-	
-	int main(){
-	    pthread_t thread1, thread2;  /* thread variables */
-	    thdata data1, data2;         /* structs to be passed to threads */
-	    
-	    /* initialize data to pass to thread 1 */
-	    data1.thread_no = 1;
-	    strcpy(data1.message, "Hello!");
-	
-	    /* initialize data to pass to thread 2 */
-	    data2.thread_no = 2;
-	    strcpy(data2.message, "Hi!");
-	    
-	    /* create threads 1 and 2 */    
-	    pthread_create(&thread1, NULL, (void *) &print_message_function, (void *) &data1);
-	    pthread_create(&thread2, NULL, (void *) &print_message_function, (void *) &data2);
-	
-	    /* Main block now waits for both threads to terminate, before it exits
-	       If main block exits, both threads exit, even if the threads have not
-	       finished their work */ 
-	    pthread_join(thread1, NULL);
-	    pthread_join(thread2, NULL);
-	              
-	    /* exit */  
-	    exit(0);
-	} /* main() */
-	
-	/**
-	 * print_message_function is used as the start routine for the threads used
-	 * it accepts a void pointer 
-	**/
-	void print_message_function ( void *ptr ){
-	    thdata *data;            
-	    data = (thdata *) ptr;  /* type cast to a pointer to thdata */
-	    
-	    /* do the work */
-	    printf("Thread %d says %s \n", data->thread_no, data->message);
-	    
-	    pthread_exit(0); /* exit */
-	} /* print_message_function ( void *ptr ) */
-
-
-**运行流程**  
-在一个线程中调用`pthread_create()`创建新的线程后,当前线程从`pthread_create()`返回继续往下执行,
-而新的线程所执行的代码由我们传给`pthread_create`的函数指针`start_routine`决定.  
-`start_routine`函数接收一个参数,是通过`pthread_create`的`arg`参数传递给它的.  
-`start_routine`返回时,这个线程就退出了,其它线程可以调用`pthread_join`得到`start_routine`的返回值,类似于父进程调用`wait(2)`得到子进程的退出状态,稍后详细介绍`pthread_join`.
-
-如果需要只终止某个线程而不终止整个进程,可以有三种方法:
-
-1. 从线程函数`return`. 既然该函数必须声明成返回一个`void`指针, 它的返回值就是相应线程的终止状态.  
-	这种方法对主线程不适用,从`main`函数`return`相当于调用`exit`
-1. 一个线程可以调用`pthread_cancel`终止同一进程中的另一个线程
-1. 线程可以调用`pthread_exit`终止自己
-2. 如果进程的`main` 函数返回或者任何线程调用了`exit`, 整个进程就终止, 其中包括它的任何线程
-
-**But** [When to use pthread_cancel and not pthread_kill](http://stackoverflow.com/questions/3438536/when-to-use-pthread-cancel-and-not-pthread-kill)  
-I would use neither of those two but that is just personal preference.
-
-Of the two, `pthread_cancel` is the safest for terminating a thread 
-since the thread is only supposed to be affected when it has set its cancelability state to true using `pthread_setcancelstate()`.
-
-In other words, it should not disappear while holding resources in a way that might cause deadlock. 
-The `pthread_kill()` call sends a signal to the specific thread, and this is a way to affect a thread asynchronously for reasons other than cancelling it.
-
-**Most of my threads tends to be in loops doing work anyway and periodically checking flags to see if they should exit**. 
-That is mostly because I was raised in a world when `pthread_kill()` was dangerous and `pthread_cancel()` did not exist.
-
-I subscribe to the theory that **each thread should totally control its own resources, including its execution lifetime**. 
-I have always found that to be the best way to avoid deadlock. 
-To that end, I simply use mutexes for communication between threads(I have rarely found a need for true asynchronous communication) 
-and a flag variable for termination.
 
 一般情况下,线程终止后,其终止状态一直保留到其它线程调用`pthread_join`获取它的状态为止.  
 但是线程也可以被置为`detach`状态,这样的线程一旦终止就**立刻回收它占用的所有资源**,而不保留终止状态.  
