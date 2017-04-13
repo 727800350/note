@@ -90,7 +90,7 @@ out.close()
 ```python
 f = open("./data.txt", "r")
 for line in f:
-	line = line.strip()
+    line = line.strip()
     print line
 f.close()
 ```

@@ -44,7 +44,7 @@ printf是一个行缓冲函数, 先写到缓冲区(默认一般为 1024 bytes), 
 1. 缓冲区填满
 2. 写入的字符中有\n 或者 \r
 3. 调用fflush手动刷新缓冲区.  当我们执行printf的进程或者线程结束的时候会主动调用flush来刷新缓冲区
-4. 调用scanf要从缓冲区中读取数据时，也会将缓冲区内的数据刷新
+4. 调用scanf要从缓冲区中读取数据时,也会将缓冲区内的数据刷新
 
 满足上面4个条件之一缓冲区就会刷新(真正调用write来写入)
 
@@ -430,6 +430,12 @@ const in C does not mean something is constant. It just means a variable is read
 3. `int * const p`: p是指针常量, 也就是p不能变, 但是可以改变 `*p`
 4. `const int * const p`: 同时满足前面两种情况
 5. const并不会阻止参数的修改, 防君子不防小人, 可以强制的把 `const char *` 转换为 `char *`类型, 然后就可以修改了
+
+在 C++(但不是在 C 语言)中，const 限定符对默认存储类型稍有影响.
+在默认情况下,全局变量的链接性为外部的,但 const 全局变量的链接性为内部的.也就是说,在 C++ 看来,全局 const 定义就像使用了 static 说明符一样.
+因此,可以将 const 常量定义在头文件中供工程中的多个其它文件包含引用,并且编译时不会产生变量重复定义的错误.当然,也可以用 #define 宏定义.
+
+ref: [头文件中定义const全局变量应注意的问题](http://blog.csdn.net/ace_fei/article/details/8587403)
 
 ## extern
 - extern可以置于变量或者函数前,以标示变量或者函数的定义在别的文件中,提示编译器遇到此变量和函数时在其他模块中寻找其定义
