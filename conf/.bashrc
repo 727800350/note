@@ -6,6 +6,9 @@ if [ -f /etc/bashrc ]; then
 fi
 export PS1="[\u@\h:\W]\$ "
 
+## bash use emacs by default, change it to vi
+set -o vi
+
 ## source docker func
 if [ -f $HOME/git/docker/.dockerfunc ]; then
 	source $HOME/git/docker/.dockerfunc
@@ -41,6 +44,7 @@ else
 	alias yq='${HOME}/hadoop-client/hadoop-yq/bin/hadoop'
 	alias tiny='${HOME}/hadoop-client/hadoop-tiny/bin/hadoop'
 	alias shitu='${HOME}/hadoop-client/hadoop-shitu/bin/hadoop'
+	alias shixiao='${HOME}/hadoop-client/hadoop-shixiao/bin/hadoop'
 	alias nl='${HOME}/hadoop-client/hadoop-nanling/bin/hadoop'
 	alias spider='${HOME}/hadoop-client/hadoop-spider/bin/hadoop'
 
