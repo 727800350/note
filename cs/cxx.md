@@ -316,6 +316,18 @@ delete []p;
 	而且也不能通过判断原来的指针是否为null来判断realloc窒息你给成功与否
 - 当执行成功时, realloc 会将原来的内存释放掉, 返回的指针可能和原来的不一样, 所以我们只需要负责释放realloc 返回的内存就可以了, 之前的内存不用管了(realloc会处理)
 
+在C 和C++ 中, 结构体是可以直接赋值的. C 中是可以的, C++ 为了保持向后兼容, 因此也有了
+```C
+struct st{
+    int a;
+    char b[100];
+    char *c;
+}x, y;
+// set elements in x
+y = x;
+assert(memcmp(&x, &y, sizeof(struct st)) == 0);
+```
+
 ## 指针
 ### 指针数组与数组指针
 - 指针作为元素的数组: `int *ptr_array[10]`, 每个元素都是指针, 共10个元素.

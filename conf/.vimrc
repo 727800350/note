@@ -36,6 +36,7 @@ set autoindent
 set smartindent
 set shiftwidth=4
 set tabstop=4
+set noexpandtab "do not use 4 backspace to replace a tab
 
 " nobackup
 set nobackup
