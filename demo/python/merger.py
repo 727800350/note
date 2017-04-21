@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import sys
 
 '''
@@ -25,9 +27,9 @@ k2 \t 1 \t v2
 k3 \t 0
 
 when using hadoop
-	-partitioner "org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner" \
-	-jobconf stream.num.map.output.key.fields=2 \
-	-jobconf num.key.fields.for.partition=1 \
+    -partitioner "org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner" \
+    -jobconf stream.num.map.output.key.fields=2 \
+    -jobconf num.key.fields.for.partition=1 \
 '''
 
 d = {}
@@ -42,89 +44,90 @@ flag_1 = True
 sep = ":"
 
 def process_dict(dictionary, key):
-	if key in dictionary:
-		value = dictionary[key]
-		if flag_0:
-			if len(value) == 1:
-				print >> sys.stdout, ("%s\t%d\t%s"%(key, 0, value[0]))
-				del dictionary[key]
-			else:
-				if flag_1:
-					for i in range(1, len(value)):
-						print >> sys.stdout, ("%s\t%d\t%s"%(key, 1, value[0] + sep + value[i]))
-					del dictionary[key]
-				else:
-					print >> sys.stdout, ("%s\t%d\t%s"%(key, 1, value[0]))
-					del dictionary[key]
-		else:
-			if len(value) == 0:
-				print >> sys.stdout, ("%s\t%d"%(key, 0))
-				del dictionary[key]
-			else:
-				if flag_1:
-					for element in value: 
-						print >> sys.stdout, ("%s\t%d\t%s"%(key, 1, element))
-					del dictionary[key]
-				else:
-					print >> sys.stdout, ("%s\t%d"%(key, 1))
-					del dictionary[key]
+    if key in dictionary:
+        value = dictionary[key]
+        if flag_0:
+            if len(value) == 1:
+                print >> sys.stdout, ("%s\t%d\t%s"%(key, 0, value[0]))
+                del dictionary[key]
+            else:
+                if flag_1:
+                    for i in range(1, len(value)):
+                        print >> sys.stdout, ("%s\t%d\t%s"%(key, 1, value[0] + sep + value[i]))
+                    del dictionary[key]
+                else:
+                    print >> sys.stdout, ("%s\t%d\t%s"%(key, 1, value[0]))
+                    del dictionary[key]
+        else:
+            if len(value) == 0:
+                print >> sys.stdout, ("%s\t%d"%(key, 0))
+                del dictionary[key]
+            else:
+                if flag_1:
+                    for element in value: 
+                        print >> sys.stdout, ("%s\t%d\t%s"%(key, 1, element))
+                    del dictionary[key]
+                else:
+                    print >> sys.stdout, ("%s\t%d"%(key, 1))
+                    del dictionary[key]
 
 
 def main():
-	print >> sys.stderr, "flag_0: " + str(flag_0) + "; flag_1: " + str(flag_1)
-	key_old = ''
-	flag_old = ''
-	value_old = ''
-	key = ''
-	flag = ''
-	value = ''
-	
-	for line in sys.stdin:
-		## parser the line
-		line = line.strip()
-		terms = line.split('\t')
-		key = terms[0]
-		flag = terms[1]
+    print >> sys.stderr, "flag_0: " + str(flag_0) + "; flag_1: " + str(flag_1)
+    key_old = ''
+    flag_old = ''
+    value_old = ''
+    key = ''
+    flag = ''
+    value = ''
+    
+    for line in sys.stdin:
+        ## parser the line
+        line = line.strip()
+        terms = line.split('\t')
+        key = terms[0]
+        flag = terms[1]
 
-		if flag == '0':
-			if flag_0:
-				value = terms[2]
-		elif flag == '1':
-			if flag_1:
-				value = terms[2]
-			else:
-				value = ""
-		else:
-			print >> sys.stderr, "flag " + flag + " not supported"
-			sys.exit(1)
-		
-		## a new key
-		if key not in d and flag == '0':
-			d[key] = []
-			if flag_0:
-				d[key].append(value)
+        if flag == '0':
+            if flag_0:
+                value = terms[2]
+        elif flag == '1':
+            if flag_1:
+                value = terms[2]
+            else:
+                value = ""
+        else:
+            print >> sys.stderr, "flag " + flag + " not supported"
+            sys.exit(1)
+        
+        ## a new key
+        if key not in d and flag == '0':
+            d[key] = []
+            if flag_0:
+                d[key].append(value)
 
-		## key aleady exists
-		if key in d and flag == '1':
-			d[key].append(value)
-	
-		## the first line
-		if key_old == '':
-			key_old = key
-			flag_old = flag
-			value_old = value
-	
-		## other lines
-		if key != key_old:
-			process_dict(d, key_old)
-			key_old = key
-			flag_old = flag
-			value_old = value
-	
-	## the last possible key
-	for k in d.keys():
-		process_dict(d, k)
+        ## key aleady exists
+        if key in d and flag == '1':
+            d[key].append(value)
+    
+        ## the first line
+        if key_old == '':
+            key_old = key
+            flag_old = flag
+            value_old = value
+    
+        ## other lines
+        if key != key_old:
+            process_dict(d, key_old)
+            key_old = key
+            flag_old = flag
+            value_old = value
+    
+    ## the last possible key
+    for k in d.keys():
+        process_dict(d, k)
 
 if __name__ == "__main__":
-	main()
+    main()
+
 

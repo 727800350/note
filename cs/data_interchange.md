@@ -28,7 +28,7 @@ comments in JSON are not allowed.
 ### python
 import json
 
-- `json.load(fp)`: Deserialize fp (fp.read()-supporting file-like object containing a JSON document) to a Python object
+- `json.load(fp)`: Deserialize fp (fp.read()-supporting file-like object containing a JSON document) to a Python object(dict)
 - `json.loads(s, encoding=None)`: Deserialize s(a str instance containing a JSON document) to a Python object
 
 If the data being deserialized is not a valid JSON document, a JSONDecodeError will be raised.
