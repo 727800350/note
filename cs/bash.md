@@ -221,7 +221,7 @@ time
 	- cmdline: 就是程序运行时输入的命令行命令
 	- environ: 记录了进程运行时的环境变量
 	- fd: 目录下是进程打开或使用的文件的符号连接
-- kill: 当给多个进程号的时候, 可以同时杀死多个进行
+- kill: 当给多个进程号的时候, 可以同时杀死多个进行, `kill -s SIGINT pid` 不能在sh, 需要在bash 中启动
 - `killall sh`
 - `ps x`: An alternate description is that this option causes ps to list all processes owned by you (same EUID as ps)
 - `ps -ef` 可以查看pid, ppid

@@ -233,9 +233,10 @@ but unless you know what you know exactly what are doing, do not do this.
 
 ## C API
 ### string.h
-- `void *memset(void *s, int c, size_t n);`
-- `void *memcpy(void *dest, const void *src, size_t n);`
-- `int memcmp(const void *s1, const void *s2, size_t n);`
+- `void *memset(void *s, int c, size_t n)`
+- `void *memcpy(void *dest, const void *src, size_t n)`
+- `void *memmove( void* dest, const void* src, size_t n)`: 即使src 和dst 有交叉, 也可以正确完整的copy过去, 但是运行比memcpy 慢
+- `int memcmp(const void *s1, const void *s2, size_t n)`
 
 - `strcpy(ptr2, ptr1)` is equivalent to `while(\*ptr2++ = *ptr1++)`  
 	**So if you want the string which you have copied to be used in another function (as it is created in heap section) you can use `strdup`, else strcpy is enough.**
