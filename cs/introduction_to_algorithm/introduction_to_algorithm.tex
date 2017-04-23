@@ -2102,18 +2102,43 @@ output sensitive, 运行时间取决于输出结果
 \bigskip
 segment tree
 
-\section{Skip list}
-dynamic search structure \\
-efficient, randomized, simple\\
-$O(\lg n)$ in expectation with high probability($\simeq 1 - 1/(n^{\alpha})$)
+\section{Skiplist}
+dynamic search structure, efficient, randomized, simple
 
-\bigskip
-\noindent (sorted linked list)\\
-$2$ sorted linked lists
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale =0.4]{skiplist}\\
+  \caption{A skiplist}\label{fig.skiplist}
+\end{figure}
 
-\bigskip
-\noindent L2: stores all elements\\
-L1: stores some elements
+对于一个sorted linked list, search 的复杂度为 $O(n)$, 因为虽然是有序的, 但是linked list 不能像数组那样随机访问, 还是需要遍历.
+
+当在这个linked list 之上再加上一个linked list(level 1, 长度为$L_1$), 充当一个索引, 复杂度$\simeq L_1 + \dfrac{L_0}{L_1}$.
+可以这么理解, 设想level 1 上的node 均匀的分布在level 0 的上面, 那么level 0 会被间隔为 $\dfrac{L_0}{L_1}$段.
+通过level 1 上的node, 可以快速移动, 在level 0 上只需要移动其中的一段, 所以复杂度为$L_1 + \dfrac{L_0}{L_1}$.
+当$L_1$ 为$\sqrt{L_0}$ 时, 复杂度取最小值$2 n^{1/2}$
+
+当再加上level 2 时, 可以设想复杂度为 $3 n^{1/3}$
+
+当一共有 $\lg n$ 个level 时, 复杂度为 $\lg n \times n^{1/\lg n}$, 即 $2 \lg n$
+
+\noindent \underline{Lemma}:
+number of lelvels in a $n$ element skiplist is $O(\lg n)$ with high probability($\simeq 1 - 1/(n^{\alpha})$)
+
+Proof:
+
+设$O(\lg n) = c \lg n$
+$$
+\begin{aligned}
+\text{Failure probability}(not <= c \lg n \text{levels})
+& = Pr(> c \lg n \text{levels}) \\
+& = Pr(\text{the number of some element gets promoted} > c \lg n \text{times}) \\
+& <= n \times Pr(\text{element x gets promoted} > c \lg n \text{times}) \\
+& = n \times (1/2)^{c \lg n} \\
+& = \dfrac{1}{n^{c - 1}} \\
+& = \dfrac{1}{n^\alpha}
+\end{aligned}
+$$
 
 \section{Dynamic programming}
 optimal sub structure\\
