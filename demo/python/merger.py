@@ -1,4 +1,5 @@
 #!/usr/bin/python
+""" merger script """
 
 import sys
 
@@ -39,40 +40,42 @@ flag_0: whether record from data source with flag 0 has value
 flag_1: whether record from data source with flag 1 has value
 sep: field seperator between value from data source 0 and data source 1 if both flag_0 and flag_1 are True, with space as default
 '''
-flag_0 = True
+flag_0 = False
 flag_1 = True
 sep = ":"
 
 def process_dict(dictionary, key):
+    """ process a dict with only a key """
     if key in dictionary:
         value = dictionary[key]
         if flag_0:
             if len(value) == 1:
-                print >> sys.stdout, ("%s\t%d\t%s"%(key, 0, value[0]))
+                print >> sys.stdout, ("%s\t%d\t%s" % (key, 0, value[0]))
                 del dictionary[key]
             else:
                 if flag_1:
                     for i in range(1, len(value)):
-                        print >> sys.stdout, ("%s\t%d\t%s"%(key, 1, value[0] + sep + value[i]))
+                        print >> sys.stdout, ("%s\t%d\t%s" % (key, 1, value[0] + sep + value[i]))
                     del dictionary[key]
                 else:
-                    print >> sys.stdout, ("%s\t%d\t%s"%(key, 1, value[0]))
+                    print >> sys.stdout, ("%s\t%d\t%s" % (key, 1, value[0]))
                     del dictionary[key]
         else:
             if len(value) == 0:
-                print >> sys.stdout, ("%s\t%d"%(key, 0))
+                print >> sys.stdout, ("%s\t%d" % (key, 0))
                 del dictionary[key]
             else:
                 if flag_1:
                     for element in value: 
-                        print >> sys.stdout, ("%s\t%d\t%s"%(key, 1, element))
+                        print >> sys.stdout, ("%s\t%d\t%s" % (key, 1, element))
                     del dictionary[key]
                 else:
-                    print >> sys.stdout, ("%s\t%d"%(key, 1))
+                    print >> sys.stdout, ("%s\t%d" % (key, 1))
                     del dictionary[key]
 
 
 def main():
+    """ main func """
     print >> sys.stderr, "flag_0: " + str(flag_0) + "; flag_1: " + str(flag_1)
     key_old = ''
     flag_old = ''
