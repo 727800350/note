@@ -13,8 +13,10 @@ std::vector<std::string> split_any(const char *str, const char *delim){
 	char *p = NULL;
 
 	// strtok will modify the first parameter, so here make a copy
-	char *s = new char[strlen(str) + 1];
-	memcpy(s, str, strlen(str) + 1);
+	int len = strlen(str);
+	char *s = new char[len + 1];
+	memcpy(s, str, len + 1);
+	s[len] = '\0';
 
 	p = strtok(s, delim);
 	toks.push_back(std::string(p));
