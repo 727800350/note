@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <sstream>
 #include "util.h"
 
@@ -13,10 +14,7 @@ std::vector<std::string> split_any(const char *str, const char *delim){
 	char *p = NULL;
 
 	// strtok will modify the first parameter, so here make a copy
-	int len = strlen(str);
-	char *s = new char[len + 1];
-	memcpy(s, str, len + 1);
-	s[len] = '\0';
+	char *s = strdup(str);
 
 	p = strtok(s, delim);
 	toks.push_back(std::string(p));
@@ -24,7 +22,7 @@ std::vector<std::string> split_any(const char *str, const char *delim){
 		toks.push_back(std::string(p));
 	}
 
-	delete []s;
+	free(s);
 	return toks;
 }
 
