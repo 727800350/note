@@ -1,12 +1,11 @@
 #!/bin/bash
 set -x
 
+source ./conf/common.conf || exit 1
+source ./conf/func.sh || exit 1
+
 bash -x shell/hadoop.sh
-if [ $? -ne 0 ]
-then
-	echo "hadoop error" >&2
-	exit 1
-fi
+CHK_RET FATAL "$job_name error"
 
 exit 0
 

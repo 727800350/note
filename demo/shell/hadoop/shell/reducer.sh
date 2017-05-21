@@ -28,13 +28,15 @@ if [ $local -eq 1 ]
 then
 	hadoop_fs="$local_hadoop dfs"
 	python="/usr/bin/python"
+	id=0
 else
 	hadoop_fs="$cluster_hadoop_fs"
 	python="./Python-2.7.5/python"
+	id=${mapred_task_partition}
 fi
 
 chmod +x $bin/*
-## ${mapred_work_output_dir}/res.${mapred_task_partition}
+## ${mapred_work_output_dir}/res.$id
 
 exit 0
 
