@@ -94,19 +94,19 @@ git push origin :refs/tags/tag_name
 - git grep "hello" v2.5 在某一版本中搜索
 
 ## 合并与重置
-- git merge <branch> 将分支合并到当前HEAD中:
-- git rebase <branch> 将当前HEAD版本重置到分支中(请勿重置已发布的提交!)
-- git rebase --abort 退出重置
-- git rebase --continue 解决冲突后继续重置:
+- `git merge <branch>` 将分支合并到当前HEAD中:
+- `git rebase <branch>` 将当前HEAD版本重置到分支中(请勿重置已发布的提交!)
+- `git rebase --abort` 退出重置
+- `git rebase --continue` 解决冲突后继续重置:
 
 ## 撤销
-- git reset --hard HEAD 放弃工作目录下的所有修改:
-- git reset HEAD 移除缓存区的所有文件(i.e. 撤销上次git add):
-- git checkout HEAD <file> 放弃某个文件的所有本地修改:
-- git revert <commit> 重置一个提交(通过创建一个截然不同的新提交)
-- git reset --hard <commit> 将HEAD重置到指定的版本,并抛弃该版本之后的所有修改:
-- git reset <commit> 将HEAD重置到上一次提交的版本,并将之后的修改标记为未添加到缓存区的修改:
-- git reset --keep <commit> 将HEAD重置到上一次提交的版本,并保留未提交的本地修改:
+- `git reset --hard HEAD` 放弃工作目录下的所有修改:
+- `git reset HEAD` 移除缓存区的所有文件(i.e. 撤销上次git add):
+- `git checkout HEAD <file>` 放弃某个文件的所有本地修改:
+- `git revert <commit>` 重置一个提交(通过创建一个截然不同的新提交)
+- `git reset --hard <commit>` 将HEAD重置到指定的版本,并抛弃该版本之后的所有修改, git log 看不到这个commit 之后的commits, 但是git reflog 可以看到
+- `git reset <commit>` 将HEAD重置到上一次提交的版本,并将之后的修改标记为未添加到缓存区的修改:
+- `git reset --keep <commit>` 将HEAD重置到上一次提交的版本,并保留未提交的本地修改:
 
 ## patch 补丁
 例如，我们想导出历史上的某个commit之后的所有commits为一序列的补丁序列，那么可以这么做。

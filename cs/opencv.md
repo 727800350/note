@@ -1,6 +1,6 @@
 # Mat
-- mat.rows; 返回图像行数, 也就是图像的宽
-- mat.cols; 返回图像列数, 也就是图像的长
+- mat.cols; 返回图像列数, 也就是图像的宽
+- mat.rows; 返回图像行数, 也就是图像的高
 - mat.size(): size是一个结构体,定义了Mat矩阵内数据的分布形式,数值上有关系式: `image.size().width==image.cols; image.size().height==image.rows`
 - mat.channels(); 返回通道数. RGB 就是3, 而灰度图像只有一个灰度分量信息, 为1
 - mat.depth(); 度量每一个像素中每一个通道的精度, depth数值越大,精度越高.
