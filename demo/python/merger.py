@@ -42,7 +42,7 @@ sep: field seperator between value from data source 0 and data source 1 if both 
 '''
 flag_0 = True
 flag_1 = True
-sep = ":"
+sep = ' '
 
 def compose_fv(flag, v0, v1):
     """ compose flag and value when found """
@@ -63,6 +63,7 @@ def compose_fv(flag, v0, v1):
         else:
             return flag
 
+
 def process_dict(d, key):
     """ process a dict with only a key """
     if key + '_0' in d:
@@ -81,6 +82,7 @@ def process_dict(d, key):
         del d[key + '_0']
     if key + '_1' in d:
         del d[key + '_1']
+
 
 def main():
     """ main func """
@@ -102,24 +104,16 @@ def main():
 
         if flag == '0':
             if flag_0:
-                if len(terms) < 3:
-                    print >> sys.stderr, "%d %s format error" % (num, line)
-                    num = num + 1
-                    continue
                 value = terms[2]
             else:
                 value = ''
         elif flag == '1':
             if flag_1:
-                if len(terms) < 3:
-                    print >> sys.stderr, "%d %s format error" % (num, line)
-                    num = num + 1
-                    continue
                 value = terms[2]
             else:
                 value = ''
         else:
-            print >> sys.stderr, "flag " + flag + " not supported"
+            print >> sys.stderr, "flag %s not supported" % flag
             sys.exit(1)
         
         ## a new key
@@ -157,6 +151,14 @@ def main():
     print >> sys.stderr, "total input num: %d" % num
 
 if __name__ == "__main__":
+    if len(sys.argv) == 4:
+        flag_0 = int(sys.argv[1])
+        flag_1 = int(sys.argv[2])
+        sep = sys.argv[3]
+    elif len(sys.argv) == 3:
+        flag_0 = int(sys.argv[1])
+        flag_1 = int(sys.argv[2])
+    else:
+        pass
     main()
-
 
