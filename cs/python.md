@@ -1,21 +1,5 @@
 # 参数
-## 系统参数
-`sys.argv` 获取参数列表  
-如果需要获取参数列表的长度, 需要通过`len(sys.argv)`.  
-参数依次为: `sys.argv[0]`(第一个参数为本文件的名字), `sys.argv[1]`
-
-## 参数引用
-在C语言中,可以通知在参数中使用指针已达到改变参数值的作用
-在python中,可以在参数中使用可变对象,如列表和字典来达到改变参数的目的
-```python
-传值
-def changevalue(x):
-	x=x**2
-
-传引用
-def changevalue2(x):
-	x[0]=x[0]**2
-```
+`sys.argv` 获取参数列表, `len(sys.argv)`
 
 在Python中,无论你把对象做为参数传递,做为函数返回值,都是引用传递的.  
 你想复制一个对象.  
@@ -35,11 +19,14 @@ new_list_of_dicts = copy.deepcopy(existing_list_of_dicts)
 ## global
 ```python
 def fun(x):
-	global a #说明a是全局变量,可以直接使用, 需要确保在使用之前a 确实是存在的一个全局变量
-	return a+x
+	global a # 说明a是全局变量,可以直接使用, 需要确保在使用之前a 确实是存在的一个全局变量
+	return a + x
 ```
 
 # IO
+往 stdout 输出中文的时候一定要注意编码, 比如 decode('utf8'), encode(‘utf8’)
+否则会报下面的错误: 'ascii' codec can't encode character in position 20: ordinal not in range(128)
+
 ```python
 sys.stdout.write()
 sys.stderr.write()
@@ -293,17 +280,18 @@ eg: '我'.decode('utf8').encode('gbk')
 - `str.upper()`
 
 **分隔合并**
+- `str.strip()`: 去掉两边的空字符(包括末尾的换行符)
 - `str.lstrip([chars])` Return a copy of the string with leading characters removed. The chars argument is a string specifying the set of characters to be removed.
-
-- `str.partition(sep)`: Split the string at the first occurrence of sep, 
-	and return a 3-tuple containing the part before the separator, the separator itself, and the part after the separator. 
-	If the separator is not found, return a 3-tuple containing the string itself, followed by two empty strings.
 
 - `str.replace(old, new[, count])`: Return a copy of the string with all occurrences of substring old replaced by new. 
 	If the optional argument count is given, only the firstcount occurrences are replaced.
 
-- `str.split([sep[, maxsplit]])`: Return a list of the words in the string, using sep as the delimiter string.
-	当要对一个str 对象按照多个分隔符分隔时, 最好是进行多次分隔, 即一次指用一个字符分隔, 不知道为什么不能一次性处理
+- `str.split([sep[, maxsplit]])`: Return a list of the words in the string, using sep as the delimiter string. 但是split只能实现一次采用一个字符分割
+	- re模块中的split可实现一次多个字符分割, 不同字符之间使用 | 隔开, 其中 如果是 . 需要转义
+	```Python
+	e='aa@dd.com'
+	re.split('@|\.', e) # 得到 aa dd com
+	```
 
 - `str.join(iterable)`: Return a string which is the concatenation of the strings in the iterable iterable. 
 	The separator between elements is the string providing this method.
