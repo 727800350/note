@@ -3,6 +3,7 @@
 a.out
 .DS_Store
 ._.DS_Store
+*.dSYM
 conf/.vim/.netrwhist
 
 ## tex
@@ -36,3 +37,5 @@ demo/api/opencv/Makefile
 demo/api/opencv/demo
 demo/api/opencv/demo.cpp
 
+## redis
+*.rdb
