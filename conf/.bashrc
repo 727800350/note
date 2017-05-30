@@ -88,10 +88,8 @@ version=`gcc -v 2>&1 | tail -n 1 | awk '{print $3}'`
 if [[ $version > "4.7" ]]
 then
 	alias g++='g++ -std=c++11 -g -Wall'
-	alias clang++='clang++ -std=c++11 -g -Wall'
 else
 	alias g++='g++ -g -Wall'
-	alias clang++='clang++ -g -Wall'
 fi
 alias gcc='gcc -g -Wall'
 

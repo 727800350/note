@@ -32,44 +32,33 @@ std::vector<std::string> split_any(const char *str, const char *delim){
  * if gap is empty, the result is "a" "" "b"
  * if b is empty, the result is "a" "gap" ""
  **/
-std::vector<std::string> split_all(std::string &str, const char *delim){
+std::vector<std::string> split_all(const char *str, const char *delim){
 	std::vector<std::string> toks;
 
 	size_t start = 0;
 	size_t len = strlen(delim);
 
-	size_t pos = str.find(delim);
+	std::string s(str);
+	size_t pos = s.find(delim);
 	while(pos != std::string::npos){
-		toks.push_back(str.substr(start, pos - start));
+		toks.push_back(s.substr(start, pos - start));
 		start = pos + len;
-		if(start >= str.size()){
+		if(start >= s.size()){
 			break;
 		}
-		pos = str.find(delim, start);
+		pos = s.find(delim, start);
 	}
 
-	if(start < str.size()){
-		toks.push_back(str.substr(start));
+	if(start < s.size()){
+		toks.push_back(s.substr(start));
 	}
 
 	// the end of str is delim, so start will be str.size()
-	if(start == str.size()){
+	if(start == s.size()){
 		toks.push_back("");
 	}
 
 	return toks;
-}
-
-std::string num2string(int num){
-	std::ostringstream stream;
-	stream << num;
-	return stream.str();
-}
-
-std::string num2string(double num){
-	std::ostringstream stream;
-	stream << num;
-	return stream.str();
 }
 
 };
