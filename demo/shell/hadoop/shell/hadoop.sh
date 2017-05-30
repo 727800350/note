@@ -34,7 +34,7 @@ ${local_hadoop} streaming \
 	-jobconf mapred.reduce.tasks.speculative.execution="true" \
 	-jobconf stream.memory.limit="800" \
 	-jobconf mapred.max.map.failures.percent="5" \
-	-jobconf mapred.map.max.attempts="10" \
+	-jobconf mapred.map.max.attempts="3" \
 	-jobconf mapred.job.name="${owner}_${job_name}" \
 	-jobconf mapred.job.priority="${priority}" \
 	$files
