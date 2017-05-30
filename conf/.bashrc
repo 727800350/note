@@ -45,7 +45,7 @@ else
 	alias tiny='${HOME}/hadoop-client/hadoop-tiny/bin/hadoop'
 	alias shitu='${HOME}/hadoop-client/hadoop-shitu/bin/hadoop'
 	alias shixiao='${HOME}/hadoop-client/hadoop-shixiao/bin/hadoop'
-	alias nl='${HOME}/hadoop-client/hadoop-nanling/bin/hadoop'
+	alias nl='${HOME}/hadoop-client/hadoop-tuku/bin/hadoop'
 	alias spider='${HOME}/hadoop-client/hadoop-spider/bin/hadoop'
 
 	## svn
@@ -57,6 +57,10 @@ else
 
 	## php
 	export PATH=$PATH:$HOME/opt/php/bin/
+
+	## tool
+	export PATH=$PATH:${HOME}/icode/baidu/wangchao34/tool/kv
+	export PATH=$PATH:${HOME}/icode/baidu/wangchao34/tool/64sign
 
 	if [ -f "/home/img/.jumbo/bin/vim" ]
 	then
