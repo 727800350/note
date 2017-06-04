@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <openssl/md5.h>
 
@@ -15,6 +16,23 @@ int usage(const char *prog) {
     return 0;
 }
 
+/*
+ * process txt
+ */
+int process_txt(char *line) {
+    unsigned char md5[16] = {0};
+    MD5((const unsigned char *)line, strlen(line), md5);
+    for (int i = 0; i < 16; i++)  {
+        fprintf(stdout, "%02x", (int)md5[i]);
+    }
+    fprintf(stdout, "\t%s\n", line);
+
+    return 0;
+}
+
+/*
+ * process raw data
+ */
 int process(int vl, char *v, MD5_CTX *c) {
     MD5_Update(c, v, vl);
 
