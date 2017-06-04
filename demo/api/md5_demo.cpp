@@ -1,6 +1,4 @@
 #include <stdio.h>
-#include <stdint.h>
-#include <sys/types.h>
 #include <unistd.h>
 #include <openssl/md5.h>
 
