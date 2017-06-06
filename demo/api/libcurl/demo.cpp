@@ -16,9 +16,9 @@ typedef struct _chunk{
 }chunk_t;
 
 size_t callback(void *content, size_t size, size_t nmemb, void *userp){
-	size_t realsize = size * nmemb;
+	int realsize = size * nmemb;
 	chunk_t *chunk = (chunk_t *)userp;
-	size_t cpsize = 0;
+	int cpsize = 0;
 	if (max_vl - chunk->size >= realsize){
 		cpsize = realsize;
 	}
