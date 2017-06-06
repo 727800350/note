@@ -13,32 +13,26 @@
 - break function: Place a breakpoint at start of the specified function 
 - break linenumber: Place a breakpoint at line, relative to current source file
 - break filename:linenumber: Place a breakpoint at the specified line within the specified source file
-- break fn if expression: Stop at the breakpoint, only if expression  evaluates to true.  Expression is any valid C expression, evaluated within current stack frame when hitting the breakpoint. 
+- break fn if expression: Stop at the breakpoint, only if expression  evaluates to true.
 - disable breaknum: Disable/enable breakpoint identified by breaknum.. 
 - enable breaknum: Disable/enable breakpoint identified by breaknum.. 
 - delete breaknum: Delete the breakpoint identified by breaknum
-- commands breaknum: Specify commands to be executed when breaknum is reached.  The commands can be any list of C statements or gdb commands.  This can be useful to fix code on-the-fly in the debugger without re-compiling
+- commands breaknum: Specify commands to be executed when breaknum is reached.
 - cont: Continue a program that has been stopped
 
 ## Examining Stack
 The runtime stack is like a "trail of breadcrumbs" in a program; each time a function call is made, a "crumb is dropped" (an RT stack frame is pushed).  
 When a return from a function occurs, the corresponding RT stack frame is popped and discarded.
 
-**gdb assigns numbers to stack frames counting from zero** for the innermost (currently executing) frame
+gdb assigns numbers to stack frames counting from zero for the innermost (currently executing) frame
  
 - backtrace: Show stack frames, useful to find the calling sequence that produced a crash.
-
 - frame framenumber: Start examining the frame with framenumber.  
 	This does not change the execution context, but allows to examine variables for a different frame.  每个函数调用在堆栈中称为一帧
-
 - down: Select and print stack frame called by this one. 
-
 - up: Select and print stack frame that called this one
-
 - info args: Show the argument variables of current stack frame. 
-
 - info locals: Show the local variables of current stack frame.
-
 - where: 输出堆栈中函数的调用记录,最近调用的在最前面输出
 
 ## Examining source files
@@ -50,24 +44,19 @@ When a return from a function occurs, the corresponding RT stack frame is popped
 - print expression: Print value of expression. 
 	- `set print elements number-of-elements`, Set a limit on how many elements of an array GDB will print, 如果设置为0, 则全部打印
 	- `print array[index]@num`: print num elements from index
-- set variable = expression: Assign value of variable to expression.  You can set any variable in the current scope.  Variables which begin with $ can be used as convenience variables in gdb.
-- display expression: Print value of expression each time the program stops.  This can be useful to watch the change in a variable as you step through code. 
+- set variable = expression: Assign value of variable to expression.
+- display expression: Print value of expression each time the program stops.
 - undisplay: Cancels previous display requests. 
 - what i: 观察变量i 的变化,一旦指定变量发生变化就停止程序
 
 ### examine
-你可以使用examine命令(简写是x)来查看内存地址中的值.x命令的语法如下所示:
+你可以使用examine命令(简写是x)来查看内存地址中的值: `x/nfu`
 
-	x/ 
-	n,f,u是可选的参数.
+- n(number) 是一个正整数,表示显示内存单元的个数, 也就是说从当前地址向后显示几个地址的内容
+- f(format) 表示显示的格式,参见上面.如果地址所指的是字符串,那么格式可以是s,如果地址是指令地址,那么格式可以是i.  
+- u(unit) 一个内存单元的大小. 默认是4个bytes. b表示单字节, h表示双字节, w表示四字节, g表示八字节
 
-n 是一个正整数,表示显示内存的长度,也就是说从当前地址向后显示几个地址的内容.  
-f 表示显示的格式,参见上面.如果地址所指的是字符串,那么格式可以是s,如果地址是指令地址,那么格式可以是i.  
-u表示从当前地址往后请求的字节数,如果不指定的话,GDB默认是4个bytes.u参数可以用下面的字符来代替,b表示单字节,h表示双字节,w表示四字节,g表示八字节.当我们指定了字节长度后,GDB会从指内存定的内存地址开始,读写指定字节,并把其当作一个值取出来.
-
-表示一个内存地址.  
-n/f/u三个参数可以一起使用.例如:  
-`x/3uh 0x54320` 表示,从内存地址0x54320读取内容,h表示以双字节为一个单位,3表示三个单位,u表示按十六进制显示.
+eg: `x/3uh 0x54320`: 表示从内存地址0x54320读取内容, h表示以双字节为一个单位, 3 表示三个单位, u表示按无符号十进制显示
 
 ### 输出格式
 一般来说,GDB会根据变量的类型输出变量的值.但你也可以自定义GDB的输出的格式.
@@ -91,13 +80,6 @@ n/f/u三个参数可以一起使用.例如:
 ```
 
 ## [Debugging programs with multiple processes](http://developer.apple.com/library/mac/#documentation/DeveloperTools/gdb/gdb/gdb_5.html)
-On most systems, GDB has no special support for debugging programs which create additional processes using the fork function. When a program forks, GDB will continue to debug the parent process and the child process will run unimpeded.
-If you have set a breakpoint in any code which the child then executes, the child will get a SIGTRAP signal which (unless it catches the signal) will cause it to terminate.
-
-However, if you want to debug the child process there is a workaround which is not too painful. Put a call to sleep in the code which the child process executes after the fork.
-
-On some systems, GDB provides support for debugging programs that create additional processes using the fork or vfork functions. Currently, the only platforms with this feature are HP-UX (11.x and later only?) and GNU/Linux (kernel version 2.5.60 and later).
-
 By default, when a program forks, GDB will continue to debug the parent process and the child process will run unimpeded.
 
 If you want to follow the child process instead of the parent process, use the command `set follow-fork-mode`.
@@ -148,8 +130,9 @@ ulimit 全局配置文件: `/etc/security/limits.conf`
 *  soft  core  unlimited
 ```
 
-还有就是里面某个线程停住,也没死,这种情况一般就是死锁或者涉及消息接受的超时问题(听人说的,没有遇到过).遇到这种情况,可以使用: `gcore pid (调试进程的pid号)`.
-手动生成core文件,在使用pstack(linux下好像不好使)查看堆栈的情况.如果都看不出来,就仔细查看代码,看看是不是在 if,return,break,continue这种语句操作是忘记解锁,还有嵌套锁的问题,都需要分析清楚了
+还有就是里面某个线程停住,也没死,这种情况一般就是死锁或者涉及消息接受的超时问题(听人说的,没有遇到过).
+遇到这种情况,可以使用: `gcore pid (调试进程的pid号)`. 手动生成core文件, 再使用pstack(linux下好像不好使)查看堆栈的情况.
+如果都看不出来,就仔细查看代码,看看是不是在 if,return,break,continue这种语句操作是忘记解锁,还有嵌套锁的问题,都需要分析清楚了
 
 ## Debugging an already-running process
 - `attach process-id`: This command attaches to a running process, one that was started outside GDB.
