@@ -36,6 +36,7 @@ else
 fi
 
 chmod +x $bin/*
+mkdir log && chmod 777 log
 
 exit 0
 
