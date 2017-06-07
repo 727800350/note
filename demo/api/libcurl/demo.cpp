@@ -5,6 +5,7 @@
 /*
  * compile: g++ demo.cpp -lcurl
  * function: download the content pointed by url and write it out as kv
+ * ref: https://curl.haxx.se/libcurl/c/libcurl-tutorial.html
  */
 
 const int max_kl = 1024;
@@ -28,7 +29,7 @@ size_t callback(void *content, size_t size, size_t nmemb, void *userp){
 	
 	if(cpsize == 0){
 		fprintf(stderr, "buffer full\n");
-		return -1;
+		return 0;
 	}
 	memcpy(chunk->buffer + chunk->size, content, cpsize);
 	chunk->size += cpsize;
