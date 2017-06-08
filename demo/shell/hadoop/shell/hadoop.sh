@@ -28,6 +28,7 @@ ${local_hadoop} streaming \
 	-jobconf mapred.job.map.capacity="$mapper_capacity" \
 	-jobconf mapred.map.over.capacity.allowed="false" \
 	-jobconf mapred.map.tasks.speculative.execution="true" \
+	-jobconf mapred.reduce.slowstart.completed.maps=$slowstart \
 	-jobconf mapred.reduce.tasks="$reducer_num" \
 	-jobconf mapred.job.reduce.capacity="$reducer_capacity" \
 	-jobconf mapred.reduce.over.capacity.allowed="false" \

@@ -79,9 +79,9 @@ int main(){
 		}
 	}
  
-	delete []chunk.buffer;
 	curl_easy_cleanup(curl);
 	curl_global_cleanup();
+	delete []chunk.buffer;
  
 	return 0;
 }
