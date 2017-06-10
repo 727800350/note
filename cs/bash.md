@@ -1,27 +1,9 @@
-命令行快捷键:
-
-- CTRL-P: 从history缓冲区召回上一次的命令(在命令行下), 可以按下多次
 - CTRL-R: 回溯搜索(Backwards search)history缓冲区内的文本(在命令行下)
-- CTRL-T: 交换光标位置与光标的前一个位置的字符内容(在命令行下).比如:echo $var;,假设光标在a上,那么,按下C-T之后,v和a将会交换位置:echo $avr;.
-- CTRL-U: 擦除从光标位置开始到行首的所有字符内容
-- CTRL-W: 当在控制台或一个xterm窗口敲入文本时, CTRL-W 会删除从在光标处往后(回)的第一个空白符之间的内容.在某些设置里, CTRL-W 删除光标往后(回)到第一个非文字和数字之间的字符.
-- CTRL-Y: 将之前已经清除的文本粘贴回来(主要针对CTRL-U或CTRL-W)
-- CTRL-/: 撤消操作,Undo.
 
 - `echo *`: 会输出当前目录的文件
 - `echo "*"`: 才会输出`*`
 
 - `watch -d -n 1 command`: 间隔1秒钟, 执行一次command, 并将结果的diff 高亮显示
-
-# Help
-man
-
-- `man number item`: find item in section number, eg: `man 3 fopen`  
-- `man -k word`: 关键字查找, 查找包含word(命令本身或者解释中) 的command  
-- `man -f word`: 根据关键字在联机帮助中搜索完全匹配的条目, Equivalent to whatis  
-
-把man page 转成文本件,如: `man ls | col -b > ~/Desktop/man_ls.txt`  
-`man -t ls > man_ls.ps && ps2pdf man_ls.ps && rm man_ls.ps`: print
 
 ## 查找
 [find](http://os.51cto.com/art/200908/141119_all.htm)的使用格式如下:
@@ -125,8 +107,13 @@ Uppercase to lowercase:
 		1. 如果在dst 删除了src 中存在的文件, 那么再次执行 rsync -av 后, 被删除的文件会再次出现在dst
 		1. 如果在dst 中增加了文件, 那么再次执行 rsync -av 之后, 增加的文件不会被删除
 	- `rsync -av a b/`: 将a这个目录整体同步到b下面, 得到 b/a 这样的文件结构
-	- `rsync -av a/ b/`: 将a下面的文件同步到b下面, 得到 b/files_of_a 这样的文件结构
+	- `rsync -av a/ b/`: 将a下面的文件同步到b下面, 得到 `b/files_of_a` 这样的文件结构
 	- `--exclude ignore`: 忽略src/ignore
+- `nc`
+	- server: `nc -v -v -l -p 3000`: Listen on TCP port 3000, and once there is a connection, send stdin to the remote host, and send data from the remote host to stdout. 也就是即可以收数据也可以发数据
+	- client: `nc -v -v -n server_ip 3000`: open a TCP connection to port 3000 of server ip, 同样即可以发数据, 也可以收数据
+	- eg: `nc -v -v -l -p 3000 <server.src >server.dst` and `nc -v -v -n 127.0.0.1 3000 <client.src >client.dst`, 执行之后 server.src 和 client.dst 一样, server.dst 和 client.src 一样
+
 - wget 一个目录: `wget  -r ftp://xxx_path_xxx ./`
 
 ## 远程主机相关的

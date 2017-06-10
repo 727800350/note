@@ -1,10 +1,11 @@
 # gdb
 ## Running the program
-- run: run from the beginning.程序的参数是通过run给的, eg: `(gdb) run -n num -f file > outfile`
-- step: Run next line of source and return to debugger. If a subroutine call is encountered, **follow into that subroutine**
+- run(r): run from the beginning.程序的参数是通过run给的, eg: `(gdb) run -n num -f file > outfile`
+- step(s): Run next line of source and return to debugger. If a subroutine call is encountered, **follow into that subroutine**
 - step count: Run count lines of source
-- next: Similar to step, but **does not step into subroutines**
+- next(n): Similar to step, but **does not step into subroutines**
 - finish: Run until the current function/method returns
+- continue(c): execute until a break
 - jump address:	Continue program at specified **line or address**
 - quit:	退出调试
 
@@ -18,7 +19,6 @@
 - enable breaknum: Disable/enable breakpoint identified by breaknum.. 
 - delete breaknum: Delete the breakpoint identified by breaknum
 - commands breaknum: Specify commands to be executed when breaknum is reached.
-- cont: Continue a program that has been stopped
 
 ## Examining Stack
 The runtime stack is like a "trail of breadcrumbs" in a program; each time a function call is made, a "crumb is dropped" (an RT stack frame is pushed).  
