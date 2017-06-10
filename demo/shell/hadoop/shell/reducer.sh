@@ -36,6 +36,8 @@ else
 fi
 
 chmod +x $bin/*
+mkdir log && chmod 777 log
+
 ## ${mapred_work_output_dir}/res.$id
 
 exit 0
