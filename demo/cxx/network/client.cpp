@@ -1,7 +1,3 @@
-/* client.c */
-/*客户首先与服务器连接，然后接收用户输入的字符串，在将字符串发送给服务器，接受服务器发回的信息并显示
- * 之后，继续等待用户输入直至用户输入ctrl+D，当用户输入ctrl+D后，客户关闭连接并退出
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,8 +16,8 @@ void usage(const char *prog) {
 int process(int socket);
 
 int main(int argc, char *argv[]) {
-	char *host = NULL;
-	uint16_t port = 0;
+	char *host = "localhost";
+	uint16_t port = 8000;
 
 	int c = 0;
 	while ((c = getopt(argc, argv, "h:p:")) != -1) {
@@ -38,19 +34,13 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	if (host == NULL or port == 0) {
-		fprintf(stderr, "arg error\n");
-		usage(argv[0]);
-		return -1;
-	}
-
-	struct hostent *he;
+	struct hostent *he = NULL;
 	if((he = gethostbyname(host)) == NULL){
 		fprintf(stderr, "gethostbyname() error\n");
 		return -1;
 	}
 
-	int fd;
+	int fd = 0;
 	if((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1){
 		fprintf(stderr, "socket() error\n");
 		return -1;
