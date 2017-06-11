@@ -68,19 +68,30 @@ int main(int argc, char **argv) {
 		const char *p = inet_ntop(AF_INET, &cliaddr.sin_addr, str, sizeof(str));
 		uint16_t port = ntohs(cliaddr.sin_port);
 		fprintf(stderr, "received connection from %s:%d\n", p, port);
-		fprintf(stderr, "str is: %s\n", str);
 
 		/* op6: read and write */
-		int n = read(connfd, buf, max_vl);
-		fprintf(stderr, "buf is: %s\n", buf);
+		while (1) {
+			int n = read(connfd, buf, max_vl);
+			/* op7: close if needed */
+			if (n < 0) {
+				fprintf(stderr, "read error\n");
+				close(connfd);
+				break;
+			}
+			if (n == 0) {
+				fprintf(stderr, "client closed\n");
+				close(connfd);
+				break;
+			}
+			buf[n] = '\0'; // \n is still in buf
 
-		for (int i = 0; i < n; i++) {
-			buf[i] = toupper(buf[i]);
+			fprintf(stderr, "buf is: %s\n", buf);
+
+			for (int i = 0; i < n; i++) {
+				buf[i] = toupper(buf[i]);
+			}
+			write(connfd, buf, strlen(buf));
 		}
-		write(connfd, buf, strlen(buf));
-
-		/* op7: close */
-		close(connfd);
 	}
 
 	delete []buf;
