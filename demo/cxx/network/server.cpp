@@ -70,28 +70,19 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "received connection from %s:%d\n", p, port);
 
 		/* op6: read and write */
-		while (1) {
-			int n = read(connfd, buf, max_vl);
-			/* op7: close if needed */
-			if (n < 0) {
-				fprintf(stderr, "read error\n");
-				close(connfd);
-				break;
-			}
-			if (n == 0) {
-				fprintf(stderr, "client closed\n");
-				close(connfd);
-				break;
-			}
+		int n = 0;
+		while ((n = read(connfd, buf, max_vl)) > 0) {
 			buf[n] = '\0'; // \n is still in buf
-
-			fprintf(stderr, "buf is: %s\n", buf);
+			fprintf(stderr, "read from clinet: %s\n", buf);
 
 			for (int i = 0; i < n; i++) {
 				buf[i] = toupper(buf[i]);
 			}
 			write(connfd, buf, strlen(buf));
 		}
+		/* op7: close if needed */
+		fprintf(stderr, "read error, closing connection\n");
+		close(connfd);
 	}
 
 	delete []buf;
