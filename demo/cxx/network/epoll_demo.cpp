@@ -9,6 +9,7 @@
 #include <sys/epoll.h>
 
 const int max_event = 64;
+const int max_vl = 1024 * 1024;
 
 void usage(const char *prog) {
 	fprintf(stderr, "%s -p[listen port]\n", prog);
@@ -17,7 +18,7 @@ void usage(const char *prog) {
 int make_socket_non_blocking(int fd);
 int init_server(char *port, int *sfd);
 int accept_con(int efd, int sfd);
-int process_con(int efd, int fd);
+int process_con(int efd, int fd, char *buf);
 
 int main(int argc, char *argv[]){
 	char *serv_port = "8000";
@@ -62,6 +63,7 @@ int main(int argc, char *argv[]){
 
 	/* Buffer where events are returned */
 	struct epoll_event *events = new struct epoll_event[max_event];
+	char *buf = new char[max_vl];
 
 	/* The event loop */
 	while(1){
@@ -86,7 +88,7 @@ int main(int argc, char *argv[]){
 	 			*/
 
 				int fd = events[i].data.fd;
-				int ret = process_con(efd, fd);
+				int ret = process_con(efd, fd, buf);
 				if (ret != 0) {
 					fprintf(stderr, "process con %d error", fd);
 				}
@@ -94,8 +96,10 @@ int main(int argc, char *argv[]){
 		}
 	}
 
+	close(efd);
 	close(sfd);
 	delete []events;
+	delete []buf;
 
 	return 0;
 }
@@ -141,11 +145,10 @@ int accept_con(int efd, int sfd){
 	return 0;
 }
 
-int process_con(int efd, int fd){
+int process_con(int efd, int fd, char *buf){
 	bool done = false;
-	char buf[512];
 	while(1){
-		ssize_t count = read(fd, buf, sizeof(buf) - 1);
+		ssize_t count = read(fd, buf, max_vl - 1);
 		if(count == -1){
 			if(errno == EAGAIN){
 				fprintf(stderr, "read temporarily unavailable\n");
