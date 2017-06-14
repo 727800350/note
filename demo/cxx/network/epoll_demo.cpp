@@ -145,24 +145,25 @@ int process_con(int efd, int fd){
 	bool done = false;
 	char buf[512];
 	while(1){
-		ssize_t count = read(fd, buf, sizeof(buf));
+		ssize_t count = read(fd, buf, sizeof(buf) - 1);
 		if(count == -1){
-			/* If errno == EAGAIN, that means we have read all data. So go back to the main loop. */
-			if(errno != EAGAIN){
-				fprintf(stderr, "all read\n");
+			if(errno == EAGAIN){
+				fprintf(stderr, "read temporarily unavailable\n");
+			}
+			else{
+				fprintf(stderr, "read error\n");
 				done = true;
 			}
 			break;
 		}
 		else if(count == 0){
-			/* End of file. The remote has closed the connection. */
 			fprintf(stderr, "client closed\n");
 			done = true;
 			break;
 		}
 
 		buf[count] = '\0';
-		fprintf(stdout, "%s\n", buf);
+		fprintf(stdout, "%lu %s\n", count, buf);
 	}
 
 	if(done){
@@ -216,7 +217,7 @@ int init_server(char *port, int *sfd){
 		return -1;
 	}
 
-	ret = listen(fd, SOMAXCONN);
+	ret = listen(fd, SOMAXCONN); // SOMAXCONN is kernel parameter
 	if(ret == -1){
 		fprintf(stderr, "listen error\n");
 		return -1;
