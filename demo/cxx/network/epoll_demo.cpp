@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <sys/epoll.h>
 
-const int MAXEVENTS = 64;
+const int max_event = 64;
 
 void usage(const char *prog) {
 	fprintf(stderr, "%s -p[listen port]\n", prog);
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 
-	//除了参数size被忽略外,此函数和epoll_create完全相同
+	// same as epoll_create except that size parameter is ignored
 	int efd = epoll_create1(0);
 	if(efd == -1){
 		perror("epoll_create");
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
 
 	struct epoll_event event;
 	event.data.fd = sfd;
-	event.events = EPOLLIN | EPOLLET;//读入,边缘触发方式
+	event.events = EPOLLIN;
 	ret = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event);
 	if(ret == -1){
 		fprintf(stderr, "epoll_ctl add error\n");
@@ -61,11 +61,11 @@ int main(int argc, char *argv[]){
 	}
 
 	/* Buffer where events are returned */
-	struct epoll_event *events = new struct epoll_event[MAXEVENTS];
+	struct epoll_event *events = new struct epoll_event[max_event];
 
 	/* The event loop */
 	while(1){
-		int n = epoll_wait(efd, events, MAXEVENTS, -1);
+		int n = epoll_wait(efd, events, max_event, -1);
 		for(int i = 0; i < n; i++){
 			if((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP) || (!(events[i].events & EPOLLIN))){
 				/* An error has occured on this fd, or the socket is not ready for reading(why were we notified then?) */
@@ -115,13 +115,11 @@ int accept_con(int efd, int sfd){
 		}
 	}
 
-	//将地址转化为主机名或者服务名
 	char hbuf[NI_MAXHOST];
 	char sbuf[NI_MAXSERV];
-	int ret = getnameinfo(&in_addr, in_len, hbuf, sizeof hbuf, sbuf, sizeof sbuf, NI_NUMERICHOST | NI_NUMERICSERV);//flag参数:以数字名返回
-	//主机地址和服务地址
+	int ret = getnameinfo(&in_addr, in_len, hbuf, sizeof(hbuf), sbuf, sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV);
 	if(ret == 0){
-		printf("Accepted connection on descriptor %d (host=%s, port=%s)\n", infd, hbuf, sbuf);
+		fprintf(stderr, "Accepted connection on descriptor %d (%s:%s)\n", infd, hbuf, sbuf);
 	}
 
 	/* Make the incoming socket non-blocking and add it to the list of fds to monitor. */
@@ -133,7 +131,7 @@ int accept_con(int efd, int sfd){
 
 	struct epoll_event event;
 	event.data.fd = infd;
-	event.events = EPOLLIN | EPOLLET;
+	event.events = EPOLLIN;
 	ret = epoll_ctl(efd, EPOLL_CTL_ADD, infd, &event);
 	if(ret == -1){
 		fprintf(stderr, "epoll_ctl add error\n");
@@ -158,6 +156,7 @@ int process_con(int efd, int fd){
 		}
 		else if(count == 0){
 			/* End of file. The remote has closed the connection. */
+			fprintf(stderr, "client closed\n");
 			done = true;
 			break;
 		}
