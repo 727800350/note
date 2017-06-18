@@ -6,8 +6,8 @@
 
 在日常的git操作中,git checkout,是我们的常用命令,既可以是某一个具体的commit hash值,也可以是某个分支名称, 还可以是tag名称
 
-## git add
-- git add -p <file> 把对某个文件的修改添加到下次提交中
+- `git fetch origin branch1:branch2`: 将远程分支branch1 拉到本地作为branch2
+- `git add -p <file>` 把对某个文件的修改添加到下次提交中
 
 ## git cherry-pick. 
 What git cherry-pick does, basically, is take a commit from somewhere else, and "play it back" wherever you are right now. 
