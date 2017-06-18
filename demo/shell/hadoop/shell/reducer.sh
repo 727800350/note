@@ -38,7 +38,22 @@ fi
 chmod +x $bin/*
 mkdir log && chmod 777 log
 
-## ${mapred_work_output_dir}/res.$id
+cat - > input
+
+cat input | cmd >res
+if [ $? -ne 0 ]
+then
+	$hadoop_fs -rm $mapred_output_dir/input.$id
+	$hadoop_fs -put input $mapred_output_dir/input.$id
+	exit 1
+fi
+$hadoop_fs -rm $mapred_output_dir/input.$id
+
+if [ $local -eq 0 -a -s res ]
+then
+	$hadoop_fs -put res ${mapred_work_output_dir}/res.$id
+	CHK_RET FATAL "put res error"
+fi
 
 exit 0
 
