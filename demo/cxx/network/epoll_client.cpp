@@ -66,8 +66,6 @@ int main(int argc,char *argv[]) {
 
 
 int do_epoll(int sockfd) {
-    struct epoll_event events[EPOLLEVENTS];
-    char *buf = new char[max_vl];
     int epollfd = epoll_create(FDSIZE);
     int ret = add_event(epollfd, STDIN_FILENO, EPOLLIN);
     if (ret != 0) {
@@ -75,8 +73,11 @@ int do_epoll(int sockfd) {
         return -1;
     }
 
+    struct epoll_event events[EPOLLEVENTS];
+    char *buf = new char[max_vl];
+    int timeout = -1;
     while (true) {
-        int num = epoll_wait(epollfd, events, EPOLLEVENTS, -1);
+        int num = epoll_wait(epollfd, events, EPOLLEVENTS, timeout);
         handle_events(epollfd, events, num, sockfd, buf);
     }
     close(epollfd);
