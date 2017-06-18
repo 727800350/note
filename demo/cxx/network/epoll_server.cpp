@@ -102,7 +102,7 @@ int handle_events(int epollfd, struct epoll_event *events, int num, int listenfd
     for (int i = 0; i < num; i++) {
         int fd = events[i].data.fd;
         if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP)) {
-            fprintf(stderr, "epoll error\n");
+            fprintf(stderr, "epoll error on %d, closing it...\n", fd);
             close(fd);
         }
         else if ((fd == listenfd) and (events[i].events & EPOLLIN)) {

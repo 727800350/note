@@ -15,7 +15,7 @@ void usage(const char *prog) {
 }
 
 int main(int argc, char **argv) {
-	uint16_t serv_port = 0;
+	uint16_t serv_port = 8000;
 
 	int c = 0;
 	while ((c = getopt(argc, argv, "p:h")) != -1) {
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 
 	/* op4: start to listen */
 	listen(listenfd, 20);
-	fprintf(stderr, "accepting connections ...\n");
+	fprintf(stderr, "listening on %d:%d\n", INADDR_ANY, serv_port);
 
 	char str[INET_ADDRSTRLEN] = {'\0'};
 	char *buf = new char[max_vl];
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 		/* op5: accept new connection */
 		struct sockaddr_in cliaddr;
 		socklen_t cliaddr_len = sizeof(cliaddr);
-		int connfd = accept(listenfd, (struct sockaddr *)&cliaddr, &cliaddr_len);
+		int clifd = accept(listenfd, (struct sockaddr *)&cliaddr, &cliaddr_len);
 
 		const char *p = inet_ntop(AF_INET, &cliaddr.sin_addr, str, sizeof(str));
 		uint16_t port = ntohs(cliaddr.sin_port);
@@ -71,18 +71,18 @@ int main(int argc, char **argv) {
 
 		/* op6: read and write */
 		int n = 0;
-		while ((n = read(connfd, buf, max_vl)) > 0) {
+		while ((n = read(clifd, buf, max_vl)) > 0) {
 			buf[n] = '\0'; // \n is still in buf
-			fprintf(stderr, "read from clinet: %s\n", buf);
+			fprintf(stderr, "read from %d: %s", clifd, buf);
 
 			for (int i = 0; i < n; i++) {
 				buf[i] = toupper(buf[i]);
 			}
-			write(connfd, buf, strlen(buf));
+			write(clifd, buf, strlen(buf));
 		}
 		/* op7: close if needed */
-		fprintf(stderr, "read error, closing connection\n");
-		close(connfd);
+		fprintf(stderr, "read error, closing %d...\n", clifd);
+		close(clifd);
 	}
 
 	delete []buf;
