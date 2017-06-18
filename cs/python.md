@@ -1,26 +1,11 @@
 # 参数
 `sys.argv` 获取参数列表, `len(sys.argv)`
 
-在Python中,无论你把对象做为参数传递,做为函数返回值,都是引用传递的.  
-你想复制一个对象.  
-标准库中的copy模块提供了两个方法来实现拷贝.一个方法是copy,它返回和参数包含内容一样的对象.
-```python
-import copy
-new_list = copy.copy(existing_list)
-```
-
-有些时候,你希望对象中的属性也被复制, 尤其是当有list 等对象时,可以使用deepcopy方法:
-```python
-import copy
-new_list_of_dicts = copy.deepcopy(existing_list_of_dicts)
-```
-[demo](../demo/python/copy_deepcopy.py)
-
 ## global
 ```python
 def fun(x):
-	global a # 说明a是全局变量,可以直接使用, 需要确保在使用之前a 确实是存在的一个全局变量
-	return a + x
+    global a # 说明a是全局变量,可以直接使用, 需要确保在使用之前a 确实是存在的一个全局变量
+    return a + x
 ```
 
 # IO
@@ -51,24 +36,24 @@ out.close()
 
 - `sys.stdin.read(size)`: 读取size个字节, 文件结束, read() will return an empty string (""). 如果省略参数,则读取所有内容.
 
-	```python
-	// kv example
-	while True:
-		// decode
-		kl_byte = sys.stdin.read(4)
-		if kl_byte == "":
-			break
-		kl = st.unpack('i', kl_byte)[0]
-		k = sys.stdin.read(kl)
-		vl = st.unpack('i', sys.stdin.read(4))[0]
-		v = sys.stdin.read(vl)
+    ```python
+    // kv example
+    while True:
+        // decode
+        kl_byte = sys.stdin.read(4)
+        if kl_byte == '':
+            break
+        kl = st.unpack('i', kl_byte)[0]
+        k = sys.stdin.read(kl)
+        vl = st.unpack('i', sys.stdin.read(4))[0]
+        v = sys.stdin.read(vl)
 
-		// encode
-		sys.stdout.write(st.pack('i', kl))
-		sys.stdout.write(k)
-		sys.stdout.write(st.pack('i', vl))
-		sys.stdout.write(v)
-	```
+        // encode
+        sys.stdout.write(st.pack('i', kl))
+        sys.stdout.write(k)
+        sys.stdout.write(st.pack('i', vl))
+        sys.stdout.write(v)
+    ```
 - `f.readline()`: 读取文件一行的内容
 - `f.readlines()`: 读取所有的行到一个数组list里面.在避免将所有文件内容加载到内存中,这种方法常常使用,便于提高效率.
 
@@ -198,8 +183,7 @@ dictionaries are indexed by keys, which can be any immutable type; strings and n
 - heapq.heappop(heap) 弹出最小元素, 同时这个弹出的元素会从heap中被删除
 - heapq.heappushpop(heap, item): The combined action runs more efficiently than heappush() followed by a separate call to heappop().
 - heapq.heapify(x) Transform list x into a heap, in-place, in linear time.
-- heapq.heapreplace(heap, item): Pop and return the smallest item from the heap, and also push the new item.
-	more efficient than a heappop() followed by heappush() 
+- heapq.heapreplace(heap, item): Pop and return the smallest item from the heap, and also push the new item. more efficient than a heappop() followed by heappush()
 - heapq.nlargest(n, iterable[, key]) Return a list with the n largest elements from the dataset defined by iterable.
 - heapq.nsmallest(n, iterable[, key])
 
@@ -486,10 +470,10 @@ help, dir, type, id, hasattr, getattr, callable, isinstance
 argparse内置6种动作可以在解析到一个参数时进行触发：
 
 - store 保存参数值，可能会先将参数值转换成另一个数据类型。若没有显式指定动作，则默认为该动作。
-- store_ture/store_false 保存相应的布尔值。这两个动作被用于实现布尔开关。
-- store_const: 类似于store_true/false, 有了这个标记, 就把dest 设置为 const, `parser.add_argument('-c', action='store_const', dest='constant_value', const='value-to-store', help='Store a constant value')`
+- `store_ture/store_false` 保存相应的布尔值。这两个动作被用于实现布尔开关。
+- `store_const`: 类似于`store_true/false`, 有了这个标记, 就把dest 设置为 const, `parser.add_argument('-c', action='store_const', dest='constant_value', const='value-to-store', help='Store a constant value')`
 - append 将值保存到一个列表中。若参数重复出现，则保存多个值。
-- append_const 将一个定义在参数规格中的值保存到一个列表中。
+- `append_const` 将一个定义在参数规格中的值保存到一个列表中。
 - version 打印关于程序的版本信息，然后退出
 
 ```python
@@ -509,13 +493,13 @@ Namespace(count=3, units='inches')
 ```
 
 ## import os
+- os.sep可以取出操作系统特定的路径分割符, `linux /`, `windows \\`, `MacOS :`
+- os.linesep字符串给出当前平台使用的行终止符.例如,Windows使用'\r\n', Linux使用'\n'而Mac使用'\r'.
+
 - os.listdir(path) #列出当前路径下的文件
 - os.getcwd() #get current working directory, 绝对目录
 - os.path.dirname(path):返回文件所在目录
 - os.path.basename(path):返回文件名
-
-- os.sep可以取出操作系统特定的路径分割符, `linux /`, `windows \\`, `MacOS :`
-- os.linesep字符串给出当前平台使用的行终止符.例如,Windows使用'\r\n', Linux使用'\n'而Mac使用'\r'.
 - os.name字符串指示你正在使用的平台.比如对于Windows,它是'nt',而对于Linux/ Unix用户,它是'posix'.
 - os.getcwd()函数得到当前工作目录,即当前Python脚本工作的目录路径.
 - os.getenv()和os.putenv()函数分别用来读取和设置环境变量.
@@ -558,8 +542,12 @@ Namespace(count=3, units='inches')
 参考[Python logging模块详解](http://blog.csdn.net/zyz511919766/article/details/25136485)
 
 ## import sys
-- sys.path #系统目录
-- sys.argv  #可执行文件名是第一个参数
+- sys.path: 系统目录
+- sys.argv: 可执行文件名是第一个参数
+
+## import urllib
+- urllib.unquote(): url解码
+- urllib.urlencode(): 可以把key-value这样的键值对转换成我们想要的格式, 返回的是`a=1&b=2`这样的字符串, ex: `data = {'a': 'test', 'name': '魔兽'}`
 
 ## import time
 - `time.time()`用ticks计时单位返回从12:00am, January 1, 1970(epoch) 开始的记录的当前操作系统时间

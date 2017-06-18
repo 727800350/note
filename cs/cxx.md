@@ -1,4 +1,7 @@
 # IO
+- stdin/stdout 属于标准库处理的输入流, 其声明为 FILE 型的, 对应的函数前面都有f开头, 如fopen/fread/fwrite/fclose 标准库调用等;
+- `STDIN_FILENO(0)/STDOUT_FILENO(1)` 属于系统API接口库, 其声明为 int 型, 是一个打开文件句柄, 对应的函数主要包括 open/read/write/close 等系统级调用.
+
 同一个文件可以用fopen同时打开多次, 读取是独立的, 各个FILE指针是不相互干扰的.
 
 - `FILE *fopen(const char *path, const char *mode);`
