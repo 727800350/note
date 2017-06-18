@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <fcntl.h>
 
 const int max_vl = 1000;
 
@@ -14,6 +16,7 @@ void usage(const char *prog) {
 }
 
 int process(int socket);
+int make_socket_non_blocking(int fd);
 
 int main(int argc, char *argv[]) {
 	char *host = "localhost";
@@ -57,7 +60,13 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-	int ret = process(fd);
+	int ret = make_socket_non_blocking(fd);
+	if (ret != 0) {
+		fprintf(stderr, "make_socket_non_blocking error\n");
+		return -1;
+	}
+
+	ret = process(fd);
 	if (ret != 0) {
 		fprintf(stderr, "process socket %d error\n", fd);
 	}
@@ -67,27 +76,52 @@ int main(int argc, char *argv[]) {
 }
 
 int process(int fd){
-	char *sendline = new char[max_vl];
-	char *recvline = new char[max_vl];
-	int num = 0;
+	char *buf = new char[max_vl];
 
-	fprintf(stderr, "please input message:\n");
-	while(fgets(sendline, max_vl, stdin) != NULL){
-		send(fd, sendline, strlen(sendline), 0);
-
-		if((num = recv(fd, recvline, max_vl, 0)) == 0){
-			fprintf(stderr, "server terminated\n");
-			return 0;
+	fprintf(stderr, "please input message:");
+	while(fgets(buf, max_vl, stdin) != NULL){
+		int nwrite = write(fd, buf, strlen(buf));
+		if (nwrite == -1) {
+			fprintf(stderr, "write error\n");
 		}
-		recvline[num] = '\0';
 
-		fprintf(stdout, "server message: %s\n", recvline);
-		fprintf(stderr, "please input message:\n");
+		int nread = read(fd, buf, max_vl);
+		if (nread == -1) {
+			if(errno == EAGAIN){
+				fprintf(stderr, "read temporarily unavailable\n");
+			}
+			else{
+				fprintf(stderr, "read error\n");
+			}
+		}
+		else if (nread == 0) {
+			fprintf(stderr, "read none\n");
+		}
+		else {
+			buf[nread] = '\0';
+			fprintf(stdout, "server message: %s", buf);
+		}
+		fprintf(stderr, "please input message:");
 	}
-	fprintf(stderr, "Exit.\n");
 
-	delete []sendline;
-	delete []recvline;
+	delete []buf;
+
+	return 0;
+}
+
+int make_socket_non_blocking(int fd){
+	int flags = fcntl(fd, F_GETFL, 0);
+	if(flags == -1){
+		fprintf(stderr, "fcntl get error\n");
+		return -1;
+	}
+
+	flags |= O_NONBLOCK;
+	int ret = fcntl(fd, F_SETFL, flags);
+	if(ret == -1){
+		fprintf(stderr, "fcntl set error\n");
+		return -1;
+	}
 
 	return 0;
 }
