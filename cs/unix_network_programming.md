@@ -1,15 +1,10 @@
 Unix network Programming note
 
-[Best C/C++ Network Library](http://stackoverflow.com/questions/118945/best-c-c-network-library)  
 Aggregated List of Libraries
 
 - Boost.Asio is really good, though the documentation is scarce.
 - ZeroMQ (C++)
-- Berkeley Sockets
 - libevent
-- libcurl
-
-[C/C++ Web Server Library?](http://stackoverflow.com/questions/175507/c-c-web-server-library)
 
 # TCP
 Note that TCP does not guarantee that the data will be received by the other endpoint, as this is impossible. It delivers data to the other endpoint if possible, and notifies the user (by giving up on retransmissions and breaking the connection) if it is not possible. Therefore, TCP cannot be described as a 100% reliable protocol; it provides **reliable delivery of data or reliable notification of failure.**
@@ -61,10 +56,6 @@ recvfrom将接收到的数据与client 的地址一并返回, 因此服务器可
 他并不像TCP套接字上read 返回0值那样表示对端已关闭连接. 既然UDP是无连接的, 因此也没有诸如关闭一个UDP连接之类的事情.
 
 大多数TCP服务器是并发的, 而大多数UDP服务器是迭代的
-
-## API
-- `int inet_pton(int af, const char *src, void *dst)`: presentation to network, 将点分十进制 －> 二进制整数, dst 的实际类型为`struct in_addr`
-- `const char *inet_ntop(int af, const void *src, char *dst, socklen_t cnt)`: cnt指缓存区dst的大小, 如果缓存区太小无法存储地址的值, 则返回一个空指针, 并将errno置为ENOSPC
 
 # Signal
 就是告知某个进程发生了某个事件的通知, 有时也称为软件中断.
@@ -219,25 +210,25 @@ I/O多路复用通过一种机制, 可以监视多个描述符, 一旦某个描�
 ### Select
 ```C
 while true{
-	select(streams[]);
-	for i in streams[]{
-		if i has data{
-			read or write i;
-		}
-	}
+    select(streams[]);
+    for i in streams[]{
+        if i has data{
+            read or write i;
+        }
+    }
 }
 ```
 
 描述符就绪条件
 
 - 满足下面4 个条件中的任何一个时, 一个套接字准备好读
-	1. todo:该套接字接受缓冲区中的数据字节数大于等于套接字接受缓冲区**低水位标记**的当前大小. 对这样的套接字执行读操作不会阻塞并将**返回一个大于0的值**
+	1. 该套接字接受缓冲区中的数据字节数大于等于套接字接受缓冲区**低水位标记**的当前大小. 对这样的套接字执行读操作不会阻塞并将**返回一个大于0的值**
 	2. 该连接的读半部关闭(也就是接受了FIN的TCP连接). **读不阻塞并返回0**(也就是EOF)(读已经关闭了, 读不了内容, 所以不用阻塞)
 	3. 该套接字是一个监听套接字, 且已完成的连接数不为0. 对这样的套接字的accept通常不会阻塞
 	4. 有一个套接字错误待处理. 不会阻塞并返回-1, 同时把errno 置为确切的错误条件
 - 满足下面4 个条件中的任何一个时, 一个套接字准备好写
-	1. todo该套接字发送缓冲区中的可用空间
-	2. 该连接的写半部关闭. 对这样的套接字的写将返回SIGPIPE信号
+	1. 该套接字发送缓冲区中的可用空间
+	2. **该连接的写半部关闭. 对这样的套接字的写将返回SIGPIPE信号**
 	3. 使用非阻塞式connect 的套接字已建立连接, 或者connect 以失败告终
 	4. 其上有一个套接字错误待处理. 不会阻塞并返回-1, 同时把errno 置为确切的错误条件
 
@@ -245,27 +236,6 @@ example:
 
 1. 如果对端TCP发送一个RST(对端主机崩溃并重新启动), 那么该套接字变位可读, 并且read返回-1, 而errno中含有确切的错误代码.
 2. 如果对端TCP发送数据, 那么该套接字变为可读, 并且read 返回一个大于0 的值(即读入数据的字节数).
-
-使用select库的步骤:
-
-1. 创建所关注的事件的描述符集合(`fd_set`),对于一个描述符,可以关注其上面的读(read), 写(write), 异常(exception)事件,所以通常,要创建三个fd_set, 如果不关注, 可以设为null
-1. 然后调用FD_SET 对集合进程初始化, 然后用FD_SET 打开需要关注的事件
-1. 调用select(),等待事件发生. 这里需要注意的一点是,select的阻塞与是否设置非阻塞I/O是没有关系的. select()的返回值指定了发生事件的fd个数.
-	其中,最后一个参数timeout,可以设置select等待的时间.i)如果该值设置为0, select()在检查描述符后就立即返回;
-	ii)如果该值为null, 那么select 会永远等待下去,一直到有一个描述符准备好IO; iii)其他值, select()会等待指定的时间,然后再返回.
-1. 用`FD_ISSET`测试fd_set中的每一个fd ,检查是否有相应的事件发生,如果有,就进行处理.
-
-API
-```C
-#include <sys/select.h>
-int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout); //the nfds 等于关注的fds中的最大值加1  
-void FD_CLR(int fd, fd_set *set);
-int FD_ISSET(int fd, fd_set *set);  //test
-void FD_SET(int fd, fd_set *set);
-void FD_ZERO(fd_set *set); //set the set empty
-	
-example: tcpcliser/tcpservselect01.c; elect/strcliselect02.c
-```
 
 select的几大缺点:
 
@@ -275,32 +245,46 @@ select的几大缺点:
 1. select 正常返回, 仅仅说明有I/O事件发生了, 但并不知道是那几个流, 我们只能无差别轮询所有流, 找出能读出数据, 或者写入数据的流, 对他们进行操作. 因此有O(n)的无差别轮询复杂度.
 
 ### poll
-poll的实现和select非常相似,只是描述fd集合的方式不同,poll使用pollfd结构而不是select的fd_set结构,其他的都差不多.
+poll的实现和select非常相似,只是描述fd集合的方式不同,poll使用pollfd结构而不是select的`fd_set`结构,其他的都差不多.
 poll与select的主要区别在与,select需要为读,写,异常事件分配创建一个描述符集合,最后轮询的时候,需要分别轮询这三个集合.
 而poll只需要一个集合,在每个描述符对应的结构上分别设置读,写,异常事件,最后轮询的时候,可以同时检查三种事件.
 
 ### epoll
-[我读过的最好的epoll讲解](https://my.oschina.net/dclink/blog/287198)
+ref:
+
+1. [我读过的最好的epoll讲解](https://my.oschina.net/dclink/blog/287198)
+1. [IO多路复用之epoll总结](http://www.cnblogs.com/Anker/archive/2013/08/17/3263780.html)
+1. [自己趟过epoll的坑](http://youbingchenyoubing.leanote.com/post/%E8%87%AA%E5%B7%B1%E8%B6%9F%E8%BF%87epoll%E7%9A%84%E5%9D%91)
 
 ```C
 while true{
-	active_stream[] = epoll_wait(epollfd);
-	for i in active_stream[]{
-		read or write i;
-	}
+    active_stream[] = epoll_wait(epollfd);
+    for i in active_stream[]{
+        read or write i;
+    }
 }
 ```
 epoll提供了三个函数: `#include <sys/epoll.h>`
 
 - `int epoll_create(int size)`: 创建一个epoll句柄, size 要大于 0
-- `int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)`: 注册要监听的事件类型, op指定add, mod, del
-- `int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);` 等待事件的产生
+- `int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)`: 注册要监听的事件类型, op指定`EPOLL_CTL_ADD, EPOLL_CTL_MOD, EPOLL_CTL_DEL`
+- `int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);` 等待事件的产生, timeout 0(立即返回), -1(阻塞), other(等待特定毫秒)
+
+event可以是以下几个宏的集合:
+
+- EPOLLIN: 表示对应的文件描述符可以读(包括对端SOCKET正常关闭,
+- EPOLLOUT: 表示对应的文件描述符可以写,
+- EPOLLPRI: 表示对应的文件描述符有紧急的数据可读(这里应该表示有带外数据到来),
+- EPOLLERR: 表示对应的文件描述符发生错误,
+- EPOLLHUP: 表示对应的文件描述符被挂断,
+- EPOLLET: 将EPOLL设为边缘触发(Edge Triggered)模式,这是相对于水平触发(Level Triggered)来说的.
+- EPOLLONESHOT: 只监听一次事件,当监听完这次事件之后,如果还需要继续监听这个socket的话,需要再次把这个socket加入到EPOLL队列里
 
 针对select 的4个缺点
 
-1. 对于第一个缺点, epoll的解决方案在epoll_ctl函数中, 每次注册新的事件到epoll句柄中时(在epoll_ctl中指定EPOLL_CTL_ADD), 会把所有的fd拷贝进内核, 而不是在epoll_wait的时候重复拷贝.
+1. 对于第一个缺点, epoll的解决方案在`epoll_ctl`函数中, 每次注册新的事件到epoll句柄中时, 会把所有的fd拷贝进内核, 而不是在`epoll_wait`的时候重复拷贝.
 	epoll保证了每个fd在整个过程中只会拷贝一次.
-1. 对于第二个缺点, epoll的解决方案不像select或poll一样每次都把current轮流加入fd对应的设备等待队列中, 而只在epoll_ctl时把current挂一遍(这一遍必不可少)并为每个fd指定一个回调函数,
+1. 对于第二个缺点, epoll的解决方案不像select或poll一样每次都把current轮流加入fd对应的设备等待队列中, 而只在`epoll_ctl`时把current挂一遍(这一遍必不可少)并为每个fd指定一个回调函数,
 	当设备就绪, 唤醒等待队列上的等待者时, 就会调用这个回调函数, 而这个回调函数会把就绪的fd加入一个就绪链表).
 	epoll_wait的工作实际上就是在这个就绪链表中查看有没有就绪的fd(利用schedule_timeout()实现睡一会,判断一会的效果, 和select实现中的第7步是类似的).
 1. 对于第三个缺点, epoll没有这个限制, 它所支持的FD上限是最大可以打开文件的数目, 这个数字一般远大于2048.
@@ -310,13 +294,14 @@ epoll提供了三个函数: `#include <sys/epoll.h>`
 Epoll的2种工作方式- Level Triggered(LT)和Edge Triggered(ET)
 
 - LT(level triggered)是epoll缺省的工作方式,并且同时支持block和no-block socket.
-	在这种做法中,内核告诉你一个文件描述符是否就绪了,然后你可以对这个就绪的fd进行IO操作.
-	如果你不作任何操作,内核还是会继续通知你的,所以,这种模式编程出错误可能性要小一点.传统的select/poll都是这种模型的代表
+	- 在这种做法中, 内核告诉你一个文件描述符是否就绪了, 然后你可以对这个就绪的fd进行IO操作. 如果你不作任何操作, 内核还是会继续通知你的. 所以, 这种模式编程出错误可能性要小一点. 传统的select/poll都是这种模型的代表.
 - ET (edge-triggered)是高速工作方式,只支持no-block socket,它效率要比LT更高.
-	ET与LT的区别在于,当一个新的事件到来时,ET模式下当然可以从epoll_wait调用中获取到这个事件,可是如果这次没有把这个事件对应的套接字缓冲区处理完,
-	在这个套接字中没有新的事件再次到来时,在ET模式下是无法再次从epoll_wait调用中获取这个事件的.
-	而LT模式正好相反,只要一个事件对应的套接字缓冲区还有数据,就总能从epoll_wait中获取这个事件.
-	因此,LT模式下开发基于epoll的应用要简单些,不太容易出错.而在ET模式下事件发生时,如果没有彻底地将缓冲区数据处理完,则会导致缓冲区中的用户请求得不到响应.
+	- 当一个新的事件到来时, ET模式下当然可以从`epoll_wait`调用中获取到这个事件, 可是如果这次没有把这个事件对应的套接字缓冲区处理完, 一段时间内, 在这个套接字中没有新的事件再次到来时,是无法再次从`epoll_wait`调用中获取这个事件的.
+		而LT模式正好相反,只要一个事件对应的套接字缓冲区还有数据, 就总能从epoll_wait中获取这个事件.
+		因此, LT模式下开发基于epoll的应用要简单些, 不太容易出错. 而在ET模式下事件发生时, 如果没有彻底地将缓冲区数据处理完, 则会导致缓冲区中的用户请求得不到响应, 因此都需要使用while 来包裹io 操作, 并保证一次处理完.
+	- 即使使用ET模式, 一个socket上的某个事件还是可能被触发多次, 这是跟数据报的大小有关系, 常见的情景就是一个线程处理一个socket连接, 而在数据的处理过程中该socket上又有新数据可读(EPOLLIN再次被触发),
+		此时另外一个线程被唤醒处理这些新的数据, 于是出现了两个线程同时操作一个socket, 为了避免这种情况, 就可以采用epoll的EPOLLONESPOT事件.
+		同时要注意, 注册了EPOLLONESHOT事件的socket一旦被某个线程处理完毕, 该线程就应该立即重置这个socket的EPOLLONESHOT的事件, 以确保这个socket下次可读时, 其EPOLLIN事件被触发, 进而让其他的工作线程有机会继续处理这个socket.
 
 # 高级IO函数
 ## 套接字超时
