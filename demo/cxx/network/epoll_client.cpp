@@ -49,8 +49,13 @@ int main(int argc,char *argv[]) {
     inet_pton(AF_INET, ip, &servaddr.sin_addr);
     int ret = connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
     if (ret == -1) {
-        fprintf(stderr, "connect to %s:%d error\n", ip, port);
-        return -1;
+        if (errno == EINPROGRESS) {
+            fprintf(stderr, "connect success, but not completed, can be checked by epoll.\n");
+        }
+        else {
+            fprintf(stderr, "connect to %s:%d error\n", ip, port);
+            return -1;
+        }
     }
 
     ret = make_socket_non_blocking(sockfd);

@@ -313,28 +313,6 @@ Epoll的2种工作方式- Level Triggered(LT)和Edge Triggered(ET)
 
 example: lib/connect_timeo.c, advio/dgclitimeo.c, lib/readable_timeo.c
 
-## 高级轮询技术
-Solaris 上名为`/dev/null`的特殊文件提供了一个可扩展的轮询大量描述符的方法.  
-select 和 poll 存在的一个问题是, 每次调用它们都得传递待查询的文件描述符. 轮询设备能在调用之间维持状态, 因此轮询进程可以预先设置好待查询描述符的列表, 然后进入一个
-循环等待事件发生, 每次循环回来时不必再次设置该列表.
-
-### fcntl(file control) 函数
-```C
-#include <unistd.h>
-#include <fcntl.h>
-int fcntl(int fd, int cmd, ... /* arg */ );
-
-使用fcntl开启非阻塞式IO的典型代码:
-int flags = 0;
-if((flags = fcntl(fd, F_GETFL, 0)) < 0){
-	fprintf(stderr, "F_GETFL error");
-}
-flags |= O_NONBLOCK;
-if(fcntl(fd, F_SETFL, flags) < 0){
-	fprintf(stderr, "F_SETFL error");
-}
-```
-
 ### 可重入函数
 若一个程序或子程序可以"安全的被并行执行(Parallel computing)",则称其为可重入(reentrant或re-entrant)的.
 
