@@ -39,54 +39,9 @@ $ bash -c "date"
 Wed Apr 22 19:08:12 CST 2015
 ```
 
-在CentOS里,/bin/sh是一个指向/bin/bash的符号链接, Mac OS上不是
-
-# 调试
-最有用的调试脚本的工具是echo命令,可以随时打印有关变量或操作的信息,以帮助定位错误.
-也可使用打印最后状态($?) 命令来判断命令是否成功,这时要注意的是要在执行完要测试的命令后立即输出$?,否则$?将会改变.
-
 ## set 选项
-在脚本里面添加  
-
-**set -e**  
-Exit immediately if a simple command exits with a non-zero status.
-
-["set -e" 与 "set -o pipefail" ref](http://blog.sina.com.cn/s/blog_8bb0a3bd010171cp.html)
-
-**set -o pipefail**  
-对于set命令-o参数的pipefail选项,linux是这样解释的:  
-"If set, the return value of a pipeline is the value of the last (rightmost) command to exit with a  non-zero  status,
-or zero if all commands in the pipeline exit successfully.  This option is disabled by default."  
-设置了这个选项以后,包含管道命令的语句的返回值,会变成最后一个返回非零的管道命令的返回值.听起来比较绕,其实也很简单:
-
-```
-# test.sh
-set -o pipefail
-ls ./a.txt |echo "hi" >/dev/null
-echo $?
-```
-
-运行test.sh(当前不存在a.txt),输出:
-```
-ls: ./a.txt: No such file or directory
-1  # 设置了set -o pipefail,返回从右往左第一个非零返回值,即ls的返回值1
-```
-
-注释掉set -o pipefail 这一行,再次运行,输出:
-```
-ls: ./a.txt: No such file or directory
-0  # 没有set -o pipefail,默认返回最后一个管道命令的返回值
-```
-
-set -x
-
-## 直接在运行的时候设置
-```
-bash –n script.sh          读命令但是不执行
-bash –v script.sh          显示读取的所有的行
-bash –x script.sh          显示所有的命令及其参数
-```
-(要关闭set选项,只要把－换成+就可以了,这里有点特殊,要注意一下)
+- `set -x`
+- `set -o pipefail`: the return value of pipeline is the value of the last (rightmost) command to exit with a non-zero status, or zero if all are zero
 
 ## && and ||
 `command1  && command2`  
@@ -101,32 +56,16 @@ bash –x script.sh          显示所有的命令及其参数
 
 多行注释
 ```
-<<COM
+<<mark
 code
-COM
+mark
 ```
 
 # IO
-`$ printf %05d 123`: 输出是00123，且没有换行符, 显示5位数，不够5位的用0补充, 多余的不会进行截断
+`printf %05d 123`: 输出是00123，且没有换行符, 显示5位数，不够5位的用0补充, 多余的不会进行截断
 
 ## 管道
-数据处理类shell脚本中可能会多次用到 "cat xxx|awk yyy"类似的管道命令,判断返回值时不能仅仅用$?来判断返回值,最好使用PIPESTATUS获取管道中所有命令的返回码\\
-好处:第一条命令失败后就能提前发现问题,避免问题被遗漏或置后发现.\\
-用法:PIPESTATUS 是一个数组,第一条命令的返回码存储在${PIPESTATUS[0]},以此类推\\
-
 每个shell 过程一次最多可以有9 个文件描述符(其中 0(stdin),1(stdout),2(stderr)作为保留的文件描述符)
-## 输入重定向
-输入重定向符号: `<`.
-
-内联输入重定向符号: `<<`, 在使用的时候, 除了这个符号, 你必须指定一个文本(任意的字符串)标记来划分要输入数据的开始和结尾. eg.
-```
-$ wc << EOF
-> test string 1
-> test string 2
-> EOF
-	2 6 28
-```
-
 管道会产生了子shell, 在管道命令里面修改的全局变量在管道之后是无效的.
 
 ## 输出重定向
