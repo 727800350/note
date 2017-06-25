@@ -42,6 +42,19 @@ TCP标记和他们的意义如下所列:
 * E : ECE - 显式拥塞提醒回应
 * W : CWR - 拥塞窗口减少
  
+**长连接的情况下出现了不同程度的延时**  
+在一些长连接的条件下, 发送一个小的数据包, 结果会发现从数据write成功到接收端需要等待一定的时间后才能接收到, 而改成短连接这个现象就消失了
+(如果没有消失,那么可能网络本身确实存在延时的问题,特别是跨机房的情况下)
+在长连接的处理中出现了延时, 而且时间固定,基本都是40ms, 出现40ms延时最大的可能就是由于没有设置`TCP_NODELAY`.
+在长连接的交互中,有些时候一个发送的数据包非常的小,加上一个数据包的头部就会导致浪费,而且由于传输的数据多了,就可能会造成网络拥塞的情况,
+在系统底层默认采用了Nagle算法,可以把连续发送的多个小包组装为一个更大的数据包然后再进行发送.
+但是对于我们交互性的应用程序意义就不大了,在这种情况下我们发送一个小数据包的请求,就会立刻进行等待,不会还有后面的数据包一起发送,
+这个时候Nagle算法就会产生负作用,在我们的环境下会产生40ms的延时,这样就会导致客户端的处理等待时间过长, 导致程序压力无法上去.
+在代码中无论是服务端还是客户端都是建议设置这个选项,避免某一端造成延时.所以对于长连接的情况我们建议都需要设置`TCP_NODELAY`.
+
+对于服务端程序而言, 采用的模式一般是bind -> listen -> accept, 这个时候accept出来的句柄的各项属性其实是从listen的句柄中继承,
+所以对于多数服务端程序只需要对于listen进行监听的句柄设置一次`TCP_NODELAY`就可以了,不需要每次都accept一次.
+
 # UDP
 We also say that UDP provides a connectionless service, as there need not be any long-term relationship between a UDP client and server. 
 For example, a UDP client can create a socket and send a datagram to a given server and then immediately send another datagram on the same socket to a different server. 
@@ -74,6 +87,10 @@ When a signal is blocked, it can be delivered, but the resulting pending signal 
 1. `signal(SIGINT ,SIG_IGN)`: `SIG_IGN` 代表忽略信号. SIGINT信号代表由`InterruptKey`产生,通常是`CTRL+C` 或者是`DELETE` .发送给所有ForeGround Group的进程.
 2. `signal(SIGINT ,SIG_DFL)`: `SIG_DFL`代表执行系统默认操作,其实对于大多数信号的系统默认动作时终止该进程.这与不写此处理函数是一样的.
 3.  自定义的信号或是信号处理函数
+
+网络编程中经常出现, 程序没有任何预兆的就退出了, 一般情况都是没有设置忽略PIPE信号.
+在我们的环境中当网络触发broken pipe (一般情况是write的时候, 没有write完毕, 接受端异常断开了), 系统默认的行为是直接退出.
+在我们的程序中一般都要在启动的时候加上`signal(SIGPIPE, SIG_IGN);` 来强制忽略这种错误.
 
 ## 内核如何实现信号的捕捉
 如果信号的处理动作是用户自定义函数, 在信号递达时就调用这个函数, 这称为捕捉信号. 由于信号处理函数的代码是在用户空间的, 处理过程比较复杂:
@@ -201,6 +218,26 @@ The value of options is an OR of zero or more of the following constants:
 
 ![模型的比较](https://i.imgbox.com/OsCC0HMm.gif) 
 
+读:
+
+- 读本质来说其实不能是读, 在实际中, 具体的接收数据是由系统底层自动完成的, read 和 recv只是负责把数据从底层缓冲copy到我们指定的位置.
+- 在阻塞条件下如果没有发现数据在网络缓冲中会一直等待, 当发现有数据的时候会把数据读到用户指定的缓冲区.
+	read的原则是数据在不超过指定的长度的时候有多少读多少, 没有数据就会一直等待.
+	所以一般情况下我们读取数据都需要采用循环读的方式读取数据, 一次read完毕不能保证读到我们需要长度的数据, read完一次需要判断读到的数据长度再决定是否还需要再次读取.
+- 在非阻塞的情况下, read的行为是如果发现没有数据就直接返回, 如果发现有数据那么也是采用有多少读多少的进行处理.对于读而言, 阻塞和非阻塞的区别在于没有数据到达的时候是否立刻返回.
+
+写:
+
+- 写的本质也不是进行发送操作, 而是把用户态的数据copy到系统底层去, 然后再由系统进行发送操作,返回成功只表示数据已经copy到底层缓冲,而不表示数据以及发出,更不能表示对端已经接收到数据
+- 在阻塞的情况下会一直等待直到write完全部的数据再返回. 这点行为上与读操作有所不同, 究其原因主要是读数据的时候我们对对端发送数据没有任何预知.
+	而对于write, 由于需要写的长度是已知的, 所以可以一直写, 直到写完.
+	不过问题是write是可能被打断造成write一次只write一部分数据, 所以write的过程还是需要考虑循环write, 只不过多数情况下一次write调用就可能成功.
+- 非阻塞写的情况下, 是采用可以写多少就写多少的策略
+
+经典的做法就是采用select/epoll + 非阻塞IO进行判断, select在超时时间内判断是否可以读写操作,然后采用非堵塞读写.
+不过一般实现的时候读操作不需要设置为非堵塞, 上面已经说过读操作只有在没有数据的时候才会阻塞, select的判断成功说明存在数据.
+所以即使是阻塞读在这种情况下也是可以做到非阻塞的效果,就没有必要设置成非阻塞的情况了.
+
 ## IO复用模型
 I/O多路复用通过一种机制, 可以监视多个描述符, 一旦某个描述符就绪(一般是读就绪或者写就绪), 能够通知程序进行相应的读写操作.
 但select, poll, epoll本质上都是同步I/O, 因为他们都需要在读写事件就绪后自己负责进行读写, 也就是说这个读写过程是阻塞的
@@ -294,14 +331,18 @@ event可以是以下几个宏的集合:
 Epoll的2种工作方式- Level Triggered(LT)和Edge Triggered(ET)
 
 - LT(level triggered)是epoll缺省的工作方式,并且同时支持block和no-block socket.
-	- 在这种做法中, 内核告诉你一个文件描述符是否就绪了, 然后你可以对这个就绪的fd进行IO操作. 如果你不作任何操作, 内核还是会继续通知你的. 所以, 这种模式编程出错误可能性要小一点. 传统的select/poll都是这种模型的代表.
-- ET (edge-triggered)是高速工作方式,只支持no-block socket,它效率要比LT更高.
-	- 当一个新的事件到来时, ET模式下当然可以从`epoll_wait`调用中获取到这个事件, 可是如果这次没有把这个事件对应的套接字缓冲区处理完, 一段时间内, 在这个套接字中没有新的事件再次到来时,是无法再次从`epoll_wait`调用中获取这个事件的.
-		而LT模式正好相反,只要一个事件对应的套接字缓冲区还有数据, 就总能从epoll_wait中获取这个事件.
-		因此, LT模式下开发基于epoll的应用要简单些, 不太容易出错. 而在ET模式下事件发生时, 如果没有彻底地将缓冲区数据处理完, 则会导致缓冲区中的用户请求得不到响应, 因此都需要使用while 来包裹io 操作, 并保证一次处理完.
-	- 即使使用ET模式, 一个socket上的某个事件还是可能被触发多次, 这是跟数据报的大小有关系, 常见的情景就是一个线程处理一个socket连接, 而在数据的处理过程中该socket上又有新数据可读(EPOLLIN再次被触发),
-		此时另外一个线程被唤醒处理这些新的数据, 于是出现了两个线程同时操作一个socket, 为了避免这种情况, 就可以采用epoll的EPOLLONESPOT事件.
-		同时要注意, 注册了EPOLLONESHOT事件的socket一旦被某个线程处理完毕, 该线程就应该立即重置这个socket的EPOLLONESHOT的事件, 以确保这个socket下次可读时, 其EPOLLIN事件被触发, 进而让其他的工作线程有机会继续处理这个socket.
+	- 在这种做法中, 内核告诉你一个文件描述符是否就绪了, 然后你可以对这个就绪的fd进行IO操作. 如果你不作任何操作, 内核还是会继续通知你的.
+		所以, 这种模式编程出错误可能性要小一点. 传统的select/poll都是这种模型的代表.
+- ET (edge-triggered)是高速工作方式,只支持no-block socket,它效率要比LT更高. 但只在数据情况发生变化的时候激活(比如不可读进入可读状态).
+	- 当一个新的事件到来时, ET模式下当然可以从`epoll_wait`调用中获取到这个事件, 可是如果这次没有把这个事件对应的套接字缓冲区处理完,
+		一段时间内, 在这个套接字中没有新的事件再次到来时,是无法再次从`epoll_wait`调用中获取这个事件的.
+		而LT模式正好相反,只要一个事件对应的套接字缓冲区还有数据, 就总能从epoll_wait中获取这个事件. 因此, LT模式下开发基于epoll的应用要简单些, 不太容易出错.
+		而在ET模式下事件发生时, 如果没有彻底地将缓冲区数据处理完, 则会导致缓冲区中的用户请求得不到响应, 因此都需要使用while 来包裹io 操作, 并保证一次处理完.
+	- 即使使用ET模式, 一个socket上的某个事件还是可能被触发多次, 这是跟数据报的大小有关系, 常见的情景就是一个线程处理一个socket连接,
+		而在数据的处理过程中该socket上又有新数据可读(EPOLLIN再次被触发), 此时另外一个线程被唤醒处理这些新的数据,
+		于是出现了两个线程同时操作一个socket, 为了避免这种情况, 就可以采用epoll的EPOLLONESPOT事件.
+		同时要注意, 注册了EPOLLONESHOT事件的socket一旦被某个线程处理完毕, 该线程就应该立即重置这个socket的EPOLLONESHOT的事件,
+		以确保这个socket下次可读时, 其EPOLLIN事件被触发, 进而让其他的工作线程有机会继续处理这个socket.
 
 # 高级IO函数
 ## 套接字超时
@@ -312,41 +353,6 @@ Epoll的2种工作方式- Level Triggered(LT)和Edge Triggered(ET)
 1. 使用较新的`SO_RECVTIMEO`和`SO_SNDTIMEO`套接字选项(但是并非所有实现都支持这两个套接字).
 
 example: lib/connect_timeo.c, advio/dgclitimeo.c, lib/readable_timeo.c
-
-### 可重入函数
-若一个程序或子程序可以"安全的被并行执行(Parallel computing)",则称其为可重入(reentrant或re-entrant)的.
-
-若一个函数是可重入的,则该函数:
-
-1. 不能含有静态(全局)非常量数据.
-1. 不能返回静态(全局)非常量数据的地址.
-1. 只能处理由调用者提供的数据.
-1. 不能依赖于单实例模式资源的锁.
-1. 不能调用(call)不可重入的函数(有呼叫(call)到的函数需满足前述条件).
-
-多"用户/对象/进程优先级"以及多进程,一般会使得对可重入代码的控制变得复杂.
-同时, **IO代码通常不是可重入的**,因为他们依赖于像磁盘这样共享的,单独的(类似编程中的静态(Static),全域(Global))资源.
-
-调用了malloc或free,因为malloc也是用**全局链表来管理堆**的  
-调用了标准I/O库函数.标准I/O库的很多实现都以不可重入的方式使用**全局数据结构**.
-
-#### errno 变量
-errno 变量存在不可重入的问题, 这个整型变量历来每个进程各有一个副本. 但是同一个进程的各个线程共享一个errno 变量.
-
-从close 系统调用返回时把错误代码存入errno到稍后由程序显示errno 的值之间存在一个小的时间窗口. 
-期间同一个进程内的另一个执行线程(例如一个信号处理函数的某次调用) 可能改变了errno 的值.
-就信号处理函数考虑这个问题, 可通过把信号处理函数编写成预先保存并事后恢复errno 的值加以避免, 代码如下:
-```C
-void sig_alarm(int signo){
-	int errno_save;
-	errno_save = errno; //save its value en entry
-	if(write(...) != nbytes){
-		fprintf(stderr, "write error, errno=%d\n,errno);
-		errno = errno_save;
-	}
-}
-```
-这段代码中我们, 在信号处理函数中调用了fpritnf 这个标准IO 函数, 它引入了另外一个重入问题.
 
 # 守护进程和inetd 超级服务器
 要启动一个守护进程,可以采取以下的几种方式:
@@ -359,7 +365,7 @@ void sig_alarm(int signo){
 6. 在终端上用nohup 启动的进程.用这种方法可以把所有的程序都变为守护进程
 
 ## 守护进程启动实例
-```
+```C++
 #include"unp.h"
 #include<syslog.h>
  
@@ -488,48 +494,6 @@ setsid函数用于创建一个新的会话,并担任该会话组的组长.调用
 举例来说, 如果一个进程即读自又写往一个TCP套接字, 那么当有新数据到达时或者当以前写出的数据得到确认时, SIGIO信号均会产生, 而且信号处理函数中无法区分这两种情况.  
 如果SIGIO用于这种数据读写情形, 那么TCP套接字应该设置成非阻塞式, 以防`read`或`write`发生阻塞.  
 我们应该考虑**只对监听套接字使用SIGIO**, 因为对于监听套接字产生SIGIO的唯一条件式某个新连接的完成
-
-# 进程
-
-    #include <sys/types.h>
-    #include <unistd.h>
-    #include <stdio.h>
-    #include <stdlib.h>
-    
-    int main(void){
-    	pid_t pid;
-    	char *message;
-    	int n;
-    	pid = fork();
-    	if (pid < 0) {
-    		perror("fork failed");
-    		exit(1);
-    	}
-    	if (pid == 0) {
-    		message = "This is the child\n";
-    		n = 6;
-    	} else {
-    		message = "This is the parent\n";
-    		n = 3;
-    	}
-    	for(; n > 0; n--) {
-    		printf(message);
-    		sleep(1);
-    	}
-    	return 0;
-    }
-    
-    output:
-    $ ./a.out 
-    This is the child
-    This is the parent
-    This is the child
-    This is the parent
-    This is the child
-    This is the parent
-    This is the child
-    $ This is the child
-    This is the child
 
 # 线程 pthread
 `fork` 是昂贵的. fork要把父进程的内存镜像复制到子进程, 并在子进程中复制所有描述符, 如此, 等等.  
@@ -669,115 +633,4 @@ was not yet locked causes an `EINVAL` error.
     int pthread_cond_timedwait(pthread_cond_t *restrict cond, pthread_mutex_t *restrict mutex, 
 								const struct timespec *restrict abstime);
     int pthread_cond_broadcast(pthread_cond_t *cond);
-
-# Address
-## IP
-Convert IP addresses from a dots-and-number string to a struct in_addr and back
-    #include <sys/socket.h>
-    #include <netinet/in.h>
-    #include <arpa/inet.h>
-
-    char *inet_ntoa(struct in_addr in);
-    int inet_aton(const char *cp, struct in_addr *inp);
-    in_addr_t inet_addr(const char *cp);
-
-`inet_aton()`: **dots string to a number**. returns non-zero if the address is a valid one, and it returns zero if the address is invalid.  
-`inet_ntoa()`: **number to a dots string**. returns the dots-and-numbers string **in a static buffer that is overwritten with each call to the function**.  
-`inet_addr()` returns the address as an `in_addr_t` an `u_int32_t` value, or -1 if there is an error.
-
-	struct sockaddr_in antelope;
-	char *some_addr;
-
-	inet_aton("10.0.0.1", &antelope.sin_addr); // store IP in antelope
-
-	some_addr = inet_ntoa(antelope.sin_addr); // return the IP
-	printf("%s\n", some_addr); // prints "10.0.0.1"
-
-	// and this call is the same as the inet_aton() call, above:
-	antelope.sin_addr.s_addr = inet_addr("10.0.0.1");
-	
-	 /* Internet address.  */
-	typedef uint32_t in_addr_t;                                                 
-	struct in_addr{
-	    in_addr_t s_addr;
-	};
-
-Example of `inet_ntoa`
-
-	struct in_addr addr1,addr2;
-	ulong l1,l2;
-	l1= inet_addr("192.168.0.74");
-	l2 = inet_addr("211.100.21.179");
-	memcpy(&addr1, &l1, 4);
-	memcpy(&addr2, &l2, 4);
-	printf("%s : %s\n", inet_ntoa(addr1), inet_ntoa(addr2)); //注意这一句的运行结果
-	printf("%s\n", inet_ntoa(addr1));
-	printf("%s\n", inet_ntoa(addr2));
-	return 0;
-	}
-实际运行结果如下:  
-192.168.0.74 : 192.168.0.74 //从这里可以看出,`printf`里的`inet_ntoa(addr2)`先于`inet_ntoa(addr1)`执行.  
-192.168.0.74  
-211.100.21.179  
-`inet_ntoa`返回一个`char *`,而这个`char *`的空间是在`inet_ntoa`里面静态分配的,所以`inet_ntoa`后面的调用会覆盖上一次的调用.  
-第一句printf的结果只能说明在printf里面的可变参数的求值是从右到左的,仅此而已.
-
-
-**IP 的结构**
-```    
-struct ip{
-    #if __BYTE_ORDER == __LITTLE_ENDIAN
-    unsigned int ip_hl:4; /* header length */
-    unsigned int ip_v:4; /* version */
-    #endif
-    #if __BYTE_ORDER == __BIG_ENDIAN
-    unsigned int ip_v:4; /* version */
-    unsigned int ip_hl:4; /* header length */
-    #endif
-    u_int8_t ip_tos; /* type of service */
-    u_short ip_len; /* total length */
-    u_short ip_id; /* identification */
-    u_short ip_off; /* fragment offset field */
-    #define IP_RF 0x8000 /* reserved fragment flag */
-    #define IP_DF 0x4000 /* dont fragment flag */
-    #define IP_MF 0x2000 /* more fragments flag */
-    #define IP_OFFMASK 0x1fff /* mask for fragmenting bits */
-    u_int8_t ip_ttl; /* time to live */
-    u_int8_t ip_p; /* protocol */
-    u_short ip_sum; /* checksum */
-    struct in_addr ip_src, ip_dst; /* source and dest address */
-}; 
-```    
-
-## Socket
-    #include <netinet/in.h>
-    struct sockaddr_in {
-        short            sin_family;   // e.g. AF_INET
-        unsigned short   sin_port;     // e.g. htons(3490)
-        struct in_addr   sin_addr;     // see struct in_addr, below
-        char             sin_zero[8];  // zero this if you want to
-    };
-
-    struct in_addr {
-        unsigned long s_addr;  // load with inet_aton()
-    };
-
-`gethostbyname`和`gethostbyaddr`这两个函数仅仅支持IPv4,  
-`getaddrinfo`函数能够处理名字到地址以及服务到端口这两种转换,返回的是一个`sockaddr`结构的链表而不是一个地址清单. 这些`sockaddr`结构随后可由套接口函数直接使用.如此一来,`getaddrinfo`函数把协议相关性安全隐藏在这个库函数内部.应用程序只要处理由getaddrinfo函数填写的套接口地址结构.该函数在 POSIX规范中定义了.
-
-    #include<netdb.h>
-    int getaddrinfo( const char *hostname, const char *service, 
-					 const struct addrinfo *hints, struct addrinfo **result );
-	返回值:0-成功,非0-出错
-参数说明
-hostname:一个主机名或者地址串(IPv4的点分十进制串或者IPv6的16进制串)  
-service:服务名可以是十进制的端口号,也可以是已定义的服务名称,如ftp,http等  
-hints:可以是一个空指针,也可以是一个指向某个addrinfo结构体的指针, 调用者在这个结构中填入关于期望返回的信息类型的暗示. 
-	举例来说:指定的服务既可支持TCP也可支持UDP,所以调用者可以把	hints结构中的ai_socktype成员设置成SOCK_DGRAM使得返回的仅仅是适用于数据报套接口的信息.  
-result:本函数通过result指针参数返回一个指向addrinfo结构体链表的指针.  
-
-`getnameinfo` converts a socket address to a corresponding host and service, in a protocol-independent manner.  
-It combines the functionality of `gethostbyaddr(3)` and `getservbyport(3)`, but unlike those functions, 
-`getnameinfo()` is reentrant and allows programs to eliminate IPv4-versus-IPv6 dependencies.
-the inverse is `getaddrinfo(3)`
 
