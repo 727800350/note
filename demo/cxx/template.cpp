@@ -16,9 +16,9 @@ int process(const char *line){
 }
 
 int main(int argc, char* argv[]) {
-    int ret = 0;
-    while ((ret = getopt(argc, argv, "h")) != -1) {
-        switch (ret) {
+    int opt = 0;
+    while ((opt = getopt(argc, argv, "h")) != -1) {
+        switch (opt) {
             case 'h':
                 usage(argv[0]);
                 return 0;
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     char *line = new char[max_vl];
     while (fgets(line, max_vl, stdin) != NULL) {
         line[strlen(line) - 1] = '\0';
-        ret = process(line);
+        int ret = process(line);
         if (ret != 0) {
             fprintf(stderr, "process %s error %d\n", line, ret);
             return -1;

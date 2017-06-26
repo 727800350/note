@@ -14,7 +14,7 @@ std::vector<std::string> split_any(const char *str, const char *delim){
 	char *p = NULL;
 
 	// strtok will modify the first parameter, so here make a copy
-	char *s = strdup(str);
+	char *s = strndup(str, strlen(str));
 
 	p = strtok(s, delim);
 	toks.push_back(std::string(p));
