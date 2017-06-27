@@ -6,20 +6,20 @@ import logging
 import argparse
 import time
 
-## debug, info, warnning, error, critical
+## debug, info, warn/warning, error, fatal/critical
 logging.basicConfig(level = logging.DEBUG, format = '%(levelname)s %(asctime)s [%(filename)s][%(lineno)d][%(funcName)s] %(message)s')
 log = logging.getLogger()
+
+parser = argparse.ArgumentParser(description = 'python template')
+parser.add_argument('-n', action = 'store', dest = 'num', default = 0, type = int, help = 'number')
+parser.add_argument('-f', action = 'store', dest = 'dict', default = 'dict.txt', type = str, help = 'dict file')
+arg = parser.parse_args()
 
 def process(line):
     print >> sys.stdout, line
     return 0
 
 def main():
-    parser = argparse.ArgumentParser(description = 'python template')
-    parser.add_argument('-n', action = 'store', dest = 'num', default = 0, type = int, help = 'number')
-    parser.add_argument('-f', action = 'store', dest = 'dict', default = 'dict.txt', type = str, help = 'dict file')
-    arg = parser.parse_args()
-
     num = 0
     time_start = time.time()
     for line in sys.stdin:
