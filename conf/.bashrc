@@ -63,6 +63,7 @@ else
 	--pad-header --unpad-paren --pad-oper --max-code-length=100 --formatted --align-pointer=type \
 	--align-reference=type --break-blocks -Y"
 fi
+export LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/git/note/demo/cxx/util
 
 ## texlive env
 export TEXLIVE=${HOME}/opt/texlive/2015/
