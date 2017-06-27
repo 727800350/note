@@ -61,5 +61,26 @@ std::vector<std::string> split_all(const char *str, const char *delim){
     return toks;
 }
 
+/* Return the UNIX time in microseconds */
+uint64_t ustime(void) {
+    struct timeval tv;
+    uint64_t ust = 0;
+
+    gettimeofday(&tv, NULL);
+    ust = ((uint64_t)tv.tv_sec) * 1000000;
+    ust += tv.tv_usec;
+    return ust;
+}
+
+/* Return the UNIX time in milliseconds */
+uint64_t mstime(void) {
+    return ustime() / 1000;
+}
+
+/* Return the UNIX time in seconds */
+uint64_t stime(void) {
+    return (uint64_t)time(NULL);
+}
+
 };
 

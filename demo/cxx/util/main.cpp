@@ -35,6 +35,7 @@ int main(){
 	test_split_any();
 	test_split_all();
 
+	fprintf(stderr, "%lu %lu %lu\n", util::ustime(), util::mstime(), util::stime());
 	return 0;
 }
 
