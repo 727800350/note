@@ -13,7 +13,6 @@ std::vector<std::string> split_all(const char *str, const char *delim);
 
 uint64_t ustime(void);
 uint64_t mstime(void);
-uint64_t stime(void);
 
 };
 

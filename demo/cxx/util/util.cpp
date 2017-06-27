@@ -77,10 +77,5 @@ uint64_t mstime(void) {
     return ustime() / 1000;
 }
 
-/* Return the UNIX time in seconds */
-uint64_t stime(void) {
-    return (uint64_t)time(NULL);
-}
-
 };
 
