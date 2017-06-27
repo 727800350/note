@@ -49,18 +49,9 @@ else
 	alias spider='${HOME}/hadoop-client/hadoop-spider/bin/hadoop'
 	alias wt='${HOME}/hadoop-client/hadoop-wutai/bin/hadoop'
 
-	## svn
-	export PATH=$PATH:$HOME/opt/tools/tools/svn/1.6.5/64/bin
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/opt/tools/tools/svn/1.6.5/64/lib
-	export PATH=$PATH:$HOME/opt/tools/tools/scmtools/usr/bin
-	export PATH=$PATH:$HOME/opt/tools/tools/../bin/64
-	export MAC=64
-
-	## php
-	export PATH=$PATH:$HOME/opt/php/bin/
-
 	## tool
 	source ~/.enterprise
+	alias comake="comake2"
 
 	if [ -f "/home/img/.jumbo/bin/vim" ]
 	then
