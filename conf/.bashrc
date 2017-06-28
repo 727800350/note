@@ -25,7 +25,7 @@ fi
 
 # Path
 ## my own pc
-if [ "x$user" = "xeric" -o "x$user" = "xwangchao34" ]
+if [ "x$user" == "xeric" -o "x$user" == "xwangchao34" ]
 then
 	ulimit -c unlimited
 ## enterprise
@@ -50,7 +50,10 @@ else
 	alias wt='${HOME}/hadoop-client/hadoop-wutai/bin/hadoop'
 
 	## tool
-	source ~/.enterprise
+	if [ -f ~/.enterprise ]
+	then
+		source ~/.enterprise
+	fi
 	export PATH=$PATH:$HOME/opt/tools/tools/scmtools/usr/bin ## comake2
 	alias comake="comake2"
 
