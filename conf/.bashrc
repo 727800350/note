@@ -51,6 +51,7 @@ else
 
 	## tool
 	source ~/.enterprise
+	export PATH=$PATH:$HOME/opt/tools/tools/scmtools/usr/bin ## comake2
 	alias comake="comake2"
 
 	if [ -f "/home/img/.jumbo/bin/vim" ]

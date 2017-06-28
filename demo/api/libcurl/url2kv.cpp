@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include <curl/curl.h>
  
 /*
@@ -10,6 +11,10 @@
 
 const int max_kl = 1024;
 const int max_vl = 10 * 1024 * 1024;
+
+void usage(const char *prog) {
+	fprintf(stderr, "usage: cat url.list | %s > data.kv\n", prog);
+}
 
 typedef struct _chunk{
 	char *buffer;
@@ -55,7 +60,19 @@ int process(char *line, CURL *curl, chunk_t *chunk){
 	return 0;
 }
 
-int main(){
+int main(int argc, char* argv[]) {
+	int opt = 0;
+	while ((opt = getopt(argc, argv, "h")) != -1) {
+		switch (opt) {
+			case 'h':
+				usage(argv[0]);
+				return 0;
+			default:
+				usage(argv[0]);
+				return -1;
+		}
+	}
+
 	chunk_t chunk;
 	chunk.buffer = new char[max_vl];
 
