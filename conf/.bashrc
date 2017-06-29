@@ -28,44 +28,11 @@ fi
 if [ "x$user" == "xeric" -o "x$user" == "xwangchao34" ]
 then
 	ulimit -c unlimited
-## enterprise
 else
-	export PYTHONIOENCODING=utf8 ## for eagle code style check
-	export TMOUT= ## #turn off auto-logout (user session will not auto-logout due to session inactivity)
-	export PATH=$PATH:${HOME}/.jumbo/bin/
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/samba/lib/
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/hadoop-client/java6/jre/lib/amd64/server/:~/hadoop-client/hadoop/libhdfs/
-
-	## hadoop client
-	export HADOOP_HOME="${HOME}/hadoop-client/hadoop/"
-	export JAVA_HOME="${HADOOP_HOME}/../java6/"
-	export local_hadoop="${HADOOP_HOME}/bin/hadoop"
-	alias hadoop='${HADOOP_HOME}/bin/hadoop'
-	alias yq='${HOME}/hadoop-client/hadoop-yq/bin/hadoop'
-	alias tiny='${HOME}/hadoop-client/hadoop-tiny/bin/hadoop'
-	alias shitu='${HOME}/hadoop-client/hadoop-shitu/bin/hadoop'
-	alias shixiao='${HOME}/hadoop-client/hadoop-shixiao/bin/hadoop'
-	alias nl='${HOME}/hadoop-client/hadoop-tuku/bin/hadoop'
-	alias spider='${HOME}/hadoop-client/hadoop-spider/bin/hadoop'
-	alias wt='${HOME}/hadoop-client/hadoop-wutai/bin/hadoop'
-
-	## tool
-	if [ -f ~/.enterprise ]
+	if [ -f /home/img/.enterprise ]
 	then
-		source ~/.enterprise
+		source /home/img/.enterprise
 	fi
-	export PATH=$PATH:$HOME/opt/tools/tools/scmtools/usr/bin ## comake2
-	alias comake="comake2"
-
-	if [ -f "/home/img/.jumbo/bin/vim" ]
-	then
-		alias vi="/home/img/.jumbo/bin/vim"
-	fi
-
-	ARTISTIC_STYLE_OPTIONS=~/.astylerc
-	alias astyle="astyle --style=attach --convert-tabs --indent=spaces=4 --add-brackets \
-	--pad-header --unpad-paren --pad-oper --max-code-length=100 --formatted --align-pointer=type \
-	--align-reference=type --break-blocks -Y"
 fi
 export LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/git/note/demo/cxx/util
 
