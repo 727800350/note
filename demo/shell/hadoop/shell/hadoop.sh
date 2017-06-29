@@ -5,10 +5,10 @@ set -o pipefail
 source ./conf/common.conf || exit 1
 source ./conf/func.sh || exit 1
 
-${local_hadoop} dfs -test -d ${top_dir}
+$local_hadoop dfs -test -d $top_dir
 if [ $? -ne 0 ]
 then
-	${local_hadoop} dfs -mkdir ${top_dir}
+	$local_hadoop dfs -mkdir $top_dir
 fi
 
 files=""
@@ -18,10 +18,10 @@ do
 done 1>/dev/null 2>&1
 echo "files=$files"
 
-${local_hadoop} dfs -rmr ${output}
-${local_hadoop} streaming \
-	-input ${input} \
-	-output ${output} \
+$local_hadoop dfs -rmr $output
+$local_hadoop streaming \
+	-input $input \
+	-output $output \
 	-mapper "bash mapper.sh 0" \
 	-reducer "bash reducer.sh 0" \
 	-partitioner "org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner" \
@@ -38,7 +38,7 @@ ${local_hadoop} streaming \
 	-jobconf mapred.max.map.failures.percent="5" \
 	-jobconf mapred.map.max.attempts="3" \
 	-jobconf mapred.job.name="${owner}_${job_name}" \
-	-jobconf mapred.job.priority="${priority}" \
+	-jobconf mapred.job.priority="$priority" \
 	$files
 
 CHK_RET FATAL "$job_name error"
