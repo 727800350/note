@@ -55,5 +55,13 @@ then
 	CHK_RET FATAL "put res error"
 fi
 
+if [ $local -eq 0 -a `expr $id % $reducer_capacity` -eq 0 ]
+then
+	$hadoop_fs -ls $mapred_output_dir | grep part | awk '{print $NF}' | head -n $reducer_capacity | while read line
+	do
+		$hadoop_fs -rm $line
+	done
+fi
+
 exit 0
 
