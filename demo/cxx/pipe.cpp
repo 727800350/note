@@ -34,8 +34,8 @@ int main(){
 		close(fd_pwc);
 		close(fd_prc);
 		close(fd_cwp);
-		sleep(1);
-// 		exit(0);
+		sleep(3);
+		exit(0);
 	}
 	else{
 		// parent
@@ -52,12 +52,32 @@ int main(){
 		close(fd_pwc);
 		close(fd_prc);
 		close(fd_cwp);
-		int ret = waitpid(-1, NULL, 0);
+
+		int status = -1;
+		int option = 0;
+		/* option:
+		 * 	0: block
+		 * 	WNOHANG: return 0 immediately if no child has exited
+		 */
+		int ret = waitpid(pid, &status, option);
 		if(ret == -1){
 			fprintf(stderr, "waitpid error\n");
 		}
+		else if(ret == 0){
+			fprintf(stderr, "WNOHANG option used\n");
+		}
 		else{
-			fprintf(stderr, "process %d exited\n", ret);
+			if(WIFEXITED(status)){
+				int exitcode = WEXITSTATUS(status);
+				fprintf(stderr, "process %d exited with code %d\n", pid, exitcode);
+			}
+			else if(WIFSIGNALED(status)){
+				int bysignal = WTERMSIG(status);
+				fprintf(stderr, "process %d exited by signal %d\n", pid, bysignal);
+			}
+			else{
+				fprintf(stderr, "new case %d\n", ret);
+			}
 		}
 	}
 
