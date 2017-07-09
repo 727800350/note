@@ -179,13 +179,15 @@ dictionaries are indexed by keys, which can be any immutable type; strings and n
 ## [heapq](https://docs.python.org/2/library/heapq.html)
 需要 `import heapq`
 
-- heapq.heappush(heap, item)
+- heapq.heappush(heap, item): item 可以是一个tuple, eg: (key, value)
 - heapq.heappop(heap) 弹出最小元素, 同时这个弹出的元素会从heap中被删除
 - heapq.heappushpop(heap, item): The combined action runs more efficiently than heappush() followed by a separate call to heappop().
 - heapq.heapify(x) Transform list x into a heap, in-place, in linear time.
 - heapq.heapreplace(heap, item): Pop and return the smallest item from the heap, and also push the new item. more efficient than a heappop() followed by heappush()
 - heapq.nlargest(n, iterable[, key]) Return a list with the n largest elements from the dataset defined by iterable.
 - heapq.nsmallest(n, iterable[, key])
+
+heapq 底层使用的就是一个list, 所以初始化, 清空都使用`heap = []`, 元素个数用 `len(heap)`
 
 ## Numeric
 - `int(String)`: convert a string to integer
