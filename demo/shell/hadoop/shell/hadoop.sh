@@ -29,14 +29,16 @@ $local_hadoop streaming \
 	-jobconf mapred.job.map.capacity="$mapper_capacity" \
 	-jobconf mapred.map.over.capacity.allowed="false" \
 	-jobconf mapred.map.tasks.speculative.execution="true" \
+	-jobconf mapred.map.max.attempts="3" \
+	-jobconf mapred.max.map.failures.percent="5" \
 	-jobconf mapred.reduce.slowstart.completed.maps=$slowstart \
 	-jobconf mapred.reduce.tasks="$reducer_num" \
 	-jobconf mapred.job.reduce.capacity="$reducer_capacity" \
 	-jobconf mapred.reduce.over.capacity.allowed="false" \
 	-jobconf mapred.reduce.tasks.speculative.execution="true" \
+	-jobconf mapred.reduce.max.attempts="3" \
+	-jobconf mapred.max.reduce.failures.percent="5" \
 	-jobconf stream.memory.limit="800" \
-	-jobconf mapred.max.map.failures.percent="5" \
-	-jobconf mapred.map.max.attempts="3" \
 	-jobconf mapred.job.name="${owner}_${job_name}" \
 	-jobconf mapred.job.priority="$priority" \
 	$files
