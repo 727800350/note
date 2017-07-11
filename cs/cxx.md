@@ -1,6 +1,7 @@
 # IO
 - stdin/stdout 属于标准库处理的输入流, 其声明为 FILE 型的, 对应的函数前面都有f开头, 如fopen/fread/fwrite/fclose 标准库调用等;
-- `STDIN_FILENO(0)/STDOUT_FILENO(1)` 属于系统API接口库, 其声明为 int 型, 是一个打开文件句柄, 对应的函数主要包括 open/read/write/close 等系统级调用.
+- `int fileno(FILE *fp)` 得到fp 对应的file descriptor, fd 对应的为系统API接口库, 函数主要包括 open/read/write/close 等系统级调用.
+	- stdin, stdout, stderr 还可以通过`STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO` 得到
 
 同一个文件可以用fopen同时打开多次, 读取是独立的, 各个FILE指针是不相互干扰的.
 
@@ -9,45 +10,20 @@
 
 - `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储`\0`作为字符串的结尾, 发生错误或者没有内容可读, 返回NULL
 	如若该行(包括最后一个换行符)的字符数超过n - 1, 则fgets返回一个不完整的行,但是,缓冲区总是以NULL字符结尾,对fgets的下一次调用会继续读该行
-```C++
-int ret = 0;
-const int MAX_LEN = 1024;
-char *line = new char[MAX_LEN];
-while(fgets(line, MAX_LEN, stdin) != NULL){
-    line[strlen(line) - 1] = '\0'; ## set '\n' to '\0', could also strchr \n first to make sure
-    ret = process(line);
-    if(ret != 0){
-        fprintf(stderr, "process error\n");
-        return -1;
-    }
-}
-delete []line;
-```
-
 - `size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);`
-```c
-while(true){
-    ret = fread(buffer, sizeof(char), buffer_size, stdin);
-    if(ret < 0){
-        fprintf(stderr, "read error");
-        return -1;
-    }
-    if(ret == 0){
-        fprintf(sterr, "eof");
-        break;
-    }
-}
-```
 - `size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);`
+- `int snprintf(char *str, size_t size, const char *format, ...);`: write at most size bytes, including the trailing '\0'('\0' 是自动加的)
+
 - `void setbuf(FILE *steam, char *buf);` 将buf设置为stream 的缓冲区. 为了关闭缓冲,可以将buf参数设置为NULL.
 - `void setlinebuf(FILE *stream);`
-- `int snprintf(char *str, size_t size, const char *format, ...);`: write at most size bytes, including the trailing '\0'('\0' 是自动加的)
+- `fflush(FILE *fp)`: 是把C库中的缓冲调用write函数写到磁盘[其实是写到内核的缓冲区]
+- `fsync(FILE *fp)`: 是把内核缓冲刷到磁盘上
 
 printf是一个行缓冲函数, 先写到缓冲区(默认一般为 1024 bytes), 满足条件后, 才将缓冲区刷到对应文件中, 刷缓冲区的条件如下:
 
 1. 缓冲区填满
 2. 写入的字符中有\n 或者 \r
-3. 调用fflush手动刷新缓冲区.  当我们执行printf的进程或者线程结束的时候会主动调用flush来刷新缓冲区
+3. 调用fflush手动刷新缓冲区. 当我们执行printf的进程或者线程结束的时候会主动调用flush来刷新缓冲区
 4. 调用scanf要从缓冲区中读取数据时,也会将缓冲区内的数据刷新
 
 满足上面4个条件之一缓冲区就会刷新(真正调用write来写入)
@@ -386,6 +362,15 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 - A RandomAccessIterator is a BidirectionalIterator that can be moved to point to any element in constant time.
 	A standard pointer is an example of a type that satisfies this concept.
 
+# Process 进程
+- `pid_t getpid(void)`
+- `pid_t waitpid(pid_t pid, int *status, int options)`
+	- pid: 可以为特定的进程pid, 也可以为-1 表示任何子进程
+	- status: 不同的位保存着不同的信息, 有一些特定的macro 来对返回的status 进行操作, WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG
+	- options: 0 会阻塞; WNOHANG 若pid 进程没有结束, 立刻返回0
+- `void exit(int status)`与`void _exit(int status)` [最大区别](http://blog.csdn.net/lwj103862095/article/details/8640037)就在于
+	exit()函数在调用exit系统之前要检查文件的打开情况, 把文件缓冲区的内容写回文件.
+
 # other
 c++ 中不要使用 goto, 在goto 之后是不允许定义的新的变量的, 局部变量也不行.
 [crosses initialization error](http://stackoverflow.com/questions/14274225/statement-goto-can-not-cross-pointer-definition)
@@ -429,20 +414,6 @@ ref: [头文件中定义const全局变量应注意的问题](http://blog.csdn.ne
 - `dynamic_cast` can be used only with pointers and references to objects. used to cast a class to one of its base classes
 - `static_cast` not only from the derived class to its base, but also from a base class to its derived(可能runtime error).
 - typeid: allows to check the type of an expression, returns a reference to a constant object of type `type_info` from `<typeinfo>`.  string 和 string & 的typeid 是一样的
-
-# [C++的头文件和实现文件分别写什么](http://www.cnblogs.com/ider/archive/2011/06/30/what_is_in_cpp_header_and_implementation_file.html)
-
-![declaration and implementation](http://i.imgbox.com/A7NmGCr8.png)
-
-# Linux
-[Example of Parsing Arguments with getopt](http://www.gnu.org/software/libc/manual/html_node/Getopt.html)
-optstring中后面的`:`表示需要接值, 如果`::`, 则表示值可有可无.
-
-- `optarg` 存数据
-- `optopt` 存储出错的option(如缺参数),或者不认识的option
-- `optind`, 表示下一次运行getopt时将读取数组第optind个
-
-[parse options demo](../demo/cxx/parse_options.c)
 
 # GCC
 高版本的gcc glibc 编译后在低版本的glibc上运行导致,可能导致Floating Point Exception运行时错误.
