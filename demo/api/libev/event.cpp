@@ -21,7 +21,7 @@ void io_action(struct ev_loop *main_loop, ev_io *io_w, int e){
 
 void timer_action(struct ev_loop *main_loop, ev_timer *timer_w, int e){
 	fprintf(stderr, "in tiemr cb\n");
-	ev_timer_stop(main_loop, timer_w);
+// 	ev_timer_stop(main_loop, timer_w);
 }
 
 void signal_action(struct ev_loop *main_loop, ev_signal *signal_w, int e){
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
 	ev_signal signal_w;
 
 	ev_io_init(&io_w, io_action, STDIN_FILENO, EV_READ);
-	ev_timer_init(&timer_w, timer_action, 2, 0); // timeout and repeat or not
+	ev_timer_init(&timer_w, timer_action, 2, 5); // timeout and period(if period == 0, then not periodic)
 	ev_signal_init(&signal_w, signal_action, SIGINT);
 
 	ev_io_start(main_loop, &io_w);
