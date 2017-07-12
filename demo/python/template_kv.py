@@ -18,26 +18,26 @@ parser.add_argument('-f', action = 'store', dest = 'dict', default = 'dict.txt',
 arg = parser.parse_args()
 
 def process(kl, k, vl, v):
-    """ core procedure """
-    print >> sys.stdout, '%s\t%d' % (k, vl)
-    return 0
+	""" core procedure """
+	print >> sys.stdout, '%s\t%d' % (k, vl)
+	return 0
 
 
 num = 0
 time_start = time.time()
 while True:
-    kl_raw = sys.stdin.read(4)
-    if kl_raw == '':
-        break
-    kl = st.unpack('i', kl_raw)[0]
-    k = sys.stdin.read(kl)
-    vl = st.unpack('i', sys.stdin.read(4))[0]
-    v = sys.stdin.read(vl)
-    ret = process(kl, k, vl, v)
-    if ret != 0:
-        log.fatal('process %s %d error' % (k, vl))
-        sys.exit(1)
-    num = num + 1
+	kl_raw = sys.stdin.read(4)
+	if kl_raw == '':
+		break
+	kl = st.unpack('i', kl_raw)[0]
+	k = sys.stdin.read(kl)
+	vl = st.unpack('i', sys.stdin.read(4))[0]
+	v = sys.stdin.read(vl)
+	ret = process(kl, k, vl, v)
+	if ret != 0:
+		log.fatal('process %s %d error' % (k, vl))
+		sys.exit(1)
+	num = num + 1
 time_total = time.time() - time_start
 qps = num / time_total
 log.info('num: %d process time: %fs qps: %d' % (num, time_total, qps))
