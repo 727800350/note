@@ -90,17 +90,6 @@ pipeline
 3. 当一组命令中每条命令都不依赖于之前命令的执行结果时,就可以将这组命令一起放入管道中发出,
 4. 管道通过减少通信次数,降低往返时延累加造成的性能消耗,从而提升效率,
 
-## config
-配置文件: `/etc/redis.conf`
-
-- daemonize: 是否以后台daemon方式运行, 默认为 否
-- port: 监听的端口号, 6379
-- loglevel: log信息级别, notice
-- logfile: log文件位置, `/var/log/redis/redis.log`
-- rdbcompression: 是否使用压缩, yes
-- dbfilename: 数据快照文件名(只是文件名,不包括目录), dump.rdb
-- dir: 数据快照的保存目录(这个是目录), `/var/lib/redis/`
- 
 ## 扩展写性能和内存容量
 [Redis实战:如何构建类微博的亿级社交平台](http://www.tuicool.com/articles/eyAfeyq)
 
@@ -113,6 +102,13 @@ pipeline
 在为了应对未来可能出现的流量增长而对系统进行预先分片的时候,我们可能会陷入这样一种处境:目前拥有的数据实在太少,按照预先分片方法计算出的机器数量去存储这些数据只会得不偿失.
 为了能够如常地对数据进行分割,我们可以在单台机器上面运行多个 Redis 服务器,并将每个服务器用作一个分片.
 注意,在同一台机器上面运行多个 Redis 服务器的时候,请记得让每个服务器都监听不同的端口,并确保所有服务器写入的都是不同的快照文件或 AOF 文件.
+
+# 实践
+#### 用get/set方式使用Redis
+作为一个key value存在, 很多开发者自然的使用set/get方式来使用Redis, 实际上这并不是最优化的使用方法. 尤其在未启用VM情况下, Redis全部数据需要放入内存, 节约内存尤其重要.
+假如一个key-value单元需要最小占用512字节, 即使只存一个字节也占了512字节.
+这时候就有一个设计模式, 可以把key复用, 几个key-value放入一个key中, value再作为一个set存入, 这样同样512字节就会存放10 - 100倍的容量.
+这就是为了节约内存, 建议使用hashset而不是set/get的方式来使用Redis
 
 # memcache
 ref: [MemCache超详细解读](http://www.csdn.net/article/2016-03-16/2826609)
