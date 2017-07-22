@@ -238,6 +238,9 @@ int free_client(client_t *client){
 	free(client->ip);
 	/* whatif fd is non-blocking? */
 	close(client->fd);
+	server.clients[client->fd] = NULL;
+	delete client;
+
 	return 0;
 }
 
