@@ -162,6 +162,7 @@ void do_read(struct ev_loop *loop, ev_io *watcher, int e){
 		goto end;
 	}
 	else{
+		fprintf(stdout, "read from %s:%d ", client->ip, client->port);
 		fwrite(client->buf_req + client->pos_req, sizeof(char), nread, stdout);
 		client->pos_req += nread;
 		int ret = process(client);
@@ -170,6 +171,7 @@ void do_read(struct ev_loop *loop, ev_io *watcher, int e){
 			goto end;
 		}
 	}
+	return;
 
 end:
 	ev_io_stop(loop, watcher);
@@ -198,7 +200,7 @@ void do_write(struct ev_loop *loop, ev_io *watcher, int e){
 	int fd = watcher->fd;
 	client_t *client = server.clients[fd];
 
-	if(client->buf_res <= 0){
+	if(client->pos_res <= 0){
 		fprintf(stderr, "no response\n");
 		ev_io_stop(loop, watcher);
 		delete watcher;
@@ -216,17 +218,18 @@ void do_write(struct ev_loop *loop, ev_io *watcher, int e){
 		}
 	}
 	else if(nwrite == 0){
-		fprintf(stderr, "connection closed\n");
+		fprintf(stderr, "connection %s:%d closed\n", client->ip, client->port);
 		goto end;
 	}
 	else{
-		fprintf(stdout , "write %d\n", nwrite);
+		fprintf(stdout , "write %d to %s:%d\n", nwrite, client->ip, client->port);
 		client->pos_res -= nwrite;
 		if(client->pos_res <= 0){
 			ev_io_stop(loop, watcher);
 			delete watcher;
 		}
 	}
+	return;
 
 end:
 	ev_io_stop(loop, watcher);
