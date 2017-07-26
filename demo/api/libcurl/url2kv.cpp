@@ -24,15 +24,8 @@ typedef struct _chunk{
 size_t callback(void *content, size_t size, size_t nmemb, void *userp){
 	int realsize = size * nmemb;
 	chunk_t *chunk = (chunk_t *)userp;
-	int cpsize = 0;
-	if (max_vl - chunk->size >= realsize) {
-		cpsize = realsize;
-	}
-	else {
-		cpsize = max_vl - chunk->size;
-	}
-	
-	if (cpsize == 0) {
+	int cpsize = std::min(max_vl - chunk->size, realsize);
+	if (cpsize <= 0) {
 		fprintf(stderr, "buffer full\n");
 		return 0;
 	}
