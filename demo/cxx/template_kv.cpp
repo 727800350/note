@@ -2,24 +2,35 @@
 #include <string.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <glog/logging.h>
 
 const int max_kl = 1024;
 const int max_vl = 10 * 1024 * 1024;
 
 void usage(const char *prog){
-	fprintf(stderr, "usage: cat - | %s\n", prog);
+	LOG(INFO) << "usage: cat - | " << prog << " -lh";
 }
 
 int process(char *k, int vl, char *v){
 	(void)v;
-	fprintf(stdout, "%s\t%d\n", k, vl);
+	LOG(INFO) << k << "\t" << vl;
 	return 0;
 }
 
 int main(int argc, char* argv[]){
+	google::InitGoogleLogging(argv[0]);
+	FLAGS_logtostderr = true;
+	FLAGS_alsologtostderr = true;
+	FLAGS_colorlogtostderr = true;
+	FLAGS_stderrthreshold = google::INFO;
+	FLAGS_log_dir = "./";
+
 	int opt = 0;
-	while((opt = getopt(argc, argv, "h")) != -1){
+	while((opt = getopt(argc, argv, "lh")) != -1){
 		switch(opt){
+			case 'l':
+				FLAGS_logtostderr = false;
+				break;
 			case 'h':
 				usage(argv[0]);
 				return 0;
@@ -43,18 +54,18 @@ int main(int argc, char* argv[]){
 
 		int ret = process(k, vl, v);
 		if(ret != 0){
-			fprintf(stderr, "process %s error %d\n", k, ret);
-			return -1;
+			LOG(FATAL) << "process " << k << " error";
 		}
 
 		num++;
 	}
 
-	fprintf(stderr, "total num: %d\n", num);
+	LOG(INFO) << "total num: " << num;
 
 	delete []k;
 	delete []v;
 
+	google::ShutdownGoogleLogging();
 	return 0;
 }
 

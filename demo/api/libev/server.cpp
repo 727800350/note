@@ -177,6 +177,7 @@ end:
 	ev_io_stop(loop, watcher);
 	delete watcher;
 	free_client(client);
+	return;
 }
 
 int process(client_t *client){
