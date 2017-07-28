@@ -3,4 +3,5 @@
 	email = wangchaogo1990@gmail.com
 [core]
 	editor = vim
+	autocrlf = false
 
