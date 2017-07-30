@@ -3,6 +3,7 @@
 """ Python script """
 
 import sys
+import os
 import logging
 import argparse
 import time
@@ -25,7 +26,7 @@ def process(line):
 num = 0
 time_start = time.time()
 for line in sys.stdin:
-	line = line.strip()
+	line = line.replace(os.linesep, '')
 	ret = process(line)
 	if ret != 0:
 		log.fatal('process %s error', line)

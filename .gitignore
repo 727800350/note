@@ -39,3 +39,6 @@ demo/api/opencv/demo.cpp
 
 ## redis
 *.rdb
+
+## java
+.class
