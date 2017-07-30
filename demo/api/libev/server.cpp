@@ -11,13 +11,15 @@
 #include <ctype.h>
 #include <ev.h>
 #include <algorithm>
+#include <glog/logging.h>
 
 const int max_vl = 1024;
 const int LISTENQ = 5;
 const int max_fd = 10000;
 
 void usage(const char *prog){
-	fprintf(stderr, "%s -i ip -p port\n", prog);
+	LOG(INFO) << "usage: " << prog << " -i ip -p port";
+	LOG(INFO) << "compile: g++ -lev -lglog";
 }
 
 typedef struct _client_t{
@@ -42,6 +44,7 @@ server_t server;
 void do_accept(struct ev_loop *loop, ev_io *watcher, int e);
 void do_read(struct ev_loop *loop, ev_io *watcher, int e);
 void do_write(struct ev_loop *loop, ev_io *watcher, int e);
+void do_signal(struct ev_loop *loop, ev_signal *watcher, int e);
 
 int process(client_t *client);
 int free_client(client_t *client);
@@ -50,14 +53,24 @@ int socket_bind(const char* ip, int port);
 int make_socket_non_blocking(int fd);
 
 int main(int argc,char *argv[]){
+	google::InitGoogleLogging(argv[0]);
+	FLAGS_logtostderr = true;
+	FLAGS_alsologtostderr = true;
+	FLAGS_colorlogtostderr = true;
+	FLAGS_stderrthreshold = google::INFO;
+	FLAGS_log_dir = "./";
+
 	int opt = 0;
-	while((opt = getopt(argc, argv, "i:p:h")) != -1){
+	while((opt = getopt(argc, argv, "i:p:lh")) != -1){
 		switch (opt){
 			case 'i':
 				server.ip = strndup(optarg, strlen(optarg));
 				break;
 			case 'p':
 				server.port = atoi(optarg);
+				break;
+			case 'l':
+				FLAGS_logtostderr = false;
 				break;
 			case 'h':
 				usage(argv[0]);
@@ -74,12 +87,14 @@ int main(int argc,char *argv[]){
 	if(server.port == 0){
 		server.port = 8000;
 	}
-	memset(server.clients, 0, sizeof(client_t *) * max_fd);
+	for(int i = 0; i < max_fd + 1; i++){
+		server.clients[i] = NULL;
+	}
 
 	server.fd = socket_bind(server.ip, server.port);
 	int ret = make_socket_non_blocking(server.fd);
 	if (ret != 0){
-		fprintf(stderr, "make listen socket non blocking error\n");
+		LOG(ERROR) << "make listen socket non blocking error";
 		return -1;
 	}
 	listen(server.fd, LISTENQ);
@@ -88,11 +103,18 @@ int main(int argc,char *argv[]){
 	ev_io io;
 	ev_io_init(&io, do_accept, server.fd, EV_READ);
 	ev_io_start(server.loop, &io);
-	ev_run(server.loop, 0);
 
-	fprintf(stderr, "loop stopped.\n");
+	ev_signal sig;
+	ev_signal_init(&sig, do_signal, SIGINT);
+	ev_signal_start(server.loop, &sig);
+
+	LOG(INFO) << "loop started";
+	ev_run(server.loop, 0);
+	LOG(WARNING) << "loop stopped";
+
 	free(server.ip);
 
+	google::ShutdownGoogleLogging();
 	return 0;
 }
 
@@ -101,14 +123,14 @@ void do_accept(struct ev_loop *loop, ev_io *watcher, int e){
 	socklen_t len = sizeof(struct sockaddr_in);
 	int fd = accept(watcher->fd, (struct sockaddr *)(&addr), &len);
 	if(fd == -1){
-		fprintf(stderr, "accept error\n");
+		LOG(ERROR) << "accept error";
 		return;
 	}
 
 	// check fd
 	if(fd > max_fd){
 		char msg[] = "fd exceeds";
-		fprintf(stderr, "%s\n", msg);
+		LOG(WARNING) << msg;
 		write(fd, msg, sizeof(msg));
 		close(fd);
 		return;
@@ -118,14 +140,14 @@ void do_accept(struct ev_loop *loop, ev_io *watcher, int e){
 	char sbuf[NI_MAXSERV];
 	int ret = getnameinfo((struct sockaddr *)&addr, len, hbuf, sizeof(hbuf), sbuf, sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV);
 	if (ret != 0){
-		fprintf(stderr, "getnameinfo on %d error\n", fd);
+		LOG(WARNING) << "getnameinfo error on " << fd;
 		close(fd);
 		return;
 	}
 
 	ret = make_socket_non_blocking(fd);
 	if (ret != 0){
-		fprintf(stderr, "make connection socket non blocking error\n");
+		LOG(ERROR) << "make connection socket non blocking error";
 		return;
 	}
 
@@ -137,7 +159,7 @@ void do_accept(struct ev_loop *loop, ev_io *watcher, int e){
 	client->pos_req = 0;
 	client->pos_res = 0;
 	server.clients[fd] = client;
-	fprintf(stderr, "new client from %s:%d with fd %d\n", client->ip, client->port, client->fd);
+	LOG(INFO) << "new client from " << client->ip << ":" << client->port << " with fd " << client->fd;
 
 	ev_io *io = new ev_io;
 	ev_io_init(io, do_read, fd, EV_READ);
@@ -150,24 +172,23 @@ void do_read(struct ev_loop *loop, ev_io *watcher, int e){
 	int nread = read(fd, client->buf_req + client->pos_req, max_vl - client->pos_req);
 	if(nread == -1){
 		if(errno == EAGAIN){
-			fprintf(stderr, "resource temp unavailable");
+			LOG(WARNING) << "resource temp unavailable";
 		}
 		else{
-			fprintf(stderr, "read error\n");
+			LOG(ERROR) << "read error";
 			goto end;
 		}
 	}
 	else if(nread == 0){
-		fprintf(stderr, "connection closed\n");
+		LOG(WARNING) << "connection closed";
 		goto end;
 	}
 	else{
-		fprintf(stdout, "read from %s:%d ", client->ip, client->port);
-		fwrite(client->buf_req + client->pos_req, sizeof(char), nread, stdout);
+		LOG(INFO) << "read " << nread << " bytes from " << client->ip << ":" << client->port << " " << std::string(client->buf_req + client->pos_req, nread);
 		client->pos_req += nread;
 		int ret = process(client);
 		if(ret != 0){
-			fprintf(stderr, "process client %s:%d error\n", client->ip, client->port);
+			LOG(ERROR) << "process client " << client->ip << ":" << client->port << " error";
 			goto end;
 		}
 	}
@@ -181,9 +202,7 @@ end:
 }
 
 int process(client_t *client){
-	/* echo request
-	 * simply toupper request as response
-	 */
+	/* simply toupper request as response */
 	int n = std::min(client->pos_req, max_vl - client->pos_res);
 	for(int i = 0; i < n; i++){
 		client->buf_res[client->pos_res++] = toupper(client->buf_req[i]);
@@ -202,7 +221,7 @@ void do_write(struct ev_loop *loop, ev_io *watcher, int e){
 	client_t *client = server.clients[fd];
 
 	if(client->pos_res <= 0){
-		fprintf(stderr, "no response\n");
+		LOG(WARNING) << "no response";
 		ev_io_stop(loop, watcher);
 		delete watcher;
 		return;
@@ -211,19 +230,19 @@ void do_write(struct ev_loop *loop, ev_io *watcher, int e){
 	int nwrite = write(fd, client->buf_res, client->pos_res);
 	if(nwrite == -1){
 		if(errno == EAGAIN){
-			fprintf(stderr, "resource temp unavailable");
+			LOG(WARNING) << "resource temp unavailable";
 		}
 		else{
-			fprintf(stderr, "write error\n");
+			LOG(ERROR) << "write error";
 			goto end;
 		}
 	}
 	else if(nwrite == 0){
-		fprintf(stderr, "connection %s:%d closed\n", client->ip, client->port);
+		LOG(WARNING) << "connection " << client->ip << ":" << client->port << " closed";
 		goto end;
 	}
 	else{
-		fprintf(stdout , "write %d to %s:%d\n", nwrite, client->ip, client->port);
+		LOG(INFO) << "write " << nwrite << " bytes to " << client->ip << ":" << client->port;
 		client->pos_res -= nwrite;
 		if(client->pos_res <= 0){
 			ev_io_stop(loop, watcher);
@@ -236,6 +255,7 @@ end:
 	ev_io_stop(loop, watcher);
 	delete watcher;
 	free_client(client);
+	return;
 }
 
 int free_client(client_t *client){
@@ -244,6 +264,7 @@ int free_client(client_t *client){
 	close(client->fd);
 	server.clients[client->fd] = NULL;
 	delete client;
+	client = NULL;
 
 	return 0;
 }
@@ -252,35 +273,40 @@ int socket_bind(const char* ip, int port){
 	struct sockaddr_in servaddr;
 	int listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (listenfd == -1){
-		fprintf(stderr, "socket error\n");
-		exit(1);
+		LOG(FATAL) << "socket error";
 	}
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	inet_pton(AF_INET, ip, &servaddr.sin_addr);
 	servaddr.sin_port = htons(port);
 	if (bind(listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1){
-		fprintf(stderr, "bind error\n");
-		exit(1);
+		LOG(FATAL) << "bind error";
 	}
-	fprintf(stderr, "listening on %s:%d\n", ip, port);
+	LOG(INFO) << "listening on " << ip << ":" << port;
 	return listenfd;
 }
 
 int make_socket_non_blocking(int fd){
 	int flags = fcntl(fd, F_GETFL, 0);
 	if(flags == -1){
-		fprintf(stderr, "fcntl get error\n");
+		LOG(ERROR) << "fcntl get error";
 		return -1;
 	}
 
 	flags |= O_NONBLOCK;
 	int ret = fcntl(fd, F_SETFL, flags);
 	if(ret == -1){
-		fprintf(stderr, "fcntl set error\n");
+		LOG(ERROR) << "fcntl set error";
 		return -1;
 	}
 
 	return 0;
+}
+
+void do_signal(struct ev_loop *loop, ev_signal *watcher, int e){
+	LOG(WARNING) << "SIGINT signal recevied";
+	ev_signal_stop(loop, watcher);
+	ev_break(loop, EVBREAK_ALL);
+	return;
 }
 
