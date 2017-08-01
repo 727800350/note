@@ -169,6 +169,11 @@ void do_accept(struct ev_loop *loop, ev_io *watcher, int e){
 void do_read(struct ev_loop *loop, ev_io *watcher, int e){
 	int fd = watcher->fd;
 	client_t *client = server.clients[fd];
+	if(client->pos_req >= max_vl){
+		LOG(WARNING) << "not enough buffer for request";
+		return;
+	}
+
 	int nread = read(fd, client->buf_req + client->pos_req, max_vl - client->pos_req);
 	if(nread == -1){
 		if(errno == EAGAIN){
@@ -202,6 +207,11 @@ end:
 }
 
 int process(client_t *client){
+	if(client->pos_res >= max_vl){
+		LOG(WARNING) << "not enough buffer for response";
+		return 0;
+	}
+
 	/* simply toupper request as response */
 	int n = std::min(client->pos_req, max_vl - client->pos_res);
 	for(int i = 0; i < n; i++){
