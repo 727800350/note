@@ -113,6 +113,7 @@ int main(int argc,char *argv[]){
 	LOG(WARNING) << "loop stopped";
 
 	free(server.ip);
+	close(server.fd);
 
 	google::ShutdownGoogleLogging();
 	return 0;
@@ -229,6 +230,13 @@ int process(client_t *client){
 void do_write(struct ev_loop *loop, ev_io *watcher, int e){
 	int fd = watcher->fd;
 	client_t *client = server.clients[fd];
+
+	if(client == NULL){
+		LOG(WARNING) << "client is closed";
+		ev_io_stop(loop, watcher);
+		delete watcher;
+		return;
+	}
 
 	if(client->pos_res <= 0){
 		LOG(WARNING) << "no response";
