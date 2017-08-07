@@ -28,6 +28,7 @@ Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " different version somewhere else.
 " Plugin 'ascenator/L9', {'name': 'newL9'}
 
+Bundle 'ctags.vim'
 Bundle 'taglist.vim'
 let Tlist_Ctags_Cmd='ctags'
 let Tlist_Show_One_File=1
