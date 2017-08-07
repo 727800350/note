@@ -54,7 +54,8 @@ int main(int argc, char* argv[]){
 
 		int ret = process(k, vl, v);
 		if(ret != 0){
-			LOG(FATAL) << "process " << k << " error";
+			LOG(ERROR) << "process " << k << " error";
+			return -1;
 		}
 
 		num++;

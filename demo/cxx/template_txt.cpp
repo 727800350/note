@@ -47,7 +47,8 @@ int main(int argc, char* argv[]){
 		line[strlen(line) - 1] = '\0';
 		int ret = process(line);
 		if(ret != 0){
-			LOG(FATAL) << "process " << line << " error";
+			LOG(ERROR) << "process " << line << " error";
+			return -1;
 		}
 
 		num++;
