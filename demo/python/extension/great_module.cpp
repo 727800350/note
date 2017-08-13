@@ -1,10 +1,10 @@
 /**
  * 生成python 能够调用的库
- * gcc -fPIC -shared great_module.c -o great_module.so -I/usr/include/python2.7 -lpython2.7
+ * g++ -fPIC -shared great_module.cpp -o great_module.so -I/usr/include/python2.7 -lpython2.7
  *
  * python 使用, 需要前面生成的great_module.so 在当前文件夹下
- * import great_module 
- * print great_module.great_function(2)
+ * import great_module as gm
+ * print gm.great_function(2)
  **/
 
 #include <Python.h>
