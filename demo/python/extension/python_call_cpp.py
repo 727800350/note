@@ -6,6 +6,7 @@ import great_module as gm
 
 print gm.inc(1)
 print gm.str_len('abcd')
+print gm.hc('abcd')
 
 sys.exit(0)
 

@@ -34,7 +34,6 @@ static PyObject *_inc(PyObject *self, PyObject *args){
 int str_len(char *str){
 	return strlen(str);
 }
-
 static PyObject *_str_len(PyObject *self, PyObject *args){
 	char *str = NULL;
 	if (!PyArg_ParseTuple(args, "s", &str)){
@@ -42,6 +41,21 @@ static PyObject *_str_len(PyObject *self, PyObject *args){
 	}
 	int res = str_len(str);
 	return PyInt_FromLong(res);
+}
+
+char *hc(char *str){
+	if(str == NULL){
+		return NULL;
+	}
+	return str + 1;
+}
+static PyObject *_hc(PyObject *self, PyObject *args){
+	char *str = NULL;
+	if (!PyArg_ParseTuple(args, "s", &str)){
+		return NULL;
+	}
+	char *res = hc(str);
+	return PyString_FromString(res);
 }
 
 /**
@@ -53,6 +67,7 @@ static PyObject *_str_len(PyObject *self, PyObject *args){
 static PyMethodDef GreateModuleMethods[] = {
 	{"inc", _inc, METH_VARARGS, "increment by one"},
 	{"str_len", _str_len, METH_VARARGS, "strlen"},
+	{"hc", _hc, METH_VARARGS, "str example"},
 	{NULL, NULL, 0, NULL}
 };
 
