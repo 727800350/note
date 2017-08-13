@@ -4,6 +4,10 @@
  * make sure great_module.so in the same directory
  * import great_module as gm
  * print gm.inc(2)
+ *
+ * ref:
+ * https://docs.python.org/2/c-api/concrete.html
+ * https://docs.python.org/2/c-api/arg.html
  */
 
 #include <string.h>
