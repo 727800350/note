@@ -7,12 +7,13 @@
  * print gm.great_function(2)
  **/
 
+#include <string.h>
 #include <Python.h>
 
 /** 
  * 实际的函数
  **/
-int great_function(int a){
+int inc(int a){
 	return a + 1;
 }
 
@@ -21,13 +22,26 @@ int great_function(int a){
  * 它负责将Python的参数转化为C的参数(PyArg_ParseTuple),
  * 调用实际的great_function,并处理great_function的返回值,最终返回给Python环境.
  **/
-static PyObject *_great_function(PyObject *self, PyObject *args){
+static PyObject *_inc(PyObject *self, PyObject *args){
 	int a = 0;
 	if (!PyArg_ParseTuple(args, "i", &a)){
 		return NULL;
 	}
-	int res = great_function(a);
-	return PyLong_FromLong(res);
+	int res = inc(a);
+	return PyInt_FromLong(res);
+}
+
+int str_len(char *str){
+	return strlen(str);
+}
+
+static PyObject *_str_len(PyObject *self, PyObject *args){
+	char *str = NULL;
+	if (!PyArg_ParseTuple(args, "s", &str)){
+		return NULL;
+	}
+	int res = str_len(str);
+	return PyInt_FromLong(res);
 }
 
 /**
@@ -37,12 +51,8 @@ static PyObject *_great_function(PyObject *self, PyObject *args){
  * 导出表总是以{NULL, NULL, 0, NULL}结束.
  **/
 static PyMethodDef GreateModuleMethods[] = {
-	{
-		"great_function",
-		_great_function,
-		METH_VARARGS,
-		""
-	},
+	{"inc", _inc, METH_VARARGS, "increment by one"},
+	{"str_len", _str_len, METH_VARARGS, "strlen"},
 	{NULL, NULL, 0, NULL}
 };
 
