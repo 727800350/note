@@ -1,11 +1,4 @@
-# Mysql
-```
-mysql -u test -p db_name
-会提示输入密码
-
-mysql -u root -D db_name < cmd.sql
-mysql -u root -D db_name -e "sql_cmd"
-```
+`mysql -u user -p$passwd -h host -P port -D db --default-character-set=utf8`
 
 mysql的配置文件: `/etc/my.cnf`.  
 mysql server 自己带有一些示例配置文件: `rpm -ql mysql-server | grep cnf`, 
@@ -15,24 +8,13 @@ mysql server 自己带有一些示例配置文件: `rpm -ql mysql-server | grep 
 当由于系统的空间不够时, mysql 会在`/var/lib/mysql` 目录下创建一个hostname.error 的文件对错误进行说明, 而不会在 `/var/log/mysqld.log` 中说明.  
 如果经常出现空间不够的错误提示, 可以再`/etc/my.cnf` 中 修改数据的位置 `datadir=/var/lib/mysql`
 
-MySql innodb如果是共享表空间, ibdata1文件越来越大
-
 ## 查看
-```
-mysql> show index from t1;
-
-mysql> show create table t1;
-
-下面两者效果一样
-mysql> desc t1;
-mysql> show columns from t1;
-显示comment 与 privilege
-mysql> show full columns from t1;
-
-mysql> show triggers;
-mysql> show triggers from db1;
-mysql> show triggers like 'test1';
-```
+- `desc t1;`
+- `show full columns from t1;`
+- `show index from t1;`
+- `show create table t1;`
+- `show triggers;`
+- `show triggers from db1;`
 
 ## Create
 MySQL默认情况下指定字段为NULL修饰符
@@ -42,20 +24,19 @@ MySQL默认情况下指定字段为NULL修饰符
 [时间差](http://blog.csdn.net/yzsind/article/details/8831429)
 
 datetime 直接之间作差得到结果不是时间意义上的作差.
-实际是mysql的时间相减是做了一个隐式转换操作,将时间转换为整数,但并不是用unix_timestamp转换,而是直接把年月日时分秒拼起来,
-如2013-04-21 16:59:33 直接转换为20130421165933,由于时间不是十进制,所以最后得到的结果没有意义,这也是导致出现坑爹的结果.
+实际是mysql的时间相减是做了一个隐式转换操作, 直接把年月日时分秒拼起来, 如`2013-04-21 16:59:33` 直接转换为`20130421165933`, 由于时间不是十进制,所以最后得到的结果没有意义,这也是导致出现坑爹的结果.
 
 要得到正确的时间相减秒值,有以下3种方法:
 
-1. `time_to_sec(timediff(t2, t1))`, timediff 得到的结果是一个时间格式
+1. `time_to_sec(timediff(t2, t1))`: timediff 得到的结果是一个时间格式
 2. `timestampdiff(second, t1, t2)`
 3. `unix_timestamp(t2) - unix_timestamp(t1)`
 
 时间位移: `ADDTIME('2014-05-26 18:26:21', '0:0:2')` 求后2秒的时间.
 
 ### str
-- length()
-- char_length()
+- `length()`
+- `char_length()`
 
 ### 复制数据到新表
 - 复制表结构(包括index, key 等): 
@@ -65,31 +46,23 @@ datetime 直接之间作差得到结果不是时间意义上的作差.
 	1. `INSERT INTO 新表 SELECT * FROM 旧表`
 
 ## insert
-```
-INSERT INTO table_name VALUES (value1,value2,value3,...);
+- `INSERT INTO table_name VALUES(value1, value2, value3, ...);`
+- `INSERT INTO table_name(column1, column2, column3, ...) VALUES(value1, value2, value3, ...);`
 
-INSERT INTO table_name (column1,column2,column3,...) VALUES (value1,value2,value3,...);
-```
+MySql避免重复插入记录(根据主键判重)
 
-- 当field为not null, 但是没有设置默认值, 插入的时候如果没有为这个field指定值, 那么这个field的位置为空, 什么都不显示
-- 当field为not null, 设置有默认值, 插入的时候如果没有为这个field指定值, 那么这个field的值就为默认值
-- 当field没有设置not null(也就是说可以为null), 也没有设置默认值, 那么插入的时候如果没有为这个field指定值, 那么这个field的值就为null
-- 当field没有设置not null(也就是说可以为null), 设置有默认值, 那么插入的时候如果没有为这个field指定值, 那么这个field的值就为默认值
+1. `insert ignore into xxx`
+1. `replace into xxx`
 
 ## update
-```
-UPDATE table_name SET column1=value1,column2=value2,...  WHERE some_column=some_value;
-```
+`UPDATE table_name SET column1 = value1, column2 = value2, ...  WHERE some_column = some_value;`
+
 如果update 的一条记录在数据库不存在(就是说后面的where语句没有找到record), 不会对数据库产生影响, 同时语句的执行也不会报错.
 
 两个表update
-```
-update a set age = (select age from b where b.name = a.name)
-```
-上面的update, 用到了子查询, 当数据量大的时候, 效率非常低, 使用下面的update, 效率会高很多, 尤其是在建立有合适的索引时.
-```
-update a, b set a.age = b.age where a.name = b.name
-```
+
+- `update a set age = (select age from b where b.name = a.name)`: 用到了子查询, 当数据量大的时候, 效率非常低
+- `update a, b set a.age = b.age where a.name = b.name`: 比上面的子查询效率会高很多, 尤其是在建立有合适的索引时.
 
 ## Alter
 ```
@@ -97,21 +70,12 @@ ALTER TABLE table_name ADD column_name datatype
 alter table flows add column ip_prot tinyint(4) null default 0;
 
 ALTER TABLE table_name DROP COLUMN column_name
-```
 
-要改变表中列的数据类型
-```
 ALTER TABLE table_name MODIFY COLUMN column_name datatype
-```
 
-Rename
-```
 ALTER TABLE table_name CHANGE old_col_name new_col_name column_definition
 ALTER TABLE table_name RENAME TO new_table_name;
 ```
-在改变表的名字时, 有时会遇到下面的错误, 
-`ERROR 7 (HY000): Error on rename of './directory/flows_label.MYI' to './directory/labels.MYI' (Errcode: 13)`  
-是由于权限的问题, 对于用户自己创建的目录, 需要把目录的owner 改为`mysql:mysql`
 
 ## Select
 mysql中提供了一个G标志,放到sql语句后,可以使一行的每个列打印到单独的行.
@@ -662,8 +626,8 @@ mysql> DROP TRIGGER trig1;
 ```
 
 ## Mysql 的存储引擎,myisam和innodb的区别
-`MyISAM` is the default storage engine. It is based on the older (and no longer available) ISAM storage engine but **has many useful extensions**.  
-```
+MyISAM is the default storage engine. It is based on the older (and no longer available) ISAM storage engine but **has many useful extensions**.  
+```sql
 CREATE TABLE t(
 	i INT)ENGINE = MYISAM;
 ```
@@ -699,4 +663,6 @@ MyISAM为INSERT和UPDATE操作自动更新这一列.这使得AUTO_INCREMENT列�
 在序列顶的值被删除之后就不能再利用.(当AUTO_INCREMENT列被定义为多列索引的最后一列,可以出现重使用从序列顶部删除的值的情况).
 AUTO_INCREMENT值可用ALTER TABLE或myisamch来重置.
 对于AUTO_INCREMENT类型的字段,InnoDB中必须包含只有该字段的索引,但是在MyISAM表中,可以和其他字段一起建立联合索引,更好和更快的auto_increment处理.
+
+MySql innodb如果是共享表空间, ibdata1文件越来越大
 
