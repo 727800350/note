@@ -30,7 +30,7 @@ static PyObject *str_len(PyObject *self, PyObject *args){
 }
 
 // str return str
-static PyObject *hc(PyObject *self, PyObject *args){
+static PyObject *offset(PyObject *self, PyObject *args){
 	char *str = NULL;
 	if (!PyArg_ParseTuple(args, "s", &str)){
 		return NULL;
@@ -42,6 +42,31 @@ static PyObject *hc(PyObject *self, PyObject *args){
 	return PyString_FromString(res);
 }
 
+/* tuple example */
+typedef union _node_t{
+	uint32_t sign[2];
+	uint64_t base64;
+}node_t;
+
+static PyObject *sign64to32(PyObject *self, PyObject *args){
+	char *str = NULL;
+	if (!PyArg_ParseTuple(args, "s", &str)){
+		return NULL;
+	}
+
+	node_t node;
+	sscanf(str, "%lu", &node.base64);
+	return Py_BuildValue("(II)", node.sign[0], node.sign[1]);
+
+	/* another way to build a tuple
+	PyObject *pack = PyTuple_New(2);
+	PyObject *cs1 = PyInt_FromLong(node.sign[0]);
+	PyObject *cs2 = PyInt_FromLong(node.sign[1]);
+	PyTuple_SetItem(pack, 0, cs1);
+	PyTuple_SetItem(pack, 1, cs2);
+	*/
+}
+
 /*
  * Methods exposed to Python env
  * fun in Python, fun in C++, arg, comment
@@ -50,7 +75,8 @@ static PyObject *hc(PyObject *self, PyObject *args){
 static PyMethodDef Methods[] = {
 	{"inc", inc, METH_VARARGS, "increment by one"},
 	{"str_len", str_len, METH_VARARGS, "strlen"},
-	{"hc", hc, METH_VARARGS, "str example"},
+	{"offset", offset, METH_VARARGS, "offset a str"},
+	{"sign64to32", sign64to32, METH_VARARGS, "sign 64 to 32"},
 	{NULL, NULL, 0, NULL}
 };
 
