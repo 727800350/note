@@ -1,12 +1,10 @@
-#include <boost/thread/thread.hpp>
-#include <boost/lockfree/queue.hpp>
-#include <boost/atomic.hpp>
-
 #include <atomic>
+#include <boost/lockfree/queue.hpp>
 #include <glog/logging.h>
 
-/*
- * set fixed_sized true to disable dynamic memory allocations during push in order to ensure lockfree behavior
+/* ref: http://www.boost.org/doc/libs/1_53_0/doc/html/lockfree.html */
+
+/* set fixed_sized true to disable dynamic memory allocations during push in order to ensure lockfree behavior
  * there is not queue.size(), so we can use a atomic int to record it
  */
 boost::lockfree::queue<int, boost::lockfree::fixed_sized<true> > queue(10);
