@@ -2,13 +2,15 @@
 #include <boost/lockfree/queue.hpp>
 #include <boost/atomic.hpp>
 
+#include <atomic>
 #include <glog/logging.h>
 
 /*
- * boost::atomic_int consumer_count(0);
+ * set fixed_sized true to disable dynamic memory allocations during push in order to ensure lockfree behavior
+ * there is not queue.size(), so we can use a atomic int to record it
  */
-
-boost::lockfree::queue<int> queue(128);
+boost::lockfree::queue<int, boost::lockfree::fixed_sized<true> > queue(10);
+std::atomic<int> size(0);
 
 void usage(const char *prog){
 	LOG(INFO) << "usage: " << prog << " -lh";
@@ -43,14 +45,18 @@ int main(int argc, char* argv[]){
 		return -1;
 	}
 
-	for(int i = 0; i < 10; i++){
-		queue.push(i);
+	for(int i = 0; i < 20; i++){
+		bool succ = queue.push(i);
+		if(not succ){
+			LOG(ERROR) << "push " << i << " error, breaking...";
+			break;
+		}
+		size += 1;
 	}
-	LOG(INFO) << queue.empty();
+	LOG(INFO) << "queue size: " << size;
 
 	int value = 0;
-	while(not queue.empty()){
-		queue.pop(value);
+	while(queue.pop(value)){
 		LOG(INFO) << value;
 	}
 
