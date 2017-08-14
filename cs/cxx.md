@@ -30,6 +30,12 @@ printf是一个行缓冲函数, 先写到缓冲区(默认一般为 1024 bytes), 
 
 注: fork(返回值为0的是子进程) 的时候, 会将缓冲区也一起拷贝到子进程
 
+<red>fprintf 是线程安全的.</red>
+If you’re using a single FILE object to perform output on an open file, then whole fprintf calls on that FILE will be atomic, i.e. lock is held on the FILE for the duration of the fprintf call.
+Since a FILE is local to a single process’s address space, this setup is only possible in multi-threaded applications;
+it does not apply to multi-process setups where several different processes are accessing separate FILE objects referring to the same underlying open file.
+Even though you’re using fprintf here, each process has its own FILE it can lock and unlock without the others seeing the changes, so writes can end up interleaved.
+
 对齐
 
 - `printf("%15s\n", insertTime);`: 右对齐,15位长度,不够补空格
