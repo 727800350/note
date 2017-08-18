@@ -77,16 +77,18 @@ int main(int argc, char* argv[]){
 		}
 	}
 
-	chunk_t chunk;
-	chunk.buffer = new char[max_vl];
-
-	CURL *curl = NULL;
 	curl_global_init(CURL_GLOBAL_DEFAULT);
-	curl = curl_easy_init();
+
+	CURL *curl = curl_easy_init();
 	if(curl == NULL){
 		LOG(ERROR) << "init curl error";
 		return -1;
 	}
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30L);
+	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+
+	chunk_t chunk;
+	chunk.buffer = new char[max_vl];
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 
@@ -101,8 +103,8 @@ int main(int argc, char* argv[]){
 	}
  
 	curl_easy_cleanup(curl);
-	curl_global_cleanup();
 	delete []chunk.buffer;
+	curl_global_cleanup();
  
 	google::ShutdownGoogleLogging();
 	return 0;
