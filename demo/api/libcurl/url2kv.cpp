@@ -13,7 +13,7 @@
 const int max_kl = 1024;
 const int max_vl = 10 * 1024 * 1024;
 
-void usage(const char *prog) {
+void usage(const char *prog){
 	LOG(INFO) << "usage: cat url.list | " << prog << " > data.kv";
 }
 
@@ -26,7 +26,7 @@ size_t callback(void *content, size_t size, size_t nmemb, void *userp){
 	int realsize = size * nmemb;
 	chunk_t *chunk = (chunk_t *)userp;
 	int cpsize = std::min(max_vl - chunk->size, realsize);
-	if (cpsize <= 0) {
+	if(cpsize <= 0){
 		LOG(ERROR) << "buffer full";
 		return 0;
 	}
@@ -40,7 +40,7 @@ int process(char *line, CURL *curl, chunk_t *chunk){
 	chunk->size = 0;
 	curl_easy_setopt(curl, CURLOPT_URL, line);
 	CURLcode res = curl_easy_perform(curl);
-	if (res != CURLE_OK) {
+	if(res != CURLE_OK){
 		LOG(ERROR) << "curl_easy_perform() failed: " << curl_easy_strerror(res);
 		return -1;
 	}
@@ -54,7 +54,7 @@ int process(char *line, CURL *curl, chunk_t *chunk){
 	return 0;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]){
 	google::InitGoogleLogging(argv[0]);
 	FLAGS_logtostderr = true;
 	FLAGS_alsologtostderr = true;
@@ -63,8 +63,8 @@ int main(int argc, char* argv[]) {
 	FLAGS_log_dir = "./";
 
 	int opt = 0;
-	while ((opt = getopt(argc, argv, "lh")) != -1) {
-		switch (opt) {
+	while((opt = getopt(argc, argv, "lh")) != -1){
+		switch(opt){
 			case 'l':
 				FLAGS_logtostderr = false;
 				break;
@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
 	CURL *curl = NULL;
 	curl_global_init(CURL_GLOBAL_DEFAULT);
 	curl = curl_easy_init();
-	if (curl == NULL) {
+	if(curl == NULL){
 		LOG(ERROR) << "init curl error";
 		return -1;
 	}
@@ -91,10 +91,10 @@ int main(int argc, char* argv[]) {
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 
 	char *line = new char[max_kl];
-	while (fgets(line, max_kl, stdin) != NULL) {
+	while(fgets(line, max_kl, stdin) != NULL){
 		line[strlen(line) - 1] = '\0';
 		int ret = process(line, curl, &chunk);
-		if (ret != 0) {
+		if(ret != 0){
 			LOG(ERROR) << "process " << line << " error";
 			return -1;
 		}
