@@ -50,7 +50,7 @@ $hadoop_fs -rm $mapred_output_dir/input.$id
 
 if [ $local -eq 0 -a -s res ]
 then
-	$hadoop_fs -put res ${mapred_work_output_dir}/res.$id
+	$hadoop_fs -put res ${mapred_work_output_dir}/data.$id
 	CHK_RET FATAL "put res error"
 fi
 
