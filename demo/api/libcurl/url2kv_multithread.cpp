@@ -54,6 +54,7 @@ int process(char *line, CURL *curl, chunk_t *chunk){
 	}
 
 	int kl = strlen(line);
+	/* out of scope, automatically unlocked, we can also surround critical code with {} */
 	std::lock_guard<std::mutex> lock(mutex);
 	fwrite(&kl, sizeof(int), 1, stdout);
 	fwrite(line, sizeof(char), kl, stdout);
@@ -82,13 +83,13 @@ void *worker(void *arg){
 	int num = 0;
 	char *line = NULL;;
 	while(queue.pop(line)){
-		LOG(INFO) << --size << " " << line;
 		int ret = process(line, curl, &chunk);
 		if(ret != 0){
 			LOG(ERROR) << "process " << line << " error";
 			return (void *)-1;
 		}
 		num++;
+		size--;
 		free(line);
 	}
 	LOG(INFO) << "thread " << id << " process " << num << " lines";
@@ -99,6 +100,9 @@ void *worker(void *arg){
 }
  
 void *reader(void *arg){
+	(void)arg;
+
+	int num = 0;
 	char *line = new char[max_kl];
 	while(fgets(line, max_kl, stdin) != NULL){
 		line[strlen(line) - 1] = '\0';
@@ -107,8 +111,11 @@ void *reader(void *arg){
 			LOG(ERROR) << "push " << line << " error";
 			return (void *)-1;
 		}
-		LOG(INFO) << ++size << " " << line;
+		num++;
+		size++;
 	}
+	LOG(INFO) << "total read " << num << " lines";
+
 	delete []line;
 
 	return (void *)0;

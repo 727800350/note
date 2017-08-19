@@ -1,11 +1,8 @@
 # IO
 - stdin/stdout 属于标准库处理的输入流, 其声明为 FILE 型的, 对应的函数前面都有f开头, 如fopen/fread/fwrite/fclose 标准库调用等;
-- `int fileno(FILE *fp)` 得到fp 对应的file descriptor, fd 对应的为系统API接口库, 函数主要包括 open/read/write/close 等系统级调用.
-	- stdin, stdout, stderr 还可以通过`STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO` 得到
+- `int fileno(FILE *fp)` 得到fp 对应的file descriptor, fd 对应的为系统API接口库, 函数主要包括 open/read/write/close 等系统级调用. stdin, stdout, stderr 还可以通过`STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO` 得到
 
-同一个文件可以用fopen同时打开多次, 读取是独立的, 各个FILE指针是不相互干扰的.
-
-- `FILE *fopen(const char *path, const char *mode);`
+- `FILE *fopen(const char *path, const char *mode);` 同一个文件可以用fopen同时打开多次, 读取是独立的, 各个FILE指针是不相互干扰的.
 - `int fclose(FILE *stream);`
 
 - `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储`\0`作为字符串的结尾, 发生错误或者没有内容可读, 返回NULL
@@ -30,11 +27,11 @@ printf是一个行缓冲函数, 先写到缓冲区(默认一般为 1024 bytes), 
 
 注: fork(返回值为0的是子进程) 的时候, 会将缓冲区也一起拷贝到子进程
 
-<red>fprintf 是线程安全的.</red>
-If you’re using a single FILE object to perform output on an open file, then whole fprintf calls on that FILE will be atomic, i.e. lock is held on the FILE for the duration of the fprintf call.
-Since a FILE is local to a single process’s address space, this setup is only possible in multi-threaded applications;
+fwrite 是线程安全的.
+If you're using a single FILE object to perform output on an open file, then whole **fwrite calls on that FILE will be atomic**, i.e. lock is held on the FILE for the duration of the fprintf call.
+Since a FILE is local to a single process's address space, this setup is only possible in multi-threaded applications;
 it does not apply to multi-process setups where several different processes are accessing separate FILE objects referring to the same underlying open file.
-Even though you’re using fprintf here, each process has its own FILE it can lock and unlock without the others seeing the changes, so writes can end up interleaved.
+Even though you're using fprintf here, each process has its own FILE it can lock and unlock without the others seeing the changes, so writes can end up interleaved.
 
 对齐
 
@@ -57,20 +54,7 @@ len = ftell(fp);
 fseek(fp, 0, SEEK_SET);
 ```
 
-# 运算符
-[优先级表](https://www.slyar.com/blog/c-operator-priority.html)
-
-- `<<`, `>>`: 左移,右移
-- `&` or `bitand`: 按位与
-- `|` or  `bitor`: 按位或, `|=`: 按位或后赋值
-- `^` or  `xor`: 按位异或(对应位相同的,结果为 0,不相同为 1)
-- `&&` or `and`: 逻辑与
-- `||` or `or`: 逻辑或
-
-注: bitand, bitor, xor, and, or 是C++标准中的
-
 # Data Types
-
 ```
 #include <stdint.h>
 uint64_t, int64_t, uint32_t, int32_t, uint16_t, int16_t, uint8_t, int8_t ...
@@ -206,12 +190,7 @@ but unless you know what you know exactly what are doing, do not do this.
 - `void clear()`: 清空
 
 ### [字符数组与字符指针](http://blog.csdn.net/qiumm/article/details/5657120)
-- `char *str1 = "abc";` 字符指针指向的是一个**字符串常量**(存储在程序的常量区)的首地址, str1即指向字符串的首地址.  
-	所以尽管str1的类型不是`const char *`,并且`str1[0] = 'x'`;也能编译通过, 但是执行`str1[0] = 'x';`就会发生运行时异常,因为这个语句试图去修改程序常量区中的东西.  
-	但是建议的写法应该是**`const char* str1 = "abc";`**, 这样如果后面写`str1[0] = 'x'`, 的话编译器就不会让它编译通过,也就避免了上面说的运行时异常.  
-	如果这个语句写在函数体内,那么虽然这里的`"abc"`被放在常量区中,但是str1本身只是一个普通的指针变量,所以ptr是被放在栈上的, 只不过是它所指向的东西被放在常量区罢了.  
-	**C++ 中这种写法会warning**
-
+- `const char *str1 = "abc";` 字符指针指向的是一个**字符串常量**(存储在程序的常量区)的首地址.
 - `char str2[] = "abc";`: str2是字符数组,它存放了一个字符串, 编译会自动在str2 末尾添加`\0`.  
 	str2是一个数组,可以改变数组中保存的内容(但是数组的名字str2本身, 它是一个常量, 也就是说str2 is not assignable)
 	因为定义的是一个字符数组,所以就相当于定义了一些空间来存放"abc",而又因为字符数组就是把字符一个一个地存放的,
@@ -281,6 +260,8 @@ printf("%lu, %lu", sizeof('a'), sizeof(b)); // OUTPUT: 4,1
 Note character literals are of type int in C; but of type char in C++.
 
 # Memory
+new delete malloc free 都是thread safe
+
 单个元素
 ```c++
 pointer = new type
@@ -296,12 +277,9 @@ delete []p;
 `new (std:nothrow)`: 直接new如果失败要抛出异常的, 结果就是为了健壮性代码里到处都是try. 另如果new出现异常, 表示内存几经到达边缘了, 再用try+catch来消耗内存也是无济于事
 所以一般健壮的分配方式都用new (nothrow) xxx的(当然也有用malloc等的),之后判断NULL就OK
 
-`g_stmola = new (std::nothrow) select_mola[mola_num];`
-
 `realloc`: 重新分配内存, 但是原来的内容保留下来
 
 - 当realloc 执行失败时, 返回null, 但是原来的内容不会被更改, 所以不能将realloc的返回指针复制给原来的指针,否则会覆盖掉原来的内容,
-	而且也不能通过判断原来的指针是否为null来判断realloc窒息你给成功与否
 - 当执行成功时, realloc 会将原来的内存释放掉, 返回的指针可能和原来的不一样, 所以我们只需要负责释放realloc 返回的内存就可以了, 之前的内存不用管了(realloc会处理)
 
 在C 和C++ 中, 结构体是可以直接赋值的. C 中是可以的, C++ 为了保持向后兼容, 因此也有了
@@ -354,20 +332,6 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 
 [Pointers to functions](../demo/cxx/pointer_function.cpp)
 
-`std::copy(val.begin(), val.end(), std::ostream_iterator<int>(std::cout, ", "))`: describes types that can be used to identify and traverse the elements of a container.
-	Iterator is the base concept used by other iterator types: InputIterator, OutputIterator, ForwardIterator,BidirectionalIterator, and RandomAccessIterator.
-	Iterators can be thought of as an abstraction of pointers.
-
-- An OutputIterator is an Iterator that can write to the pointed-to element.
-- An InputIterator is an Iterator that can read from the pointed-to element.
-	InputIterators only guarantee validity for single pass algorithms:
-	once an InputIterator i has been incremented, all copies of its previous value may be invalidated.
-- A ForwardIterator is an Iterator that can read data from the pointed-to element.
-	Unlike an InputIterator, it guarantees validity when used in multipass algorithms.
-- A BidirectionalIterator is a ForwardIterator that can be moved in both directions (i.e. incremented and decremented).
-- A RandomAccessIterator is a BidirectionalIterator that can be moved to point to any element in constant time.
-	A standard pointer is an example of a type that satisfies this concept.
-
 # Process 进程
 - `pid_t getpid(void)`
 - `pid_t waitpid(pid_t pid, int *status, int options)`
@@ -377,11 +341,64 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 - `void exit(int status)`与`void _exit(int status)` [最大区别](http://blog.csdn.net/lwj103862095/article/details/8640037)就在于
 	exit()函数在调用exit系统之前要检查文件的打开情况, 把文件缓冲区的内容写回文件.
 
-# other
-c++ 中不要使用 goto, 在goto 之后是不允许定义的新的变量的, 局部变量也不行.
-[crosses initialization error](http://stackoverflow.com/questions/14274225/statement-goto-can-not-cross-pointer-definition)
+# thread
+`fork` 是昂贵的. fork要把父进程的内存镜像复制到子进程, 并在子进程中复制所有描述符, 如此, 等等.  
+子进程获取父进程数据空间,堆和栈的副本, 包括缓冲区
+
+同一进程内的所有线程共享
+
+1. 相同的全局内存(也就是全局变量)
+1. 打开的文件(即描述符)
+1. 信号处理函数和信号处置
+1. 进程指令
+1. 大多数数据
+1. 当前工作目录
+1. 用户ID和组ID
+1. All threads share a common heap. so access to the allocator/deallocator must be synchronized. 
+
+不过每个线程拥有各自的
+
+1. 线程ID
+1. 寄存器集合, 包括程序计数器和栈指针
+1. 栈(用于存放局部变量和返回地址)
+1. errno. [ref](http://learn.akae.cn/media/ch35s02.html). 
+	pthread库的函数都是通过返回值返回错误号,虽然每个线程也都有一个errno,但这是为了兼容其它函数接口而提供的,pthread库本身并不使用它. 
+	所以errno 还是看成同一个进程的所有线程共享一个全局的errno.
+1. 信号掩码
+1. 优先级
+
+一般情况下,线程终止后,其终止状态一直保留到其它线程调用`pthread_join`获取它的状态为止.  
+但是线程也可以被置为`detach`状态,这样的线程一旦终止就**立刻回收它占用的所有资源**,而不保留终止状态.  
+不能对一个已经处于`detach`状态的线程调用`pthread_join`,这样的调用将返回`EINVAL`
+
+## 线程特定数据
+也被称为线程私有数据,是一种存储和查找一个特定线程相关数据的机制.每个线程访问它自己独立的数据,而不用担心和其它线程的访问的同步.
+
+线程特定数据看似很复杂,其实我们可以把它理解为就是一个索引和指针.key结构中存储的是索引,pthread结构中存储的是指针,指向线程中的私有数据,通常是malloc函数返回的指针.
+
+## 互斥锁 Mutual Exclusive Lock
+用于同步的手段很多, 其中以互斥锁应用最为广泛(信号量是一种将资源数目从1泛化到n的互斥锁).
+当线程进入临界区前获得锁,只有获得了锁的线程才可能继续执行,当退出临界区后归还锁.如果锁被占用,则线程进入阻塞状态.
+
+优先级翻转.
+现代操作系统通过优先级继承较好的解决了这个问题, 但程序员需要注意自己代码所运行的平台是否有这个机制, 然后正确的设置线程属性方可.
+此外,如果所有优先级都调到一个数量级,那么还需要注意lock convoy问题.发生lock convoy的场景犹如2人迎面通过一独木桥,2人相遇后均主动放弃退回,然后再次上桥相遇.
+
+挂起等待和唤醒等待线程的操作如何实现?
+每个Mutex有一个等待队列,一个线程要在Mutex上挂起等待,首先在把自己加入等待队列中,然后置线程状态为睡眠,然后调用调度器函数切换到别的线程.
+一个线程要唤醒等待队列中的其它线程,只需从等待队列中取出一项,把它的状态从睡眠改为就绪,加入就绪队列,那么下次调度器函数执行时就有可能切换到被唤醒的线程.
+
+而`pthread_mutex_t`实现基于Linux的futex, 当临界区足够小时, 一次`pthread_mutex_lock`消耗很非常小
+
+## 条件变量 condition variable
+条件变量也是同步的一种手段,由一把锁(mutex)和一个condition组成.
+它可以使线程阻塞在某一条件上,比如`queue.not_empty()`.当条件满足时,线程唤醒.需要注意是要小心虚假唤醒,即当wait返回后,需要再次判断条件是否满足.
 
 # 关键字
+## goto
+在goto 之后是不允许定义的新的变量的, 局部变量也不行.
+[crosses initialization error](http://stackoverflow.com/questions/14274225/statement-goto-can-not-cross-pointer-definition)
+
 ## const
 const in C does not mean something is constant. It just means a variable is read-only.
 
@@ -391,7 +408,7 @@ const in C does not mean something is constant. It just means a variable is read
 4. `const int * const p`: 同时满足前面两种情况
 5. const并不会阻止参数的修改, 防君子不防小人, 可以强制的把 `const char *` 转换为 `char *`类型, 然后就可以修改了
 
-在 C++(但不是在 C 语言)中，const 限定符对默认存储类型稍有影响.
+在 C++(但不是在 C 语言)中,const 限定符对默认存储类型稍有影响.
 在默认情况下,全局变量的链接性为外部的,但 const 全局变量的链接性为内部的.也就是说,在 C++ 看来,全局 const 定义就像使用了 static 说明符一样.
 因此,可以将 const 常量定义在头文件中供工程中的多个其它文件包含引用,并且编译时不会产生变量重复定义的错误.当然,也可以用 #define 宏定义.
 

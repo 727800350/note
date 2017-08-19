@@ -9,14 +9,7 @@ Markdown 高亮配置
 - `[[`  跳转到代码块的开头去(但要求代码块中'{'必须单独占一行)
 - `''`  跳转到光标上次停靠的地方, 是两个, 而不是一个
 
-[vim tab设置为4个空格](http://blog.csdn.net/jiang1013nan/article/details/6298727)
-在`.vimrc`中添加以下代码后, 重启vim即可实现按TAB产生4个空格:
-```
-set ts=4  (注：ts是tabstop的缩写，设TAB宽4个空格)
-set expandtab
-```
-
-对于已保存的文件，可以使用下面的方法进行空格和TAB的替换：
+对于已保存的文件，可以使用下面的方法进行[空格和TAB的替换](http://blog.csdn.net/jiang1013nan/article/details/6298727)：
 TAB替换为空格：
 ```
 :set ts=4
@@ -129,6 +122,7 @@ More editing commands
 删除不包含指定字符的行: `v/pattern/d` 或者`g!/pattern/d`
 
 ## Replacement
+- `%s/a/b/gc`: 末尾的c代表确认的意思, 在进行每一次替换时会询问是否替换
 - `&` is replaced by the entire text matched by the search pattern when used in a replacement
 - `:%s/Yazstremski/&,clar/`  #the result is `Yazstremski,clar`
 - `:1,10s/.*/(&)/` #surrend each line from line 1 to line 10 with parentheses
