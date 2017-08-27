@@ -57,6 +57,36 @@ $$
 
 Want to find $w, b$ to minimize $J(w, b)$
 
+\subsubsection{Optional}
+$$
+\hat{y} = P(y = 1 | x)
+\Longrightarrow
+\left\{
+	\begin{aligned}
+		& \si y = 1, P(y|x) = \hat{y} \\
+		& \si y = 0, P(y|x) = 1 - \hat{y}
+	\end{aligned}
+\right.
+\Longrightarrow
+P(y|x) = \hat{y}^y (1 - \hat{y})^{1 - y}
+$$
+
+$$ \log P(y|x) = y \log \hat{y} + (1 - y) \log (1 - \hat{y}) = - L(\hat{y}, y) = - \text{loss function} $$
+
+suppose that all examples are iid(independent and identically distributed).
+
+$$P = \prod_{i = 1}^m P(y^{(i)} | x^{(i)})$$
+$$\log P = \sum_{i = 1}^m \log P(y^{(i)} | x^{(i)}) = - \sum_{i = 1}^m L(\hat{y}^{(i)}, y^{(i)})$$
+
+$$
+\begin{aligned}
+\max P & \Longleftrightarrow \max \log P \\
+	   & \Longleftrightarrow \min \sum_{i = 1}^m L(\hat{y}^{(i)}, y^{(i)}) \\
+	   & \Longleftrightarrow \min \dfrac{1}{m} \sum_{i = 1}^m L(\hat{y}^{(i)}, y^{(i)}) \\
+	   & \Longleftrightarrow \min J(w, b)
+\end{aligned}
+$$
+
 \subsection{Gradient Descent}
 one variable function $y = f(x)$.
 
@@ -199,6 +229,56 @@ $db /= m$ \\
 $w_1 := w_1 - \alpha dw_1$ \\
 $w_2 := w_2 - \alpha dw_2$ \\
 $b := b - \alpha db$
+
+\subsection{Vectorizing Logistic Regression}
+we use the notation:
+$$
+X_{n \times m} =
+\begin{bmatrix}
+	\vdots & \vdots & \ldots & \vdots \\
+	x^{(1)} & x^{(2)} & \ldots & x^{(m)} \\
+	\vdots & \vdots & \ldots & \vdots
+\end{bmatrix}
+$$
+
+we get:
+$$Z = \begin{bmatrix}z^{(1)} & z^{(2)} & \ldots & z^{(m)}\end{bmatrix} = W^T \cdot X + \begin{bmatrix}b & b & \ldots & b\end{bmatrix} = np.dot(W.T, X) + b$$
+$$A = \begin{bmatrix}a^{(1)} & a^{(2)} & \ldots & a^{(m)}\end{bmatrix} = \sigma(Z)$$
+$$
+dZ
+= \begin{bmatrix}dz^{(1)} & dz^{(2)} & \ldots & dz^{(m)}\end{bmatrix}
+= \begin{bmatrix}a^{(1)} - y^{(1)} & a^{(2)} - y^{(2)} & \ldots & a^{(m)} - y^{(m)}\end{bmatrix}
+= A - Y
+$$
+$$db = \dfrac{1}{m} \sum_{i = 1}^m dz^{(i)} = \dfrac{1}{m} np.sum(dZ)$$
+$$
+dW
+= \dfrac{1}{m} (x^{(1)} dz^{(1)} + x^{(1)} dz^{(1)} + \ldots + x^{(m)} dz^{(m)})
+= \dfrac{1}{m}
+  \begin{bmatrix}
+	\vdots & \vdots & \ldots & \vdots \\
+	x^{(1)} & x^{(2)} & \ldots & x^{(m)} \\
+	\vdots & \vdots & \ldots & \vdots
+  \end{bmatrix}
+  \times
+  \begin{bmatrix}
+	  dz^{(1)} \\
+	  dz^{(2)} \\
+	  \vdots \\
+	  dz^{(m)} \\
+  \end{bmatrix} \\
+= \dfrac{1}{m} X dZ \\
+= \dfrac{1}{m} np.dot(X, Z.T)
+$$
+
+pseudo code of a single step of gradient descent on $m$ examples: \\
+$Z = W^T \cdot X + b = np.dot(W.T, X) + b$ \\
+$A = \sigma(Z)$ \\
+$dZ = A - Y$ \\
+$dW = \dfrac{1}{m} X \cdot dZ^T$ \\
+$db = \dfrac{1}{m} np.sum(dZ)$ \\
+$W := W - \alpha dW$ \\
+$b := b - \alpha db$ \\
 
 假设我们的样本是$\{x, y\}$,y是0或者1,表示正类或者负类,x是我们的m维的样本特征向量.
 那么这个样本x属于正类,也就是$y = 1$的概率可以通过下面的逻辑函数来表示:
