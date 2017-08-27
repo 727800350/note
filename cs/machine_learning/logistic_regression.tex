@@ -3,6 +3,203 @@ For classification, not for regression
 
 \href{http://blog.csdn.net/zouxy09/article/details/20319673}{机器学习算法与Python实践之(七)逻辑回归(Logistic Regression)}
 
+\subsection{Notation}
+$(x, y), x \in R^{n_x}, y \in {0, 1}$
+
+$$
+X_{n \times m} =
+\begin{bmatrix}
+	\vdots & \vdots & \ldots & \vdots \\
+	x^{(1)} & x^{(2)} & \ldots & x^{(m)} \\
+	\vdots & \vdots & \ldots & \vdots
+\end{bmatrix}
+$$
+
+$m$ training examples, each example has a feature with $n$ dimension.
+
+$$
+Y_{1 \times m} =
+\begin{bmatrix}
+	y^{(1)} & y^{(2)} & \ldots & y^{(m)}
+\end{bmatrix}
+$$
+
+\subsection{Problem}
+Given $x \in R^{n_x}$, define $\hat{y} = P(y = 1 | x)$ \\
+parameters: $w \in R^{n_x}, b \in R$ \\
+output: $\hat{y} = w^{T} \cdot x + b$ \\
+but we want $\hat{y} \in (0, 1)$, so we add a sigmoid function, thus $$\hat{y} = \sigma(z) = \sigma(w^T \cdot x + b)$$ with $$\sigma(z) = \dfrac{1}{1 + \exp(-z)}$$
+
+Given ${(x^{(1)}, y^{(1)}) \ldots (x^{(m)}, y^{(m)})}$, want $\hat{y}^{(i)} \simeq y^{(i)}$
+
+\subsection{Loss function and Cost function}
+we can define $L(\hat{y}, y) = \dfrac{1}{2} (\hat{y} - y)^2$.
+but people do not usually use this, because its cost function is not convex, so it will have many local minimum.
+
+we define loss function: $$L(\hat{y}, y) = -[y \log \hat{y} + (1 - y) \log (1 - \hat{y})]$$
+
+if $y = 1, L(\hat{y}, y) = - \log \hat{y}$,
+we want loss function $L(\hat{y}, y)$ small $\Leftrightarrow \log \hat{y}$ large $\Leftrightarrow \hat{y}$ large $\Leftrightarrow \hat{y} \simeq 1$ as $\hat{y} = \sigma(z) \in (0, 1)$
+
+if $y = 0, L(\hat{y}, y) = - \log (1 - \hat{y})$,
+we want loss function $L(\hat{y}, y)$ small $\Leftrightarrow \log (1 - \hat{y})$ large $\Leftrightarrow \hat{y}$ small $\Leftrightarrow \hat{y} \simeq 0$ as $\hat{y} = \sigma(z) \in (0, 1)$
+
+\red{Loss function is defined with respect to a single example.}
+
+\red{Cost function is defined with respect to the entire training example set}.
+
+Cost function:
+$$
+J(w, b)
+=   \dfrac{1}{m} \sum_{i = 1}^m L(\hat{y}^{(i)}, y^{(i)})
+= - \dfrac{1}{m} \sum_{i = 1}^m [y^{(i)} \log \hat{y}^{(i)} + (1 - y^{(i)}) \log (1 - \hat{y}^{(i)})]
+$$
+
+Want to find $w, b$ to minimize $J(w, b)$
+
+\subsection{Gradient Descent}
+one variable function $y = f(x)$.
+
+repeat: $$x := x - \alpha \dfrac{df(x)}{dx}$$ with $\alpha$ as the learning rate.
+
+in code, we use $dx$ to denote $\dfrac{df(x)}{dx}$, so $x := x - \alpha dx$
+
+forward propagation, we compute the output of neural network.
+
+backward propagation, we compute the gradients.
+
+\subsection{Computation Graph}
+$$J(a, b, c) = 3(a + bc)$$
+we define:
+$$
+\left\{
+\begin{aligned}
+& u = bc \\
+& v = a + u \\
+& J = 3v
+\end{aligned}
+\right.
+$$
+
+\write18{wget https://i.imgbox.com/rV4oc2HX.png -O computation-graph.png}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{computation-graph}\\
+	\caption{Computation Graph ex}\label{fig.computation-graph}
+\end{figure}
+
+we compute the derivatives from right to left:
+$$
+\left\{
+\begin{aligned}
+& dv = \dfrac{\partial J}{\partial v} = 3 \\
+& da = \dfrac{\partial J}{\partial a} = \dfrac{\partial J}{\partial v} \times \dfrac{\partial v}{\partial a} = 3 \times 1 = 3 \\
+& du = \dfrac{\partial J}{\partial u} = \dfrac{\partial J}{\partial v} \times \dfrac{\partial v}{\partial u} = 3 \times 1 = 3 \\
+& db = \dfrac{\partial J}{\partial b} = \dfrac{\partial J}{\partial u} \times \dfrac{\partial u}{\partial b}= 3 \times c = 3c = 6 \\
+& dc = \dfrac{\partial J}{\partial c} = \dfrac{\partial J}{\partial u} \times \dfrac{\partial u}{\partial c}= 3 \times b = 3b = 9
+\end{aligned}
+\right.
+$$
+
+\subsubsection{Computation Graph on Logistic Regression}
+we now have:
+$$
+\left\{
+\begin{aligned}
+& z = w^T \cdot x + b \\
+& \hat{y} = a = \sigma(z) \\
+& L(a, y) = - [y \log a + (1 - y) \log (1 - a)]
+\end{aligned}
+\right.
+$$
+
+we can compute the derivatives:
+$$
+\dfrac{\partial L(a, y)}{\partial a}
+= - [y \cdot \dfrac{1}{a} + (1 - y) \cdot \frac{1}{1 - a} \cdot -1]
+= - \dfrac{y}{a} + \dfrac{1 - y}{1 - a}
+$$
+
+$$ a = \sigma(z) = \dfrac{1}{1 + \exp(-z)} = 1 - \dfrac{1}{1 + \exp(z)} $$
+
+$$
+\dfrac{da}{dz}
+= -1 \cdot -1 \cdot (1 + \exp(z))^{-2} \cdot \exp(z)
+= \dfrac{\exp(z)}{(1 + \exp(z))^2}
+= \dfrac{\exp(-z)}{(1 + \exp(-z))^2}
+= \dfrac{1 + \exp(-z) - 1}{(1 + \exp(-z))^2}
+= a - a^2
+$$
+
+The computation graph of Logistic Regression is as follows:
+$$
+\begin{bmatrix}
+x_1 \\
+w_1 \\
+x_2 \\
+w_2 \\
+b
+\end{bmatrix}
+\Rightarrow z = w_1 x_1 + w_2 x_2 + b
+\Rightarrow a = \sigma(z)
+\Rightarrow L(a, y)
+$$
+
+We compute their derivatives:
+$$
+\left\{
+\begin{aligned}
+	& \dfrac{dL}{da} = - \dfrac{y}{a} + \dfrac{1 - y}{1 - a} \\
+	& \dfrac{dL}{dz} = \dfrac{dL}{da} \cdot \dfrac{da}{dz} = (- \dfrac{y}{a} + \dfrac{1 - y}{1 - a}) \cdot (a - a^2) = a - y \\
+	& \dfrac{dL}{dw_1} = \dfrac{dL}{dz} \cdot \dfrac{dz}{dw_1} = x_1 \cdot \dfrac{dL}{dz} \\
+	& \dfrac{dL}{dw_2} = \dfrac{dL}{dz} \cdot \dfrac{dz}{dw_2} = x_2 \cdot \dfrac{dL}{dz} \\
+	& \dfrac{dL}{db} = \dfrac{dL}{dz} \cdot \dfrac{dz}{db} = \dfrac{dL}{dz}
+\end{aligned}
+\right.
+$$
+
+In code, we denote:
+$$
+\left\{
+\begin{aligned}
+	& dw_1 = x_1 dz \\
+	& dw_2 = x_2 dz \\
+	& db = dz
+\end{aligned}
+\right.
+\Rightarrow
+\left\{
+\begin{aligned}
+	& w_1 := w_1 - \alpha dw_1 \\
+	& w_2 := w_2 - \alpha dw_2 \\
+	& b := b - \alpha db
+\end{aligned}
+\right.
+$$
+
+\subsection{Logistic Regression on $m$ examples}
+The cost function: $$ J(w, b) = \dfrac{1}{m} \sum_{i = 1}^m L(a^{(i)}, y^{(i)}) $$
+
+The gradient on $w_1$ is $$ \dfrac{J(w, b)}{dw_1} = \dfrac{1}{m} \sum_{i = 1}^m \dfrac{\partial}{\partial w_1} L(a^{(i)}, y^{(i)}) = \dfrac{1}{m} \sum_{i = 1}^m dw^{(i)}_1 $$
+
+pseudo code of a single step of gradient descent on $m$ examples: \\
+init $J = 0, dw_1 = 0, dw_2 = 0, db = 0$ \\
+For $i = 1$ to $m$ \\
+\verb+    + $z^{(i)} = w^T \cdot x^{(i)} + b$ \\
+\verb+    + $a^{(i)} = \sigma(z^{(i)})$ \\
+\verb+    + $J += -[y^{(i)} \log a^{(i)} + (1 - y^{(i)}) \log (1 - a^{(i)})]$ \\
+\verb+    + $dz^{(i)} = a^{(i)} - y^{(i)}$ \\
+\verb+    + $dw_1 += x^{(i)}_1 dz^{(i)}$, suppose we are in dimention 2 \\
+\verb+    + $dw_2 += x^{(i)}_2 dz^{(i)}$ \\
+\verb+    + $db += dz^{(i)}$ \\
+$J /= m$ \\
+$dw_1 /= m$ \\
+$dw_2 /= m$ \\
+$db /= m$ \\
+$w_1 := w_1 - \alpha dw_1$ \\
+$w_2 := w_2 - \alpha dw_2$ \\
+$b := b - \alpha db$
+
 假设我们的样本是$\{x, y\}$,y是0或者1,表示正类或者负类,x是我们的m维的样本特征向量.
 那么这个样本x属于正类,也就是$y = 1$的概率可以通过下面的逻辑函数来表示:
 $$
