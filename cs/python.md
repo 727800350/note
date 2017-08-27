@@ -657,6 +657,11 @@ array 的操作
 boolean
 when using NumPy arrays, you can only use & and | as this allows fast comparisons of boolean values.
 
+broadcasting
+
+- 一个 (m, n) 的matrix 和 一个 (1, n) 的row vector 进行 `+ - * /`, row vector 会被copy m 份, 也变成一个 (m, n) 的matrix, 然后进行对应位的四则运算
+- 一个 (m, n) 的matrix 和 一个 (m, 1) 的column vector 进行 `+ - * /`, column vector 会被copy n 份, 也变成一个 (m, n) 的matrix, 然后进行对应位的四则运算
+
 ## import pandas as pd
 ### series
 - `pd.Series([1, 3, 5, np.nan, 6, 8])`: 创建一个序列

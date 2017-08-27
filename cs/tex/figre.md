@@ -1,6 +1,9 @@
 # Figure and Table
 [Floats,_Figures_and_Captions](http://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions)
 
+- `xelatex --shell-escape file.tex`: enable `\write18`, such that we can call `\write18{wget http://www.some-site.com/path/to/image.png -O image.png}`, 之后就可以includegraphics 了.
+	wget 可能会下载多次, 所以只要加一次`--shell-escape` 就行了
+
 **图片的位置**
 h: here, t: top, b: bottom, H: Here
 !:  Override internal parameters LaTeX uses for determining "good" float positions.                                              |
