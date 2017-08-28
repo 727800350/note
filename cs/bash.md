@@ -84,13 +84,6 @@ grep -R --include="*.c" keyword directory
 - ^ 符号输出所有以某指定模式开头的行
 - $ 符号输出所有以指定模式结尾的行, `^$` 就表示空行
 
-时间:
-```bash
-date +%Y%m%d_%H%M%S ## 20150519_161232
-date +%Y%m%d        ## 显示前天年月日
-date +%Y%m%d --date="+1 day"  ## 显示后一天的日期, day, week, month, year
-```
-
 Uppercase to lowercase:
 `$ tr '[:upper:]' '[:lower:]' < input` or `tr '[A-Z]' '[a-z]' < input`
 
