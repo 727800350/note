@@ -164,7 +164,7 @@ This is the heap profiler we use at Google, to explore how C++ programs manage m
 下面是一个文字输出样例
 
 ```
-% pprof --text gfs_master /tmp/profile.0100.heap
+% pprof --text bin /tmp/profile.0100.heap
    255.6  24.7%  24.7%    255.6  24.7% GFS_MasterChunk::AddServer
    184.6  17.8%  42.5%    298.8  28.8% GFS_MasterChunkTable::Create
    176.2  17.0%  59.5%    729.9  70.5% GFS_MasterChunkTable::UpdateState
@@ -173,10 +173,10 @@ This is the heap profiler we use at Google, to explore how C++ programs manage m
     49.5   4.8%  88.0%     49.5   4.8% hashtable::resize
    ...
 ```
-The first column contains the direct memory use in MB.
-The fourth column contains memory use by the procedure and all of its callees.
-The second and fifth columns are just percentage representations of the numbers in the first and fourth columns.
-The third column is a cumulative sum of the second column (i.e., the kth entry in the third column is the sum of the first k entries in the second column.)
+- The first column contains the direct memory use in MB.
+- The fourth column contains memory use by the procedure and all of its callees.
+- The second and fifth columns are just percentage representations of the numbers in the first and fourth columns.
+- The third column is a cumulative sum of the second column (i.e., the kth entry in the third column is the sum of the first k entries in the second column.)
 
 # valgrind
 Valgrind is a programming tool for memory debugging, memory leak detection, and profiling.
