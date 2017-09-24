@@ -1,0 +1,138 @@
+% !Mode:: "TeX:UTF-8"
+\section{Improving Deep Neural Networks}
+
+\subsection{Data Sets}
+train / dev / test set
+
+Make sure train / dev and test come from the same distribution.
+
+\subsection{Bias and Variance}
+eg: Cat classification
+
+Human error $\simeq 0$
+\begin{itemize}
+\item Train set error $1\%$ and dev set error $11\%$ => high variance
+\item Train set error $15\%$ and dev set error $16\%$ => high bias
+\item Train set error $15\%$ and dev set error $30\%$ => high bias and high variance
+\item Train set error $0.5\%$ and dev set error $1\%$ => low bias and low variance
+\end{itemize}
+
+Basic recipe
+\begin{itemize}
+\item High bias(training set problem)? -> bigger network / train longer / NN architecture search
+\item High variance? -> more data / regularization / NN architecture search
+\end{itemize}
+
+\subsection{Regularization}
+If you suspect your neural network is over fitting your data, that is you have a high variance problem.
+One of the first thing you should try is probably regularization.
+The other way to address high variance is to get more training data, that is also quite reliable.
+But you can not always get more training data, or it could be expensive to get more data.
+
+\subsubsection{Logistic Regression}
+$\min_{w, b} J(w, b)$
+
+$$J(w, b) = \dfrac{1}{m} \sum_{i = 1}^m L(\hat{y}^{(i)}, y^{(i)}) + \dfrac{\lambda}{2m} ||w||_2^2$$
+
+L2 regularization: $\dfrac{\lambda}{2m} ||w||_2^2 = \dfrac{\lambda}{2m} \sum_{i = 1}^{n_x} w_i^2 = w^T w$
+
+L1 regularization: $\dfrac{\lambda}{2m} ||w||_1 = \dfrac{\lambda}{2m} \sum_{i = 1}^{n_x} |w|$, $w$ will be sparse.
+\todo{难道用L2就不是稀疏的了? 一个平方求和, 一个绝对值求和, 差不多啊.}
+
+$\lambda$ is regularization parameter
+
+\subsubsection{Neural Network}
+\begin{equation}
+J(w^{[1]}, b^{[1]}, \ldots, w^{[L]}, b^{[L]}) = \dfrac{1}{m} \sum_{i = 1}^m L(\hat{y}^{(i)}, y^{(i)}) + \dfrac{\lambda}{2m} \sum_{l = 1}^L ||W^{[l]}||_F^2
+\label{eq.regu.nn}
+\end{equation}
+
+Frobenius norm: $||W^{[l]}||_F^2 = \sum_{i = 1}^{n^{[l - 1]}} \sum_{j = 1}^{n^{[l]}} (W_{ij}^{[l]})^2$
+
+$$
+\left\{
+\begin{aligned}
+& dW^{[l]} = (\text{form back prop}) \\
+& W^{[l]} := W^{[l]} - \alpha dW^{[l]}
+\end{aligned}
+\right.
+$$
+becomes:
+$$
+\left\{
+\begin{aligned}
+& dW^{[l]} = (\text{form back prop}) + \dfrac{\lambda}{m} W^{[l]} \\
+& W^{[l]} := W^{[l]} - \alpha dW^{[l]} = (1 - \alpha \dfrac{\lambda}{m}) W^{[l]} - \alpha (\text{form back prop})
+\end{aligned}
+\right.
+$$
+For this reason, L2 regularization is sometimes called "weight decay".
+
+\subsubsection{How does regularization prevent overfitting?}
+In the regularization function \eqref{eq.regu.nn} of neural network, if we set the regularization parameter $\lambda$ very large, as the object is to minimize $J$, so the weight matrixs $W$ will be reasonably close to zero.
+So one piece of intuition is maybe it set the weight to be so close to zero for a lot of hidden units that's basically zeroing out a lot of impact of these hidden units.
+And if that is the case, this much simplified neural network becomse a much smaller neural network. Then less overfitting.
+
+过拟合的时候,拟合函数的系数往往非常大.
+因为过拟合意味着拟合函数需要顾忌每一个点,最终形成的拟合函数波动很大.在某些很小的区间里,函数值的变化很剧烈.
+这就意味着函数在某些小区间里的导数值(绝对值)非常大, 由于自变量值可大可小, 所以只有系数足够大, 才能保证导数值很大.
+而正则化是通过约束参数的范数使其不要太大, 所以可以在一定程度上减少过拟合情况.
+
+$\lambda \uparrow \Longrightarrow W^{[l]} \downarrow$, in the case of $\tanh$ as the activation function, every layer is rougly linear, then the whole network is linear.
+So it is not able to overfit(as overfit functions are normally non linear functions).
+
+\subsubsection{Dropout regularization}
+illustrate with layer $l = 3$, keep prob $= 0.8$.
+
+$$
+\left\{
+\begin{aligned}
+& d^{[3]} = np.random.rand(shape) < keep\_prob \\
+& a^{[3]} = np.multiply(a^{[3]}, d^{[3]}) \\
+& a^{[3]} /= keep\_prob
+\end{aligned}
+\right.
+$$
+最后再除以keep prob 是为了保持输出的scale 一致, 不管有没有采用drop out.
+
+You should not use drop out when making predictions at test time. Because we do not want our prediction to be random.
+
+\subsubsection{Data augmentation}
+有时候不是因为算法好赢了,而是因为拥有更多的数据才赢了.
+
+不记得原话是哪位大牛说的了,hinton?从中可见训练数据有多么重要,特别是在深度学习方法中,更多的训练数据,意味着可以用更深的网络,训练出更好的模型.
+
+既然这样,收集更多的数据不就行啦?如果能够收集更多可以用的数据,当然好.但是很多时候,收集更多的数据意味着需要耗费更多的人力物力,有弄过人工标注的同学就知道,效率特别低,简直是粗活.
+
+所以,可以在原始数据上做些改动,得到更多的数据,以图片数据集举例,可以做各种变换,如:
+\begin{itemize}
+\item 将原始图片旋转一个小角度
+\item 添加随机噪声
+\item 一些有弹性的畸变(elastic distortions),论文<Best practices for convolutional neural networks applied to visual document analysis>对MNIST做了各种变种扩增.
+\item 截取(crop)原始图片的一部分.比如DeepID中,从一副人脸图中,截取出了100个小patch作为训练数据,极大地增加了数据集.感兴趣的可以看<Deep learning face representation from predicting 10,000 classes>.
+\end{itemize}
+
+\subsubsection{Early stopping}
+
+\subsubsection{Normalize input}
+zero mean and normalize variance.
+
+use the same normalization strategy to dev and test set.
+
+\subsection{Vanishing/exploding gradients}
+suppose $g(z) = z$ and $b^{[l]} = 0$, we have:
+$$\hat{y} = W^{[l]} W^{[l - 1]} \cdots W^{[2]} W^{[1]} x$$
+\begin{itemize}
+\item if we suppse $W^{[l]} = \begin{bmatrix}1.5 & 0 \\ 0 & 1.5\end{bmatrix}$, the gradient will explode.
+\item if we suppse $W^{[l]} = \begin{bmatrix}0.5 & 0 \\ 0 & 0.5\end{bmatrix}$, the gradient will vanish.
+\end{itemize}
+
+partial solution in Logistic Regression:
+
+large $n \longrightarrow$ small $w_i$
+
+For relu activation function, we want $\var{w_i} = \dfrac{2}{n}$
+$$W^{[l]} = np.random.randn(shape) \times np.sqrt(\dfrac{2}{n^{[l - 1]}})$$
+
+for $\tanh$ activation function, use xaiver initialization $np.sqrt(\dfrac{1}{n^{l - 1}})$
+
