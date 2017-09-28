@@ -86,8 +86,11 @@ git push origin :refs/tags/tag_name
 ```
 
 ## git log
-- git log -p <file> 显示某个文件的所有修改
-- git blame <file> 谁, 在什么时间, 修改了文件的什么内容
+- `git log -p filename`: 显示该文件每次提交的diff
+- `git log filename`: 可以看到该文件相关的commit记录
+- `git blame filename`: 谁, 在什么时间, 修改了文件的什么内容
+- `git show commit-id`: 根据commit-id查看某个提交
+- `git show commit-id filename`: 查看某次提交中的某个文件变化
 
 ## git grep
 - git grep "hello" 从当前目录的所有文件中搜索

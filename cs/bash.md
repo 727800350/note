@@ -103,7 +103,7 @@ Uppercase to lowercase:
 	- `rsync -av a/ b/`: 将a下面的文件同步到b下面, 得到 `b/files_of_a` 这样的文件结构
 	- `--exclude ignore`: 忽略src/ignore
 - `nc`
-	- server: `nc -v -v -l -p 3000`: Listen on TCP port 3000, and once there is a connection, send stdin to the remote host, and send data from the remote host to stdout. 也就是即可以收数据也可以发数据
+	- server: `nc -v -v -l -p 3000`: Listen on TCP port 3000, and once there is a connection, send stdin to the remote host, and receive data from the remote host to stdout. 也就是即可以收数据也可以发数据
 	- client: `nc -v -v -n server_ip 3000`: open a TCP connection to port 3000 of server ip, 同样即可以发数据, 也可以收数据
 	- eg: `nc -v -v -l -p 3000 <server.src >server.dst` and `nc -v -v -n 127.0.0.1 3000 <client.src >client.dst`, 执行之后 server.src 和 client.dst 一样, server.dst 和 client.src 一样
 
