@@ -50,17 +50,14 @@ git statsh pop
 ```
 
 ## git tag
-- git tag 列出现有标签的命令非常简单
-- git tag -l 'v1.4.2.\*' // 匹配标签
-- git tag -a v1.4 -m 'my version 1.4'  // 含附注标签
-- git show v1.4
-- git push origin v1.5
-- git pull/push origin --tags
-
-删除tag
-
-1. git tag -d v1.5
-1. git push origin :refs/tags/v1.5
+- `git tag` 列出现有标签的命令非常简单
+- `git tag -l 'v1.4.2.\*'` // 匹配标签
+- `git tag -a v1.4 -m 'my version 1.4'`  // 含附注标签
+- `git show v1.4`
+- `git push origin v1.5`
+- `git pull/push origin --tags`
+- `git tag -d v1.5`: 删除本地tag
+- `git push origin :refs/tags/v1.5`: 删除远程的tag
 
 Git 使用的标签有两种类型:轻量级的(lightweight)和含附注的(annotated).
 
@@ -69,21 +66,6 @@ Git 使用的标签有两种类型:轻量级的(lightweight)和含附注的(anno
 标签本身也允许使用 GNU Privacy Guard (GPG) 来签署或验证.
 
 一般我们都建议使用含附注型的标签,以便保留相关信息:当然,如果只是临时性加注标签,或者不需要旁注额外信息,用轻量级标签也没问题
-
-### 删除远程Tag
-显示本地 tag
-```
-git tag 
-tag_name
-```
-删除本地tag
-```
-git tag -d tag_name 
-```
-用push, 删除远程tag
-```
-git push origin :refs/tags/tag_name
-```
 
 ## git log
 - `git log -p filename`: 显示该文件每次提交的diff
@@ -110,6 +92,12 @@ git push origin :refs/tags/tag_name
 - `git reset --hard <commit>` 将HEAD重置到指定的版本,并抛弃该版本之后的所有修改, git log 看不到这个commit 之后的commits, 但是git reflog 可以看到
 - `git reset <commit>` 将HEAD重置到上一次提交的版本,并将之后的修改标记为未添加到缓存区的修改:
 - `git reset --keep <commit>` 将HEAD重置到上一次提交的版本,并保留未提交的本地修改:
+
+[How do I revert master branch to a tag in git?](https://stackoverflow.com/questions/6872223/how-do-i-revert-master-branch-to-a-tag-in-git)
+
+1. `git checkout master`
+1. `git reset --hard tag_ABC`
+1. `git push --force origin master`
 
 ## patch 补丁
 例如，我们想导出历史上的某个commit之后的所有commits为一序列的补丁序列，那么可以这么做。
