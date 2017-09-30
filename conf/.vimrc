@@ -36,7 +36,7 @@ let Tlist_WinWidt=28
 let Tlist_Exit_OnlyWindow=1
 " let Tlist_Use_Right_Window=1
 let Tlist_Use_Left_Windo =1 "show tag list in left window
-let Tlist_Auto_Open=1
+let Tlist_Auto_Open=0
 
 set runtimepath^=~/.vim/bundle/ag
 
@@ -215,8 +215,7 @@ func SetHeader()
 	endif
 
 	if &filetype == 'cpp'
-		call append(line(".")+6, "#include <iostream>")
-		call append(line(".")+7, "using namespace std;")
+		call append(line(".")+6, "#include <stdio.h>")
 		call append(line(".")+8, "")
 	endif
 
