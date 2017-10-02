@@ -9,6 +9,13 @@ Make sure train / dev and test come from the same distribution.
 \subsection{Bias and Variance}
 eg: Cat classification
 
+\write18{wget https://images.imgbox.com/6c/f1/mvCSz8lc_o.png -O bias_variance.png}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{bias_variance}\\
+	\caption{Bias and variance}\label{fig.bias_variance}
+\end{figure}
+
 Human error $\simeq 0$
 \begin{itemize}
 \item Train set error $1\%$ and dev set error $11\%$ => high variance
@@ -135,4 +142,35 @@ For relu activation function, we want $\var{w_i} = \dfrac{2}{n}$
 $$W^{[l]} = np.random.randn(shape) \times np.sqrt(\dfrac{2}{n^{[l - 1]}})$$
 
 for $\tanh$ activation function, use xaiver initialization $np.sqrt(\dfrac{1}{n^{l - 1}})$
+
+\subsection{Batch vs. mini-batch gradient descent}
+mini-batch notation: $X^{\{1\}}, X^{\{2\}}$
+
+$1$ epoch: a single pass through the entire training set
+
+\write18{wget https://images.imgbox.com/e4/99/u6s8FG20_o.png -O cost_batch_vs_mini-batch.png}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale = 0.4]{cost_batch_vs_mini-batch}\\
+	\caption{Cost function on Batch vs Mini-batch}\label{fig.cost.batch}
+\end{figure}
+
+batch: cost function $J$ will decrease after each iteration.
+while mini-batch, $J$ would not decrease after each iteration, but has a decreasing trend.
+
+offen, mini batch size is a power of $2$.
+
+\subsection{momentum}
+momentum是梯度下降法中一种常用的加速技术.
+对于一般的SGD,其表达式为$x \leftarrow  x-\alpha \ast dx$, $x$沿负梯度方向下降.
+而带momentum项的SGD则写生如下形式:
+$$
+\left\{
+\begin{aligned}
+	& v = \beta \ast v - a \ast dx \\
+	& x \leftarrow x + v
+\end{aligned}
+\right.
+$$
+其中$\beta$ 即momentum系数,通俗的理解上面式子就是,如果上一次的momentum(即v)与这一次的负梯度方向是相同的,那这次下降的幅度就会加大,所以这样做能够达到加速收敛的过程.
 
