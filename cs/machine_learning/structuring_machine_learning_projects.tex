@@ -1,0 +1,32 @@
+\section{Structuring Machine Learning Projects}
+\subsection{Ttransfer Learning}
+When transfer leanring makes sense:
+\begin{itemize}
+\item task A and B have the same input x
+\item you have a lot more data for task A than task B
+\item low level features from A could be helpful for learning B
+\end{itemize}
+
+\subsection{Multi-task Learning}
+When multi-task learning makes sense:
+\begin{itemize}
+\item traning on a set of tasks that could benefit from having sahred lower-level features
+\item usually: amount of data you have for each task is quite similar
+\item can train a big enough neural network to do well on all the tasks(better performance than seperate NN for each task)
+\end{itemize}
+
+\subsection{End-to-End Learning}
+Pros and cons of end-to-end deep learning
+\begin{itemize}
+\item pros:
+	\begin{itemize}
+	\item let the data speak
+	\item less hand-designing of components needed
+	\end{itemize}
+\item cons:
+	\begin{itemize}
+	\item may need large amount of data
+	\item excludes potentially useful hand-designed components
+	\end{itemize}
+\end{itemize}
+

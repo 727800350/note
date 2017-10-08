@@ -2,18 +2,22 @@
 \section{Improving Deep Neural Networks}
 
 \subsection{Data Sets}
-train / dev / test set
+train / dev(hold out cross validation set) / test set
 
-Make sure train / dev and test come from the same distribution.
+Make sure train / dev and test set all come from the same distribution.
+
+In the era of big data, the old rule of 70/30 split no longer applies.
+And the trend has been to use more data for training and less data for dev and test, especially when you have a very large data sets.
 
 \subsection{Bias and Variance}
 eg: Cat classification
 
-\write18{wget https://images.imgbox.com/6c/f1/mvCSz8lc_o.png -O bias_variance.png}
+\write18{wget https://images.imgbox.com/6c/f1/mvCSz8lc_o.png -O bias-variance.png}
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale = 0.4]{bias_variance}\\
-	\caption{Bias and variance}\label{fig.bias_variance}
+	\includegraphics[scale = 0.4]{bias-variance}\\
+	\caption{Bias and variance}
+	\label{fig.bias-variance}
 \end{figure}
 
 Human error $\simeq 0$
@@ -26,9 +30,11 @@ Human error $\simeq 0$
 
 Basic recipe
 \begin{itemize}
-\item High bias(training set problem)? -> bigger network / train longer / NN architecture search
+\item High bias(training set problem)? -> bigger network / train longer / better optimization algo / NN architecture search
 \item High variance? -> more data / regularization / NN architecture search
 \end{itemize}
+
+Bayes optimal error: best possible error. We often use Human-level error as proxy for Bayes optimal error.
 
 \subsection{Regularization}
 If you suspect your neural network is over fitting your data, that is you have a high variance problem.
@@ -160,6 +166,31 @@ while mini-batch, $J$ would not decrease after each iteration, but has a decreas
 
 offen, mini batch size is a power of $2$.
 
+\subsection{指数加权平均}
+比如我们现在有100天的温度值, $24,25,24,26,34,28,33,33,34,35, \ldots, 32$, 要求这100天的平均温度值.\\
+我们直接可以用: $v_{aver} = \dfrac{v_1 + \cdots + v_100}{100}$ 得到出$100$天的平均值.
+
+而我们要介绍的指数加权平均本质上就是一种近似求平均的方法.
+$$v_t = \beta * v_{t - 1} + (1 - \beta) \theta_t$$
+其中$v_t$ 代表到第$t$天的平均温度值, $\theta_t$ 代表第$t$天的温度值, $\beta$为可调节的超参数值.
+
+如果$\beta = 0.9$, 我们可以得到指数平均公式下的平均值求法如下:
+$$
+\begin{aligned}
+v_{100}
+& = 0.9 v_{99} + 0.1 \theta_{100} \\
+& = 0.9 (0.9 v_{98} + 0.1 \theta_{99}) + 0.1 \theta_{100} \\
+& = \cdots \\
+& = 0.1 \theta_{100} + 0.1 \times 0.9 \theta_{99} + 0.1 \times 0.9^2 \theta_{98} + \cdots + 0.1 \times 0.9^{99} \theta_1
+\end{aligned}
+$$
+通过上面表达式,我们可以看到,$v_{100}$等于将每一天的温度值再乘以一个权值进行求和. \\
+本质就是以指数式递减加权的移动平均.各数值的加权而随时间而指数式递减,越近期的数据加权越重,但较旧的数据也给予一定的加权. \\
+而在我们上面提到的普通平均数求法,它的每一项的权值都是一样的,如果有$n$项, 权值都为$1/n$.
+
+我们可以看到指数加权平均的求解过程实际上是一个递推的过程,那么这样就会有一个非常大的好处,每当我要求从$0$到某一时刻$n$的平均值的时候,我并不需要像普通求解平均值的作为,保留所有的时刻值,类和然后除以$n$.
+而是只需要保留$0 - (n-1)$时刻的平均值和$n$时刻的温度值即可.也就是每次只需要保留常数值,然后进行运算即可,这对于深度学习中的海量数据来说,是一个很好的减少内存和空间的做法.
+
 \subsection{momentum}
 momentum是梯度下降法中一种常用的加速技术.
 对于一般的SGD,其表达式为$x \leftarrow  x-\alpha \ast dx$, $x$沿负梯度方向下降.
@@ -173,4 +204,9 @@ $$
 \right.
 $$
 其中$\beta$ 即momentum系数,通俗的理解上面式子就是,如果上一次的momentum(即v)与这一次的负梯度方向是相同的,那这次下降的幅度就会加大,所以这样做能够达到加速收敛的过程.
+也就是前后梯度方向一致时,能够加速学习; 前后梯度方向不一致时,能够抑制震荡.
+
+\subsection{RMSprop}
+
+\subsection{Adam}
 
