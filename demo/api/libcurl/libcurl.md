@@ -9,3 +9,7 @@ libcurl 有个很好的特性,它甚至可以控制域名解析的超时.
 这样,多线程中使用超时就安全了.但是域名解析就没了超时机制,碰到很慢的域名解析,也很麻烦.
 文档的建议是 Consider building libcurl with c-ares support to enable asynchronous DNS lookups, which enables nice timeouts for name resolves without signals. c-ares 是异步的 DNS 解决方案.
 
+- `CURLOPT_CONNECTTIMEOUT`: the maximum time in seconds that you allow the connection phase to the server to take. This only limits the connection phase, it has no impact once it has connected.
+	Set to zero to switch to the default built-in connection timeout - 300 seconds. In unix-like systems, this might cause signals to be used unless `CURLOPT_NOSIGNAL` is set.
+- `CURLOPT_TIMEOUT`: the maximum time in seconds that you allow the libcurl transfer operation to take. In unix-like systems, this might cause signals to be used unless `CURLOPT_NOSIGNAL` is set.
+
