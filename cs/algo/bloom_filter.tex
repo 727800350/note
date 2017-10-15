@@ -1,0 +1,75 @@
+\section{Bloom filter}
+\subsection{Intro}
+A Bloom filter is a space-efficient probabilistic data structure, conceived by Burton Howard Bloom in 1970, that is used to test whether an element is a member of a set.
+
+Here is the formal set-up: we want to represent $n$-element sets $S = {s_1, \ldots, s_n}$ from a very large universe $U$, with $|U| = u >> n$. 
+We want to support insertions and membership queries ("Given $x \in U$, is $x \in S$?") so that:
+\begin{enumerate}
+\item If the answer is No, then $x \notin S$.
+\item If the answer is Yes, then $x$ may or may not be in $S$, but the probability that $x \notin S$(false positive) is low.
+\end{enumerate}
+Both insertions and membership queries should be performed in constant time(而且不同的hash 函数还能并行化).
+
+A Bloom filter is a bit vector $B$ of $m$ bits, with $k$ independent hash functions $h_1, \ldots, h_k$ that map each key in $U$ to the set $R_m = {0, 1, \ldots, m − 1}$.
+We assume that each hash function $h_i$ maps uniformly at random a chosen key $x \in U$ to each element of $R_m$ with equal probability.
+Since the hash functions are independent, it follows that the vector $(h_1(x), \ldots, h_k(x))$ is equally likely to be any of the $m^k$ $k$-tuples of elements from $R_m$.
+Initially all $m$ bits of $B$ are set to $0$.
+
+\begin{itemize}
+\item Insert $x$ into $S$. Compute $(h_1(x), \ldots, h_k(x))$ and set $B[h_1(x)] = B[h_2(x) = \cdots = B[h_k(x)] = 1$
+\item Query if $x \in S$. Compute $(h_1(x), \ldots, h_k(x))$, if $B[h_1(x)] = B[h_2(x) = \cdots = B[h_k(x)] = 1$, then answer Yes, else answer No.
+\end{itemize}
+
+Removing an element from this simple Bloom filter is impossible because false negatives are not permitted.
+An element maps to $k$ bits, and although setting any one of those $k$ bits to zero sufices to remove the element, it also results in removing any other elements that happen to map onto that bit.
+Since there is no way of determining whether any other elements have been added that affect the bits for an element to be removed, clearing any of the bits would introduce the possibility for false negatives.
+
+\subsection{Probability of false positives}
+Assume that a hash function selects each array position with equal probability.
+If $m$ is the number of bits in the array, the probability that a certain bit is not set to 1 by a certain hash function during the insertion of an element is $$1 - \dfrac{1}{m}$$
+If $k$ is the number of hash functions, the probability that the bit is not set to 1 by any of the hash functions is $$(1 - \dfrac{1}{m})^k$$
+If we have inserted $n$ elements, the probability that a certain bit is still $0$ is $$(1 - \dfrac{1}{m})^{kn}$$
+Then the probability that it is $1$ is therefore $$1 - (1 - \dfrac{1}{m})^{kn}$$
+The false positive happends when it is not in the set, but all hash function result $1$. So the false positive rate $$p = (1 - (1 - \dfrac{1}{m})^{kn})^k$$
+
+note that $\lim_{x \to \infty}(1 + \dfrac{1}{x})^x = e$, we can transform $p$ as follows:
+$$p \approx (1 - e^{-kn/m})^k$$
+
+Suppose we are given the ratio $m/n$ and want to optimize the number of hash functions $k$ to minimize the false positive rate $P_{err}$.
+Note that more hash functions increase the precision but also the number of $1$’s in the filter, thus making false positives both less and more likely at the same time.
+$$g = \ln p = k \cdot \ln (1 - e^{-kn/m})$$
+$$
+\dfrac{dg}{dk}
+= \ln (1 - e^{-kn/m}) + k \cdot \dfrac{1}{1 - e^{-kn/m}} \cdot (-1) \cdot e^{-kn/m}\cdot (-n/m)
+= \ln (1 - e^{-kn/m}) + \dfrac{kn}{m} \cdot \dfrac{e^{-kn/m}}{1 - e^{-kn/m}}
+$$
+We find the optimal $k$, or right number of hash functions to use, when the derivative is $0$.
+This occurs when $$k = \ln 2 \cdot \dfrac{m}{n}$$
+This can be shown to be a global minimum.
+
+For the optimal value of $k$, the false positive rate is
+$$
+p
+\approx (1 - e^{-kn/m})^k
+= (1 - e^{- (\ln 2 \cdot m/n) \cdot n/m})^{(\ln 2 \cdot m/n)}
+= \dfrac{1}{2}^{m/n \ln 2}
+$$
+This results in $$m = - \dfrac{n \ln p}{(\ln 2)^2}$$
+
+So when given $n$ and $p$, we can compute:
+$$
+\left\{
+\begin{aligned}
+	& m = - \dfrac{n \ln p}{(\ln 2)^2} \\
+	& k = \dfrac{m}{n} \ln 2
+\end{aligned}
+\right.
+$$
+
+\subsection{Application example}
+A typical application of Bloom filters is web caching.
+An ISP may keep several levels of carefully located caches to speed up the loading of commonly viewed web pages, in particular for large data objects, such as images and videos.
+If a client requests a particular URL, then the service needs to determine quickly if the requested page is in one of its caches.
+False positives, while undesirable, are acceptable: if it turns out that a page thought to be in a cache is not there, it will be loaded from its native URL,
+and the "penalty" is not much worse than not having the cache in the first place.
+
