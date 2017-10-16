@@ -61,10 +61,19 @@ $$
 \left\{
 \begin{aligned}
 	& m = - \dfrac{n \ln p}{(\ln 2)^2} \\
-	& k = \dfrac{m}{n} \ln 2
+	& k = \dfrac{m}{n} \ln 2 = - \dfrac{\ln p}{\ln 2}
 \end{aligned}
 \right.
 $$
+This means that for a given false positive probability $p$, the length of a Bloom filter $m$ is proportionate to the number of elements being filtered $n$ and
+the required number of hash functions only depends on the target false positive probability $p$.
+
+The formula $m = -\dfrac{n \ln p}{(\ln 2)^2}$ is approximate for three reasons.
+\begin{enumerate}
+\item First, and of least concern, it approximates $(1 - \dfrac{1}{m})^{-m}$ as $e$, which is a good asymptotic approximation (i.e., which holds as $m \to \infty$).
+\item Second, of more concern, it assumes that during the membership test the event that one tested bit is set to $1$ is independent of the event that any other tested bit is set to $1$.
+\item Third, of most concern, it assumes that $k = \dfrac{m}{n} \ln 2$ is fortuitously integral.
+\end{enumerate}
 
 \subsection{Application example}
 A typical application of Bloom filters is web caching.
