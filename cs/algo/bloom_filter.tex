@@ -44,6 +44,20 @@ $$
 = \ln (1 - e^{-kn/m}) + \dfrac{kn}{m} \cdot \dfrac{e^{-kn/m}}{1 - e^{-kn/m}}
 $$
 We find the optimal $k$, or right number of hash functions to use, when the derivative is $0$.
+
+Define $x = - \dfrac{kn}{m}$, then we get
+$$
+\begin{aligned}
+                    & \ln(1 - e^x) + (-x) \cdot \dfrac{e^x}{1 - e^x} = 0 \\
+\Longleftrightarrow & (1 - e^x) \ln(1 - e^x) = x e^x \\
+\Longleftrightarrow & \ln (1 - e^x) + \ln \ln(1 - e^x) = \ln x + \ln e^x = \ln x + x \\
+\text{guess}        & \ln (1 - e^x) = x \\
+\Longleftrightarrow & x = -\ln 2 \\
+\Longleftrightarrow & - \dfrac{kn}{m} = -\ln 2 \\
+\Longleftrightarrow & k = \ln 2 \cdot \dfrac{m}{n} \\
+\end{aligned}
+$$
+
 This occurs when $$k = \ln 2 \cdot \dfrac{m}{n}$$
 This can be shown to be a global minimum.
 
