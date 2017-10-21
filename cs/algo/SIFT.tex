@@ -1,0 +1,20 @@
+\section{SIFT(Scale-Invariant Feature Transform)}
+\href{http://blog.csdn.net/abcjennifer/article/details/7639681/}{SIFT特征提取分析}
+
+尺度不变特征转换(Scale-invariant feature transform 或SIFT)是一种电脑视觉的算法用来侦测与描述影像中的局部性特征,它在空间尺度中寻找极值点,并提取出其位置,尺度,旋转不变量,此算法由 David Lowe 在1999年所发表,2004年完善总结.
+Sift算法就是用不同尺度(标准差)的高斯函数对图像进行平滑,然后比较平滑后图像的差别,差别大的像素就是特征明显的点.
+
+Sift是一个很好的图像匹配算法, 同时能处理亮度,平移,旋转,尺度的变化,利用特征点来提取特征描述符,最后在特征描述符之间寻找匹配.
+
+它的步骤可以主要分两步:1)特征点检出 keypoint localisation, 2)特征点描述 feature description.
+
+特征点检出主要是用了DoG,就是把图像做不同程度的高斯模糊blur,平滑的区域或点肯定变化不大,而纹理复杂的比如边缘,点,角之类区域肯定变化很大,这样变化很大的点就是特征点.
+当然为了找到足够的点,还需要把图像放大缩小几倍(Image Pyramids)来重复这个步骤找特征点.
+其实DoG(Difference of Gaussian)并不是Lowe提出的,很久以前就有了,读过SIFT专利的人都知道,SIFT的专利里面也不包括这部分.可代替特征点检出还有很多其他方法如MSER等.
+
+特征点描述就是一个简单版的HOG(histogram of oriented gradients), 即以检出的特征点为中心选$16 \times 16$的区域作为local patch,这个区域又可以均分为$4 \times 4$个子区域,每个子区域中各个像素的梯度都可以分到$8$个bin里面,
+这样就得到了$4 \times 4 \times 8 = 128$维的特征向量.
+特征点检出以后还需要一个很重要的步骤就是归一化,计算这个patch的主方向,然后根据这个主方向把patch旋转到特定方向,这样计算的特征就有了方向不变性,也需要根据patch各像素梯度大小把patch缩放到一定的尺度,这样特征就有了尺度不变性.
+
+很多人都直接把这两步统称为SIFT,其实确切来说SIFT是指第二步的特征,而SIFT features或SIFT descriptor的说法应该比较准确.
+
