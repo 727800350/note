@@ -30,7 +30,7 @@ then
 	python="/usr/bin/python"
 	id=0
 else
-	hadoop_fs="$cluster_hadoop_fs"
+	hadoop_fs="$cluster_hdfs"
 	python="./Python-2.7.5/python"
 	id=${mapred_task_partition}
 	chmod +x $bin/*
