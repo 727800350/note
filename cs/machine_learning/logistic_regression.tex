@@ -111,7 +111,7 @@ $$
 \right.
 $$
 
-\write18{wget https://i.imgbox.com/rV4oc2HX.png -O computation-graph.png}
+\immediate\write18{pic="computation-graph.png" && [ ! -f $pic ] && wget https://i.imgbox.com/rV4oc2HX.png -O $pic}
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[scale = 0.4]{computation-graph}\\

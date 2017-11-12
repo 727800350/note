@@ -12,7 +12,7 @@ And the trend has been to use more data for training and less data for dev and t
 \subsection{Bias and Variance}
 eg: Cat classification
 
-\write18{wget https://images.imgbox.com/6c/f1/mvCSz8lc_o.png -O bias-variance.png}
+\immediate\write18{pic="bias-variance.png" && [ ! -f $pic ] && wget https://images.imgbox.com/6c/f1/mvCSz8lc_o.png -O $pic}
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[scale = 0.4]{bias-variance}\\
@@ -154,7 +154,7 @@ mini-batch notation: $X^{\{1\}}, X^{\{2\}}$
 
 $1$ epoch: a single pass through the entire training set
 
-\write18{wget https://images.imgbox.com/e4/99/u6s8FG20_o.png -O cost_batch_vs_mini-batch.png}
+\immediate\write18{pic="cost_batch_vs_mini-batch.png" && [ ! -f $pic ] && wget https://images.imgbox.com/e4/99/u6s8FG20_o.png -O $pic}
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[scale = 0.4]{cost_batch_vs_mini-batch}\\
