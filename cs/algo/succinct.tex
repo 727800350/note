@@ -1,0 +1,16 @@
+\section{Succinct}
+\href{http://succinct.cs.berkeley.edu/}{berkeley succinct}
+
+Succinct is a data store that enables efficient queries directly on a compressed representation of the input data.
+Succinct uses a compression technique that achieves compression close to that of gzip and yet allows random access into the input data.
+In addition, Succinct natively supports a wide range of queries including count and search of arbitrary strings, range and wildcard queries.
+
+What differentiates Succinct from previous data stores is that Succinct supports these queries without storing any secondary indexes, without requiring data scans and without decompressing the data.
+\red{All the required information is embedded within the compressed representation and queries are executed directly on the compressed representation}.
+
+As a base API, Succinct exposes a simple interface that supports above queries on flat files.
+Applications that perform queries on semi-structured data can extend this API to build higher-level data representations.
+
+On real-world and benchmark datasets, Succinct requires as much as an order of magnitude lower storage compared to state-of-the-art systems with similar functionality.
+As a result, Succinct executes more queries in faster storage, leading to lower query latency than existing systems for a much larger range of input sizes.
+
