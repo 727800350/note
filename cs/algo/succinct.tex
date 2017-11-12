@@ -1,9 +1,17 @@
 \section{Succinct}
 \href{http://succinct.cs.berkeley.edu/}{berkeley succinct}
+\href{https://www.youtube.com/watch?v=O1a6YxFMp0g}{Succinct Spark: Fast Interactive Queries on Compressed RDDs}
 
 Succinct is a data store that enables efficient queries directly on a compressed representation of the input data.
 Succinct uses a compression technique that achieves compression close to that of gzip and yet allows random access into the input data.
-In addition, Succinct natively supports a wide range of queries including count and search of arbitrary strings, range and wildcard queries.
+
+Succinct natively supports point querys including
+\begin{itemize}
+\item search
+\item range queries
+\item regular expressions
+\item random access
+\end{itemize}
 
 What differentiates Succinct from previous data stores is that Succinct supports these queries without storing any secondary indexes, without requiring data scans and without decompressing the data.
 \red{All the required information is embedded within the compressed representation and queries are executed directly on the compressed representation}.
@@ -13,4 +21,19 @@ Applications that perform queries on semi-structured data can extend this API to
 
 On real-world and benchmark datasets, Succinct requires as much as an order of magnitude lower storage compared to state-of-the-art systems with similar functionality.
 As a result, Succinct executes more queries in faster storage, leading to lower query latency than existing systems for a much larger range of input sizes.
+
+What do we lose?
+\begin{itemize}
+\item Preprocessing time
+\item Extra CPU for data access: When you are doing random access, succinct requires extract CPU cycles because you have to decompress the at least for the range of data that you are accessing.
+\item Low Sequential scan throughput: succinct is primarily designed to enable random access, which means that sequential throughput is going to be lower.
+\item Do not support in-place updates: succinct supportes updates by append
+\end{itemize}
+
+question:
+succinct 说压缩后可以把更多的数据放到内存里, 但是需要preprocess, 还挺耗时的.
+他是把压缩后的数据都加载到内存中吗?
+那他和加索引有什么本质区别, 生成索引需要时间, 索引文件肯定比数据文件小很多, 我觉得比succinct 压缩后的数据还是小很多, 那用索引文件可以把更多的meta data 放在内存里面, query 不是更快吗?
+
+视频中有C++ 的lib, 但是没有找到
 
