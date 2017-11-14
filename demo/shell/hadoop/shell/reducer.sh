@@ -35,6 +35,7 @@ else
 	id=${mapred_task_partition}
 	chmod +x $bin/*
 	mkdir log && chmod 777 log
+	pwd >&2
 fi
 
 cat - > input
