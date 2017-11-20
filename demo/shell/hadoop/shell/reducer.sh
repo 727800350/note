@@ -32,7 +32,7 @@ then
 else
 	hadoop_fs="$cluster_hdfs"
 	python="./Python-2.7.5/python"
-	id=${mapred_task_partition}
+	id=$mapred_task_partition
 	chmod +x $bin/*
 	mkdir log && chmod 777 log
 	pwd >&2
@@ -51,7 +51,7 @@ $hadoop_fs -rm $mapred_output_dir/input.$id
 
 if [ $local -eq 0 -a -s res ]
 then
-	$hadoop_fs -put res ${mapred_work_output_dir}/data.$id
+	$hadoop_fs -put res $mapred_work_output_dir/data.$id
 	CHK_RET FATAL "put res error"
 fi
 

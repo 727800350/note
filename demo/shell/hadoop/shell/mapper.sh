@@ -32,7 +32,7 @@ then
 else
 	hadoop_fs="$cluster_hdfs"
 	python="./Python-2.7.5/python"
-	id=${mapred_task_partition}
+	id=$mapred_task_partition
 	chmod +x $bin/*
 	mkdir log && chmod 777 log
 	pwd >&2

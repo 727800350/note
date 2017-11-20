@@ -23,7 +23,6 @@ function CHK_RET(){
 	fi
 }
 
-## ex:safe_duprun "${_hadoop_cmd} -copyToLocal $file_dir thumail.data"
 function safe_run(){
 	cmd=$1
 
@@ -36,7 +35,6 @@ function safe_run(){
 	return 0
 }
 
-## ex:safe_duprun "${_hadoop_cmd} -copyToLocal $file_dir thumail.data" 5
 function safe_duprun(){
 	cmd=$1
 	trynum=$2
