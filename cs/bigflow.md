@@ -66,6 +66,7 @@ PTable非常类似于并行化的Python dict, 其包含key到value的映射,但�
 # transform
 - `x.map(fn)`: 对PCollection中的每个元素做一对一映射
 - `x.flat_map(fn)`: 对PCollection中的每个元素做一对N映射
+- `x.filter(fn)`: 过滤
 
 - `x.count()`
 - `x.distinct()`: uniq 操作

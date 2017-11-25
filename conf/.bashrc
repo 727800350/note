@@ -34,27 +34,10 @@ else
 		source /home/img/.enterprise
 	fi
 fi
-export LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/git/note/demo/cxx/util
-
-## texlive env
-export TEXLIVE=${HOME}/opt/texlive/2015/
-export PATH=$PATH:$TEXLIVE/bin/x86_64-linux/
-export MANPATH=$MANPATH:$TEXLIVE/texmf/doc/man/
-export INFOPATH=$INFOPATH:$TEXLIVE/texmf/doc/info/
 
 export PATH=$PATH:/usr/local/sbin/
 export PATH=$PATH:${HOME}/git/note/bin/
 export PATH=$PATH:${HOME}/bin/
-
-# aliases
-version=`gcc -v 2>&1 | tail -n 1 | awk '{print $3}'`
-if [[ $version > "4.7" ]]
-then
-	alias g++='g++ -std=c++11 -g -Wall'
-else
-	alias g++='g++ -g -Wall'
-fi
-alias gcc='gcc -g -Wall'
 
 if [ "x$os" == "xmac" ]
 then

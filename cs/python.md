@@ -247,7 +247,7 @@ eg: '我'.decode('utf8').encode('gbk')
 
 **查找**
 - `str.endswith(suffix[, start[, end]])`: Return True if the string ends with the specified suffix, otherwise return False.
-- `str.find(sub[, start[, end]])`: Return the lowest index in the string where substring sub is found, such that sub is contained in the slice s[start:end].
+- `str.find(sub[, start[, end]])`: Return the lowest index in the string where substring sub is found, 否则返回-1.
 	Note: **The find() method should be used only if you need to know the position of sub. To check if sub is a substring or not, use the `in` operator**
 - `str.index(sub[, start[, end]])` Like find(), but raise ValueError when the substring is not found.
 
