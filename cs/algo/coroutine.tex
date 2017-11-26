@@ -1,68 +1,70 @@
-协程,又称微线程和纤程等.
-现代编程语言基本上都有支持,比如 Lua,ruby 和最新的 Google Go.
+\section{Coroutine}
+协程, 现代编程语言基本上都有支持,比如 Lua,ruby 和最新的 Google Go.
 协程是用户空间线程,操作系统对其存在一无所知,所以需要用户自己去做调度,用来执行协作式多任务非常合适.
 其实用协程来做的东西,用线程或进程通常也是一样可以做的,但往往多了许多加锁和通信的操作.
 
-通俗易懂的回答:**让原来要使用异步+回调方式写的非人类代码,可以用看似同步的方式写出来...**
+通俗易懂的回答:\textbf{让原来要使用异步+回调方式写的非人类代码,可以用看似同步的方式写出来...}
 
-我们看到阻塞,切换到其他进程(线程)的操作,都会交由操作系统来完成.
+我们通常看到的阻塞,切换到其他进程(线程)的操作,都会交由操作系统来完成.
 所以不管是进程还是线程,每次阻塞,切换都需要陷入系统调用(system call),先让CPU跑操作系统的调度程序,然后再由调度程序决定该跑哪一个进程(线程).
 
 如果我们不要这些功能了,我自己在进程里面写一个逻辑流调度的东西,碰着io我就用非阻塞式的.
 那么我们即可以利用到并发优势,又可以避免反复系统调用,还有进程切换造成的开销,分分钟给你上几千个逻辑流不费力.
 这就是协程.
 
-**本质上协程就是用户空间下的线程**
+\red{本质上协程就是用户空间下的线程}
 
-[协程三篇之一(协程初接触)](http://blog.csdn.net/gzlaiyonghao/article/details/5397038)
+\href{http://blog.csdn.net/gzlaiyonghao/article/details/5397038}{协程三篇之一(协程初接触)}
 
 下面是生产者消费者模型的基于抢占式多线程编程实现(伪代码):
-```
+\begin{verbatim}
 // 队列容器
 var q := new queue
 // 消费者线程
 loop
-	lock(q)
-	get item from q
-	unlock(q)
-	if item
-		use this item
-	else
-		sleep 
+    lock(q)
+    get item from q
+    unlock(q)
+    if item
+        use this item
+    else
+        sleep 
 // 生产者线程
 loop
-	create some new items
-	lock(q)
-	add the items to q
-	unlock(q)
-```
+    create some new items
+    lock(q)
+    add the items to q
+    unlock(q)
+\end{verbatim}
 
 由以上代码可以看到线程实现至少有两点硬伤:
-
-1. 对队列的操作需要有显式/隐式(使用线程安全的队列)的加锁操作.
-2. 消费者线程还要通过 sleep 把 CPU 资源适时地"谦让"给生产者线程使用,其中的适时是多久,基本上只能静态地使用经验值,效果往往不由人意.
+\begin{enumerate}
+\item 对队列的操作需要有显式/隐式(使用线程安全的队列)的加锁操作.
+\item 消费者线程还要通过 sleep 把 CPU 资源适时地"谦让"给生产者线程使用,其中的适时是多久,基本上只能静态地使用经验值,效果往往不由人意.
+\end{enumerate}
 
 而使用协程可以比较好的解决这个问题,下面来看一下基于协程的生产者消费者模型实现(伪代码):
-```
+\begin{verbatim}
 // 队列容器
 var q := new queue
 // 生产者协程
 loop
-	while q is not full
-		create some new items
-		add the items to q
-	yield to consume
+    while q is not full
+        create some new items
+        add the items to q
+    yield to consume
 // 消费者协程
 loop
-	while q is not empty
-		remove some items from q
-		use the items
-	yield to produce
-```
+    while q is not empty
+        remove some items from q
+        use the items
+    yield to produce
+\end{verbatim}
 
-[知乎上的见解](http://www.zhihu.com/question/20511233)
+\href{http://www.zhihu.com/question/20511233}{知乎上的见解}
 
-可以从以上代码看到之前的加锁和谦让 CPU 的硬伤不复存在,但**也损失了利用多核 CPU 的能力**.所以选择线程还是协程,就要看应用场合了.
+可以从以上代码看到之前的加锁和谦让 CPU 的硬伤不复存在,但\textbf{也损失了利用多核 CPU 的能力}. 所以选择线程还是协程,就要看应用场合了.
+
 下面简单谈一下协程常见的用武之地,其中之一是状态机,能够产生更高可读性的代码,
 还有就是并行的角色模型,这在游戏开发中比较常见,以及产生器, 有助于对输入/输出和数据结构的通用遍历.
 
@@ -73,7 +75,7 @@ loop
 当然有些问题确实不是单纯的计算能力或存储能力极大提升就能解决的,不是我的工作范围,就不献丑了.
 
 协程比线程更基础.协程不能像线程那样,简单看做一种硬件妥协机制.
-**协程是可以作为语言的内建机制的,因为协程反映了程序逻辑的一种需求:可重入能力.**
+协程是可以作为语言的内建机制的,因为协程反映了程序逻辑的一种需求:可重入能力.
 这个能力很重要,因为大多数语言的一个最重要的组件--函数,其实就依赖这个能力的弱化版本.
 函数中的局部变量,被你初始化为特定的值,每次你调函数,换种说法:重入函数,语言都保证这些局部变量的值不会改变.相同的输入,得到相同的输出.
 当然你跟我扯全局变量就没意思了.
