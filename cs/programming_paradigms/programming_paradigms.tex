@@ -39,8 +39,10 @@ Most computers also support reading and writing larger units of memory— 2 byte
 Half-words and words span consecutive bytes in memory. By convention the address of any multiple-byte thing is the address of its lowest byte— its "base-address".
 
 Most computers restrict \textbf{half-word} and word accesses to be "aligned"—
-\indent a \textbf{half-word} must \textbf{start at an even address} and \\
-\indent a \textbf{word} must \textbf{start} at an \textbf{address that is a multiple of $4$}.
+\begin{enumerate}
+\item \textbf{half-word} must \textbf{start at an even address} and
+\item a \textbf{word} must \textbf{start} at an \textbf{address that is a multiple of $4$}
+\end{enumerate}
 
 The ASCII code defines $128$ characters and a mapping of those characters onto the numbers $0..127$.
 
@@ -70,11 +72,7 @@ Instruction— Machine instructions themselves are also encoded using bit patter
 The different bits in the instruction encoding indicate things such as what type of instruction it is(load, store, multiply, etc.) and the registers involved.
 
 \subsection{负数的表示}
-\begin{verbatim}
-0111,1111,1111,1111
-\end{verbatim}
-如果最左端的$0$是一个$1$, 那么这个$1$ 会贡献$2^{15}$, 当上面的数字加上$1$ 之后, 刚好变成了$1000,0000,0000,0000$\\
-所以原来的那个数是$2^{15} – 1$
+\verb+0111,1111,1111,1111+ 如果最左端的$0$是一个$1$(不考虑正负的情况下), 那么这个$1$ 会贡献$2^{15}$, 当上面的数字加上$1$ 之后, 刚好变成了$1000,0000,0000,0000$, 所以原来的那个数是$2^{15} – 1$
 
 \textbf{正负整数}\\
 第一位$0$表示正, $1$表示负, $(-1)^0=1, (-1)^1 = -1$
@@ -170,27 +168,30 @@ memcpy(b, buffer, size);
 }
 \end{lstlisting}
 在使用的时候, 要注意a与b的类型要一致
+
+\href{https://www.cnblogs.com/wuyuegb2312/archive/2013/06/08/3126510.html}{大小端}
 \begin{lstlisting}[language = C]
-int i=44;      	short s=5;
-swap(&i, &s, sizeof(short)); //error
-swap(&i, &((int)s), sizeof(int)); // does it work?
+int i=44;
+short s=5;
+swap(&i, &s, sizeof(short)); // C++ 编译ok, 执行ok, 但是不一定是预期的结果, 取决于i 的大小和大小端
+swap(&i, &((int)s), sizeof(int)); // 编译错误
 char *husband = strdup("Fred");
 char *wife = strdup("Willma");
 swap(&husband, &wife, sizeof(char *));
-swap(husband, wife, sizeof(char *)); //error
+swap(husband, wife, sizeof(char *)); // C++ 编译ok, 执行ok, 但是不一定是预期的结果
 \end{lstlisting}
 交换了4个字节的内容, 指针的长度都是4 个字节
 
 \begin{lstlisting}[language = C]
 void * lsearch(void* key, void * base, int n, int elemSize){
-// n base 数列中有多少个值, elemSize 元素的字节数
-for (int i=0; i<n; i++){
-void * elemAddr = (char *)base + i * elemSize;	
-//void * elemAddr = base + i * elemSize; error 不同类型的数据指针加1 的偏移量不一样
-if(memcmp(key, elemAddr, elemSize) == 0)
-	return elemAddr;
-}
-return null;
+	// n base 数列中有多少个值, elemSize 元素的字节数
+	for(int i=0; i<n; i++){
+		void * elemAddr = (char *)base + i * elemSize; //void * elemAddr = base + i * elemSize; error 不同类型的数据指针加1 的偏移量不一样
+		if(memcmp(key, elemAddr, elemSize) == 0){
+			return elemAddr;
+		}
+	}
+	return null;
 }
 
 void * lsearch(void *key, void *base, int n, int elemSize, int (* cmpfun)(void *, void *))
@@ -200,12 +201,13 @@ void * lsearch(void *key, void *base, int n, int elemSize, int (* cmpfun)(void *
 \section{Lecture 5}
 \begin{lstlisting}[language = C]
 void * lsearch(void *key, void *base, int n, int elemSize, int (* cmpfun)(void *, void *)){
-for (int i=0; i<n; i++){
-void * elemAddr = (char *)base + i * elemSize;	
-if(cmpfun(key, elemAddr) == 0)
-	return elemAddr;
-}
-return null;
+	for(int i=0; i<n; i++){
+		void * elemAddr = (char *)base + i * elemSize;
+		if(cmpfun(key, elemAddr) == 0){
+			return elemAddr;
+		}
+	}
+	return null;
 }
 \end{lstlisting}
 For example:
@@ -250,9 +252,9 @@ method 是与object相关的, 含有隐含的this 指针
 \begin{lstlisting}[language = C]
 // a stack data structure
 typedef struct {
-int *elems;
-int logicalLen;
-int allocLen;
+	int *elems;
+	int logicalLen;
+	int allocLen;
 } stack;
 // 这里我们要存储的元素是int类型的, 我们定义的栈结构中int *elems, 所以我们实际上在栈中存储的是我们想要存储东西的指针, 在这里, 也就是说栈中的元素是int *类型的
 
@@ -265,10 +267,10 @@ int stackPop(stack *s);
 \textbf{stack.c}
 \begin{lstlisting}[language = C]
 void stackNew(stack *s){
-s->logicalLen = 0;
-s->allocLen = 4;
-s->elems = (int *)malloc(4*sizeof(int));
-assert(s->elems !=NULL); // 检查申请空间成功与否
+	s->logicalLen = 0;
+	s->allocLen = 4;
+	s->elems = (int *)malloc(4*sizeof(int));
+	assert(s->elems !=NULL); // 检查申请空间成功与否
 }
 \end{lstlisting}
 
@@ -280,20 +282,20 @@ free(s->elems);
 // 我们不需要free(s) , s可能是一个局部变量, 我们只需要释放我们申请的空间
 
 void stackPush(stack *s, int value){
-if(s->logicalLen == s->allocLen){
-	s->allocLen *= 2;
-	s->elems = realloc(s->elems, s->allcLen * sizeof(int));
-	assert(s->elems != NULL);
-}
-s->elems[s->logicalLen] = value;
-s->logicalLen ++;
+	if(s->logicalLen == s->allocLen){
+		s->allocLen *= 2;
+		s->elems = realloc(s->elems, s->allcLen * sizeof(int));
+		assert(s->elems != NULL);
+	}
+	s->elems[s->logicalLen] = value;
+	s->logicalLen ++;
 }
 // realloc 对malloc申请的内存进行动态调整, 同时它会自动对原来的空间进行处理, 所以不需要我们手动处理
 
 int stackPop(stack *s){
-assert(s->logicalLen > 0);
-s->logicalLen --;
-return s->elems[s->logicalLen];
+	assert(s->logicalLen > 0);
+	s->logicalLen --;
+	return s->elems[s->logicalLen];
 }
 \end{lstlisting}
 
@@ -301,10 +303,10 @@ return s->elems[s->logicalLen];
 \textbf{stack.h}
 \begin{lstlisting}[language = C]
 typedef struct{
-void *elems;
-int elemsize;
-int logicalLen;
-int allocLen;
+	void *elems;
+	int elemsize;
+	int logicalLen;
+	int allocLen;
 }stack;
 // 这里我们要存储的元素是void类型的, 我们定义的栈结构中void *elems, 所以我们实际上在栈中存储的是我们想要存储东西的指针, 在这里, 也就是说栈中的元素是void *类型的
 
@@ -317,35 +319,36 @@ void stackPop(stack *s, void *elemAddr); //出栈元素放到elemAddr地址中
 \textbf{stack.c}
 \begin{lstlisting}[language = C]
 void stackNew(stack *s, int elemsize){
-s->elemsize = elemsize;
-s->logicalLen = 0;
-s->allocLen = 4;
-s-> elems = malloc(4 * elemsize);
-assert(s->elems != NULL);
+	s->elemsize = elemsize;
+	s->logicalLen = 0;
+	s->allocLen = 4;
+	s-> elems = malloc(4 * elemsize);
+	assert(s->elems != NULL);
 }
 
 void stackDispose(stack *s){
-free(s->elems);
+	free(s->elems);
 }
 
 static void stackGrow(stack *s){
-s->allocLen *= 2;
-s->elems = realloc(s->elems, s->allocLen * elemsize);
+	s->allocLen *= 2;
+	s->elems = realloc(s->elems, s->allocLen * elemsize);
 }
 //static 这个函数只能在本文件中使用,
 
 void stackPush(stack *s, void *elemAddr){
-if (s->logicLen == s->allocLen)
-	stackGrow(s);
-void *target = (char *)s->elems + s->logicalLen * s->elemsize;
-memcpy(target, elemAddr, s->elemsize);
-s->logicalLen ++;
+	if(s->logicLen == s->allocLen){
+		stackGrow(s);
+	}
+	void *target = (char *)s->elems + s->logicalLen * s->elemsize;
+	memcpy(target, elemAddr, s->elemsize);
+	s->logicalLen ++;
 }
 
 void stackPop(stack *s, void *elemAddr){
-s->logicalLen --;
-void *source = (char *)s->elems + s->logicalLen * s->elemsize;
-memcpy(elemAddr, source, s->elemsize);
+	s->logicalLen --;
+	void *source = (char *)s->elems + s->logicalLen * s->elemsize;
+	memcpy(elemAddr, source, s->elemsize);
 }
 //我们也可以void * stackPop(stack *s), 但是这样需要在函数中动态申请内存, 这样代码会变得很难维护, 所以不推荐那样做
 \end{lstlisting}
@@ -380,21 +383,20 @@ void stackNew(stack *s, int elemsize, void (* freefun)(void *))
 //freefun 是释放栈中元素空间的函数, 需要用户提供, 因为我们不知道元素是指针还是普通元素
 
 typedef struct{
-void *elems;
-int elemsize;
-int logicalLen;
-int allocLen;
-void *freefun;
+	void *elems;
+	int elemsize;
+	int logicalLen;
+	int allocLen;
+	void *freefun;
 }stack;
 
-
 void stackDispose(stack *s){
-if(s->freefun !=NULL){
-	for(int i=0; i< s->logicLen; i++){
-		s->freefun((char *)s->elems + i * s->elemsize);
-}
-}
-free(s->elems);
+	if(s->freefun !=NULL){
+		for(int i=0; i< s->logicLen; i++){
+			s->freefun((char *)s->elems + i * s->elemsize);
+		}
+	}
+	free(s->elems);
 }
 
 stack stringstack;
@@ -419,12 +421,12 @@ memmove 会检查重叠的区域, 但是执行效率要比memcpy低}
 将middle与end之间的移动到前面, 同时将front与middle之间的移动到后面
 \begin{lstlisting}[language = C]
 void rotate(void *front, void *middle, void *end){
-int frontSize = (char *)middle - (char *)front;
-int backSize = (char *)end - (char *)middle;
-char buffer[frontSize];
-memcpy(buffer, front, frontSize);
-memmove(front, middle, backSize);
-memcpy((char *)end - frontSize, buffer, frontSize);
+	int frontSize = (char *)middle - (char *)front;
+	int backSize = (char *)end - (char *)middle;
+	char buffer[frontSize];
+	memcpy(buffer, front, frontSize);
+	memmove(front, middle, backSize);
+	memcpy((char *)end - frontSize, buffer, frontSize);
 }
 
 void qsort(void *base, int n, int elemSize, int (*cmpfn)(void *, void *))
@@ -440,8 +442,8 @@ void qsort(void *base, int n, int elemSize, int (*cmpfn)(void *, void *))
 
 \begin{lstlisting}[language = C]
 foo(){
-int a;
-int b;
+	int a;
+	int b;
 }
 \end{lstlisting}
 读到a的时候, 将a 压入内存中的stack区域
@@ -486,9 +488,10 @@ int *a = malloc(40 * sizeof(int));
 
 \textbf{内存压缩}\\
 当malloc 遇到一个请求, 但是目前堆中没有连续的内存能够满足这个请求, 但是我们发现未被使用的内存的和是大于这个请求值的.
-所以我们可以采用内存压缩的策略, 将用过的内存压缩到一起(内存搬运), 然后就可以继续处理用户的请求
-但是这样内存管理就会遇到一个问题, 就是我们必须将已经分配的内存指针$a$ 和 $b$ 更新, 让他们指向新的位置, 否则用户是不知道的
-handle
+所以我们可以采用内存压缩的策略, 将用过的内存压缩到一起(内存搬运), 然后就可以继续处理用户的请求.
+但是这样就会遇到一个问题, 就是我们必须将已经分配的内存指针$a$ 和 $b$ 更新, 让他们指向新的位置, 否则用户是不知道的.
+
+handle:
 当申请内存的时候, 不返回direct pointer to the data(不是直接指数据的指针), 而是一个距离实际数据有两跳的指针, 也就是说相当于二级指针
 \begin{figure}[htbp]
 	\centering
@@ -504,10 +507,9 @@ HandleLock(handle);
 ... do sth...
 HandleUnlock(handle);
 
-\subsubsection{stack segment}
 void A(){
-int a;
-B();
+	int a;
+	B();
 }
 \end{lstlisting}
 \begin{figure}[htbp]
@@ -632,8 +634,8 @@ BGE branch on greater than or equal to\\
 函数
 \begin{lstlisting}[language = C]
 void foo(int bar, int *baz){
-char snink[4];
-short *why;
+	char snink[4];
+	short *why;
 }
 \end{lstlisting}
 \begin{figure}[htbp]
@@ -642,39 +644,41 @@ short *why;
 	\caption{编程范式 activation foo}\label{fig.activation.foo}
 \end{figure}
 
-执行函数的时候, 首先解析参数, 解析参数的顺序是从左到右.
+执行函数的时候, 首先解析参数, 解析参数的顺序是从右到左.
 所以这里, 先读取baz, 进行压栈, 然后读取bar, 进行压栈.
 这个时候, 函数的参数读取完了, 所以接下来的一个地址保存sp寄存器.
 然后进入到函数内部, 读取局部变量, 4 个char, 进行压栈, 然后读取指针类型, 进行压栈.
 
 \begin{lstlisting}[language = C]
 int main(int argc, char **argv){
-int i=4;
-foo(i,&i);
-return 0;
+	int i=4;
+	foo(i,&i);
+	return 0;
 }
 \end{lstlisting}
 
-\textbf{sp特殊寄存器: static pointer 指向执行栈的最低地址, 也就是之前我们一直使用的基地址R1}
-
-RV 特殊寄存器: 存放函数的返回值
+\begin{itemize}
+\item sp特殊寄存器: static pointer 指向执行栈的最低地址, 也就是之前我们一直使用的基地址R1
+\item RV 特殊寄存器: 存放函数的返回值
+\end{itemize}
 
 \begin{lstlisting}[language = C]
 int fact(int n){
-if (n == 0)
-	return 1;
-return n * fact(n-1);
+	if(n == 0){
+		return 1;
+	}
+	return n * fact(n-1);
 }
 \end{lstlisting}
 
 \section{Lecture 11}
 \begin{lstlisting}[language = C]
 void foo(){
-int x;
-int y;
-x = 11
-y = 1
-swap(&x, &y);
+	int x;
+	int y;
+	x = 11
+	y = 1
+	swap(&x, &y);
 }
 \end{lstlisting}
 \begin{figure}[htbp]
@@ -686,9 +690,9 @@ swap(&x, &y);
 
 \begin{lstlisting}[language = C]
 void swap(int *ap, int *bp){
-int temp=*ap;
-*ap=*bp;
-*bp=temp;
+	int temp=*ap;
+	*ap=*bp;
+	*bp=temp;
 }
 SP=SP - 8; //写完这个申请空间的语句, 就立刻补上回收空间的语句,  然后return
 M[SP + 4] = 11;
@@ -733,9 +737,8 @@ RET;
 \end{lstlisting}
 
 \subsection{C++ reference}
-C++中 \& 表示的引用 reference\\
-the way references work is that they are basically just automatically dereferenced pointers.\\
-所以在将C++ code 编译成汇编代码后, 和C的汇编代码几乎一样\\
+C++中 \& 表示的引用 reference, the way references work is that they are basically just automatically dereferenced pointers.\\
+所以在将C++ code 编译成汇编代码后, 和C的汇编代码几乎一样.
 
 引用:就是给变量起一个别名.引用与它所引用的变量共享存储单元
 \begin{lstlisting}[language = C]
@@ -827,11 +830,11 @@ gcc -E vector.c //只进行预处理
 #include <assert.h>
 
 int main(int argc, char *argv[]){
-void *memory = malloc(400);
-assert(memory != NULL);
-printf("Success");
-free(memory);
-return 0;
+	void *memory = malloc(400);
+	assert(memory != NULL);
+	printf("Success");
+	free(memory);
+	return 0;
 }
 \end{lstlisting}
 
@@ -898,12 +901,12 @@ void *vp=
 \subsubsection{永真循环}
 \begin{lstlisting}[language = C]
 int main(){
-int i;
-int array[2];
-for (i=0;i<=2;i++){
-	array[i] = 0;
-}
-return 0;
+	int i;
+	int array[2];
+	for (i=0;i<=2;i++){
+		array[i] = 0;
+	}
+	return 0;
 }
 \end{lstlisting}
 \begin{figure}[htbp]
@@ -912,17 +915,17 @@ return 0;
 	\caption{编程范式 永真循环}\label{fig.loop_forever}
 \end{figure}
 
-如图\ref{fig.编程范式.永真循环}中所示, i=1执行之后, i=2, 仍然满足循环条件, 所以继续执行array[2] = 0;\\
+如图\ref{fig.loop_forever}中所示, $i=1$执行之后, $i=2$, 仍然满足循环条件, 所以继续执行array[2] = 0;\\
 然后根据 array[2] 就是 SP+8, 也就是 i 的位置, 所以array[2] = 0;实际上是 i = 0; 然后发现又满足条件, 所以就会这样一直循环下去
 
 \subsubsection{saved PC导致的无限循环}
 \begin{lstlisting}[language = C]
 void foo(){
-int array[4];
-int i;
-for (i=0;i<=4;i++){
-	arrar[i]  -= 4;
-}
+	int array[4];
+	int i;
+	for (i=0;i<=4;i++){
+		arrar[i]  -= 4;
+	}
 }
 \end{lstlisting}
 \begin{figure}[htbp]
@@ -930,7 +933,6 @@ for (i=0;i<=4;i++){
 	\includegraphics[scale = 0.4]{savedPC-loop}\\
 	\caption{编程范式 savedPC导致的循环}\label{fig.savedPC-loop}
 \end{figure}
-
 
 在汇编代码中
 CALL <foo>
@@ -942,34 +944,32 @@ instruction
 \subsection{peseudo 全局变量}
 \begin{lstlisting}[language = C]
 int main(){
-DeclareAndInitArray();
-PrintArray();
+	DeclareAndInitArray();
+	PrintArray();
 }
 
 void DeclareAndInitArray(){
-int array[100];
-int i;
-for (i=0;i<100;i++){
-	array[i] = i;
-}
+	int array[100];
+	int i;
+	for (i=0;i<100;i++){
+		array[i] = i;
+	}
 }
 
 void PrintArray(){
-int array[100];
-int i;
-for (i=0;i<100;i++){
-	printf("%d\n",array[i]);
-}
+	int array[100];
+	int i;
+	for (i=0;i<100;i++){
+		printf("%d\n",array[i]);
+	}
 }
 \end{lstlisting}
-程序会输出结果, 而且看上去输出的就是DeclareAndInitArray 中赋的值, 但是这是由于在main 函数中, 执行DeclareAndInitArray 时, 申请的栈空间和执行PrintArray 申请的栈空间是一样的, 所以当行DeclareAndInitArray 执行完毕后, 栈指针SP 又回到了当初时的位置, 但是在行DeclareAndInitArray 中进行的数组赋值的内存内容并没有被清理(不会清理, 因为清理还需要消耗时间而且也没有这个必要), 所以行PrintArray 会输出之前的结果
+程序会输出结果, 而且看上去输出的就是DeclareAndInitArray 中赋的值, 但是这是由于在main 函数中, 执行DeclareAndInitArray 时, 申请的栈空间和执行PrintArray 申请的栈空间是一样的,
+所以当行DeclareAndInitArray 执行完毕后, 栈指针SP 又回到了当初时的位置, 但是在行DeclareAndInitArray 中进行的数组赋值的内存内容并没有被清理(不会清理, 因为清理还需要消耗时间而且也没有这个必要), 所以行PrintArray 会输出之前的结果
 
-printf\\
-protype:	int printf(const char * control, ...);\\
-返回值: 成功解析的占位符的个数
+printf's protype: int printf(const char * control, ...); 返回值: 成功解析的占位符的个数
 
-通过printf 的protype 我们可以解释\\
-why we push parameters on the stack , why the $0$\textsuperscript{th} parameter is always at the bottom
+通过printf 的protype 我们可以解释, why we push parameters on the stack , why the $0$\textsuperscript{th} parameter is always at the bottom
 
 \begin{lstlisting}[language = C]
 printf("%d + %d = %d\n", 4, 5, 9);
@@ -988,26 +988,27 @@ PS: Pascal 中参数个数必须是确定的, 所以没有必要一定要 from r
 \section{Lecture 15 - multithreading}
 \begin{lstlisting}[language = C]
 int main(){
-int numAgent = 10;
-int numTicktes = 150;
-InitThreadPackage(false);  // false表示不打印出线程的信息
-for(int agent=0; agent <numAgents; agent++){
-	char name[32];
-	sprintf(name,"Agent %d Thread", agent);
-	ThreadNew(name,SellTickets,2,agent, numTickets/numAgents); //name标记不同的线程
-}
-RunAllThreads();
-return 0;
+	int numAgent = 10;
+	int numTicktes = 150;
+	InitThreadPackage(false);  // false表示不打印出线程的信息
+	for(int agent=0; agent <numAgents; agent++){
+		char name[32];
+		sprintf(name,"Agent %d Thread", agent);
+		ThreadNew(name,SellTickets,2,agent, numTickets/numAgents); //name标记不同的线程
+	}
+	RunAllThreads();
+	return 0;
 }
 
 void SellTickets(int agentID, int numTicketToSell){
-while (numTiketsToSell > 0){
-	printf("Agent %d sells a ticket.\n", agentID);
-	numTicketsToSell --;
-	if(RandomChance(0.1))
-ThreadSleep(1000);	 //0.1的概率 暂停1000毫秒
-}
-printf("Agent %d: All done.\n", agentID);
+	while(numTiketsToSell > 0){
+		printf("Agent %d sells a ticket.\n", agentID);
+		numTicketsToSell --;
+		if(RandomChance(0.1)){
+			ThreadSleep(1000);	 //0.1的概率 暂停1000毫秒
+		}
+	}
+	printf("Agent %d: All done.\n", agentID);
 }
 \end{lstlisting}
 一个线程在执行SellTickets 的时候, 是可能被打断的, 然后处理器去执行其他的线程
@@ -1017,9 +1018,9 @@ C语言语句都不是atomic, 因为一个C语句会被翻译成好几个汇编�
 //让所有的agents 共享tickets
 \begin{lstlisting}[language = C]
 void SellTicktes(int agent, int *numTickets){
-while( *numTickets > 0){
-	(*numTickets) --;
-}//critical region, 这while 循环应该是一个transaction, 不能让其他线程交叉进来
+	while(*numTickets > 0){
+		(*numTickets) --;
+	}//critical region, 这while 循环应该是一个transaction, 不能让其他线程交叉进来
 }
 
 ThreadNew(name,SellTickets,2,agent, &numTickets);
@@ -1029,28 +1030,28 @@ ThreadNew(name,SellTickets,2,agent, &numTickets);
 //形成一个transaction
 \begin{lstlisting}[language = C]
 int main(){
-int numAgent = 10;
-int numTicktes = 150;
-Semaphore lock = SemaphoreNew(---, 1);  //第一个参数没有提到
-InitThreadPackage(false);  // false表示不打印出线程的信息
-for(int agent=0; agent <numAgents; agent++){
-	char name[32];
-	sprintf(name,"Agent %d Thread", agent);
-	ThreadNew(name, SellTickets, 3, agent, &numTickets, lock);
-}
-RunAllThreads();
-return 0;
+	int numAgent = 10;
+	int numTicktes = 150;
+	Semaphore lock = SemaphoreNew(---, 1);  //第一个参数没有提到
+	InitThreadPackage(false);  // false表示不打印出线程的信息
+	for(int agent=0; agent < numAgents; agent++){
+		char name[32];
+		sprintf(name,"Agent %d Thread", agent);
+		ThreadNew(name, SellTickets, 3, agent, &numTickets, lock);
+	}
+	RunAllThreads();
+	return 0;
 }
 
 void SellTickets(int agent, int *numTickets, Semaphore lock){
-while(true){
-	SemaphoreWait(lock);
-if(*numTickets == 0 ) break; //如果为0, 立刻跳出循环并增加信号量
-(*numTickets) --;
-printf("....");
-SemaphoreSignal(lock);
-}
-SemaphoreSignal(lock);
+	while(true){
+		SemaphoreWait(lock);
+		if(*numTickets == 0 ) break; //如果为0, 立刻跳出循环并增加信号量
+		(*numTickets) --;
+		printf("....");
+		SemaphoreSignal(lock);
+	}
+	SemaphoreSignal(lock); // safe case operation
 }
 \end{lstlisting}
 
@@ -1061,13 +1062,10 @@ Semaphore lock = SemaphoreNew(---, 1);
 //初始化为1,表示任一时刻, 只允许一个人进入critical region
 
 \begin{lstlisting}[language = C]
-SemaphoreWait(lock);  //减一操作 atomic --
-SemaphoreSignal(lock); //加一操作 atomic ++
+SemaphoreWait(lock);  //减一操作 atomic
+SemaphoreSignal(lock); //加一操作 atomic
 \end{lstlisting}
-由于信号量不允许有非负整数变为负整数\\
-当一个SemaphoreWait 发现一个 信号量为0 时, 他不会将其减为-1, 而是会等待, 并立即放弃处理器的控制权, 直到他检测到这个信号量被其他的进程作用SemaphoreSignal而变为正整数
-
-如果我们当初将lock 初始化为0 的话, 因为已经到0 了, 不能再继续进行减一操作了, 所以所有的线程都会认为有某个线程占用这个lock, 导致所有的线程都在等待, 从而形成一个\textbf{死锁dead lock}
+由于信号量不允许有非负整数变为负整数, 当一个SemaphoreWait 发现一个 信号量为0 时, 他不会将其减为-1, 而是会等待, 并立即放弃处理器的控制权, 直到他检测到这个信号量被其他的进程作用SemaphoreSignal而变为正整数
 
 \section{Lecture 16}
 考虑只有2 个agents 的情况
@@ -1077,39 +1075,41 @@ SemaphoreSignal(lock); //加一操作 atomic ++
 	\caption{编程范式 多线程 堆栈}\label{fig.multi-thread.heap-stack}
 \end{figure}
 
-如图\ref{fig.编程范式.多线程.堆栈}中所示, 当一个线程被激活时, 他会获得进程的堆栈的副本, 然后这个线程运行, 然后运行之后, 再将线程的堆栈(共享信息)\\覆盖进程的堆栈中的共享信息, 因为在线程的运行过程中, 会对进行的共享信息进行修改, 所以必须同步到进程.\\
-例如这里的情况, 当一个agent 售出一张票时, 他必须将进程的堆栈中的数据进行更新\\
+如图\ref{fig.multi-thread.heap-stack}中所示, 当一个线程被激活时, 他会获得进程的堆栈的副本, 然后这个线程运行, 然后运行之后, 再将线程的堆栈(共享信息)覆盖进程的堆栈中的共享信息.
+因为在线程的运行过程中, 会对进行的共享信息进行修改, 所以必须同步到进程.
+例如这里的情况, 当一个agent 售出一张票时, 他必须将进程的堆栈中的数据进行更新.
 
 \subsection{Writer and reader}
-假设一台html server 与一个一台client browser
-常见情况: 当一个页面加载到大概75\% 的时候, 你知道还有更多的内容. 表示服务器已经传递了75\% 的内容, 所以browser 的渲染过程必须被blocked, 以等待剩下的内容
-下面的例子以上面的说明为指导性原则
-我们使用8 个字符大小的缓冲区来模拟的服务器的填充缓冲区, client 从缓冲区读取数据
+假设一台html server 与一个一台client browser.
+常见情况: 当一个页面加载到大概75\% 的时候, 你知道还有更多的内容. 表示服务器已经传递了75\% 的内容, 所以browser 的渲染过程必须被blocked, 以等待剩下的内容.
+下面的例子以上面的说明为指导性原则, 我们使用8 个字符大小的缓冲区来模拟的服务器的填充缓冲区, client 从缓冲区读取数据
 
 \begin{lstlisting}[language = C]
 char buffer[8];
 int main(){
-InitThreadPackage(false);
-ThreadNew("writer", writer, 0);
-ThreadNew("reader", reader, 0);
-RunAllThreads();
+	InitThreadPackage(false);
+	ThreadNew("writer", writer, 0);
+	ThreadNew("reader", reader, 0);
+	RunAllThreads();
 }
 
 void writer(){
-for (int i=0; i<40; i++){
-	char c=PrepareRandomChar();
-	buffer[i%8] = c;
-}
+	for(int i=0; i<40; i++){
+		char c = PrepareRandomChar();
+		buffer[i % 8] = c;
+	}
 }
 
 void reader(){
-for (int i=0; i<40; i++){
-	char c= buffer[i%8] ;
-	ProcessChar(c);
-}
+	for(int i=0; i<40; i++){
+		char c= buffer[i%8] ;
+		ProcessChar(c);
+	}
 }
 \end{lstlisting}
-上面的程序的问题: writer 有可能严重超前于reader,导致有些数据还没有被reader 读取就已经被writer 重新覆盖掉了; 也有可能reader 严重超前于writer, 导致reader 读到了一些乱码, 因为这些位置还没有被writer 填充内容
+上面的程序的问题:
+writer 有可能严重超前于reader, 导致有些数据还没有被reader 读取就已经被writer 重新覆盖掉了;
+也有可能reader 严重超前于writer, 导致reader 读到了一些乱码, 因为这些位置还没有被writer 填充内容.
 
 解决办法: 信号量
 
@@ -1117,40 +1117,42 @@ for (int i=0; i<40; i++){
 char buffer[8];
 Semaphore empty 8; //最开始, 剩余量是8, 表示可以write 8 个字符
 Semaphore full 0; //最开始, 0, 表示可以read 0 个字符
+
 int main(){
-InitThreadPackage(false);
-ThreadNew("writer", writer, 0);
-ThreadNew("reader", reader, 0);
-RunAllThreads();
+	InitThreadPackage(false);
+	ThreadNew("writer", writer, 0);
+	ThreadNew("reader", reader, 0);
+	RunAllThreads();
 }
 
 void writer(){
-for (int i=0; i<40; i++){
-	char c=PrepareRandomChar(empty);
-	SemaphoreWait(empty); //如果empty 可以继续减, 说明还有剩余空间供我们write
-	buffer[i%8] = c;
-SemaphoreSignal(full);
-}
+	for(int i=0; i<40; i++){
+		char c=PrepareRandomChar(empty);
+		SemaphoreWait(empty); //如果empty 可以继续减, 说明还有剩余空间供我们write
+		buffer[i%8] = c;
+		SemaphoreSignal(full);
+	}
 }
 
 void reader(){
-for (int i=0; i<40; i++){
-	SemaphoreWait(full); // 如果full 可以继续减, 说明还有内容供我们read
-	char c= buffer[i%8] ;
-SemaphoreSignal(empty);
-	ProcessChar(c);
-}
+	for(int i=0; i<40; i++){
+		SemaphoreWait(full); // 如果full 可以继续减, 说明还有内容供我们read
+		char c= buffer[i%8];
+		SemaphoreSignal(empty);
+		ProcessChar(c);
+	}
 }
 \end{lstlisting}
-这样最开始的时候 empty=8, 所以在没有reaer 插进来的情况下, writer 可以写8 次, 这时empty=0, 同时full=8, 当writer 想继续写的时候, 发现empty是0, 从而不能继续进行\\
-而只有reader 才能对empty 进行增加的操作, 所以reader 可以执行, 同样, 在没有writer 插进来的情况下, reader 可以连续执行8 次. 这样就完成了一个轮回
 
-如果最开始的时候, writer执行了1 次, empty=7, full=1; reader插进来了, full=1>0, 所以reader可以执行, 执行了1 次之后, empty=8, full=0, 回到了最开始的状态, 但是此时我们已经完成一个字符的写和读取
-
-如果最开始的时候, reader 想执行, 但是发现full=0, 不能继续减下去, 所以只能由writer 先执行.
+\begin{itemize}
+	\item 这样最开始的时候 empty=8, 所以在没有reaer 插进来的情况下, writer 可以写8 次, 这时empty=0, 同时full=8, 当writer 想继续写的时候, 发现empty是0, 从而不能继续进行.
+	\item 而只有reader 才能对empty 进行增加的操作, 所以reader 可以执行, 同样, 在没有writer 插进来的情况下, reader 可以连续执行8 次. 这样就完成了一个轮回
+	\item 如果最开始的时候, writer执行了1 次, empty=7, full=1; reader插进来了, full=1>0, 所以reader可以执行, 执行了1 次之后, empty=8, full=0, 回到了最开始的状态, 但是此时我们已经完成一个字符的写和读取
+	\item 如果最开始的时候, reader 想执行, 但是发现full=0, 不能继续减下去, 所以只能由writer 先执行.
+\end{itemize}
 
 \subsection{哲学家与餐叉的故事- 死锁}
-5 个哲学家
+5 个哲学家, 每两个哲学家之间有一只餐叉. 假设必须用两只餐叉吃东西, 他们只能使用自己左右手边的那两只餐叉.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[scale = 0.4]{multi-thread_philo}\\
@@ -1161,36 +1163,45 @@ think, eat, think, eat, think, eat, go to bed;
 \begin{lstlisting}[language = C]
 Semaphore forks[]= {1, 1, 1, 1, 1}; //每个信号量表示了某项资源的可用性
 void Philosopher(int id){
-for(int i=0; i<3; i++){
-	Think();
-	SemaphoreWait(forks[id]);
-	SemaphoreWait(forks[(id+1)%5]);
-	Eat();
-SemaphoreSignal(forks[id]);
-	SemaphoreSignal(forks[(id+1)%5]);
-}
+	for(int i=0; i<3; i++){
+		Think();
+		SemaphoreWait(forks[id]);
+		SemaphoreWait(forks[(id+1)%5]);
+		Eat();
+		SemaphoreSignal(forks[id]);
+		SemaphoreSignal(forks[(id+1)%5]);
+	}
 }
 \end{lstlisting}
 在上面的这个函数中, 存在着一个dead lock 死锁的情形:\\
-第1 个哲学家拿到了逆时针方向(右边)的餐叉; 这个时候, 处理器切换到了第2 个哲学家, 他也拿到了逆时针方向的餐叉, 依次下去, 所有人都拿到了逆时针方向的餐叉, 也就是说5 个人都拿到了餐叉. 在这个时候, 任何一个人想拿起第二把餐叉, 发现信号量为0, 于是所有人都失去处理器的控制权, 所有人都在等待左边人持有的某些资源. 这样就形成了一个死锁.
+第1 个哲学家拿到了逆时针方向(右边)的餐叉; 这个时候, 处理器切换到了第2 个哲学家, 他也拿到了逆时针方向的餐叉, 依次下去, 所有人都拿到了逆时针方向的餐叉, 也就是说5 个人都拿到了餐叉.
+在这个时候, 任何一个人想拿起第二把餐叉, 发现信号量为0, 于是所有人都失去处理器的控制权, 所有人都在等待左边人持有的某些资源. 这样就形成了一个死锁.
 \textbf{所以当允许5 个人尝试去吃, 就可能形成死锁}
 
-因为我们有5 个叉子, 所以任意时刻, 最多只有2 个人可以同时就餐\\
-允许4 个尝试去吃
+因为我们有5 个叉子, 所以任意时刻, 最多只有2 个人可以同时就餐, 允许4 个尝试去吃
+
+系统中有$N$个并发进程. 若规定每个进程需要申请$R$个某类资源, 则当系统提供$K＝N \times (R-1)+1$个同类资源时,无论采用何种方式申请使用,一定不会发生死锁.
+分析:在最坏的情况下,每个进程都申请到$R-1$个同类资源, 此时它们均阻塞. 试想若系统再追加一个同类资源, 则 $N$ 个进程中必有一个进程获得$R$个资源,死锁解除.
+结合以上分析,哲学家就餐问题可以被抽象描述为:系统中有$5$个并发进程, 规定每个进程需要申请$2$个某类资源. 若系统提供5个该类资源, 在保证一定不会产生死锁的前提下,最多允许多少个进程并发执行?
+假设允许$N$个进程. 将$R=2,K=5$带入上述公式, 有$N*(2-1)+1=5$所以 $N=4$.也就意味着,如果在任何时刻系统最多允许$4$个进程并发执行, 则一定不会发生死锁.
+大多数哲学家就餐问题死锁阻止算法都是基于这个结论.
+
+这个问题还有其他解决方案, \href{http://blog.csdn.net/Sunflowerfiona/article/details/52756819}{哲学家就餐问题的分析与解决方案}, wikipedia 上也有.
+
 \begin{lstlisting}[language = C]
 Semaphore forks[]= {1, 1, 1, 1, 1};
 Semaphore numAllowedToEat = 4;
 void Philosopher(int id){
-for(int i=0; i<3; i++){
-	Think();
-SemaphoreWait(numAllowedToEat );
-	SemaphoreWait(forks[id]);
-	SemaphoreWait(forks[(id+1)%5]);
-	Eat();
-SemaphoreSignal(forks[id]);
-	SemaphoreSignal(forks[(id+1)%5]);
-SemaphoreSignal(numAllowedToEat );
-}
+	for(int i=0; i<3; i++){
+		Think();
+		SemaphoreWait(numAllowedToEat );
+		SemaphoreWait(forks[id]);
+		SemaphoreWait(forks[(id+1)%5]);
+		Eat();
+		SemaphoreSignal(forks[id]);
+		SemaphoreSignal(forks[(id+1)%5]);
+		SemaphoreSignal(numAllowedToEat );
+	}
 }
 \end{lstlisting}
 这样, 当有4 个人尝试的时候, 可以将numAllowedToEat 由4 减为0, 当地5 个人尝试的时候就会失败, 所以这样我么就能保证只有4 个人可以尝试成功.
@@ -1204,138 +1215,149 @@ That's the minimum amount of a fix that I need to implant into the code to make 
 简化版本的例子
 \begin{lstlisting}[language = C]
 int downloadSingleFile(const char *server, const char *path);
+// 返回值: 下载的字节数
 \end{lstlisting}
-返回值: 下载的字节数
 
+需求: 获取所有下载的文件的总的字节数
 \begin{lstlisting}[language = C]
 int downloadAllFiles(const char *server, const char *files[], int n){ // n files
-int totalBytes = 0;
-Semaphore lock = 1;
-for (int i=0; i<n; i++){
-	ThreadNew(-, downloadHelper, 4, server, files[i], totalBytes, lock);
-}
-return totalBytes;
+	int totalBytes = 0;
+	Semaphore lock = 1;
+	for(int i=0; i<n; i++){
+		ThreadNew(-, downloadHelper, 4, server, files[i], totalBytes, lock);
+	}
+	return totalBytes;
 }
 
 void downloadHelper(const char *server, const char *path, int *numBytes, Semaphore lock){
-int bytesDownloaded = downloadSingleFile(server, path);
-SemaphoreWait(lock);
-(*numBytes) += bytesDownloaded;
-SemaphoreSignal(lock);
+	int bytesDownloaded = downloadSingleFile(server, path);
+	SemaphoreWait(lock);
+	(*numBytes) += bytesDownloaded;
+	SemaphoreSignal(lock);
 }
+\end{lstlisting}
+问题: 创建的下载thread是在后台的, 主线程还是会继续执行, 所以会立刻返回totalBytes, 很有可能是0, 所以需要wait.
 
-
+\begin{lstlisting}[language = C]
 int downloadAllFiles(const char *server, const char *files[], int n){ // n files
-Semaphore childDone = 0;
-int totalBytes = 0;
-Semaphore lock = 1;
-for (int i=0; i<n; i++){
-	ThreadNew(-, downloadHelper, 5, server, files[i], totalBytes, lock, childDone);
-}
-for (int i=0; i<n; i++){
-	SemaphoreWait(childDone);
-} // 等待所有线程完成下载任务, 然后才能return totalBytes
-return totalBytes;
+	Semaphore childDone = 0;
+	int totalBytes = 0;
+	Semaphore lock = 1;
+	for(int i=0; i<n; i++){
+		ThreadNew(-, downloadHelper, 5, server, files[i], totalBytes, lock, childDone);
+	}
+
+	for(int i=0; i<n; i++){
+		SemaphoreWait(childDone);
+	} // 等待所有线程完成下载任务, 然后才能return totalBytes
+	return totalBytes;
 }
 
 void downloadHelper(const char *server, const char *path, int *numBytes, Semaphore lock, Semaphore parentToSignal){
-int bytesDownloaded = downloadSingleFile(server, path);
-SemaphoreWait(lock);
-(*numBytes) += bytesDownloaded;
-SemaphoreSignal(lock);
-SemaphoreSignal(parentToSignal);
+	int bytesDownloaded = downloadSingleFile(server, path);
+	SemaphoreWait(lock);
+	(*numBytes) += bytesDownloaded;
+	SemaphoreSignal(lock);
+	SemaphoreSignal(parentToSignal);
 }
 \end{lstlisting}
 
 \subsection{Ice cream store simulation}
-manager, 检查冰淇淋是否合格\\
-10 - 4- clerks, 制作冰淇淋  [10,40]\\
-10 customers, 每个顾客会买, 随机1 到4 个冰淇淋\\
-1 cashier
-
+Ice cream store 职员
+\begin{itemize}
+	\item 1 manager, 检查冰淇淋是否合格
+	\item 10 - 40 clerks, 制作冰淇淋[10, 40]
+	\item 10 customers, 每个顾客会买, 随机1 到4 个冰淇淋
+	\item 1 cashier
+\end{itemize}
 52 possible threads
 
-\section{Lecture 18} important
+\section{Lecture 18(important)}
 \begin{lstlisting}[language = C]
 int main(){
-int totalCones=0;
-InitThreadPackage();
-SetupSemaphores();
-for (int i=0; i< 10; i++){
-	int numCones = RandomInteger(1,4);
-	ThreadNew(, customer, 1, numCones);
-	totalCones += numCones;
-}
-ThreadNew("cashier",cashier,0);
-ThreadNew("manager", manager, 1, totalCones);
-RunAllThreads();
-FreeSemaphores();
-return 0;
+	int totalCones=0;
+	InitThreadPackage();
+	SetupSemaphores();
+	for(int i=0; i< 10; i++){
+		int numCones = RandomInteger(1,4);
+		ThreadNew(, customer, 1, numCones);
+		totalCones += numCones;
+	}
+	ThreadNew("cashier",cashier,0);
+	ThreadNew("manager", manager, 1, totalCones);
+	RunAllThreads();
+	FreeSemaphores();
+	return 0;
 }
 
-typedef struct {
-bool passed;  // false in default
-Semaphore requested; // initial to 0
-Semaphore finished; // initial to 0
-Semaphore lock; // initial to 1, 只允许一个人进入经理的办公室进行检查
+typedef struct{
+	bool passed;  // false in default
+	Semaphore requested; // initial to 0
+	Semaphore finished; // initial to 0
+	Semaphore lock; // initial to 1, 只允许一个人进入经理的办公室进行检查
 }inspection;
 
 void manager(int totalConesNeeded){
-int numApproved = 0;
-int numInspected = 0;
-while (numApproved < totalConesNeeded){
-	SW(inspection.requested); //SemaphoreWait
-	numInspected ++;
-	inspection.passed = RandomChoose(0,1);
-	if(inspection.passed)
-		numApproved ++;
-	SS(inspection.finished);
-}
+	int numApproved = 0;
+	int numInspected = 0;
+	while(numApproved < totalConesNeeded){
+		SW(inspection.requested); //SemaphoreWait
+		numInspected ++;
+		inspection.passed = RandomChoose(0,1);
+		if(inspection.passed){
+			numApproved++;
+		}
+		SS(inspection.finished);
+	}
 }
 
 void clerk(Semaphore semaTosignal){
-bool passed = false;
-while(!passed){
-	makeCone();
-	SW(inspection.lock);
-	SS(inpection.requested); //如果为0, manager 将被阻塞, 只有clerk做完一个cone, 并且进入经理的办公室,但是这里有一个疑问, 既然已经进入了经理的办公室, 那说明里面没有其他的clerk, 应该说经理可以直接检查, 为什么还需要requeseted 这个信号量呢?
-	SW(inspection.finished);
-	passed = inspection.passed;
-	SS(inspection.lock); //不管通过与否, 都要释放经理办公室的门锁
-}
+	bool passed = false;
+	while(!passed){
+		makeCone();
+		SW(inspection.lock);
+		/* 
+		* 如果为0, manager 将被阻塞, 只有clerk做完一个cone, 并且进入经理的办公室
+		* 但是这里有一个疑问, 既然已经进入了经理的办公室, 那说明里面没有其他的clerk, 应该说经理可以直接检查, 为什么还需要requeseted 这个信号量呢?
+		*/
+		SS(inpection.requested);
+		SW(inspection.finished);
+		passed = inspection.passed;
+		SS(inspection.lock); //不管通过与否, 都要释放经理办公室的门锁
+	}
 	SS(semaToSignal);
 }
 
 void customer(int numCones){
-Semaphore clerksDone; // initial to 0
-for(int i=0; i< numCones; i++){
-	ThreadNew(, clerk, 1, clerksDone);	
-}
-for(int i=0; i< numCones; i++){
-	SW(clerkDone);
-}
-SemaphoreFree(clerksDone);
-WalkToCashier();
-SW(line.lock);
-int place = line.number ++;
-SS(line.lock)
-SS(line.requested);
-SW(line.customers[place]);
+	Semaphore clerksDone; // initial to 0
+	for(int i=0; i< numCones; i++){
+		ThreadNew(, clerk, 1, clerksDone);
+	}
+	for(int i=0; i< numCones; i++){
+		SW(clerkDone);
+	}
+	SemaphoreFree(clerksDone);
+	WalkToCashier();
+	SW(line.lock);
+	int place = line.number ++;
+	SS(line.lock)
+	SS(line.requested);
+	SW(line.customers[place]);
 }
 
 typedef struct{
-int number; // 0
-Semaphore requested; //initial to 0
-Semaphore customers[10]; //
-Semaphore lock; // initial to 1对number的lock, 防止race condition
+	int number; // 0
+	Semaphore requested; //initial to 0
+	Semaphore customers[10]; //
+	Semaphore lock; // initial to 1对number的lock, 防止race condition
 }line;
 
 void cashier(){
-for(int i=0; i<10, i++){
-SW(line.requested);
-checkout(i);
-SS(line.customers[i];
-}
+	for(int i=0; i<10, i++){
+		SW(line.requested);
+		checkout(i);
+		SS(line.customers[i];
+	}
 }
 \end{lstlisting}
 
@@ -1836,3 +1858,4 @@ User types
 data Bool = True | False
 \end{verbatim}
 \end{document}
+
