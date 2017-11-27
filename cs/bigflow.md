@@ -7,6 +7,10 @@ Bigflow Python能够将Pipeline映射成为不同分布式计算引擎上的计�
 from bigflow import base, transforms, input, output
 pipeline = base.Pipeline.create('local')
 ```
+
+# API
+- `pipeline.add_file(path, path, executable=True)`: 经过测试, 两个path 最好一致, 可执行文件, 需要给可执行权限
+
 # P类型(PType)
 - PCollection – 并行化的Python list
 - PObject – 并行化的Python单个变量
@@ -102,6 +106,10 @@ def fn(line):
 txt.flat_map(fn)
 ```
 用 yield 组成一个generator
+
+```Python
+transforms.pipe(txt, "awk -F '\t' '{if(NF == 2) print $1}'")
+```
 
 # lazy variable
 
