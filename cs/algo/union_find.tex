@@ -1,0 +1,78 @@
+\chapter{Union-Find 并查集}
+并查集是一种树型的数据结构,用于处理一些不相交集合(Disjoint Sets)的合并及查询问题.
+有一个联合-查找算法(union-find algorithm)定义了两个用于此数据结构的操作:
+\begin{itemize}
+\item Find:确定元素属于哪一个子集.它可以被用来确定两个元素是否属于同一子集.
+\item Union:将两个子集合并成同一个集合.
+\end{itemize}
+由于支持这两种操作,一个不相交集也常被称为联合-查找数据结构(union-find data structure)或合并-查找集合(merge-find set).其他的重要方法,MakeSet,用于建立单元素集合.有了这些方法,许多经典的划分问题可以被解决.
+
+为了更加精确的定义这些方法,需要定义如何表示集合.一种常用的策略是为每个集合选定一个固定的元素,称为代表,以表示整个集合.
+在并查集森林中,每个集合的代表即是集合的根节点.
+
+\begin{lstlisting}[language = C]
+// 一开始我们假设元素都是分别属于一个独立的集合里的
+function MakeSet(x)
+	x.parent := x
+
+// "查找"根据其父节点的引用向根行进直到到底树根.
+function Find(x)
+	if x.parent == x
+		return x
+	else
+		return Find(x.parent)
+
+// "联合"将两棵树合并到一起,这通过将一棵树的根连接到另一棵树的根.
+function Union(x, y)
+	xRoot := Find(x)
+	yRoot := Find(y)
+	xRoot.parent := yRoot
+\end{lstlisting}
+
+这是并查集森林的最基础的表示方法,这个方法不会比链表法好,这是因为创建的树可能会严重不平衡,然而,可以用两种办法优化.
+\begin{enumerate}
+\item "按秩合并",即总是将更小的树连接至更大的树上.因为影响运行时间的是树的深度,更小的树添加到更深的树的根上将不会增加秩除非它们的秩相同.在这个算法中,术语"秩"替代了"深度",因为同时应用了路径压缩时(见下文)秩将不会与高度相同.
+	单元素的树的秩定义为$0$,当两棵秩同为$r$的树联合时,它们的秩$r+1$.只使用这个方法将使最坏的运行时间提高至每个MakeSet,Union或Find操作 $O(\log n)$.
+\begin{lstlisting}[language = C]
+function Union(x, y)
+	xRoot := Find(x)
+	yRoot := Find(y)
+	if xRoot == yRoot
+		return
+
+	// x和y不在同一个集合,合并它们.
+	if xRoot.rank < yRoot.rank
+		xRoot.parent := yRoot
+	else if xRoot.rank > yRoot.rank
+		yRoot.parent := xRoot
+	else
+		yRoot.parent := xRoot
+		xRoot.rank := xRoot.rank + 1
+\end{lstlisting}
+\item "路径压缩",是一种在执行"查找"时扁平化树结构的方法.关键在于在路径上的每个节点都可以直接连接到根上,他们都有同样的表示方法.为了达到这样的效果,Find递归地经过树,改变每一个节点的引用到根节点.
+	得到的树将更加扁平,为以后直接或者间接引用节点的操作加速
+\begin{lstlisting}[language = C]
+function Find(x)
+	if x.parent != x
+		x.parent := Find(x.parent)
+	return x.parent
+\end{lstlisting}
+\end{enumerate}
+这两种方法的优势互补,同时使用二者的程序每个操作的平均时间仅为$O(\alpha(n))$, $\alpha(n)$是$n = f(x) = A(x,x)$的反函数,其中$A$是急速增加的阿克曼函数.
+因为$\alpha(n)$是其的反函数,故$\alpha(n)$在$n$十分巨大时还是小于$5$.因此,平均运行时间是一个极小的常数.
+
+实际上,这是渐近最优算法:Fredman和Saks在1989年解释了$\Omega(\alpha(n))$的平均时间内可以获得任何并查集.
+
+\section{Fonction d'Ackermann}
+La fonction d'Ackermann est un exemple simple de fonction r\'ecursive non r\'ecursive primitive(非原始递归函数)
+$$
+A(m,n) =
+\begin{cases}
+	n + 1 & {\mbox{si }} m = 0 \\
+	A(m-1, 1) & {\mbox{si }} m > 0{\mbox{ et }}n = 0 \\
+	A(m-1, A(m, n-1)) & {\mbox{si }} m > 0{\mbox{ et }}n > 0
+\end{cases}
+$$
+由于函数$f(n)=A(n,n)$的增加速率非常快,因此其反函数$f^{−1}$则会以非常慢的速度增加,阿克曼反函数常用$\alpha$表示.
+因为$A(4,4)$的数量级约等于$2^{{2^{{10^{{19729}}}}}}$,因此对于一般可能出现的数值$n$,$\alpha(n)$均小于$5$.
+

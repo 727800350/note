@@ -1,5 +1,5 @@
-\section{Bloom filter}
-\subsection{Intro}
+\chapter{Bloom filter}
+\section{Intro}
 A Bloom filter is a space-efficient probabilistic data structure, conceived by Burton Howard Bloom in 1970, that is used to test whether an element is a member of a set.
 
 Here is the formal set-up: we want to represent $n$-element sets $S = {s_1, \ldots, s_n}$ from a very large universe $U$, with $|U| = u >> n$. 
@@ -24,7 +24,7 @@ Removing an element from this simple Bloom filter is impossible because false ne
 An element maps to $k$ bits, and although setting any one of those $k$ bits to zero sufices to remove the element, it also results in removing any other elements that happen to map onto that bit.
 Since there is no way of determining whether any other elements have been added that affect the bits for an element to be removed, clearing any of the bits would introduce the possibility for false negatives.
 
-\subsection{Probability of false positives}
+\section{Probability of false positives}
 Assume that a hash function selects each array position with equal probability.
 If $m$ is the number of bits in the array, the probability that a certain bit is not set to 1 by a certain hash function during the insertion of an element is $$1 - \dfrac{1}{m}$$
 If $k$ is the number of hash functions, the probability that the bit is not set to 1 by any of the hash functions is $$(1 - \dfrac{1}{m})^k$$
@@ -89,7 +89,7 @@ The formula $m = -\dfrac{n \ln p}{(\ln 2)^2}$ is approximate for three reasons.
 \item Third, of most concern, it assumes that $k = \dfrac{m}{n} \ln 2$ is fortuitously integral.
 \end{enumerate}
 
-\subsection{Application example}
+\section{Application example}
 A typical application of Bloom filters is web caching.
 An ISP may keep several levels of carefully located caches to speed up the loading of commonly viewed web pages, in particular for large data objects, such as images and videos.
 If a client requests a particular URL, then the service needs to determine quickly if the requested page is in one of its caches.

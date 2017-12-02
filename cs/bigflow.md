@@ -8,6 +8,27 @@ from bigflow import base, transforms, input, output
 pipeline = base.Pipeline.create('local')
 ```
 
+# IO
+`input.TextFile(*path, **options)`
+
+- path 可以为本地路径(相对或绝对), 也可以为hadoop集群路径
+	- `pipeline.read(input.TextFile('hdfs://host:port/my_hdfs_file'))`
+	- `pipeline.read(input.TextFile('hdfs:///multi_path1', 'hdfs:///multi_path2'))`
+	- `pipeline.read(input.TextFile(*['hdfs:///multi_path1', 'hdfs:///multi_path2']))`
+	- `pipeline.read(input.TextFile('./local_file_by_rel_path/'))`
+	- `pipeline.read(input.TextFile('/home/work/local_file_by_abs_path/'))`
+- options
+	- partitioned: 默认为False，如果置为True，则返回的数据集为一个ptable, ptable的key是split info(类似于hadoop中的`$map_input_file` 环境变量, value这个split上的全部数据所组成的pcollection.
+
+`output.TextFile(path, **options)`
+
+- path 和 input 一样, 可以为本地或集群路径
+- 可以串一些选项, 比如sort, partition
+	- `sort(reverse=False)`: 根据数据实际值对数据进行排序(默认为升序)
+	- `sort_by(key_read_fn=None, reverse=False)`
+	- `partition(n=None, partition_fn=None)`: 对输出结果进行分组
+	- eg: `output.TextFile("your output dir").sort().partition(n=2000, partition_fn=lambda x, n: hash(x.split("\t", 1)[0]) % n)`
+
 # API
 - `pipeline.add_file(path, path, executable=True)`: 经过测试, 两个path 最好一致, 可执行文件, 需要给可执行权限
 

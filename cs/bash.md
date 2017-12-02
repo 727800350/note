@@ -109,11 +109,10 @@ Uppercase to lowercase:
 
 - wget 一个目录: `wget  -r ftp://xxx_path_xxx ./`
 
-## 远程主机相关的
-`ssh -o StrictHostKeyChecking=no user@ip "bash shell.sh" < /dev/null` 登陆一台机器, 并在登录后的机器上执行命令.
-但是这个命令的stdout 仍然在发起ssh 命令的机器的stdout, stderr 同样在发起ssh 命令的机器的stderr 上.  
-当加上 `bash shell.sh 1>out 2>log` 时, 才会将stdout, stderr 输出到ip 的机器上.  
-加上/dev/null 是为了避免可能的干扰
+- `ssh -o StrictHostKeyChecking=no user@ip "bash shell.sh" < /dev/null` 登陆一台机器, 自动yes, 并在登录后的机器上执行命令.
+	- [StrictHostKeyChecking=no ssh: automatically accept keys](https://askubuntu.com/questions/123072/ssh-automatically-accept-keys).
+	- 在远程执行的命令的stdout 和 stderr 是发起ssh 命令的机器.
+	- 加上`/dev/null` 是为了避免可能的干扰
 
 添加ssh 公钥到github
 
@@ -122,15 +121,10 @@ Uppercase to lowercase:
 1. 测试添加是否成功: `ssh -T git@github.com`
 
 putty connection refused error
-```
-sudo service sshd status
-```
+`sudo service sshd status`
 发现SSH: Could not load host key: `/etc/ssh/ssh_host_rsa_key`  
 因为刚安装ssh之后, 这个文件不存在, 我们只是在`$HOME/.ssh` 中产生了key, 而没有在`/etc/ssh`中产生key.  
-解决方法:
-```
-sudo ssh-keygen -A
-```
+解决方法: `sudo ssh-keygen -A`
 
 ## iptables
 iptables, 但更正确的名称是 iptables/netfilter.

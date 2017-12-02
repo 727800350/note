@@ -1280,10 +1280,10 @@ int main(){
 	SetupSemaphores();
 	for(int i=0; i< 10; i++){
 		int numCones = RandomInteger(1,4);
-		ThreadNew(, customer, 1, numCones);
+		ThreadNew("customer", customer, 1, numCones); // 1 表示有一个参数
 		totalCones += numCones;
 	}
-	ThreadNew("cashier",cashier,0);
+	ThreadNew("cashier", cashier, 0);
 	ThreadNew("manager", manager, 1, totalCones);
 	RunAllThreads();
 	FreeSemaphores();
@@ -1292,8 +1292,8 @@ int main(){
 
 typedef struct{
 	bool passed;  // false in default
-	Semaphore requested; // initial to 0
-	Semaphore finished; // initial to 0
+	Semaphore requested; // initial to 0, 经理block在这个信号上, 等待clerk semaphorewait
+	Semaphore finished; // initial to 0, clerk block 在这个信号上, 等待经理的决定(通过或者不通过)
 	Semaphore lock; // initial to 1, 只允许一个人进入经理的办公室进行检查
 }inspection;
 
@@ -1302,8 +1302,8 @@ void manager(int totalConesNeeded){
 	int numInspected = 0;
 	while(numApproved < totalConesNeeded){
 		SW(inspection.requested); //SemaphoreWait
-		numInspected ++;
-		inspection.passed = RandomChoose(0,1);
+		numInspected++;
+		inspection.passed = RandomChance(0, 1);
 		if(inspection.passed){
 			numApproved++;
 		}
@@ -1317,8 +1317,9 @@ void clerk(Semaphore semaTosignal){
 		makeCone();
 		SW(inspection.lock);
 		/* 
-		* 如果为0, manager 将被阻塞, 只有clerk做完一个cone, 并且进入经理的办公室
-		* 但是这里有一个疑问, 既然已经进入了经理的办公室, 那说明里面没有其他的clerk, 应该说经理可以直接检查, 为什么还需要requeseted 这个信号量呢?
+		* 为什么同时需要lock 和 requested 两个信号?
+		* 如果没有lock, 那么可能有多个cleck 会同时进入到经理的办公室, 违反了题设
+		* 如果没有requested, manager 就会一直循环在while 里面, 也就会一直更新passed, 那么cleck获取的passed 就有问题了
 		*/
 		SS(inpection.requested);
 		SW(inspection.finished);
@@ -1330,10 +1331,10 @@ void clerk(Semaphore semaTosignal){
 
 void customer(int numCones){
 	Semaphore clerksDone; // initial to 0
-	for(int i=0; i< numCones; i++){
-		ThreadNew(, clerk, 1, clerksDone);
+	for(int i = 0; i < numCones; i++){
+		ThreadNew("clerk", clerk, 1, clerksDone);
 	}
-	for(int i=0; i< numCones; i++){
+	for(int i = 0; i < numCones; i++){
 		SW(clerkDone);
 	}
 	SemaphoreFree(clerksDone);

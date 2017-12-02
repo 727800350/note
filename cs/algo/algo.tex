@@ -1,5 +1,5 @@
 % !Mode:: "TeX:UTF-8"
-\documentclass{article}
+\documentclass{book}
 \input{../../public/package}
 \input{../../public/article}
 \input{../../public/math}
@@ -11,11 +11,17 @@
 \tableofcontents
 \newpage
 
+\part{Data Structure}
 \include{bloom_filter}
+\include{union_find}
+\include{succinct}
+
+\part{Language}
+\include{coroutine}
+
+\part{CV}
 \include{SIFT}
 \include{bag_of_words}
-\include{succinct}
-\include{coroutine}
 
 \end{document}
 
