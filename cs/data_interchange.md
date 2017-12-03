@@ -50,7 +50,7 @@ double, float, int32, int64, uint32, uint64, sint32, sint64, fixed32, fixed64, s
 - sint32/64: Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32/64.
 - fixed32: Always four bytes. More efficient than uint32 if values are often greater than 228.
 - bytes: May contain any arbitrary sequence of bytes.
-- map<key_type, value_type> map_field = N; where the key_type can be any integral or string type. The value_type can be any type.
+- `map<key_type, value_type> map_field = N`; where the key type can be any integral or string type. The value type can be any type.
 
 ### required / optional / repeated
 Each field in the message definition has a unique numbered tag.
@@ -65,6 +65,34 @@ Remember to leave some room for frequently occurring elements that might be adde
 - repeated: this field can be repeated any number of times (including zero) in a well-formed message. The order of the repeated values will be preserved.
 
 `package foo.bar` 在C++ 中会被转换为 `foo::bar` namespace
+
+### Service
+如果想要将消息类型用在RPC(远程方法调用)系统中,可以在.proto文件中定义一个RPC服务接口,protocol buffer编译器将会根据所选择的不同语言生成服务接口代码及存根.
+如,想要定义一个RPC服务并具有一个方法,该方法能够接收 SearchRequest并返回一个SearchResponse,此时可以在.proto文件中进行如下定义:
+```
+service SearchService{
+	rpc Search(SearchRequest) returns (SearchResponse);
+}
+```
+
+RPC的调用过程(Stub这个术语应该是借鉴了JavaRMI):
+
+1. Client向ClientStub发送请求(Call).
+1. ClientStub对请求参数进行封包(也叫Marshalling),发出系统调用,OS向S端发送消息.
+1. S端接收到消息后,把封包消息传递给ServerStub. ServerStub解包(UnMarshalling).
+1. ServerStub调用S端的子程序.处理完毕后,以同样的方式向C端发送结果. 注:ServerStub又叫Skeleton.
+
+[什么是Stub](https://en.wikipedia.org/wiki/Stub_(distributed_computing))?
+
+Stub是一段代码,用来转换RPC过程中传递的参数.处理内容包括不同OS之间的大小端问题.另外,Client端一般叫Stub,Server端一般叫Skeleton.
+生产方式:1)手动生成,比较麻烦,2)自动生成,使用IDL(InterfaceDescriptionLanguate),定义C/S的接口.
+
+### Options
+在定义.proto文件时能够标注一系列的options.
+Options并不改变整个文件声明的含义,但却能够影响特定环境下处理方式.完整的可用选项可以在google/protobuf/descriptor.proto找到.
+
+`cc_generic_services`, `py_generic_services`: 在C++,python中protocol buffer编译器是否应该基于服务定义产生抽象服务代码.由于历史遗留问题,该值默认是true
+- `option cc_generic_services = true;`
 
 ### 编译使用
 1. 生成类文件
@@ -360,7 +388,7 @@ rabbitmqctl delete_user user
 rabbitmqctl list_users
 rabbitmqctl change_password <username> <newpassword>
 
-Mnesia的设计要求如下：
+Mnesia的设计要求如下:
 1.快速实时的键(key)/值(value)查找
 2.主要用于运营和维护的非实时复杂查询
 3.由于分布式应用导致的分布式数据

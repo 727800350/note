@@ -1,11 +1,5 @@
 Unix network Programming note
 
-Aggregated List of Libraries
-
-- Boost.Asio is really good, though the documentation is scarce.
-- ZeroMQ (C++)
-- libevent
-
 # TCP
 Note that TCP does not guarantee that the data will be received by the other endpoint, as this is impossible. It delivers data to the other endpoint if possible, and notifies the user (by giving up on retransmissions and breaking the connection) if it is not possible. Therefore, TCP cannot be described as a 100% reliable protocol; it provides **reliable delivery of data or reliable notification of failure.**
 
@@ -238,6 +232,25 @@ The value of options is an OR of zero or more of the following constants:
 不过一般实现的时候读操作不需要设置为非堵塞, 上面已经说过读操作只有在没有数据的时候才会阻塞, select的判断成功说明存在数据.
 所以即使是阻塞读在这种情况下也是可以做到非阻塞的效果,就没有必要设置成非阻塞的情况了.
 
+## 阻塞,无锁,无等待的区别
+- 阻塞,blocking
+	一个方法被称为阻塞的,即这个方法在其演进过程中不能正常运行直到其他(占有锁的)线程释放.
+	也就是普通的synchronized方法,同一时间内只有一个线程占有了锁,其他线程只能等待.但是这个占有锁的线程并不一定真的在工作(可能被挂起了).
+- 无锁,lock-free
+	An algorithm is lock-free if, when the program threads are run for a sufficiently long time, at least one of the threads makes progress (for some sensible definition of progress).
+	如果所有线程运行了足够长时间后,至少有一个线程能获得进展,那么这个算法是无锁的.
+	用人话讲就是:系统中无论何时,始终有一个线程在工作.
+- 无等待,wait-free
+	An algorithm is wait-free if every operation has a bound on the number of steps the algorithm will take before the operation completes.
+	假如一个方法是无等待的,那么它保证了每一次调用都可以在有限的步骤内结束.
+	用人话讲就是,系统中的所有线程,都会在有限时间内结束,无论如何也不可能出现饿死(starving)的情况.
+
+再通俗一点的说:
+
+- 阻塞算法可能会出现整个系统都挂起的情况(占有锁的线程被中断,那么所有试图争用这个锁的线程会被挂起),系统中的所有线程全部饿死
+- 无锁算法可以保证系统中至少有一个线程处于工作状态,但是还是可能有线程永远抢不到资源而被饿死
+- 无等待算法保证系统中的所有线程都能处于工作状态,没有线程会被饿死,只要时间够,所有线程都能结束.
+
 ## IO复用模型
 I/O多路复用通过一种机制, 可以监视多个描述符, 一旦某个描述符就绪(一般是读就绪或者写就绪), 能够通知程序进行相应的读写操作.
 但select, poll, epoll本质上都是同步I/O, 因为他们都需要在读写事件就绪后自己负责进行读写, 也就是说这个读写过程是阻塞的
@@ -354,108 +367,14 @@ Epoll的2种工作方式- Level Triggered(LT)和Edge Triggered(ET)
 
 example: lib/connect_timeo.c, advio/dgclitimeo.c, lib/readable_timeo.c
 
-# 守护进程和inetd 超级服务器
-要启动一个守护进程,可以采取以下的几种方式:
-
-1. 在系统期间通过系统的初始化脚本启动守护进程.这些脚本通常在目录etc/rc.d 下, 通过它们所启动的守护进程具有超级用户的权限.系统的一些基本服务程序通常都是通过这种方式启动的.
-2. 很多网络服务程序是由inetd 守护程序启动的. 它监听各种网络请求,如telnet,ftp 等,在请求到达时启动相应的服务器程序(telnet server, ftp server 等).
-3. 由cron 定时启动的处理程序.这些程序在运行时实际上也是一个守护进程.
-4. 由at 启动的处理程序.
-5. 守护程序也可以从终端启动,通常这种方式只用于守护进程的测试,或者是重起因某种原因而停止的进程.
-6. 在终端上用nohup 启动的进程.用这种方法可以把所有的程序都变为守护进程
-
-## 守护进程启动实例
-```C++
-#include"unp.h"
-#include<syslog.h>
- 
-#define MAXFD 64
-extern int daemon_proc; /* defined in error.c */
- 
-int daemon_init(const char *pname, int facility){
-	int i;
-	pid_t pid;
-
-	//若本程序从前台作为一个shell命令启动,当父进程终止时,shell会认为该命令已执行完毕.这样子进程就自动在后台运行
-	//另外,子进程继承了父进程的进程组ID, 这就保证了子进程不是一个进程组的头进程, 这是接下去调用setsid的必要条件
-	if ((pid = Fork()) < 0)
-		return (-1); //error
-	else if (pid)
-		_exit(1);   /* parent terminates */
-
-	/* child 1 continues... */
-
-	// 当前进程变为新会话的会话头进程以及新进程组的进程组头进程, 从而不再有控制终端
-	if (setsid() < 0)   /* become session leader */
-		return (-1);
-
-	// 这里必须忽略SIGHUP信号, 因为当会话头进程终止时(即首次fork 产生的子进程) 终止时, 
-	// 其会话中的所有进程(即在此fork产生的子进程) 都收到SIGHUP信号    
-	Signal(SIGHUP, SIG_IGN);
-
-	// 再次调用fork的目的是确保本守护进程即使将来打开了一个终端设备, 也不会自动获得控制终端.
-	// 因为当没有控制终端的会话头进程打开一个终端设备时, 该终端自动成为这个会话头进程的控制终端. 
-	// 然后再次调用fork 之后, 我们确保新的子进程不再是一个会话头进程, 从而不能自动获得一个控制终端
-	if ((pid = Fork()) < 0)
-		return (-1);
-	else if (pid)
-		_exit(0);   /* child 1 terminates */
-
-	/* child 2 continues... */
-
-	daemon_proc = 1;/* for err_XXX() functions */
-
-	// 使用fork创建的子进程继承了父进程的当前工作目录, 切换到根目录, 可以避免将来的文件系统卸载问题
-	chdir("/"); /* change working directory */
-
-	/* close off file descriptors */
-	for (i = 0; i < MAXFD; i++)
-		close(i);
-
-	/* redirect stdin, stdout, and stderr to /dev/null */
-	// 保证这些常用描述符是打开的, 针对他们的系统调用read 返回0(EOF)
-	open("/dev/null", O_RDONLY);
-	open("/dev/null", O_RDWR);
-	open("/dev/null", O_RDWR);
-
-	openlog(pname, LOG_PID, facility);
-
-	return (0); /* success */
-}
-```	
-example: inetd/daytimetcpserv2.c
-
-进程组:是一个或多个进程的集合.
-进程组有进程组ID来唯一标识.除了进程号(PID)之外,进程组ID也是一个进程的必备属性.
-每个进程组都有一个组长进程,其组长进程的进程号等于进程组ID.且该**进程组ID不会因组长进程的退出而受到影响**.  
-
-会话周期:会话期是一个或多个进程组的集合.通常,一个会话开始于用户登录,终止于用户退出,在此期间该用户运行的所有进程都属于这个会话期.
-
-setsid函数用于创建一个新的会话,并担任该会话组的组长.调用setsid有下面的3个作用:
-
-1. 让进程摆脱原会话的控制
-1. 让进程摆脱原进程组的控制
-1. 让进程摆脱原控制终端的控制
-
-那么,在创建守护进程时为什么要调用setsid函数呢?
-由于创建守护进程的第一步调用了fork函数来创建子进程,再将父进程退出.
-由于在调用了fork函数时,子进程全盘拷贝了父进程的会话期,进程组,控制终端等,虽然父进程退出了,但会话期,进程组,控制终端等并没有改变,
-因此,这还不是真正意义上的独立开来,而setsid函数能够使进程完全独立出来,从而摆脱其他进程的控制.
-
-既然守护进程在没有控制终端的环境下运行, 他绝不会收到来自内核的`SIGHUP` 信号.
-许多守护进程因此把这个吸纳后作为来自管理员的一个通知, 表示其配置文件爱你已经发生更改, 需要重新读取配置文件.  
-守护进程同样绝不会收到来自内核的`SIGINT` 和`SIGWINCH` 信号, 因此这些信号也可以安全地用作系统管理员的通知手段, 指示守护进程应作出某种反应.
-
-当用户需要外部停止守护进程运行时,往往会使用 kill命令停止该守护进程.所以,守护进程中需要编码来实现kill发出的signal信号处理,达到进程的正常退出
-
 # 非阻塞式IO
 套接字的默认状态是阻塞的. 这就意味着当发出一个不能立即完成的套接字调用时, 其进程将被投入睡眠, 等待相应操作完成.  
 可能阻塞的套接字调用可分为以下四类
 
 1. 输入操作: 包括`read, readv, recv, recvfrom, recvmsg` 共5 个函数.  
 	- 如果某个进程对一个阻塞的TCP套接字(默认设置)调用这些输入函数, 而且**该套接字的接收缓冲区中没有数据可读**, 该进程将被投入睡眠, 直到有一些数据到达. 
-	既然TCP 是字节流协议, 该进程的唤醒就是只要有一些数据到达, 可以使单个字节, 也可以是一个完整的TCP分节. 
-	如果想等到某个固定数目的数据可读为止, 那么可以调用我们的`readn` 函数或者指定`MSG_WAITALL` 标志.  
+		既然TCP 是字节流协议, 该进程的唤醒就是只要有一些数据到达, 可以使单个字节, 也可以是一个完整的TCP分节.
+		如果想等到某个固定数目的数据可读为止, 那么可以调用我们的`readn` 函数或者指定`MSG_WAITALL` 标志.
 	- 既然UDP是数据报协议, 如果一个阻塞的UDP套接字的接收缓冲区为空, 对它调用输入函数的进程将被投入睡眠, 直到有UDP数据报到达.  
 	- 对于非阻塞的套接字, 如果输入操作不能被满足, 相应调用将立即返回一个`EWOULDBLOCK` 错误.
 1. 输出操作: 包括`write, writev, send, sendto, sendmsg` 共5 个函数.  
@@ -467,7 +386,8 @@ setsid函数用于创建一个新的会话,并担任该会话组的组长.调用
 	- 对一个非阻塞的套接字调用accept函数, 并且尚无新的连接到达, 调用将立即返回一个`EWOULDBLOCK` 错误.
 1. 发起外出连接, 即用于TCP的`connect` 函数
 	- TCP的建立涉及一个三路握手过程, 而且`connect` 函数一直要等到客户收到对于自己的`SYN`的`ACK` 为止才返回. 这意味着TCP的每个connect 总会阻塞其调用进程至少一个到服务器的RTT时间.
-	- 如果对一个非阻塞的TCP套接字调用connect, 并且连接不能立即建立, 那么连接的建立能照样发起(譬如发送出TCP三路握手的第一个分组), 不过会返回一个`EINPROGRESS`错误. 另请注意, 有些连接可以立即建立, 通常是由于服务器和客户同在一个主机, 因此对于一个非阻塞的connect, 我们也得预备connect 成功返回的情况发生.
+	- 如果对一个非阻塞的TCP套接字调用connect, 并且连接不能立即建立, 那么连接的建立能照样发起(譬如发送出TCP三路握手的第一个分组), 不过会返回一个`EINPROGRESS`错误.
+		另请注意, 有些连接可以立即建立, 通常是由于服务器和客户同在一个主机, 因此对于一个非阻塞的connect, 我们也得预备connect 成功返回的情况发生.
 
 # 信号驱动式IO
 进程预先告知内核, 使得当某个描述符上发生某事时, 内核使用信号通知相关进程.
