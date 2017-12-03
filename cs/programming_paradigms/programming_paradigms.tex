@@ -1292,7 +1292,7 @@ int main(){
 
 typedef struct{
 	bool passed;  // false in default
-	Semaphore requested; // initial to 0, 经理block在这个信号上, 等待clerk semaphorewait
+	Semaphore requested; // initial to 0, 经理block在这个信号上, 等待clerk semaphore signal
 	Semaphore finished; // initial to 0, clerk block 在这个信号上, 等待经理的决定(通过或者不通过)
 	Semaphore lock; // initial to 1, 只允许一个人进入经理的办公室进行检查
 }inspection;
@@ -1338,23 +1338,33 @@ void customer(int numCones){
 		SW(clerkDone);
 	}
 	SemaphoreFree(clerksDone);
+
 	WalkToCashier();
+
+	/*
+	* 给customer 排队, 每个customer 按照和clerk 交互的完成时间依次排序, 同时作为和cachier交互的次序
+	*/
 	SW(line.lock);
-	int place = line.number ++;
+	int place = line.number++;
 	SS(line.lock)
-	SS(line.requested);
-	SW(line.customers[place]);
+
+	SS(line.requested); // 给cachier 发请求
+	SW(line.customers[place]); // 等待cachier 处理
 }
 
 typedef struct{
 	int number; // 0
-	Semaphore requested; //initial to 0
-	Semaphore customers[10]; //
+	Semaphore requested; // initial to 0, 和manager 那里的requested 一个用途
+	/*
+	* 这里用了数组, 所以如果cachier 处理不及时, customer 可以在cachier这里排队.
+	* 这里不用customer 应该也行, 每个customer 和clerk交互完之后, 就独占cachier, 直到处理完成
+	*/
+	Semaphore customers[10];
 	Semaphore lock; // initial to 1对number的lock, 防止race condition
 }line;
 
 void cashier(){
-	for(int i=0; i<10, i++){
+	for(int i = 0; i < 10, i++){
 		SW(line.requested);
 		checkout(i);
 		SS(line.customers[i];
@@ -1404,10 +1414,10 @@ hello
 #f
 \end{verbatim}
 
-\bigskip\noindent
-car 第一个元素 first  address register\\
-cdr 余下的元素  data register\\
-cons 合并\\
+- car 取第一个元素
+- cdr 余下的元素
+- cons 合并
+
 \begin{verbatim}
 >(car '(1 2 3 4 5))  // 如果不用' ,那么第一个参数1 将被认为是一个函数
 1
@@ -1465,21 +1475,24 @@ sum-of的实现方式, 不使用Scheme 默认的迭代方式
 
 \begin{lstlisting}[language = Lisp]
 (define fib (n)
-	if (zero? n) 0
-		(if (= n 1) 1
-			(+ (fib (- n 1))
-				(fib (- n 2)))))
+	if (zero? n)
+		0
+		(if (= n 1)
+			1
+			(+ (fib (- n 1)) (fib (- n 2)))
+		)
+)
 
 (define fib (n)
-	if (or (= n 0)
-			(= n 1)) n
-		(+ (fib (- n 1))
-			(fib (- n 2))))
+	if (or (= n 0) (= n 1))
+		n
+		(+ (fib (- n 1)) (fib (- n 2)))
+)
 \end{lstlisting}
 
 \begin{verbatim}
 >(if (zero? 0) 4
-	 (+ "hello" 4.5 '(8 2)))
+	(+ "hello" 4.5 '(8 2)))
 4
 // 由于Scheme 是runtime language, 所以仍然能够运行, 而不会像C等编译型语言那样对"hello"+4.5 在编译阶段报错
 
@@ -1499,23 +1512,29 @@ sum-of的实现方式, 不使用Scheme 默认的迭代方式
 \end{enumerate}
 
 \begin{lstlisting}[language = Lisp]
+// todo: flatten 没有测试
 (define flatten (sequence)
 	(cond (((null? sequence) '())
 			((list? (car sequence)
-				(append (flatten (car sequence))
-						(flatten (cdr sequence)))
-			(else (cons (car sequence) (flatten (cdr sequence))))))))
+				(append (flatten (car sequence)) (flatten (cdr sequence)))
+				(else (cons (car sequence) (flatten (cdr sequence))))
+			))))
 
-(define sorted? (num-list)
-	(or (< (length num-list) 2)
-		(and (<= (car num-list) (cadr num-list))
-			(sorted? (cdr num-list)))))
+(define sorted? (lambda (num-list)
+	(or
+		(< (length num-list) 2)
+		(and
+			(<= (car num-list) (cadr num-list))
+			(sorted? (cdr num-list))
+		)
+	)
+))
 \end{lstlisting}
 
-\bigskip\noindent
-cadr: (cadr list) == (car (cdr list))\\
-cddddr\\
-cadadr\\
+- cadr: (cadr list) == (car (cdr list))
+- cddddr
+- cadadr
+
 c 和r 之间最多有4个
 
 \begin{verbatim}
@@ -1537,7 +1556,6 @@ c 和r 之间最多有4个
 	\caption{Scheme 内存模型}\label{fig.scheme.memo.model}
 \end{figure}
 
-
 \begin{verbatim}
 >(sorted? '(1 2 3 4) <=)
 #t
@@ -1546,14 +1564,18 @@ c 和r 之间最多有4个
 \end{verbatim}
 定义如下
 \begin{lstlisting}[language = Lisp]
-(define sorted? (seq comp)
-	(or (< (length seq) 2)
-		(and (comp (car seq) (cadr seq))
-			(sorted? (cdr seq) comp))))
+(define sorted? (lambda (seq comp)
+	(or
+		(< (length seq) 2)
+		(and
+			(comp (car seq) (cadr seq))
+			(sorted? (cdr seq) comp)
+		)
+	)
+))
 \end{lstlisting}
 
 \section{Lecture 21}
-.scm file
 \begin{verbatim}
 >load "test.scm"  //然后就可以调用test.scm 中定义的函数
 
@@ -1590,19 +1612,23 @@ c 和r 之间最多有4个
 \end{verbatim}apply 不能用在and, or 等非真正的函数上面
 
 \begin{lstlisting}[language = Lisp]
-(define (average num-list)
-	(/ (apply + num-list) (length num-list)))
+(define average (lambda (num-list)
+	(/ (apply + num-list) (length num-list))
+))
 
-(define (flatten seq)
-	(if (not (list? seq) (list seq)
-	(apply append (map flatten seq)))))
+(define flatten (lambda (seq)
+	(if (not (list? seq))
+		(list seq)
+		(apply append (map flatten seq))
+	)
+))
 \end{lstlisting}
 
 \begin{verbatim}
->(flatten ((1 2) ((3) ((4) 5)) 10))
+>(flatten '((1 2) ((3) ((4) 5)) 10))
 (1 2 3 4 5 10)
-(append append ((flatten (1 2)) (flatten ((3) ((4) 5))) (flatten 10)))
-(flatten (1 2)) == (apply append ((flatten 1) (flatten 2))) == (apply append ((1) (2))) == (1 2) //推断是生成这样的, 但是((flatten 1) (flatten 2))==(((1) (2))) 括号的深度好像有问题
+(apply append ((flatten '(1 2)) (flatten '((3) ((4) 5))) (flatten 10)))
+(flatten '(1 2)) ==> (apply append '((flatten 1) (flatten 2))) ==> (apply append '((1) (2))) == '(1 2) //推断是生成这样的, 但是((flatten 1) (flatten 2))==(((1) (2))) 括号的深度好像有问题
 \end{verbatim}
 
 \subsection{eval}
@@ -1647,31 +1673,34 @@ power set: a set which contains all of its subsets
 \end{verbatim}
 
 \begin{lstlisting}[language = Lisp]
-(define (ps set)
-	(if (null? set) '(())
-		(append (ps (cdr set))
+(define ps (lambda (set)
+	(if (null? set)
+		'(())
+		(append
+			(ps (cdr set))
 			(map (lambda (subset) (cons (car set) subset)) (ps (cdr set)))
 		)
 	)
-)
+))
 
 (ps (cdr set)) // 重复调用
 
 (define (ps set)
 	(if (null? set) '(())
 		(let ((ps-rest (ps (cdr set))))
-			(append ps-rest
-				(map (lambda (subset) (cons (car set) subset))
-					ps-rest
-				)
+			(append
+				ps-rest
+				(map (lambda (subset) (cons (car set) subset)) ps-rest)
 			)
 		)
 	)
 )
 
-(let ((x exp1)
-	(y exp2)
-	(z exp3))
+(let (
+		(x exp1)
+		(y exp2)
+		(z exp3)
+	)
 //using x y z
 )
 
@@ -1747,25 +1776,10 @@ self-type identifying
 从12:00 minutes 继续看
 
 \section{Lecture 24}
-Python:
-scripting language,
-imperative,
-object-oriented,
-functional.
-
-\begin{verbatim}
-?> x = 5  //这个地方实际上输出的是None, 但是由于None 是不可见的, 所以我们看不到任何输出, None 有点类似于C 中的void
-?>x
-5
-?>"Iron Man".istitle()
-True
-?>"hello there".istitle()
-False
-\end{verbatim}
+Python: scripting language, imperative, object-oriented, functional.
 
 \section{Lecture 25}
 \begin{verbatim}
->>>
 >>> a = [10, 12, 14]
 >>> a
 [10, 12, 14]
