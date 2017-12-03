@@ -453,8 +453,15 @@ Scheme语言中只有if结构是系统原始提供的, 其它的cond, case, and,
 Scheme语言中的cond结构类似于C语言中的switch结构
 `(cond ((测试) 操作) ... (else 操作))`
 
-case结构和cond结构有点类似
-`(case (表达式) ((值) 操作))	... (else 操作)))`
+```
+(cond
+	(<p1> <e1>)
+	(<p2> <e2>)
+	...
+	(<pn> <en>)
+	(else <final>)
+)
+```
 
 ## and 与 or
 - `(and arg1 ... argn)`: 后面的参数的表达式的值都为#t时,它的返回值才为#t,否则为#f
