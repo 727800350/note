@@ -113,6 +113,9 @@ Uppercase to lowercase:
 	- [StrictHostKeyChecking=no ssh: automatically accept keys](https://askubuntu.com/questions/123072/ssh-automatically-accept-keys).
 	- 在远程执行的命令的stdout 和 stderr 是发起ssh 命令的机器.
 	- 加上`/dev/null` 是为了避免可能的干扰
+- iterm 文件传输(本地和服务器都需要安转 lrzsz)
+	- `rz`: 将文件传到远端服务器
+	- `sz file`: 从远端服务器下载文件
 
 添加ssh 公钥到github
 

@@ -185,3 +185,8 @@ Lzo一般用于内置轻量级压缩,用在中间结果压缩,不建议外部使
 		- `-jobconf mapred.output.compress="true"`
 		- `-jobconf mapred.output.compression.codec="org.apache.hadoop.io.compress.GzipCodec"`
 
+# error code
+- 137: 内存超标
+- `java.io.EOFException at java.io.DataInputStream.readFully(DataInputStream.java:180)`: 错误是因为文件大小为 0, 但是输入要求为seq, 所以至少是96 字节的文件
+- 141: pipe error, 在hadoop 上最好不要设置`set -o pipefail`
+

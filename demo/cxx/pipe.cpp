@@ -1,57 +1,58 @@
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdlib.h>
+#include <glog/logging.h>
+#include <gflags/gflags.h>
 
-int main(){
-	int fds[4] = {-1, -1, -1, -1};
-	if(pipe(fds) != 0 or pipe(fds + 2) != 0){
-		fprintf(stderr, "pipe error\n");
+const int max_kl = 1024;
+const int max_vl = 10 * 1024 * 1024;
+
+int main(int argc, char* argv[]){
+	google::InitGoogleLogging(argv[0]);
+
+	google::SetVersionString("1.0.0.0");
+	google::SetUsageMessage(std::string("usage: cat - | ") + argv[0]);
+	google::ParseCommandLineFlags(&argc, &argv, true);
+
+	int fds[] = {-1, -1};
+	if(pipe(fds) != 0){
+		LOG(ERROR) << "pipe error";
 		return -1;
 	}
-	int fd_pwc = fds[1]; // parent write to child
-	int fd_crp = fds[0]; // child read from parent
-	int fd_cwp = fds[3]; // child write to parent
-	int fd_prc = fds[2]; // parent read from child
 
 	pid_t pid = fork();
 	if(pid < 0){
-		fprintf(stderr, "fork error\n");
+		LOG(ERROR) << "fork error";
 		return -1;
 	}
 	else if(pid == 0){
 		// child
-		fprintf(stderr, "child process %d\n", getpid());
+		LOG(INFO) << "child pid " << getpid() << " starts";
 
-		char msg[] = "msg from child to parent";
-		write(fd_cwp, msg, sizeof(msg));
+		dup2(fds[1], STDOUT_FILENO);
+		close(fds[0]);
 
-		char buf[1024];
-		read(fd_crp, buf, sizeof(buf));
-		fprintf(stdout, "%s\n", buf);
-
-		close(fd_crp);
-		close(fd_pwc);
-		close(fd_prc);
-		close(fd_cwp);
-		sleep(3);
-		exit(0);
+		/*
+		 * 系统调用exec是用来执行一个可执行文件来代替当前进程的执行图像.
+		 * 需要注意的是, 该调用并没有生成新的进程, 而是在原有进程的基础上, 替换原有进程的正文.
+		 * 调用前后是同一个进程, 进程号PID不变. 但执行的程序变了(执行的指令序列改变了).
+		 * execl 成功后就不会返回, 因为后面的代码就不会执行.
+		 * execl 出错后会返回, 后面的代码才可能执行到.
+		 * 一定要要在fork 出的子进程中调用! pthread_create创建的子线程与父线程共用同一代码段.
+		 *
+		 */
+		execl("/bin/sh", "sh", "-c", "ls -l | head -n 5", NULL);
+		exit(-1);
 	}
 	else{
 		// parent
-		fprintf(stderr, "parent process %d\n", getpid());
+		LOG(INFO) << "parent pid " << getpid() << " starts";
 
-		char msg[] = "msg from parent to child";
-		write(fd_pwc, msg, sizeof(msg));
-
-		char buf[1024];
-		read(fd_prc, buf, sizeof(buf));
-		fprintf(stdout, "%s\n", buf);
-
-		close(fd_crp);
-		close(fd_pwc);
-		close(fd_prc);
-		close(fd_cwp);
+		char buffer[1024] = {'\0'};
+		read(fds[0], buffer, sizeof(buffer) - 1);
+		fprintf(stdout, "%s", buffer);
 
 		int status = -1;
 		int option = 0;
@@ -61,28 +62,30 @@ int main(){
 		 */
 		int ret = waitpid(pid, &status, option);
 		if(ret == -1){
-			fprintf(stderr, "waitpid error\n");
+			LOG(INFO) << "waitpid error";
 		}
 		else if(ret == 0){
-			fprintf(stderr, "WNOHANG option used\n");
+			LOG(INFO) << "WNOHANG option used";
 		}
 		else{
 			if(WIFEXITED(status)){
 				int exitcode = WEXITSTATUS(status);
-				fprintf(stderr, "process %d exited with code %d\n", pid, exitcode);
+				LOG(INFO) << "child " << pid << " exited with code " << exitcode;
 			}
 			else if(WIFSIGNALED(status)){
 				int bysignal = WTERMSIG(status);
-				fprintf(stderr, "process %d exited by signal %d\n", pid, bysignal);
+				LOG(INFO) << "child " << pid << " exited by signal " << bysignal;
 			}
 			else{
-				fprintf(stderr, "new case %d\n", ret);
+				LOG(INFO) << "new case " << ret;
 			}
 		}
+
 	}
 
-	fprintf(stderr, "in process %d\n", getpid());
+	LOG(INFO) << "in process " << getpid();
 
+	google::ShutdownGoogleLogging();
 	return 0;
 }
 
