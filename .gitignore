@@ -21,6 +21,7 @@ conf/.vim/.netrwhist
 *.nav
 *.snm
 *.vrb
+*.png
 
 latex/test.tex
 *.txt
