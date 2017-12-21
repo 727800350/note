@@ -1,231 +1,141 @@
-#include <iostream>
-#include <fstream>
+#include <stdio.h>
 #include <string>
-#include <assert.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include <gtest/gtest.h>
 #include "addressbook.pb.h"
 
+const int max_vl = 10 * 1024 * 1024;
+
 using namespace std;
-using namespace addressbook;
+wcg::pb::ex::AddressBook address_book;
 
-int add_person(AddressBook &address_book, const char *name, const char *email, const char *phone_number){
+int add_person(wcg::pb::ex::AddressBook &address_book, const char *name, const char *email, const char *phone_number);
+int print(wcg::pb::ex::AddressBook &address_book);
+
+TEST(pbTest, Test_add_person){
+	ASSERT_TRUE(add_person(address_book, "xxx", "xxx@xxx.com", "123456") == 0);
+	ASSERT_TRUE(add_person(address_book, "yyy", "yyy@yyy.com", "654321") == 0);
+	ASSERT_TRUE(address_book.person_size() == 2);
+}
+
+TEST(pbTest, Test_string){
+	std::string v;
+	ASSERT_TRUE(address_book.SerializeToString(&v) == true);
+
+	wcg::pb::ex::AddressBook ex;
+	ASSERT_TRUE(ex.ParseFromString(v) == true);
+	print(ex);
+}
+
+TEST(pbTest, Test_char){
+	char *v = new char[max_vl];
+	int vl = address_book.ByteSize();
+	ASSERT_TRUE(address_book.SerializeToArray(v, max_vl) == true);
+
+	wcg::pb::ex::AddressBook ex;
+	ASSERT_TRUE(ex.ParseFromArray(v, vl) == true);
+	print(ex);
+}
+
+TEST(pbTest, Test_file){
+	const char *path = "./data.pb";
+	FILE *fp = fopen(path, "wb");
+	int fd = fileno(fp);
+	ASSERT_TRUE(fp != NULL);
+	ASSERT_TRUE(fd > 0);
+
+	ASSERT_TRUE(address_book.SerializeToFileDescriptor(fd) == true);
+	fclose(fp);
+	fp = NULL;
+	fd = -1;
+
+	fp = fopen(path, "rb");
+	fd = fileno(fp);
+	ASSERT_TRUE(fp != NULL);
+	ASSERT_TRUE(fd > 0);
+
+	wcg::pb::ex::AddressBook ex;
+	ASSERT_TRUE(ex.ParseFromFileDescriptor(fd) == true);
+	fclose(fp);
+	fp = NULL;
+	fd = -1;
+
+	print(ex);
+}
+
+#include <fstream>
+TEST(pbTest, Test_stream){
+	const char *path = "./data.pb";
+	fstream output(path, ios::out | ios::trunc | ios::binary);
+	ASSERT_TRUE(address_book.SerializeToOstream(&output) == true);
+
+	fstream input(path, ios::in | ios::binary);
+	wcg::pb::ex::AddressBook ex;
+	ASSERT_TRUE(ex.ParseFromIstream(&input) == true);
+	print(ex);
+}
+
+int main(int argc, char* argv[]){
+	// Verify that the version of the library that we linked against is compatible with the version of the headers we compiled against.
+// 	GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+
+	// Optional: Delete all global objects allocated by libprotobuf
+// 	google::protobuf::ShutdownProtobufLibrary();
+
+// 	return 0;
+}
+
+int add_person(wcg::pb::ex::AddressBook &address_book, const char *name, const char *email, const char *phone_number){
 	int id = address_book.person_size();
-	Person *person = address_book.add_person();
-	person->set_id(id);
-
-// 	getline(cin, *person->mutable_name());
-	person->set_name(std::string(name));
-
+	wcg::pb::ex::Person *person = address_book.add_person();
+	person->set_name(name);
 	person->set_email(email);
 
-	Person::PhoneNumber* phone = person->add_phone();
+	wcg::pb::ex::PhoneNumber* phone = person->add_phone();
 	phone->set_number(phone_number);
 	switch(id % 3){
 		case 0:
-			phone->set_type(Person::MOBILE);
+			phone->set_type(wcg::pb::ex::MOBILE);
 			break;
 		case 1:
-			phone->set_type(Person::HOME);
+			phone->set_type(wcg::pb::ex::HOME);
 			break;
 		case 2:
-			phone->set_type(Person::WORK);
+			phone->set_type(wcg::pb::ex::WORK);
 			break;
 	}
 
 	return 0;
 }
 
-int print(AddressBook &address_book){
+int print(wcg::pb::ex::AddressBook &address_book){
 	for(int i = 0; i < address_book.person_size(); i++){
-		const Person& person = address_book.person(i);
+		const wcg::pb::ex::Person& person = address_book.person(i);
 
-		cout << "Person ID: " << person.id() << endl;
-		cout << "	Name: " << person.name() << endl;
+		fprintf(stdout, "Name: %s\t", person.name().c_str());
 		if(person.has_email()){
-			cout << "	E-mail address: " << person.email() << endl;
+			fprintf(stdout, "email: %s\t", person.email().c_str());
 		}
 
 		for(int j = 0; j < person.phone_size(); j++){
-			const Person::PhoneNumber& phone_number = person.phone(j);
+			const wcg::pb::ex::PhoneNumber& phone_number = person.phone(j);
 
-			switch (phone_number.type()){
-				case Person::MOBILE:
-					cout << "	Mobile phone #: ";
+			switch(phone_number.type()){
+				case wcg::pb::ex::MOBILE:
+					fprintf(stdout, "Mobile phone: ");
 					break;
-				case Person::HOME:
-					cout << "	Home   phone #: ";
+				case wcg::pb::ex::HOME:
+					fprintf(stdout, "Home phone: ");
 					break;
-				case Person::WORK:
-					cout << "	Work   phone #: ";
+				case wcg::pb::ex::WORK:
+					fprintf(stdout, "Work phone: ");
 					break;
 			}
-			cout << phone_number.number() << endl;
+			fprintf(stdout, "%s\n", phone_number.number().c_str());
 		}
 	}
-
-	return 0;
-}
-
-int mem2string(AddressBook &address_book, std::string &str){
-	if(address_book.SerializeToString(&str) == false){
-		fprintf(stderr, "SerializeToString error\n");
-		return -1;
-	}
-
-	return 0;
-}
-
-int string2mem(AddressBook &address_book, const std::string &str){
-	if(address_book.ParseFromString(str) == false){
-		fprintf(stderr, "ParseFromString error\n");
-		return -1;
-	}
-
-	fprintf(stdout, "\nGet from std::string\n");
-	print(address_book);
-
-	return 0;
-}
-
-int mem2char(AddressBook &address_book, char *str, int max_size){
-	if(address_book.SerializeToArray(str, max_size) == false){
-		fprintf(stderr, "SerializeToArray error\n");
-		return -1;
-	}
-
-	return address_book.ByteSize();
-}
-
-/**
- * func: read from C char array
- * para: size: the acutal size of message in Bytes, obtained from pb.ByteSize()
- **/
-int char2mem(AddressBook &address_book, const char *str, int size){
-	if(address_book.ParseFromArray(str, size) == false){
-		fprintf(stderr, "ParseFromgArray error\n");
-		return -1;
-	}
-
-	fprintf(stdout, "\nGet from C char array\n");
-	print(address_book);
-
-	return 0;
-}
-// write to file using C++ stream
-int mem2stream(AddressBook &address_book, const char *path){
-	fstream output(path, ios::out | ios::trunc | ios::binary);
-	if (!address_book.SerializeToOstream(&output)){
-		cerr << "Failed to write address book." << endl;
-		return -1;
-	}
-
-	return 0;
-}
-
-// read from file using C++ stream
-int stream2mem(AddressBook &address_book, const char* path){
-	fstream input(path, ios::in | ios::binary);
-	if(!input){
-		cout << path << ": File not found.	Creating a new file." << endl;
-	}
-
-	if(!address_book.ParseFromIstream(&input)){
-		cerr << "Failed to parse address book." << endl;
-		return -1;
-	}
-
-	fprintf(stdout, "\nGet from file using C++ stream\n");
-	print(address_book);
-
-	return 0;
-}
-
-int mem2file(AddressBook &address_book, const char *path){
-	int fd = open(path, O_CREAT | O_TRUNC | O_RDWR, 0644);
-	if(fd <= 0){
-		fprintf(stderr, "open %s error\n", path);
-		return -1;
-	}
-	if(address_book.SerializeToFileDescriptor(fd) == false){
-		fprintf(stderr, "SerializeToFileDescriptor error\n");
-		close(fd);
-		return -1;
-	}
-	close(fd);
-
-	return 0;
-}
-
-int file2mem(AddressBook &address_book, const char *path){
-	int fd = open(path, O_RDONLY);
-	if(fd <= 0){
-		fprintf(stderr, "open %s error\n", path);
-		return -1;
-	}
-	if(address_book.ParseFromFileDescriptor(fd) == false){
-		fprintf(stderr, "ParseFromFileDescriptor error\n");
-		close(fd);
-		return -1;
-	}
-	close(fd);
-
-	fprintf(stdout, "\nGet from file\n");
-	print(address_book);
-
-	return 0;
-}
-
-int main(){
-	// Verify that the version of the library that we linked against is compatible with the version of the headers we compiled against.
-	GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-	AddressBook address_book;
-
-	int ret = 0;
-
-	ret = add_person(address_book, "xxx", "xxx@xxx.com", "123456");
-	assert(ret == 0);
-
-	fprintf(stdout, "Original data\n");
-	print(address_book);
-
-	// std::string container
-	std::string data;
-	ret = mem2string(address_book, data);
-	assert(ret == 0);
-	ret = string2mem(address_book, data);
-	assert(ret == 0);
-
-	// char container
-	int size = 1000;
-	char *str = new (std::nothrow)char[size];
-	ret = mem2char(address_book, str, size);
-	assert(ret > 0);
-	ret = char2mem(address_book, str, ret);
-	assert(ret == 0);
-
-	if(str != NULL){
-		delete []str;
-	}
-
-	// stream file container
-	char path[100] = {'\0'};
-	snprintf(path, 100, "%s", "./addressbook.data.stream");
-	ret = mem2stream(address_book, path);
-	assert(ret == 0);
-	ret = stream2mem(address_book, path);
-	assert(ret == 0);
-
-	// file container
-	snprintf(path, 100, "%s", "./addressbook.data.file");
-	ret = mem2file(address_book, path);
-	assert(ret == 0);
-	ret = file2mem(address_book, path);
-	assert(ret == 0);
-
-	// Optional: Delete all global objects allocated by libprotobuf
-	google::protobuf::ShutdownProtobufLibrary();
 
 	return 0;
 }
