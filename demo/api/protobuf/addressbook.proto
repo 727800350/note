@@ -20,6 +20,8 @@ message Person{
 };
 
 message AddressBook{
-	repeated Person person = 1;
+	required string owner = 1;
+	optional string desc = 2;
+	repeated Person person = 3;
 };
 
