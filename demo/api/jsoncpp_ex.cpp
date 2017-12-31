@@ -63,6 +63,10 @@ TEST(JsoncppTest, Test_append){
 
 TEST(JsoncppTest, Test_read){
 	Json::Reader reader;
+	/*
+	 * Jsoncpp 的 Json::Writer 类是一个纯虚类,并不能直接使用.
+	 * Json::Writer 的子类:Json::FastWriter, Json::StyledWriter, Json::StyledStreamWriter.
+	 */
 	Json::FastWriter writer;
 	Json::Value json;
 	std::string doc = root.toStyledString();
