@@ -1,3 +1,16 @@
+# options
+- `CURLOPT_VERBOSE`: debug 时很有用, 默认为0, 不启用, [ref](https://curl.haxx.se/libcurl/c/CURLOPT_VERBOSE.html)
+
+[http header](https://curl.haxx.se/libcurl/c/CURLOPT_HTTPHEADER.html)
+```C++
+struct curl_slist *list = NULL;
+list = curl_slist_append(list, "Shoesize: 10");
+list = curl_slist_append(list, "Accept:");
+curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
+curl_easy_perform(curl);
+curl_slist_free_all(list);
+```
+
 #### 多线程出core
 libcurl 有个很好的特性,它甚至可以控制域名解析的超时.
 但是在默认情况下,它是使用alarm + siglongjmp 实现的. 用alarm在多线程下做超时,本身就几乎不可能.如果只是使用alarm,并不会导致程序崩溃,但是,再加上siglongjmp,就要命了(程序崩溃的很可怕,core中几乎看不出有用信息),

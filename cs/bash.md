@@ -166,7 +166,7 @@ eg:
 	- `cat file1 file2 | gzip > foo.gz` can get better compression than `gzip -c file1 file2 > foo.gz`
 	- 将foo.tar.gz 解压到/to 目录: `tar -zxvf foo.tar.gz -C /to`
 	- `tar cvzf all.tar.gz dir0  --exclude dir1 --exclude file`: 排除dir0下面的dir1和file
-- 如果文件数量太大，rm提示超出参数列表长度的话，可以用下列命令来删除：`find . -name "*" -exec rm {} \; -print`
+- 如果文件数量太大,rm提示超出参数列表长度的话,可以用下列命令来删除:`find . -name "*" -exec rm {} \; -print`
 - umask: 指定是默认不具备的权限, r,w,x分别是4,2,1. 执行`umask` 得到`0002`, 后面三个数字分别对应o(owner), g(group), a(all), 最后一个2意味着a 默认不具备w 权限
 
 # Text
@@ -190,6 +190,9 @@ time
 
 其中,用户CPU时间和系统CPU时间之和为CPU时间,即命令占用CPU执行的时间总和.
 实际时间要大于CPU时间,因为Linux是多任务操作系统,往往在执行一条命令时, 系统还要处理其它任务
+
+- centos/redhat下查看某个文件或命令属于哪个rpm包: `yum provides /etc/passwd` or `rpm -qf /etc/passwd`
+- ubuntu 及衍生版: `dpkg -S whereis` or `dpkg-query -S /usr/bin/whereis`. 具体参考ubuntu wiki skills页面, 不过该命令不如`rpm -qf`强大, 如`/etc/passwd`就查不出.
 
 # 进程
 - `ll /proc/PID`

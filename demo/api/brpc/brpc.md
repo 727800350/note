@@ -52,8 +52,13 @@ XXX_Stub(&channel).some_method(controller, request, response, done);
 ## http
 在http 下怎么设置refer?
 
+### post 请求参数设置
+channel init 中的server 还是要用server 的地址, 和get 不一样.
+例如 `cq01-c1-vis-dog1.cq01:8889/stuui/watermarkbvc?version=v2&_from_openapi=1&rpc=1`, server 设置为`cq01-c1-vis-dog1.cq01:8889`, `cntl.uri = "/stuui/watermarkbvc?version=v2&_from_openapi=1&rpc=1"`
+
 `cntl.request_attachment().append("{\"message\":\"hello world!\"}")`
-append 的参数必须是 `{"key1": "value1", "key2": "value2"}` 的结构, 可以通过 jsoncpp 来构造
+append 的参数必须是 `{"key1": "value1", "key2": "value2"}` 的结构, 可以通过 jsoncpp 来构造.
+在 server 端, 获取post 内容时, 获取到raw data, 要用json decode.
 
 ```C++
 #include <json/json.h>
@@ -61,8 +66,12 @@ Json::Value root;
 root["key1"] = "value1";
 root["key2"] = "value2";
 Json::FastWriter writer;
+cntl.http_request().set_content_type("application/x-www-form-urlencoded");
 cntl.request_attachment().append(writer.write(root));
 ```
+
+也可以用`cntl.request_attachment().append("key1=value1&key2=value2")` 的形式, 但是value 需要用url encode.
+实际上, 应该任何格式的数据都可以, 只要server 端获得raw data, 然后按照商定好的格式解析就行了.
 
 # server
 ```C++
