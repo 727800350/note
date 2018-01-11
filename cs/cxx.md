@@ -65,6 +65,22 @@ INT_MAX, INT_MIN
 ```
 
 # STL 标准模板库
+- `std::to_string()`: 对于数字型可以使用
+- `std::end(x)`: for Container, returns `cont.end()`, for Array, returns `arr + N`.
+- `std::find(InputIterator first, InputIterator last, const T& val);`
+
+	```C++
+	int n = 3;
+	std::vector<int> v{0, 1, 2, 3, 4};
+	auto result = std::find(std::begin(v), std::end(v), n);
+	assert(result != std::end(v));
+	```
+- `std::for_each`: 避免显示的for 循环
+
+	```C++
+	std::for_each(std::begin(vec), std::end(vec), [](int &x){x++;}); // 修改vec 里面的元素, 因此需要用ref
+	```
+
 ## [std::vector](http://www.cplusplus.com/reference/vector/vector/)
 vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素, 从尾部追加
 
@@ -78,15 +94,18 @@ This class already manage memory allocation and deallocation. 在超出变量的
 - `void push_back (const value_type& val)`: 将元素拷贝到新分配的内存中. 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容, 也就是值(指针本身的值)拷贝.
 	对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针,
 	所以即使原来的object被删除了, vector中的仍然可以正常访问.
+- `emplace_back`: 与push back的作用一样, 在有构造函数的情况下, 效率高(去掉了额外的拷贝或者移动的)
 - erase: 删除元素, 如果元素是指向某个对象的指针, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
 - back: Returns a reference to the last element in the vector.
 - clear: 可以清空所有元素, 也就是改变vector 的size, 但是capacity 一般不会改变.
 - swap: vector<T>().swap(x); 改变x 占用内存的方式, 实际上是把x 的内存交换给一个新的vector<T>()对象
 
 初始化一个vector
-```
+```C++
 int array[] = {-1, 1, 2, 7, 11, 15};
 std::vector<int> vec(array, array + sizeof(array) / sizeof(int));
+
+std::vector<int> vec{3, 4, 2, 8, 15, 267};
 ```
 [vector push back operation demo](../demo/cxx/stl/vector-push_back.cpp)
 
@@ -242,7 +261,7 @@ scan in values from a string using sscanf
 string str("2.5,6.7");
 double val1, val2;
 if(sscanf(str.c_str(),"%lf,%lf", &val1, &val2) == 2){
-    // got them!
+	// got them!
 }
 ```
 
@@ -286,9 +305,9 @@ delete []p;
 在C 和C++ 中, 结构体是可以直接赋值的. C 中是可以的, C++ 为了保持向后兼容, 因此也有了
 ```C
 struct st{
-    int a;
-    char b[100];
-    char *c;
+	int a;
+	char b[100];
+	char *c;
 }x, y;
 // set elements in x
 y = x;
