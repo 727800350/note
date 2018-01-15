@@ -62,7 +62,7 @@ mark
 ```
 
 # IO
-`printf %05d 123`: 输出是00123，且没有换行符, 显示5位数，不够5位的用0补充, 多余的不会进行截断
+`printf %05d 123`: 输出是00123,且没有换行符, 显示5位数,不够5位的用0补充, 多余的不会进行截断
 
 ## 管道
 每个shell 过程一次最多可以有9 个文件描述符(其中 0(stdin),1(stdout),2(stderr)作为保留的文件描述符)
@@ -508,5 +508,14 @@ echo $name
 - 当operation 为 bash 时, 最后一个 $name 仍为 "b", 也就是说bash ./a.sh 是在另外一个shell 环境中运行的.
 - 当operation 为source时, 最后一个 $name 仍为 "a", 也就是说source ./a.sh 是将a.sh 引入到当前的shell 中运行.
 
-real_path=`readlink -f ./file`: 获得决定路径
+`readlink -f ./file`: 获得决定路径
+
+# Util
+[Shell脚本实现乱序排列文件内容的多种方法](http://www.cnblogs.com/clarke/p/5447389.html)
+
+- 利用 Shell 的 `$RANDOM` 变量给原文件的每一行加上随机的行号然后根据这个随机行号进行排序,再把临时加上去的行号给过滤掉,这样操作之后得到的新文件就相当于被随机"洗"了一次:
+`cat - | while read line; do echo "$line $RANDOM"; done | sort -k 2 -n | cut -d" " -f1`
+
+- 利用AWK中散列的特性(详细请看:info gawk 中的7.x ),只要构造一个随机不重复的散列函数即可,因为一个文件每行的linenumber是独一无二的,所以用: `随机数＋每行linenumber --对应--> 那一行的内容`, 即为所构造的随机函数.
+`cat - | awk 'BEGIN{srand()}{b[rand()NR] = $0}END{for(x in b) print b[x]}'`
 

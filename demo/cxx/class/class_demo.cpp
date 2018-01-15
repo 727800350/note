@@ -1,37 +1,51 @@
-// classes example
-#include <iostream>
-using namespace std;
+#include <stdio.h>
 
-class CRectangle{
-	int x, y;
-
+namespace wcg{
+class Point{
 public:
-// 	default constructor
-	CRectangle(){};
+	Point(){};
 
-	CRectangle(int a, int b){
-		x = a;
-		y = b;
-	};
+	Point(int x, int y);
 
-	~CRectangle(){};
+	~Point(){};
 
-	void set_values(int,int);
+	void set_values(int x, int y);
+	int area();
+	Point operator+(Point b);
 
-	int area(){
-		return x*y;
-	}
+private:
+	int _x;
+	int _y;
 };
 
-void CRectangle::set_values(int a, int b){
-	x = a;
-	y = b;
+Point::Point(int x, int y){
+	_x = x;
+	_y = y;
+}
+
+void Point::set_values(int x, int y){
+	_x = x;
+	_y = y;
+}
+
+int Point::area(){
+	return _x * _y;
+}
+
+Point Point::operator+(Point b){
+	Point res;
+	res._x = this->_x + b._x;
+	res._y = this->_y + b._y;
+	return res;
+}
+
 }
 
 int main(){
-	CRectangle rect;
-	rect.set_values(3,4);
-	cout << "area: " << rect.area() << endl;
+	wcg::Point point;
+	point.set_values(3, 4);
+	fprintf(stdout, "area:%d\n", point.area());
+
 	return 0;
 }
 
