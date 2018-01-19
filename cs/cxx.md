@@ -116,6 +116,8 @@ implemented as doubly-linked lists
 - `push_back`: 在尾插入
 
 ## [std::unordered map](http://www.cplusplus.com/reference/unordered_map/unordered_map/)
+unordered map 内部实现了一个哈希表, 因此其元素的排列顺序是杂乱的, 无序的
+
 Internally, the elements are not sorted in any particular order, but organized into buckets depending on their hash values
 to allow for fast access to individual elements directly by their key values (with a constant average time complexity on average).
 
@@ -153,6 +155,8 @@ for(unsigned i = 0;i < mymap.bucket_count(); ++i){
 ```
 
 ## [std::map](http://www.cplusplus.com/reference/map/map/)
+map内部实现了一个红黑树,该结构具有自动排序的功能,因此map内部的所有元素都是有序的.
+
 - `size_type std::map::count(const key_type& k) const`: Count elements with a specific key
 - `size_type erase (const key_type& k);`: 删除元素, 返回1
 

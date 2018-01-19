@@ -85,32 +85,18 @@ Git 使用的标签有两种类型:轻量级的(lightweight)和含附注的(anno
 - `git rebase --continue` 解决冲突后继续重置:
 
 ## 撤销
-- `git reset --hard HEAD` 放弃工作目录下的所有修改:
 - `git reset HEAD` 移除缓存区的所有文件(i.e. 撤销上次git add):
 - `git checkout HEAD <file>` 放弃某个文件的所有本地修改:
 - `git revert <commit>` 重置一个提交(通过创建一个截然不同的新提交)
-- `git reset --hard <commit>` 将HEAD重置到指定的版本,并抛弃该版本之后的所有修改, git log 看不到这个commit 之后的commits, 但是git reflog 可以看到
 - `git reset <commit>` 将HEAD重置到上一次提交的版本,并将之后的修改标记为未添加到缓存区的修改:
 - `git reset --keep <commit>` 将HEAD重置到上一次提交的版本,并保留未提交的本地修改:
 
-[How do I revert master branch to a tag in git?](https://stackoverflow.com/questions/6872223/how-do-i-revert-master-branch-to-a-tag-in-git)
-
-1. `git checkout master`
-1. `git reset --hard tag_ABC`
+## 回滚
+1. `git reset --hard <commit>` reset index和working directory, 自从<commit>以来在working directory中的任何改变都被丢弃, 并把HEAD指向<commit>. git log 看不到这个commit 之后的commits, 但是git reflog 可以看到
 1. `git push --force origin master`
 
-## patch 补丁
-例如，我们想导出历史上的某个commit之后的所有commits为一序列的补丁序列，那么可以这么做。
-```bash
-$ git log | grep ^commit | head -5
-commit a11c7fd5839ddac9a19edadc245522f606a9e067
-commit a718cbdc3ea9c72e05dd3beb5c58bfac91fe1a76
-commit b5345a1b077259958fa56cb7c4dea82694214247
-commit 380f57ad3157b644bb822995dcd85d73504a75d8
-commit 68a0c4b66d619f816ded5b83f5e8c526e43bdf3e
-$ git format-patch 68a0c4b66d619f816ded5b83f5e8c526e43bdf3e
-$ git am 68a0c4b66d619f816ded5b83f5e8c526e43bdf3e    ## 应用patch
-```
+- 把<commit> 换成某一个tag的名字, 可以回滚到指定的tag
+- 不指定<commit>时, 默认为HEAD, 即最新的一次提交
 
 # repo
 ## Create repo
@@ -187,12 +173,6 @@ https://github.com/rails/rails/compare/master@{2014-10-04}...master
 
 	- `git rm --cached <added_file_to_undo>`
 	- `git reset .`: (to undo my entire initial add), 修改的文件还将处于修改的状态
-
-1. 错误提交了一个commit, 需要把它撤销掉, **只适用于刚提交的commit**
-
-	1. `git reset --hard <commit_id>`  ##  commit_id 为这个commit 之前的一个commit_id, 可以使用`HEAD~1` 表示刚刚commit 的 commit_id
-	1. `git push origin HEAD --force`
-之后, 修改的内容也会别擦除, 所以操作之前需要先保存修改的结果.
 
 1. Checkout all files except one.  
 When I do a git status, I see files like this:
