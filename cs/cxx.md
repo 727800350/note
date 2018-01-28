@@ -66,6 +66,7 @@ INT_MAX, INT_MIN
 
 # STL 标准模板库
 - `std::to_string()`: 对于数字型可以使用
+- `std::begin(x)`
 - `std::end(x)`: for Container, returns `cont.end()`, for Array, returns `arr + N`.
 - `std::find(InputIterator first, InputIterator last, const T& val);`
 
@@ -75,7 +76,8 @@ INT_MAX, INT_MIN
 	auto result = std::find(std::begin(v), std::end(v), n);
 	assert(result != std::end(v));
 	```
-- `std::for_each`: 避免显示的for 循环
+- `std::for_each`: 避免显示的for 循环.
+	不能使用auto 来推断x 的类型, 必须显式指定
 
 	```C++
 	std::for_each(std::begin(vec), std::end(vec), [](int &x){x++;}); // 修改vec 里面的元素, 因此需要用ref
@@ -95,7 +97,18 @@ This class already manage memory allocation and deallocation. 在超出变量的
 	对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针,
 	所以即使原来的object被删除了, vector中的仍然可以正常访问.
 - `emplace_back`: 与push back的作用一样, 在有构造函数的情况下, 效率高(去掉了额外的拷贝或者移动的)
-- erase: 删除元素, 如果元素是指向某个对象的指针, 元素本身在该vector种会被删除, 但是指针所指向的对象不会被删除
+- erase: 删除元素, 同时返回下一个元素的iterator, 如果删除最后一个元素,则返回vec.end().
+
+	```C++
+	for(auto it = vec.begin(); it != vec.end();){
+		if(condition){
+			it = vec.erase(it);
+		}
+		else{
+			it++;
+		}
+	}
+	```
 - back: Returns a reference to the last element in the vector.
 - clear: 可以清空所有元素, 也就是改变vector 的size, 但是capacity 一般不会改变.
 - swap: vector<T>().swap(x); 改变x 占用内存的方式, 实际上是把x 的内存交换给一个新的vector<T>()对象
@@ -230,7 +243,7 @@ but unless you know what you know exactly what are doing, do not do this.
 
 - `strcpy(ptr2, ptr1)` is equivalent to `while(\*ptr2++ = *ptr1++)`  
 	**So if you want the string which you have copied to be used in another function (as it is created in heap section) you can use `strdup`, else strcpy is enough.**
-	The functions `strcpy` and `strncpy` are part of the **C standard library** and **operate on existing memory**.   
+	The functions `strcpy` and `strncpy` are part of the **C standard library** and **operate on existing memory**.  
 
 - `char *strdup(const char *s);`相当于 `ptr2 = malloc(strlen(ptr1)+1); strcpy(ptr2, ptr1);`
 - `char *strndup(const char *s, size_t n);`  
