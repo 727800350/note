@@ -35,9 +35,9 @@ else
 	fi
 fi
 
-export PATH=$PATH:/usr/local/sbin/
-export PATH=$PATH:${HOME}/git/note/bin/
-export PATH=$PATH:${HOME}/bin/
+export PATH=$PATH:/usr/local/sbin
+export PATH=$PATH:${HOME}/git/note/bin
+export PATH=$PATH:${HOME}/bin
 
 if [ "x$os" == "xmac" ]
 then
@@ -52,4 +52,16 @@ else
 	alias ls="ls --color=auto"
 	alias ll="ls -l"
 fi
+
+# udf
+## weather report
+function weather(){
+	if [ $# -eq 1 ]
+	then
+		city=$1
+	else
+		city="shenzhen"
+	fi
+	curl http://wttr.in/~$city
+}
 
