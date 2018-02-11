@@ -17,6 +17,8 @@ op=$1
 machine=$2
 capacity=$3
 
+user="img"
+
 [ ! -d status ] && mkdir status
 rm -rf ./status/*.$op
 
@@ -25,14 +27,14 @@ i=0
 while read host
 do
 	{
-	scp -r -o StrictHostKeyChecking=no ./shell/$op.sh work@$host:/home/work/
+	scp -r -o StrictHostKeyChecking=no ./shell/$op.sh $user@$host:/home/$user/
 	if [ $? -ne 0 ]
 	then
 		echo "scp to $host error" >&2
 		exit 1
 	fi
 
-	ssh work@$host "bash /home/work/$op.sh" </dev/null
+	ssh $user@$host "bash /home/$user/$op.sh" </dev/null
 	if [ $? -ne 0 ]
 	then
 		echo "$op on $host error" >&2

@@ -7,14 +7,13 @@
 #!/bin/bash
 set -x
 
+user="img"
+
 while read host
 do
-## 	scp -r -o StrictHostKeyChecking=no ./../bin root@$host:/root/ ## only first time
-## 	rsync -av /etc/security/limits.conf root@$host:/etc/security/limits.conf
-## 	rsync -av /home/work/hadoop-client /home/work/share work@$host:/home/work/
-	rsync -av /home/new_mount_point1/simid_as_0  /home/new_mount_point1/simid_as_1  --exclude=log --exclude=status work@$host:/home/new_mount_point1/
-## 	rsync -av /home/new_mount_point1/simid_bs_0  /home/new_mount_point1/simid_bs_1  --exclude=log --exclude=status --exclude=csinfodb work@$host:/home/new_mount_point1/
-## 	rsync -av /home/new_mount_point1/simid_wbs_0 /home/new_mount_point1/simid_wbs_1 --exclude=log --exclude=status --exclude=csinfodb work@$host:/home/new_mount_point1/
+## 	scp -r -o StrictHostKeyChecking=no ./../bin $user@$host:/home/$user/ ## only first time
+## 	rsync -av /home/$user/hadoop-client /home/$user/share $user@$host:/home/$user/
+	rsync -av /home/new_mount_point1/simid_as_0  /home/new_mount_point1/simid_as_1  --exclude=log --exclude=status $user@$host:/home/new_mount_point1/
 	if [ $? -ne 0 ]
 	then
 		echo "sync to $host error" >&2
