@@ -234,6 +234,14 @@ but unless you know what you know exactly what are doing, do not do this.
 	所以编译器把这个语句解析为 `char str2[3] = {'a','b','c'};`, 然后补零, 所以最终结果是 `char str2[4] = {'a','b','c','\0'};`  
 	如果这个语句是在函数内部写的话, 那么这里的`"abc\0"`, 因为不是常量, 所以应该被放在栈上.
 
+# std::atomic
+x 为 `std::atomic<int>`
+
+- `x.load()`: 返回x的值.
+- `x.store(n)`: 把x设为n, 什么都不返回.
+- `x.fetch_add(n)`, `x.fetch_sub(n)`, `x.fetch_xxx(n)`: x += n, x-= n(或更多指令), 返回修改之前的值.
+- `x.exchange(n)`: 把x设为n, 返回设定之前的值.
+
 ## C API
 ### string.h
 - `void *memset(void *s, int c, size_t n)`
