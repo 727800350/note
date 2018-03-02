@@ -140,13 +140,13 @@ func(get_cs() = get_cs()); // correct
 
 ```C++
 class cs{
-public:      
+public:	 
 	cs& operator=(const cs& c);
 };
 
 // 另一种写法
 class cs2{
-public:      
+public:	 
 	cs2& operator=(cs2& c);
 };
 ```
@@ -160,9 +160,9 @@ public:
 		ptr_ = p.ptr_;
 		p.ptr_ = NULL;
 	}
-   
+
 private:
-	void*  ptr_;
+	void* ptr_;
 };
 ```
 所以,对于 `auto_ptr` 来说,它的 copy constructor 的参数类型是 non const reference.
@@ -180,7 +180,7 @@ auto_ptr p = get_ptr(); // operator=() 同理,错误.
 ## std::move
 ref: [c++11 中的 move 与 forward](http://www.cnblogs.com/catch/p/3507883.html)
 
-关于 lvaue 和 rvalue,在 c++11 以前存在一个有趣的现象:`T &`  指向 lvalue (左传引用), `const T &` 既可以指向 lvalue 也可以指向 rvalue.
+关于 lvaue 和 rvalue,在 c++11 以前存在一个有趣的现象:`T &` 指向 lvalue (左传引用), `const T &` 既可以指向 lvalue 也可以指向 rvalue.
 但却没有一种引用类型,可以限制为只指向 rvalue.这乍看起来好像也不是很大的问题,但实际与看起来不一样,右值引用的缺失有时严重限制了我们在某些情况下,写出更高效的代码.
 举个粟子,假设我们有一个类,它包含了一些资源:
 
@@ -298,7 +298,7 @@ holder(holder&& other){
 }
 
 holder& operator=(holder&& other){
-	std::swap(_resource, other._resource);
+	std::swap(_resource, other._resource); // std::swap 对movable 的变量有优化
 	std::swap(_i, other._i);
 	return *this;
 }
@@ -314,7 +314,7 @@ h1 = get_holder(); // 调用operator(holder&&)
 ```
 编译器就能根据当前参数的类型选择相应的函数,显然后者的实现是更高效的.
 
-写到里,有的人也许会有疑问:  `T && ref` 指向的是右值(右值引用),那 ref 本身在函数内是左值还是右值?
+写到里,有的人也许会有疑问: `T && ref` 指向的是右值(右值引用),那 ref 本身在函数内是左值还是右值?
 具体来说就是如下代码中,第二行所调用的是 `operator=(holder &)` 还是 `operator=(holder &&)`?
 
 ```C++
@@ -358,5 +358,90 @@ void swap(T& a, T& b){
 }
 ```
 
-这样一来,如果 holder 提供了 operator=(T&&) 重载,上述操作就相当于只是交换了三次指针,效率大大提升!move() 使得程序员在有需要的情况下能把 lvalue 当成右值来对待.
+这样一来,如果 holder 提供了 `operator=(T &&)` 重载,上述操作就相当于只是交换了三次指针,效率大大提升!
+move() 使得程序员在有需要的情况下能把 lvalue 当成右值来对待.
+
+```C++
+#include <iostream>
+#include <vector>
+#include <string>
+ 
+int main(){
+	std::string str = "Hello";
+	std::vector<std::string> v;
+ 
+	// uses the push_back(const T&) overload, which means we'll incur the cost of copying str
+	v.push_back(str);
+	std::cout << "After copy, str is \"" << str << "\"" << std::endl;
+ 
+	// uses the rvalue reference push_back(T&&) overload, which means no strings will be copied;
+	// instead, the contents of str will be moved into the vector.
+	// This is less expensive, but str is now valid but unspecifie.
+	v.push_back(std::move(str));
+	std::cout << "After move, str is \"" << str << "\"" << std::endl;
+ 
+	std::cout << "The contents of the vector are \"" << v[0] << "\", \"" << v[1] << "\"" << std::endl;
+
+	return 0;
+}
+```
+
+# std::forward
+除了 move() 语义之外，右值引用的提出还解决另一个问题：完美转发 (perfect forwarding).
+
+转发问题针对的是模板函数，这些函数主要处理的是这样一个问题：
+假设我们有这样一个模板函数，它的作用是：缓存一些 object，必要的时候创建新的。
+
+```C++
+template<class TYPE, class ARG>
+TYPE* acquire_obj(ARG arg){
+	static list<TYPE*> caches;
+	TYPE* ret;
+
+	if(!caches.empty()){
+		ret = caches.pop_back();
+		ret->reset(arg);
+		return ret;
+	}
+
+	ret = new TYPE(arg);
+	return ret;
+}
+```
+
+这个模板函数的作用简单来说，就是转发一下参数 arg 给 TYPE 的 reset() 函数和构造函数，除此它就没再干别的事情，
+在这个函数当中，我们用了值传递的方式来传递参数，显然是比较低效的，多了次没必要的拷贝，于是我们准备改成传递引用的方式，同时考虑到要能接受 rvalue 作为参数，最后做出艰难的决定改成如下样子：
+
+```C++
+template<class TYPE, class ARG>
+TYPE* acquire_obj(const ARG& arg){
+	//...
+}
+```
+但这样写很不灵活：
+
+1. 首先，如果 reset() 或 TYPE 的构造函数不接受 const 类型的引用，那上述的函数就不能使用了，必须另外提供非 const TYPE& 的版本，参数一多的话，很麻烦。
+2. 其次，如果 reset() 或 TYPE 的构造函数能够接受 rvalue 作为参数的话，这个特性在 `acquire_obj()` 里头也永远用不上。
+
+其中1) 好理解，2) 是什么意思？
+
+2) 说的是这样的问题，即使 TYPE 存在 `TYPE (TYPE&& other)` 这样的构造函数，它在上述 `acquire_obj()` 中也永远不会被调用，
+原因是在 `acquire_obj()` 中，传递给 TYPE 构造函数的，永远是 lvalue（因为 arg 有名字），哪怕外面调用 acquire_obj() 时，用户传递进来的是 rvalue，请看如下示例：
+
+```C++
+holder get_holder();
+holder* h = acquire_obj<holder, holder>(get_holder());
+```
+虽然在上面的代码中，我们传递给 `acquire_obj()` 的是一个 rvalue，但是在 `acuire_obj()` 内部，我们再使用这个参数时，它却永远是 lvalue，因为它有名字 --- 有名字的就是 lvalue。
+`acquire_obj()` 这个函数它的基本功能本来只是传发一下参数，理想状况下它不应该改变我们传递的参数的类型，但上面的写法却没有做到这点，而在 c++11 以前也没法做到。
+forward() 函数的出现，就是为了解决这个问题。
+
+forward() 函数的作用：它接受一个参数，然后返回该参数本来所对应的类型的引用。
+
+```C++
+template<class TYPE, class ARG>
+TYPE* acquire_obj(ARG&& arg){
+	return new TYPE(forward<ARG>(arg));
+}
+```
 
