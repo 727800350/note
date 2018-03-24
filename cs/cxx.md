@@ -435,6 +435,14 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 
 而`pthread_mutex_t`实现基于Linux的futex, 当临界区足够小时, 一次`pthread_mutex_lock`消耗很非常小
 
+```C++
+std::mutex mutex;
+{
+	std::lock_guard<std::mutex> guard(mutex);
+	do xxx
+}
+```
+
 ## 条件变量 condition variable
 条件变量也是同步的一种手段,由一把锁(mutex)和一个condition组成.
 它可以使线程阻塞在某一条件上,比如`queue.not_empty()`.当条件满足时,线程唤醒.需要注意是要小心虚假唤醒,即当wait返回后,需要再次判断条件是否满足.
@@ -460,30 +468,10 @@ reader 线程扫描文件, 将各个kv 的offset 记录下来, 存储到 thread 
 在goto 之后是不允许定义的新的变量的, 局部变量也不行.
 [crosses initialization error](http://stackoverflow.com/questions/14274225/statement-goto-can-not-cross-pointer-definition)
 
-## const
-const in C does not mean something is constant. It just means a variable is read-only.
-
-1. 为了防止传递的函数参数不被修改,在调用函数的形参中用const关键字.
-2. `const int *p`: p是指向int常量的指针, `*p`是不变的, 但是可以将p指向其他变量
-3. `int * const p`: p是指针常量, 也就是p不能变, 但是可以改变 `*p`
-4. `const int * const p`: 同时满足前面两种情况
-5. const并不会阻止参数的修改, 防君子不防小人, 可以强制的把 `const char *` 转换为 `char *`类型, 然后就可以修改了
-
-在 C++(但不是在 C 语言)中,const 限定符对默认存储类型稍有影响.
-在默认情况下,全局变量的链接性为外部的,但 const 全局变量的链接性为内部的.也就是说,在 C++ 看来,全局 const 定义就像使用了 static 说明符一样.
-因此,可以将 const 常量定义在头文件中供工程中的多个其它文件包含引用,并且编译时不会产生变量重复定义的错误.当然,也可以用 #define 宏定义.
-
-ref: [头文件中定义const全局变量应注意的问题](http://blog.csdn.net/ace_fei/article/details/8587403)
-
 ## extern
 - extern可以置于变量或者函数前,以标示变量或者函数的定义在别的文件中,提示编译器遇到此变量和函数时在其他模块中寻找其定义
 - 当它与"C"一起连用时, 如: `extern "C" void fun(int a, int b)`; 则告诉编译器按照C的规则去翻译相应的函数名而不是C++的, C++在翻译这个函数名时会把fun这个名字变得面目全非
 - 在一个cpp文件定义了一个数组:`char a[6]`, h文件声明为`extern char a[]`, 而不是`extern char *a`, 两者的类型不一样
-
-## static
-- static 表示静态的变量, 分配内存的时候, 存储在静态区, 不存储在栈上面
-- static 修饰的全局变量的作用域只能是本身的编译单元, 也就是所在的cpp文件
-- 一般定义static全局变量时, 把它放在cpp文件而不是h文件中(理论上也可以放), 这样就不会给其他模块造成不必要的信息污染
 
 ## define  
 - `#str`: 生成`"str"`

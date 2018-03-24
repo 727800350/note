@@ -1,3 +1,24 @@
+# const
+const in C does not mean something is constant. It just means a variable is read-only.
+
+1. 为了防止传递的函数参数不被修改,在调用函数的形参中用const关键字.
+2. `const int *p`: p是指向int常量的指针, `*p`是不变的, 但是可以将p指向其他变量
+3. `int * const p`: p是指针常量, 也就是p不能变, 但是可以改变 `*p`
+4. `const int * const p`: 同时满足前面两种情况
+5. const并不会阻止参数的修改, 防君子不防小人, 可以强制的把 `const char *` 转换为 `char *`类型, 然后就可以修改了
+
+在 C++(但不是在 C 语言)中, const 限定符对默认存储类型稍有影响.
+在默认情况下, 全局变量的链接性为外部的, 但 const 全局变量的链接性为内部的.也就是说,在 C++ 看来, 全局 const 定义就像使用了 static 说明符一样.
+因此,可以将 const 常量定义在头文件中供工程中的多个其它文件包含引用, 并且编译时不会产生变量重复定义的错误. 当然,也可以用 #define 宏定义.
+
+ref: [头文件中定义const全局变量应注意的问题](http://blog.csdn.net/ace_fei/article/details/8587403)
+
+## 一个函数名后面加const表示什么意思
+在函数名后面表示是常成员函数, 该函数不能修改对象内的任何成员, 只能发生读操作, 不能发生写操作.
+我们都知道在调用成员函数的时候编译器会将对象自身的地址作为隐藏参数传递给函数, 在const成员函数中,既不能改变this所指向的对象,也不能改变this所保存的地址,this的类型是一个指向const类型对象的const指针.
+
+一个函数名字后有const, 这个函数必定是成员函数,也就是说普通函数后面不能有const修饰
+
 # static
 ref:
 

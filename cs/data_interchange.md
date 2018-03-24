@@ -105,28 +105,16 @@ Options并不改变整个文件声明的含义,但却能够影响特定环境下
 - class static method
 	- `static const Descriptor* descriptor()`: 返回类型的descripter, 可用于反射
 - numeric field
-	- `bool has_foo() const`: return true if the field foo is set
-	- `int32 foo()`: return the current value or the default value if not set
-	- `void set_foo(int32 value)`
-	- `void clear_foo()`
-- string or bytes field
-	- `const string& foo() const`
-	- `void set_foo(const string& value)`: 内存是怎么处理的
-	- `void set_foo(const char* value)`
-	- `string* mutable_foo()`
-	- `void clear_foo()`
-	- 对于repeated string fields, `add_foo(const string& value | const char* value)` 中内存是怎么处理的.
+- string or bytes field: 即使设置为`""`, `has_foo()`也会返回true;
 - enum fields
-	- `bool has_foo()`
-	- `Bar foo()`
-	- `void set_foo(Bar value)`
-	- `void clear_foo()`
+	- `bool ImageFeatureID_IsValid(int value);`
+	- `const ImageFeatureID ImageFeatureID_MIN = FEATURE_MIN;`
+	- `const ImageFeatureID ImageFeatureID_MAX = FEATURE_MAX;`
+	- `const int ImageFeatureID_ARRAYSIZE = ImageFeatureID_MAX + 1;`
+	- `const ::std::string& ImageFeatureID_Name(ImageFeatureID value);` 将 enum 转换为名字
+	- `bool ImageFeatureID_Parse(const ::std::string& name, ImageFeatureID* value);` 将名字转换为enum
+
 - repeated numeric fields
-	- `int foo_size()`
-	- `int32 foo(int index) const`: 返回index 位置的value
-	- `void set_foo(int index, int32 value)`
-	- `void add_foo(int32 value)`
-	- `void clear_foo()`
 - map fields
 	- proto def: `map<int32, int32> weight = 1;`
 	- `const google::protobuf::Map<int32, int32> &weight()`: return an **immutable** map

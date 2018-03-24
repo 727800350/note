@@ -1,3 +1,5 @@
+- `readelf -s` 查看so a 文件的symbol
+
 # gdb
 ## Running the program
 - run(r): run from the beginning.程序的参数是通过run给的, eg: `(gdb) run -n num -f file > outfile`
