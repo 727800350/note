@@ -1,9 +1,9 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <glog/logging.h>
+
 #include <gflags/gflags.h>
+#include <glog/logging.h>
 
 const int max_kl = 1024;
 const int max_vl = 10 * 1024 * 1024;
@@ -20,6 +20,9 @@ int main(int argc, char* argv[]){
 	google::SetVersionString("1.0.0.0");
 	google::SetUsageMessage(std::string("usage: cat - | ") + argv[0]);
 	google::ParseCommandLineFlags(&argc, &argv, true);
+
+	FLAGS_alsologtostderr = true;
+	FLAGS_colorlogtostderr = true;
 
 	int kl = 0;
 	char *k = new char[max_kl];

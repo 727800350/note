@@ -193,3 +193,8 @@ log_idle_connection_close   false   Print log when an idle connection is closed 
 虽然读比之前慢多了,但由于这类计数器的读多为低频的记录和展现,慢点无所谓.
 而写就快多了,极小的开销使得用户可以无顾虑地使用bvar监控系统,这便是我们设计bvar的目的.
 
+build
+
+1. `sh config_brpc.sh --headers=/usr/include --libs=/usr/lib`
+1. `make -j 4`
+
