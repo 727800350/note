@@ -180,6 +180,9 @@ for(std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it){
 }
 ```
 
+## [std::queue](http://www.cplusplus.com/reference/queue/queue/)
+- pop: This calls the removed element's destructor
+
 ## [std::priority queue](http://www.cplusplus.com/reference/queue/priority_queue/)
 ```C++
 template<class T,
@@ -446,6 +449,32 @@ std::mutex mutex;
 ## 条件变量 condition variable
 条件变量也是同步的一种手段,由一把锁(mutex)和一个condition组成.
 它可以使线程阻塞在某一条件上,比如`queue.not_empty()`.当条件满足时,线程唤醒.需要注意是要小心虚假唤醒,即当wait返回后,需要再次判断条件是否满足.
+
+使用`pthread_cond_wait`方式如下：
+```
+pthread _mutex_lock(&mutex)
+while或if(线程执行的条件是否成立)
+	pthread_cond_wait(&cond, &mutex);
+线程执行
+pthread_mutex_unlock(&mutex);
+```
+
+`pthread_cond_wait` 内部包含以下几步：
+
+1. 线程放在等待队列上，解锁
+2. 等待 `pthread_cond_signal` 或者 `pthread_cond_broadcast` 信号之后去竞争锁
+3. 若竞争到互斥索则加锁
+
+下面来讲一下：`pthread_cond_wait`和`pthread_cond_singal`是怎样配对使用的：
+
+- 等待线程：
+	1. `pthread_cond_wait` 前要先加锁
+	1. `pthread_cond_wait` 内部会解锁, 然后等待条件变量被其它线程激活
+	1. `pthread_cond_wait` 被激活后会再自动加锁
+- 激活线程：
+	1. 加锁(和等待线程用同一个锁)
+	1. `pthread_cond_signal`发送信号(阶跃信号前最好判断有无等待线程)
+	1. 解锁
 
 ## pratice
 对于本地文件的多线程
