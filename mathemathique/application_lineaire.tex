@@ -1,0 +1,430 @@
+\chapter{线性映射 Application lin\'eaire}
+$f$ application lin\'eaire de $V$ \`a $W$, alors:
+\begin{enumerate}
+\item $f$ injective, $\alpha_1, \alpha_2, \ldots, \alpha_r$ libre $\Rightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r)$ libre.
+	$f$ n'est pas injective时, 可以把线性无关的向量组映射为现行相关的向量组
+\item $f$ surjective, $\alpha_1, \alpha_2, \ldots, \alpha_r$ g\'en\'eratrice $\Rightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r)$ g\'en\'eratrice 
+\item $f$ isomorphisme
+	$$
+	\begin{cases}
+	\begin{aligned}
+			\alpha_1, \alpha_2, \ldots, \alpha_r \eqnote{libre} & \Leftrightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r) \eqnote{libre} \\
+	\alpha_1, \alpha_2, \ldots, \alpha_r \eqnote{li\'ees} & \Leftrightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r) \eqnote{li\'ees} \\
+	\alpha_1, \alpha_2, \ldots, \alpha_r \eqnote{g\'en\'eratrice} & \Leftrightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r) \eqnote{g\'en\'eratrice} \\
+	\alpha_1, \alpha_2, \ldots, \alpha_r \eqnote{base de} V & \Leftrightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r) \eqnote{base de} W
+	\end{aligned}
+	\end{cases}
+	$$
+\item $\alpha_1, \alpha_2, \ldots, \alpha_r$ li\'ees $\Rightarrow f(\alpha_1), f(\alpha_2), \ldots, f(\alpha_r)$ li\'ees
+\end{enumerate}
+
+\section{域$F$上线性空间的同构 - isomorphisme}
+$\sigma: V \rightarrow V'$, $\sigma$ est un isomorphisme entre $V$ et $V'$, 记作$V \cong V'$(latex 符号 \verb+\cong+), alors
+\begin{enumerate}
+\item 若$\alpha = (\alpha_1, \alpha_2, \ldots, \alpha_n)$为$V$的一个base, 则$\beta = (\sigma(\alpha_1), \sigma(\alpha_2), \ldots, \sigma(\alpha_n))$为$V'$的一个base.
+\item 若$v \in V$在base $\alpha$下的坐标为$(a_1, a_2, \ldots, a_n)^t$,
+	那么向量$\sigma(v) \in V'$在base $\beta$下的坐标为$(\sigma(a_1), \sigma(a_2), \ldots, \sigma(a_n))^t$
+\item $V$中向量组$x_1, x_2, \ldots, x_s$线性相关, 当且仅当$\sigma(x_1), \sigma(x_2), \ldots, \sigma(x_s)$线性相关.
+	\begin{proof}
+	$$dim(x_1, x_2, \ldots, x_s) = dim(\sigma(x_1), \sigma(x_2), \ldots, \sigma(x_s))$$
+	\end{proof}
+\item 若$U$为$V$的sous-espace vectoriel, 那么$\sigma(U)$为$V'$的一个sous-espace vectoriel;
+		同时如果$U$为有限维的, 那么$dim \sigma(U) = dim U$
+\end{enumerate}
+
+\begin{theorem}[维数决定同构]
+域$F$上两个有限维线性空间同构的充要条件是他们的维数相等.
+\end{theorem}
+根据上面的定理, 域$F$上任何一个$n$维线性空间$V$都与$F^n$同构, 并且可建立如下$V$到$F^n$的一个同构.\\
+取$V$的一个base $(\alpha_1, \alpha_2, \ldots, \alpha_n)$, 取$F^n$的标准基base canonique, 令
+$$
+\begin{aligned}
+\sigma: V & \rightarrow F^n \\
+v = \sum_{i = 1}^n a_i \alpha_i & \rightarrow \sum_{i = 1}^n a_i \epsilon_i = \begin{bmatrix}a_1 \\ a_2 \\ \vdots \\ a_n \end{bmatrix}
+\end{aligned}
+$$
+即把$V$中每一个向量$v$对应到它在$V$的一个base canonique下的坐标.
+
+\begin{theorem}
+\begin{enumerate}
+\item Soit $V$ un espace vectoriel de dimension finie $n$ sur le corps commutatif $K$.  Alors il existe un isomorphisme de $K^n$ vers $V$.
+\item S'il existe un isomorphisme de $K^n$ vers $V$, alors $V$ est de dimension $n$.
+\item Soient $V$ et $W$ deux espaces vectoriels isomorphes (il existe un isomorphisme de $V$ vers $W$ et un isomorphisme de $W$ vers $V$).
+	On suppose que l'un des deux espaces est de dimension finie. Alors $V$ et $W$ ont la m\^eme dimension.
+\item Si $V,W$ sont de dimension finie, et $\dim V = \dim W$, alors $V$ et $W$ sont isomorphes.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+1. Soit $(e_1,\dots, e_n)$ une base de $V$. On d\'efinit l'application $u : K^n \to V$ comme suit:
+$$ u(\lambda_1,\dots ,\lambda_n) = \sum_{i=1}^n \lambda_i \cdot e_i $$
+Il est \'evident que $u$ est une application lin\'eaire. Comme $(e_i)$ est une famille g\'en\'eratrice de $V$, il est
+\'egalement clair que $u$ est surjective. Reste \`a montrer l'injectivit\'e de $u$.
+\medskip
+
+Par lin\'earit\'e de $u$, il suffit de montrer que si $u(\lambda_1,\dots ,\lambda_n) = 0_V$, alors
+tous les $\lambda_i$ sont nuls. Or cela est vrai, puisque la famille $(e_i)$ est libre.
+Comme $u$ est une application lin\'eaire surjective et injective, il s'agit d'un isomorphisme d'espaces vectoriels.
+\medskip
+
+2. Soit $u: K^n \to V$ un isomorphisme. On consid\`ere une base $(e_1,\dots ,e_n)$ de $K^n$ (par exemple la
+base canonique). On regarde maintenant la famille
+$$ (f_1,\dots ,f_n) = (u(e_1), \dots, u(e_n)) $$
+Pour montrer que $V$ est de dimension $n$, il suffit de se convaincre que la famille $(f_i)$ est une base de $V$.
+Montrons d'abord qu'elle est libre.
+\medskip
+
+Si $\sum_{i=1}^n \lambda_i \cdot f_i = \sum_{i=1}^n \lambda_i \cdot u(e_i) =0_V$, alors par lin\'earit\'e de $u$ on aura
+$$ u\left( \sum_{i=1}^n \lambda_i \cdot e_i \right) = 0_V.  $$
+Or $u$ est un isomorphisme, donc en particulier c'est une injection. Et comme $u(0)=0$, on doit avoir
+$$ \sum_{i=1}^n \lambda_i \cdot e_i  = 0 $$
+Mais la famille $(e_i)$ est en particulier une famille libre, donc tous les $\lambda_i$ sont nuls.
+Nous avons prouv?que la famille $(f_i)$ est libre.
+\medskip
+
+Montrons maintenant que la famille $(f_i)$ est g\'en\'eratrice. Soit $v$ vecteur quelconque de $V$. Puisque
+$u$ est une surjection, il existe un vecteur $t \in K^n$ avec $u(t)=v$. Comme $(e_i)$ est une famille g\'en\'eratrice
+de $K^n$, il existe des scalaires $(\lambda_1, \dots, \lambda_n)$ avec
+$$ t = \sum_{i=1}^n \lambda_i \cdot e_i $$
+Mais alors
+$$
+v
+= u(t)
+= u\left(\sum_{i=1}^n \lambda_i \cdot e_i \right)
+= \sum_{i=1}^n \lambda_i \cdot u(e_i)
+= \sum_{i=1}^n \lambda_i f_i
+$$
+Nous avons montr\'e que $(f_i)$ est bien une famille g\'en\'eratrice. Cette famille est bien une base de $V$.
+\bigskip
+
+3. C'est une cons\'equence imm\'ediate de 1. et 2.
+\bigskip
+
+4. Soit $n$ la dimension commune de $V$ et $W$. Par 1. les deux espaces vectoriels sont alors isomorphes
+\`a l'espace vectoriel $K^n$. Puisque la composition de deux isomorphismes est encore un isomorphisme, on en d\'eduit
+que $V$ et $W$ sont isomorphes.
+\end{proof}
+
+\begin{example}
+设$(\alpha_1, \alpha_2, \ldots, \alpha_n)$是域$F$上$n$维线性空间$V$的一个base, $(\beta_1, \beta_2, \ldots, \beta_s)$为$V$的一个向量组, 并且
+$(\beta_1, \beta_2, \ldots, \beta_s) = (\alpha_1, \alpha_2, \ldots, \alpha_n) \cdot A$ \\
+证明: $dim(\beta_1, \beta_2, \ldots, \beta_s) = rank(A)$
+\end{example}
+\begin{proof}
+$(\alpha_1, \alpha_2, \ldots, \alpha_n)$为$V$的一个base $\Rightarrow dimV = n \Rightarrow v \cong F^n$. \\
+设$\sigma: \alpha = \sum_{i = 1}^n a_i \alpha_i \rightarrow (a_1, a_2, \ldots, a_n)^t$ 为$V \rightarrow F^n$的一个isomorphisme. \\
+$\sigma$的作用就是取坐标.
+
+$(\beta_1, \beta_2, \ldots, \beta_s) = (\alpha_1, \alpha_2, \ldots, \alpha_n) \cdot A$
+$\Rightarrow \beta_j$在$(\alpha_1, \alpha_2, \ldots, \alpha_n)$的坐标为$A$的第$j$列$A_j$, \\
+因此$\sigma(\beta_j) = A_j,~ j \in [[1, s]]$
+$$ \Rightarrow \sigma(\beta_1, \beta_2, \ldots, \beta_s) = (A_1, A_2, \ldots, A_s) $$
+$$ dim(\beta_1, \beta_2, \ldots, \beta_s) = dim \sigma(\beta_1, \beta_2, \ldots, \beta_s) = dim(A_1, A_2, \ldots, A_s) = rank(A) $$
+\end{proof}
+
+\begin{example}
+设$A, B \in M_n(F)$ \\
+证明: 若$A \sim B$, 则$C(A) \cong C(B)$, 从而 $dim C(A) = dim C(B)$.\\
+$C(A)$: 与$A$可交换的矩阵.
+\end{example}
+\begin{proof}
+\end{proof}
+$A \sim B \Rightarrow \exists P \in M_n(F)$ inversible telle que $B = P^{-1} \cdot A \cdot P$. 于是
+$$
+\begin{aligned}
+\forall x \in C(A)
+& \Leftrightarrow xA = Ax \\
+& \Leftrightarrow P^{-1} \cdot xA \cdot P = P^{-1} \cdot Ax \cdot P \\
+& \Leftrightarrow P^{-1} \cdot x \cdot P P^{-1} \cdot A \cdot P = P^{-1} \cdot A \cdot P P^{-1} \cdot x \cdot P \\
+& \Leftrightarrow P^{-1} \cdot x \cdot P B = B P^{-1} \cdot x \cdot P \\
+& \Leftrightarrow (P^{-1} \cdot x \cdot P) B = B (P^{-1} \cdot x \cdot P) \\
+& \Leftrightarrow (P^{-1} \cdot x \cdot P) \in C(B)
+\end{aligned}
+$$
+所以可以令
+$$
+\begin{aligned}
+\sigma: C(A) & \rightarrow C(B) \\
+		 x   & \rightarrow P^{-1} x P
+\end{aligned}
+$$
+因此$\sigma$是一个 isomorphisme, $C(A) \cong C(B) \Rightarrow dim C(A) = dim C(B)$
+
+\section{正交线性映射}
+\begin{definition}
+线性空间$V$上的两个线性变换$A, B$, 如果满足 $AB = BA = 0$, 那么称$A$与$B$是正交的.
+\end{definition}
+
+\begin{itemize}
+\item $p$ projecteur $\Rightarrow E = Ker p \oplus Img p$
+\item $p$ projecteur orthogonal $\Rightarrow E = Ker p \oplus Img p \et Ker p = (Img p)^{\perp}$
+\item $u$ auto-adjoint $\Rightarrow E = Ker u \oplus Img u \et Ker u = (Img u)^{\perp}$
+\item $u$ automorphisme orthogonal $\Rightarrow u^* \circ u = Id$
+\end{itemize}
+
+\begin{lemma}
+设$U$和$W$为域$F$上线性空间$V$的两个子空间, 且$V = U \oplus W$, 则
+$P_U$(le projecteur sur $U$ parall\`element \`a $W$) 与
+$P_W$(le projecteur sur $W$ parall\`element \`a $U$)是正交的幂等变换, 且他们的和为恒等变换, 反之也成立.
+即: 若$A^2 = A, B^2 = B, A + B = I, AB = BA = 0$, 那么$A, B$分别为投影.
+\end{lemma}
+\begin{proof}
+首先需要找到$V$的子空间$U$和$W$, 使得$V = U \oplus W$. \\
+$\forall \alpha \in V$, 由$A + B = I$, 得到$\alpha  = I \alpha = (A + B) \alpha = A \alpha + B \alpha$. \\
+因此猜想$U = ImgA, W = ImgB$. \\
+由$A(0) = 0$得到 $Img A \neq \emptyset$ \\
+$A \alpha + A r = A(\alpha + r) \in Img A$ \\
+$k A \alpha = A(k \alpha) \in Img A$ \\
+所以$ImgA$是$V$的一个sous-espace vectoriel. \\
+同理$ImgB$是$V$的一个sous-espace vectoriel.
+
+$\forall \alpha \in V$ 有 $\alpha  = A \alpha + B \alpha$. 因此$V = Img A + Img B$ \\
+任取$x \in (Img A) \cap (Img B)$, 则$\exists \alpha \in Img A, \beta \in Img B$, 使得 $x = A \alpha, x = B \beta$ \\
+$$x = A \alpha = A^2 \alpha = A \cdot A \alpha = A \cdot x = A \cdot B \beta = AB \beta = 0 \cdot \beta = 0 $$
+$$\Rightarrow Img A \cap Img B = 0$$
+结合 $V = Img A + Img B$ 得到:
+$$V = Img A \oplus Img B$$
+
+$\forall x \in Img A$, 从上面的结论可知: $x = A x,~ B x = 0$ \\
+$\forall x \in Img B$, 从上面的结论可知: $x = B x,~ A x = 0$ \\
+$$\therefore A = P_U,~ U = Img A;~ B = P_W,~ W = Img B$$
+\end{proof}
+
+\section{endomorphisme}
+Si $u$ est un endomorphisme diagonalisable, alors $tr(u)$ est la some des valeurs propres de $u$ compt\'ees avec leurs multiplicit\'es.
+
+\begin{example}
+\end{example}
+Soit $p: E \rightarrow E$ un endomorphisme et $p \circ p \circ p = p$.
+证明: $p$ est un projecteur
+\begin{proof}
+$$
+\begin{aligned}
+\forall x \in E,~ p \circ p \circ p(x) = p(x)
+& \Leftrightarrow p(p \circ p(x)) - p(x) = 0 \\
+& \Leftrightarrow p(p \circ p(x) - x) = 0 \\
+& \Leftrightarrow p \circ p(x) - x \in Ker p \\
+\end{aligned}
+$$
+$$\forall x \in E,~ x = (x - p \circ p(x)) + p \circ p(x)$$
+$$(x - p \circ p(x)) \in Ker p \et p \circ p(x) \in Img p$$
+$$\therefore E = Ker p + Img p$$
+
+Si $v \in Ker p \cap Img p$, alors $\exists w \in E$, telle que $p(w) = v$ et $p(v) = 0$
+$$p(p(w)) = p(v) = 0$$
+$$v = p(w) = p \circ p \circ p(w) = p(0) = 0$$
+$$\therefore Ker p \cap Img p = {0} \Rightarrow E = Ker p \oplus Img p$$
+Donc $p$ est un projecteur sur $Img p$.
+\end{proof}
+
+\section{核与像 Ker et Img}
+\begin{theorem}
+Soit $f:V \rightarrow W$ une application lin\'eaire. Soit $w \in W$ un vecteur donn\'e. On note
+$$ S=\{x \in V|f(x)=w\} $$
+Alors $S$ est soit l'ensemble vide, soit un ensemble de la forme $\{x_0+v|v \in ker f\}$, o\`u $x_0$ est une solution particuli\`ere de l'\'equation $f(x_0)=w$.
+\end{theorem}
+\begin{note}
+想一想解线性微分方程的时候,我们也用到了这种思想,先找通解,然后再找一个特解,组合在一起,就构成了微分方程的完整解.
+\end{note}
+
+\begin{theorem}
+设$A: V \rightarrow W$ application lineaire, $dim V = n$.
+在$KerA$中取一个base $(\alpha_1, \alpha_2, \ldots, \alpha_m)$.
+然后把它扩充成为$V$的一个base,即$(\alpha_1, \alpha_2, \ldots, \alpha_m, \alpha_{m + 1}, \alpha_{m + 2}, \ldots, \alpha_n)$.
+于是$Img A = Vect(A \alpha_{m + 1}, A \alpha_{m + 2}, \ldots, A \alpha_n)$.
+\end{theorem}
+\begin{proof}
+$$Ker A = Vect(\alpha_1, \alpha_2, \ldots, \alpha_m)$$
+$$V = Vect(\alpha_1, \alpha_2, \ldots, \alpha_m, \alpha_{m + 1}, \alpha_{m + 2}, \ldots, \alpha_n)$$
+$$dim Ker A + dim Img A = dim V \Rightarrow dim Img A = n - m$$
+$$A \alpha_i \in Img A,~ \forall i \in [[1, n]]$$
+$$A \alpha_i = 0,~ \forall i \in [[1, m]]$$
+$\alpha_i,~ i \in [[m + 1, n]]$ 刚好有$n - m$个, 猜测$A \alpha_i,~ i \in [[m + 1, n]]$就是$Img A$的一个base. \\
+只需要证明$(A \alpha_{m + 1}, A \alpha_{m + 2}, \ldots, A \alpha_n)$是一个famille libre 就可以了. \\
+也就是需要能够从 $k_{m + 1} A \alpha_{m + 1} + k_{m + 2} A \alpha_{m + 2} + \ldots + k_n A \alpha_n = 0$中推断出 $k_{m + 1} = k_{m + 2} = \cdots = k_n = 0$.
+
+$$k_{m + 1} A \alpha_{m + 1} + k_{m + 2} A \alpha_{m + 2} + \ldots + k_n A \alpha_n = 0$$
+$$A(k_{m + 1} \alpha_{m + 1} + k_{m + 2} \alpha_{m + 2} + \ldots + k_n \alpha_n) = 0$$
+$$k_{m + 1} \alpha_{m + 1} + k_{m + 2} \alpha_{m + 2} + \ldots + k_n \alpha_n \in Ker A$$
+$$k_{m + 1} \alpha_{m + 1} + k_{m + 2} \alpha_{m + 2} + \ldots + k_n \alpha_n \in Vect(\alpha_1, \alpha_2, \ldots, \alpha_m)$$
+而$(\alpha_1, \alpha_2, \ldots, \alpha_m, \alpha_{m + 1}, \alpha_{m + 2}, \ldots, \alpha_n)$是$V$的一个base, 所以是famille libre
+$$\therefore k_{m + 1} = k_{m + 2} = \cdots = k_n = 0$$
+所以$Img A = Vect(A \alpha_{m + 1}, A \alpha_{m + 2}, \ldots, A \alpha_n)$.
+\end{proof}
+
+\begin{example}
+设$V$和$V'$分别为域$F$上$n$维, $s$维的线性空间, $A$为$V$到$V'$的一个线性映射, 它在$V$的一个base与$V'$的一个base下的矩阵为$M(A)$.
+证明:
+\begin{enumerate}
+\item $A$是injective $\Leftrightarrow M(A)$为列满秩矩阵
+\item $A$是surjective $\Leftrightarrow M(A)$为行满秩矩阵
+\end{enumerate}
+\end{example}
+\begin{proof}
+$$
+\begin{aligned}
+A \eqnote{est injective} & \Leftrightarrow Ker A = 0 \\
+& \Leftrightarrow dim(Img A) = dim V - dim(Ker A) = n \\
+& \Leftrightarrow rang(A) = n \\
+& \Leftrightarrow rang(M(A)) = n
+\end{aligned}
+$$
+由于$M(A)$为$s \times n$矩阵, 因此$M(A)$为列满秩矩阵.
+
+$$
+\begin{aligned}
+A \eqnote{est surjective} & \Leftrightarrow Img A = V' \\
+& \Leftrightarrow dim(Img A) = dim V' = s \\
+& \Leftrightarrow rank(A) = s \\
+& \Leftrightarrow rank(M(A)) = s \\
+\end{aligned}
+$$
+由于$M(A)$为$s \times n$矩阵, 因此$M(A)$为行满秩矩阵.
+\end{proof}
+
+\subsection{Hyperplan 超平面}
+Les hyperplans sont exactement les noyaux des formes lin\'eaire non nulles. \\
+C'est-\`a-dire: $H$ est un hyperplan de $E \Leftrightarrow \exists \phi \in E^*\backslash\{0\}$ telle que $H = Ker \phi$ 
+\begin{proof}
+$\Rightarrow$ \\
+Soit $H$ un hyperplan de $E$, on cherche \`a construire une forme lin\'eaire non nulle $\phi$, telle que $H = Ker \phi$. \\
+$H$ est hyperplan, donc il admet un suppl\'ementaire dans $E$ de dimension $1$.
+C'est donc une droite engendr'e par un $x_0 \in E - H$ avec $x_0 \neq 0$.
+Donc: $$E = H \oplus k x_0$$
+$$\forall x \in E, \exists ! x_H \in H \et \lambda \in K, \eqnote{telle que} x = x_H + \lambda x_0$$
+On d\'efinit
+$$
+\begin{aligned}
+\phi: E & \rightarrow k \\
+	x   & \rightarrow \lambda
+\end{aligned}
+$$
+Puis, on doit d\'emontrer $Ker \phi = H$.
+\footnote{undone}
+
+$\Leftarrow$ \\
+$\phi$ non nulle, donc $\exists x_0 \in E$, telle que $\phi(x_0) \neq 0$ \\
+Montrons alors $E = H \oplus k x_0$
+$$\forall x \in E,~ x = (x - \dfrac{\phi(x)}{\phi(x_0)} x_0) + \dfrac{\phi(x)}{\phi(x_0)} x_0$$
+$$(x - \dfrac{\phi(x)}{\phi(x_0)} x_0) \in Ker \phi = H,~ \dfrac{\phi(x)}{\phi(x_0)} x_0 \in k x_0$$
+$$E = H + k x_0 \eqnote{再证交集为} \{0\} \Rightarrow E = H \oplus k x_0$$
+Donc $H$ est un hyperplan.
+\end{proof}
+
+\textbf{Espace m\'etrique}
+On appelle $(E, d)$ un espace m\'etrique si $ E$  est un ensemble et d une distance sur $E$ .
+
+\textbf{Espace complet}
+Un espace m\'etrique $ M$  est dit complet si toute suite de Cauchy de $ M$  a une limite dans $ M$  (c'est-\`a-dire qu'elle converge dans $M$ ).\newline
+Intuitivement, un espace est complet s'il n'a pas de trou, s'il n'a aucun point manquant. \newline
+Par exemple, les nombres rationnels ne forment pas un espace complet,
+puisque $\sqrt{2}$ n'y figure pas alors qu'il existe une suite de Cauchy de nombres rationnels ayant cette limite.
+
+Il est toujours possible de remplir les trous amenant ainsi \`a la compl\'etion d'un espace donn\'e.
+
+\textbf{Espace euclidien}
+il est d\'efini par la donn\'ee d'un espace vectoriel sur le corps des r\'eels, de dimension finie, muni d'un produit scalaire,
+qui permet de mesurer distances et angles.
+
+\textbf{Espace hermitien}
+En math\'ematiques, un espace hermitien est un espace vectoriel sur le corps commutatif des complexes de dimension finie et muni d'un produit scalaire.
+
+La g\'eom\'etrie d'un tel espace est analogue \`a celle d'un espace euclidien
+
+Une forme hermitienne est une application d\'efini\'e sur $E \times E$ \`a valeur dans $\mathbf{C}$ not\'ee $\langle .,.\rangle$, telle que :
+\begin{itemize}
+		\item pour tout y fix\'e l'application $x \mapsto \langle x,y\rangle $est $\mathbf{C}$-lin\'eaire et
+		\item $\forall x,y \in E$,$\langle x,y\rangle=\overline{ \langle y,x\rangle}$.
+\end{itemize}
+En particulier, $\langle x,x\rangle$ est r\'eel, et $x\mapsto \langle x,x\rangle$ est une forme quadratique sur E vu comme $\mathbf{R}$-espace vectoriel.
+
+\textbf{Espace pr\'ehilbertien}
+En math\'ematiques, un espace pr\'ehilbertien est d\'efini comme un espace vectoriel r\'eel ou complexe muni d'un produit scalaire
+
+Un espace pr\'ehilbertien $(E,\langle\cdot,\cdot\rangle)$ est alors un espace vectoriel E muni d'un produit scalaire $\langle\cdot,\cdot\rangle$.
+
+\textbf{Espace de Hilbert}
+C'est un espace pr\'ehilbertien complet, c'est-\`a-dire un espace de Banach dont
+la norme $\parallel\bullet\parallel$ d\'ecoule d'un produit scalaire ou hermitien $\langle\cdot,\cdot\rangle$ par la formule
+$$\parallel x\parallel = \sqrt{\langle x,x \rangle}$$
+C'est la g\'en\'eralisation en dimension quelconque d'un espace euclidien ou hermitien.
+\bigskip
+
+\textbf{Application hermitien's eigenvalues are real values}.
+\begin{proof}
+Soient A une matrice autoadjointe (r\'eelle ou complexe), $\lambda$ une racine de son polyn\^ome caract\'eristique (il en existe au moins une,
+mais a priori complexe), et $X$ une matrice colonne complexe non nulle telle que
+$AX=\lambda X$. Alors
+$$ \overline\lambda X^*.X=(AX)^*.X=X^*.A^*.X=X^*.A.X=\lambda X^*.X $$
+or $X*.X$ est non nul, donc $\lambda$ est r\'eel.
+\end{proof}
+
+\begin{theorem}[Th\'eor\`eme spectral en dimension finie, pour les endomorphismes]
+Tout endomorphisme auto-adjoint d'un espace euclidien ou hermitien est diagonalisable dans une base orthonormale et ses valeurs propres sont toutes r\'eelles.
+\end{theorem}
+
+\begin{theorem}[Th\'eor\`eme spectral pour les matrices]
+Soit $A$ une matrice sym\'etrique r\'eelle(resp. hermitienne complexe),
+alors il existe une matrice $P$ orthogonale (resp. unitaire) et une matrice $D$ diagonale dont tous les coefficients sont r\'eels,
+telles que la matrice $A = P.D.P^{-1}$
+\end{theorem}
+
+\begin{theorem}[Diagonalisation d'un endomorphisme autoadjoint et d'une matrice autoadjointe]
+Un endomorphisme d'un espace euclidien ou hermitien est autoadjoint
+si et seulement s'il existe une base orthonormale de vecteurs propres, avec valeurs propres toutes r\'eelles.\\
+Une matrice carr\'ee complexe $A$ est autoadjointe si et seulement s'il existe une matrice unitaire $U$ telle que $U.A.U^{-1}$ soit diagonale et r\'eelle.\\
+Une matrice carr\'ee r\'eelle $A$ est \textbf{sym\'etrique} si et seulement s'il existe une \textbf{matrice orthogonale} $P$
+telle que $P.A.P^{-1}$ soit diagonale et r\'eelle.
+\end{theorem}
+Rappel:
+Une matrice carr\'ee $A$(n lignes, n colonnes) \`a coefficients r\'eels est dite \textbf{orthogonale}正交矩阵 si $A^t A = I_n$, c'est-\`a-dire que $A^t = A^{-1}$
+
+\textbf{Th\'eor\`eme de Riesz (Fr\'echet-Riesz)}\newline
+un th\'eor\`eme qui repr\'esente les \'el\'ements du dual d'un espace de Hilbert comme produit scalaire par un vecteur de l'espace.
+Soient :
+\begin{itemize}
+	\item H un espace de Hilbert (r\'eel ou complexe) muni de son produit scalaire not\'e $<.,.>$
+	\item f in H' une forme lin\'eaire continue sur H.
+\end{itemize}
+Alors il existe un unique $y$ dans $H$ tel que pour tout x de H on ait $f(x) = <y, x>$
+$$
+\exists\,!\ y \in H\,, \quad \forall x\in H\,, \quad f(x) = \langle y,x\rangle
+$$
+\underline{Extension aux formes bilin\'eaires}\newline
+Si $a$ est une forme bilin\'eaire continu\'e sur un espace de Hilbert r\'eel $\mathcal{H}$ (ou une forme sesquilin\'eaire complexe continue sur un Hilbert complexe),
+alors il existe une unique application $A$ de $\mathcal{H}$ dans $\mathcal{H}$ telle que,
+pour tout $(u, v) \in \mathcal{H} \times \mathcal{H}$, on ait $a(u, v) = <Au, v>$.
+De plus, A est lin\'eaire et continue, de norme \'egale \`a celle de a.
+$$ \exists !\,A\in\mathcal{L}(H),\ \forall (u,v)\in H\times H,\ a(u,v)=\langle Au,v \rangle $$
+Cela r\'esulte imm\'ediatement de l'isomorphisme canonique(isom\'etrique) entre l'espace norm\'e des formes bilin\'eaires continues sur
+$\mathcal{H} \times \mathcal{H}$ et celui des applications lin\'eaires continues de H dans son dual, et de l'isomorphisme ci-dessus entre ce dual et H lui-m\^eme.
+\bigskip
+
+\textbf{Th\'eor\`eme de Lax-Milgram}\newline
+Appliqu\'e \`a certains probl\`emes aux d\'eriv\'ees partielles exprim\'es sous une formulation faible (appel\'ee \'egalement formulation variationnelle).
+Il est notamment l'un des fondements de la m\'ethode des \'el\'ements finis.
+Soient :
+\begin{itemize}
+\item $\mathcal{H}$ un espace de Hilbert r\'eel ou complexe muni de son produit scalaire not\'e $\langle.,.\rangle$, de norme associ\'ee not\'ee $\|.\|$
+\item a(.\, ,\,.) une forme bilin\'eaire (ou une forme sesquilin\'eaire si $\mathcal{H}$ est complexe) qui est
+	\begin{itemize}
+	\item continue sur $\mathcal{H}\times\mathcal{H} : \exists\,c>0, \forall (u,v)\in \mathcal{H}^2\,,\ |a(u,v)|\leq c\|u\|\|v\|$
+	\item coercive sur $\mathcal{H}$ (certains auteurs disent plut\^ot $\mathcal{H}$-elliptique):
+		$\exists\,\alpha>0, \forall u\in\mathcal{H}\,,\ a(u,u) \geq \alpha\|u\|^2$
+	\end{itemize}
+\item $L(.)$ une forme lin\'eaire continue sur $\mathcal{H}$
+\end{itemize}
+Sous ces hypoth\`eses il existe un unique $u$ de $\mathcal{H}$ tel que l'\'equation $a(u,v)=L(v)$ soit v\'erifi\'ee pour tout $v$ de $\mathcal{H}$ :
+$$
+\quad \exists!\ u \in \mathcal{H},\ \forall v\in\mathcal{H},\quad a(u,v)=L(v)
+$$
+Si de plus la forme bilin\'eaire a est sym\'etrique, alors $u$ est l'unique \'el\'ement de $\mathcal{H}$ qui
+minimise la fonctionnelle $J:\mathcal{H}\rightarrow\R$ d\'efinie par $J(v) = \tfrac{1}{2}a(v,v)-L(v)$ pour tout $v$ de $\mathcal{H}$, c'est-\`a-dire :
+$$
+\quad \exists!\ u \in \mathcal{H},\quad J(u) = \min_{v\in\mathcal{H}}\ J(v)
+$$
+\bigskip
+
+$-\laplace $ admet une base de fonctions propres $v_k$, $k \in N$,
+orthonormales pour le produit scalaire de $L^2(\Omega)$
+

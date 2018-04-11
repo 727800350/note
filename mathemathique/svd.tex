@@ -1,0 +1,99 @@
+\chapter{SVD}
+\begin{theorem}
+\textbf{Singular value decomposition}\\
+Suppose $A$ is an $m \times n$ matrix whose entries come from the field $K$, which is either the field of real numbers or the field of complex numbers.
+Then there exists a factorization of the form
+$$
+\mathbf{A} = \mathbf{U} \boldsymbol{\Sigma} \mathbf{V}^*
+$$
+where $U$ is an $m \times m$ unitary matrix over $K$ (orthogonal matrix if $K = R$),
+$Σ$ is an $m \times n$ diagonal matrix with non-negative real numbers on the diagonal,
+and the $n \times n$ unitary matrix $V^*$ denotes the conjugate transpose of the $n \times n$ unitary matrix $V$
+\end{theorem}
+\begin{proof}
+$A$ is $m \times n \Rightarrow AA^T$ is $m \times m, A^T A$ is $n \times n$\\
+Let $\lambda_1, \ldots, \lambda_r$ be the \textbf{nonzero} eigenvalues of $A^T A$, \\
+and the corresponding unit eigenvector are $v_1, \ldots, v_r$ with $v_i \in K^n$\\
+$r$ is just the rank of $A^T A$, which is also the rank of $A$.
+\todo{proof it is also the rank of $A$}
+$$A A^T A v_i = A \lambda_i v_i = \lambda_i (A v_i)$$
+所以, $Av_i$刚好就是$A A^T$的vector propre, 相应的valeur propre也是$\lambda_i$.
+$$\norm{Av_i} = \sqrt{(Av_i)^T Av_i} = \sqrt{v_i^T A^T Av_i} = \sqrt{v_i^T \lambda_i v_i} = \sqrt{\lambda_i} \equiv \sigma_i$$
+Let $u_i = \dfrac{Av_i}{\sigma_i}$, 那么 $\norm{u_i} = 1$ and $\u_i \in K^m$
+
+$$
+\forall i, j \in \{1,2,\ldots, r\},\
+u_i^T Av_j
+= (\dfrac{Av_i}{\sigma_i})^T Av_j
+= \dfrac{1}{\sigma_i} v_i^T A^T Av_j
+= \dfrac{\lambda_j}{\sigma_i} v_i^T v_j
+= \dfrac{\lambda_j}{\sigma_i} \delta_{ij}
+=
+\left\{
+  \begin{array}{ll}
+    \sigma_i & \si i = j \\
+    0 & \sinon
+  \end{array}
+\right.
+$$
+将这$r \times r$个方程写成矩阵的形式:
+$$
+\begin{bmatrix}
+u_1^T \\
+u_2^T \\
+\vdots \\
+u_r^T \\
+\end{bmatrix}
+\cdot
+A
+\cdot
+\begin{bmatrix}
+v_1 & v_2 & \cdots & v_r
+\end{bmatrix}
+=\diag{\sigma_1, \sigma_2, \ldots, \sigma_r}
+$$
+The $u_i$ are vectors from an $m$-dimensional space, and we only have $r$ of them, so we can pick unit
+vectors $u_{r+1}, \ldots, u_m$ that are pairwise orthogonal, and orthogonal to $u_1,\ldots, u_r$. Similarly we can
+find $v_{r+1}, \ldots, v_n$ such that $v_1,...,v_n$ are pairwise orthogonal unit vectors. We then still have that
+$u_i^T A v_j$ is $\sigma_i$ when $i = j \leq r$ and by a calculation analogous to the above it is
+\textbf{zero for all other cases(因为其他的特征值都为0)}.\\
+In matrix form this gives us
+$$
+\begin{bmatrix}
+u_1^T \\
+u_2^T \\
+\vdots \\
+u_m^T \\
+\end{bmatrix}
+\cdot
+A
+\cdot
+\begin{bmatrix}
+v_1 & v_2 & \cdots & v_n
+\end{bmatrix}
+=\Sigma
+$$
+where $\Sigma$ is now an $m \times n$ matrix with its first $r$ diagonal entries being the
+$\sigma_1, \sigma_2, \ldots, \sigma_r$ and zeroes everywhere else.
+
+Defining $U = [u_1, \ldots, u_m]$ and $V = [v_1, \ldots, v_n]$ column vectors.
+we now have $U^TAV = \Sigma$\\
+and as orthogonal matrix, $U^{-1} = U^T, V^{-1} = V^T$
+$$ A = U \Sigma V^T $$
+This is the famous singular value decomposition, and you have just seen a complete proof of its existence for an arbitrary $m \times n$ matrix $A$.
+\end{proof}
+
+\begin{remark}
+\textbf{econonmy version of the SVD}\\
+$$ A = U_r \Sigma_r V_r^T $$
+\end{remark}
+
+\begin{remark}
+The $\sigma_1, \ldots, \sigma_r$ which are just the square roots of the eigenvalues of $A A^T$ or ($A^T A$), are called the singular values of A.
+The columns of $U$, which are just the eigenvectors of $A A^T$, are called \textbf{left singular vectors of $A$},
+and the columns of $V$ , which are just the eigenvectors of $A^T A$, are called the \textbf{right singular vectors of $A$}
+\end{remark}
+
+Any arbitrary matrix $X$ can be converted to an orthogonal matrix, a diagonal matrix and another orthogonal matrix
+(or a rotation, a stretch and a second rotation)
+

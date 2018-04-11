@@ -1,0 +1,33 @@
+\chapter{Max-plus algebra}
+A max-plus algebra is a \textbf{semiring(demi-anneau):(半环是类似于环但没有加法逆元的代数结构)} over the union of real numbers and
+$\varepsilon = -\infty$, equipped with maximum and addition as the two binary operations.
+
+\textbf{Scalar operations}\\
+Let a and b be real scalars or $\varepsilon$.
+Then the operations maximum(implied by the max operator $\oplus$) and addition(plus operator $\otimes$) for these scalars are defined as
+$$ a \oplus b = \max(a,b) $$
+$$ a \otimes b = a + b $$
+Similar to the conventional algebra, all $\otimes$ - operations have a higher precedence than $\oplus$ - operations.
+
+\textbf{Matrix operations}\\
+$$ [A \oplus B]_{ij} = [A]_{ij} \oplus [B]_{ij} = \max([A]_{ij} , [B]_{ij}) $$
+$$ [A \otimes B]_{ij} = \oplus_{k = 1}^p [A]_{ik} \otimes [B]_{kj} = \max([A]_{i1} + [B]_{1j}, \dots, [A]_{ip} + [B]_{pj}) $$
+
+\textbf{Algebra properties}\\
+\begin{itemize}
+\item associativity:
+	\begin{itemize}
+	\item $(a \oplus b) \oplus c = a \oplus (b \oplus c) $
+	\item $(a\otimes b) \otimes c = a \otimes (b \otimes c)$
+	\end{itemize}
+\item commutativity :
+	\begin{itemize}
+	\item $a \oplus b = b \oplus a $
+	\item $a \otimes b = b \otimes a $
+	\end{itemize}
+\item distributivity:
+	\begin{itemize}
+	\item  $(a \oplus b) \otimes c = a \otimes c \oplus b \otimes c $
+	\end{itemize}
+\end{itemize}
+

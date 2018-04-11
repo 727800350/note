@@ -1,0 +1,587 @@
+\chapter{Matrices}
+\begin{definition}
+  Soient $V,W$ deux espaces vectoriels sur un corps communitatif $K$ avec dim$V=n$,dim$W=p$,\newline
+  soit $e=(e_1,\ldots,e_n)$ une base de $V$, et $f=(f_1,\ldots,f_n)$ une base de $W$. \newline
+  On appelle {\bf matrice associ\'ee \`a $u$ dans les bases} $e,f$ et on note ${\cal M}_f^e(u)$ la matrice $p \times n$ d\'efinie par la r\`egle:
+  $\forall j \in [[1,n]], u(e_j)= \sum_{i=1}^p ({\cal M}_f^e(u))_{ij} \cdot f_i $. Autrement dit,
+  $\forall i \in [[1,p]],\forall j \in [[1,n]]$, le scalaire $({\cal M}_f^e(u))_{ij}$ est la i-\`eme coordonn\'ee du vecteur $u(e_j) \in W $ dans la base $f$.
+\end{definition}
+\begin{note}
+  Les {\bf coordonn\'ees de $u(e_j)$ dans la base $f$} sont les coeficients qui se trouvent dans {\bf la colonne num\'er\'e $j$ de la matrice}
+  ${\cal M}_f^e(u)$.
+\end{note}
+
+\begin{theorem}
+  $ \forall v \in V, {\cal C}_f(u(v))= {\cal M}_f^e(u)\cdot {\cal C}_e(v) $
+\end{theorem}
+
+\begin{note}
+ $ {\cal M}_f^e(u)\cdot {\cal P}_{e\rightarrow e'}= {\cal M}_f^e(u)\cdot {\cal M}_e^{e'}(id_V)={\cal M}_f^{e'}(u)$
+\end{note}
+
+\section{矩阵的运算}
+$$
+A \times B = 
+\begin{bmatrix}
+	A_1 & A_2
+\end{bmatrix}
+\times
+\begin{bmatrix}
+	B_1 \\
+	B_2
+\end{bmatrix}
+=
+A_1 \times B_1 + A_2 \times B_2
+$$
+$B$对$A$进行列变换, $A$对$B$进行行变换.
+
+\subsection{列向量组}
+若$A$的列向量组为$\alpha_1,\ldots,\alpha_n$,那么我们可以把$A$写成:$A=(\alpha_1,\ldots,\alpha_n)$ \newline
+设$A=(a_{ij})_{s\times n},B=(b_{ij})_{n\times m},A$ 的列向量组为$\alpha_1,\ldots,\alpha_n$. \newline
+$AB$的第$j\in [[1,m]]$列为: \newline
+$$
+\begin{bmatrix}
+  a_{11}b_{1j}+a_{12}b_{2j}+\dots+a_{1n}b_{nj}  \\
+  a_{21}b_{1j}+a_{22}b_{2j}+\dots+a_{2n}b_{nj}  \\
+  \vdots \\
+  a_{s1}b_{1j}+a_{s2}b_{2j}+\dots+a_{sn}b_{nj}
+\end{bmatrix}
+\\
+=
+b_{1j}\alpha_1+b_{2j}\alpha_2+\dots+b_{nj}\alpha_n
+$$
+于是
+$$
+AB=(\alpha_1,\ldots,\alpha_n)
+\begin{bmatrix}
+  b_{11} & b_{12} & \dots & b_{1m}  \\
+  b_{21} & b_{22} & \dots & b_{2m}  \\
+  \vdots & \vdots & \vdots &\vdots \\
+  b_{n1} & b_{n2} & \dots & b_{nm}
+\end{bmatrix}
+%=(b_{11}\alpha_1+b_{21}\alpha_2+\dots+b_{n1}\alpha_n,b_{12}\alpha_1+b_{22}\alpha_2+\dots+b_{n2}\alpha_n,\ldots,b_{1m}\alpha_1+b_{2m}\alpha_2+\dots+b_{nm}\alpha_n,)
+%上面的这一行显示不全,所以挪到下面了
+$$
+$=(b_{11}\alpha_1+b_{21}\alpha_2+\dots+b_{n1}\alpha_n,b_{12}\alpha_1+b_{22}\alpha_2+\dots+b_{n2}\alpha_n,\ldots,b_{1m}\alpha_1+b_{2m}\alpha_2+\dots+b_{nm}\alpha_n,)$
+\begin{note}
+B对A进行列变换 \newline
+A乘以B可以看做把A的列向量组分别与B的每一列的对应元素的成绩之和作为AB的相应的列向量.
+\end{note}
+
+\subsection{行向量组}
+设B的行向量组为$r_1,r_2,\ldots,r_n$,则
+$$
+AB=
+\begin{bmatrix}
+  a_{11} & a_{12} & \dots & a_{1n}  \\
+  a_{21} & a_{22} & \dots & a_{2n}  \\
+  \vdots & \vdots & \vdots &\vdots \\
+  a_{s1} & a_{s2} & \dots & a_{sn}
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+  r_1 \\
+  r_2 \\
+  \vdots \\
+  r_n
+\end{bmatrix}
+=
+\begin{bmatrix}
+  a_{11}r_1 + a_{12}r_2 + \dots + a_{1n}r_n  \\
+  a_{21}r_1 + a_{22}r_2 + \dots + a_{2n}r_n   \\
+  \vdots \\
+  a_{s1}r_1 + a_{s2}r_2 + \dots + a_{sn}r_n
+\end{bmatrix}
+$$
+$A\times B$可以看做把A的每一行元素与B的行向量组的对应的行向量的成绩作为AB相应的行向量.
+
+\begin{question}
+  设A为数域K上$s \times n$的矩阵,证明:如果对于$K^n$中任一列向量$\eta$,都有$A\eta=0$,那么$A=0$
+\end{question}
+\begin{proof}
+  设$u:x \in K^n \rightarrow Ax \in K^s$,且$A=(\alpha_1,\ldots,\alpha_n)$ \newline
+  我们求出u在base canonique下的矩阵 \newline
+  $$
+  u(\begin{bmatrix}
+    1 \\
+    0\\
+    \vdots \\
+    0
+  \end{bmatrix})
+  =A \cdot
+  \begin{bmatrix}
+    1 \\
+    0\\
+    \vdots \\
+    0
+  \end{bmatrix}
+  =\alpha_1=0
+  $$
+  同理,我们可以得到$\alpha_2=\dots=\alpha_n=0$,所以$A=0$ \newline
+  或者,我们可以直接写
+  $$
+  A=AI=A(\epsilon_1,\ldots,\epsilon_n)=(A\epsilon_1,\dots,A\epsilon_n)=(0,\ldots,0)=0
+  $$
+\end{proof}
+
+\section{特殊矩阵}
+\subsection{对角矩阵}
+la matrice diagonale,$diag(d_1,\ldots,d_n)$ \newline
+用一个对角矩阵{\bf 左(右) }乘一个矩阵A,就相当于用对角矩阵的主对角元素分别去乘A相应的{\bf 行(列)}.
+%对角矩阵左乘一个矩阵
+$$
+\begin{bmatrix}
+  d_1 & 0  & 0 & \cdots & 0 \\
+  0   & d_2 & 0 & \cdots & 0 \\
+  \vdots & \vdots & \ddots & \vdots \\
+  0 & 0 & 0 & \cdots & d_s
+\end{bmatrix}
+\times
+\begin{bmatrix}
+  r_1  \\
+  r_2 \\
+  \vdots \\
+  r_s \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+  d_1 r_1  \\
+  d_2 r_2 \\
+  \vdots \\
+  d_s r_s \\
+\end{bmatrix}
+$$
+
+%对角矩阵右乘一个矩阵
+$$
+(\alpha_1,\ldots,\alpha_n)
+\times
+\begin{bmatrix}
+  d_1 & 0  & 0 & \cdots & 0 \\
+  0   & d_2 & 0 & \cdots & 0 \\
+  \vdots & \vdots & \ddots & \vdots \\
+  0 & 0 & 0 & \cdots & d_n
+\end{bmatrix}
+=
+\begin{bmatrix}
+  d_1 \alpha_1 & d_2 \alpha_2 & \dots & d_n \alpha_n \\
+\end{bmatrix}
+$$
+
+特别的,两个n级对角矩阵的乘积还是n级对角矩阵,并且是把相应的主对角元相乘
+
+\subsection{三角矩阵}
+\noindent
+上三角矩阵(上面的三角不为0,而下面的三角为零的矩阵) \newline
+下三角矩阵(下面的三角不为0,而上面的三角为零的矩阵)
+\begin{note}
+  用初等矩阵左(右)乘一个矩阵A,就相当于对A进行了一次相应的初等行(列)变换
+\end{note}
+
+\subsection{基本矩阵}
+只有一个元素为1,其余元素均为0的矩阵, (i,j)元为1的基本矩阵记为$E_{ij}$
+\begin{itemize}
+\item 任意一个矩阵A都可以记为$A=\sum_{i=1}^s {\sum_{j=1}^n {a_{ij}E_{ij}}}$
+\item 用$E_{ij}$左乘一个矩阵A,相当于把A的第j行搬到第i行的位置,然后乘积所得矩阵的其余行均为0
+\item 用$E_{ij}$右乘一个矩阵A,相当于把A的第i列搬到第j列的位置,然后乘积所得矩阵的其余列均为0
+\end{itemize}
+
+矩阵$A$的行向量组为$r_1, r_2, \ldots, r_s$, 列向量组为$c_1, c_2, \ldots, c_n$, 则
+$$
+E_{ij} \times A
+=
+\begin{bmatrix}
+	0 & 0 & \cdots & 0 & 0 \\
+	0 & 0 & \cdots & 0 & 0 \\
+	0 & 0 & \cdots & 1_{ij} & 0\\
+	0 & 0 & \cdots & 0 & 0\\
+\end{bmatrix}
+\times
+\begin{bmatrix}
+	r_1 \\
+	r_2 \\
+	\vdots \\
+	r_s \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	0 \\
+	\vdots \\
+	0_{i - 1} \\
+	r_j \\
+	0_{i + 1} \\
+	\vdots \\
+	0 \\
+\end{bmatrix}
+$$
+
+$$
+A \times E_{ij}
+=
+\begin{bmatrix}
+	c_1 & c_2 & \cdots & c_n
+\end{bmatrix}
+\times
+\begin{bmatrix}
+	0 & 0 & \cdots & 0 & 0 \\
+	0 & 0 & \cdots & 0 & 0 \\
+	0 & 0 & \cdots & 1_{ij} & 0\\
+	0 & 0 & \cdots & 0 & 0\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+	0 & \cdots & 0_{j - 1} & c_i & 0_{j + 1} & \cdots & 0
+\end{bmatrix}
+$$
+
+$$
+E_{ij}E_{kl}=
+\begin{cases}
+  E_{il} & \si k=j \\
+  0 & \si k \neq j
+\end{cases}
+$$
+
+\begin{question}
+  循环移位矩阵:
+  $$
+  C=
+  \begin{bmatrix}
+    \epsilon_n & \epsilon_1 & \epsilon_2 & \epsilon_3 & \dots & \epsilon_{n-2} & \epsilon_{n-1} \\
+    \hline
+        0      &     1      &     0      &       0    & \dots &      0         &       0        \\
+        0      &     0      &     1      &       0    & \dots &      0         &       0        \\
+        0      &     0      &     0      &       1    & \dots &      0         &       0        \\
+        \vdots &    \vdots  &     \vdots &     \vdots & \ddots&      \vdots    &       \vdots   \\
+        0      &     0      &     0      &       0    & \dots &      0         &       1        \\
+        1      &     0      &     0      &       0    & \dots &      0         &       0
+  \end{bmatrix}
+  $$
+  (1)用C左乘A,相当于把A 的行向上移一行,第一行换到最后一行 \newline
+  用C右乘B,相当于把B 的列向右移一列,最后一列换到第一列 \newline
+  (2)$\sum_{l=0}^{n-1} C^l=J$,其中J 为元素全为1 的n 级矩阵
+\end{question}
+\begin{proof}[Demontration(2)]
+  $\newline C=(\epsilon_n,\epsilon_1 , \epsilon_2 ,\epsilon_3 , \dots , \epsilon_{n-2}, \epsilon_{n-1} ) \\
+    C^2=( \epsilon_{n-1},\epsilon_n,\epsilon_1 , \epsilon_2 ,\epsilon_3 , \dots , \epsilon_{n-2}  ) \\
+    C^3=(\epsilon_{n-2}, \epsilon_{n-1},\epsilon_n,\epsilon_1 , \epsilon_2 ,\epsilon_3 , \dots , \epsilon_{n-3}  ) \\
+    until \\
+    C^{n-1}=(\epsilon_2 ,\epsilon_3 , \dots , \epsilon_n,\epsilon_1 ) \\
+    \sum_{l=0}^{n-1} C^l=
+    (\epsilon_n,\epsilon_1 , \epsilon_2 , \dots , \epsilon_{n-2}, \epsilon_{n-1} ) +
+    ( \epsilon_{n-1},\epsilon_n,\epsilon_1 , \dots , \epsilon_{n-2}  ) +
+    (\epsilon_{n-2}, \epsilon_{n-1},\epsilon_n,\epsilon_1 , \dots , \epsilon_{n-3}  ) +
+    (\epsilon_2 ,\epsilon_3 , \dots , \epsilon_n,\epsilon_1 ) \\
+    =(\epsilon_1+\epsilon_n+\epsilon_{n-1}+\dots+\epsilon_1,\epsilon_2+\epsilon_1+\epsilon_n+\dots+\epsilon_3,\dots,\epsilon_n+\epsilon_{n-1}+\dots+\epsilon_1)\\
+    =
+    \begin{bmatrix}
+      1 & 1 & 1 & \cdots & 1 \\
+      1 & 1 & 1 & \cdots & 1 \\
+      \vdots &\vdots &\vdots &\vdots &\vdots \\
+      1 & 1 & 1 & \cdots & 1 \\
+    \end{bmatrix}
+    =J$
+\end{proof}
+\section{Rang 秩}
+$$rang(AB)\leqslant rang(A)$$
+$$rang(A+B)\leqslant rang(A) + rang(B)$$
+$$\si k \neq 0, rang(kA) = rang(A)$$
+
+\section{D\'etermiants}
+
+\section{可逆矩阵}
+\begin{itemize}
+\item Si $A$ inversible, alors $A^t$ inversible et $(A^t)^{-1} = (A^{-1})^t$
+$$
+A \cdot A^{-1} = 1
+\Rightarrow (A \cdot A^{-1})^t = 1^t = 1
+\Rightarrow (A^{-1})^t \cdot A^t = 1
+\Rightarrow (A^t)^{-1} = (A^{-1})^t
+$$
+\item 用一个可逆矩阵左(右)乘一个矩阵$A$, 不改变$A$的rang.
+\end{itemize}
+
+\begin{question}
+Si $A$ une matrice carr\'ee et $A^2 = I$, 称$A$为对合矩阵. 设$A, B \in M_{n \times n}(K)$.
+证明: 若$A, B$都为对合矩阵, 且 $|A| + |B| = 0$, 那么 $A + B, I + AB$ 都不可逆. \\
+\end{question}
+\begin{proof}
+这里的绝对值符号应该是表示 det 的意思.
+$$
+A^2 = I
+\Rightarrow det(A^2) = det(I) = 1
+\Rightarrow (det(A))^2 = 1
+\Rightarrow det(A) = +1 \ou -1
+$$
+不妨设 $det(A) = 1, det(B) = -1$.
+$$|A| \cdot |A + B| = |A(A + B)| = |A^2 + AB| = |I + AB|$$
+$$|A + B| \cdot |B| = |(A + B)B| = |AB + B^2| = |AB + I|$$
+因此 $$|A + B| = |A| \cdot |A + B| = |A + B| \cdot |B| = -|A + B|$$
+$$\Rightarrow |A + B| = 0$$
+$$\Rightarrow |I + AB| = 0$$
+因此$A + B, I + AB$ 都不可逆.
+\end{proof}
+
+\begin{note}
+任意一个矩阵, 若有以下三个性质的任意两个, 则第三个也必然成立
+\begin{enumerate}
+\item 对称矩阵: $A^t = A$
+\item 正交矩阵: $A^t \cdot A = I$
+\item 对合矩阵: $A^2 = I$
+\end{enumerate}
+\end{note}
+
+\section{矩阵的分块}
+\begin{remark}
+设$A \in M_{s \times n}(K), B \in M_{n \times m}(K)$
+
+$B$的列向量为$(\beta_1, \beta_2, \ldots, \beta_m)$, 则
+$$AB = A(\beta_1, \beta_2, \ldots, \beta_m) = (A\beta_1, A\beta_2, \ldots, A\beta_m)$$
+
+$A$的行向量组为$(r_1, r_2, \ldots, r_s)$, 则
+$$
+AB =
+\begin{bmatrix}
+r_1 \\
+r_2 \\
+\vdots \\
+r_s
+\end{bmatrix}
+B =
+\begin{bmatrix}
+r_1 \cdot B \\
+r_2 \cdot B \\
+\vdots \\
+r_s \cdot B
+\end{bmatrix}
+$$
+\end{remark}
+
+\begin{corollary}
+设$A_{s \times n} \neq 0, B_{n \times m}$的列向量组$(\beta_1, \beta_2, \ldots, \beta_m)$, $C_{n \times m}$的列向量组为$(\delta_1, \delta_2, \ldots, \delta_m)$.
+则
+$$ AB = C \Leftrightarrow \beta_j \eqnote{为} Ax = \delta_j \eqnote{的一个解}, j = 1, 2, \ldots, m $$
+\end{corollary}
+\begin{proof}
+$$
+\begin{aligned}
+		AB & = C \\
+		AB & = A(\beta_1, \beta_2, \ldots, \beta_m) = (A\beta_1, A\beta_2, \ldots, A\beta_m) \\
+		C & = (\delta_1, \delta_2, \ldots, \delta_m) \\
+		\Rightarrow A \beta_j & = \delta_j,~ \forall j \in [[1, m]]
+\end{aligned}
+$$
+\end{proof}
+
+利用前面的推论, 可以使用线性方程组来求可逆矩阵的逆矩阵. \\
+$A \cdot A^{-1} = I$, 设$A^{-1} = (x_1, x_2, \ldots, x_n), I = (\delta_1, \delta_2, \ldots, \delta_n)$. 则,
+$$
+\begin{aligned}
+& A (x_1, x_2, \ldots, x_n) = (\delta_1, \delta_2, \ldots, \delta_n) \\
+& \Leftrightarrow A x_i = \delta_i,~ \forall i \in [[1, n]] \\
+& \Leftrightarrow x_i \eqnote{为} A x_i = \delta_i 的一个解 ,~ \forall i \in [[1, n]] \\
+\end{aligned}
+$$
+
+\section{正交矩阵 matrice orthogonal}
+正交矩阵的集合用$O(n)$表示.
+
+\begin{question}
+设$A \in M_{m \times n}(R), m > n, \beta \in R^m$.
+若$x_o \in R^n$, 使得$|\beta - A x_0|^2 \leq |\beta - A x|^2,~ \forall x \in R^n$
+那么称$x_0$为$Ax=\beta$的最小二乘解. \\
+证明: $x_0$为$Ax = \beta$的最小二乘解当且仅当$x_0$ 为 $A^t \cdot Ax = A^t B$的解.
+\end{question}
+\begin{proof}
+设$A$的列向量组为 $(\alpha_1, \alpha_2, \ldots, \alpha_n)$. \\
+则$A$的列空间$U = vect(\alpha_1, \alpha_2, \ldots, \alpha_n)$. \\
+则
+$$
+\begin{aligned}
+	x_0 \eqnote{为} Ax = \beta \eqnote{的最小二乘解} & \Leftrightarrow |\beta - A x_0|^2 \leq |\beta - A x|^2,~ \forall x \in R^n \\
+	& \Leftrightarrow |\beta - A x_0| \leq |\beta - A x|,~ \forall x \in R^n \\
+	& \Leftrightarrow |\beta - A x_0| \leq |\beta - r|,~ \forall r \in U \\
+	& \Leftrightarrow A x_0 \eqnote{为} \beta \eqnote{在} U \eqnote{上的正交投影} \\
+	& \Leftrightarrow \beta - A x_0 \in U^{\perp} \\
+	& \Leftrightarrow <\beta - A x_0, \alpha_i> = 0,~ \forall i \in [[1, n]] \\
+	& \Leftrightarrow \alpha^t (\beta - A x_0) = 0,~ \forall i \in [[1, n]] \\
+	& \Leftrightarrow A^t (\beta - A x_0) = 0 \\
+	& \Leftrightarrow A^t A x_0 = A^t \beta \\
+	& \Leftrightarrow x_0 \eqnote{为} A^t \cdot Ax = A^t B \eqnote{的解}
+\end{aligned}
+$$
+\end{proof}
+
+\subsection{最小二乘解}
+最佳逼近元: 设$U$为实内积空间$V$的一个子空间, 对于$\alpha \in V$, 如果存在$\delta \in V$,使得
+$$\forall r \in U, d(\alpha, \delta) \leq d(\alpha, r)$$
+那么称$\delta$为$\alpha$在$U$上的最佳逼近元.
+(若$U$为有限维的, 则$\delta$为$\alpha$在$U$上的正交投影)
+
+实际应用: 在许多实际问题中, 需要研究一个变量$y$与其他一些变量$x_1, x_2, \ldots, x_n$之间的关系. \\
+经过实际的观测和分析, 假定变量$y$与$x_1, x_2, \ldots, x_n$之间呈线性关系:
+$y = k_1 x_1 + k_2 x_2 + \ldots + k_n x_n$.\\
+为了去顶$k_1, K_2, \ldots, k_n$, 需要观测$m$次, 得到下面数值:
+
+\begin{center}
+\begin{tabular}{c|cccc}
+$y$ & $x_1$ & $x_2$ & $\ldots$ & $x_n$ \\ \hline
+$b_1$ & $a_{11}$ & $a_{12}$ & $\ldots$ & $a_{1n}$ \\
+$b_2$ & $a_{21}$ & $a_{22}$ & $\ldots$ & $a_{2n}$ \\
+		$\vdots$ \\
+$b_m$ & $a_{m1}$ & $a_{m2}$ & $\ldots$ & $a_{mn}$
+\end{tabular}
+\end{center}
+如果观测绝对精确, 只需要方程个数$m$与未知数个数$n$相等即可.
+但是观测中, 肯定会有误差, 因此需要 $m > n$, 将上面的数据写成方程组的形式如下:
+$$
+\begin{cases}
+\begin{aligned}
+a_{11} k_1 + a_{12} k_2 + \ldots + a_{1n} k_n & = b_1 \\
+a_{21} k_1 + a_{22} k_2 + \ldots + a_{2n} k_n & = b_2 \\
+\vdots & \\
+a_{m1} k_1 + a_{m2} k_2 + \ldots + a_{mn} k_n & = b_m \\
+\end{aligned}
+\end{cases}
+$$
+方程个数$m >$未知数个数$n$, 这时方程组可能无解. \\
+这时, 我们就像找一组数$(c_1, c_2, \ldots, c_n)$, 使得$\forall k_1, k_2, \ldots, k_n \in R$.
+\begin{equation}
+\sum_{i = 1}^m (a_{i1} c_1 + a_{i2} c_2 + \ldots + a_{in} c_n - b_i)^2
+\leq
+\sum_{i = 1}^m (a_{i1} k_1 + a_{i2} k_2 + \ldots + a_{in} k_n - b_i)^2
+\label{eq.least_square.def}
+\end{equation}
+此时, 我们把$(c_1, c_2, \ldots, c_n)'$称为线性方程组的最小二乘解. \\
+我们将方程组的系数矩阵记为$A$, 同时令
+$x = (k_1, k_2, \ldots, k_n)^t$,
+$\alpha = (c_1, c_2, \ldots, c_n)^t$,
+$\beta = (b_1, b_2, \ldots, b_m)^t$
+$$
+\begin{cases}
+\begin{aligned}
+a_{11} c_1 + a_{12} c_2 + \ldots + a_{1n} c_n - b_1 \\
+a_{21} c_1 + a_{22} c_2 + \ldots + a_{2n} c_n - b_2 \\
+\vdots \\
+a_{m1} c_1 + a_{m2} c_2 + \ldots + a_{mn} c_n - b_m \\
+\end{aligned}
+\end{cases}
+$$
+上面的方程组可以写成矩阵的形式:
+$$A \alpha - \beta$$
+\eqref{eq.least_square.def}的左边为向量$A \alpha - \beta$的长度的平方, 也就是向量$\beta$ 与 向量 $A \alpha$的距离的平方. \\
+令$U = Vect(A_1, A_2, \ldots, A_n)$, 则
+$$
+A \cdot \alpha
+=
+\begin{bmatrix}
+A_1 & A_2 & \cdots & A_n
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+c_1 \\
+c_2 \\
+\vdots \\
+c_n
+\end{bmatrix}
+= c_1 A_1 + c_2 A_2 + \ldots + c_n A_n \in U
+$$
+
+$$
+A \cdot x
+=
+\begin{bmatrix}
+A_1 & A_2 & \cdots & A_n
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+k_1 \\
+k_2 \\
+\vdots \\
+k_n
+\end{bmatrix}
+= k_1 A_1 + k_2 A_2 + \ldots + k_n A_n \in U,~ \forall k_1, k_2, \ldots, k_n \in R
+$$
+
+于是:
+$$
+\begin{aligned}
+\alpha \eqnote{为线性方程组} A x = \beta \eqnote{的最小二乘解}
+& \Leftrightarrow \norm{A \alpha - \beta}^2 \leq \norm{A x - \beta}^2,~ \forall x \in R^m \\
+& \Leftrightarrow d(A \alpha, \beta) \leq d(r, \beta),~ \forall r \in U \\
+& \Leftrightarrow A \alpha \eqnote{为} \beta \eqnote{在} U \eqnote{上的正交投影} \\
+& \Leftrightarrow \beta - A \alpha \in U^{\perp} \\
+& \Leftrightarrow <\beta - A \alpha, \alpha_j> = 0,~ j = 1,2, \ldots, n \\
+& \Leftrightarrow \alpha_j^{'} (\beta - A \alpha) = 0,~ j = 1,2, \ldots, n \\
+& \Leftrightarrow A^t (\beta - A \alpha) = 0 \\
+& \Leftrightarrow A^t A \alpha = A^t \beta \\
+& \Leftrightarrow \alpha \eqnote{为线性方程组} A^t A x = A^t \beta \eqnote{的解}
+\end{aligned}
+$$
+这样, 我们就把求线性方程组$A x = \beta$最小二乘解的问题化为求解线性方程组$A^t A x = A^t \beta$的解($A^t A$为方阵).
+
+\section{$K^n$到$K^s$的线性映射}
+设$A \in M_{s \times n}(K)$, $A$的列向量组为$(\alpha_1, \alpha_2, \ldots, \alpha_n)$.
+则
+$$
+\begin{aligned}
+Ax = \beta \eqnote{有解} & \Leftrightarrow \beta \in ImA \\
+	& \Leftrightarrow \beta \in vect(\alpha_1, \alpha_2, \ldots, \alpha_n)
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+A: K^n \rightarrow & K^s \\
+     x \rightarrow & Ax
+\end{aligned}
+$$
+$$ dimKerA + dimImgA = n $$
+$$ dimImgA = rank(A) $$
+
+\section{矩阵的相似}
+若$A \in M_n(K), A diagonalisable$则, $A$ 与 $A^t$ 相似.
+\begin{proof}
+$\exists D \in M_n(K)$ diagonal et $P \in M_n(K)$ inversible telle que $P^{-1} \cdot A \cdot P = D$
+$$ D^t = (P^{-1} \cdot A \cdot P)^t = P^t \cdot A^t \cdot (P^{-1})^t = P^t \cdot A^t \cdot (P^t)^{-1} $$
+$$ \Rightarrow D^t \sim A^t \Rightarrow A \sim D \sim D^t \sim A^t \Rightarrow A \sim A^t $$
+\end{proof}
+
+\section{矩阵的特征值与特征向量}
+设$A \in M_n(K)$, 则$A$的特征多项式为 $det(\lambda I - A)$ 为一个$n$次多项式 \\
+$\lambda^n$的系数为$1$,
+$\lambda^{n - 1}$的系数为$-tr(A)$,
+常数项为 $(-1)^{detA}$
+
+\begin{example}
+证明: 幂零矩阵一定有特征值, 并且它的特征值一定为0
+\end{example}
+\begin{proof}
+设幂零矩阵$A$的幂零指数为$l$, 则$A^l = 0$.
+
+存在性:
+$$
+\Rightarrow det(A^l) = 0
+\Rightarrow (detA)^l = 0
+\Rightarrow detA = 0
+\Rightarrow det(0 \cdot I - A) = (-1)^n detA = 0
+\Rightarrow 0 \in SpecA
+$$
+
+唯一性:
+设$\lambda \in SpecA$, 那么
+$\exists x \in K^n \et x \neq 0$, 使得 $A x = \lambda x$.
+$$\Rightarrow A^2 x = A \cdot \lambda x = \lambda (Ax) = \lambda^2 x$$
+以此类推得到
+$$ A^l x = \lambda^l x \Rightarrow \lambda^l x = 0$$
+而$x \neq 0$, 所以$\lambda^l = 0 \Rightarrow \lambda = 0$
+\end{proof}
+
+\begin{example}
+证明: 幂等矩阵一定有特征值, 且为1或者0.
+\end{example}
+\begin{proof}
+幂等矩阵$A$, $A^2 = A$
+$$ \lambda x = A x = A^2 x = A \cdot Ax = A \cdot \lambda x = \lambda Ax = \lambda^2 x \Rightarrow \lambda = 1 \ou 0$$
+\end{proof}
+
