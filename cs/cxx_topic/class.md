@@ -1,93 +1,91 @@
-# Class
 定义class的结尾}后需要一个分号,和结构体的定义一样.
 
-对象作为参数传递时是传值, 而不是传递对象的地址,如果需要传递地址,需要明确指出.
-
-```C++
-class a{
-public:
-	struct b{
-		int x;
-		int y;
-	};
-};
-```
-要定义一个struct b 类型的变量时, 需要使用namespace, 也就是 `a::b c`;
+- this: The keyword this represents a pointer to the object whose member function is being executed. It is a pointer to the object itself.
 
 private, public or protected.
-These specifiers modify the access rights that the members following
-them acquire:
 
 - private: members of a class are accessible only from within other members of **the same class** or from their **friends**.
 - protected: members are accessible from members of their **same class** and from their **friends**, but also from members of their **derived classes**.
 - public: members are accessible from **anywhere** where the object is visible.
 
-By default, all members of a class are private.
+By default, all members of a class are private. 结构体的成员默认是public
 
-[class demo](../demo/cpp/class/class_demo.cpp)
+Static members
 
-**Constructors**
-Objects generally need to initialize variables or assign dynamic memory during their process of creation to become
-operative and to avoid returning unexpected values during their execution.
-
-Like any other function, a constructor can also be overloaded with more than one function that have the same
-name but different types or number of parameters.
-
-The use of destructors is especially suitable when an object assigns dynamic memory during its lifetime and at the
-moment of being destroyed we want to release the memory that the object was allocated.
-
-[class construnctor and destructor](../demo/cpp/class/class_constructor_destructor.cpp)
-
-## Overloading operators
-[class overload operator](../demo/cpp/class/class_overload_operator.cpp)
-
-**keyword this**
-The keyword this represents a pointer to the object whose member function is being executed. It is a pointer to
-the object itself.
-
-**Static members**
 A class can contain static members, either data or functions.
+Static data members of a class are also known as "class variables", because there is **only one unique value for all the objects of that same class**.
+For example, it may be used for a variable within a class that can contain a counter with the number of objects of that class that are currently allocated.
 
-Static data members of a class are also known as "class variables", because there is **only one unique value for all
-the objects of that same class**. Their content is not different from one object of this class to another.
-
-For example, it may be used for a variable within a class that can contain a counter with the number of objects of
-that class that are currently allocated.
-
-**类成员函数中const的使用**
-一般放在函数体后,形如:
-	
-	void fun() const;
-如果一个成员函数的不会修改数据成员,那么最好将其声明为const,因为const成员函数中不允许对数据成员进行修改,如果修改,编译器将报错,这大大提高了程序的健壮性
-(const 的其他用法见[const in c](./c.md))
-
-**const object**
 const对象不能调用非const函数
 
-上面关于const的示例[const demo](../demo/cpp/class/const.cpp)
+### 拷贝构造函数和赋值运算符
+拷贝构造函数必须以引用的方式传递参数.这是因为,在值传递的方式传递给一个函数的时候,会调用拷贝构造函数生成函数的实参.如果拷贝构造函数的参数仍然是以值的方式,就会无限循环的调用下去,直到函数的栈溢出.
+
+拷贝构造函数使用传入对象的值生成一个新的对象的实例,而赋值运算符是将对象的值复制给一个已经存在的实例.
+调用的是拷贝构造函数还是赋值运算符,主要是看是否有新的对象实例产生.
+如果产生了新的对象实例,那调用的就是拷贝构造函数,如果没有,那就是对已有的对象赋值,调用的是赋值运算符.
+```C++
+class Person{
+public:
+	Person(){
+		LOG(INFO) << "default constructor";
+	}
+
+	Person(const Person& p){
+		LOG(INFO) << "copy Constructor";
+	}
+
+	Person& operator=(const Person& p){
+		LOG(INFO) << "assign operator";
+		this->name = p.name;
+		return *this;
+	}
+
+private:
+	string name;
+};
+
+void f(Person p){
+	return;
+}
+
+Person f1(){
+	Person p;
+	return p;
+}
+
+int main(int argc, char* argv[]){
+	Person p; // default
+	Person p1 = p; // copy, 虽然使用了"=",但是实际上使用对象p来创建一个新的对象p1.也就是产生了新的对象,所以调用的是拷贝构造函数.
+
+	Person p2; // default
+	p2 = p;	// assign, p2 已经是一个Person 对象, 所以这里是赋值运算符
+	f(p2); // copy
+
+	p2 = f1(); // default and assign
+
+	Person p3 = f1(); // default, 应该是首先调用拷贝构造函数创建临时对象,然后再调用拷贝构造函数使用刚才创建的临时对象创建新的对象p3,也就是会调用两次拷贝构造函数.不过,编译器也没有那么傻,应该是直接调用拷贝构造函数使用返回值创建了对象p3.
+
+	return 0;
+}
+```
 
 ## Friendship and inheritance
 ### Friend functions
 In principle, private and protected members of a class cannot be accessed from outside the same class in which
 they are declared. However, this rule does not affect friends.
 
-[friend function](../demo/cpp/class/friend_function.cpp)
-
 ### Friend classes
 Just as we have the possibility to define a friend function, we can also define a class as friend of another one,
 granting that first class access to the protected and private members of the second one.
 
-[friend class](../demo/cpp/class/friend_class.cpp)
-
 In this example, we have declared CRectangle as a friend of `CSquare` so that CRectangle member functions could
 have access to the protected and private members of `CSquare`, more concretely to `CSquare::side`, which describes the side width of the square.
 
-### [Inheritance between classes](http://www.cnblogs.com/fzhe/archive/2012/12/25/2832250.html)
 派生类的声明:
 ```
-class 派生类名:继承方式 基类名1, 继承方式 基类名2,...,继承方式 基类名n
-{
-    派生类成员声明;
+class 派生类名:继承方式 基类名1, 继承方式 基类名2,...,继承方式 基类名n{
+	派生类成员声明;
 };
 ```
 继承方式规定了如何访问基类继承的成员.继承方式有public, private, protected.
@@ -115,7 +113,7 @@ class 派生类名:继承方式 基类名1, 继承方式 基类名2,...,继承�
 ```
 派生类名::派生类名(参数总表):基类名1(参数表1),....基类名n(参数名n),内嵌子对象1(参数表1),...内嵌子对象n(参数表n)
 {
-    派生类新增成员的初始化语句;
+	派生类新增成员的初始化语句;
 }
 ```
 **注:构造函数的初始化顺序并不以上面的顺序进行,而是根据声明的顺序初始化.**
