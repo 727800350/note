@@ -1,95 +1,49 @@
-#include <iostream>
-#include <cstdlib>
 #include <vector>
-using namespace std;
+#include <glog/logging.h>
 
 class Point{
 public:
 	Point(){
-		cout << "construction" << endl;
+		LOG(INFO) << "default constructor";
 	}
 	Point(const Point& p){
-		cout << "copy construction" << endl;
+		LOG(INFO) << "copy constructor";
 	}
 	~Point(){
-		cout << "destruction" << endl;
+		LOG(INFO) << "default destructor";
 	}
 };
 
-int main(){
-	vector<Point> pointVec;
+int main(int argc, char* argv[]){
+	google::InitGoogleLogging(argv[0]);
+	FLAGS_alsologtostderr = true;
+	FLAGS_colorlogtostderr = true;
+
+	std::vector<Point> pointVec;
 	Point a;
 	Point b;
 
-// 	pointVec.reserve(4);
-
+	pointVec.reserve(4);
+	/* 即使是引用类型的参数, 还是会把a 整个对象copy 一份, 再push 到vector 里面去
+	 * 因此如果这里就return, 一共会有3次析构
+	 */
 	pointVec.push_back(a);
-	cout<<pointVec.size()<<std::endl;
-	cout<<pointVec.capacity()<<std::endl;
+	pointVec.push_back(a);
+	LOG(INFO) << pointVec.size() << " " << pointVec.capacity();
 
-	pointVec.push_back(b);
-	cout<<pointVec.size()<<std::endl;
-	cout<<pointVec.capacity()<<std::endl;
-
-	// erase the first element
+	/* erase the first element
+	 * 因为vector 中的元素在push进去的时候是copy 的, 所以在erase 的时候, 会自动调用对象的析构
+	 */
 	pointVec.erase(pointVec.begin());
 
-// 	call swap to truely clear the vector
-// 	vector<Point>().swap(pointVec);
-// 	cout<<pointVec.size()<<std::endl;
-// 	cout<<pointVec.capacity()<<std::endl;
+	/* call swap to truely clear the vector
+	 * std::vector<Point>() 会产生一个std::vector<Point> 对象, 因为没有名字, 所以是一个临时对象, 所以到了下一个语句, 就出了作用域, 会被自动销毁.
+	 * 在将pointVec 与临时对象交换后, 借助临时对象的销毁来销毁pointVec 对象
+	 */
+	std::vector<Point>().swap(pointVec);
+	LOG(INFO) << pointVec.size() << " " << pointVec.capacity();
+
+	google::ShutdownGoogleLogging();
 	return 0;
 }
 
-/*************************************
-[eric@iis STL]$ ./a.out
-construction
-construction
-copy construction
-1
-1
-copy construction
-copy construction
-destruction
-2
-2
-destruction
-destruction
-destruction
-destruction
-
-+++++++++++++++++++++++++++++++++++++
-分析
-Point a;
-Point b;
-两个construction
-
-pointVec.push_back(a);
-将a插入到vector中, copy一次
-
-pointVec.push_back(b);
-将b插入到vector中, 但是发现vector 空间不够, 自动增长, 并把原来的a copy到新的vector中
-在把b copy到新的vector 中
-所以push_back(b)触发两次copy
-
-一共新建了5个point 对象, 所以一共有5 个 destruction
-第一个destruction 是自动增长, 且copy之后, 原来的vector一份
-接下来的两个destruction 是新的vector 的两个
-最后两个是a和b
-
-========================================
-加上 pointVec.reserve(4);之后的运行结果
-
-construction
-construction
-copy construction
-1
-4
-copy construction
-2
-4
-destruction
-destruction
-destruction
-destruction
-*************************************/

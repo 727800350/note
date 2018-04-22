@@ -88,6 +88,18 @@ C++ 重用了这个关键字,并赋予它与前面不同的第三种含义:表�
 因为它是对整个类来说是唯一的,因此不可能属于某一个实例对象的.  
 (针对静态数据成员而言, 成员函数不管是否是static, 在内存中只有一个副本, 普通成员函数调用时, 需要传入this指针, static成员函数调用时, 没有this指针)
 
+# goto
+在goto 之后是不允许定义的新的变量的, 局部变量也不行.
+[crosses initialization error](http://stackoverflow.com/questions/14274225/statement-goto-can-not-cross-pointer-definition)
+
+# extern
+- extern可以置于变量或者函数前,以标示变量或者函数的定义在别的文件中,提示编译器遇到此变量和函数时在其他模块中寻找其定义
+- 当它与"C"一起连用时, 如: `extern "C" void fun(int a, int b)`; 则告诉编译器按照C的规则去翻译相应的函数名而不是C++的, C++在翻译这个函数名时会把fun这个名字变得面目全非
+- 在一个cpp文件定义了一个数组:`char a[6]`, h文件声明为`extern char a[]`, 而不是`extern char *a`, 两者的类型不一样
+
+# volatile
+volatile 指示变量随时可能发生变化的, 每次使用时都需要去内存里重新读取它的值, 与该变量有关的运算, 不要进行编译优化
+
 # mutable
 ref: [C++ 中mutable 关键字存在的必要性是什么?](https://www.zhihu.com/question/64969053/answer/226383958)
 
@@ -137,4 +149,10 @@ private:
 在这里,`_last_key` 和 `_last_value` 是 HashTable 的数据成员.按照一般的理解,const 成员函数是不允许修改数据成员的.
 但是,另一方面,`_last_key` 和 `_last_value` 在类的外部是看不到的,从逻辑上说,修改它们的值,外部是无有感知的,因此也就不会破坏逻辑上的 const.
 为了解决这一矛盾,我们用 mutable 来修饰 `_last_key` 和 `_last_value`,以便在 lookup 函数中更新缓存的键值.
+
+# define
+- `#str`: 生成`"str"`
+- `std::c##out << "str"`: 相当于`std::cout << "str"`
+- `\`是用来续行的
+- `#@`给参数加上单引号.
 

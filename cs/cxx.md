@@ -6,7 +6,7 @@
 - `FILE *fopen(const char *path, const char *mode);` 同一个文件可以用fopen同时打开多次, 读取是独立的, 各个FILE指针是不相互干扰的.
 - `int fclose(FILE *stream);`
 
-- `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储`\0`作为字符串的结尾, 发生错误或者没有内容可读, 返回NULL
+- `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储`\0`作为字符串的结尾, 发生错误或者没有内容可读, 返回NULL.
 	如若该行(包括最后一个换行符)的字符数超过n - 1, 则fgets返回一个不完整的行,但是,缓冲区总是以NULL字符结尾,对fgets的下一次调用会继续读该行
 - `size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);`
 - `size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);`
@@ -60,6 +60,10 @@ fseek(fp, 0, SEEK_SET);
 #include <stdint.h>
 uint64_t, int64_t, uint32_t, int32_t, uint16_t, int16_t, uint8_t, int8_t ...
 
+#include <limits>
+std::numeric_limits<int>::max()
+std::numeric_limits<int>::min()
+
 #include <limits.h>
 INT_MAX, INT_MIN
 ```
@@ -94,9 +98,9 @@ This class already manage memory allocation and deallocation. 在超出变量的
 - size(): 容器元素的个数
 - empty(): 用来检测容器是否为空的.
 - `void push_back (const value_type& val)`: 将元素拷贝到新分配的内存中. 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容, 也就是值(指针本身的值)拷贝.
-	对于string 等object, 即使push_back中传入的参数是reference(别名) 类型, push到vector中的是一个完整的拷贝, 而不是一直指向原来的object 的指针,
+	**对于string 等object, 即使push_back中传入的参数是reference(别名)类型, push到vector中的是一个完整的拷贝**, 而不是一直指向原来的object 的指针,
 	所以即使原来的object被删除了, vector中的仍然可以正常访问.
-- `emplace_back`: 与push back的作用一样, 在有构造函数的情况下, 效率高(去掉了额外的拷贝或者移动的)
+- `emplace_back`: 与push back的作用一样, 在有构造函数的情况下, 效率高(去掉了额外的拷贝或者移动)
 - erase: 删除元素, 同时返回下一个元素的iterator, 如果删除最后一个元素,则返回vec.end().
 
 	```C++
@@ -428,16 +432,9 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 用于同步的手段很多, 其中以互斥锁应用最为广泛(信号量是一种将资源数目从1泛化到n的互斥锁).
 当线程进入临界区前获得锁,只有获得了锁的线程才可能继续执行,当退出临界区后归还锁.如果锁被占用,则线程进入阻塞状态.
 
-优先级翻转.
-现代操作系统通过优先级继承较好的解决了这个问题, 但程序员需要注意自己代码所运行的平台是否有这个机制, 然后正确的设置线程属性方可.
-此外,如果所有优先级都调到一个数量级,那么还需要注意lock convoy问题.发生lock convoy的场景犹如2人迎面通过一独木桥,2人相遇后均主动放弃退回,然后再次上桥相遇.
-
-挂起等待和唤醒等待线程的操作如何实现?
-每个Mutex有一个等待队列,一个线程要在Mutex上挂起等待,首先在把自己加入等待队列中,然后置线程状态为睡眠,然后调用调度器函数切换到别的线程.
-一个线程要唤醒等待队列中的其它线程,只需从等待队列中取出一项,把它的状态从睡眠改为就绪,加入就绪队列,那么下次调度器函数执行时就有可能切换到被唤醒的线程.
-
 而`pthread_mutex_t`实现基于Linux的futex, 当临界区足够小时, 一次`pthread_mutex_lock`消耗很非常小
 
+通过lock guard, 进入critical region 时, 自动加锁, 出的时候自动归还锁.
 ```C++
 std::mutex mutex;
 {
@@ -476,48 +473,13 @@ pthread_mutex_unlock(&mutex);
 	1. `pthread_cond_signal`发送信号(阶跃信号前最好判断有无等待线程)
 	1. 解锁
 
-## pratice
-对于本地文件的多线程
-
-reader 线程扫描文件, 将各个kv 的offset 记录下来, 存储到 thread safe queue 中
-
-多个 worker 线程从 queue 中取数据, 然后读取文件.
-读取文件可以采用内存映射的方式, 方便进行偏移, 也可以用ftell 的方式.
-这样避免了由于数据是在本地, 所以reader 线程很快, 就会把整个文件加载到内存中去.
-
-对于writer
-如果输出需要多个fwrite 操作时
-取决于是加锁解锁快, 还是本地分配内存, copy, 释放快
-但是一个进程下的线程是共享一个heap, 所以内存的申请和释放也是需要同步
-
-如果writer 是单个的fwrite, 就不存在竞争的情况.
-
-# 关键字
-## goto
-在goto 之后是不允许定义的新的变量的, 局部变量也不行.
-[crosses initialization error](http://stackoverflow.com/questions/14274225/statement-goto-can-not-cross-pointer-definition)
-
-## extern
-- extern可以置于变量或者函数前,以标示变量或者函数的定义在别的文件中,提示编译器遇到此变量和函数时在其他模块中寻找其定义
-- 当它与"C"一起连用时, 如: `extern "C" void fun(int a, int b)`; 则告诉编译器按照C的规则去翻译相应的函数名而不是C++的, C++在翻译这个函数名时会把fun这个名字变得面目全非
-- 在一个cpp文件定义了一个数组:`char a[6]`, h文件声明为`extern char a[]`, 而不是`extern char *a`, 两者的类型不一样
-
-## define  
-- `#str`: 生成`"str"`
-- `std::c##out << "str"`: 相当于`std::cout << "str"`
-- `\`是用来续行的  
-- `#@`给参数加上单引号.
-
 ## 高级
-- volatile 指示变量随时可能发生变化的, 每次使用时都需要去内存里重新读取它的值, 与该变量有关的运算, 不要进行编译优化
-- `sig_atomic_t`: 保证该变量的操作都是原子的
-
 - `dynamic_cast` can be used only with pointers and references to objects. used to cast a class to one of its base classes
 - `static_cast` not only from the derived class to its base, but also from a base class to its derived(可能runtime error).
 - typeid: allows to check the type of an expression, returns a reference to a constant object of type `type_info` from `<typeinfo>`.  string 和 string & 的typeid 是一样的
 
 # GCC
-高版本的gcc glibc 编译后在低版本的glibc上运行导致,可能导致Floating Point Exception运行时错误.
+高版本的gcc glibc 编译的程序在低版本的glibc上运行, 可能导致Floating Point Exception运行时错误.
 这是由于高版本gcc在link的时候默认会采用选项--hash-style=gnu,而使用这种Hash表的方式可以大大提升动态链结时的效率.
 而老版本的glibc本并未支持,我们只要在在程序连接选项中加上-Wl,--hash-style=sysv就可以解决这个问题了
 
