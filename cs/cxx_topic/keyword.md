@@ -1,8 +1,10 @@
 # const
 const in C does not mean something is constant. It just means a variable is read-only.
 
-1. 为了防止传递的函数参数不被修改,在调用函数的形参中用const关键字.
-2. `const int *p`: p是指向int常量的指针, `*p`是不变的, 但是可以将p指向其他变量
+1. 为了防止传递的函数参数被修改, 在调用函数的形参中用const关键字.
+2. `const int *p`: p是指向int常量的指针, `*p`是不变的, 但是可以将p指向其他变量.
+	- 也就是可以通过将p 指向其他int 达到修改`*p`值的目的, 但是不能直接`*p = 10`这样
+	- 也可以写成 `int const *p`
 3. `int * const p`: p是指针常量, 也就是p不能变, 但是可以改变 `*p`
 4. `const int * const p`: 同时满足前面两种情况
 5. const并不会阻止参数的修改, 防君子不防小人, 可以强制的把 `const char *` 转换为 `char *`类型, 然后就可以修改了
