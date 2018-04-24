@@ -1,9 +1,29 @@
-# shared_ptr
+# [uniq ptr](http://www.cplusplus.com/reference/memory/unique_ptr)
+For safety reasons, they **do not support pointer arithmetics**, and only support move assignment(disabling copy assignments).
 
-# uniq_ptr
+- `get()`: Returns the stored pointer. 拿到这个指针后可以像以前那样直接操作这快内存, 但是要注意, unique ptr 的ownership 并没有发生变化
+- `*`: Returns a reference to the managed object, equivalent to `*get()`.
+- `->`: 可以像以前那样直接访问成员变量
+- `[i]`: Returns a reference to the i-th object (zero-based) in the managed array. equivalent to `get()[i]`.
+- 不能把unique ptr 赋值给其他unique ptr, 可以`std::move()`, 操作之后, original becomes nullptr and the new one owns the pointer;
 
-# weak_ptr
-C++ Primer 中讲解为什么需要weak pointer 不是很清楚, blog [C++11智能指针之weak_ptr](http://blog.csdn.net/Xiejingfa/article/details/50772571) 从一个循环引用的例子来开篇, 间接解释了为什么需要weak pointer.
+```C++
+#include <memory>
+std::unique_ptr<int> x(new int);
+std::unique_ptr<int[]> x(new int[5]);
+```
+
+# [shared ptr](http://www.cplusplus.com/reference/memory/shared_ptr)
+- For multiple users of one pointer/object
+- Refcountered, useful but over-used. 所以尽量不要使用
+
+If two shared ptr are constructed (or made) from the same (non-shared ptr) pointer, they will both be owning the pointer without sharing it,
+causing potential access problems when one of them releases it (deleting its managed object) and leaving the other pointing to an invalid location.
+
+# [weak ptr](http://www.cplusplus.com/reference/memory/weak_ptr)
+weak ptr, is able to share pointers with shared ptr objects without owning them.
+
+C++ Primer 中讲解为什么需要weak pointer 不是很清楚, blog [C++11智能指针之weak ptr](http://blog.csdn.net/Xiejingfa/article/details/50772571) 从一个循环引用的例子来开篇, 间接解释了为什么需要weak pointer.
 
 ```C++
 #include <iostream>

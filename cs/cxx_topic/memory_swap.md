@@ -1,6 +1,6 @@
 ref: [调整linux内核尽量用内存,而不用swap](http://lxshopping.blog.51cto.com/4542643/1573947)
 
-Linux uses kswapd for virtual memory management such that pages that havebeen recently accessed are kept in memory and less active pages are paged outto disk.
+Linux uses kswapd for virtual memory management such that pages that have been recently accessed are kept in memory and less active pages are paged outto disk.
 
 kswapd0进程的作用:它是虚拟内存管理中,负责换页的,操作系统每过一定时间就会唤醒kswapd ,看看内存是否紧张,如果不紧张,则睡眠.
 在 kswapd 中,有2 个阀值,`pages_hige` 和 `pages_low`,当空闲内存页的数量低于 `pages_low` 的时候,
