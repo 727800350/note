@@ -164,7 +164,38 @@ class 派生类名::virtual 继承方式 基类名,
 
 [class assignment](../demo/cpp/class/class_assignment.cpp)
 
-### Virtual members
+### Virtual Function
+```C++
+class Animal{
+public:
+	void walk(){
+		LOG(INFO) << "animal walk";
+	}
+
+class Dog : public Animal{
+public:
+	void walk(){
+		LOG(INFO) << "dog walk";
+	}
+};
+
+int main(int argc, char* argv[]){
+	Animal animal;
+	animal.walk(); // 输出animal walk
+
+	Dog dog;
+	dog.walk(); // 输出dog walk
+
+	Animal *x = &dog;
+	x->walk(); // 输出animal walk, 而不是预期的 dog walk
+}
+```
+将Animal 的walk 定义为虚函数, `virtual void walk()`, 则可以达到这个目的, 这就是虚函数.
+通过这种方式, 可以实现运行时多态性, 比如有一个api: `void walk(Animal animal)`, 在编译的时候, 并不清楚animal 是具体哪一种动物, 也不需要关心, 运行的时候, 根据传入的参数来动态决定.
+
+实现的方式, 会有一个虚函数表, 类里面会有一个指针指向这个表.
+
+进一步, 如果不想让Animal 实例化, 只作为接口派生其他类, 可以将walk 定义为纯虚函数`virtual void walk() = 0`, 这样子类必须实现walk 这个函数.
 
 ### Polymorphism
 

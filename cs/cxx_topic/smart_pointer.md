@@ -1,4 +1,4 @@
-# [uniq ptr](http://www.cplusplus.com/reference/memory/unique_ptr)
+# [unique ptr](http://www.cplusplus.com/reference/memory/unique_ptr)
 For safety reasons, they **do not support pointer arithmetics**, and only support move assignment(disabling copy assignments).
 
 - `get()`: Returns the stored pointer. 拿到这个指针后可以像以前那样直接操作这快内存, 但是要注意, unique ptr 的ownership 并没有发生变化
