@@ -7,6 +7,10 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 
+/*
+ * g++ cpu_usage.cpp -lglog -lgflags -lpthread
+ */
+
 DEFINE_int32(thread_num, 1, "thread num");
 DEFINE_int32(percentage, 50, "usage percent");
 DEFINE_int32(busy_time, 1000, "busy time(ms)");
