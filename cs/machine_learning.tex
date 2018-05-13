@@ -534,7 +534,7 @@ $$ \theta_{MLE} = \mean{x} $$
 即便是大数据的情况下,由于数据很稀疏,在某一个范围或一个维度内,数据量其实也不算大,这时候用MAP效果也比MLE好.
 
 \noindent
-最大似然估计:把待估的参数看做是确定性的量,只是其取值未知.最佳估计就是使得产生以观测到的样本的概率最大的那个值.
+最大似然估计:
 把待估的参数看做是确定性的量,只是其取值未知.最佳估计就是使得产生以观测到的样本的概率最大的那个值.\\
 MLE: 存在即是合理\\
 贝叶斯估计:把待估计的参数看成是符合某种先验概率分布的随机变量.对样本进行观测的过程,就是把先验概率密度转化为后验概率密度,这样就利用样本的信息修正了对参数的初始估计值.
@@ -544,8 +544,8 @@ MLE: 存在即是合理\\
 
 Suppose there are three facts:
 \begin{itemize}
-\item If a student was lazy, he has a probility of 0.3 to pass his exam.
-\item If a student works hard, he has a probility of 0.8 to pass exam.
+\item If a student was lazy, he has a probability of 0.3 to pass his exam.
+\item If a student works hard, he has a probability of 0.8 to pass exam.
 \item 10 percents students work hard, and 90 percents students were lazy in Tom's school.
 \end{itemize}
 Now Tom has passed his exam, we want to know if Tom was lazy.
