@@ -79,7 +79,7 @@ o
 PTable非常类似于并行化的Python dict, 其包含key到value的映射,但其value必须是另一个P类型.PTable往往是一个分组变换的结果:
 
 ```Python
->>> p3 = pipeline.parallelize([("A", 1), ("A", 2), ("B", 1)]
+>>> p3 = pipeline.parallelize([("A", 1), ("A", 2), ("B", 1)])
 >>> p4 = p3.group_by_key()  # group_by_key() 的输入PCollection的所有元素必须是有两个元素的tuple或list.第一个元素为key,第二个元素为value.
 >>> print p4
 {k0: [...]}
@@ -97,6 +97,8 @@ PTable非常类似于并行化的Python dict, 其包含key到value的映射,但�
 - `x.distinct()`: uniq 操作
 
 - `x.substract(y)`: x - y, 注: 如果有重复元素的话, 需要自己去重
+- `x.union(y)`: x + y
+
 - `x.left_join(y)`: 会用None 表示不存在.
 
 	```Python
