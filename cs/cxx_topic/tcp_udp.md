@@ -112,6 +112,24 @@ Unix系统关机时, init进程通常先给所有进程发送SIGTERM信号(该�
 当服务器进程终止时,它的所有打开着的描述字都被关闭,随后发生的步骤与第一节中讨论过的一样.
 正如第一节中所述的情形,我们必须在客户中使用select或poll函数,使得服务器进程的终止已经发生,客户马上检测到.
 
+### 关于SIGPIPE导致的程序退出
+当server close一个连接时, server 会向client 发送一个FIN, client read 会返回0. 通过read 返回0, 我们就能知道对方已经关闭了连接, 通常这时候我们就需要关闭本端的连接.
+如果client 端接着发数据, 根据TCP协议的规定, 会收到一个RST响应(同时errno 会被置为104).
+如果client 再往server发送数据时, 系统会发出一个SIGPIPE信号给client进程(同时errno 会被置为32), 告诉进程这个连接已经断开了, 不要再写了.
+
+SIGPIPE信号的默认执行动作是terminate(终止,退出),所以client会退出. 若不想客户端退出可以把SIGPIPE设为`SIG_IGN`, `signal(SIGPIPE, SIG_IGN);`
+
+服务器采用了fork的话,要收集垃圾进程,防止僵尸进程的产生,可以这样处理:
+```C++
+signal(SIGCHLD, SIG_IGN); // 交给系统init去回收.
+```
+这里子进程就不会产生僵尸进程了.
+
+errno
+
+- errno 32: Broken pipe
+- errno 104: Connection reset by peer
+
 **长连接的情况下出现了不同程度的延时**  
 在一些长连接的条件下, 发送一个小的数据包, 结果会发现从数据write成功到接收端需要等待一定的时间后才能接收到, 而改成短连接这个现象就消失了
 (如果没有消失,那么可能网络本身确实存在延时的问题,特别是跨机房的情况下).  
