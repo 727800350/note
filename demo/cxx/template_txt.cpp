@@ -15,11 +15,7 @@ int process(const char *line){
 
 int main(int argc, char* argv[]){
 	google::InitGoogleLogging(argv[0]);
-
-	google::SetVersionString("1.0.0.0");
-	google::SetUsageMessage(std::string("usage: cat - | ") + argv[0]);
 	google::ParseCommandLineFlags(&argc, &argv, true);
-
 	FLAGS_alsologtostderr = true;
 	FLAGS_colorlogtostderr = true;
 
