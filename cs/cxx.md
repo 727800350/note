@@ -87,126 +87,51 @@ INT_MAX, INT_MIN
 	std::for_each(std::begin(vec), std::end(vec), [](int &x){x++;}); // 修改vec 里面的元素, 因此需要用ref
 	```
 
-## [std::vector](http://www.cplusplus.com/reference/vector/vector/)
-vector封装了数组, vector使用连续内存存储的,支持[]运算符; 对于新添加的元素, 从尾部追加
-
-Do not use pointers to std::vector, 也就是说直接使用std::vector这个对象,而不要使用这个对应的指针.
-This class already manage memory allocation and deallocation. 在超出变量的scope, 会自动调用它的析构函数来释放内存
-
-`#include <vector>`
-
-- size(): 容器元素的个数
-- empty(): 用来检测容器是否为空的.
-- `void push_back (const value_type& val)`: 将元素拷贝到新分配的内存中. 如果元素是指针, 那么只拷贝指针本身, 而不会拷贝指针所指向的实际内容, 也就是值(指针本身的值)拷贝.
-	**对于string 等object, 即使push_back中传入的参数是reference(别名)类型, push到vector中的是一个完整的拷贝**, 而不是一直指向原来的object 的指针,
-	所以即使原来的object被删除了, vector中的仍然可以正常访问.
-- `emplace_back`: 与push back的作用一样, 在有构造函数的情况下, 效率高(去掉了额外的拷贝或者移动)
-- erase: 删除元素, 同时返回下一个元素的iterator, 如果删除最后一个元素,则返回vec.end().
+## containers
+- [std::vector](http://www.cplusplus.com/reference/vector/vector): vector封装了数组, vector使用连续内存存储的, 支持[]运算符
+	- erase: 删除元素, 同时返回下一个元素的iterator, 如果删除最后一个元素,则返回vec.end().
 
 	```C++
-	for(auto it = vec.begin(); it != vec.end();){
-		if(condition){
-			it = vec.erase(it);
-		}
-		else{
-			it++;
+	int array[] = {-1, 1, 2, 7, 11, 15};
+	std::vector<int> vec(array, array + sizeof(array) / sizeof(int));
+
+	std::vector<int> vec{3, 4, 2, 8, 15, 267};
+	```
+	- [vector push back operation demo](../demo/cxx/stl/vector-push_back.cpp)
+
+- [std::list](http://www.cplusplus.com/reference/list/list): implemented as doubly-linked lists
+- [std::unordered map](http://www.cplusplus.com/reference/unordered_map/unordered_map): unordered map 内部实现了一个哈希表, 因此其元素的排列顺序是杂乱的, 无序的
+
+	```C++
+	// 将整个container 作为一个整体:
+	for(auto it = mymap.begin(); it != mymap.end(); ++it){
+		std::cout << " " << it->first << ":" << it->second << std::endl;
+	}
+
+	// 分bucket单独遍历:
+	std::cout << "mymap's buckets contain:\n";
+	for(unsigned i = 0;i < mymap.bucket_count(); ++i){
+		for(auto local_it = mymap.begin(i); local_it!= mymap.end(i); ++local_it ){
+			std::cout << " " << local_it->first << ":" << local_it->second << std::endl;
 		}
 	}
 	```
-- back: Returns a reference to the last element in the vector.
-- clear: 可以清空所有元素, 也就是改变vector 的size, 但是capacity 一般不会改变.
-- swap: vector<T>().swap(x); 改变x 占用内存的方式, 实际上是把x 的内存交换给一个新的vector<T>()对象
 
-初始化一个vector
-```C++
-int array[] = {-1, 1, 2, 7, 11, 15};
-std::vector<int> vec(array, array + sizeof(array) / sizeof(int));
+- [std::map](http://www.cplusplus.com/reference/map/map/): map内部实现了一个红黑树,该结构具有自动排序的功能,因此map内部的所有元素都是有序的.
+- [std::queue](http://www.cplusplus.com/reference/queue/queue): 队列
+	- pop: This calls the removed element's destructor
 
-std::vector<int> vec{3, 4, 2, 8, 15, 267};
-```
-[vector push back operation demo](../demo/cxx/stl/vector-push_back.cpp)
-
-## [std::list](http://www.cplusplus.com/reference/list/list)
-implemented as doubly-linked lists
-
-- `push_front`: 在头插入
-- `push_back`: 在尾插入
-
-## [std::unordered map](http://www.cplusplus.com/reference/unordered_map/unordered_map/)
-unordered map 内部实现了一个哈希表, 因此其元素的排列顺序是杂乱的, 无序的
-
-Internally, the elements are not sorted in any particular order, but organized into buckets depending on their hash values
-to allow for fast access to individual elements directly by their key values (with a constant average time complexity on average).
-
-`unordered_map` containers are faster than map containers to access individual elements by their key,
-although they are generally less efficient for range iteration through a subset of their elements.
-
-尽量不要使用`char *` 作为key, 而要使用string.
-`char *`是一个地址, 也就是一个unsigned int, 所以实际上的key 是一个unsigned int 类型的值
-
-`#include <unordered_map>`
-
-- `std::unordered_map::operator[]`: If k matches the key of an element in the container, the function returns a reference to its mapped value.
-	If k does not match the key of any element in the container, the function inserts a new element with that key(值为mapped value 的类型的默认值) and
-	returns a reference to its mapped value. 反应在map.size() 上
-- `std::unordered_map::find(const key_type& k)`: returns an iterator if found, otherwise it returns `map.end()`
-- `map.insert(pair)`: 向map 中添加元素
-	- `std::pair<std::string,double> myshopping ("baking powder",0.3);`
-	- `std::make_pair<std::string,double>("eggs",6.0)`
-
-将整个container 作为一个整体:
-```C++
-for(auto it = mymap.begin(); it != mymap.end(); ++it){
-	std::cout << " " << it->first << ":" << it->second << std::endl;
-}
-```
-
-分bucket单独遍历:
-```C++
-std::cout << "mymap's buckets contain:\n";
-for(unsigned i = 0;i < mymap.bucket_count(); ++i){
-	for(auto local_it = mymap.begin(i); local_it!= mymap.end(i); ++local_it ){
-		std::cout << " " << local_it->first << ":" << local_it->second << std::endl;
-	}
-}
-```
-
-## [std::map](http://www.cplusplus.com/reference/map/map/)
-map内部实现了一个红黑树,该结构具有自动排序的功能,因此map内部的所有元素都是有序的.
-
-- `size_type std::map::count(const key_type& k) const`: Count elements with a specific key
-- `size_type erase (const key_type& k);`: 删除元素, 返回1
-
-```C++
-#include <map>
-for(std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it){
-	std::cout << it->first << " => " << it->second << '\n';
-}
-```
-
-## [std::queue](http://www.cplusplus.com/reference/queue/queue/)
-- pop: This calls the removed element's destructor
-
-## [std::priority queue](http://www.cplusplus.com/reference/queue/priority_queue/)
-```C++
-template<class T,
-	class Container = std::vector<T>,
-	class Compare = std::less<typename Container::value_type>
-	> class priority_queue;
-```
-1. 第一个参数指定元素的类型, 可以是简单的例如int, 也可以是复杂的, `std::pair<int, int>` 等类型
-1. 第二个参数指定 priority queue 使用的底层存储结构
-1. 第三个参数指定排序标准, 默认使用std::less 进行compare, 也就是降序, 因此 top 每次取到的都是最大值
-
-`#include <queue>`
-
-- `empty()`
-- `size_type size() const`
-- `const value_type& top() const`: Returns a constant reference to the top element
-- `void pop()`: Remove top element, 注意, 这个函数没有返回值, 一般和top() 结合使用
-- `void push (const value_type& val)`
-
-[demo](../demo/cxx/stl/priority_queue.cpp)
+- [std::priority queue](http://www.cplusplus.com/reference/queue/priority_queue): 优先队列
+	- `template<class T, class Container = std::vector<T>, class Compare = std::less<typename Container::value_type> > class priority_queue;`
+		1. 第一个参数指定元素的类型, 可以是简单的例如int, 也可以是复杂的, `std::pair<int, int>` 等类型
+		1. 第二个参数指定 priority queue 使用的底层存储结构
+		1. 第三个参数指定排序标准, 默认使用std::less 进行compare, 也就是降序, 因此 top 每次取到的都是最大值
+	- `const value_type& top() const`: Returns a constant reference to the top element
+	- `void pop()`: Remove top element, 注意, 这个函数没有返回值, 一般和top() 结合使用
+	- `void push (const value_type& val)`
+	- [demo](../demo/cxx/stl/priority_queue.cpp)
+- [set]
+- [multiset](http://www.cplusplus.com/reference/set/multiset): 红黑树实现的有序集合, 默认是增序
 
 ## [algorithm](http://www.cplusplus.com/reference/algorithm/)
 - `template <class BidirectionalIterator> void reverse(BidirectionalIterator first, BidirectionalIterator last)`: std::vector 可以直接使用, std::string 不能使用(因为string 是immutable)
