@@ -130,8 +130,10 @@ INT_MAX, INT_MIN
 	- `void pop()`: Remove top element, 注意, 这个函数没有返回值, 一般和top() 结合使用
 	- `void push (const value_type& val)`
 	- [demo](../demo/cxx/stl/priority_queue.cpp)
-- [set]
-- [multiset](http://www.cplusplus.com/reference/set/multiset): 红黑树实现的有序集合, 默认是增序
+- [unordered set](http://www.cplusplus.com/reference/unordered_set): hash 表实现的
+	- the elements in an unordered set cannot be modified once in the container, they can be inserted and removed, though.
+- [set](http://www.cplusplus.com/reference/set/set): 红黑树实现的集合, 内部不允许重复元素
+- [multiset](http://www.cplusplus.com/reference/set/multiset): 红黑树实现的有序集合, 默认是增序, 元素可以重复
 
 ## [algorithm](http://www.cplusplus.com/reference/algorithm/)
 - `template <class BidirectionalIterator> void reverse(BidirectionalIterator first, BidirectionalIterator last)`: std::vector 可以直接使用, std::string 不能使用(因为string 是immutable)
