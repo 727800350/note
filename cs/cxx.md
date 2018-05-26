@@ -154,10 +154,11 @@ but unless you know what you know exactly what are doing, do not do this.
 ## [std::string](http://www.cplusplus.com/reference/string/string/)
 - `string (const char* s)`
 - `string (const char* s, size_t n)`: 当用字符数组表示的二进制串中可能含有 0 字符时, 需要明确二机制串的长度
-- `size_t size()` or `length()`: Return length of string, `capacity()` 返回的是storage space currently allocated for the string
+- `size_t size()` or `length()`: length of string
+- `capacity()`: storage space currently allocated for the string
 - `const char *c_str()`: 返回一个分配给`const char*`的地址,其内容已设定为**不可变更**
 - `size_t find()`: 第一个参数可以为 `string, char, const char*`类型, 若没有找到, 返回std::string::npos; 第二个参数pos(默认为0)表示从string 的pos位置开始查找
-- `string substr(size_t pos = 0, size_t len = npos) const`: 新构造一个string 对象, len 是可以为0的, 表示std::string(""), 默认到string的结尾
+- `string substr(size_t pos = 0, size_t len = npos) const`: 新构造一个string 对象, len 是可以为0的, 表示std::string(""), 默认到string的结尾, 尽力而为, 如果len 超过, 则只到结尾
 - `void clear()`: 清空
 
 ### [字符数组与字符指针](http://blog.csdn.net/qiumm/article/details/5657120)
