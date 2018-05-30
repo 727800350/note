@@ -1,0 +1,14 @@
+#!/bin/bash
+## my compile in docker dev
+set -x
+
+if [ $# -eq 1 ]
+then
+	code=$1
+else
+	code="test.cpp"
+fi
+g++ -std=c++11 -g -Wall $code -I ~/git/wcg-api/output/include -L ~/git/wcg-api/output/lib -lglog -lgflags -lpthread -lwcg-api
+
+exit 0
+

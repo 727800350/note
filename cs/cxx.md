@@ -118,6 +118,7 @@ INT_MAX, INT_MIN
 	```
 
 - [std::map](http://www.cplusplus.com/reference/map/map/): map内部实现了一个红黑树,该结构具有自动排序的功能,因此map内部的所有元素都是有序的.
+- [std::stack](http://www.cplusplus.com/reference/stack/stack): 栈
 - [std::queue](http://www.cplusplus.com/reference/queue/queue): 队列
 	- pop: This calls the removed element's destructor
 
@@ -132,7 +133,7 @@ INT_MAX, INT_MIN
 	- [demo](../demo/cxx/stl/priority_queue.cpp)
 - [unordered set](http://www.cplusplus.com/reference/unordered_set): hash 表实现的
 	- the elements in an unordered set cannot be modified once in the container, they can be inserted and removed, though.
-- [set](http://www.cplusplus.com/reference/set/set): 红黑树实现的集合, 内部不允许重复元素
+- [set](http://www.cplusplus.com/reference/set/set): 红黑树实现的有序集合, 内部不允许重复元素
 - [multiset](http://www.cplusplus.com/reference/set/multiset): 红黑树实现的有序集合, 默认是增序, 元素可以重复
 
 ## [algorithm](http://www.cplusplus.com/reference/algorithm/)
