@@ -123,13 +123,8 @@ INT_MAX, INT_MIN
 	- pop: This calls the removed element's destructor
 
 - [std::priority queue](http://www.cplusplus.com/reference/queue/priority_queue): 优先队列
-	- `template<class T, class Container = std::vector<T>, class Compare = std::less<typename Container::value_type> > class priority_queue;`
-		1. 第一个参数指定元素的类型, 可以是简单的例如int, 也可以是复杂的, `std::pair<int, int>` 等类型
-		1. 第二个参数指定 priority queue 使用的底层存储结构
-		1. 第三个参数指定排序标准, 默认使用std::less 进行compare, 也就是降序, 因此 top 每次取到的都是最大值
-	- `const value_type& top() const`: Returns a constant reference to the top element
-	- `void pop()`: Remove top element, 注意, 这个函数没有返回值, 一般和top() 结合使用
-	- `void push (const value_type& val)`
+	- `std::priority_queue<int, std::vector<int>, std::less<int>> pq_max`: top() 为最大值的优先级队列
+	- `std::priority_queue<int, std::vector<int>, std::greater<int>> pq_min`: top() 为最小值的优先级队列
 	- [demo](../demo/cxx/stl/priority_queue.cpp)
 - [unordered set](http://www.cplusplus.com/reference/unordered_set): hash 表实现的
 	- the elements in an unordered set cannot be modified once in the container, they can be inserted and removed, though.
