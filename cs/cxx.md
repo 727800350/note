@@ -69,9 +69,10 @@ INT_MAX, INT_MIN
 ```
 
 # STL 标准模板库
-- `std::to_string()`: 对于数字型可以使用
-- `std::begin(x)`
-- `std::end(x)`: for Container, returns `cont.end()`, for Array, returns `arr + N`.
+- [iterator](http://www.cplusplus.com/reference/iterator): 5类, 分别为 Input, Output, Forward, Bidirectional, Random Access
+
+- [std::to_string](http://www.cplusplus.com/reference/string/to_string): 对于数字型可以使用
+- [std::begin](http://www.cplusplus.com/reference/iterator/begin), and [std::end](http://www.cplusplus.com/reference/iterator/end): for Container, returns `cont.end()`, for Array, returns `arr + N`.
 - [std::find](http://www.cplusplus.com/reference/algorithm/find)
 
 	```C++
@@ -80,7 +81,7 @@ INT_MAX, INT_MIN
 	auto pos = std::find(std::begin(v), std::end(v), 3);
 	assert(pos != std::end(v));
 	```
-- [std::for each](http://www.cplusplus.com/reference/algorithm/for_each): 避免显示的for 循环.
+- [std::for_each](http://www.cplusplus.com/reference/algorithm/for_each): 避免显示的for 循环.
 	不能使用auto 来推断x 的类型, 必须显式指定
 
 	```C++
