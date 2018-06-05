@@ -72,18 +72,19 @@ INT_MAX, INT_MIN
 - `std::to_string()`: 对于数字型可以使用
 - `std::begin(x)`
 - `std::end(x)`: for Container, returns `cont.end()`, for Array, returns `arr + N`.
-- `std::find(InputIterator first, InputIterator last, const T& val);`
+- [std::find](http://www.cplusplus.com/reference/algorithm/find)
 
 	```C++
-	int n = 3;
+	#include <algorithm>
 	std::vector<int> v{0, 1, 2, 3, 4};
-	auto result = std::find(std::begin(v), std::end(v), n);
-	assert(result != std::end(v));
+	auto pos = std::find(std::begin(v), std::end(v), 3);
+	assert(pos != std::end(v));
 	```
-- `std::for_each`: 避免显示的for 循环.
+- [std::for each](http://www.cplusplus.com/reference/algorithm/for_each): 避免显示的for 循环.
 	不能使用auto 来推断x 的类型, 必须显式指定
 
 	```C++
+	#include <algorithm>
 	std::for_each(std::begin(vec), std::end(vec), [](int &x){x++;}); // 修改vec 里面的元素, 因此需要用ref
 	```
 
@@ -125,7 +126,6 @@ INT_MAX, INT_MIN
 - [std::priority queue](http://www.cplusplus.com/reference/queue/priority_queue): 优先队列
 	- `std::priority_queue<int, std::vector<int>, std::less<int>> pq_max`: top() 为最大值的优先级队列
 	- `std::priority_queue<int, std::vector<int>, std::greater<int>> pq_min`: top() 为最小值的优先级队列
-	- [demo](../demo/cxx/stl/priority_queue.cpp)
 - [unordered set](http://www.cplusplus.com/reference/unordered_set): hash 表实现的
 	- the elements in an unordered set cannot be modified once in the container, they can be inserted and removed, though.
 - [set](http://www.cplusplus.com/reference/set/set): 红黑树实现的有序集合, 内部不允许重复元素

@@ -1,10 +1,12 @@
 #include <stdio.h>
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
+#include <wcg_api.h>
 
 int main(int argc, char* argv[]){
 	google::InitGoogleLogging(argv[0]);
