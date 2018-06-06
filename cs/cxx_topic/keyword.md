@@ -1,29 +1,94 @@
 # const
+[C++ TUTORIAL: KEYWORD - 2018](http://www.bogotobogo.com/cplusplus/cplusplus_keywords.php#const)
+
 const in C does not mean something is constant. It just means a variable is read-only.
 
-1. 为了防止传递的函数参数被修改, 在调用函数的形参中用const关键字.
-2. `const int *p`: p是指向int常量的指针, `*p`是不变的, 但是可以将p指向其他变量.
-	- 也就是可以通过将p 指向其他int 达到修改`*p`值的目的, 但是不能直接`*p = 10`这样
-	- 也可以写成 `int const *p`
-3. `int * const p`: p是指针常量, 也就是p不能变, 但是可以改变 `*p`
-4. `const int * const p`: 同时满足前面两种情况
-5. const并不会阻止参数的修改, 防君子不防小人, 可以强制的把 `const char *` 转换为 `char *`类型, 然后就可以修改了
+For pointers, we can specify whether the pointer itself is const, the data it points to is const, both, or neither:
 
+```C++
+char str[] = "constantness";
+char *p = str;                 //non-const pointer to non-const data
+const char *pc = str;          //non-const pointer to const data
+char * const cp = str;         //const pointer to non-const data
+const char * const cpc = str;  //const pointer to const data
+```
+When const appears to the left of the `*`, what's pointed to is constant,
+and if const appears to the right of the `*`, the pointer itself is constant.
+If const appears on both sizes, both are constants.
+
+const并不会阻止参数的修改, 防君子不防小人, 可以强制的把 `const char *` 转换为 `char *`类型, 然后就可以修改了
+
+## more const in C++
+### const global variable
 在 C++(但不是在 C 语言)中, const 限定符对默认存储类型稍有影响.
 在默认情况下, 全局变量的链接性为外部的, 但 const 全局变量的链接性为内部的.也就是说,在 C++ 看来, 全局 const 定义就像使用了 static 说明符一样.
 因此,可以将 const 常量定义在头文件中供工程中的多个其它文件包含引用, 并且编译时不会产生变量重复定义的错误. 当然,也可以用 #define 宏定义.
 
-ref: [头文件中定义const全局变量应注意的问题](http://blog.csdn.net/ace_fei/article/details/8587403)
+However, if we want to make a constant have external linkage, we can use the extern keyword to override the default internal linkage: `extern const int a = 20;`
 
-## 一个函数名后面加const表示什么意思
-在函数名后面表示是常成员函数, 该函数不能修改对象内的任何成员, 只能发生读操作, 不能发生写操作.
+### const function
+一个函数名后面加const
+在函数名后面表示是常成员函数, 该函数不能修改对象内的任何成员(attention: static member 不是对象的成员, 因此可以修改, mutable 标记的member可以修改), 只能发生读操作, 不能发生写操作.
 我们都知道在调用成员函数的时候编译器会将对象自身的地址作为隐藏参数传递给函数, 在const成员函数中,既不能改变this所指向的对象,也不能改变this所保存的地址,this的类型是一个指向const类型对象的const指针.
 
 一个函数名字后有const, 这个函数必定是成员函数,也就是说普通函数后面不能有const修饰
 
-# static
-ref:
+Const object can not call non-const member functions(因为non-const member functions 可以修改成员变量, 导致object 就不是const 的了).
 
+The example below shows that a const member function can be overloaded with a non-const member function that has the same parameter list.
+In this case, the constness of the class object determines which of the two functions is invoked:
+```C++
+#include <iostream>
+using namespace std;
+
+class Testing{
+public:
+	Testing(int n):val(n){}
+	int getVal() const {
+		cout << "getVal() const" << endl;
+		return val;
+	}
+	int getVal() {
+		cout << "getVal() non-const" << endl;
+		return val;
+	}
+
+private:
+	int val;
+};
+
+
+int main(){
+	const Testing ctest(10);
+	Testing test(20);
+	ctest.getVal(); // output: getVal() const
+	test.getVal();  // getVal() non-const
+	return 0;
+}
+```
+
+### const class member
+成员变量加const: const 成员, 只能在构造函数中的初始化列表中初始化
+
+## STL iterators
+Since STL iterators are modeled on pointers, an iterator behaves mush like a `T *` pointer.
+So, declaring an iterator as const is like declaring a pointer const. If we want an iterator that points to something that can't be altered (`const T *`), we want to use a `const_iterator`:
+```C++
+vector<int> v;
+vector<int>::const_iterator itc = v.begin();
+*itc = 2012;                                   // error: *itc is cost
+itc++;                                         // ok, itc is not const
+```
+
+How about `T *const iterator`:
+```C++
+vector<int> v;
+const vector<int>::iterator cit = v.begin;
+*cit = 2012;                                   // ok
+cit++;                                         // error: cit is const
+```
+
+# static
 - [C语言中的static 详细分析](http://blog.csdn.net/keyeagle/article/details/6708077/)
 - [static在C和C++中的用法和区别](http://blog.csdn.net/skyereeee/article/details/8000512)
 
@@ -83,12 +148,88 @@ static局部变量中文名叫静态局部变量.它与普通的局部变量比�
 
 所以static函数的作用域是本源文件,把它想象为面向对象中的private函数就可以了.
 
-### 静态数据成员／成员函数(C++特有)
-C++ 重用了这个关键字,并赋予它与前面不同的第三种含义:表示属于一个类而不是属于此类的任何特定对象的变量和函数. 这是与普通成员函数的最大区别, 也是其应用所在.  
-比如在对某一个类的对象进行计数时, 计数生成多少个类的实例, 就可以用到静态数据成员.  
-在这里面, static既不是限定作用域的, 也不是扩展生存期的作用, 而是指示变量/函数在此类中的唯一性. 这也是"属于一个类而不是属于此类的任何特定对象的变量和函数"的含义. 
-因为它是对整个类来说是唯一的,因此不可能属于某一个实例对象的.  
-(针对静态数据成员而言, 成员函数不管是否是static, 在内存中只有一个副本, 普通成员函数调用时, 需要传入this指针, static成员函数调用时, 没有this指针)
+### 静态数据成员/成员函数(C++特有)
+[STATIC VARIABLES AND STATIC CLASS MEMBERS - 2018](http://www.bogotobogo.com/cplusplus/statics.php)
+
+C++ 重用了这个关键字,并赋予它与前面不同的第三种含义: 表示属于一个类而不是属于此类的任何特定对象的变量和函数.
+比如在对某一个类的对象进行计数时, 计数生成多少个类的实例, 就可以用到静态数据成员.
+
+- static members exist as members of the class rather than as an instance in each object of the class. 不占用sizeof 的结果
+- this keyword is not available in a static member function.
+- Static member function, it can only access static member data(including static const variable), or other static member functions while non-static member functions can access all data members of the class: static and non-static.
+- A non-static member function can be declared as virtual but care must be taken not to declare a static member function as virtual.
+
+Note again that we cannot initialize a static member variable inside the class declaration.
+That's because the declaration is a description of how memory is to be allocated, but it doesn't allocate memory.
+We allocate and initialize memory by creating an object using that format.
+
+The exception to the initialization of a static data member inside the class declaration is if the static data member is a const of integral or enumeration type. 但是这能二选一
+
+```C++
+class Car{
+public:
+	enum Color {silver = 0, maroon, red };
+	int year;
+	int mileage = 34289;                   // error: not-static data members, only static const integral data members can be initialized within a class
+	static int vin = 12345678;             // error: non-constant data member, only static const integral data members can be initialized within a class
+	static const string model = "Sonata";  // error: not-integral type cannot have in-class initializer
+	static const int engine = 6;           // allowed: static const integral type(二选一)
+};
+
+int Car::year = 2013;                      // error: non-static data members cannot be defined out-of-class
+int Car::vin = 1234;                       // ok
+const int engine = 6;                      // allowed: static const integral type(二选一)
+
+int main(){
+	return 0;
+}
+```
+
+#### Static - Singleton Pattern
+Singleton design pattern is a good example of static member function and static member variable.
+In this pattern, we put constructor in private section not in public section of a class. So, we can not access the constructor to make an instance of the class.
+Instead, we put a public function which is static function. The getInstance() will make an instance only once.
+Note that if this method is not static, there is no way to invoke the getInstance() even though it is public method. That's because we do not have any instance of Singleton.
+
+```
+#include <iostream>
+using namespace std;
+
+class Singleton{
+public:
+	static Singleton *getInstance(){
+		if(instance == NULL){
+			instance = new Singleton();
+			cout << "getInstance(): First instance\n";
+			return instance;
+		}
+		else{
+			cout << "getInstance(): previous instance\n";
+			return instance;
+		}
+	}
+
+private:
+	Singleton() {}
+	static Singleton *instance;
+};
+Singleton* Singleton::instance = NULL;
+
+int main(){
+	Singleton* s1 = Singleton::getInstance();
+	Singleton* s2 = Singleton::getInstance();
+
+	return 0;
+}
+```
+output
+```
+getInstance(): First instance
+getInstance(): previous instance
+```
+
+# namespace
+避免每次写全称: `namespace mapi = mixer::common::api;`
 
 # goto
 在goto 之后是不允许定义的新的变量的, 局部变量也不行.
@@ -101,6 +242,12 @@ C++ 重用了这个关键字,并赋予它与前面不同的第三种含义:表�
 
 # volatile
 volatile 指示变量随时可能发生变化的, 每次使用时都需要去内存里重新读取它的值, 与该变量有关的运算, 不要进行编译优化
+
+const, volatile的作用以及起作用的阶段
+
+- const只在编译期有用,在运行期无用, const在编译期保证在C的"源代码"里面,没有对其修饰的变量进行修改的地方(如有则报错,编译不通过),而运行期该变量的值是否被改变则不受const的限制.
+- volatile在编译期和运行期都有用, 在编译期告诉编译器:请不要做自以为是的优化,这个变量的值可能会变掉, 在运行期:每次用到该变量的值,都从内存中取该变量的值.
+- const 和 volatile 不是反义词, 可以同时修饰一个变量, 表示一个变量在程序编译期不能被修改且不能被优化,在程序运行期,变量值可修改,但每次用到该变量的值都要从内存中读取,以防止意外错误.
 
 # mutable
 ref: [C++ 中mutable 关键字存在的必要性是什么?](https://www.zhihu.com/question/64969053/answer/226383958)
