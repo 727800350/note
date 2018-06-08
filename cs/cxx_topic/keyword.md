@@ -191,7 +191,7 @@ In this pattern, we put constructor in private section not in public section of 
 Instead, we put a public function which is static function. The getInstance() will make an instance only once.
 Note that if this method is not static, there is no way to invoke the getInstance() even though it is public method. That's because we do not have any instance of Singleton.
 
-```
+```C++
 #include <iostream>
 using namespace std;
 
