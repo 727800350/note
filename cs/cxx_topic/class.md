@@ -1,4 +1,4 @@
-# constructor
+# constructor and operator
 ```C++
 class Empty{};
 ```
@@ -13,7 +13,9 @@ public:
 		return *this;
 	}
 };
+```
 
+```C++
 Empty eA;                        // default constructor
 ~Empty();                        // destructor
 Empty eB(eA);                    // copy constructor(creating a new object)
@@ -60,6 +62,86 @@ Empty e2 = f2(e);
 1. default constructor, 创建x
 1. 注: 应该是首先从x copy 出一个临时对象tmp, 然后再由tmp copy 出e2, 也就是会调用两次拷贝构造函数.不过,都被编译器优化掉了
 
+friend关键字,它能让被修饰的对象冲破本class的封装特性,从而能够访问本class的私有对象.
+
+- 如果你在A类中,申明了函数func()是你的friend,那么func()就可以使用A类的所有成员变量,无论它在什么地方定义的.
+- 如果你在A类中,申明了B类是你的friend,那么B类中的方法就可以访问A类的所有成员变量.
+
+[C++ TUTORIAL - OBJECT RETURNING - 2018](http://www.bogotobogo.com/cplusplus/object_returning.php)
+
+```C++
+class Complx {
+public:
+	Complx() {}
+	Complx(double r, double i): real(r), imag(i) {}
+
+	Complx operator+(const Complx & c) const{
+		return Complx(real + c.real, imag + c.imag);
+	}
+
+	Complx & operator=(const Complx &c){
+		real = c.real;
+		imag = c.imag;
+		return *this;
+	}
+
+	friend std::ostream& operator<<(std::ostream &os, const Complx &c); // friend 标记不能少
+
+	double size() const{
+		return sqrt(real * real + imag * imag);
+	}
+
+private:
+	double real;
+	double imag;
+};
+
+std::ostream& operator<<(std::ostream &os, const Complx &c){
+	os << "(" << c.real << ", " << c.imag << ")";
+	return os;
+}
+```
+
+## Returning a Reference to a Non-const Object
+The return value of `operator=()` is used for chained assignment:
+```C++
+Complx c3(20,40);
+Complx c4, c5;
+c5 = c4 = c3;
+```
+In the code, the return value of `c4.operator=(c3)` is assigned to c5.
+Returning either a Complx object or a reference to a Complx object would work. But using a reference allows the function to avoid calling the Complx copy constructor to create a new Complx object.
+In this case, the return type is not const because operator=() method returns a reference to c4, which is modified.
+
+The return value of `operator<<()` is used for chained output:
+```C++
+cout << c4 << " got its value from c3" << endl;
+```
+In the code, the return value of `operator<<(cout, c4)` becomes the object used to display the string " got its value from c3". Here, the return type must be `ostream &` and not just ostream.
+
+## Returning a const Object
+The `Complx::operator+()` in the example has a strange property. The intended use is this:
+```C++
+Complx c6 = c1 + c2;	// #1
+```
+But the definition also allows us to use the following:
+```C++
+Complx c7;
+c1 + c2 = c7;	// #2
+```
+This code is possible because the copy constructor constructs a temporary object to represent the return value.
+So, in the code, the expression c1 + c2 stands for that temporary object. In statement #1, the temporary object is assigned to c6. In statement #2, c7 is assigned to the temporary object.
+
+The temporary object is used and then discarded. For instance, in statement #2, the program computes the sum of c1 and c2, copies the answer into the temporary return object, overwrites the contents with the contents of c7,
+and then discards the temporary object. The original complex numbers are all left unchanged.
+
+If we declare the return type as a const object, we can avoid the problem.
+```C++
+const Complx operator+(const Complx & c) const{
+	return Complx(real + c.real, imag + c.imag);
+}
+```
+
 private, public or protected.
 
 - private: members of a class are accessible only from within other members of **the same class** or from their **friends**.
@@ -69,9 +151,6 @@ private, public or protected.
 By default, all members of a class are private. 结构体的成员默认是public
 
 const对象不能调用非const函数
-
-### 拷贝构造函数和赋值运算符
-	Person p3 = f1(); // default, 应该是首先调用拷贝构造函数创建临时对象,然后再调用拷贝构造函数使用刚才创建的临时对象创建新的对象p3,也就是会调用两次拷贝构造函数.不过,编译器也没有那么傻,应该是直接调用拷贝构造函数使用返回值创建了对象p3.
 
 ## Virtual Function
 [C++类内存分布(非常重要)](https://www.cnblogs.com/jerry19880126/p/3616999.html)
