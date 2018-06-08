@@ -1,6 +1,64 @@
-定义class的结尾}后需要一个分号,和结构体的定义一样.
+# constructor
+```C++
+class Empty{};
+```
+Thanks to C++ compiler, actually it becomes something like this:
+```C++
+class Empty{
+public:
+	Empty(){}                           // default constructor
+	Empty(const Empty&){}               // copy constructor
+	~Empty(){}                          // destructor
+	Empty& operator=(const Empty&){     // assignment operator
+		return *this;
+	}
+};
 
-- this: The keyword this represents a pointer to the object whose member function is being executed. It is a pointer to the object itself.
+Empty eA;                        // default constructor
+~Empty();                        // destructor
+Empty eB(eA);                    // copy constructor(creating a new object)
+eB = eA;                         // assignment operator(assign to an existing object)
+Empty eC = eA;                   // copy constructor(creating a new object)
+```
+
+The copy constructor should have one of the following forms:
+
+- `MyClass(const MyClass &);`
+- `MyClass(MyClass & );`
+- `MyClass(volatile MyClass &);`
+- `MyClass(volatile const MyClass &);`
+
+copy constructor 必须以引用的方式传递参数.
+因为,在值传递的方式传递给一个函数的时候,会调用拷贝构造函数生成函数的实参.如果拷贝构造函数的参数仍然是以值的方式,就会无限循环的调用下去,直到函数的栈溢出.
+拷贝构造函数使用传入对象的值生成一个新的对象的实例,而赋值运算符是将对象的值复制给一个已经存在的实例.
+
+```C++
+Empty f1(const Empty &e){
+	Empty x;
+	return e;
+}
+
+Empty f2(const Empty &e){
+	Empty x;
+	return x;
+}
+
+Empty e;
+Empty e1 = f1(e);
+Empty e2 = f2(e);
+```
+
+调用f1, 会发生
+
+1. default constructor, 创建x
+1. copy constructor, 从e创建一个临时对象, 供出f1 的作用域之后使用
+1. destuctor, 出f1 的scope 之后销毁x
+1. 注: copy constructor 出来的对象, 没有看到显式的销毁, 因为编译器会进行优化, 从e copy 出来的一个对象直接成了e1
+
+调用f2, 会发生
+
+1. default constructor, 创建x
+1. 注: 应该是首先从x copy 出一个临时对象tmp, 然后再由tmp copy 出e2, 也就是会调用两次拷贝构造函数.不过,都被编译器优化掉了
 
 private, public or protected.
 
@@ -10,66 +68,10 @@ private, public or protected.
 
 By default, all members of a class are private. 结构体的成员默认是public
 
-Static members
-
-A class can contain static members, either data or functions.
-Static data members of a class are also known as "class variables", because there is **only one unique value for all the objects of that same class**.
-For example, it may be used for a variable within a class that can contain a counter with the number of objects of that class that are currently allocated.
-
 const对象不能调用非const函数
 
 ### 拷贝构造函数和赋值运算符
-拷贝构造函数必须以引用的方式传递参数.这是因为,在值传递的方式传递给一个函数的时候,会调用拷贝构造函数生成函数的实参.如果拷贝构造函数的参数仍然是以值的方式,就会无限循环的调用下去,直到函数的栈溢出.
-
-拷贝构造函数使用传入对象的值生成一个新的对象的实例,而赋值运算符是将对象的值复制给一个已经存在的实例.
-调用的是拷贝构造函数还是赋值运算符,主要是看是否有新的对象实例产生.
-如果产生了新的对象实例,那调用的就是拷贝构造函数,如果没有,那就是对已有的对象赋值,调用的是赋值运算符.
-
-```C++
-class Person{
-public:
-	Person(){
-		LOG(INFO) << "default constructor";
-	}
-
-	Person(const Person& p){
-		LOG(INFO) << "copy Constructor";
-	}
-
-	Person& operator=(const Person& p){
-		LOG(INFO) << "assign operator";
-		this->name = p.name;
-		return *this;
-	}
-
-private:
-	string name;
-};
-
-void f(Person p){
-	return;
-}
-
-Person f1(){
-	Person p;
-	return p;
-}
-
-int main(int argc, char* argv[]){
-	Person p; // default
-	Person p1 = p; // copy, 虽然使用了"=",但是实际上使用对象p来创建一个新的对象p1.也就是产生了新的对象,所以调用的是拷贝构造函数.
-
-	Person p2; // default
-	p2 = p;	// assign, p2 已经是一个Person 对象, 所以这里是赋值运算符
-	f(p2); // copy
-
-	p2 = f1(); // default and assign
-
 	Person p3 = f1(); // default, 应该是首先调用拷贝构造函数创建临时对象,然后再调用拷贝构造函数使用刚才创建的临时对象创建新的对象p3,也就是会调用两次拷贝构造函数.不过,编译器也没有那么傻,应该是直接调用拷贝构造函数使用返回值创建了对象p3.
-
-	return 0;
-}
-```
 
 ## Virtual Function
 [C++类内存分布(非常重要)](https://www.cnblogs.com/jerry19880126/p/3616999.html)
