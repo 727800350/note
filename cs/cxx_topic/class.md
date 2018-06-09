@@ -153,6 +153,8 @@ By default, all members of a class are private. 结构体的成员默认是publi
 const对象不能调用非const函数
 
 ## Virtual Function
+Once a function is declared as virtual, it remains virtual in all the dervied classes. 既不需要在dervied class 中显式指定virtual
+
 [C++类内存分布(非常重要)](https://www.cnblogs.com/jerry19880126/p/3616999.html)
 
 ```C++
@@ -187,7 +189,93 @@ int main(int argc, char* argv[]){
 
 进一步, 如果不想让Animal 实例化, 只作为接口派生其他类, 可以将walk 定义为纯虚函数`virtual void walk() = 0`, 这样子类必须实现walk 这个函数.
 
+### vector of base objects
+```C++
+class A{
+public:
+	A(int n = 0) : m(n) {}
+	virtual ~A() { }
+
+	virtual int getVal() const {
+		std::cout << "A::getVal() = ";
+		return m;
+	}
+
+protected:
+	int m;
+};
+
+class B : public A{
+public:
+	B(int n = 0) : A(n) {}
+
+	int getVal() const {
+		std::cout << "B::getVal() = ";
+		return m + 1;
+	}
+};
+
+int main(){
+	const A a(1);
+	const B b(3);
+	const A *pA[2] = {&a, &b};
+	std::cout << pA[0]->getVal() << std::endl; // A::getVal() = 1
+	std::cout << pA[1]->getVal() << std::endl; // B::getVal() = 4
+
+	std::vector<A> vA;
+	vA.push_back(a);
+	vA.push_back(b);
+	std::cout << vA[0].getVal() << std::endl; // A::getVal() = 1
+	std::cout << vA[1].getVal() << std::endl; // A::getVal() = 3
+
+	const A &c = b;
+	std::cout << c.getVal() << std::endl;	 // B::getVal() = 4
+
+	return 0;
+}
+```
+从执行结果可以看到, 把 derived object 放到base object 的 vector 中, 就真的成了base object(通过往B 中添加新的member, 然后求sizeof 可以验证).
+
+Deleting an array of objects using a base class pointer is undefined
+```C++
+A *a = new B[10];
+delete []a;
+```
+因为a 是一个数组, `a[1] = *(a + 1)`, 而a 是A 类型的, 所以a + 1 实际上偏移的是 sizeof(A), 与我们实际需要的不符.
+
+### parameter of an overriding function
+虚函数body 可以被覆盖掉, 但是默认参数还是使用base class 中声明的.
+```C++
+class A{
+public:
+	virtual ~A() {}
+	virtual int foo(int x = 99){
+		std::cout << "A:foo" << std::endl;
+		return x;
+	}
+};
+
+class B : public A{
+public:
+	int foo(int x = 77){
+		std::cout << "B:foo" << std::endl;
+		return x;
+	}
+};
+
+int main(int argc, char** argv){
+	A* a = new B;
+	std::cout << a->foo() << std::endl; // output B:foo and 99
+	delete a;
+
+	return 0;
+}
+```
+
 ### 虚析构函数
+- Constructors can't be virtual! 因为构造函数被invoked 时候, 说明object 还未创建完成, 也就不能做到虚函数的runtime dynamic binding.
+- Virtual Destructor can be pure, but we must provide a function body for the pure virtual destructor. 作用仅仅是在没有其他纯虚函数的情况下, 指名这个class 不能被实例化
+
 ```C++
 class Base{
 public:
@@ -274,4 +362,26 @@ I0605 15:50:43.765859   167 test.cpp:17] destructor in base
 ```
 class 派生类名::virtual 继承方式 基类名,
 ```
+
+```C++
+class Worker{
+public:
+	std::string name;
+};
+
+class Student: public virtual Worker{
+public:
+	int studentID;
+};
+
+class Assistant: virtual public Worker{
+public:
+	int employerID;
+};
+
+class StudentAssitant: public Student, public Assistant {};
+```
+Now a StudentAssitant object will contain a single copy of a Worker. Actually, the inherited Student and Assitant objects share a common Worker object instead of each carrying its own copy.
+
+Here, the virtual key word does not have any obvious connection to the virtual in virtual functions.
 
