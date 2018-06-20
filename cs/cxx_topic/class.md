@@ -1,6 +1,6 @@
 # constructor and operator
 ```C++
-class Empty{};
+class Empty{}; // sizeof(Empty) 为 1
 ```
 Thanks to C++ compiler, actually it becomes something like this:
 ```C++

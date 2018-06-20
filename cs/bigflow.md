@@ -7,6 +7,26 @@ Bigflow Python能够将Pipeline映射成为不同分布式计算引擎上的计�
 from bigflow import base, transforms, input, output
 pipeline = base.Pipeline.create('local')
 ```
+## 并发和reducer 数量
+- 并发可以直接通过hadoop 的参数来指定
+- redcuer 数量可以通过 default concurrency 来指定, 默认是1000
+- 有些算子, 比如grouy by, join 可以指定局部的concurrency, 此参数优先级高于default concurrency
+	- `p.group_by(lambda x: x, concurrency = 1000)`
+	- `a.join(b, concurrency = 1000)`
+- 如果数据量过小, bigflow 会对concurrency 进行动态缩减, 但是不会在数据很大时动态增加
+
+```Python
+pipeline = base.Pipeline.create(
+		'hadoop',
+		job_name = 'xxx',
+		tmp_data_path = 'hdfs://xxx',
+		hadoop_job_conf = {
+			'mapred.job.map.capacity': '4000',
+			'mapred.job.reduce.capacity': '1100'
+			},
+		default_concurrency = 1000
+		)
+```
 
 # IO
 `input.TextFile(*path, **options)`
@@ -80,7 +100,7 @@ PTable非常类似于并行化的Python dict, 其包含key到value的映射,但�
 
 ```Python
 >>> p3 = pipeline.parallelize([("A", 1), ("A", 2), ("B", 1)])
->>> p4 = p3.group_by_key()  # group_by_key() 的输入PCollection的所有元素必须是有两个元素的tuple或list.第一个元素为key,第二个元素为value.
+>>> p4 = p3.group_by_key() # group_by_key() 的输入PCollection的所有元素必须是有两个元素的tuple或list.第一个元素为key,第二个元素为value.
 >>> print p4
 {k0: [...]}
 >>> print p4.get()
@@ -122,9 +142,9 @@ PTable非常类似于并行化的Python dict, 其包含key到value的映射,但�
 
 ```Python
 def fn(line):
-    vec = line.split('\t')
-    if len(vec) == 2:
-        yield(vec[0])
+	vec = line.split('\t')
+	if len(vec) == 2:
+		yield(vec[0])
 
 txt.flat_map(fn)
 ```

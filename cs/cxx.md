@@ -123,7 +123,7 @@ INT_MAX, INT_MIN
 - [std::stack](http://www.cplusplus.com/reference/stack/stack): 栈
 - [std::queue](http://www.cplusplus.com/reference/queue/queue): 队列
 	- pop: This calls the removed element's destructor
-
+- [std::deque](http://www.cplusplus.com/reference/deque/deque): 双端队列, dynamic array 实现的, 支持random access operator[]
 - [std::priority queue](http://www.cplusplus.com/reference/queue/priority_queue): 优先队列
 	- `std::priority_queue<int, std::vector<int>, std::less<int>> pq_max`: top() 为最大值的优先级队列
 	- `std::priority_queue<int, std::vector<int>, std::greater<int>> pq_min`: top() 为最小值的优先级队列
@@ -319,31 +319,6 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 	exit()函数在调用exit系统之前要检查文件的打开情况, 把文件缓冲区的内容写回文件.
 
 # thread
-`fork` 是昂贵的. fork要把父进程的内存镜像复制到子进程, 并在子进程中复制所有描述符, 如此, 等等.  
-子进程获取父进程数据空间,堆和栈的副本, 包括缓冲区
-
-同一进程内的所有线程共享
-
-1. 相同的全局内存(也就是全局变量)
-1. 打开的文件(即描述符)
-1. 信号处理函数和信号处置
-1. 进程指令
-1. 大多数数据
-1. 当前工作目录
-1. 用户ID和组ID
-1. All threads share a common heap. so access to the allocator/deallocator must be synchronized. 
-
-不过每个线程拥有各自的
-
-1. 线程ID
-1. 寄存器集合, 包括程序计数器和栈指针
-1. 栈(用于存放局部变量和返回地址)
-1. errno. [ref](http://learn.akae.cn/media/ch35s02.html). 
-	pthread库的函数都是通过返回值返回错误号,虽然每个线程也都有一个errno,但这是为了兼容其它函数接口而提供的,pthread库本身并不使用它. 
-	所以errno 还是看成同一个进程的所有线程共享一个全局的errno.
-1. 信号掩码
-1. 优先级
-
 一般情况下,线程终止后,其终止状态一直保留到其它线程调用`pthread_join`获取它的状态为止.  
 但是线程也可以被置为`detach`状态,这样的线程一旦终止就**立刻回收它占用的所有资源**,而不保留终止状态.  
 不能对一个已经处于`detach`状态的线程调用`pthread_join`,这样的调用将返回`EINVAL`
