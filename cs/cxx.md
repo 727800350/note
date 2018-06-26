@@ -81,6 +81,8 @@ INT_MAX, INT_MIN
 	auto pos = std::find(std::begin(v), std::end(v), 3);
 	assert(pos != std::end(v));
 	```
+- [`std::lower_bound(first, last, value)`](http://www.cplusplus.com/reference/algorithm/lower_bound/) 第一个 >= value 的iterator, 如果没有符合的元素, 返回last
+- `std::upper_bound(first, last, value)` 第一个 > value 的iterator, 如果没有符合的元素, 返回last
 - [std::for_each](http://www.cplusplus.com/reference/algorithm/for_each): 避免显示的for 循环.
 	不能使用auto 来推断x 的类型, 必须显式指定
 
@@ -123,7 +125,9 @@ INT_MAX, INT_MIN
 - [std::stack](http://www.cplusplus.com/reference/stack/stack): 栈
 - [std::queue](http://www.cplusplus.com/reference/queue/queue): 队列
 	- pop: This calls the removed element's destructor
-- [std::deque](http://www.cplusplus.com/reference/deque/deque): 双端队列, dynamic array 实现的, 支持random access operator[]
+- [std::deque](http://www.cplusplus.com/reference/deque/deque): 双端队列
+	- [map + vector 实现的](https://stackoverflow.com/questions/6292332/what-really-is-a-deque-in-stl), 将很多个固定大小的vector 连接到一起, 也就是内存是不连续的
+	- 支持random access operator[]
 - [std::priority queue](http://www.cplusplus.com/reference/queue/priority_queue): 优先队列
 	- `std::priority_queue<int, std::vector<int>, std::less<int>> pq_max`: top() 为最大值的优先级队列
 	- `std::priority_queue<int, std::vector<int>, std::greater<int>> pq_min`: top() 为最小值的优先级队列
@@ -343,11 +347,31 @@ std::mutex mutex;
 }
 ```
 
+### 读写锁(rwlock)
+[c++ 读写锁](https://www.cnblogs.com/i80386/p/4478021.html)
+
+pthread读写锁把对共享资源的访问分为读者和写者,读者只对共享资源进行读访问,写者只对共享资源进行写操作.
+在互斥机制,读者和写者都需要独立独占互斥量以独占共享资源, 在读写锁机制下,允许同时有多个读者访问共享资源,只有写者才需要独占资源.
+相比互斥机制,读写机制由于允许多个读者同时访问共享资源,进一步提高了多线程的并发度.
+
+读写锁机制
+
+- 写者: 写者使用写锁,如果当前没有读者,也没有其他写者,写者立即获得写锁, 否则写者将等待,直到没有读者和写者.
+- 读者: 读者使用读锁,如果当前没有写者,读者立即获得读锁,否则读者等待,直到没有写者.
+
+读写锁特性:
+
+- 同一时刻只有一个线程可以获得写锁,同一时刻可以有多个线程获得写锁.
+- 读写锁出于写锁状态时,所有试图对读写锁加锁的线程,不管是读者试图加读锁,还是写者试图加写锁,都会被阻塞.
+- 读写锁处于读锁状态时,有写者试图加写锁时,之后的其他线程的读锁请求会被阻塞,以避免写者长时间的获取不到写锁.
+
+API: `pthread.h` 中 `pthread_rwlock_*` 函数
+
 ## 条件变量 condition variable
 条件变量也是同步的一种手段,由一把锁(mutex)和一个condition组成.
 它可以使线程阻塞在某一条件上,比如`queue.not_empty()`.当条件满足时,线程唤醒.需要注意是要小心虚假唤醒,即当wait返回后,需要再次判断条件是否满足.
 
-使用`pthread_cond_wait`方式如下：
+使用`pthread_cond_wait`方式如下:
 ```
 pthread _mutex_lock(&mutex)
 while或if(线程执行的条件是否成立)
@@ -356,19 +380,19 @@ while或if(线程执行的条件是否成立)
 pthread_mutex_unlock(&mutex);
 ```
 
-`pthread_cond_wait` 内部包含以下几步：
+`pthread_cond_wait` 内部包含以下几步:
 
-1. 线程放在等待队列上，解锁
+1. 线程放在等待队列上,解锁
 2. 等待 `pthread_cond_signal` 或者 `pthread_cond_broadcast` 信号之后去竞争锁
 3. 若竞争到互斥索则加锁
 
-下面来讲一下：`pthread_cond_wait`和`pthread_cond_singal`是怎样配对使用的：
+下面来讲一下:`pthread_cond_wait`和`pthread_cond_singal`是怎样配对使用的:
 
-- 等待线程：
+- 等待线程:
 	1. `pthread_cond_wait` 前要先加锁
 	1. `pthread_cond_wait` 内部会解锁, 然后等待条件变量被其它线程激活
 	1. `pthread_cond_wait` 被激活后会再自动加锁
-- 激活线程：
+- 激活线程:
 	1. 加锁(和等待线程用同一个锁)
 	1. `pthread_cond_signal`发送信号(阶跃信号前最好判断有无等待线程)
 	1. 解锁
