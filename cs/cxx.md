@@ -165,10 +165,6 @@ but unless you know what you know exactly what are doing, do not do this.
 ### [字符数组与字符指针](http://blog.csdn.net/qiumm/article/details/5657120)
 - `const char *str1 = "abc";` 字符指针指向的是一个**字符串常量**(存储在程序的常量区)的首地址.
 - `char str2[] = "abc";`: str2是字符数组,它存放了一个字符串, 编译会自动在str2 末尾添加`\0`.  
-	str2是一个数组,可以改变数组中保存的内容(但是数组的名字str2本身, 它是一个常量, 也就是说str2 is not assignable)
-	因为定义的是一个字符数组,所以就相当于定义了一些空间来存放"abc",而又因为字符数组就是把字符一个一个地存放的,
-	所以编译器把这个语句解析为 `char str2[3] = {'a','b','c'};`, 然后补零, 所以最终结果是 `char str2[4] = {'a','b','c','\0'};`  
-	如果这个语句是在函数内部写的话, 那么这里的`"abc\0"`, 因为不是常量, 所以应该被放在栈上.
 
 # std::atomic
 x 为 `std::atomic<int>`
@@ -204,6 +200,12 @@ x 为 `std::atomic<int>`
 	在第一次调用时, 必需给予参数str, 往后的调用则将参数str 设置成NULL.
 	[ex](http://c.biancheng.net/cpp/html/175.html)
 
+```C
+char b = 'a';
+printf("%lu,%lu", sizeof('a'), sizeof(b)); // OUTPUT in C: 4,1, in C++: 1,1
+```
+Note character literals are of type int in C; but of type char in C++.
+
 #### stdlib.h
 - `int atoi(const char *nptr)`
 - `long int atol(const char *nptr)`, atoll
@@ -217,41 +219,18 @@ x 为 `std::atomic<int>`
 - `int isdigit(int c)`
 - `int toupper(int c), tolower, islower, isupper`
 
-scan in values from a string using sscanf
-```C++
-string str("2.5,6.7");
-double val1, val2;
-if(sscanf(str.c_str(),"%lf,%lf", &val1, &val2) == 2){
-	// got them!
-}
-```
-
-we can initialize the array of char elements called myword with a null-terminated sequence of characters
-by either one of these two methods:
-
-1. `char myword [] = { 'H', 'e', 'l', 'l', 'o', '\0' };`
-1. `char myword [] = "Hello";`
-
-In both cases the array of characters myword is declared with a size of 6 elements of type char: 5 characters that compose the word "Hello" plus a final null character ('\0').
-
-```C
-char b = 'a';
-printf("%lu, %lu", sizeof('a'), sizeof(b)); // OUTPUT: 4,1
-```
-Note character literals are of type int in C; but of type char in C++.
-
 # Memory
 new delete malloc free 都是thread safe
 
 单个元素
 ```c++
-pointer = new type
-delete pointer;
+int *p = new int;
+delete p;
 ```
 
 数组
 ```c++
-char *p = new char[number_of_elements];
+int *p = new int[num];
 delete []p;
 ```
 
@@ -312,6 +291,19 @@ arr 是一个二维数组对象, `sizeof(arr)` 得到24(一共6个元素).
 - `void print((void *)arr, int rows, int cols)`: 自己进行位移
 
 [Pointers to functions](../demo/cxx/pointer_function.cpp)
+
+## [柔性数组](https://www.cnblogs.com/pluviophile/p/7571410.html)
+```C++
+struct node_t{
+	int a;
+	char c[]; // 一个符号地址, 不占用空间, sizeof(node_t) 为 4
+};
+
+const char *str = "Hello World";
+node_t *node = (node_t *)new char[sizeof(node_t) + strlen(str) + 1];
+strcpy(node->c, str);
+delete node;
+```
 
 # Process 进程
 - `pid_t getpid(void)`

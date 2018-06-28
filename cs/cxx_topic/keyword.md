@@ -158,6 +158,7 @@ C++ 重用了这个关键字,并赋予它与前面不同的第三种含义: 表�
 - this keyword is not available in a static member function.
 - Static member function, it can only access static member data(including static const variable), or other static member functions while non-static member functions can access all data members of the class: static and non-static.
 - A non-static member function can be declared as virtual but care must be taken not to declare a static member function as virtual.
+- 不需要经由类的对象来调用.(虽然使用类的对象来调用也是合法的, 编译器不会报错)
 
 Note again that we cannot initialize a static member variable inside the class declaration.
 That's because the declaration is a description of how memory is to be allocated, but it doesn't allocate memory.
