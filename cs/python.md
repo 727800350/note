@@ -661,46 +661,6 @@ broadcasting
 - 一个 (m, n) 的matrix 和 一个 (1, n) 的row vector 进行 `+ - * /`, row vector 会被copy m 份, 也变成一个 (m, n) 的matrix, 然后进行对应位的四则运算
 - 一个 (m, n) 的matrix 和 一个 (m, 1) 的column vector 进行 `+ - * /`, column vector 会被copy n 份, 也变成一个 (m, n) 的matrix, 然后进行对应位的四则运算
 
-## import pandas as pd
-### series
-- `pd.Series([1, 3, 5, np.nan, 6, 8])`: 创建一个序列
-- `pd.date_range(start=None, end=None, periods=None, freq='D')`: 返回一个pandas.tseries.index.DatetimeIndex, 可以用作DataFrame 的index.
-	其中periods 为长度(start, end, periods 用两个), freq 为间隔, 默认为Day.
-
-Series 对象本身和它的索引都有一个 name 属性, 它和pandas的其它一些关键功能整合在一起
-
-Series的索引可以通过赋值就地更改： `s.index = xxx`. 但是不能修改单个元素, `s.index[0]  = xxx` 会报错.
-类似于C 语言中的const 指针
-
-### data frame
-创建
-
-- `pd.DataFrame(data=None, index=None, columns=None)`: data 可以是numpy 的array, 可以是python 的dict(key 被作为df.columns, values 作为df.values)
-
-```Python
-dates = pd.date_range('20130101', periods=6)
-df = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=['a', 'b', 'c', 'd'])
-```
-
-- df.index, df.columns, df.values
-- df.shape, df.ndim, df.size
-- df.head(), df.tail()
-
-- df.a, df['a']: 取出列名为a 的列
-- df[0:3], df['20130102':'20130104']: 取某些行
-- df.loc: 通过label 来选择, `df.loc[dates[0]]`, `df.loc[:,['A','B']]`, `df.loc['20130102':'20130104',['A','B']]`
-- df.iloc: 通过坐标 来选择, `df.iloc[3]`, `df.iloc[[1,2,4],[0,2]]`, `df.iloc[1:3,:]`
-- df.at: 通过label 获取一个值, `df.at[dates[0],'A']`
-- df.iat: 通过坐标 获取一个值, `df.iat[1,1]` 比 `df.iloc[1,1]` 速度快
-- df.ix
-
-- `df.sort_values(by=['a', 'b'], axis=0, ascending=True, inplace=False, kind='quicksort', na_position='last')`: axis {0 or 'index', 1 or 'columns'}, default 0
-- `df.T`: 转置
-- `df.mean()`
-- `df.apply(func, axis=0)` aixs=0 为列, aixs=1 为行
-	- `df.apply(np.cumsum)`
-	- func 可以为lambda表达式, `df.apply(lambda x: x.max() - x.min())`
-
 ## scipy
 SciPy是一款方便,易于使用,专为科学和工程设计的Python工具包.它包括统计,优化,整合,线性代数模块,傅里叶变换,信号和图像处理,常微分方程求解器等等.
 
