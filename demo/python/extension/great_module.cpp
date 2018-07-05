@@ -59,7 +59,7 @@ static PyObject *sign64to32(PyObject *self, PyObject *args){
 	}
 
 	node_t node;
-	sscanf(str, "%lu", &node.base64);
+	sscanf(str, "%llu", &node.base64);
 	return Py_BuildValue("(II)", node.sign[0], node.sign[1]);
 
 	/* another way to build a tuple

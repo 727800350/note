@@ -15,7 +15,7 @@ plt.subplot2grid(grid_size, (0, 1), rowspan = 3, colspan = 1)
 plt.plot(np.cos(3 * T), np.sin(T), c = 'k')
 plt.title("sin")
 
-plt.subplot2grid(grid_size, (3, 0), rowspan=1, colspan=3)
+plt.subplot2grid(grid_size, (3, 0), rowspan=1, colspan=2)
 plt.plot(np.cos(5 * T), np.sin(7 * T), c= 'k')
 
 plt.tight_layout()

@@ -1,4 +1,5 @@
 /*
+ * g++ -fPIC -shared util.cpp -o util.so -I/usr/include/python2.7 -lpython2.7
  * g++ -fPIC -shared util.cpp -o util.so -I/home/img/.jumbo/include/python2.7 -L/home/img/.jumbo/lib -lpython2.7
  *
  * make sure great_module.so in the same directory
@@ -26,7 +27,7 @@ static PyObject *sign64to32(PyObject *self, PyObject *args){
 	}
 
 	node_t node;
-	sscanf(str, "%lu", &node.base64);
+	sscanf(str, "%llu", &node.base64);
 	char buffer[100];
 	snprintf(buffer, sizeof(buffer), "%u,%u", node.sign[0], node.sign[1]);
 	return PyString_FromString(buffer);
@@ -41,7 +42,7 @@ static PyObject *sign32to64(PyObject *self, PyObject *args){
 	node_t node;
 	sscanf(str, "%u,%u", &node.sign[0], &node.sign[1]);
 	char buffer[100];
-	snprintf(buffer, sizeof(buffer), "%lu", node.base64);
+	snprintf(buffer, sizeof(buffer), "%llu", node.base64);
 	return PyString_FromString(buffer);
 }
 

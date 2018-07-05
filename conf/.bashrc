@@ -39,6 +39,8 @@ export PATH=$PATH:/usr/local/sbin
 export PATH=$PATH:${HOME}/git/note/bin
 export PATH=$PATH:${HOME}/bin
 
+alias grep='grep --color=auto'
+
 if [ "x$os" == "xmac" ]
 then
 	alias ls="ls -G"
