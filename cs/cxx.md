@@ -394,8 +394,4 @@ pthread_mutex_unlock(&mutex);
 - `static_cast` not only from the derived class to its base, but also from a base class to its derived(可能runtime error).
 - typeid: allows to check the type of an expression, returns a reference to a constant object of type `type_info` from `<typeinfo>`.  string 和 string & 的typeid 是一样的
 
-# GCC
-高版本的gcc glibc 编译的程序在低版本的glibc上运行, 可能导致Floating Point Exception运行时错误.
-这是由于高版本gcc在link的时候默认会采用选项--hash-style=gnu,而使用这种Hash表的方式可以大大提升动态链结时的效率.
-而老版本的glibc本并未支持,我们只要在在程序连接选项中加上-Wl,--hash-style=sysv就可以解决这个问题了
 
