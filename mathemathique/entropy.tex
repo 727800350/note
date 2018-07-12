@@ -35,9 +35,9 @@ As it turns out Bob doesn't say all words equally often. Bob really likes dogs. 
 
 That seems promising. Our old code uses codewords that are 2 bits long, regardless of how common they are.
 
-There’s a nice way to visualize this. In the following diagram, we use the vertical axis to visualize the probability of each word, $p(x)$,
+There's a nice way to visualize this. In the following diagram, we use the vertical axis to visualize the probability of each word, $p(x)$,
 and the horizontal axis to visualize the length of the corresponding codeword, $L(x)$.
-Notice that the area is the average length of a codeword we send – in this case 2 bits.
+Notice that \textbf{the area is the average length of a codeword we send} – in this case 2 bits.
 
 \begin{figure}[htbp]
   \centering
@@ -66,7 +66,7 @@ $$ 1 \times 1/2 + 2 \times 1/4 + 3 \times 1/8 + 3 \times 1/8 = 1.75$$
 It turns out that this code is the best possible code.
 There is no code which, for this distribution, will give us an average codeword length of less than 1.75 bits.
 
-We call this fundamental limit the entropy of the distribution.
+\textbf{We call this fundamental limit the entropy of the distribution}.
 
 \section{The Space of Codewords}
 One useful way to think about this is that every codeword requires a sacrifice from the space of possible codewords.
@@ -90,9 +90,9 @@ In general, the cost of codewords decreases exponentially with the length of the
 
 \section{Calculating Entropy}
 Recall that the cost of a message of length $L$ is $1/2^L$.
-$$cost = 1/2^L \Rightarrow L = \log_2{1/cost}$$
+$$cost = 1/2^L \Rightarrow L = \log_2{\dfrac{1}{cost}}$$
 
-Since we spend $p(x)$ on a codeword for $x$, the length is $\log_2{1/p(x)}$. Those are the best choices of lengths.
+Since we spend $p(x)$ on a codeword for $x$, the length is $\log_2{\dfrac{1}{p(x)}}$. Those are the best choices of lengths.
 
 Earlier, we discussed how there is a fundamental limit to how short one can get the average message to communicate events
 from a particular probability distribution, $p$.
@@ -143,10 +143,10 @@ Surprisingly, it's worse for Bob to accidentally use Alice's code than for Alice
 
 So, now we have four possibilities:
 \begin{itemize}
-\item So, Bob using his own code ($H(p)=1.75$ bits)
-\item So, Alice using Bob's code ($Hp(q)=2.25$ bits)
-\item So, Alice using her own code ($H(q)=1.75$ bits)
-\item So, Bob using Alice's code ($Hq(p)=2.375$ bits)
+\item Bob using his own code ($H(p)=1.75$ bits)
+\item Alice using Bob's code ($Hp(q)=2.25$ bits)
+\item Alice using her own code ($H(q)=1.75$ bits)
+\item Bob using Alice's code ($Hq(p)=2.375$ bits)
 \end{itemize}
 
 This isn't necessarily as intuitive as one might think. For example, we can see that $H_p(q) \neq H_q(p)$.
