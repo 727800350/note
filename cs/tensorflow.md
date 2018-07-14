@@ -26,16 +26,16 @@ Tensor就是张量,张量有多种
 	numeric_feature_column = tf.feature_column.numeric_column("Year")
 	bucketized_feature_column = tf.feature_column.bucketized_column(source_column = numeric_feature_column, boundaries = [1960, 1980, 2000])
 	'''
-	Date Range			 Represented as...
-	< 1960				 [1, 0, 0, 0]
-	>= 1960 but < 1980 	 [0, 1, 0, 0]
-	>= 1980 but < 2000 	 [0, 0, 1, 0]
-	> 2000				 [0, 0, 0, 1]
+	Date Range           Represented as...
+	< 1960               [1, 0, 0, 0]
+	>= 1960 but < 1980   [0, 1, 0, 0]
+	>= 1980 but < 2000   [0, 0, 1, 0]
+	> 2000               [0, 0, 0, 1]
 	'''
 	```
 - Categorical vocabulary column: We cannot input strings directly to a model. Instead, we must first map strings to numeric or categorical values.
 	Categorical vocabulary columns provide a good way to represent strings as a one-hot vector.
-	For example: ![Mapping string values to vocabulary columns](https://1.bp.blogspot.com/-tATYn91S0Mw/Wg4HVJgTy6I/AAAAAAAAEG8/I0GiWJH0aBYSwfuyBFGwRiS0SHVVGrNngCLcBGAs/s1600/6.jpg)
+	For example: `"kitchenware" -> [1,0,0], "electronics" -> [0,1,0], "sports" -> [0,0,1]`
 
 	```Python
 	# Given input "feature_name_from_input_fn" which is a string, create a categorical feature to our model by mapping the input to one of the elements in the vocabulary list.
@@ -65,7 +65,7 @@ In terms of neural network architecture, this means that a logit is an output of
 
 Tensorflow naming is a bit strange: all of the functions below accept logits, not probabilities, and apply the transformation themselves (which is simply more efficient).
 
-Softmax functions family
+**Softmax functions family**
 
 - `tf.nn.softmax_cross_entropy_with_logits_v2`
 - `tf.losses.softmax_cross_entropy`
@@ -75,7 +75,7 @@ These loss functions should be used for multinomial mutually exclusive classific
 The labels must be one-hot encoded or can contain soft class probabilities: a particular example can belong to class A with 50% probability and class B with 50% probability.
 Note that strictly speaking it doesn't mean that it belongs to both classes, but one can interpret the probabilities this way.
 
-Sparse functions family
+**Sparse functions family**
 
 - `tf.nn.sparse_softmax_cross_entropy_with_logits`
 - `tf.losses.sparse_softmax_cross_entropy`
