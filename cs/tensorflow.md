@@ -7,15 +7,56 @@ Tensor就是张量,张量有多种
 - `global_step` refers to the number of batches seen by the graph. `tf.train.get_global_step()`: The global step variable, or None if none was found.
 - `dataset.shuffle(buffer_size=1000)`: Randomizes input using a window of 1000 elements(read into memory)
 
-## layers
+# layers
+## input layer
+[Introducing TensorFlow Feature Columns](https://developers.googleblog.com/2017/11/introducing-tensorflow-feature-columns.html)
+
+- Numeric Column
+
+	```Python
+	# Defaults to a tf.float32 scalar.
+	numeric_feature_column = tf.feature_column.numeric_column(key="SepalLength")
+
+	# Represent a tf.float64 scalar.
+	numeric_feature_column = tf.feature_column.numeric_column(key="SepalLength", dtype=tf.float64)
+	```
+- Bucketized Column
+
+	```Python
+	numeric_feature_column = tf.feature_column.numeric_column("Year")
+	bucketized_feature_column = tf.feature_column.bucketized_column(source_column = numeric_feature_column, boundaries = [1960, 1980, 2000])
+	'''
+	Date Range			 Represented as...
+	< 1960				 [1, 0, 0, 0]
+	>= 1960 but < 1980 	 [0, 1, 0, 0]
+	>= 1980 but < 2000 	 [0, 0, 1, 0]
+	> 2000				 [0, 0, 0, 1]
+	'''
+	```
+- Categorical vocabulary column: We cannot input strings directly to a model. Instead, we must first map strings to numeric or categorical values.
+	Categorical vocabulary columns provide a good way to represent strings as a one-hot vector.
+	For example: ![Mapping string values to vocabulary columns](https://1.bp.blogspot.com/-tATYn91S0Mw/Wg4HVJgTy6I/AAAAAAAAEG8/I0GiWJH0aBYSwfuyBFGwRiS0SHVVGrNngCLcBGAs/s1600/6.jpg)
+
+	```Python
+	# Given input "feature_name_from_input_fn" which is a string, create a categorical feature to our model by mapping the input to one of the elements in the vocabulary list.
+	vocabulary_feature_column = tf.feature_column.categorical_column_with_vocabulary_list(key="feature_name_from_input_fn", vocabulary_list=["kitchenware", "electronics", "sports"])
+	```
+- Using hash buckets to limit categories
+
+	```Python
+	# Create categorical output for input "feature_name_from_input_fn". Category becomes: hash_value("feature_name_from_input_fn") % hash_bucket_size
+	hashed_feature_column = tf.feature_column.categorical_column_with_hash_bucket(key="feature_name_from_input_fn", hash_buckets_size=100) # 100 个bucket
+	```
+
+## convolution layer
 `tf.nn.conv2d` 和 `tf.layers.conv2d`
 
 - 对于卷积来说, 作用是一样的. `tf.layers.conv2d` 使用`tf.nn.convolution`作为后端.
 - `tf.layers.conv2d` 参数丰富, 一般用于从头训练一个模型.
 - `tf.nn.conv2d`, 一般在下载预训练好的模型时使用. filter是一个卷积核Tensor,由tf.Variable生成,在加载已经训练好的权值时很有用
 
-## loss function
-### softmax
+# loss function
+## softmax
 softmax模型可以用来给不同的对象分配概率
 [How to choose cross-entropy loss in tensorflow?](https://stackoverflow.com/questions/47034888/how-to-choose-cross-entropy-loss-in-tensorflow)
 
