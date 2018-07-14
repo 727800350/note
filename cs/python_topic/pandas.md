@@ -23,6 +23,10 @@ california_housing_dataframe = pd.read_csv("https://storage.googleapis.com/mledu
 california_housing_dataframe.describe()
 ```
 
+`pd.read_csv(csv_file, options)`
+
+- `header=0`: 表示文件第0行（即第一行，索引从0开始）为列索引，如果再加上names, 则会替换原来的列索引。
+
 ## Brief
 - `california_housing_dataframe.describe()`
 - df.shape, df.ndim, df.size
@@ -47,6 +51,8 @@ You may apply Python's basic arithmetic operations to Series.
 Note: Boolean Series are combined using the bitwise, rather than the traditional boolean, operators. For example, when performing logical and, use & instead of and.
 
 `cities['Is wide and has saint name'] = (cities['Area square miles'] > 50) & cities['City name'].apply(lambda name: name.startswith('San'))`
+
+- `[df.pop(item)](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.pop.html)`: Return item(为指向某一列) in series, and drop from frame
 
 ## index
 Both Series and DataFrame objects also define an index property that assigns an identifier value to each Series item or DataFrame row.
