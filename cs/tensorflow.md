@@ -48,12 +48,37 @@ Tensor就是张量,张量有多种
 	hashed_feature_column = tf.feature_column.categorical_column_with_hash_bucket(key="feature_name_from_input_fn", hash_buckets_size=100) # 100 个bucket
 	```
 
+[根据已有的列生成新的](https://stackoverflow.com/questions/46904972/how-to-create-a-tf-feature-column-by-multiplying-two-other-tf-feature-columns)
+```Python
+# Existing features
+age = tf.feature_column.numeric_column("age")
+education_num = tf.feature_column.numeric_column("education_num")
+# Declare a custom column just like other columns
+my_feature = tf.feature_column.numeric_column("my_feature")
+
+# Add to the list of features
+feature_columns = [ ... age, education_num, my_feature, ... ]
+
+def input_fn():
+	df_data = pd.read_csv("input.csv")
+	df_data = df_data.dropna(how="any", axis=0)
+	# Manually update the dataframe
+	df_data["my_feature"] = df_data["age"] * df_data["education_num"]
+
+	return tf.estimator.inputs.pandas_input_fn(x=df_data, y=labels, batch_size=100, num_epochs=10)
+
+model.train(input_fn=input_fn())
+```
+
 ## convolution layer
 `tf.nn.conv2d` 和 `tf.layers.conv2d`
 
 - 对于卷积来说, 作用是一样的. `tf.layers.conv2d` 使用`tf.nn.convolution`作为后端.
 - `tf.layers.conv2d` 参数丰富, 一般用于从头训练一个模型.
 - `tf.nn.conv2d`, 一般在下载预训练好的模型时使用. filter是一个卷积核Tensor,由tf.Variable生成,在加载已经训练好的权值时很有用
+
+## utils
+- `tf.contrib.layers.flatten`: Flattens the input while maintaining the batch size. input a tensor of shape `[batch_size, ...]`, returns a tensor with shape `[batch_size, k]`.
 
 # loss function
 ## softmax
@@ -68,7 +93,7 @@ Tensorflow naming is a bit strange: all of the functions below accept logits, no
 **Softmax functions family**
 
 - `tf.nn.softmax_cross_entropy_with_logits_v2`
-- `tf.losses.softmax_cross_entropy`
+- `tf.losses.softmax_cross_entropy`: 等价于 `tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2)`
 
 These loss functions should be used for multinomial mutually exclusive classification, i.e. pick one out of N classes. Also applicable when N = 2.
 
@@ -78,7 +103,7 @@ Note that strictly speaking it doesn't mean that it belongs to both classes, but
 **Sparse functions family**
 
 - `tf.nn.sparse_softmax_cross_entropy_with_logits`
-- `tf.losses.sparse_softmax_cross_entropy`
+- `tf.losses.sparse_softmax_cross_entropy`, 等价于 `tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits)`
 
 Like ordinary softmax above, these loss functions should be used for multinomial mutually exclusive classification, i.e. pick one out of N classes.
 The difference is in labels encoding: the classes are specified as integers(class index), not one-hot vectors.
