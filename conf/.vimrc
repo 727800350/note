@@ -6,7 +6,6 @@ set mouse-=a "disable visual mode
 set guifont=Lucida\ Console:h10
 set guifont=fangsong:h12
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
-set termencoding=gb2312,utf-8
 set encoding=utf-8
 "=============================== font and encoding ===============================
 

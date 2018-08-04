@@ -1,15 +1,23 @@
 ref: [深入理解C语言函数指针](http://www.cnblogs.com/windlaughing/archive/2013/04/10/3012012.html)
 
 ```C++
-void myFun(int x){
-    fprintf(stdout, "myFun: %d\n",x);
+int myFun(int x){
+    fprintf(stdout, "myFun: %d\n", x);
+	return x;
 }
 ```
 一个数据变量的内存地址可以存储在相应的指针变量中,函数的首地址也可以存储在某个函数指针变量中. 这样,我就可以通过这个函数指针变量来调用所指向的函数了.
 
 在C系列语言中,任何一个变量,总是要先声明,之后才能使用的.函数指针变量也应该要先声明.
-函数指针变量的声明: `void (*funP)(int);` // 声明一个指向一个接受int 参数, 返回值为void的函数指针变量.
-整个函数指针变量的声明格式如同函数myFun的声明处一样, 只不过我们把myFun改成`(*funP)`而已, 这样就有了一个能指向myFun函数的指针了. 当然, 这个funP指针变量也可以指向所有其它具有相同参数及返回值的函数.
+```C++
+// 声明一个指向一个接受int 参数, 返回值为int的函数指针变量.
+int (*funP)(int);
+funP = myFun;
+```
+实际上和 `int a` 差不多, 也就是类型是`int (*)(int)`, 名字是funP, myFun 也是这个类型.
+```C++
+typedef int(*FUN)(int); // 将FUN 定义为一个类型, 和 typedef int a 一样
+```
 
 ```C++
 void (*funP)(int);   // 也可写成void(*funP)(int x),但习惯上一般不这样.

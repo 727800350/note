@@ -17,7 +17,7 @@ protected:
 template<class T>
 class Callback0 : public Closure{
 public:
-	typedef void (T::*Done)();
+	typedef void (T::*Done)(); // Done 是一个属于Class T 的成员函数指针, void T::fun()
 	
 public:
 	Callback0(T *obj, Done run) : object_(obj), run_(run) {
@@ -35,7 +35,7 @@ private:
 template<class T, class T1>
 class Callback1 : public Closure {
 public:
-	typedef void (T::*Done)(T1);
+	typedef void (T::*Done)(T1); // Done 是一个属于Class T 的成员函数指针, void T::fun(T1 arg)
 	
 public:
 	Callback1(T *obj, Done run, T1 arg) : object_(obj), run_(run), arg0_(arg){
