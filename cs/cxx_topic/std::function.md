@@ -3,7 +3,7 @@ ref: [深入理解C语言函数指针](http://www.cnblogs.com/windlaughing/archi
 
 ```C++
 int myFun(int x){
-    fprintf(stdout, "myFun: %d\n", x);
+	fprintf(stdout, "myFun: %d\n", x);
 	return x;
 }
 ```
@@ -21,7 +21,7 @@ typedef int(*FUN)(int); // 将FUN 定义为一个类型, 和 typedef int a 一�
 ```
 
 ```C++
-void (*funP)(int);   // 也可写成void(*funP)(int x),但习惯上一般不这样.
+void (*funP)(int); // 也可写成void(*funP)(int x),但习惯上一般不这样.
 void (*funA)(int);
 void myFun(int x);
 
@@ -29,8 +29,8 @@ void myFun(int x);
 myFun(100);
 
 // myFun与funP的类型关系类似于int 与int *的关系.
-funP = &myFun;  // 将myFun函数的地址赋给funP变量
-(*funP)(200);  // 通过函数指针变量来调用函数
+funP = &myFun; // 将myFun函数的地址赋给funP变量
+(*funP)(200); // 通过函数指针变量来调用函数
 
 //myFun与funA的类型关系类似于int 与int 的关系.
 funA = myFun;
@@ -61,9 +61,7 @@ funP(400);
 - 如果声明是指定参数列表,则会在编译期检查赋值函数的参数列表是否匹配
 
 # lambda
-C++11 的 lambda 表达式规范有好几种
-
-1. `[ capture ] ( params ) { body }`
+`[ capture ] ( params ) { body }`
 
 - capture 指定了在可见域范围内 lambda 表达式的代码内可见得外部变量的列表，具体解释如下
 	- `[]`: 未定义变量.试图在Lambda内使用任何外部变量都是错误的.
@@ -75,6 +73,11 @@ C++11 的 lambda 表达式规范有好几种
 - params 指定 lambda 表达式的参数
 
 ```C++
+[] () { return 1; } // compiler knows this returns an integer
+[] () -> int { return 1; } // now we're telling the compiler what we want
+```
+
+```C++
 #include <vector>
 #include <algorithm>
 std::vector<int> vec{0, 1, 2, 3, 4};
@@ -83,4 +86,90 @@ std::for_each(std::begin(vec), std::end(vec), [](int &x){x++;}); // 修改vec �
 int sum = 0;
 std::for_each(std::begin(vec), std::end(vec), [&sum](int x){sum += x;}); // 不修改vec 的元素, 又是基本类型, 可以直接用value
 ```
+
+## Why Lambdas Rock
+[Lambda Functions in C++11 - the Definitive Guide](https://www.cprogramming.com/c++11/c++11-lambda-closures.html)
+
+Imagine that you had an address book class, and you want to be able to provide a search function.
+You might provide a simple search function, taking a string and returning all addresses that match the string. Sometimes that's what users of the class will want.
+But what if they want to search only in the domain name or, more likely, only in the username and ignore results in the domain name? There are a lot of potentially interesting things to search for.
+Instead of building all of these options into the class, wouldn't it be nice to provide a generic "find" method that takes a procedure for deciding if an email address is interesting?
+Let's call the method findMatchingAddresses, and have it take a "function" or "function-like" object.
+
+```C++
+#include <string>
+#include <vector>
+
+class AddressBook{
+public:
+	// using a template allows us to ignore the differences between functors, function pointers and lambda
+	template<typename Func>
+	std::vector<std::string> findMatchingAddresses (Func func){
+		std::vector<std::string> results;
+		for(auto itr = _addresses.begin(), end = _addresses.end(); itr != end; ++itr){
+			// call the function passed into findMatchingAddresses and see if it matches
+			if(func(*itr)){
+				results.push_back(*itr);
+			}
+		}
+		return results;
+	}
+
+	private:
+	std::vector<std::string> _addresses;
+};
+
+AddressBook global_address_book;
+
+std::vector<std::string> findAddressesFromOrgs(){
+	return global_address_book.findMatchingAddresses(
+		// we're declaring a lambda here; the [] signals the start
+		[] (const string& addr){
+			return addr.find(".org") != std::string::npos;
+		}
+	);
+}
+```
+
+## How are Lambda Closures Implemented?
+So how does the magic of variable capture really work?
+It turns out that the way lambdas are implemented is by creating a small class; this class overloads the `operator()`, so that it acts just like a function.
+A lambda function is an instance of this class;
+when the class is constructed, any variables in the surrounding enviroment are passed into the constructor of the lambda function class and saved as member variables.
+This is, in fact, quite a bit like the idea of a functor that is already possible.
+The benefit of C++11 is that doing this becomes almost trivially easy--so you can use it all the time, rather than only in very rare circumstances where writing a whole new class makes sense.
+
+## What type is a Lambda?
+The main reason that you'd want to create a lambda function is that someone has created a function that expects to receive a lambda function.
+We've already seen that we can use templates to take a lambda function as an argument, and auto to hold onto a lambda function as a local variable.
+But how do you name a specific lambda? Because each lambda function is implemented by creating a separate class, as you saw earlier,
+even single lambda function is really a different type--even if the two functions have the same arguments and the same return value!
+But C++11 does include **a convenient wrapper for storing any kind of function--lambda function, functor, or function pointer: std::function.**
+
+The new std::function is a great way of passing around lambda functions both as parameters and as return values.
+It **allows you to specify the exact types for the argument list and the return value in the template.**
+Here's out AddressBook example, this time using std::function instead of templates.
+```C++
+#include <functional>
+#include <string>
+#include <vector>
+
+class AddressBook{
+public:
+	std::vector<string> findMatchingAddresses (std::function<bool (const string&)> func){
+		std::vector<string> results;
+		for(auto itr = _addresses.begin(), end = _addresses.end(); itr != end; ++itr){
+			// call the function passed into findMatchingAddresses and see if it matches
+			if(func(*itr)){
+				results.push_back(*itr);
+			}
+		}
+		return results;
+	}
+
+	private:
+	std::vector<string> _addresses;
+};
+```
+One big advantage of std::function over templates is that if you write a template, you need to put the whole function in the header file, whereas std::function does not.
 
