@@ -133,7 +133,7 @@ std::vector<std::string> findAddressesFromOrgs(){
 
 ## How are Lambda Closures Implemented?
 So how does the magic of variable capture really work?
-It turns out that the way lambdas are implemented is by creating a small class; this class overloads the `operator()`, so that it acts just like a function.
+It turns out that the way **lambdas are implemented is by creating a small class; this class overloads the `operator()`, so that it acts just like a function.**
 A lambda function is an instance of this class;
 when the class is constructed, any variables in the surrounding enviroment are passed into the constructor of the lambda function class and saved as member variables.
 This is, in fact, quite a bit like the idea of a functor that is already possible.
@@ -172,4 +172,68 @@ public:
 };
 ```
 One big advantage of std::function over templates is that if you write a template, you need to put the whole function in the header file, whereas std::function does not.
+
+closure implementation using lambda:
+```C++
+#include <functional>
+std::function<int(void)> func(int x){
+	int state = x;
+	return [&](){
+		return state++;
+	};
+}
+
+auto f = func(100);
+fprintf(stdout, "%d\n", f()); // 100
+fprintf(stdout, "%d\n", f()); // 101
+fprintf(stdout, "%d\n", f()); // 102
+```
+
+# Functors: Function Objects in C++
+```C++
+#include <iostream>
+
+class myFunctorClass{
+public:
+	myFunctorClass(int x) : _x( x ) {}
+	// C++ allows you to overload operator(), the "function call" operator
+	int operator()(int y){
+		return _x + y;
+	}
+
+private:
+	int _x;
+};
+
+int main(){
+	myFunctorClass addFive(5);
+	std::cout << addFive(6);
+
+	return 0;
+}
+```
+the act of constructing an object lets you give the functor information that it can use inside the implementation of its function-like behavior(when the functor is called through operator()).
+
+[Do we have closures in C++?](https://stackoverflow.com/questions/12635184/do-we-have-closures-in-c)
+
+If you understand **closure as a reference to a function that has an embedded, persistent, hidden and unseparable context(memory, state).**
+
+```C++
+class summer{
+public:
+	summer() : sum(0) {}
+	int operator() (int x){
+		return sum += x;
+	}
+private:
+	int sum; // sum 保存求和的状态
+};
+
+// make a closure
+summer adder;
+// use closure
+adder(3);
+adder(4);
+std::cout << adder(0) << std::endl;
+```
 
