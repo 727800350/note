@@ -23,7 +23,7 @@ else
 	exit 1
 fi
 
-grep -R -i ${include} "${keyword}" ${dir}
+grep --color=auto -R -i ${include} "${keyword}" ${dir}
 
 exit 0
 
