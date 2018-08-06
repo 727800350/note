@@ -2,13 +2,17 @@
 ## my compile in docker dev
 set -x
 
-if [ $# -eq 1 ]
+if [ $# -lt 1 ]
 then
-	code=$1
+	echo "arg error" >&2
+	exit 1
 else
-	code="test.cpp"
+	code="$1"
 fi
-g++ -std=c++11 -g -Wall $code -I ~/git/wcg-api/output/include -L ~/git/wcg-api/output/lib -lglog -lgflags -lpthread -lwcg-api
+
+shift 1
+
+g++ -std=c++11 -g -Wall $code -I ~/git/wcg-api/output/include -L ~/git/wcg-api/output/lib -lwcg-api -lglog -lgflags $@ -lpthread
 
 exit 0
 
