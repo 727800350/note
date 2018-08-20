@@ -330,6 +330,36 @@ I0605 15:50:43.765859   167 test.cpp:17] destructor in base
 ```
 只调用了Base 的析构函数(因为instance 声明的是Base 类型的), Derived 中就可能发生内存泄露, 资源没有释放.
 
+### 在非虚函数中调用虚函数
+```C++
+class RowOrientedBenchmark{
+public:
+	virtual ~RowOrientedBenchmark(){}
+	virtual void DoRow(int i){
+		LOG(INFO) << "DoRow in RowOrientedBenchmark";
+	}
+	void run(){
+		for(int i = 0; i < 10; ++i){
+			DoRow(i);
+		}
+	}
+};
+
+class ReadBenchmark : public RowOrientedBenchmark{
+public:
+	void DoRow(int i){
+		LOG(INFO) << "DoRow in ReadBenchmark";
+	}
+};
+
+std::unique_ptr<RowOrientedBenchmark> bc1(new RowOrientedBenchmark);
+bc1->run(); // output "DoRow in RowOrientedBenchmark"
+
+std::unique_ptr<RowOrientedBenchmark> bc2(new ReadBenchmark);
+bc2->run(); // output "DoRow in ReadBenchmark"
+```
+通过这种方式可以看到一个明显的优点, 先在base 中把框架确定下来(这里就是run), 然后再子类中具体实现怎么做.
+
 ## 派生
 派生类构造函数的语法:
 ```

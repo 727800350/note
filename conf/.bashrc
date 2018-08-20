@@ -40,6 +40,7 @@ export PATH=$PATH:${HOME}/git/note/bin
 export PATH=$PATH:${HOME}/bin
 
 alias grep='grep --color=auto'
+alias watch='watch -d -n 1'
 
 if [ "x$os" == "xmac" ]
 then
