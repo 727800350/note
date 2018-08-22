@@ -360,6 +360,42 @@ bc2->run(); // output "DoRow in ReadBenchmark"
 ```
 通过这种方式可以看到一个明显的优点, 先在base 中把框架确定下来(这里就是run), 然后再子类中具体实现怎么做.
 
+### 子类调用父类的方法
+```C++
+class A{
+public:
+	virtual ~A(){}
+	void faire(){
+		LOG(INFO) << "A faire";
+	}
+	virtual void say(){
+		LOG(INFO) << "A say";
+	}
+};
+
+class B : public A{
+public:
+	void faire(){
+		A::faire();
+		LOG(INFO) << "B faire";
+	}
+	// 如果派生类在虚函数声明时使用了override描述符,那么该函数必须重载其基类中的同名函数,否则代码将无法通过编译. 不加也可以, 只是加了编译检查会更严格.
+	void say() override{
+		A::say();
+		LOG(INFO) << "B say";
+	}
+};
+
+std::unique_ptr<A> a(new B);
+a->faire(); // output "A faire"
+a->say(); // output "A say" "B say"
+
+std::unique_ptr<B> b(new B);
+b->faire(); // output "A faire" "B faire"
+b->say(); // output "A say" "B say"
+```
+在子类的虚函数中也可以调用父类的同名函数.
+
 ## 派生
 派生类构造函数的语法:
 ```
