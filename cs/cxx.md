@@ -104,7 +104,7 @@ INT_MAX, INT_MIN
 	- [vector push back operation demo](../demo/cxx/stl/vector-push_back.cpp)
 
 - [std::list](http://www.cplusplus.com/reference/list/list): implemented as doubly-linked lists
-- [std::unordered map](http://www.cplusplus.com/reference/unordered_map/unordered_map): unordered map 内部实现了一个哈希表, 因此其元素的排列顺序是杂乱的, 无序的
+- [std::unordered map](http://www.cplusplus.com/reference/unordered_map/unordered_map): unordered map 内部实现了一个哈希表, 因此其元素的排列顺序是杂乱的, 无序的. [自定义key 和value](../demo/cxx/stl/unordered_map_customized_key.cpp)
 
 	```C++
 	// 将整个container 作为一个整体:

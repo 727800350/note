@@ -26,9 +26,9 @@ Stash the changes in a dirty working directory away
 
 The modifications stashed away by this command can be 
 
-- listed with `git stash list`, 
+- listed with `git stash list`
 - inspected with `git stash show`
-- restored (potentially on top of a different commit) with `git stash apply`. 
+- restored (potentially on top of a different commit) with `git stash apply`
 
 Calling git stash without any arguments is equivalent to `git stash save`.
 A stash is by default listed as "WIP on branchname …", but you can give a more descriptive message on the command line when you create one.
