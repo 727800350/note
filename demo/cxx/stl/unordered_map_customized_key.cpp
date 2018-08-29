@@ -23,6 +23,8 @@
  * or combine all members into a string first, and then use std::hash<std::string>()
  */
 
+namespace wcg{
+
 class Key{
 public:
 	Key(const std::string &x, const std::string &y, int z) : x_(x), y_(y), z_(z) {}
@@ -53,15 +55,6 @@ private:
 	int z_;
 };
 
-namespace std {
-	template <>
-	struct hash<Key>{
-		std::size_t operator()(const Key &key) const{
-			return (std::hash<std::string>()(key.x()) ^ (std::hash<std::string>()(key.y()) << 1) >> 1) ^ (std::hash<int>()(key.z()) << 1);
-		}
-	};
-}
-
 class Value{
 public:
 	Value() {} // 作为value 需要
@@ -76,20 +69,38 @@ private:
 	int y_;
 };
 
+}
+
+namespace std{
+	template <>
+	struct hash<wcg::Key>{
+		size_t operator()(const wcg::Key &key) const{
+			auto x = std::hash<std::string>()(key.x());
+			auto y = std::hash<std::string>()(key.y());
+			auto z = std::hash<int>()(key.z());
+			return ((x ^ (y << 1)) >> 1) ^ (z << 1);
+		}
+	};
+}
+
 int main(int argc, char* argv[]){
 	google::InitGoogleLogging(argv[0]);
 	google::ParseCommandLineFlags(&argc, &argv, true);
 	FLAGS_alsologtostderr = true;
 	FLAGS_colorlogtostderr = true;
 
-	Key k1("k1x", "k1y", 1);
-	std::unique_ptr<Key> k2(new Key("k2x", "k2y", 2));
-	Key k22("k2x", "k2y", 2);
+	wcg::Key k0("k0x", "k0y", 0);
+	wcg::Key k1("k1x", "k1y", 1);
+	std::unique_ptr<wcg::Key> k2(new wcg::Key("k2x", "k2y", 2));
+	wcg::Key k22("k2x", "k2y", 2);
 
-	Value v1("v1x", 1);
-	Value v2("v2x", 2);
+	wcg::Value v0("v0x", 0);
+	wcg::Value v1("v1x", 1);
+	wcg::Value v2("v2x", 2);
 
-	std::unordered_map<Key, Value> map;
+	std::unordered_map<wcg::Key, wcg::Value> map = {
+		{k0, v0},
+	};
 
 	map[k1] = v1;
 	map.insert(std::make_pair(*k2, v2));
