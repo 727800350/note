@@ -8,3 +8,5 @@
 
 - will be initialized after [-Wreorder]: 构造函数时,初始化成员变量的顺序要与类声明中的变量顺序要相对应,若不对应,则出现如题错误.
 
+- passing 'const A' as 'this' argument discards qualifiers [-fpermissive]: const 对象不能调用non-const 成员函数
+

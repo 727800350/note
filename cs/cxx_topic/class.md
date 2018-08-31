@@ -152,7 +152,7 @@ By default, all members of a class are private. 结构体的成员默认是publi
 
 const对象不能调用非const函数
 
-## Virtual Function
+# Virtual Function
 Once a function is declared as virtual, it remains virtual in all the dervied classes. 既不需要在dervied class 中显式指定virtual
 
 [C++类内存分布(非常重要)](https://www.cnblogs.com/jerry19880126/p/3616999.html)
@@ -397,6 +397,36 @@ b->faire(); // output "A faire" "B faire"
 b->say(); // output "A say" "B say"
 ```
 在子类的虚函数中也可以调用父类的同名函数.
+
+# 嵌套类
+嵌套中的局部类可以访问外层的private 元素(包括变量和函数), eg:
+```C++
+class A{
+public:
+	void say(){
+		LOG(INFO) << "this is A";
+	}
+
+	class B{
+	public:
+		void faire(){
+			A a(2);
+			a.say();
+			LOG(INFO) << a.x_;
+		}
+	};
+
+private:
+	A(int x) : x_(x) {}
+private:
+	int x_;
+};
+
+A::B b;
+b.faire();
+
+// A a; // compile error, as A's constructor is private
+```
 
 ## 派生
 派生类构造函数的语法:
