@@ -71,9 +71,11 @@ private:
 
 }
 
+// std::hash is a class template
 namespace std{
 	template <>
-	struct hash<wcg::Key>{
+	class hash<wcg::Key>{
+	public:
 		size_t operator()(const wcg::Key &key) const{
 			auto x = std::hash<std::string>()(key.x());
 			auto y = std::hash<std::string>()(key.y());

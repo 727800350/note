@@ -19,16 +19,30 @@ So, what do people actually use template for?
 
 But note that, the flexibility and performance come at the cost of poor error diagnostics and poor error messages.
 
+```C++
+template <typename T>
+int compare(const T &v1, const T &v2){
+	if(v1 < v2) return -1;
+	if(v2 < v1) return 1;
+	return 0;
+}
+
+Sales_data data1, data2;
+cout << compare(data1, data2) << endl;
+```
+If class Sales does not overload `operator<`, compilation would fail.
+Errors such as this one cannot be detected until the compiler instantiates the definition of compare on type `Sales_data`.
+
 ## Terminology of Templates
 - Instantiation
 	This is when the compiler generates a regular class, method, or function by substituting each of the template's parameters with a concrete type.
 	This can happen implicitly when we create an object based on a template or explicitly if we want to control when the code generation happens.
 	For instance, the following code creates two specific stack instances and will normally cause the compiler to generate code for these two different types:
 
-		```
-		Stack<int> myIntStack;
-		Stack<std::string> myStringStack;
-		```
+	```
+	Stack<int> myIntStack;
+	Stack<std::string> myStringStack;
+	```
 
 - Implicit Instantiation
 	This is when the compiler decides when to generate code for our template instances.
