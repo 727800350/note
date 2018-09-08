@@ -32,7 +32,7 @@ set autoread
 set autoindent
 set smartindent
 set shiftwidth=4
-set tabstop=4 "for python, tabstop will be overwritten by ftplugin/python.vim, need to change tabstop in this file to 4 too
+set tabstop=4 "for python, tabstop will be overwritten by /usr/share/vim/vim80/ftplugin/python.vim, need to change tabstop in this file to 4 too
 set noexpandtab "do not use 4 backspace to replace a tab
 
 " nobackup
