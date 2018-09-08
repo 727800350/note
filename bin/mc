@@ -12,7 +12,7 @@ fi
 
 shift 1
 
-g++ -std=c++11 -g -Wall $code -I ~/git/wcg-api/output/include -L ~/git/wcg-api/output/lib -lwcg-api -lglog -lgflags $@ -lpthread
+g++ -std=c++11 -g -Wall $code -I ~/git/wcg-api/output/include -L ~/git/wcg-api/output/lib -lwcg-api -lglog -lgflags -lgtest $@ -lpthread
 
 exit 0
 

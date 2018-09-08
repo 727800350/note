@@ -57,6 +57,13 @@ out.close()
 - `f.readline()`: 读取文件一行的内容
 - `f.readlines()`: 读取所有的行到一个数组list里面.在避免将所有文件内容加载到内存中,这种方法常常使用,便于提高效率.
 
+## [python3 format](https://www.cnblogs.com/eternal1025/p/5227997.html)
+```Python
+print('{0}, {1}'.format('zhangk', 32))
+print('{}, {}, {}'.format('zhangk', 'boy', 32))
+print('{name}, {sex}, {age}'.format(age=32, sex='male', name='zhangk'))
+```
+
 ## 文件
 读取文件
 ```python
@@ -199,26 +206,8 @@ heapq 底层使用的就是一个list, 所以初始化, 清空都使用`heap = [
 - `ord`: 将ascii字符转化为ascii值
 - `str(object)`  转化为字符串
 - `len(object)` 长度
-
-`divmod(x, y)` which returns a tuple `(x / y, x % y)`
-
-### 小数位数
-
-	>>> round(2.675,2)
-	2.6800000000000002
-	>>> round(2.675,2) == 2.68
-	True
-	>>> round(2.675,2) == 2.67
-	False
-
-保留小数位要用字符替换 
-
-	>>> "%.0f" % 3.45
-	'3'
-	>>> "%.1f" % 3.45
-	'3.5'
-
-### math module
+- `divmod(x, y)` which returns a tuple `(x / y, x % y)`
+- `round(2.675, 2)`: 小数位数
 - `math.floor()`
 - `math.ceil()`
 
@@ -288,154 +277,7 @@ eg: '我'.decode('utf8').encode('gbk')
 在原始字符串中,\不再表示转义字符的含义
 原始字符串是为正则表达式而设计的, 但是可以用其来方便的表示windows系统下的路径
 
-# class
-[class inheritance demo](../demo/python/school.py)
-
-# Database
-## mysql-connector-python
-install
-
-	pip install --alow-all-external mysql-connector-python
-
-demo
-
-	import mysql.connector
-	conn = mysql.connector.connect(host="localhost", user="test", passwd="123456", db="test", buffered=True)
-	cursor = conn.cursor()
-	cursor.execute("show databases;")
-	r = cursor.fetchone()
-	print r
-	cursor.close()
-	conn.close()
-
-process a query result
-
-	# Using a while-loop
-	cursor.execute("SELECT * FROM employees")
-	row = cursor.fetchone()
-	while row is not None:
-		print(row)
-		row = cursor.fetchone()
-				
-	# Using the cursor as iterator 
-	cursor.execute("SELECT * FROM employees")
-	for row in cursor:
-		print(row)
-
-Inserting or updating data is also done using the handler structure known as a cursor. 
-When you use a transactional storage engine such as InnoDB (the default in MySQL 5.5 and later), 
-you must commit the data after a sequence of INSERT, DELETE, and UPDATE statements.
-
-[insert demo](/../demo/python/db/insert.py)
-
-update 也可以像上面的demo 一样使用.
-
-bind 的使用
-```
-add_user = """INSERT INTO DB.tbluser 
-              (username, department, startyear, currentpos, link) 
-              VALUES (%s, %s, %s, %s, %s)"""
-```
-
-当需要插入mysql 中的`null` 时, 在python 中将变量赋值为 `None`.
-
-transaction
-```
-cnx.start_transaction(consistent_snapshot=bool, isolation_level=level, readonly=access_mode)
-
-con.start_trsansaction()
-cursor.execute(sql)
-con.commit()
-cursor.close()
-con.close()
-```
-The default consistent_snapshot value is False. If the value is True, Connector/Python sends WITH CONSISTENT SNAPSHOT with the statement. 
-MySQL ignores this for isolation levels for which that option does not apply.
-
-The default isolation_level value is None, and permitted values are 'READ UNCOMMITTED', 'READ COMMITTED', 'REPEATABLE READ', and 'SERIALIZABLE'. 
-If the isolation_level value is None, no isolation level is sent, so the default level applies.
-
-The readonly argument can be True to start the transaction in READ ONLY mode or False to start it in READ WRITE mode. 
-
-# Internet
-## Address
-	import socket
-	import struct
-	>>> socket.ntohl(struct.unpack('I', socket.inet_aton("201.119.123.249"))[0])
-	3380050937L
-	;; 如果用i, 而不是I, 可能会出现负值
-
-	>>> socket.inet_ntoa(struct.pack('I',socket.htonl(980942848 )))
-	'58.120.0.0'
-
 # General
-## 基本程序结构
-
-switch
-python中不支持switch, 可以通过if来完成, 当然还有一种更加优雅的方式
-```python
-sw = {
-    'a': lambda x: x,
-    'b': lambda x: x + 1,
-    'c': lambda x: x * x,
-}
-print sw['a'](2) ## 输出2
-print sw['b'](2) ## 输出3
-print sw['c'](2) ## 输出4
-```
-不管从可读性(这是显然的),性能(哈希表 vs 普通查找)上都更好.
-另外最后一种做法将参数与行为的映射完全独立出来了,一来修改起来极其方便,到时候也很容易将它们分离到配置文件中去. 
-
-```python
-sw= {
-  '10':'age 10',
-  '20':'age 20',
-  '30':'30',
-  'default':'age 10'
-  }
-age = '10'
-print  sw.get(age,'age is deault') ## 如果sw中不含有age, 则sw[age] = 'age is deault'
-```
-
-`assert expression, 'text'`: 如果expression为假, 则将text输出,并且报AssertionError
-例如:
-```python
-a=4
-assert a>0, 'a must be positive'  # do nothing
-assert a<0, 'a must be negative' #输出a must be negative
-```
-
-class
-
-python中类里的属性变量以:
-`_xxx` 单下划线开头,类似于php中的protected,意思是受保护的,只能在本类以及子类中访问
-`__xxx` 双下划线,类似于private,私有的,只能本类中访问,连子类都无法访问
-没有下划线的是public
-
-类拥有两种操作
-1. 类属性 attribute references 
-类属性就相当于专属于一个类的变量(即某些语言中的类的静态公共变量static public),使用方法是: 类名称.类属性名称
-2. 实例化instantiation
-实例化则是创建一个类的实例的方法,使用方法是:类名称()
-在使用实例化方法后,将会创建一个空的类实例,一般的python类的定义中会有一个特殊的方法来初始化, 
-这个方法就是`__init__()`,当调用了类的实例化方法后,`__init__()`方法会立刻被这个类的实例调用.也就是说,`__init__()`不是构造函数,而是一个普通的方法.
-
-class 中特殊方法
-
-- `__init__` initialize an instance  每边都是两个下划线
-- `__str__` print an instance out
-- `__cmp__` compare the instances
-- `_init__(self,...)` 这个方法在新建对象恰好要被返回使用之前被调用.
-- `__del__(self)` 恰好在对象要被删除之前调用.
-- `__str__(self)` 在我们对对象使用print语句或是使用str()的时候调用.
-- `__lt__(self,other)` 当使用 小于 运算符(<)的时候调用.类似地,对于所有的运算符(+,>等等)都有特殊的方法.
-- `__getitem__(self,index)` 使用x[index]索引操作符的时候调用)
-- `__len__(self)` 对序列对象使用内建的len()函数的时候调用
-
-Note: Remember that a double underscore (`__`) around a method name indicates that the method has special meaning to Python, 
-even though it can be used and overridden like any other method. 
-Python has some special conventions for calling such methods; for example, `len(x)` makes Python call `x.__len__()`.
-
 ## Help
 ```
 help, dir, type, id, hasattr, getattr, callable, isinstance
@@ -455,17 +297,6 @@ help, dir, type, id, hasattr, getattr, callable, isinstance
 - hasattr (object, "split" )
 - callable() 判断对象是否可以被调用
 - isinstance() 可以确认某个变量是否有某种类型 isinstance(a, str)
-
-# 模块
-包管理工具[PIP](http://lesliezhu.github.io/public/2014-11-08-pip.html)
-
-- $ pip search SomePackage
-- $ pip install SomePackage
-- $ pip show SomePackage ## 可以查看软件版本
-- $ pip list --outdated
-- $ pip install --upgrade SomePackage
-- $ pip uninstall SomePackage
-- $ pip show --files SomePackage: 查看具体的安装文件
 
 ## [import argparse](http://blog.xiayf.cn/2013/03/30/argparse/)
 argparse内置6种动作可以在解析到一个参数时进行触发：
