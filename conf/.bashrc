@@ -9,11 +9,6 @@ export PS1="[\u@\h:\W]\$ "
 ## bash use emacs by default, change it to vi
 set -o vi
 
-## source docker func
-if [ -f $HOME/git/docker/.dockerfunc ]; then
-	source $HOME/git/docker/.dockerfunc
-fi
-
 user=`whoami`
 uname -a | grep Darwin 1>/dev/null 2>&1
 if [ $? -eq 0 ]
@@ -23,21 +18,10 @@ else
 	os="linux"
 fi
 
-# Path
-## my own pc
-if [ "x$user" == "xeric" -o "x$user" == "xwangchao34" ]
-then
-	ulimit -c unlimited
-else
-	if [ -f /home/img/.enterprise ]
-	then
-		source /home/img/.enterprise
-	fi
-fi
-
 export PATH=$PATH:/usr/local/sbin
 export PATH=$PATH:${HOME}/git/note/bin
 export PATH=$PATH:${HOME}/bin
+ulimit -c unlimited
 
 alias grep='grep --color=auto'
 alias watch='watch -d -n 1'
@@ -57,6 +41,12 @@ else
 fi
 
 # udf
+## docker
+if [ -f $HOME/git/docker/.dockerfunc ]
+then
+	source $HOME/git/docker/.dockerfunc
+fi
+
 ## weather report
 function weather(){
 	if [ $# -eq 1 ]
