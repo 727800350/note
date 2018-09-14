@@ -4,7 +4,18 @@ set -x
 dir=`pwd`
 cd $dir
 
+## latex
 rm *.aux *.bbl *.blg *.out *.log *.lof *.lot *.toc *.thm *.snm *.vrb *.nav 2>/dev/null
+
+## glog
+rm *.TENCENT64.site.ericuniwang.log.*
+for file in *.INFO *.WARNING *.ERROR *.FATAL
+do
+	if [ -L $file ]
+	then
+		rm $file
+	fi
+done
 
 exit 0
 
