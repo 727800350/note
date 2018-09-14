@@ -1,6 +1,11 @@
 #!/usr/bin/python
 
 import sys
+import argparse
+
+parser = argparse.ArgumentParser(description = 'statistiques tool')
+parser.add_argument('--unit', action = 'store', dest = 'unit', default = 'us', type = str, help = 'unit suffix')
+arg = parser.parse_args()
 
 v_max = 0
 v_min = 0
@@ -8,7 +13,7 @@ v_sum = 0
 num = 0
 for line in sys.stdin:
 	line = line.strip()
-	value = int(line)
+	value = int(line[:len(line) - len(arg.unit)])
 
 	v_sum = v_sum + value
 	if num == 0:
