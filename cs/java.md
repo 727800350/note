@@ -1,16 +1,11 @@
 # Java
-[环境变量配置](http://jingyan.baidu.com/article/f96699bb8b38e0894e3c1bef.html)
-
 ## 命令行调用
-
-- -Xms<size>        set initial Java heap size
-- -Xmx<size>        set maximum Java heap size
-- -Xss<size>        set java thread stack size
-
 ```java
-public static void main(String[] args){
-	for(int i = 0; i < args.length; ++i){
-		System.out.println(args[i]);
+public class Main{
+	public static void main(String[] args){
+		for(int i = 0; i < args.length; ++i){
+			System.out.println(args[i]);
+		}
 	}
 }
 ```

@@ -72,12 +72,12 @@ you can set and clear individual bits, count all the bits set to 1, find the fir
 ## API
 ```C++
 typedef struct redisReply {
-    int type; /* REDIS_REPLY_* */
-    long long integer; /* The integer when type is REDIS_REPLY_INTEGER */
-    int len; /* Length of string */
-    char *str; /* Used for both REDIS_REPLY_ERROR and REDIS_REPLY_STRING */
-    size_t elements; /* number of elements, for REDIS_REPLY_ARRAY */
-    struct redisReply **element; /* elements vector for REDIS_REPLY_ARRAY */
+	int type; /* REDIS_REPLY_* */
+	long long integer; /* The integer when type is REDIS_REPLY_INTEGER */
+	int len; /* Length of string */
+	char *str; /* Used for both REDIS_REPLY_ERROR and REDIS_REPLY_STRING */
+	size_t elements; /* number of elements, for REDIS_REPLY_ARRAY */
+	struct redisReply **element; /* elements vector for REDIS_REPLY_ARRAY */
 } redisReply;
 ```
 
@@ -195,4 +195,48 @@ DB中核心数据结构在使用前都要初始化,随后可以调用结构中�
 对算法的选择首先要看关键字的类型,如果为复杂类型,则只能选择B+树或HASH算法,如果关键字为逻辑记录号,则应该选择Recno或Queue算法.
 当工作集关键字有序时,B+树算法比较合适, 如果工作集比较大且基本上关键字为随机分布时,选择HASH算法.
 Queue算法只能存储定长的记录,在高的并发处理情况下,Queue算法效率较高,如果是其它情况,则选择Recno算法,Recno算法把数据存储为平面文件格式.
+
+# HBase
+## hbase shell
+[HBase 常用Shell命令](https://www.cnblogs.com/cxzdy/p/5583239.html)
+
+- list: 列出hbase中存在的所有表, 除-ROOT表和.META表(被过滤掉了)
+- status: 返回hbase集群的状态信息
+
+- disable/enable/drop/exists/describe
+- truncate: 重新创建指定表, 也就是清空表
+- flush: 手工把memstore写到Hfile中
+
+- `put 'table', 'row', 'family:qualifier','value'`
+- `get 'table', 'row'`
+- `get 'table', 'row', 'family'`
+- `get 'table', 'row', 'family:qualifier'`
+
+- `delete 'table', 'row', 'family:qualifer'`
+- `deleteall 'table', 'row'`
+
+- `scan 'hbase:meta'` 查看所有表的 region 信息
+- `scan 'hbase:meta', {FILTER=>"PrefixFilter('table_name')"}`: 特定表单region 信息
+
+```
+create 'table', {NAME => 'f1', VERSIONS => 2}, {NAME => 'f2', VERSIONS => 2}
+```
+
+## hbase-site.xml
+[HBase hbase-site.xml中各参数意义](https://blog.csdn.net/u014782458/article/details/56679136)
+
+- `hbase.rootdir`: 这个目录是region server的共享目录,用来持久化HBase, 默认 file:///tmp/hbase-${user.name}/hbase.
+- `hbase.cluster.distributed`: HBase的运行模式, 默认false.false是单机模式,true是分布式模式.若为false,HBase和Zookeeper会运行在同一个JVM里面
+- `hbase.master.port`: HBase的Master的端口, 默认: 60000
+
+block
+
+- `hbase.mapreduce.hfileoutputformat.blocksize`: 默认65536, 也就是64KB
+- `hfile.block.cache.size`: 分配给HFile/StoreFile的block cache占最大堆(-Xmx setting)的比例.默认是20%,设置为0就是不分配
+
+zookeeper
+
+- `hbase.zookeeper.quorum`: Zookeeper集群的地址列表,用逗号分割.例如:"host1.mydomain.com,host2.mydomain.com,host3.mydomain.com". 默认是localhost,是给伪分布式用的.
+- `hbase.zookeeper.property.dataDir`: ZooKeeper的zoo.conf中的配置. 快照的存储位置, 默认: `${hbase.tmp.dir}/zookeeper`
+- `hbase.zookeeper.property.clientPort`: ZooKeeper的zoo.conf中的配置. 客户端连接的端口, 默认: 2181
 
