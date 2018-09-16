@@ -5,17 +5,27 @@ dir=`pwd`
 cd $dir
 
 ## latex
-rm *.aux *.bbl *.blg *.out *.log *.lof *.lot *.toc *.thm *.snm *.vrb *.nav 2>/dev/null
+rm *.aux *.bbl *.blg *.lof *.lot *.toc *.thm *.snm *.vrb *.nav 2>/dev/null
 
 ## glog
-rm *.TENCENT64.site.ericuniwang.log.*
-for file in *.INFO *.WARNING *.ERROR *.FATAL
+rm *.TENCENT64.site.ericuniwang.log.* 2>/dev/null
+for file in `ls *.INFO *.WARNING *.ERROR *.FATAL`
 do
 	if [ -L $file ]
 	then
 		rm $file
 	fi
-done
+done 2>/dev/null
+
+for file in `ls *.out *.log`
+do
+	## preserve nohup.out and err.log
+	if [ "x$file" == "xnohup.out" -o "x$file" == "xerr.log" ]
+	then
+		continue
+	fi
+	rm $file
+done 2>/dev/null
 
 exit 0
 
