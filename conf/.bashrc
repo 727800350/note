@@ -21,6 +21,7 @@ fi
 export PATH=$PATH:/usr/local/sbin
 export PATH=$PATH:${HOME}/git/note/bin
 export PATH=$PATH:${HOME}/bin
+
 ulimit -c unlimited
 
 alias grep='grep --color=auto'
@@ -39,6 +40,12 @@ else
 	alias ls="ls --color=auto"
 	alias ll="ls -l"
 fi
+
+# enterprise
+export JAVA_HOME="~/opt/jdk/jdk1.7.0_45"
+alias bb="blade build"
+alias bt="blade test"
+test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
 # udf
 ## docker
