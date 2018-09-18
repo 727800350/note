@@ -25,7 +25,6 @@ ulimit -c unlimited
 
 alias grep='grep --color=auto'
 alias watch='watch -d -n 1'
-alias ack="ack --type-add TYPE=.proto"
 
 if [ "x$os" == "xmac" ]
 then
