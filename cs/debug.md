@@ -140,46 +140,6 @@ ulimit 全局配置文件: `/etc/security/limits.conf`
 - `attach process-id`: This command attaches to a running process, one that was started outside GDB.
 - `detach`: used after you have finished debugging the attached process. After the detach command, that process and GDB become completely independent once more
 
-# gperftools
-先安装libunwind, 执行ldconfig 更新so的cache, 然后再安装gperftools
-
-google pprof
-
-- `pprof --base=./base.prof --text ./a.out new.prof`: 以base.prof 为基准来看new.prof
-
-## cpu profiler
-[ex](../demo/cxx/gperftools/cpu_profile.cpp)
-
-performance of functions
-
-You can change the sampling frequency with the `CPUPROFILE_FREQUENCY` environment variable. Default value: 100
-
-## heap profiler
-[ex](../demo/cxx/gperftools/heap_profile.cpp)
-
-This is the heap profiler we use at Google, to explore how C++ programs manage memory. This facility can be useful for
-
-- Figuring out what is in the program heap at any given time
-- Locating memory leaks
-- Finding places that do a lot of allocation
-
-下面是一个文字输出样例
-
-```
-% pprof --text bin /tmp/profile.0100.heap
-   255.6  24.7%  24.7%    255.6  24.7% GFS_MasterChunk::AddServer
-   184.6  17.8%  42.5%    298.8  28.8% GFS_MasterChunkTable::Create
-   176.2  17.0%  59.5%    729.9  70.5% GFS_MasterChunkTable::UpdateState
-   169.8  16.4%  75.9%    169.8  16.4% PendingClone::PendingClone
-    76.3   7.4%  83.3%     76.3   7.4% __default_alloc_template::_S_chunk_alloc
-    49.5   4.8%  88.0%     49.5   4.8% hashtable::resize
-   ...
-```
-- The first column contains the direct memory use in MB.
-- The fourth column contains memory use by the procedure and all of its callees.
-- The second and fifth columns are just percentage representations of the numbers in the first and fourth columns.
-- The third column is a cumulative sum of the second column (i.e., the kth entry in the third column is the sum of the first k entries in the second column.)
-
 # valgrind
 Valgrind is a programming tool for memory debugging, memory leak detection, and profiling.
 

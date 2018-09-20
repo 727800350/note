@@ -14,6 +14,10 @@
 # gtest
 
 # gperftools
+- `pprof --base=./base.prof --text ./a.out new.prof`: 以base.prof 为基准来看new.prof
+
+## cpu profiler
+You can change the sampling frequency with the `CPUPROFILE_FREQUENCY` environment variable. Default value: 100
 ```C++
 #include <gperftools/profiler.h>
 
@@ -44,6 +48,86 @@ int main(){
 g++ -std=c++11 -g -Wall test.cpp -lprofiler
 google-pprof --text ./a.out my.prof // 二进制的命令老版本为 pprof
 google-pprof --pdf ./a.out my.prof >output.pdf
+```
+
+## heap profiler
+- Figuring out what is in the program heap at any given time
+- Locating memory leaks
+- Finding places that do a lot of allocation
+
+```C++
+#include <string>
+#include <gperftools/heap-profiler.h>
+
+void f(){
+	char *buffer = new char[1 * 1024 * 1024];
+}
+
+void f1(){
+	char *buffer = new char[1 * 1024 * 1024];
+	f();
+}
+
+void f2(){
+	char *buffer = new char[2 * 1024 * 1024];
+}
+
+int main(int argc, char* argv[]){
+	HeapProfilerStart("heap");
+	for(int i = 0; i < 10; ++i){
+		if(i % 2 == 0){
+			f1();
+		}
+		else{
+			f2();
+		}
+		std::string info = "loop " + std::to_string(i);
+		HeapProfilerDump(info.c_str());
+	}
+	HeapProfilerStop();
+
+	return 0;
+}
+```
+下面是一个文字输出样例
+```
+[root@dev:git]$ ./a.out
+Starting tracking the heap
+Dumping heap profile to heap.0001.heap (loop 0)
+Dumping heap profile to heap.0002.heap (loop 1)
+...
+Dumping heap profile to heap.0009.heap (loop 8)
+Dumping heap profile to heap.0010.heap (loop 9)
+```
+
+```
+[root@dev:git]$ google-pprof --text ./a.out heap.0010.heap
+Using local file ./a.out.
+Using local file heap.0010.heap.
+Total: 20.0 MB
+    10.0  50.0%  50.0%     10.0  50.0% f2
+     5.0  25.0%  75.0%      5.0  25.0% f
+     5.0  25.0% 100.0%     10.0  50.0% f1
+     0.0   0.0% 100.0%     20.0 100.0% __libc_start_main
+     0.0   0.0% 100.0%     20.0 100.0% _start
+     0.0   0.0% 100.0%     20.0 100.0% main
+```
+- 第一列表示直接占用的, 第二列表示对应的比例
+- 第四列表示所占用的所有内存, 直接的和间接的都包括在内, 第五列表示对应的比例
+- 第三列为第二列的累积和
+
+通过`--base` 可以把某个heap 文件作为基准, 这样可以去掉一些初始化情况下的内存占用, 从而可以更加聚焦.
+```
+[root@dev:git]$ google-pprof --text ./a.out --base heap.0001.heap heap.0010.heap
+Using local file ./a.out.
+Using local file heap.0010.heap.
+Total: 18.0 MB
+    10.0  55.6%  55.6%     10.0  55.6% f2
+     4.0  22.2%  77.8%      4.0  22.2% f
+     4.0  22.2% 100.0%      8.0  44.4% f1
+     0.0   0.0% 100.0%     18.0 100.0% __libc_start_main
+     0.0   0.0% 100.0%     18.0 100.0% _start
+     0.0   0.0% 100.0%     18.0 100.0% main
 ```
 
 # Google Protocol Buffer
