@@ -46,6 +46,10 @@ export JAVA_HOME="~/opt/jdk/jdk1.7.0_45"
 alias bb="blade build"
 alias bt="blade test"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
+if [ -f ~/svn/trunk/thirdparty/perftools/bin/pprof ]
+then
+	alias pprof="~/svn/trunk/thirdparty/perftools/bin/pprof"
+fi
 
 # udf
 ## docker
