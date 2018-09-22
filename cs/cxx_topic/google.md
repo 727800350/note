@@ -12,6 +12,28 @@
 - `DEFINE_string`: C++ string
 
 # gtest
+### Basic Assertions
+These assertions do basic true/false condition testing.
+
+Fatal assertion            | Nonfatal assertion         | Verifies
+-------------------------- | -------------------------- | --------------------
+`ASSERT_TRUE(condition);`  | `EXPECT_TRUE(condition);`  | `condition` is true
+`ASSERT_FALSE(condition);` | `EXPECT_FALSE(condition);` | `condition` is false
+
+Remember, when they fail, `ASSERT_*` yields a fatal failure and returns from the current function, while `EXPECT_*` yields a nonfatal failure, allowing the function to continue running.
+In either case, an assertion failure means its containing test fails.
+
+### Binary Comparison
+This section describes assertions that compare two values.
+
+Fatal assertion          | Nonfatal assertion       | Verifies
+------------------------ | ------------------------ | --------------
+`ASSERT_EQ(val1, val2);` | `EXPECT_EQ(val1, val2);` | `val1 == val2`
+`ASSERT_NE(val1, val2);` | `EXPECT_NE(val1, val2);` | `val1 != val2`
+`ASSERT_LT(val1, val2);` | `EXPECT_LT(val1, val2);` | `val1 < val2`
+`ASSERT_LE(val1, val2);` | `EXPECT_LE(val1, val2);` | `val1 <= val2`
+`ASSERT_GT(val1, val2);` | `EXPECT_GT(val1, val2);` | `val1 > val2`
+`ASSERT_GE(val1, val2);` | `EXPECT_GE(val1, val2);` | `val1 >= val2`
 
 # gperftools
 - `pprof --base=./base.prof --text ./a.out new.prof`: 以base.prof 为基准来看new.prof
