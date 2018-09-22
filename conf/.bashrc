@@ -41,11 +41,13 @@ else
 	alias ll="ls -l"
 fi
 
-# enterprise
-export JAVA_HOME="~/opt/jdk/jdk1.7.0_45"
+# blade
 alias bb="blade build"
 alias bt="blade test"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
+
+# enterprise
+export JAVA_HOME="~/opt/jdk/jdk1.7.0_45"
 if [ -f ~/svn/trunk/thirdparty/perftools/bin/pprof ]
 then
 	alias pprof="~/svn/trunk/thirdparty/perftools/bin/pprof"

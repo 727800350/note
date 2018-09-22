@@ -74,6 +74,7 @@ cntl.request_attachment().append(writer.write(root));
 实际上, 应该任何格式的数据都可以, 只要server 端获得raw data, 然后按照商定好的格式解析就行了.
 
 # server
+[echo.proto](https://github.com/brpc/brpc/blob/master/example/echo_c%2B%2B/echo.proto)
 ```C++
 #include "echo.pb.h"
 
@@ -91,12 +92,18 @@ public:
 };
 ```
 Service在插入brpc.Server后才可能提供服务.
-当客户端发来请求时,Echo()会被调用.参数的含义分别是:
+当客户端发来请求时, Echo()会被调用. 参数的含义分别是:
 
 - controller: 在brpc中可以静态转为brpc::Controller(前提是代码运行brpc.Server中),包含了所有request和response之外的参数集合,具体接口查阅controller.h
 - request: 请求,只读的,来自client端的数据包.
 - response: 回复.需要用户填充,如果存在required字段没有被设置,该次调用会失败.
 - done: server 端的done 由框架创建,递给服务回调,包含了调用服务回调后的后续动作,包括检查response正确性,序列化,打包,发送等逻辑.
+
+可以用curl 来发起rpc 请求:
+
+1. 服务启动后, 会打出`Server[example::EchoServiceImpl] is serving on port=8000` 的日志, 说明是在8000 端口提供服务.
+1. 以json 的数据格式构造请求: `curl -H'Content-Type: application/json' -d '{"message" : "hello world"}' http://localhost:8000/EchoService/Echo`, json 中的字段名字为message 是因为`message EchoRequest` 中的字段名字为 message
+1. EchoService 只是把请求原样返回, 得到的结果: `{"message":"hello world"}`
 
 ### done detail
 不管成功失败,`done->Run()`必须在请求处理完成后被用户调用一次.
@@ -193,7 +200,7 @@ log_idle_connection_close   false   Print log when an idle connection is closed 
 虽然读比之前慢多了,但由于这类计数器的读多为低频的记录和展现,慢点无所谓.
 而写就快多了,极小的开销使得用户可以无顾虑地使用bvar监控系统,这便是我们设计bvar的目的.
 
-build
+# build
 
 1. `sh config_brpc.sh --headers=/usr/include --libs=/usr/lib`
 1. `make -j 4`
