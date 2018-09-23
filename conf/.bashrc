@@ -42,6 +42,7 @@ else
 fi
 
 # blade
+export BLADE_AUTO_UPGRADE="no"
 alias bb="blade build"
 alias bt="blade test"
 alias br="blade run"

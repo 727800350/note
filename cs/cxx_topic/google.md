@@ -35,6 +35,35 @@ Fatal assertion          | Nonfatal assertion       | Verifies
 `ASSERT_GT(val1, val2);` | `EXPECT_GT(val1, val2);` | `val1 > val2`
 `ASSERT_GE(val1, val2);` | `EXPECT_GE(val1, val2);` | `val1 >= val2`
 
+# gmock
+除宏或其它特别提到的之外所有Google Mock名称都位于testing命名空间之下
+```C++
+EXPECT_CALL(mock_object, method(matcher1, matcher2, ...))
+	.With(multi_argument_matcher)
+	.Times(cardinality)
+	.InSequence(sequences)
+	.After(expectations)
+	.WillOnce(action)
+	.WillRepeatedly(action)
+	.RetiresOnSaturation();
+```
+- `EXPECT_CALL`声明一个调用期待,就是我们期待这个对象的这个方法按什么样的逻辑去执行.
+- `mock_object`是我们mock的对象,上例中就是TestUser的一个对象.
+- Method是mock对象中的mock方法,它的参数可以通过matchers规则去匹配.
+- With是多个参数的匹配方式指定.
+- Times表示这个方法可以被执行多少次.
+- InSequence用于指定函数执行的顺序.它是通过同一序列中声明期待的顺序确定的.
+- After方法用于指定某个方法只能在另一个方法之后执行.
+- WillOnce表示执行一次方法时,将执行其参数action的方法.一般我们使用Return方法,用于指定一次调用的输出.
+- WillRepeatedly表示一直调用一个方法时,将执行其参数action的方法.需要注意下它和WillOnce的区别,WillOnce是一次,WillRepeatedly是一直.
+- RetiresOnSaturation用于保证期待调用不会被相同的函数的期待所覆盖
+
+```C++
+EXPECT_CALL(mock_user, Pay(_)).Times(3).WillOnce(Return(true)).WillOnce(Return(true)).WillRepeatedly(Return(false))
+```
+调用`mock_user`的Pay()方法, 这个方法会调用3次, 第1次被调用时返回true, 第2次被调用时返回true, 从第3次被调用返回false.
+如果想至少调用3次`Times(Atleaste(3))`
+
 # gperftools
 - `pprof --base=./base.prof --text ./a.out new.prof`: 以base.prof 为基准来看new.prof
 
