@@ -44,6 +44,7 @@ fi
 # blade
 alias bb="blade build"
 alias bt="blade test"
+alias br="blade run"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
 # enterprise
