@@ -64,6 +64,29 @@ EXPECT_CALL(mock_user, Pay(_)).Times(3).WillOnce(Return(true)).WillOnce(Return(t
 调用`mock_user`的Pay()方法, 这个方法会调用3次, 第1次被调用时返回true, 第2次被调用时返回true, 从第3次被调用返回false.
 如果想至少调用3次`Times(Atleaste(3))`
 
+`EXPECT_THAT`, `ASSERT_THAT` 可以在gtest 中丰富判断行为
+
+- `EXPECT_THAT(value, matcher)`: Asserts that value matches matcher
+- `ASSERT_THAT(value, matcher)`: Asserts that value matches matcher
+
+```C++
+ASSERT_THAT("hello world", testing::HasSubStr("world"));
+
+::std::set<int> page_ids;
+page_ids.insert(3);
+page_ids.insert(1);
+EXPECT_THAT(page_ids, testing::Contains(1));
+EXPECT_THAT(page_ids, testing::Contains(testing::Gt(2)));
+EXPECT_THAT(page_ids, testing::Not(testing::Contains(4)));
+
+::std::map<int, size_t> page_lengths;
+page_lengths[1] = 100;
+EXPECT_THAT(page_lengths, testing::Contains(::std::pair<const int, size_t>(1, 100)));
+
+const char* user_ids[] = { "joe", "mike", "tom" };
+EXPECT_THAT(user_ids, testing::Contains(testing::Eq(::std::string("tom"))));
+```
+
 # gperftools
 - `pprof --base=./base.prof --text ./a.out new.prof`: 以base.prof 为基准来看new.prof
 
@@ -280,6 +303,15 @@ debug
 
 - `string DebugString() const`: Generates a human readable form of this message, useful for debugging and other purposes.
 - `string ShortDebugString() const`: Like DebugString(), but with less whitespace.
+
+[TextFormat](https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.text_format)
+
+- `bool ParseFromString(const string &input, Message *output)`: Parses a text-format protocol message from the given input string(格式与 DebugString() 的输出一样) to the given message object.
+```C++
+#include <google/protobuf/text_format.h>
+// google::protobuf::Message 是一个abstract type
+bool ret = google::protobuf::TextFormat::ParseFromString(content, &message);
+```
 
 ## Encoding
 ### varint
