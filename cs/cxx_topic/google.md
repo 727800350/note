@@ -313,6 +313,16 @@ debug
 bool ret = google::protobuf::TextFormat::ParseFromString(content, &message);
 ```
 
+[Protobuf reflection](https://stackoverflow.com/questions/29960871/protobuf-message-object-creation-by-name)
+
+The C++ Protobuf library already maintains a pool of "descriptors" for all types compiled into the binary.
+The library also maintains an object that can be used to construct instances of any compiled-in type, given its descriptor:
+```C++
+google::Protobuf::Descriptor* desc = google::protobuf::DescriptorPool::generated_pool()->FindMessageTypeByName("mypkg.MyType");
+assert(desc != NULL);
+google::protobuf::Message* message = google::protobuf::MessageFactory::generated_factory()->GetPrototype(desc)->New();
+```
+
 ## Encoding
 ### varint
 Varints are a method of serializing integers using one or more bytes.
