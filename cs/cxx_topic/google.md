@@ -35,6 +35,11 @@ Fatal assertion          | Nonfatal assertion       | Verifies
 `ASSERT_GT(val1, val2);` | `EXPECT_GT(val1, val2);` | `val1 > val2`
 `ASSERT_GE(val1, val2);` | `EXPECT_GE(val1, val2);` | `val1 >= val2`
 
+浮点数
+
+- `ASSERT_FLOAT_EQ` and `ASSERT_DOUBLE_EQ`
+- `ASSERT_NEAR`: 浮点值接近(第3个参数为误差阈值)
+
 # gmock
 除宏或其它特别提到的之外所有Google Mock名称都位于testing命名空间之下
 ```C++
