@@ -43,10 +43,9 @@ fi
 
 # blade
 export BLADE_AUTO_UPGRADE="no"
-alias bb="blade build"
-alias bbn="blade build --no-debug-info"
-alias bt="blade test"
-alias br="blade run"
+alias bb="blade build --no-debug-info"
+alias bt="blade test --no-debug-info"
+alias br="blade run --no-debug-info"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
 # enterprise
