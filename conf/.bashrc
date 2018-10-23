@@ -5,6 +5,7 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 export PS1="[\u@\h:\W]\$ "
+export LC_CTYPE="en_US.UTF-8"
 
 ## bash use emacs by default, change it to vi
 set -o vi
