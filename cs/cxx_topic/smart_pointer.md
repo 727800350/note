@@ -20,6 +20,13 @@ std::unique_ptr<int[]> x(new int[5]);
 If two shared ptr are constructed (or made) from the same (non-shared ptr) pointer, they will both be owning the pointer without sharing it,
 causing potential access problems when one of them releases it (deleting its managed object) and leaving the other pointing to an invalid location.
 
+`std::enable_shared_from_this`
+
+- allows an object t that is currently managed by a `std::shared_ptr` named pt to safely generate additional `std::shared_ptr` instances pt1, pt2, ... that all share ownership of t with pt.
+- publicly inheriting from `std::enable_shared_from_this<T>` provides the type T with a member function `shared_from_this`.
+	If an object t of type T is managed by a `std::shared_ptr<T>` named pt, then calling `T::shared_from_this` will return a new `std::shared_ptr<T>` that shares ownership of t with pt.
+- 典型的使用场景: 当类A被`std::share_ptr`管理, 且在类A 的成员函数里需要把当前类对象作为参数传给其他函数时, 就需要传递一个指向自身的`std::share_ptr`
+
 # [weak ptr](http://www.cplusplus.com/reference/memory/weak_ptr)
 weak ptr, is able to share pointers with shared ptr objects without owning them.
 
