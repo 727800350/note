@@ -42,6 +42,11 @@ else
 	alias ll="ls -l"
 fi
 
+# java
+export JAVA_HOME="~/opt/jdk"
+export PATH="$PATH:${JAVA_HOME}/bin"
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+
 # blade
 export BLADE_AUTO_UPGRADE="no"
 alias bb="blade build --no-debug-info"
@@ -50,7 +55,6 @@ alias br="blade run --no-debug-info"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
 # enterprise
-export JAVA_HOME="~/opt/jdk/jdk1.7.0_45"
 if [ -f ~/svn/trunk/thirdparty/perftools/bin/pprof ]
 then
 	alias pprof="~/svn/trunk/thirdparty/perftools/bin/pprof"
