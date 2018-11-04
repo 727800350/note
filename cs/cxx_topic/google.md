@@ -1,7 +1,35 @@
 # glog
+- 当不对glog 初始化而直接使用LOG(level) 时, 日志会打印到stderr
+- 当初始化, 日志默认打印到/tmp 目录下, 文件名格式为: `<program name>.<hostname>.<user name>.log.<severity level>.<date>.<time>.<pid>`.
+	也可以使用设置临时环境变量的方式(给命令行参数加上 `GLOG_` 前缀),如 `GLOG_logtostderr=1 ./your_application` 将日志输出到 stderr
+- 如果有配套gflags 使用, 可以通过 gflags 的形式指定参数
+
+## 日志类型
 - `LOG(INFO), LOG(WARNING), LOG(ERROR), LOG(FATAL)`: info 是0, warning 是1, fatal 级别会出core
+- VLOG: 自定义日志, 需要通过 `--v` 选项来控制输出
+- DLOG: DEBUG模式可输出的日志
+
+## 条件日志
+- `LOG_IF(INFO, num_cookies > 10) << "Got lots of cookies";`: 当条件满足时输出日志
+- `LOG_EVERY_N(INFO, 10) << "Got the " << google::COUNTER << "th cookie";`: google::COUNTER 记录该语句被执行次数,从1开始,在第一次运行输出日志之后,每隔 10 次再输出一次日志信息
+- `LOG_IF_EVERY_N(INFO, (size > 1024), 10) << "Got the " << google::COUNTER << "th big cookie";`是先每隔 10 次去判断条件是否满足,如果滞则输出日志,而不是当满足某条件的情况下,每隔 10 次输出一次日志信息.
+- `LOG_FIRST_N(INFO, 20) << "Got the " << google::COUNTER << "th cookie";`: 当此语句执行的前 20 次都输出日志,然后不再输出
+
+## 控制选项
 - `--minloglevel=0`: 打印级别大于0的日志, 也就是INFO 及以上都会打印
 - `--v=0`: 默认不打印vlog, eg: `vlog(100) << "vlog"` 则需要 --v=100 才能打印出来, 还可以配合`--vmodule` 进行文件级别的控制
+- `--vmodule(string, default="")`: 分文件(不包括文件名后缀,支持通配符)设置自定义日志的可输出级别. 如果同时使用 `--v` 选项,将覆盖 `--v` 选项.
+	如:`--vmodule=server=2,client=3` 表示文件名为`server.*` 的只输出小于 2 的日志,文件名为 `client.*` 的只输出小于 3 的日志.
+- `--logbuflevel(int, default=0)`: 缓存小于或等于这个级别的日志信息. (-1表示不缓存; 0表示只缓存INFO级别日志; ...)
+- `--logbufsecs(int, default=30)`: 最多缓存这么多秒的日志信息.
+- `--log_backtrace_at=server_status_manager.cc:177`: 可以看到指定行的调用堆栈信息
+
+## CHECK 宏
+当通过该宏指定的条件不成立的时候,程序会中止,并且记录对应的日志信息.功能类似于ASSERT,区别是 CHECK 宏不受 NDEBUG 约束,在 release 版中同样有效.
+```C++
+CHECK(port == 80)<<"HTTP port 80 is not exit.";
+```
+其它还有: `CHECK_EQ, CHECK_NOTNULL, CHECK_STREQ, CHECK_DOUBLE_EQ` 等判断数字, 空指针, C字符串, 浮点数的 CHECK 宏, 需要使用时可以搜索 `glog/logging.h` 文件中以 `CHECK_` 开头的宏定义.
 
 # gflags
 - `DEFINE_bool`: boolean
