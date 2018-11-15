@@ -176,6 +176,12 @@
     <description>Time to sleep in between searches for work (in milliseconds). Used as sleep interval by service threads such as log roller.</description>
   </property>
 
+  <!-- flush -->
+  <property>
+    <name>hbase.hstore.flusher.count</name>
+    <value>4</value>
+    <description>The number of flush threads. With less threads, the memstore flushes will be queued.</description>
+  </property>
   <property>
     <name>hbase.hregion.memstore.flush.size</name>
     <value>134217728</value>
@@ -184,7 +190,7 @@
   <property>
     <name>hbase.hregion.percolumnfamilyflush.size.lower.bound</name>
     <value>16777216</value>
-    <description>If FlushLargeStoresPolicy is used, then every time that we hit the total memstore limit, we find out all the column families whose memstores exceed this value,
+    <description>16MB, If FlushLargeStoresPolicy is used(the default), then every time that we hit the total memstore limit, we find out all the column families whose memstores exceed this value,
       and only flush them, while retaining the others whose memstores are lower than this limit.
       If none of the families have their memstore size more than this, all the memstores will be flushed (just as usual).
       This value should be less than half of the total memstore threshold (hbase.hregion.memstore.flush.size).
@@ -192,52 +198,30 @@
   </property>
   <property>
     <name>hbase.hregion.memstore.block.multiplier</name>
-    <value>4</value>
+    <value>10</value>
     <description>Block updates if memstore has hbase.hregion.memstore.block.multiplier times hbase.hregion.memstore.flush.size bytes.</description>
   </property>
   <property>
     <name>hbase.hregion.memstore.mslab.enabled</name>
     <value>true</value>
-    <description>Enables the MemStore-Local Allocation Buffer, a feature which works to prevent heap fragmentation under heavy write loads.
-      This can reduce the frequency of stop-the-world GC pauses on large heaps.
-    </description>
+    <description>Enables the MemStore-Local Allocation Buffer(http://blog.cloudera.com/blog/2011/03/avoiding-full-gcs-in-hbase-with-memstore-local-allocation-buffers-part-3), a feature which works to prevent heap fragmentation under heavy write loads. This can reduce the frequency of stop-the-world GC pauses on large heaps.</description>
   </property>
   <property>
     <name>hbase.hregion.max.filesize</name>
     <value>10737418240</value>
-    <description>Maximum HStoreFile size. If any one of a column families' HStoreFiles has grown to exceed this value, the hosting HRegion is split in two.</description>
+    <description>10GB, Maximum HStoreFile size. If any one of a column families' HStoreFiles has grown to exceed this value, the hosting HRegion is split in two.</description>
   </property>
+
+  <!-- compaction -->
   <property>
-    <name>hbase.hregion.majorcompaction</name>
-    <value>604800000</value>
-    <description>The time (in miliseconds) between 'major' compactions of all HStoreFiles in a region. Default: Set to 7 days.
-      Major compactions tend to happen exactly when you need them least so enable them such that they run at off-peak for your deploy;
-      or, since this setting is on a periodicity that is unlikely to match your loading, run the compactions via an external invocation out of a cron job or some such.
-    </description>
+    <name>hbase.hstore.blockingStoreFiles</name>
+    <value>200</value>
+    <description>Updates are bloked until a compaction is completed or untilblockingWaitTime has been exceeded if any store of this region has more than this number of store files.</description>
   </property>
   <property>
     <name>hbase.hstore.compactionThreshold</name>
     <value>3</value>
-    <description>If more than this number of HStoreFiles in any one HStore (one HStoreFile is written per flush of memstore) then a compaction is run to rewrite all HStoreFiles files as one.
-      Larger numbers put off compaction but when it runs, it takes longer to complete.
-    </description>
-  </property>
-  <property>
-    <name>hbase.hstore.flusher.count</name>
-    <value>2</value>
-    <description>The number of flush threads. With less threads, the memstore flushes will be queued.</description>
-  </property>
-  <property>
-    <name>hbase.hstore.blockingStoreFiles</name>
-    <value>10</value>
-    <description>Updates are bloked until a compaction is completed or untilblockingWaitTime has been exceeded if any store of this region has more than this number of store files.</description>
-  </property>
-  <property>
-    <name>hbase.hstore.blockingWaitTime</name>
-    <value>90000</value>
-    <description>The time an HRegion will block updates for after hitting the StoreFile limit defined by hbase.hstore.blockingStoreFiles.
-      After this time has elapsed, the HRegion will stop blocking updates even if a compaction has not been completed.
-    </description>
+    <description>If more than this number of HStoreFiles in any one HStore,then a compaction is run to rewrite all HStoreFiles files as one</description>
   </property>
   <property>
     <name>hbase.hstore.compaction.max</name>
@@ -245,10 +229,20 @@
     <description>Max number of HStoreFiles to compact per 'minor' compaction.</description>
   </property>
   <property>
+    <name>hbase.regionserver.thread.compaction.small</name>
+    <value>5</value>
+    <description>'minor' compaction thread number</description>
+  </property>
+  <property>
+    <name>hbase.regionserver.thread.compaction.large</name>
+    <value>2</value>
+  </property>
+  <property>
     <name>hbase.hstore.compaction.kv.max</name>
     <value>10</value>
     <description>How many KeyValues to read and then write in a batch when flushing or compacting. Do less if big KeyValues and problems with OOME. Do more if wide, small rows.</description>
   </property>
+
   <property>
     <name>hbase.storescanner.parallel.seek.enable</name>
     <value>false</value>
@@ -260,25 +254,12 @@
   <property>
     <name>hfile.block.cache.size</name>
     <value>0.4</value>
-    <description>Percentage of maximum heap (-Xmx setting) to allocate to block cache used by HFile/StoreFile. Default of 0.4 means allocate 40%.
-        Set to 0 to disable but it's not recommended; you need at least enough cache to hold the storefile indices.
-    </description>
+    <description>Percentage of maximum heap (-Xmx setting) to allocate to block cache used by HFile/StoreFile. default 0.4. Set to 0 to disable but it's not recommended, you need at least enough cache to hold the storefile indices</description>
   </property>
   <property>
     <name>hfile.block.index.cacheonwrite</name>
     <value>false</value>
     <description>This allows to put non-root multi-level index blocks into the block cache at the time the index is being written.</description>
-  </property>
-  <property>
-    <name>hfile.index.block.max.size</name>
-    <value>131072</value>
-    <description>When the size of a leaf-level, intermediate-level, or root-level index block in a multi-level block index grows to this size,
-      the block is written out and a new block is started.
-    </description>
-  </property>
-  <property>
-    <name>hfile.format.version</name>
-    <value>3</value>
   </property>
 
   <!-- Coprocessor -->
@@ -290,8 +271,7 @@
   <property>
     <name>hbase.coprocessor.user.enabled</name>
     <value>true</value>
-    <description>Enables or disables user (aka. table) coprocessor loading. If 'false' (disabled), any table coprocessor attributes in table descriptors will be ignored.
-      If "hbase.coprocessor.enabled" is 'false' this setting has no effect.
+    <description>Enables or disables user (aka. table) coprocessor loading. If 'false' (disabled), any table coprocessor attributes in table descriptors will be ignored. If "hbase.coprocessor.enabled" is 'false' this setting has no effect.
     </description>
   </property>
   <property>
