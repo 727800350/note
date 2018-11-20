@@ -153,7 +153,8 @@ By default, all members of a class are private. 结构体的成员默认是publi
 const对象不能调用非const函数
 
 # Virtual Function
-Once a function is declared as virtual, it remains virtual in all the dervied classes. 既不需要在dervied class 中显式指定virtual
+- Once a function is declared as virtual, it remains virtual in all the dervied classes. 既不需要在dervied class 中显式指定virtual
+- 虚函数不能定义为内联函数, inline是在编译器将函数类容替换到函数调用处, 是静态编译的, 而虚函数是动态调用的, 在编译器并不知道需要调用的是父类还是子类的虚函数, 所以不能够inline声明展开, 所以编译器会忽略
 
 [C++类内存分布(非常重要)](https://www.cnblogs.com/jerry19880126/p/3616999.html)
 
