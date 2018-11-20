@@ -176,7 +176,7 @@
     <description>Time to sleep in between searches for work (in milliseconds). Used as sleep interval by service threads such as log roller.</description>
   </property>
 
-  <!-- flush -->
+  <!-- flush ref: https://community.hortonworks.com/articles/184892/tuning-hbase-for-optimized-performance-part-1.html -->
   <property>
     <name>hbase.hstore.flusher.count</name>
     <value>4</value>
@@ -184,13 +184,15 @@
   </property>
   <property>
     <name>hbase.hregion.memstore.flush.size</name>
-    <value>134217728</value>
-    <description>Memstore will be flushed if size of the memstore exceeds this number of bytes. Value is checked by a thread that runs every hbase.server.thread.wakefrequency.</description>
+    <value>268435456</value>
+    <description>256MB, Memstore will be flushed if size of the memstore exceeds this number of bytes. Value is checked by a thread that runs every hbase.server.thread.wakefrequency.
+        默认情况下, 一个region 下任意一个memstore 达到了flush 的条件, 这个region 的所有memstore 都会flush, 除非下面说的情况.
+    </description>
   </property>
   <property>
     <name>hbase.hregion.percolumnfamilyflush.size.lower.bound</name>
-    <value>16777216</value>
-    <description>16MB, If FlushLargeStoresPolicy is used(the default), then every time that we hit the total memstore limit, we find out all the column families whose memstores exceed this value,
+    <value>104857600</value>
+    <description>100MB, If FlushLargeStoresPolicy is used(the default), then every time that we hit the total memstore limit, we find out all the column families whose memstores exceed this value,
       and only flush them, while retaining the others whose memstores are lower than this limit.
       If none of the families have their memstore size more than this, all the memstores will be flushed (just as usual).
       This value should be less than half of the total memstore threshold (hbase.hregion.memstore.flush.size).
@@ -199,7 +201,7 @@
   <property>
     <name>hbase.hregion.memstore.block.multiplier</name>
     <value>10</value>
-    <description>Block updates if memstore has hbase.hregion.memstore.block.multiplier times hbase.hregion.memstore.flush.size bytes.</description>
+    <description>Block updates on this column family if its memstore > hbase.hregion.memstore.block.multiplier * hbase.hregion.memstore.flush.size bytes.</description>
   </property>
   <property>
     <name>hbase.hregion.memstore.mslab.enabled</name>
