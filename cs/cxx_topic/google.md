@@ -27,9 +27,15 @@
 ## CHECK 宏
 当通过该宏指定的条件不成立的时候,程序会中止,并且记录对应的日志信息.功能类似于ASSERT,区别是 CHECK 宏不受 NDEBUG 约束,在 release 版中同样有效.
 ```C++
-CHECK(port == 80)<<"HTTP port 80 is not exit.";
+CHECK(port == 80) << "HTTP port 80 is not exit.";
 ```
-其它还有: `CHECK_EQ, CHECK_NOTNULL, CHECK_STREQ, CHECK_DOUBLE_EQ` 等判断数字, 空指针, C字符串, 浮点数的 CHECK 宏, 需要使用时可以搜索 `glog/logging.h` 文件中以 `CHECK_` 开头的宏定义.
+
+- `CHECK_NOTNULL`
+- `CHECK_EQ, CHECK_NE, CHECK_LE, CHECK_LT, CHECK_GE, and CHECK_GT`
+- `CHECK_STREQ, CHECK_STRNE, CHECK_STRCASEEQ, and CHECK_STRCASENE`
+- `CHECK_DOUBLE_EQ`
+
+`glog/logging.h` 文件中以 `CHECK_` 开头的宏定义.
 
 # gflags
 - `DEFINE_bool`: boolean
@@ -125,77 +131,12 @@ EXPECT_THAT(user_ids, testing::Contains(testing::Eq(::std::string("tom"))));
 
 ## cpu profiler
 You can change the sampling frequency with the `CPUPROFILE_FREQUENCY` environment variable. Default value: 100
-```C++
-#include <gperftools/profiler.h>
-
-void func1(){
-	int i = 0;
-	while(i < 100000){
-		++i;
-	}
-}
-
-void func2() {
-	int i = 0;
-	while(i < 200000){
-		++i;
-	}
-}
-
-int main(){
-	ProfilerStart("my.prof");
-	for(int i = 0; i < 1000; ++i){
-		func1();
-		func2();
-	}
-	ProfilerStop();
-	return 0;
-}
-
-g++ -std=c++11 -g -Wall test.cpp -lprofiler
-google-pprof --text ./a.out my.prof // 二进制的命令老版本为 pprof
-google-pprof --pdf ./a.out my.prof >output.pdf
-```
 
 ## heap profiler
 - Figuring out what is in the program heap at any given time
 - Locating memory leaks
 - Finding places that do a lot of allocation
 
-```C++
-#include <string>
-#include <gperftools/heap-profiler.h>
-
-void f(){
-	char *buffer = new char[1 * 1024 * 1024];
-}
-
-void f1(){
-	char *buffer = new char[1 * 1024 * 1024];
-	f();
-}
-
-void f2(){
-	char *buffer = new char[2 * 1024 * 1024];
-}
-
-int main(int argc, char* argv[]){
-	HeapProfilerStart("heap");
-	for(int i = 0; i < 10; ++i){
-		if(i % 2 == 0){
-			f1();
-		}
-		else{
-			f2();
-		}
-		std::string info = "loop " + std::to_string(i);
-		HeapProfilerDump(info.c_str());
-	}
-	HeapProfilerStop();
-
-	return 0;
-}
-```
 下面是一个文字输出样例
 ```
 [root@dev:git]$ ./a.out
