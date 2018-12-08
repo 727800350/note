@@ -1,10 +1,8 @@
 # hbase shell
 [HBase shell commands](https://learnhbase.net/2013/03/02/hbase-shell-commands)
 
-shell 启动时默认选择 `$HBASE_HOME` 中的配置目录.
-如果要访问其他集群, 新建包含其他集群的 hbase-site.xml 文件的单独目录, 配置hbase.zookeeper.quorum 属性指定另外一个集群, 然后用 `$ HBASE_CONF_DIR="<your-other-config-dir>/" bin/hbase shell` 来启动.
-注意: 必须指定完整的目录, 而不仅仅是 hbase-site.xml 文件
-
+- shell 启动时默认选择 `$HBASE_HOME` 中的配置目录.
+	如果要访问其他集群, 新建包含其他集群的 hbase-site.xml 文件的单独目录, 配置hbase.zookeeper.quorum 属性指定另外一个集群, 然后用 `$ HBASE_CONF_DIR="<your-other-config-dir>/" bin/hbase shell` 来启动.
 - 可以用tab 键提示自动补全
 - debug 来切换调试模式
 - 命令行支持 二进制, 八进制, 十六进制的输入输出.
@@ -90,9 +88,7 @@ Took 0.4914 seconds
 - `./bin/hbase org.apache.hadoop.hbase.io.hfile.HFile`: hfile 查看工具
 - `./bin/hbase hbck`: 功能由class HBaseFsck 来实现, hbck 工具会扫描 `.META` 表来收集其持有的所有相关信息, 还会扫描HBase 使用的 HDFS 的root 目录.
 
-[bulk load](https://blog.cloudera.com/blog/2013/09/how-to-use-hbase-bulk-loading-and-why)
-`./bin/hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles hfile_dir table_name`
-
+- [bulk load](https://blog.cloudera.com/blog/2013/09/how-to-use-hbase-bulk-loading-and-why): `./bin/hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles hfile_dir table_name`
 	- 表需要在HBase 中提前建好
 	- hfile dir 需要按照 column family 布局好, 但是不要求不同region 的同一个column family 也提前分割到不同的文件, [导入的过程中hbase 会自动进行split](http://photo.weibo.com/5652735758/photos/large/photo_id/4314927866205193/album_id/4314927492922430)
 
@@ -113,6 +109,35 @@ zookeeper
 - `hbase.zookeeper.quorum`: Zookeeper集群的地址列表,用逗号分割.例如:"host1.mydomain.com,host2.mydomain.com,host3.mydomain.com". 默认是localhost,是给伪分布式用的.
 - `hbase.zookeeper.property.dataDir`: ZooKeeper的zoo.conf中的配置. 快照的存储位置, 默认: `${hbase.tmp.dir}/zookeeper`
 - `hbase.zookeeper.property.clientPort`: ZooKeeper的zoo.conf中的配置. 客户端连接的端口, 默认: 2181
+
+# pseudo-distributed 部署
+单机部署一个master, 三个region server
+
+1. 先按照单机模式配置
+
+	```xml
+	  <property>
+	    <name>hbase.rootdir</name>
+	    <value>file:///data/hbase/data</value>
+	  </property>
+	  <property>
+	    <name>hbase.zookeeper.property.dataDir</name>
+	    <value>/data/zookeeper</value>
+	  </property>
+	  <property>
+	    <name>hbase.cluster.distributed</name>
+	    <value>false</value>
+	  </property>
+	```
+
+1. 启动单机的hbase `./bin/start-hbase.sh`, 一个master, 一个region server, zookeeper 一起启动
+1. 然后修改配置, 将 `hbase.cluster.distributed` 设置为true
+1. 额外启动两个region servers, `./bin/local-regionservers.sh start 1 2`, 在master 的监控页面上可以看到一共有三个region server
+
+关闭的时候需要逆着来操作
+
+1. `./bin/local-regionservers.sh stop 1 2`
+1. 然后再将配置的 `hbase.cluster.distributed  改回false, 再 `./bin/stop-hbase.sh`
 
 # JRuby
 `./bin/hbase org.jruby.Main ./hbase-shell-status-2.rb`
