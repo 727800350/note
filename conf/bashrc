@@ -48,13 +48,13 @@ fi
 
 # blade
 export BLADE_AUTO_UPGRADE="no"
-alias bb="blade build"
-alias bt="blade test"
-alias br="blade run"
-alias nbb="blade build --no-debug-info"
-alias nbt="blade test --no-debug-info"
-alias nbr="blade run --no-debug-info"
+alias bb="blade build --no-debug-info"
+alias bt="blade test --no-debug-info"
+alias br="blade run --no-debug-info"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
+
+## java
+export JAVA_HOME="$HOME/opt/jdk"
 
 # enterprise
 if [ -f ~/svn/trunk/thirdparty/perftools/bin/pprof ]
