@@ -11,6 +11,9 @@ method=$1
 shift 1
 list=$@
 
+ip=`ifconfig | grep inet | grep -v "127.0.0.1" | awk '{print $2}'`
+host=`hostname`
+
 if [ "x$method" = "xlocal" ]
 then
 	for target in $list
@@ -21,13 +24,13 @@ elif [ "x$method" = "xftp" ]
 then
 	for target in $list
 	do
-		echo "ftp://`hostname`:`pwd`/${target}"
+		echo "ftp://$host:`pwd`/${target}"
 	done
 elif [ "x$method" = "xssh" ]
 then
 	for target in $list
 	do
-		echo "`whoami`@`hostname`:`pwd`/${target}"
+		echo "`whoami`@$host:`pwd`/${target}"
 	done
 else
 	echo "${method} not supported" >&2
