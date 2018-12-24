@@ -11,7 +11,7 @@ method=$1
 shift 1
 list=$@
 
-ip=`ifconfig | grep inet | grep -v "127.0.0.1" | awk '{print $2}'`
+ip=`ifconfig | grep inet | grep -v "127.0.0.1" | awk '{print $2}' | awk -F ":" '{print $NF}'`
 host=`hostname`
 
 if [ "x$method" = "xlocal" ]
