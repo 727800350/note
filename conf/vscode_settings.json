@@ -1,9 +1,10 @@
 {
-    "workbench.iconTheme": "vscode-icons",
     "editor.tabSize": 2,
+    "java.home": "/Library/Java/JavaVirtualMachines/jdk1.8.0_192.jdk/Contents/Home/",
     "vsicons.dontShowNewVersionMessage": true,
-    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "window.nativeTabs": true,
     "workbench.editor.enablePreview": false,
-    "java.home": "/Library/Java/JavaVirtualMachines/jdk1.8.0_192.jdk/Contents/Home/"
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.iconTheme": "vscode-icons"
 }
 
