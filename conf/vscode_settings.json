@@ -3,5 +3,7 @@
     "editor.tabSize": 2,
     "vsicons.dontShowNewVersionMessage": true,
     "workbench.editor.enablePreviewFromQuickOpen": false,
-    "workbench.editor.enablePreview": false
+    "workbench.editor.enablePreview": false,
+    "java.home": "/Library/Java/JavaVirtualMachines/jdk1.8.0_192.jdk/Contents/Home/"
 }
+
