@@ -4,7 +4,7 @@
     "command": "workbench.action.gotoLine"
   },
   {
-    "key": "ctrl+g;",
+    "key": "ctrl+g",
     "command": "-workbench.action.gotoLine"
   },
 	{
