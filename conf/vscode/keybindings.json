@@ -1,0 +1,27 @@
+[
+  {
+    "key": "shift+;",
+    "command": "workbench.action.gotoLine"
+  },
+  {
+    "key": "ctrl+g;",
+    "command": "-workbench.action.gotoLine"
+  },
+	{
+    "key": "ctrl+[",
+    "command": "workbench.action.navigateBack"
+  },
+  {
+    "key": "ctrl+-",
+    "command": "-workbench.action.navigateBack"
+  },
+  {
+    "key": "ctrl+]",
+    "command": "workbench.action.navigateForward"
+  },
+  {
+    "key": "ctrl+shift+-",
+    "command": "-workbench.action.navigateForward"
+  }
+]
+
