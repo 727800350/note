@@ -1,6 +1,12 @@
 {
     "C_Cpp.errorSquiggles": "Disabled",
     "editor.tabSize": 2,
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
     "java.autobuild.enabled": false,
     "java.configuration.updateBuildConfiguration": "disabled",
     "java.debug.settings.forceBuildBeforeLaunch": false,
