@@ -1,5 +1,29 @@
 ref: [c++中的左值与右值](https://www.cnblogs.com/catch/p/3500678.html)
 
+## `auto&&`
+[What does auto&& tell us?](https://stackoverflow.com/questions/13230480/what-does-auto-tell-us)
+
+By using `auto&& var = <initializer>` you are saying: I will accept any initializer regardless of whether it is an lvalue or rvalue expression and I will preserve its constness.
+This is typically used for forwarding (usually with `T&&`). The reason this works is because a "universal reference", `auto&&` or `T&&`, will bind to anything.
+
+`const auto&` will also bind to anything. The difference is that it's const! You won't be able to later bind it to any non-const references or invoke any member functions that are not marked const.
+
+As an example, imagine that you want to get a std::vector, take an iterator to its first element and modify the value pointed to by that iterator in some way:
+
+```C++
+auto&& vec = some_expression_that_may_be_rvalue_or_lvalue;
+auto i = std::begin(vec);
+(*i)++;
+```
+This code will compile just fine regardless of the initializer expression. The alternatives to auto&& fail in the following ways:
+
+```C++
+auto         => will copy the vector, but we wanted a reference
+auto&        => will only bind to modifiable lvalues
+const auto&  => will bind to anything but make it const, giving us const_iterator
+const auto&& => will bind only to rvalues
+```
+
 ## 左值右值的定义
 ```C++
 int a;
