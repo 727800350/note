@@ -61,6 +61,9 @@ memory_order_seq_cst
 - `std::atomic<T>` guarantees that accesses to the variable will be atomic. It however does not says how is the atomicity achieved. It can be using lock-free variable, or using a lock. The actual implementation depends on your target architecture and the type T.
 - `std::atomic_flag` on the other hand is guaranteed to be implemented using a lock-free technique.
 
+当发生访问资源冲突的时候, 可以有两个选择: 一个是死等, 一个是挂起当前进程, 调度其他进程执行.
+spin lock是一种死等的机制, 当前的执行thread会不断的重新尝试直到获取锁进入临界区.
+
 ```C++
 // atomic_flag as a spinning lock
 #include <iostream>			 // std::cout
