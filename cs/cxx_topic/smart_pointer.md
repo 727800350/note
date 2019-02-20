@@ -36,7 +36,7 @@ The way to avoid this problem is to use the class template `enable_shared_from_t
 class S : std::enable_shared_from_this<S>{
 public:
   std::shared_ptr<S> not_dangerous(){
-    return std::shared_from_this();
+	return std::shared_from_this();
   }
 };
 
@@ -50,9 +50,62 @@ When you do this, keep in mind that the object on which you call `shared_from_th
 ```C++
 int main(){
    S *p = new S;
-   std::shared_ptr<S> sp2 = p->not_dangerous();     // don't do this
+   std::shared_ptr<S> sp2 = p->not_dangerous();	 // don't do this
 }
 ```
+
+## [借`shared_ptr`实现copy-on-write](https://blog.csdn.net/q5707802/article/details/79261515)
+在<Linux多线程服务端编程使用muduoC++网络库>2.8节说"借`shared_ptr`实现copy-on-write". 那么copy-on-write是怎样的技术?
+COW(Copy-On-Write)通过浅拷贝(shallow copy)只复制引用而避免复制值,当的确需要进行写入操作时,首先进行值拷贝,再对拷贝后的值执行写入操作,这样减少了无谓的复制耗时.
+
+特点如下:
+
+- 读取安全(但是不保证缓存一致性),写入安全(代价是加了锁,而且需要全量复制)
+- 不建议用于频繁读写场景下,全量复制很容易造成GC停顿.
+- 适用于对象空间占用大,修改次数少,而且对数据实效性要求不高的场景.
+
+这里的安全指在进行读取或者写入的过程中,数据不被修改.
+
+copy-on-write最擅长的是并发读取场景,即多个线程/进程可以通过对一份相同快照,去处理实效性要求不是很高但是仍然要做的业务,如Unix下的fork()系统调用,标准C++类std::string等采用了 copy-on-write,在真正需要一个存储空间时才去分配内存,这样会极大地降低程序运行时的内存开销.
+
+Copy-On-Write的原理:Copy-On-Write使用了"引用计数(retainCount)"的机制(在Objective-C和Java中有应用).
+
+COW技术的精髓:
+
+1. 如果你是数据的唯一拥有者,那么你可以直接修改数据.
+1. 如果你不是数据的唯一拥有者,那么你拷贝它之后再修改.
+
+shared_ptr是采用引用计数方式的智能指针,如果当前只有一个观察者,则其引用计数为1,可以通过shared_ptr::unique()判断.
+用shared_ptr来实现COW时,主要考虑两点:(1)读数据  (2)写数据
+
+通过shared_ptr实现copy-on-write的原理如下:
+
+1. read端在读之前,创建一个新的智能指针指向原指针,这个时候引用计数加1,读完将引用计数减1,这样可以保证在读期间其引用计数大于1,可以阻止并发写.
+	```C++
+	// 假设g_ptr是一个全局的shared_ptr<Foo>并且已经初始化.
+	void read(){
+		shared_ptr<Foo> tmpptr;
+		{
+			lock();
+			tmpptr = g_ptr; // 此时引用计数为2,通过gdb调试可以看到
+		}
+		// read
+	}
+	```
+这部分是shared_ptr最基本的用法,还是很好理解的,read()函数调用结束,tmpptr作为栈上变量离开作用域,自然析构,原数据对象的引用计数也变为1.
+
+2. write端在写之前,先检查引用计数是否为1. 如果引用计数为1,则你是数据的唯一拥有者,直接修改; 如果引用计数大于1,则你不是数据的唯一拥有者,还有其它拥有者, 此时数据正在被其它拥有者read,则不能再原来的数据上并发写,应该创建一个副本,并在副本上修改,然后用副本替换以前的数据. 这就需要用到一些shared_ptr的编程技法了:
+	```C++
+	void write(){
+		lock()
+		if(!g_ptr.unique())
+		{
+			g_ptr.reset(new Foo(*g_ptr));
+		}
+		assert(g_ptr.unique());
+		// write
+	}
+	```
 
 # [weak ptr](http://www.cplusplus.com/reference/memory/weak_ptr)
 weak ptr, is able to share pointers with shared ptr objects without owning them.
