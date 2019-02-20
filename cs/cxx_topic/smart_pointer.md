@@ -14,11 +14,18 @@ std::unique_ptr<int[]> x(new int[5]);
 ```
 
 # [shared ptr](http://www.cplusplus.com/reference/memory/shared_ptr)
-- For multiple users of one pointer/object
-- Refcountered, useful but over-used. 所以尽量不要使用
-
 If two shared ptr are constructed (or made) from the same (non-shared ptr) pointer, they will both be owning the pointer without sharing it,
 causing potential access problems when one of them releases it (deleting its managed object) and leaving the other pointing to an invalid location.
+
+```C++
+auto sp1 = std::make_shared<int>(1);
+auto sp2 = sp1;
+auto sp3 = std::make_shared<int>(2);
+fprintf(stdout, "%d %d %d\n", *sp1, *sp2, *sp3); // 1 1 2
+sp1.swap(sp3);
+fprintf(stdout, "%d %d %d\n", *sp1, *sp2, *sp3); // 2 1 1
+```
+swap 仅仅是交换了sp1 和 sp3 的指向, sp2 没有发生变化, 还是指向原来的1
 
 ## [`std::enable_shared_from_this`](https://stackoverflow.com/questions/712279/what-is-the-usefulness-of-enable-shared-from-this)
 allows an object t(裸指针) that is currently managed by a `std::shared_ptr` named pt to safely generate additional `std::shared_ptr` instances pt1, pt2, ... that all share ownership of t with pt.
@@ -94,7 +101,9 @@ shared_ptr是采用引用计数方式的智能指针,如果当前只有一个观
 	```
 这部分是shared_ptr最基本的用法,还是很好理解的,read()函数调用结束,tmpptr作为栈上变量离开作用域,自然析构,原数据对象的引用计数也变为1.
 
-2. write端在写之前,先检查引用计数是否为1. 如果引用计数为1,则你是数据的唯一拥有者,直接修改; 如果引用计数大于1,则你不是数据的唯一拥有者,还有其它拥有者, 此时数据正在被其它拥有者read,则不能再原来的数据上并发写,应该创建一个副本,并在副本上修改,然后用副本替换以前的数据. 这就需要用到一些shared_ptr的编程技法了:
+2. write端在写之前,先检查引用计数是否为1. 如果引用计数为1,则你是数据的唯一拥有者,直接修改; 
+如果引用计数大于1,则你不是数据的唯一拥有者,还有其它拥有者, 此时数据正在被其它拥有者read,则不能再原来的数据上并发写,应该创建一个副本,并在副本上修改,然后用副本替换以前的数据.
+这就需要用到一些shared_ptr的编程技法了(注意需要注意不能有weak_ptr, 否则引用计数即使是1, 也可能有其他地方可能正在读):
 	```C++
 	void write(){
 		lock()
@@ -107,10 +116,12 @@ shared_ptr是采用引用计数方式的智能指针,如果当前只有一个观
 	}
 	```
 假设一个线程读,一个线程写,当写线程进入到if循环中时,原对象的引用计数为2,分别为tmpptr和g_ptr,此时reset()函数将原对象的引用计数减1,并且g_ptr已经指向了新的对象(用原对象构造),这样就完成了数据的拷贝,并且原对象还在,只是引用计数变成了1.
+
 注意,reset()函数仅仅只是将原对象的引用计数减1,并没有将原对象析构,当原对象的引用计数为0时才会被析构.
 
 # [weak ptr](http://www.cplusplus.com/reference/memory/weak_ptr)
-weak ptr, is able to share pointers with shared ptr objects without owning them.
+- weak ptr, is able to share pointers with shared ptr objects without owning them.
+- 尽量不要使用
 
 C++ Primer 中讲解为什么需要weak pointer 不是很清楚, blog [C++11智能指针之weak ptr](http://blog.csdn.net/Xiejingfa/article/details/50772571) 从一个循环引用的例子来开篇, 间接解释了为什么需要weak pointer.
 
