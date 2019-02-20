@@ -106,6 +106,8 @@ shared_ptr是采用引用计数方式的智能指针,如果当前只有一个观
 		// write
 	}
 	```
+假设一个线程读,一个线程写,当写线程进入到if循环中时,原对象的引用计数为2,分别为tmpptr和g_ptr,此时reset()函数将原对象的引用计数减1,并且g_ptr已经指向了新的对象(用原对象构造),这样就完成了数据的拷贝,并且原对象还在,只是引用计数变成了1.
+注意,reset()函数仅仅只是将原对象的引用计数减1,并没有将原对象析构,当原对象的引用计数为0时才会被析构.
 
 # [weak ptr](http://www.cplusplus.com/reference/memory/weak_ptr)
 weak ptr, is able to share pointers with shared ptr objects without owning them.
