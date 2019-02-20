@@ -20,12 +20,39 @@ std::unique_ptr<int[]> x(new int[5]);
 If two shared ptr are constructed (or made) from the same (non-shared ptr) pointer, they will both be owning the pointer without sharing it,
 causing potential access problems when one of them releases it (deleting its managed object) and leaving the other pointing to an invalid location.
 
-`std::enable_shared_from_this`
+## [`std::enable_shared_from_this`](https://stackoverflow.com/questions/712279/what-is-the-usefulness-of-enable-shared-from-this)
+allows an object t(裸指针) that is currently managed by a `std::shared_ptr` named pt to safely generate additional `std::shared_ptr` instances pt1, pt2, ... that all share ownership of t with pt.
 
-- allows an object t that is currently managed by a `std::shared_ptr` named pt to safely generate additional `std::shared_ptr` instances pt1, pt2, ... that all share ownership of t with pt.
-- publicly inheriting from `std::enable_shared_from_this<T>` provides the type T with a member function `shared_from_this`.
-	If an object t of type T is managed by a `std::shared_ptr<T>` named pt, then calling `T::shared_from_this` will return a new `std::shared_ptr<T>` that shares ownership of t with pt.
-- 典型的使用场景: 当类A被`std::share_ptr`管理, 且在类A 的成员函数里需要把当前类对象作为参数传给其他函数时, 就需要传递一个指向自身的`std::share_ptr`
+code like this won't work correctly:
+```C++
+int *ip = new int;
+std::shared_ptr<int> sp1(ip);
+std::shared_ptr<int> sp2(ip);
+```
+Neither of the two `shared_ptr` objects knows about the other, so both will try to release the resource when they are destroyed. That usually leads to problems.
+
+The way to avoid this problem is to use the class template `enable_shared_from_this`. The template takes one template type argument, which is the name of the class that defines the managed resource. That class must, in turn, be derived publicly from the template; like this:
+```C++
+class S : std::enable_shared_from_this<S>{
+public:
+  std::shared_ptr<S> not_dangerous(){
+    return std::shared_from_this();
+  }
+};
+
+int main(){
+   std::shared_ptr<S> sp1(new S);
+   std::shared_ptr<S> sp2 = sp1->not_dangerous();
+   return 0;
+}
+```
+When you do this, keep in mind that the object on which you call `shared_from_this` must be owned by a `shared_ptr` object. This won't work:
+```C++
+int main(){
+   S *p = new S;
+   std::shared_ptr<S> sp2 = p->not_dangerous();     // don't do this
+}
+```
 
 # [weak ptr](http://www.cplusplus.com/reference/memory/weak_ptr)
 weak ptr, is able to share pointers with shared ptr objects without owning them.
