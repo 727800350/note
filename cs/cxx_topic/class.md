@@ -23,6 +23,14 @@ eB = eA;                         // assignment operator(assign to an existing ob
 Empty eC = eA;                   // copy constructor(creating a new object)
 ```
 
+## operator=
+赋值运算符(`operator=`)返回类型一般声明为类型的引用, 并在函数结尾时返回实例自身的引用(即`*this`).这里主要有两个原因:
+
+1. 返回引用可以减少一次拷贝构造和析构函数导致不必要的开销,因为如果返回值类型不是引用,会创建一个匿名对象,这个匿名对象时个右值,获取return的值.
+1. 可以实现连续赋值, 在例子中 `b = c = a;`, 运算顺序 `b = (c = a);` 返回值不是引用类型也是可以的, c得到一个右值,再将右值赋给b,所以逻辑上没有问题的.
+	但是如果是 `(b = c) = a;` 这里将会出错,`b = c`后b是一个右值,所以`b = a`时将会出错.
+
+## copy contructor
 The copy constructor should have one of the following forms:
 
 - `MyClass(const MyClass &);`
@@ -32,7 +40,7 @@ The copy constructor should have one of the following forms:
 
 copy constructor 必须以引用的方式传递参数.
 因为,在值传递的方式传递给一个函数的时候,会调用拷贝构造函数生成函数的实参.如果拷贝构造函数的参数仍然是以值的方式,就会无限循环的调用下去,直到函数的栈溢出.
-拷贝构造函数使用传入对象的值生成一个新的对象的实例,而赋值运算符是将对象的值复制给一个已经存在的实例.
+**拷贝构造函数使用传入对象的值生成一个新的对象的实例,而赋值运算符是将对象的值复制给一个已经存在的实例**.
 
 ```C++
 Empty f1(const Empty &e){
@@ -80,6 +88,9 @@ public:
 	}
 
 	Complx & operator=(const Complx &c){
+		if(this == &c){
+			return *this;
+		}
 		real = c.real;
 		imag = c.imag;
 		return *this;
