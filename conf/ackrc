@@ -1,1 +1,3 @@
 --type-set=protobuf=.proto
+--type-set=conf=.conf
+--type-set=flags=.flags
