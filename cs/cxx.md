@@ -122,6 +122,27 @@ INT_MAX, INT_MIN
 	```
 
 - [std::map](http://www.cplusplus.com/reference/map/map/): map内部实现了一个红黑树,该结构具有自动排序的功能,因此map内部的所有元素都是有序的.
+
+	```C++
+	struct Server {
+		std::string ip;
+		int port;
+	};
+
+	// 对于自定义的Compare, 需要满足strict weak ordering, 只有当left < right 时返回true
+	// The map object uses this expression to determine both the order the elements follow in the container and whether two element keys are equivalent (by comparing them reflexively: they are equivalent if !comp(a, b) && !comp(b, a)).
+	struct ServerCompare {
+		bool operator()(const Server* left, const Server* right) const {
+			if (left != right) {
+				return left->ip < right->ip < 0;
+			}
+			return false;
+		}
+	};
+
+	std::map<const Server*, int, ServerCompare> map;
+	```
+
 - [std::stack](http://www.cplusplus.com/reference/stack/stack): 栈
 - [std::queue](http://www.cplusplus.com/reference/queue/queue): 队列
 	- pop: This calls the removed element's destructor
