@@ -18,6 +18,7 @@
     "python.workspaceSymbols.rebuildOnFileSave": false,
     "vsicons.dontShowNewVersionMessage": true,
     "window.nativeTabs": true,
+    "window.zoomLevel": 0,
     "workbench.editor.enablePreview": false,
     "workbench.editor.enablePreviewFromQuickOpen": false,
     "workbench.iconTheme": "vscode-icons"

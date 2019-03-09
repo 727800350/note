@@ -104,44 +104,13 @@ INT_MAX, INT_MIN
 	- [vector push back operation demo](../demo/cxx/stl/vector-push_back.cpp)
 
 - [std::list](http://www.cplusplus.com/reference/list/list): implemented as doubly-linked lists
-- [std::unordered map](http://www.cplusplus.com/reference/unordered_map/unordered_map): unordered map 内部实现了一个哈希表, 因此其元素的排列顺序是杂乱的, 无序的. [自定义key 和value](../demo/cxx/stl/unordered_map_customized_key.cpp)
 
-	```C++
-	// 将整个container 作为一个整体:
-	for(auto it = mymap.begin(); it != mymap.end(); ++it){
-		std::cout << " " << it->first << ":" << it->second << std::endl;
-	}
-
-	// 分bucket单独遍历:
-	std::cout << "mymap's buckets contain:\n";
-	for(unsigned i = 0;i < mymap.bucket_count(); ++i){
-		for(auto local_it = mymap.begin(i); local_it!= mymap.end(i); ++local_it ){
-			std::cout << " " << local_it->first << ":" << local_it->second << std::endl;
-		}
-	}
-	```
-
-- [std::map](http://www.cplusplus.com/reference/map/map/): map内部实现了一个红黑树,该结构具有自动排序的功能,因此map内部的所有元素都是有序的.
-
-	```C++
-	struct Server {
-		std::string ip;
-		int port;
-	};
-
-	// 对于自定义的Compare, 需要满足strict weak ordering, 只有当left < right 时返回true
-	// The map object uses this expression to determine both the order the elements follow in the container and whether two element keys are equivalent (by comparing them reflexively: they are equivalent if !comp(a, b) && !comp(b, a)).
-	struct ServerCompare {
-		bool operator()(const Server* left, const Server* right) const {
-			if (left != right) {
-				return left->ip < right->ip < 0;
-			}
-			return false;
-		}
-	};
-
-	std::map<const Server*, int, ServerCompare> map;
-	```
+- [std::unordered map](http://www.cplusplus.com/reference/unordered_map/unordered_map): unordered map 内部实现了一个哈希表, 因此其元素的排列顺序是杂乱的, 无序的.
+- [std::map](http://www.cplusplus.com/reference/map/map/): map内部实现了一个红黑树,该结构具有自动排序的功能,因此map内部的所有元素都是有序的. 对于自定义的Compare, 需要满足strict weak ordering, 只有当left < right 时返回true
+- [unordered set](http://www.cplusplus.com/reference/unordered_set): hash 表实现的
+	- the elements in an unordered set cannot be modified once in the container, they can be inserted and removed, though.
+- [set](http://www.cplusplus.com/reference/set/set): 红黑树实现的有序集合, 内部不允许重复元素
+- [multiset](http://www.cplusplus.com/reference/set/multiset): 红黑树实现的有序集合, 默认是增序, 元素可以重复
 
 - [std::stack](http://www.cplusplus.com/reference/stack/stack): 栈
 - [std::queue](http://www.cplusplus.com/reference/queue/queue): 队列
@@ -152,10 +121,6 @@ INT_MAX, INT_MIN
 - [std::priority queue](http://www.cplusplus.com/reference/queue/priority_queue): 优先队列
 	- `std::priority_queue<int, std::vector<int>, std::less<int>> pq_max`: top() 为最大值的优先级队列
 	- `std::priority_queue<int, std::vector<int>, std::greater<int>> pq_min`: top() 为最小值的优先级队列
-- [unordered set](http://www.cplusplus.com/reference/unordered_set): hash 表实现的
-	- the elements in an unordered set cannot be modified once in the container, they can be inserted and removed, though.
-- [set](http://www.cplusplus.com/reference/set/set): 红黑树实现的有序集合, 内部不允许重复元素
-- [multiset](http://www.cplusplus.com/reference/set/multiset): 红黑树实现的有序集合, 默认是增序, 元素可以重复
 
 ## [algorithm](http://www.cplusplus.com/reference/algorithm/)
 - `template <class BidirectionalIterator> void reverse(BidirectionalIterator first, BidirectionalIterator last)`: std::vector 可以直接使用, std::string 不能使用(因为string 是immutable)
