@@ -88,6 +88,7 @@ funP(400);
 std::function 是一个可调用对象包装器,是一个类模板, 可以容纳除了类成员函数指针之外的所有可调用对象
 
 std::bind 是一个通用的函数适配器,它接受一个可调用对象,生成一个新的可调用对象来"适应"原对象的参数列表, 绑定后的结果可以使用std::function保存.
+借助std::bind 的返回值为std::function 类型的特性, 可以将任意函数, 包括class member function, class static function 转换为std::function.
 
 # Closure
 closure implementation using lambda:
