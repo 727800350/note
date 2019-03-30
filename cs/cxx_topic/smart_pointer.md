@@ -40,24 +40,24 @@ Neither of the two `shared_ptr` objects knows about the other, so both will try 
 
 The way to avoid this problem is to use the class template `enable_shared_from_this`. The template takes one template type argument, which is the name of the class that defines the managed resource. That class must, in turn, be derived publicly from the template; like this:
 ```C++
-class S : std::enable_shared_from_this<S>{
-public:
+class S : std::enable_shared_from_this<S> {
+ public:
   std::shared_ptr<S> not_dangerous(){
-	return std::shared_from_this();
+  return std::shared_from_this();
   }
 };
 
-int main(){
-   std::shared_ptr<S> sp1(new S);
-   std::shared_ptr<S> sp2 = sp1->not_dangerous();
-   return 0;
+int main() {
+  std::shared_ptr<S> sp1(new S);
+  std::shared_ptr<S> sp2 = sp1->not_dangerous();
+  return 0;
 }
 ```
 When you do this, keep in mind that the object on which you call `shared_from_this` must be owned by a `shared_ptr` object. This won't work:
 ```C++
-int main(){
-   S *p = new S;
-   std::shared_ptr<S> sp2 = p->not_dangerous();	 // don't do this
+int main() {
+  S *p = new S;
+  std::shared_ptr<S> sp2 = p->not_dangerous();   // don't do this
 }
 ```
 
@@ -88,40 +88,64 @@ shared_ptr是采用引用计数方式的智能指针,如果当前只有一个观
 通过shared_ptr实现copy-on-write的原理如下:
 
 1. read端在读之前,创建一个新的智能指针指向原指针,这个时候引用计数加1,读完将引用计数减1,这样可以保证在读期间其引用计数大于1,可以阻止并发写.
-	```C++
-	// 假设g_ptr是一个全局的shared_ptr<Foo>并且已经初始化.
-	void read(){
-		shared_ptr<Foo> tmpptr;
-		{
-			lock();
-			tmpptr = g_ptr; // 此时引用计数为2,通过gdb调试可以看到
-		}
-		// read
-	}
-	```
+  ```C++
+  // 假设g_ptr是一个全局的shared_ptr<Foo>并且已经初始化.
+  void read() {
+    std::shared_ptr<Foo> tmpptr;
+    {
+      lock();
+      tmpptr = g_ptr; // 此时引用计数为2,通过gdb调试可以看到
+    }
+    // read
+  }
+  ```
 这部分是shared_ptr最基本的用法,还是很好理解的,read()函数调用结束,tmpptr作为栈上变量离开作用域,自然析构,原数据对象的引用计数也变为1.
 
 2. write端在写之前,先检查引用计数是否为1. 如果引用计数为1,则你是数据的唯一拥有者,直接修改; 
 如果引用计数大于1,则你不是数据的唯一拥有者,还有其它拥有者, 此时数据正在被其它拥有者read,则不能再原来的数据上并发写,应该创建一个副本,并在副本上修改,然后用副本替换以前的数据.
 这就需要用到一些shared_ptr的编程技法了(注意需要注意不能有weak_ptr, 否则引用计数即使是1, 也可能有其他地方可能正在读):
-	```C++
-	void write(){
-		lock()
-		if(!g_ptr.unique())
-		{
-			g_ptr.reset(new Foo(*g_ptr));
-		}
-		assert(g_ptr.unique());
-		// write
-	}
-	```
+  ```C++
+  void write(){
+    lock()
+    if(!g_ptr.unique()) {
+      g_ptr.reset(new Foo(*g_ptr));
+    }
+    assert(g_ptr.unique());
+    // write
+  }
+  ```
 假设一个线程读,一个线程写,当写线程进入到if循环中时,原对象的引用计数为2,分别为tmpptr和g_ptr,此时reset()函数将原对象的引用计数减1,并且g_ptr已经指向了新的对象(用原对象构造),这样就完成了数据的拷贝,并且原对象还在,只是引用计数变成了1.
 
 注意,reset()函数仅仅只是将原对象的引用计数减1,并没有将原对象析构,当原对象的引用计数为0时才会被析构.
 
+## `std::shard_ptr<void>`
+[`std::shared_ptr<void>`的工作原理](https://www.cnblogs.com/imjustice/p/how_shared_ptr_void_works.html)
+
+delete语句会至少产生两个动作,一个是调用指针对应类型的析构函数,然后去调用operator delete释放内存.
+所以如果delete的指针和其指向的真实类型不一样的时候,编译器只会调用指针类型的析构函数,这也就为什么基类的析构函数需要声明称虚函数才能够保证delete基类指针的时候子类析构函数能够被正确的调用.
+operator delete是都会被调用到的,所以指针指向的那块内存是能够"正常的"被释放掉用.
+
+意味着如果一个class Foo的成员变量申请了动态内存,
+```C++
+void* foo = new Foo;
+delete foo;
+```
+`delete foo;` 中所包含的第二个动作 operator delete 是不负责删除成员变量申请的动态内存, 而要靠第一个动作中的Foo 类型的析构函数.
+
+```C++
+std::shared_ptr<void> foo = std::make_shared<Foo>();
+```
+用`std::shared_ptr<void>` 在引用数降为0 而释放的时候, 是能够正确调用析构函数的.
+因为`std::shared_ptr` 里面有一个控制块, 里面会存放一个要维护的指针,一个计数,一个删除器(deleter),一个分配(allocator).
+有了这个deleter, 就能正确的调用析构函数.
+
+这种实现方式给`std::shared_ptr`带来额外好处:
+Effective C++ 条款07告诉我们"要为多态基类声明 virtual 析构函数". 当然我认为建议依然有效,
+但是用了`std::shared_ptr`以后带来的一个额外好处就是即便你的析构函数忘记写成virtual也能帮你正确的调用析构函数.
+
 # [weak ptr](http://www.cplusplus.com/reference/memory/weak_ptr)
 - weak ptr, is able to share pointers with shared ptr objects without owning them.
-- 从效率的角度来看，`std::weak_ptr`和`std::shared_ptr`几乎一致
+- 从效率的角度来看,`std::weak_ptr`和`std::shared_ptr`几乎一致
 - 可能使用`std::weak_ptr`的情况包括: 缓存, 观察模式中的观察者列表, 以及防止`std::shared_ptr`环路. [ref](https://blog.csdn.net/coolmeme/article/details/43266319)
 
 观察者模式:
