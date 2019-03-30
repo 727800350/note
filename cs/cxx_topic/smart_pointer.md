@@ -121,65 +121,12 @@ shared_ptr是采用引用计数方式的智能指针,如果当前只有一个观
 
 # [weak ptr](http://www.cplusplus.com/reference/memory/weak_ptr)
 - weak ptr, is able to share pointers with shared ptr objects without owning them.
-- 尽量不要使用
+- 从效率的角度来看，`std::weak_ptr`和`std::shared_ptr`几乎一致
+- 可能使用`std::weak_ptr`的情况包括: 缓存, 观察模式中的观察者列表, 以及防止`std::shared_ptr`环路. [ref](https://blog.csdn.net/coolmeme/article/details/43266319)
 
-C++ Primer 中讲解为什么需要weak pointer 不是很清楚, blog [C++11智能指针之weak ptr](http://blog.csdn.net/Xiejingfa/article/details/50772571) 从一个循环引用的例子来开篇, 间接解释了为什么需要weak pointer.
-
-```C++
-#include <iostream>
-#include <memory>
-
-using namespace std;
-
-class ClassB;
-
-class ClassA {
-public:
-	ClassA(){
-		cout << "ClassA Constructor..." << endl;
-	}
-
-	~ClassA(){
-		cout << "ClassA Destructor..." << endl;
-	}
-
-	shared_ptr<ClassB> pb;
-};
-
-class ClassB{
-public:
-	ClassB(){
-		cout << "ClassB Constructor..." << endl;
-	}
-
-	~ClassB(){
-		cout << "ClassB Destructor..." << endl;
-	}
-
-	shared_ptr<ClassA> pa;
-};
-
-int main(){
-	shared_ptr<ClassA> spa = make_shared<ClassA>();
-	shared_ptr<ClassB> spb = make_shared<ClassB>();
-	cout << spa.use_count() << "," << spb.use_count() << endl; // 1,1
-
-	spa->pb = spb;
-	spb->pa = spa;
-	cout << spa.use_count() << "," << spb.use_count() << endl; // 2,2
-
-	return 0;
-}
-```
-上面的代码输出:
-```
-ClassA Constructor...
-ClassB Constructor...
-Program ended with exit code: 0
-```
-从上面代码中, ClassA 和ClassB 间存在着循环引用, 从运行结果中我们可以看到: 当main函数运行结束后, spa 和spb 管理的动态资源并没有得到释放, 产生了内存泄露.
-
-原因: 在两个赋值语句之后, spa 和 spb 的use_count 都是2, 退出函数之后, use_count 会都减1, 但是减了之后, use_count 还是1, 不是0, 所以内存不会被自动释放.
-
-解决方案: 使用weak_ptr,来打破这种循环引用, 这样在退出main 函数后, use_count 会被减为0, 内存就会被自动释放.
+观察者模式:
+该模式的主要部件是主题(Subjects, 状态可以改变的对象)和观察者(Observers, 状态改变发生后被通知的对象).
+多数实现中, 每个subject包含了一个数据成员, 保持着指向observer的指针,这样很容易在subject发生状态改变时发通知.
+subject没有兴趣控制它们的observer的生命周期(不关心何时它们被销毁),但他要确认一个observer是否被销毁,这样避免去访问.
+一个合理的设计就是每个subject保存一个容器,容器里放着每个observer的`std::weak_ptr`, 这样在subject在使用前就可以检查observer指针是否是悬浮的.
 
