@@ -316,3 +316,5 @@ function! CheckChineseMark()
 endfunction
 "===========================Chinese Punctuation: ctrl-s or :%call CheckChineseMark ==================
 
+hi comment ctermfg=6  " comment color
+
