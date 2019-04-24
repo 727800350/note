@@ -1,5 +1,6 @@
 {
     "C_Cpp.errorSquiggles": "Disabled",
+    "editor.suggestSelection": "first",
     "editor.tabSize": 2,
     "files.exclude": {
         "**/.classpath": true,
@@ -10,6 +11,7 @@
     "java.autobuild.enabled": false,
     "java.configuration.updateBuildConfiguration": "disabled",
     "java.debug.settings.forceBuildBeforeLaunch": false,
+    "java.errors.incompleteClasspath.severity": "ignore",
     "java.home": "/Library/Java/JavaVirtualMachines/jdk1.8.0_192.jdk/Contents/Home/",
     "latex-workshop.latex.option.maxPrintLine.enabled": false,
     "latex-workshop.latex.autoBuild.onSave.enabled": false,
@@ -17,6 +19,7 @@
     "python.workspaceSymbols.rebuildOnStart": false,
     "python.workspaceSymbols.rebuildOnFileSave": false,
     "vsicons.dontShowNewVersionMessage": true,
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "window.nativeTabs": true,
     "window.zoomLevel": 0,
     "workbench.editor.enablePreview": false,
