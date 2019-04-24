@@ -1,21 +1,18 @@
 # [unique ptr](http://www.cplusplus.com/reference/memory/unique_ptr)
-For safety reasons, they **do not support pointer arithmetics**, and only support move assignment(disabling copy assignments).
-
+- For safety reasons, they **do not support pointer arithmetics**, and only support move assignment(disabling copy assignments).
+- 性能出色, 析构和delete 没有差异, 可大量使用
+- 必要时可以转换为shared ptr
+- unique ptr 可以自定义Deleter, 但是这可能会改变类型, 因为Deleter 也是模板参数的一部分, `std::unique_ptr<FILE, decltype(&fclose)> f(fopen(...), &fclose)`
+- 工厂类建议返回`std::unique_ptr<T>`
 - `get()`: Returns the stored pointer. 拿到这个指针后可以像以前那样直接操作这快内存, 但是要注意, unique ptr 的ownership 并没有发生变化
 - `*`: Returns a reference to the managed object, equivalent to `*get()`.
 - `->`: 可以像以前那样直接访问成员变量
 - `[i]`: Returns a reference to the i-th object (zero-based) in the managed array. equivalent to `get()[i]`.
 - 不能把unique ptr 赋值给其他unique ptr, 可以`std::move()`, 操作之后, original becomes nullptr and the new one owns the pointer;
 
-```C++
-#include <memory>
-std::unique_ptr<int> x(new int);
-std::unique_ptr<int[]> x(new int[5]);
-```
-
 # [shared ptr](http://www.cplusplus.com/reference/memory/shared_ptr)
-If two shared ptr are constructed (or made) from the same (non-shared ptr) pointer, they will both be owning the pointer without sharing it,
-causing potential access problems when one of them releases it (deleting its managed object) and leaving the other pointing to an invalid location.
+- 性能开销大
+- shared ptr 的Deleter 不影响类型(通过类型消除实现)
 
 ```C++
 auto sp1 = std::make_shared<int>(1);

@@ -20,7 +20,8 @@ This code will compile just fine regardless of the initializer expression. The a
 ```C++
 auto         => will copy the vector, but we wanted a reference
 auto&        => will only bind to modifiable lvalues
-const auto&  => will bind to anything but make it const, giving us const_iterator
+auto&&       => will bind to anything, 转发引用(推荐用于声明变量)
+const auto&  => will bind to anything but make it const
 const auto&& => will bind only to rvalues
 ```
 
