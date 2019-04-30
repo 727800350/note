@@ -22,10 +22,7 @@ Docker使用以下操作系统的功能来提高容器技术效率:
 - Control Groups是LXC的重要组成部分,具有资源核算与限制的关键功能.
 - UnionFS(文件系统)作为容器的构建块.为了支持Docker的轻量级以及速度快的特性,它创建了用户层.
 
-# basic
-https://testerhome.com/topics/2760
-
-## docker run
+# docker run
 `docker run options image command args`
 
 options:
@@ -45,7 +42,7 @@ options:
 - --rm=true|false: Automatically remove the container when it exits (incompatible with -d). The default is false.
 - -w:  The default working directory for running binaries within a container is the root directory (/), 可以指定任意一个目录, container 启动的时候会自动创建这个目录
 
-## container
+# container
 container 只是 image的一个实例
 
 The operator can identify a container in three ways:
@@ -65,11 +62,11 @@ The operator can identify a container in three ways:
 
 命令中需要指定 container 时, 既可使用其名称, 也可使用其id.
 
-## image
+# image
 - docker rmi image_id: 删除image, `docker rmi $(docker images -q -a)`删除所有的
 - docker diff 它可以列出容器内发生变化的文件和目录.这些变化包括添加(A-add),删除(D-delete),修改(C-change).
 
-### 下载镜像
+## 下载镜像
 在本地 docker 环境中输入以下命令,就可以pull一个镜像到本地了.                    
 `sudo docker pull index.tenxcloud.com/<namespace>/<repository>:<tag>`
 
@@ -82,61 +79,17 @@ The operator can identify a container in three ways:
 - dockerpull: http://dockerpool.com/.  修改/etc/sysconfig/docker文件,修改OPTIONS='--selinux-enabled --insecure-registry dl.dockerpool.com:5000'
 - 阿里云: http://help.aliyun.com/knowledge_detail/5974865.html, 暂时还没有连接成功
 
-### 创建镜像
-#### 通过container
+## 创建镜像
+### 通过container
 `docker commit [container] image:tag`
 
-#### 通过docker file
+### 通过docker file
 当前目录下包含Dockerfile, 使用命令build来创建新的image:
 `docker build -t image:tag PATH`
 
 注意: Docker Client会默认发送Dockerfile同级目录下的所有文件到Docker daemon中, 所以无关的文件不要出现在同级目录
 
-```
-FROM centos71:repo
-
-## author info
-MAINTAINER xxx, xxx@gmail.com
-
-## install soft
-RUN yum-config-manager --disable system-container
-RUN yum install -y gcc 
-
-## add new user
-RUN useradd eric
-USER eric ## default user is root
-WORKDIR /home/eric
-CMD /bin/bash
-```
-
-所有的 Dockerfile 命令格式都是: `INSTRUCTION arguments`
-
-- `FROM image:tag`: 这个设置基本的镜像
-- `MAINTAINER name, email`: author info
-- `RUN <shell command>`: 执行命令
-- `USER eric`: 指定运行用户,
-- `EXPOSE <port> [<port>...]`: EXPOSE 命令可以设置一个端口在运行的镜像中暴露在外, docker run 时仍然需要进行端口映射
-	`docker run -d -p 127.0.0.1:33301:22 centos6-ssh`: container ssh服务的22端口被映射到主机的33301端口
-- `ENV <key> <value>`: 用于设置环境变量, 设置了后,后续的RUN命令都可以使用.
-- `COPY/ADD <src> <dest>`: 从src复制文件到container的dest路径, <src> 为主机的相对路径, <dest> 是container中的绝对路径
-	ADD 多了2个功能, 下载URL和解压, 其他都一样.
-	如果你不希望压缩文件拷贝到container后会被解压的话, 那么使用COPY.
-	如果需要自动下载URL并拷贝到container的话, 请使用ADD.
-- `VOLUME <mountpoint>`: 创建一个挂载点用于共享目录, 但是如果想把本地的目录挂载到这个目录, 还是需要在docker run的时候, 使用 -v 参数来显示的指定
-- `WORKDIR /path/to/workdir`: 配置RUN, CMD, ENTRYPOINT 工作路径, 可以设置多次,如果是相对路径,则相对前一个 WORKDIR 命令.
-- `ENTRYPOINT cmd param1 param2 ...`: 设置在容器启动时执行命令
-- `CMD command param1 param2`: 一个Dockerfile里只能有一个CMD,如果有多个,只有最后一个生效.
-	Without entrypoint, CMD is command that is executed,  With entrypoint, CMD is passed to entrypoint as argument.
-	所以一般就不用写entrypoint, 直接写CMD, 且一般写为`CMD /bin/bash`
-
-### 发布镜像
-1. 在本地 docker 环境中输入以下命令进行登录: `sudo docker login index.tenxcloud.com`
-1. 对这个image进行标记,在命令中输入: `sudo docker tag image:tag index.tenxcloud.com/username/image:tag(自定义仓库名)`
-1. push到镜像仓库中: `sudo docker push index.tenxcloud.com/username/image:tag`
-
-注: 删除remote tag, docker client 还没有实现, [ref](https://github.com/docker/docker/issues/8759)
-
-#### 导入导出
+### 导入导出
 容器
 ```Bash
 docker export [container] > container.tar
@@ -152,9 +105,4 @@ docker load < image.tar
 
 - 导出后再导入(exported-imported)的镜像会丢失所有的历史, 意味着将无法回滚到之前的层(layer)
 - 保存后再加载(saveed-loaded)的镜像没有丢失历史和层(layer), 就可以做到层回滚(可以执行docker tag <LAYER ID> <IMAGE NAME>来回滚之前的层)
-
-# install
-1. yum install docker-devel docker
-1. 启动docker 服务需要关闭selinux, 编辑/etc/selinux/config, 找到SELINUX 行修改成为:SELINUX=disabled, 之后重启系统
-1. systemctl start docker
 

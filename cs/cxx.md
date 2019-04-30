@@ -316,11 +316,12 @@ delete node;
 
 而`pthread_mutex_t`实现基于Linux的futex, 当临界区足够小时, 一次`pthread_mutex_lock`消耗很非常小
 
-通过lock guard, 进入critical region 时, 自动加锁, 出的时候自动归还锁.
+通过`std::scopted_lock`(还可以同时对多个锁进行处理), 进入critical region 时, 自动加锁, 出的时候自动归还锁.
+[std::lock_guard or std::scoped_lock?](https://stackoverflow.com/questions/43019598/stdlock-guard-or-stdscoped-lock)
 ```C++
 std::mutex mutex;
 {
-	std::lock_guard<std::mutex> guard(mutex);
+	std::scoped_lock guard(mutex);
 	do xxx
 }
 ```
