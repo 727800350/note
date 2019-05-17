@@ -10,8 +10,13 @@ method=$1
 shift 1
 list=$@
 
-ip=`ifconfig eth1 | grep inet | awk '{print $2}' | awk -F ":" '{print $NF}'`
 host=`hostname`
+num=`cat /proc/net/dev | grep eth | wc -l`
+if [ $num -gt 0 ]
+then
+  card="eth"`expr $num - 1`
+  host=`ifconfig $card | grep inet | awk '{print $2}' | awk -F ":" '{print $NF}'`
+fi
 
 if [ "x$method" = "xlocal" ]
 then
