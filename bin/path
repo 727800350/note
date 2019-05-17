@@ -2,9 +2,8 @@
 
 if [ $# -lt 2 ]
 then
-	echo "wrong args" >&2
-	echo "usage: $0 local|ftp|ssh files" >&2
-	exit 1
+  echo "usage: $0 local|ftp|ssh files" >&2
+  exit 1
 fi
 
 method=$1
@@ -16,25 +15,25 @@ host=`hostname`
 
 if [ "x$method" = "xlocal" ]
 then
-	for target in $list
-	do
-		echo "`pwd`/${target}"
-	done
+  for target in $list
+  do
+    echo "`pwd`/${target}"
+  done
 elif [ "x$method" = "xftp" ]
 then
-	for target in $list
-	do
-		echo "ftp://$host:`pwd`/${target}"
-	done
+  for target in $list
+  do
+    echo "ftp://$host:`pwd`/${target}"
+  done
 elif [ "x$method" = "xssh" ]
 then
-	for target in $list
-	do
-		echo "`whoami`@$host:`pwd`/${target}"
-	done
+  for target in $list
+  do
+    echo "`whoami`@$host:`pwd`/${target}"
+  done
 else
-	echo "${method} not supported" >&2
-fi	
+  echo "${method} not supported" >&2
+fi
 
 exit 0
 

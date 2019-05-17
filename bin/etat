@@ -12,18 +12,18 @@ v_min = 0
 v_sum = 0
 num = 0
 for line in sys.stdin:
-	line = line.strip()
-	value = int(line[:len(line) - len(arg.unit)])
+  line = line.strip()
+  value = int(line[:len(line) - len(arg.unit)])
 
-	v_sum = v_sum + value
-	if num == 0:
-		v_max = value
-		v_min = value
-	else:
-		v_max = max(v_max, value)
-		v_min = min(v_min, value)
+  v_sum = v_sum + value
+  if num == 0:
+    v_max = value
+    v_min = value
+  else:
+    v_max = max(v_max, value)
+    v_min = min(v_min, value)
 
-	num = num + 1
+  num = num + 1
 
 v_mean = v_sum * 1.0 / num
 print >> sys.stdout, "num: %d, mean: %f, max: %d, min: %d" % (num, v_mean, v_max, v_min)
