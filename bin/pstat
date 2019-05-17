@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]
+then
+  echo "usage: $0 pid" >&2
+  exit 1
+fi
+
+pid=$1
+if [ ! -d /proc/$pid ]
+then
+	echo "$pid invalid" >&2
+	exit 1
+fi
+
+cmd=`cat /proc/$pid/cmdline | tr -d '\0'`
+start_time=`ps -p $pid -o lstart | tail -n 1`
+
+echo "command: $cmd"
+echo "start time: $start_time"
+
+exit 0
+
