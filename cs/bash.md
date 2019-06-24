@@ -6,6 +6,8 @@
 - `watch -d -n 1 command`: 间隔1秒钟, 执行一次command, 并将结果的diff 高亮显示
 
 ## 查找
+ack, search inside files with no extensions: `ack -a -G regex what-to-search-for`
+
 [find](http://os.51cto.com/art/200908/141119_all.htm)的使用格式如下:
 ```
 $ find <指定目录> <指定条件> <指定动作>
