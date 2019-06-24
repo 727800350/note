@@ -1,4 +1,4 @@
 --type-set=protobuf=.proto
 --type-set=flags=.flags
---type-set=conf=.conf,config
+--type-set=conf=.conf,.config
 --type-set=txt=.txt
