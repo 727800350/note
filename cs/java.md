@@ -17,6 +17,7 @@ String 是final 类, 不可以被继承, String 是只读字符串.
 
 - `x.equals(y)`: true if and only if the argument is not null and 包含同样的内容.
 - `length()`: length 是方法
+- 'Integer.parseInt()': 将 String 转换为int
 
 String 和 StringBuilder, StringBuffer的区别?  
 Java 平台提供了两种类型的字符串: String和 StringBuffer/StringBuilder, 它们可以储存和操作字符串.
@@ -40,6 +41,4 @@ objs[1] = new String("hello world");  // 将前两个Object 进行赋值
 
 Object[] objs = new Object[]{new Integer(47), new Float(3.14), new Double(11.11), new String("string")}; //  创建的时候初始化
 ```
-
-- `length`: length 属性
 
