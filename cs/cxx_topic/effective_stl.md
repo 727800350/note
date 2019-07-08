@@ -168,3 +168,28 @@ std::vector<int>().swap(v);  // clear v and minimize its capacity
 std::string().swap(s);  // clear s and minimize its capacity
 ```
 
+# understand the difference between equality and equivalence
+the std::find algorithm and set's insert member function are representative of many functions that must determine whether two values are the same. Yet they do it in defferent ways,
+
+- `std::find`'s definition of the "the same" is equality, which is based on the `operator==`.
+- `std::set::insert` and `std::set::find`'s definition of "the same" is equivalence, which is usually based on operators.
+
+Equivalence is based on the relative ordering of object values in a sorted range.
+Two objects x and y have equivalent values with respect to the sort order used by an associative container c if neither precedes the other in c's sort order. That is:
+```C++
+!(x < y) && !(y < x)  // suppose we are using the default comparion function <
+```
+In the genearal case, the comparison function for an associative container isn't `operator<`, it is a user-defined predicate.
+Every standard associative container makes its sorting predicate available through its `key_comp` member function,
+so two objects x and y have equivalent values with respect to an associative containers c's soring criterion if the following evalutes to true:
+```C++
+!c.key_comp()(x, y) && !c.key_comp()(y, x)
+```
+
+Each of the set template's three parameters is a type, so we can not pass a function as comparison type.
+set doesn't want a function, it wants a type that it can internally instantiate to create a function.
+
+Always have comparison functions return false for equal values.
+
+Equal values are, by definition, not equivalent! Equal values never precede one another!
+
