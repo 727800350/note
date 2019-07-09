@@ -1,6 +1,12 @@
 - `readelf -s` 查看so a 文件的symbol
 - `lsof -p pid` 可以看到这个进程打开的所有文件, 如果文件被其他进程删除, 会有一个删除的标记
 
+# perf
+1. `perf record -t tid -g`: record thread tid's profile into perf.data
+  - `-g`: means doing call-graph (stack chain/backtrace) recording
+  - `-p`: pid
+1. `perf report`: read perf.data (created by perf record) and display the profile
+
 # gdb
 - `bt`: Show stack frames, useful to find the calling sequence that produced a crash.
 - `thread apply all bt`: bt 只能看到一个线程的结果, 有时候core 是其他线程引起的, 这个命令相当于在所有的thread 中执行bt
