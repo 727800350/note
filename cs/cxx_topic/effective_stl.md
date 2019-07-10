@@ -196,12 +196,13 @@ Equal values are, by definition, not equivalent! Equal values never precede one 
 # avoid in-place key modification in set and multiset
 Like all the standard associative containers, set and multiset keep elements in sorted order, and the proper behavior of these containers id dependent on their remaining sorted.
 If you change the key of an elemnent, the new element might not be in the corrent location.
-So the elements in an object of type `std::map<K, V>` or `std::multimap<K, V>` are `std::pair<const K, V>`.
+
+The elements in an object of type `std::map<K, V>` or `std::multimap<K, V>` are `std::pair<const K, V>`.
 But the elements in an object of type `std::set<K>` or `std::multiset<K>` are `K`.
 虽然我们认为两者应该都是一样, 但是标准委员会就是这样认为的.
 
 For std::set and std::multiset, we could use `const_cast<K&>(*iterator)` to access the modification member functions.
 But for std::map and std::multimap, const cast won't work, because the first component of `std::pair<const K, V>` is defined to be const, meaning that
 that attemps to cast away its constness are undefined.
-
+TODO: 用 std::map 测试之后是ok 的, 应该跟实现有关.
 
