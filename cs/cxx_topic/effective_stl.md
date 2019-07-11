@@ -206,3 +206,27 @@ But for std::map and std::multimap, const cast won't work, because the first com
 that attemps to cast away its constness are undefined.
 TODO: 用 std::map 测试之后是ok 的, 应该跟实现有关.
 
+# consider replacing associative containers with sorted vectors
+A balanced binary search tree is a data structure that is optimized for a mixed combination of insertions, erasures, and lookups.
+
+Many applications use their data structure in a less chaotic manner. Their use of data structures fall into three distinct phases.
+
+1. Setup. Create a new data structure by inserting lots of elements into it. During this phase, almost all operations are insertions and erasures. Lookups are rare or nonexistent.
+1. Lookup. Consult the data structure to find specific pieces of information. During this phase, almost all operations are lookups. Insertions and erasures are rare or nonexistent.
+1. Reorganize. Modify the contents of the data structure, perhaps by erasing all the current data and inserting new data in it.
+
+For applications that use their data strunctures in this way, a sorted vector is likely to offer better performance(in both time and space) than associative container.
+
+1. size matters.
+  Balanced binary tree node would holds not only a Widget, but also a pointer to the node's left child, a pointer to its right child, and (typically) a pointer to its parent.
+  That means the space overhead would be at least three pointers.
+  Assuming our data structures are big enough, they'll be split acroess multiple memory pages, but the vector will require fewer pages.
+  Suppose sizeof(Widget) = 12 bytes, sizeof(pointer) = 4 bytes and a memory page holds 4096(4K) bytes.
+  Ignoring the per-container overhead, a page can hold 341 Widgets when they are stored in a vector. But only at most 170 when they are stored in a associative container.
+1. locality of reference matters.
+  I'm actually being optimistic aboud the associative containers here, becasue I'm assuming that the nodes in the binary tree are clustered together on a relatively small set of memory pages.
+  But if your STL implementation failes to improve locality of reference among tree nodes, the nodes could end up scattered all over your address space. That would lead to even more page faults.
+  Even with the customary clustering memory managers, associative containers tend to have more problems with page faults, because, unlike continuous-memory containers such as vector,
+  node-based containers find it more difficult to guarantee that container elements are close to one another in a container's traversal order are also close to one another in physical memory.
+
+search sorted vector using `std::binary_search, std::lower_bound, std::equal_range`.
