@@ -255,3 +255,27 @@ map.insert(IntWidgetMap::value_type(1, 1.50));
 Efficiency considerations thus lead us to conclude that insert is preferable to operator[] when adding an element to a map.
 And both efficiency and aesthetics dictate that operator[] is preferable when updaing the value of an element that is already in the map.
 
+# make sure destination ranges are big enough
+```C++
+std::string src("hello");
+std::string dst;
+dst.resize(src.size());
+std::transform(src.begin(), src.end(), dst.begin(), [](unsigned char c) -> unsigned char { return std::toupper(c); });
+```
+std::transform writes its results by making assignments to the elemnts in the destination range.
+std::transform will thus apply lambda to `*src.begin()` and assign the result to `*dst.begin()`.
+It will then apply lambda to `*(src.begin() + 1)` and assign the result to `*(dst.begin() + 1)`.
+
+```C++
+std::string src("hello");
+std::string dst;
+std::tranform(src.begin(), src.end(), std::back_inserter(dst), [](unsigned char c) {return std::toupper(c);});
+```
+Internally, the iterator returned by `std::back_inserter` causes `push_back` to be called,
+so you may use `back_inserter` with any container offering `push_back` (i.e., any of the standard sequence containers: vector, string, deque and list).
+
+- `std::front_inserter` makes use of `push_front`, so `front_inserter` works only for the containers offering `push_front` (i.e. deque and list).
+- `std::inserter` allows you to force algorithms to insert their result into containers at arbitrary locations.
+
+Regardless of whether you use back inserter, front inserter or inserter, each insertion into the destination range is done one object at a time.
+
