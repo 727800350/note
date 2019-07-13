@@ -230,3 +230,28 @@ For applications that use their data strunctures in this way, a sorted vector is
   node-based containers find it more difficult to guarantee that container elements are close to one another in a container's traversal order are also close to one another in physical memory.
 
 search sorted vector using `std::binary_search, std::lower_bound, std::equal_range`.
+
+# choose carefully between map::operator[] and map-insert when efficiency is important
+```C++
+class Widget {
+ public:
+  Widget();
+  Widget(double weight);
+  Widget& operator=(double weight);
+};
+
+std::map<int, Widget> map;
+map[1] = 1.50;
+
+// map[1] = 1.50 is equivalent to the following
+using IntWidgetMap = std::map<int, Widget>;
+std::pair<IntWidgetMap::iterator, bool> result = map.insert(IntWidgetMap::value_type(1, Widget()));
+result.first->second = 1.50;
+
+// straightforward call to insert is better
+map.insert(IntWidgetMap::value_type(1, 1.50));
+```
+
+Efficiency considerations thus lead us to conclude that insert is preferable to operator[] when adding an element to a map.
+And both efficiency and aesthetics dictate that operator[] is preferable when updaing the value of an element that is already in the map.
+
