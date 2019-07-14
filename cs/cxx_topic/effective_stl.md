@@ -310,3 +310,11 @@ While partition and stable partiton only require bidirenctional iterators, you c
 
 time and space complexity: `std::partition < std::stable_partition < std::nth_element < std::partial_sort < std::sort < std::stable_sort`
 
+# use `std::accumulate` or `std::for_each` to summarize ranges
+`std::for_each` takes a range and a function(typically a functor) to invoke on each element of the range, and returns its function when it's done. (Actually, it returns a copy of its function).
+
+difference between accumulate and for each
+
+1. accumulate returns the summary we want directly, while for each returns a function object, and we must extract the summary information we want from this object.
+1. `for_each`'s function parameter is allowd to have side effects while accumulate's is not. STL standard says so.
+
