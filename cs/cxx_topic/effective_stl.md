@@ -76,9 +76,12 @@ and you'd like to get rid of all the objects in c with the value 1963.
   // for predicate, we must write a loop
   for (auto&& it = c.begin(); it != c.end();) {
     if (badValue(*it)) {
-      // we pass it's old value to erase, but we also increment it itself before erase begins executing, that is exactly what we want
+      // we pass it's old value to erase, but we also increment it itself before
+      // erase begins executing, that is exactly what we want
       // 在C++ 11 之后, 可以用 it = c.erase(it)
-      // note: for contiguous-memory container, invoking erase invalidates all iterators beyond the erased element, in our case, that includes all ietrators beyond it, so c.erase(it++) does not work
+      // note: for contiguous-memory container, invoking erase invalidates all iterators beyond
+      // the erased element, in our case, that includes all ietrators beyond it,
+      // so c.erase(it++) does not work
       c.erase(it++);
     }
     else {
@@ -95,7 +98,7 @@ Because the only way to eliminate an element from a container is to invoke a mem
 and because remove cannot know the container holding the elements on which it is operating, it is not possible for remove to eliminate elements from a container.
 That explains the otherwise baffling observation that removeing elements from a container never changes the number of elements in the container.
 
-Very briefly, remove moves elements in the range it's given until all the "unremoved" elements are at the front of the range (in the same relative order they were in originally).
+Very briefly, **remove moves elements in the range until all the "unremoved" elements are at the front of the range (in the same relative order they were in originally)**.
 It returns an iterator pointing one past the last "unremoved" element. This return value is the "new logical end" of the range.
 
 remove doesn't change the order of the elements in a range so that all the "removed" ones are at the end, it arranges for all the "unremoved" values to be at the beginning.
