@@ -279,3 +279,31 @@ so you may use `back_inserter` with any container offering `push_back` (i.e., an
 
 Regardless of whether you use back inserter, front inserter or inserter, each insertion into the destination range is done one object at a time.
 
+# know your sorting options
+- `std::partial_sort`: Rearranges the elements in the range `[first,last)`, in such a way that the elements before middle are the smallest elements in the entire range and are sorted in ascending order,
+  while the remaining elements are left without any specific order.
+- `std::nth_element`: Rearranges the elements in the range `[first,last)`, in such a way that the element at the nth position is the element that would be in that position in a sorted sequence.
+
+- none of `std::partial_sort` and `std::nth_element` are stable.
+- The only difference between `partial_sort` and `nth_element` is that `partial_sort` sorts the elements in `[first, middle)`, while `nth_element` does not.
+
+`std::sort`, `std::stable_sort` and `std::partial_sort` are great if you really need to put things in order,
+and `std::nth_element` fills the bill when you need to identify the top n elements or the element at a particular position,
+but sometimes you need something similar to `std::nth_element`, but not quite the same.
+
+Suppose, for example, you didn't need to identify the 20 highest quality Widgets. Instead, you need to identify all the Widgets with a quality rating of 1 or 2.
+Of course you could sort and then select. But a full sort can be a lot of work, and that much work is not necessary.
+A better strategy is to use the partition algorithm, which reorders element in a range so that all elements satifying a particular criterion are at the beginning of the range.
+And it were important to maintain the relative positions of Widgets with equivalent quality levels during the partitioning, we would use `std::stable_partition` instead.
+
+```C++
+auto HasAcceptableQuality = [](const Widget& w){....};
+// move all widgets satisfying condition to the front of widgets, and return an iterator to the first widget that does not satisify the condition.
+auto good_end = std::partition(widgets.begin(), widgets.end(), HasAcceptableQuality);
+```
+
+The algorithms sort, stable sort, partial sort and nth element require random access iterators, so they may be applied only to vector, string, deque and array.
+While partition and stable partiton only require bidirenctional iterators, you can therefore use partition and stable partition with any of the standart sequence containers.
+
+time and space complexity: `std::partition < std::stable_partition < std::nth_element < std::partial_sort < std::sort < std::stable_sort`
+
