@@ -74,3 +74,4 @@ function weather(){
   curl http://wttr.in/~$city
 }
 
+export PATH="$PATH:$HOME/.ft"
