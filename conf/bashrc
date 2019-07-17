@@ -49,6 +49,7 @@ test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
 ## java
 export JAVA_HOME="$HOME/opt/jdk"
+export PATH="$HOME/opt/jdk/bin":$PATH
 
 # enterprise
 if [ -f ~/svn/trunk/thirdparty/perftools/bin/pprof ]
