@@ -322,7 +322,7 @@ difference between accumulate and for each
 If iterators define a sorted range, you can get speedy lookups via binary search, lower bound, upper bound and equal range. Then search employing equivalence.
 
 - binary search returns only a bool, whether the value was found.
-- lower bound reeturns an iterator pointing to either the first copy of that value (if it's found) or to the proper insertion location for that value (if it's not).
+- lower bound returns an iterator pointing to either the first copy of that value (if it's found) or to the proper insertion location for that value (if it's not).
   lower bound thus answers the question. "Is it there? If os, where is the first copy and if it is not, where should it go?".
   ```C++
   auto it = std::lower_bound(vw.begin(), vw.end(), w);
@@ -343,7 +343,32 @@ If iterators define a sorted range, you can get speedy lookups via binary search
   There are two important obervations about equal range's return values.
     1. If the two iterators are the same, that means the range is empty: the value was not found.
     1. The distance between its iterators is equal to the number of objects in the range, i.e., the objects with a value equivalent to the one that was searched for.
+
   A well-named algorithm(notwithstanding, equivalent range would be better).
 
 If iterators define a unsorted range, you are limited to the linear-time algorithms, count, count if, find, find if. And they search using equality.
+
+# consider function objects instead of functions as algorithm parameters
+It may come as a surprise to learn that passing STL function objects(objects masquerading as functions) to algorithms typically yields code that is more efficient that passing real functions.
+```C++
+std::vector<double> v;
+// call 1
+// std::greater<double> is an inline function
+std::sort(v.begin(), v.end(), std::greater<double>);
+
+inline bool doubleGreater(double d1, double d2) {
+  return d1 > d2;
+}
+// call 2
+std::sort(v.begin(), v.end(), doubleGreater);
+```
+call 1 is faster than call 2.
+The explanation is simple: inlining.
+If a function object's operator() function has been declared inline(either explicitly via inline or implicitly by defining it in its class definition), the body of that function is available to compilers, and
+most compilers will happily inline that function during template instantiation of the called algorithm.
+As a result, sort contains zero function calls, and compilers are able to perform optimizations on this call-free code that are otherwise not ususlly attempted.
+
+When we try to pass a real function as a parameter, compilers silently convert the function into a pointer to that function, so it is the pointer we actually pass.
+Because it is a pointer to a function, each time it is used inside sort, compilers make an indirect function call - a call through a pointer.
+Most compilers won't try to inline calls to functions that are invoked through function pointers, even if, as in this example, such functions have been declared inline.
 
