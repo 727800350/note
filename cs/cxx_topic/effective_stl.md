@@ -8,12 +8,12 @@
 - `vector<char>` as a replacement for string
 - several standard non-STL containers, including arrays, bitset, valarray, stack, queue, and `priority_queue` 
 
-Contiguous-memory containers store their elements in one or more (dynamically allocated) chunks of memory, each chunk holding more than one container element.
+**Contiguous-memory containers** store their elements in one or more (dynamically allocated) chunks of memory, each chunk holding more than one container element.
 If a new element is inserted or an existing element is erased, other elements in the same memory chunk have to be shifted up or down to make room for the new element or
 to fill the space formerly occupied by the erased element. This kind of movement affects both performance and exception safety.
 The standard contiguous-memory containers are vector, string, and deque.
 
-Node-based containers store only a single element per chunk of (dynamically allocated) memory.
+**Node-based containers** store only a single element per chunk of (dynamically allocated) memory.
 Insertion or erasure of a container element affects only pointers to nodes, not the contents of the nodes themselves, so element values need not be moved when something is inserted or erased.
 
 In general, insertions or erasures on contiguous-memory containers may invalidate all iterators, pointers, and ref- erences into the container.
@@ -23,10 +23,11 @@ That is why the form of erase taking an iterator returns a new iterator when inv
 In the presence of inheritance, of course, copying leads to slicing.
 That is, if you create a container of base class objects and you try to insert derived class objects into it,
 the derivedness of objects will be removed as the objects are copied(via the base class copy contructor) into the container.
+
 子类是可以作为base class 的copy constructor 的参数的. 所以这种情况下就需要用到pointer 或者 smart pointers.
 
+# call empty instread of checking size() against zero
 empty is a contant-time operation for all standard containers, but for some list implementations, size takes linear time.
-So we should call empty instead of checking size() against zero.
 
 # range operations
 prefer range member functions to their single-element counterparts.
@@ -34,12 +35,14 @@ Almost all uses of copy where the destination range is specified using an insert
 
 - given two vectors, v1 and v2, what's the easiest way to make v1's contents be the same as the second half of v2's?
   ```C++
-  // first one is better
+  // method 1, the best
   v1.assign(v2.begin() + v2.size() / 2, v2.end());
 
+  // method 2
   v1.clear();
   std::copy(v2.begin() + v2.size() / 2; v2.end(), std::back_inserter(v1));
 
+  // method 3
   v1.clear();
   for (auto&& it = v2.begin() + v2.size() / 2; it != v2.end(); ++it) {
     v1.push_back(*it);
@@ -47,21 +50,24 @@ Almost all uses of copy where the destination range is specified using an insert
   ```
 - insert half v2 into v1
   ```C++
+  // method 1, the best
+  // 在 pos 前插入来自范围 [first, last) 的元素(in the same order)
   v1.insert(v1.end(), v2.begin() + v2.size() / 2, v2.end());
 
+  // method 2
   std::copy(v2.begin() + v2.size() / 2; v2.end(), std::back_inserter(v1));
   ```
 
 memmber functions supports ranges
 
 - range construnction. All standard containers offer a constructor of this form: `container::container(InputIterator begin, InputIterator end)`
+- range assignment. All standard sequence containers offer a range form of assign: `void container::assign(InputIterator begin, InputIterator end)`
 - range insertion.
   - All standard sequence containers offer this form of insert: `void container::insert(iterator position, InputIterator begin, InputIterator end)`
   - Associative containers use their comparison function to determiner where elements go, so they use `void container::insert(InputIterator begin, InputIterator end)`
 - range erasure. Every standard container offers a range form of erase, but return type differs
   - sequence containers: `iterator container::erase(iterator begin, iterator end)`
   - associative containsers: `void container::erase(iterator begin, iterator end)`
-- range assignment. All standard sequence containers offer a range form of assign: `void container::assign(InputIterator begin, InputIterator end)`
 
 # erasing options
 Suppose you have a standard STL container, c, that holds ints. `Container<int> c;`
@@ -102,9 +108,11 @@ Very briefly, **remove moves elements in the range until all the "unremoved" ele
 It returns an iterator pointing one past the last "unremoved" element. This return value is the "new logical end" of the range.
 
 remove doesn't change the order of the elements in a range so that all the "removed" ones are at the end, it arranges for all the "unremoved" values to be at the beginning.
-```
-before: 1(v.begin()), 2, 3, 99, 5, 99, 7, 8, 9, 99, v.end()
-after auto it = remove(c.begin(), c.end(), 99): 1(v.begin()), 2, 3, 5, 7, 8, 9, 8(it), 9, 99, v.end()
+```C++
+// before: 1(v.begin()), 2, 3, 99, 5, 99, 7, 8, 9, 99, v.end()
+// after call
+auto it = remove(c.begin(), c.end(), 99):
+// 1(v.begin()), 2, 3, 5, 7, 8, 9, 8(it), 9, 99, v.end()
 ```
 As you can see, two of the "99" values that used to exist in v are no longer there, while one "99" remains.
 In general, after calling remove, the values removed from the range may or may not continue to exist in the range. Most people find this surprising, but why?
@@ -116,9 +124,9 @@ The overwriting is accomplished by making assignments to the elements holding th
 
 # use reserve to avoid unncessary reallocations
 - `resize(size_t n)`: forces the container to change to n the number of elements it holds. After the call to resize, size will return n.
-  If n is smaller than the current size, elements at the end will be destroyed.
-  if n is larger than the current size, new default-constructed elements will added to the end of the container.
-  if n is larger than the current capacity, a reallocation will take place before the elements are added.
+  - If n is smaller than the current size, elements at the end will be destroyed.
+  - if n is larger than the current size, new default-constructed elements will added to the end of the container.
+  - if n is larger than the current capacity, a reallocation will take place before the elements are added.
 - `reserve(size_t n)`: forces the container to change its capacity to at least n.
 
 # pass vector and string data to legacy C APIs
@@ -126,27 +134,29 @@ The overwriting is accomplished by making assignments to the elements holding th
 - for non-empty vector v, `&v[0]` is a pointer to the data in v that can be viewed as an array
 
 The approach to getting a pointer to container data that works for vectors isn't reliable for strings, because
-(1) the data for strings are not guaranteed to be stored in contiguous memory, and
-(2) the internal representation of a string is not guaranteed to end with a null character.
-This explains the existence of the string member function `c_str`, which returns a pointer to the value of the string in a form designed for C.
+
+1. the data for strings are not guaranteed to be stored in contiguous memory, and
+1. the internal representation of a string is not guaranteed to end with a null character.
+  This explains the existence of the string member function `c_str`, which returns a pointer to the value of the string in a form designed for C.
 
 If you have a vector that you'd like to initialize with elements from a C API,
 you can take advantage of the underlying layout compatibility of vectors and arrays by passing to the API the storage for the vector's elements:
 ```C++
-// C API: this function takes a pointer to an array of at most arraySize doubles and writes data to it.
+// C API:
+// this function takes a pointer to an array of at most arraySize doubles and writes data to it.
 // It returns the number of doubles written, which is never more than maxNumDoubles.
 size_t fillArray(double* pArray, size_t arraySize);
-vector<double> vd(maxNumDoubles); // create a vector whose size is maxNumDoubles
+std::vector<double> vd(maxNumDoubles);  // create a vector whose size is maxNumDoubles
 vd.resize(fillArray(&vd[0], vd.size()));
 ```
 This technique works only for vectors, because only vectors are guaranteed to have the same underlying memory layout as arrays.
 If you want to initialize a string with data from a C API, however, you can do it easily enough.
-Just have the API put the data into a `vector<char>`, then copy the data from the vector to the string:
+Just have the API put the data into a `std::vector<char>`, then copy the data from the vector to the string:
 ```C++
 size_t fillString(char* pArray, size_t arraySize);
-vector<char> vc(maxNumChars); // create a vector whose size is maxNumChars
-size_t charsWritten = fillString(&vc[0], vc.size()); // have fillString write
-string s(vc.begin(), vc.begin() + charsWritten);
+std::vector<char> vc(maxNumChars);  // create a vector whose size is maxNumChars
+size_t charsWritten = fillString(&vc[0], vc.size());  // have fillString write
+std::string s(vc.begin(), vc.begin() + charsWritten);
 ```
 
 # use the swap trick to trim excess capacity
@@ -221,7 +231,7 @@ Many applications use their data structure in a less chaotic manner. Their use o
 For applications that use their data strunctures in this way, a sorted vector is likely to offer better performance(in both time and space) than associative container.
 
 1. size matters.
-  Balanced binary tree node would holds not only a Widget, but also a pointer to the node's left child, a pointer to its right child, and (typically) a pointer to its parent.
+  Balanced binary tree node would hold not only a Widget, but also a pointer to the node's left child, a pointer to its right child, and (typically) a pointer to its parent.
   That means the space overhead would be at least three pointers.
   Assuming our data structures are big enough, they'll be split acroess multiple memory pages, but the vector will require fewer pages.
   Suppose sizeof(Widget) = 12 bytes, sizeof(pointer) = 4 bytes and a memory page holds 4096(4K) bytes.
