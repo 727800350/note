@@ -318,3 +318,32 @@ difference between accumulate and for each
 1. accumulate returns the summary we want directly, while for each returns a function object, and we must extract the summary information we want from this object.
 1. `for_each`'s function parameter is allowd to have side effects while accumulate's is not. STL standard says so.
 
+# distinguish among count, find, binary search, lower bound, upper bound and equal range
+If iterators define a sorted range, you can get speedy lookups via binary search, lower bound, upper bound and equal range. Then search employing equivalence.
+
+- binary search returns only a bool, whether the value was found.
+- lower bound reeturns an iterator pointing to either the first copy of that value (if it's found) or to the proper insertion location for that value (if it's not).
+  lower bound thus answers the question. "Is it there? If os, where is the first copy and if it is not, where should it go?".
+  ```C++
+  auto it = std::lower_bound(vw.begin(), vw.end(), w);
+  if (it != vw.end() && *it == w) {
+    // xxx
+  }
+  ```
+  The code above works most of the time, but it is not really correct.
+  This is a quality test, while lower bound searched using equivalence. Most of the time, test for equivalence and equality yield the same result.
+  ```C++
+  auto it = std::lower_bound(vw.begin(), vw.end(), w);
+  if (it != vw.end() && !(*it < w) && !(w < *it)) {
+    // xxx
+  }
+  ```
+- equal range returns a pair of iterators, the first equal to the iterator lower bound would return, the second equal to the one upper bound would return(i.e., the one-past-the-end iterator for the range of values equivalent to the one searched for).
+  equal range then returns a pair of iterators that demarcate the range of values equivalent to the one you searched for.
+  There are two important obervations about equal range's return values.
+    1. If the two iterators are the same, that means the range is empty: the value was not found.
+    1. The distance between its iterators is equal to the number of objects in the range, i.e., the objects with a value equivalent to the one that was searched for.
+  A well-named algorithm(notwithstanding, equivalent range would be better).
+
+If iterators define a unsorted range, you are limited to the linear-time algorithms, count, count if, find, find if. And they search using equality.
+
