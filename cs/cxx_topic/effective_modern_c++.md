@@ -136,6 +136,43 @@ In accord with the type deduction rule, the constness of ptr will be ignored, an
 The constness of what ptr points to is preserved during type deduction.
 
 ### array arguments
+In many contexts, an array decays into a pointer to its first element. This decay is what permits code like this to compile:
+```C++
+const char name[] = "J. P. Briggs";  // name's type is const char[13]
+const char* ptrToName = name;  // array decays to pointer
+```
+These types (`const char*` and `const char[13]`) are not the same, but because of the array-to-pointer decay rule, the code compilers.
+
+```C++
+template<typename T>
+void f(T param);
+
+f(name);  // T is deduced as const char*
+```
+Because array parameter declarations are treated as if they were pointer parameters, the type of the array that is passed to a template function by value is deduced to be a pointer type.
+That means that in the call f(name), its type parameter T is deduct to be `const char*`.
+
+Althouth functions can not declare parameters that are truly arrays, they can declare parameters that are references to arrays!
+```C++
+template<typename T>
+void f(T& param);
+
+f(name);  // T is deduced as const char[13], param's type is const char(&)[13]
+```
+
+And interestingly, the ability to declare references to arrays enables creation of a template that deduces the number of elements that an array contains:
+```C++
+// constexpr makes its result available during compilation.
+template<typename T, std::size_t N>
+constexpr std::size_t arraySize(T(&)[N]) noexcept {
+  return N;
+}
+
+int keyVals[] = {1, 3, 5};
+int mappedVals[arraySize(keyVals)];
+```
+
+### function arguments
 
 ## auto
 
