@@ -102,6 +102,40 @@ f(27);  // 27 is rvalue, so T is int, param's type is therefore int&&.
 ```
 
 ### case 3: ParamType is neither a pointer nor a reference
+```C++
+template<typename T>
+void f(T param);  // param is now passed by value
+```
+That means that param will be a copy of whatever is passed in - a completely new object.
+The fact that param will be a new object motivates the rules that govern how T is deduced from expr.
+
+1. As before, if expr's type is a reference, ignore the reference part.
+1. If, after ignoring expr's reference-ness, expr is const, ignore that, too. If it's volatile, also ignore that.
+
+```C++
+int x = 27;
+const int cx = x;
+const int& rx = x;
+
+f(x);  // T's and param's types are both int
+f(cx);  // T's and param's types are again both int
+f(rx);  // T's and param's types are still both int
+```
+
+It is important to recognize that const (and volatile) is ingored only for by-value-parameters.
+As we've seen, for parameters that are references-to- or pointers-to-const, the constness of expr is preserved during type deduction.
+```C++
+const char* const ptr = "Fun with pointers";  // ptr is const pointer to const object
+
+f(ptr)  // pass arg of type const char* const
+```
+Here, the right const declares ptr to be const, meaning ptr can not be made to point to a different location, nor can it be set to null.
+The left const says that what ptr points to - the character string is cont, hence can not be modified.
+When ptr is passed to f, the bits making up the pointer are copied into param.
+In accord with the type deduction rule, the constness of ptr will be ignored, and the type deduced for param will be `const char*`, i.e., a modifiable pointer to a const character string.
+The constness of what ptr points to is preserved during type deduction.
+
+### array arguments
 
 ## auto
 
