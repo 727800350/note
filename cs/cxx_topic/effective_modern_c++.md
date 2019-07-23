@@ -173,6 +173,60 @@ int mappedVals[arraySize(keyVals)];
 ```
 
 ### function arguments
+Arrays are not the only things in C++ that can decay into pointers.
+Function types can decay into function pointers, and everything we've discussed regarding type deduction for array applies to type deduction for functions.
+```C++
+void someFunc(int, double);  // someFunc's type is void(int, double)
+
+template<typename T>
+void f1(T param);
+
+template<typename T>
+void f2(T& param);
+
+f1(someFunc);  // param deduced as ptr-to-func, type is void (*)(int, double)
+f2(someFunc);  // param deduced as ref-to-func, type is void (&)(int, double)
+```
 
 ## auto
+With only one curious exception, auto type deduction is template type deduction.
+There is a direct mapping between template type deduction and auto type deduction.
+When a variable is declared using auto, auto plays the role of T in template, and type specifier for the variable acts as ParamType.
+So there are also three cases.
+
+- case 1: the type specifier is a pointer or reference, but not a universal reference.
+- case 2: the type specifier is a universal reference.
+- case 3: the type specifier is neither a pointer nor a reference.
+
+```C++
+auto x = 27;  // type specifier for x is auto, case 3
+const auto cx = x;  // type specifier for x is const auto, case 3
+const auto& rx = x;  // type specifier for x is const auto&, case 1
+
+auto&& uref1 = x;  // x is int and lvalue, so uref1's type is int&
+auto&& uref2 = cx;  // cx is const int and lvalue, so uref1's type is const int&
+auto&& uref3 = 27;  // 27 is int and rvalue, so uref3's type is int&&
+
+const char name[] = "R. N. Briggs";
+auto arr1 = name;  // arr1's type is const char*
+auto& arr2 = name;  // arr2's type is const char (&)[13]
+
+void someFunc(int, double);
+auto func1 = someFunc;  // func1's type is void(*)(int, double)
+auto& func2 = someFunc;  // func2's type is void(&)(int, double)
+```
+
+Now let's talk about the one special type deduction for auto.
+When the initializer for an auto-declared variable is enclosed in braces, the deduced type is `std::initializer_list`.
+```C++
+auto x = {11, 23, 9};  // x's type is std::initializer_list<int>
+
+template<typename T>
+void f_error(T& param);
+f_error({11, 23, 9});  // error, can not deduce type for T
+
+template<typename T>
+void f_succ(std::initializer_list<T> param);
+f_succ({11, 23, 9});  // T deduced as int, and param's type is std::initializer_list<int>
+```
 
