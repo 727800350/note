@@ -230,3 +230,26 @@ void f_succ(std::initializer_list<T> param);
 f_succ({11, 23, 9});  // T deduced as int, and param's type is std::initializer_list<int>
 ```
 
+## decltype
+Given a name or an expression, decltype tells you the name's or the expression's type.
+```C++
+int i = 33;
+decltype(i) j = i * 2;
+
+auto f = [](int a, int b){return a * b;};
+decltype(f) g = f;  // the type of a lambda function is unique and unnamed
+```
+
+In C++11, the primary use for decltype is declaring function templates where the functions's return type depends on its paramter types.
+For example, suppose we'd like to write a function that takes a container that supports indexing via [] plus an index, then authenticates the user before returning the result.
+`oprator[]` on a container of objects of type T typically returns a `T&`.
+
+```C++
+// works but requires refinement
+template<typename Container, typename Index>
+auto authAndAccess(Container& c, index i) -> decltype(c[i]) {
+  authenticateUser();
+  return c[i];
+}
+```
+
