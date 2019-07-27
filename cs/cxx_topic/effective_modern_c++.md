@@ -245,11 +245,64 @@ For example, suppose we'd like to write a function that takes a container that s
 `oprator[]` on a container of objects of type T typically returns a `T&`.
 
 ```C++
-// works but requires refinement
+// works since C++11, but requires refinement
 template<typename Container, typename Index>
 auto authAndAccess(Container& c, index i) -> decltype(c[i]) {
   authenticateUser();
   return c[i];
+}
+```
+The use of auto before the function name has nothing to do with the type deduction.
+Rather, it indicates that C++11's trailing return type syntax is being used, i.e., that the function's return type will be declared following the parameter list(after the "->").
+A trailing return type has the advantage that the function's paramters can be used in the specification of the return type.
+
+```C++
+// C++14, works but still requires refinement
+template<typename Conatainer, typename Index>
+decltype(auto) authAndAccess(Container& c, Index i) {
+  authenticateUser();
+  return c[i];
+}
+```
+auto sepecifies that the type is to be deduced, and decltype says that decltype rule should be used during the deduction.
+
+The use of `decltype(auto)` is not limited to function return types. It can be also be convenient for declaring variables when you want to apply the decltype type deduction rules.
+```C++
+Widget w;
+const Widget& cw = w;
+auto myWidget1 = cw;  // auto type deduction, myWidget1's type is Widget
+decltype(auto) myWidget2 = cw;  // decltype type deduction, myWidget2's type is const Widget
+```
+
+Look agagin at the declarition for the C++14 version of authAndAccess:
+```C++
+template<typename Conatainer, typename Index>
+decltype(auto) authAndAccess(Container& c, Index i);
+```
+The container is passed by lvalue-reference-to-non-const, because returning a reference to an element of the container permits clients to modify that container.
+But this also means it's not possible to pass rvalue containers to this function.
+Admittedly, passing an rvalue container to authAndAccess is an edge case.
+An rvalue container, being a temporary object, would typically be destroyed at the end of the statement.
+Still, it could make sense to pass a temporary object to authAndAccess. A client might simpy want to make a copy of an element in the temporary container, for example:
+```C++
+std::deque<std::string> makeStringDeque();  // factory function
+// make copy of 5th element of deque returned from makeStringDeque
+auto s = authAndAccess(makeStringDeque(), 5);
+```
+
+```C++
+// final C++14 version
+template<typename Container, typename Index>
+decltype(auto) authAndAccess(Container&& c, Index i) {
+  authenticateUser();
+  return std::forward<Container>(c)[i];
+}
+
+// final C++11 version
+template<typename Container, typename Index>
+auto authAndAccess(Container&& c, Index i) -> decltype(std::forward<Container>(c)[i]) {
+  authenticateUser();
+  return std::forward<Container>(c)[i];
 }
 ```
 
