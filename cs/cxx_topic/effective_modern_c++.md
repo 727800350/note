@@ -305,4 +305,27 @@ auto authAndAccess(Container&& c, Index i) -> decltype(std::forward<Container>(c
   return std::forward<Container>(c)[i];
 }
 ```
+## know how to view deduced types
+### compiler diagnostics
+An effective way to get a compiler to show a type it has deduced is to use that type in a way that leads to compilation problems.
+The error message reporting the problem is virtually sure to mention the type that's causing it.
+```C++
+template<typename T>
+class TD;  // declaration only for TD(Type Displayer)
+
+const int value = 42;
+auto x = value;
+auto y = &value;
+TD<decltype(x)> xType;
+TD<decltype(y)> yType;
+```
+Attempts to instantiate this template will elicit an error message, because there's no template definition to instantiate.
+```C++
+error: aggregate 'wcg::TD<int> xType' has incomplete type and cannot be defined
+error: aggregate 'wcg::TD<const int*> yType' has incomplete type and cannot be defined
+```
+
+### runtime output
+Use the Boost TypeIndex library.
+See example `code/thirdparty/boost/type_index_test.cc`
 
