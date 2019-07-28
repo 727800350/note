@@ -329,3 +329,31 @@ error: aggregate 'wcg::TD<const int*> yType' has incomplete type and cannot be d
 Use the Boost TypeIndex library.
 See example `code/thirdparty/boost/type_index_test.cc`
 
+# moving to modern C++
+## distinguish between () and {} when creating objects
+C++98 has no way to directly indicate that an STL container should be created holding a particular set of values.
+
+C++11 introduces **uniform initialization**: a single initialization syntax that can, at least in concept, be used anywhere and express everything.
+It's based on braces, and for that reason, I prefer the term **braced initialization**.
+
+A novel feature of braced initialization is that is prohibits implicit narrowing conversions among built-in types.
+```C++
+double x, y, z;
+int sum1(x + y + z);  // ok, value of expression truncated to an int
+int sum2{x + y + z};  // error, sum of doubles may not be expressible as int
+```
+
+Another noteworthy characteristic of braced initialization is its immunity to C++'s most vexing parse.
+A side effect of C++'s rule that anything that can be parsed as a declaration must be interpreted as one.
+The most vexing parse most frequently afflicts developers when they want to default-construct an object, but in inadvertently end up declaring a function instead.
+
+The root of the problem is that if you want to call a constructor with an argument, you can do it as usual.
+But if you want to call a Widget ctor with zero arguments using the analogous syntax, you declare a function instead of an object:
+```C++
+Widget w1(10);  // call Widget ctor with argument 10
+Widget w2();  // most vexing parse! declares a function named w2 that returns a Widget
+Widget w3{};  // calls Widget ctor with no args
+```
+
+During ctor overload resolution, braced initializers are matched to `std::initializer_list` parameters if at all possible, even if other ctors offer seemingly better matches.
+
