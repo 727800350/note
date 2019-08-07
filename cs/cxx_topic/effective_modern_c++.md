@@ -443,3 +443,48 @@ std::add_lvalue_reference<T>::type  // C++11: T -> T&
 std::add_lvalue_reference_t<T>  // C++14 equivalent
 ```
 
+## perfer deleted functions to private undefined ones
+An important adavantage of deleted functions is that any function may be delted, while only member functions may be private.
+For example, suppose we have a non-member function that takes an integer and returns whether it's a lucky number:
+```C++
+bool isLucky(int number);
+bool isLucky(char) = delete;  // reject char
+bool isLucky(bool) = delete;  // reject bool
+bool isLucky(double) = delete;  // reject double and float
+```
+
+Another trick that deleted functions can perform is to prevent use of template instantiations that should be disabled.
+For example, suppose you need a template that works with built-in pointers.
+```C++
+template<typename T>
+void processPointer(T* ptr);
+
+template<>
+void processPointer<void>(void*) = delete;
+
+template<>
+void processPointer<char>(char*) = delete;
+
+template<>
+void processPointer<const void>(const void*) = delete;
+
+template<>
+void processPointer<const char>(const char*) = delete;
+```
+
+Interestingly, if you have a function template inside a class, and you'd like to disable some instantiations by declaring them private(in C++98 style), you can't.
+Luckily, this issue doesn't arise for deleted functions, and they can also be deleted outside the class.
+```C++
+class Widget {
+ public:
+  template<typename T>
+  void processPointer(T* ptr) {}
+
+  template<>
+  void processPointer<void>(void*) = delete;
+};
+
+template<>
+void Widget::processPointer<char>(char*) = delete;  // still public and deleted
+```
+
