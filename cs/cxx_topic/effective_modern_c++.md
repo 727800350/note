@@ -357,3 +357,89 @@ Widget w3{};  // calls Widget ctor with no args
 
 During ctor overload resolution, braced initializers are matched to `std::initializer_list` parameters if at all possible, even if other ctors offer seemingly better matches.
 
+## prefer alias declarations to typedefs
+Alias declarations may be templaized (in which case they're called alias templates), while typedefs cannot.
+For example, consider defining a synonym for a linked list that uses a custom allocator, MyAlloc
+```C++
+// alias declaration
+// MyAllocList<T> is synonym for std::list<T, MyAlloc<T>>
+template<typename T>
+using MyAllocList = std::list<T, MyAlloc<T>>;
+
+MyAllocList<Widget> lw;  // client code
+```
+
+With a typedef, you pretty much have to create the cake from sratch:
+```C++
+// typedef declaration
+// MyAllocList<T>::type is synonym for std::list<T, MyAlloc<T>>
+template<typename T>
+struct MyAllocList {
+  typedef std::list<T, MyAlloc<T>> type;
+};
+
+MyAllocList<Widget>::type lw;  // client code
+```
+
+It gets worse. If you want to use the typedef inside a template for the purpose of creating a linked list holding objects of a type specifiied by a template parameter,
+you have to precede the typedef name with typename:
+```C++
+template<typename T>
+class Widget {
+ private:
+  typename MyAllocList<T>::type list;  // Widget<T> contains a MyAllocList<T> as a data member
+};
+```
+Here, `MyAllocList<T>::type` refers to a type that is dependent on a template type parameter T.
+`MyAllocList<T>::type` is thus a dependent type, and one of C++'s many endearing rulels is that **the name of dependent types must be preceded by typename**.
+
+If MyAllocList is defined as an alias template, this need for typenmae vanishes:
+```C++
+template<typename T>
+using MyAllocList = std::list<T, MyAlloc<T>>;
+
+template<typename T>
+class Widget {
+ private:
+  MyAllocList<T> list;  // no typename and no ::type
+};
+```
+To you, `MyAllocList<T>` may look just as dependent on the template parameter T.
+But when compilers process the Widget template and encounter the use of `MyAllocList<T>`, they know that `MyAllocList<T>` is the name of a type, because it is an alias template: it must name a type.
+`MyAllocList<T>` is thus a non-dependent type, and a typename specifier is neither required nor permitted.
+
+When compilers see `MyAllocList<T>::type` (i.e., use of the nested typedef) in the Widget template, on the other hand, they can not know for sure that it names a type.
+Because there might be a specialization of MyAllocList:
+```C++
+class Wine {};
+
+tempalte<>
+class MyAllocList<Wine> {
+ private:
+  enum class WineType { White, Red, Rose};
+  WineType type;  // in this class, type is a data member
+};
+```
+That's why compilers insist on your asserting that it is a type by preceding it with typename.
+
+C++11 gives you the tools to perform some kinds of transformations in the form of type traits, defined in the header `<type_traits>`.
+```C++
+std::remove_const<T>::type  // yields T from const T
+std::remove_reference<T>::type  // yields T from T& and T&&
+std::add_lvalue_reference<T>::type  // yields T& from T
+```
+If you apply these type traits to a type parameter inside a template, you'd also have to precede each use with typename.
+The reason is that C++ type traits are implemented as nested typedefs inside templatized structs. That's bad.
+
+So in C++14, alias implementations are included
+```C++
+std::remove_const<T>::type  // C++11: const T -> T
+std::remove_const_t<T>  // C++11 equivalent
+
+std::remove_reference<T>::type  // C++11: T&/T&& -> T
+std::remove_reference_t<T>  // C++14 equivalent
+
+std::add_lvalue_reference<T>::type  // C++11: T -> T&
+std::add_lvalue_reference_t<T>  // C++14 equivalent
+```
+
