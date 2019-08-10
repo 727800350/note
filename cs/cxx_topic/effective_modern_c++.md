@@ -488,3 +488,18 @@ template<>
 void Widget::processPointer<char>(char*) = delete;  // still public and deleted
 ```
 
+## declare functions noexcept if they won't emit exceptions
+By declaring a function, a method, or a lambda-function as noexcept, you specify that these won't throw an exception and if they throw, you do not care and let the program just crash.
+
+1. move operations (move assignment operator and move constructors)
+1. swap operations
+1. memory deallocators (operator delete, operator delete[])
+1. destructors (though these are implicitly noexcept(true) unless you make them noexcept(false))
+
+These functions should generally be noexcept, and it is most likely that library implementations can make use of the noexcept property.
+For example, std::vector can use non-throwing move operations without sacrificing strong exception guarantees.
+Otherwise, it will have to fall back to copying elements (as it did in C++98).
+
+This kind of optimization is on the algorithmic level and does not rely on compiler optimizations.
+It can have a significant impact, especially if the elements are expensive to copy.
+
