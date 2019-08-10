@@ -503,3 +503,36 @@ Otherwise, it will have to fall back to copying elements (as it did in C++98).
 This kind of optimization is on the algorithmic level and does not rely on compiler optimizations.
 It can have a significant impact, especially if the elements are expensive to copy.
 
+## use constexpr whenever possible
+Conceptually, constexpr indicates a value that's not only constant, it's known during compilation.
+```C++
+{
+  constexpr int size = 10;
+  std::array<int, size> data;  // ok
+}
+
+{
+  const int size = 10;
+  std::array<int, size> data;  // ok
+}
+```
+Simply put, all constexpr objects are const, but not all const objects are constexpr.
+
+constexpr functionss produce compile-time constants when they are called with compile-time constants.
+If they're called with values not known until runtime, they produce runtime values.
+```C++
+constexpr int foo(int i) noexcept {
+    return i + 5;
+}
+
+std::array<int, foo(5)> arr;  // ok
+
+int i = 10;
+foo(i); // Call is Ok
+    
+std::array<int, foo(i)> arr1;  // error
+```
+It means that the traditionally fairly strict line between work done during compilation and work done at runtime begins to blur,
+and some computations traditionally done at runtime can migrate to compile time.
+The more code taking part in the migration, the faster your software will run, compilation may take longer, however.
+
