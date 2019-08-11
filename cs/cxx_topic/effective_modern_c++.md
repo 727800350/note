@@ -536,3 +536,21 @@ It means that the traditionally fairly strict line between work done during comp
 and some computations traditionally done at runtime can migrate to compile time.
 The more code taking part in the migration, the faster your software will run, compilation may take longer, however.
 
+## make const member functions thread safe
+const 成员函数还是有可能修改内部状态, 比如使用mutable 修饰的成员变量.
+That means that there will be different threads reading and writing the same memory without synchronization, and that's the definition of a data race. The function has undefined behavior.
+需要使用mutex 来保护.
+
+## understand special member function generation
+The two copy operations(copy ctor and copy assignment) are independent: declaring one doesn't prevent compilers from generating the other.
+
+The two move operations(move ctor and move assignment) are not independent. If you declare either, that prevents compilers from generating the other.
+The rationale is that if you declare, say, a move ctor, you're indicating that the move ctor is different from the default memberwise move that compilers would generate.
+And if there's something wrong with memberwise move construnction, there'd probably be something wrong with memberwise move assignment, too.
+
+Futhermore, move operations won't be generated for any class that explicitly declares a copy operation.
+The justification is that declaring a copy operation (constructor or assignment) indicates that the normal approach to copying an object(memberwise copy) isn't appropriate for the class,
+and compilers figure that if memberwise copy isn't appropriate for the copy operations, memberwise move probably isn't appropriate for the move operations.
+
+Declare a move operation cause compilers to disable the copy operations. (The copy operations are disabled by deleting them).
+
