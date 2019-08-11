@@ -552,5 +552,25 @@ Futhermore, move operations won't be generated for any class that explicitly dec
 The justification is that declaring a copy operation (constructor or assignment) indicates that the normal approach to copying an object(memberwise copy) isn't appropriate for the class,
 and compilers figure that if memberwise copy isn't appropriate for the copy operations, memberwise move probably isn't appropriate for the move operations.
 
+C++11 does not generate move operations for a class with a user-declared destructor.
+
 Declare a move operation cause compilers to disable the copy operations. (The copy operations are disabled by deleting them).
+
+So default move operations are generated for classes(when needed) only if these three things are true:
+
+1. No copy operations are declared in the class
+1. No move operations are declared in the class
+1. No desctructor is declared in the class
+
+根据需要可以显示的要求compiler 生成默认的函数
+```C++
+class Widget {
+ public:
+  Widget(const Widget&) = default;
+  Widget& operator=(const Widget&) = defalut;
+
+  Widget(Widget&&) = default;
+  Widget& operator=(Widget&&) = defalut;
+};
+```
 
