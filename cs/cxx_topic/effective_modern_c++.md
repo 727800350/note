@@ -574,3 +574,51 @@ class Widget {
 };
 ```
 
+## use `std::shared_ptr` for shared-ownership resource management
+Both `std::unique_ptr` and `std::shared_ptr` supports custom deleters, but the design of this support differs.
+For `std::unique_ptr`, the type of the deleter is part of the type of the smart pointer. For `std::shared_ptr`, it's not.
+```C++
+auto loggingDel = [](Widget* pw) {
+  makeLogEntry(pw);
+  delete pw;
+};
+
+std::unique_ptr<Widget, decltype(loggingDel)> upw(new Widget, loggingDel);  // deleter type is part of ptr type
+std::shared_ptr<Widget> spw(new Widget, loggingDel);  // deleter type is not part of ptr type
+```
+
+The `std::shared_ptr` design is more flexible. Consider two `std::shared_ptr<Widget>`s, each with a custom deleter of a different type.
+```C++
+auto del1 = [](Widget* pw) { ... };
+auto del2 = [](Widget* pw) { ... };
+
+std::shared_ptr<Widget> pw1(new Widget, del1);
+std::shared_ptr<Widget> pw2(new Widget, del2);
+```
+Because pw1 and pw2 have the same type, they can be placed in a container of objects of that type `std::vector<std::shared_ptr<Widget>>`.
+Thet could also be assigned to one another.
+None of these things could be done with `std::unique_ptr` that differ in the types of their custom deleters.
+
+There is a control block for each object managed by `std::shared_ptr`.
+Control block contains reference count, weak count, a copy of the custom deleter, if one has been specified.
+![control block](http://senlinzhan.github.io/images/data-structure/sh2.png)
+
+`std::enable_shared_from_this`: a template for a base class you inherit from if you want a class managed by `std::shared_ptr` to be able to safely create a `std::shared_ptr` from a `this` pointer.
+```C++
+class Widget : public std::enable_shared_from_this<Widget> {
+ public:
+  void process(std::vector<std::shared_ptr<Widget>* processed_widgets) {
+    // xxxx
+    processed_widgets.emplace_back(std::shared_from_this());
+  }
+};
+```
+`std::enable_shared_from_this` defines a member function that creates a `std::shared_ptr` to the current object without duplicating control blocks.
+The design relies on the current object having an associated control block. For that to be the case, there must be an existing `std::shared_ptr`.
+
+Another difference from `std::unique_ptr`, `std::shared_ptr` has an API that's designed only for pointers to single objects.
+There's no `std::shared_ptr<T[]>`, but from time to time, "clever" programmers stumble on the idea of using `std::shared_ptr<T>` to point to an array,
+specifying a custom deleter to perform an array delete.
+This can be made to compile, but it's a horrible idea. `std::shared_ptr` offers no operator[].
+Given the variety of C++11 alternatives to `std::vector`, declaring a smart pointer to a dump array is almost always a sign of bad design.
+
