@@ -653,3 +653,10 @@ A reasonable design is for each subject to hold a container of `std::weak_ptr` t
 
 ### scenario 3: `std::shared_ptr` cycle
 
+## prefer `std::make_unique` and `std::make_shared` to direct use of new
+The size and speed advantages of `std::make_shared` vis-à-vis direct use of new stem from `std::shared_ptr`'s control block being placed in the same chunk of memory as the managed object.
+When that object's reference count goes to zero, the object is destroyed (i.e., its destructor is called). However, the memory it occupies can't be released until the control block has also been destroyed, because the same chunk of dynamically allocated memory contains both.
+
+As long as `std::weak_ptr`s refer to a control block (i.e., the weak count is greater than zero), that control block must continue to exist.
+And as long as a control block exists, the memory containing it must remain allocated. The memory allocated by a `std::shared_ptr` make function, then, can't be deallocated until the last `std::shared_ptr` and the last `std::weak_ptr` referring to it have been destroyed.
+
