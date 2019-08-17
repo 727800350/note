@@ -37,16 +37,16 @@ IRB.conf[:HISTORY_FILE] = "#{ENV['HOME']}/.irb-save-history"
 
 ## Data Manipulation commands
 - `put 'table', 'row', 'family:qualifier','value'`
+
 - `get 'table', 'row'`
 - `get 'table', 'row', 'family'`
 - `get 'table', 'row', 'family:qualifier'`
-- MAXLENGTH 限制返回的数据的长度 `get 'testtable', 'rowlong', MAXLENGTH => 60`
+
+- `scan 'hbase:meta', LIMIT => 5, MAXLENGTH => 60` 查看所有表的 region 信息
+- `scan 'hbase:meta', {FILTER => "PrefixFilter('table_name')"}`: 特定表单region 信息
 
 - `delete 'table', 'row', 'family:qualifer'`
 - `deleteall 'table', 'row'`
-
-- `scan 'hbase:meta', LIMIT => 5` 查看所有表的 region 信息
-- `scan 'hbase:meta', {FILTER => "PrefixFilter('table_name')"}`: 特定表单region 信息
 
 ## HBase surgery tools
 - `move 'ENCODED_REGIONNAME', 'SERVER_NAME'`: 将一个region move 到指定的region server 上, ENCODED REGIONNAME 不带最后的`.`

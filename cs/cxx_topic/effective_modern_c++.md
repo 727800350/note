@@ -622,3 +622,34 @@ specifying a custom deleter to perform an array delete.
 This can be made to compile, but it's a horrible idea. `std::shared_ptr` offers no operator[].
 Given the variety of C++11 alternatives to `std::vector`, declaring a smart pointer to a dump array is almost always a sign of bad design.
 
+## use `std::weak_ptr` for `std::shared_ptr` like pointers that can dangle
+### scenario 1: cache
+Consider a factory function that produces smart pointers to read-only objects based on a unique ID.
+```C++
+std::unique_ptr<const Widget> loadWidget(WidgetID id);
+```
+If loadWidget is an expensive call, a reasonable optimization would be using a cache.
+For this caching factory function, a `std::unique_ptr` return type is not a good fit. Callers should certainly receive smart pointers to cached objects, at callers should certainly determine the lifetime of those objects, but the cache needs a pointer to the objects, too.
+The cache's pointers need to be able to detect when they dangle, because when factory clients are finished using an object returned by the factory, that object will be destroyed, and the corresponding cache entry will dangle.
+The cached pointers should therefore be `std::weak_ptr`.
+```C++
+// 可以继续改进, 删除已经无用的
+std::shared_ptr<const Widget> fastLoadWidget(WidgetID id) {
+  static std::unordered_map<WidgetID, std::weak_ptr<const Widget>> cache;
+  auto obj = cache[id].lock();  // obj is std::shared_ptr to cached object or null if the object is not in cache
+  if (!obj) {
+    obj = loadWidget(id);
+    cache[id] = obj;
+  }
+  return obj;
+}
+```
+
+### scenario 2: observer design pattern
+The primary components of this pattern are subjects(objects whose state may change) and observers(objects to be notified when state changes occur).
+In most implementations, each subject contains a data member holding pointers to its observers. That makes it easy for subjects to issue state change notifications.
+Subjects have no interest in controlling the lifetime of their observers(i.e., when they are destroyed), but they have a great interest in making sure that if an observer gets destroyed, subjects don't try to subsequently access it.
+A reasonable design is for each subject to hold a container of `std::weak_ptr` to its observers.
+
+### scenario 3: `std::shared_ptr` cycle
+
