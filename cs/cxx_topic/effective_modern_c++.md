@@ -630,7 +630,8 @@ std::unique_ptr<const Widget> loadWidget(WidgetID id);
 ```
 If loadWidget is an expensive call, a reasonable optimization would be using a cache.
 For this caching factory function, a `std::unique_ptr` return type is not a good fit. Callers should certainly receive smart pointers to cached objects, at callers should certainly determine the lifetime of those objects, but the cache needs a pointer to the objects, too.
-The cache's pointers need to be able to detect when they dangle, because when factory clients are finished using an object returned by the factory, that object will be destroyed, and the corresponding cache entry will dangle.
+The cache's pointers need to be able to detect when they dangle, because when factory clients are finished using an object returned by the factory,
+that object will be destroyed, and the corresponding cache entry will dangle.
 The cached pointers should therefore be `std::weak_ptr`.
 ```C++
 // 可以继续改进, 删除已经无用的
@@ -648,21 +649,25 @@ std::shared_ptr<const Widget> fastLoadWidget(WidgetID id) {
 ### scenario 2: observer design pattern
 The primary components of this pattern are subjects(objects whose state may change) and observers(objects to be notified when state changes occur).
 In most implementations, each subject contains a data member holding pointers to its observers. That makes it easy for subjects to issue state change notifications.
-Subjects have no interest in controlling the lifetime of their observers(i.e., when they are destroyed), but they have a great interest in making sure that if an observer gets destroyed, subjects don't try to subsequently access it.
+Subjects have no interest in controlling the lifetime of their observers(i.e., when they are destroyed),
+but they have a great interest in making sure that if an observer gets destroyed, subjects don't try to subsequently access it.
 A reasonable design is for each subject to hold a container of `std::weak_ptr` to its observers.
 
 ### scenario 3: `std::shared_ptr` cycle
 
 ## prefer `std::make_unique` and `std::make_shared` to direct use of new
 The size and speed advantages of `std::make_shared` vis-à-vis direct use of new stem from `std::shared_ptr`'s control block being placed in the same chunk of memory as the managed object.
-When that object's reference count goes to zero, the object is destroyed (i.e., its destructor is called). However, the memory it occupies can't be released until the control block has also been destroyed, because the same chunk of dynamically allocated memory contains both.
+When that object's reference count goes to zero, the object is destroyed (i.e., its destructor is called).
+However, the memory it occupies can't be released until the control block has also been destroyed, because the same chunk of dynamically allocated memory contains both.
 
 As long as `std::weak_ptr`s refer to a control block (i.e., the weak count is greater than zero), that control block must continue to exist.
-And as long as a control block exists, the memory containing it must remain allocated. The memory allocated by a `std::shared_ptr` make function, then, can't be deallocated until the last `std::shared_ptr` and the last `std::weak_ptr` referring to it have been destroyed.
+And as long as a control block exists, the memory containing it must remain allocated.
+The memory allocated by a `std::shared_ptr` make function, then, can't be deallocated until the last `std::shared_ptr` and the last `std::weak_ptr` referring to it have been destroyed.
 
 ## understand std::move and std::forward
 std::move doesn't move anything, std::forward doesn't forward anything. At runtime, neither does anyting at all. They generate no executable, not a single byte.
-They are merely function templates that perform casts. **std::move unconditionally casts its argument to an rvalue, while std::forward perform this cast only if its argument was initialized with an rvalue.**
+They are merely function templates that perform casts.
+**std::move unconditionally casts its argument to an rvalue, while std::forward perform this cast only if its argument was initialized with an rvalue.**
 ```C++
 // C++14, still in namespace std
 template<typename T>
@@ -693,8 +698,65 @@ logAndProcess(w);  // call with lvalue
 logAndProcess(std::move(w));  // call with rvalue
 ```
 Inside logAndProcess, param is always a lvalue, so if without std::forward, every call to process will thus want to invoke the lvalue overloaded for process.
-To prevent this, we need a mechanism for param to be cast to an rvalue if and only if the argument with which param was initialized(the argument passed to logAndProcess) was an rvalue. This is precisely what std::forward does. Thas's why std::forward is a conditional cast.
+To prevent this, we need a mechanism for param to be cast to an rvalue if and only if the argument with which param was initialized(the argument passed to logAndProcess) was an rvalue.
+This is precisely what std::forward does. Thas's why std::forward is a conditional cast.
 
 You may wonder how std::forward can know whether its argument was initialized with an rvalue.
 The brief answer is that that information is encoded in logAndProcess's template parameter T. That parameter is passwd to std::forward, which recovers the encoded information.
+
+## distinguish universal references from rvalue references
+If a function template parameter has type `T&&` for a deduced type T, or if an object is defined using `auto&&`, the parameter or object is a universal reference.
+```C++
+template<typename T>
+void f(T&& param);  // universal reference
+
+template<typename T>
+void f(std::vector<T>&& param);  // rvalue reference
+
+template<typename T>
+void f(const T&& param);  // rvalue reference
+```
+
+Being in a template doesn't guarantee the presence of type deduction, consider this `push_back` member function in `std::vector`:
+```C++
+// from C++ standards
+template<class T, class Allocator = allocator<T>>
+class vector {
+ public:
+  void push_back(T&& x);
+  ...
+};
+```
+`push_back`'s parameter certainly has the right form for a universal reference, but there's no type deduction in this case.
+That's because push back can't exist without a particular vector instantiation for it to be part of, and the type of that instantiation fully determines the declaration for push back.
+```C++
+std::vector<Widget> v;
+
+class vector<Widget, allocator<Widget>> {
+ public:
+  void push_back(Widget&& x);  // rvalue reference
+};
+```
+Now we can see that push back employs no type deduction.
+
+In contrast, the conceptually similar `emplace_back` member function in std::vector does employ type deduction.
+```C++
+// still from C++ standards
+template<class T, class Allocator = allocator<T>>
+class vector {
+  template<class ... Args>
+  void emplace_back(Args&&... args);  // universal reference
+  ...
+};
+```
+
+C++14 lambda expressions may declare auto&& parameters.
+For example, if you wanted to write a C++14 lambda to record the time taken in a arbitrary function invocation, you could do this:
+```C++
+auto timeFunctionInvocation = [](auto&& func, auto&&... params) {
+  start timer;
+  std::forward<decltype(func)>(func)(std::forward<decltype(params)>(params)...);  // invoke func on params
+  stop timer and record elapsed time;
+};
+```
 
