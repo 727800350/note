@@ -660,3 +660,41 @@ When that object's reference count goes to zero, the object is destroyed (i.e., 
 As long as `std::weak_ptr`s refer to a control block (i.e., the weak count is greater than zero), that control block must continue to exist.
 And as long as a control block exists, the memory containing it must remain allocated. The memory allocated by a `std::shared_ptr` make function, then, can't be deallocated until the last `std::shared_ptr` and the last `std::weak_ptr` referring to it have been destroyed.
 
+## understand std::move and std::forward
+std::move doesn't move anything, std::forward doesn't forward anything. At runtime, neither does anyting at all. They generate no executable, not a single byte.
+They are merely function templates that perform casts. **std::move unconditionally casts its argument to an rvalue, while std::forward perform this cast only if its argument was initialized with an rvalue.**
+```C++
+// C++14, still in namespace std
+template<typename T>
+decltype(auto) move(T&& param) {
+  using ReturnType = remove_reference_t<T>&&;
+  return static_cast<ReturnType>(param);
+}
+```
+The returned rvalues are candidates for moving, so applying std::move to an object tells the compiler that this object is eligible to be moved from.
+That's why std::move has the name it does: to make it easy to designate objects that may be moved from.
+
+1. Don't declare objects const if you want to able to move from them. Move requests on const objects are silently transformed into copy operations.
+1. std::move not only doesn't actually move anything, it doesn't even guarantee that the object is it's casting will be eligible to moved.
+
+Recall how std::forward is typically used. The most common scenario is a function template taking a universal reference parameter that is to be passed to another function.
+```C++
+void process(const Widget& lval);  // process lvalues
+void process(Widget&& rval);  // process rvales
+
+template<typename T>
+void logAndProcess(T&& param) {
+  LOG(INFO) << "calling process at " << utime();
+  process(std::forward<T>(param));
+}
+
+Widget w;
+logAndProcess(w);  // call with lvalue
+logAndProcess(std::move(w));  // call with rvalue
+```
+Inside logAndProcess, param is always a lvalue, so if without std::forward, every call to process will thus want to invoke the lvalue overloaded for process.
+To prevent this, we need a mechanism for param to be cast to an rvalue if and only if the argument with which param was initialized(the argument passed to logAndProcess) was an rvalue. This is precisely what std::forward does. Thas's why std::forward is a conditional cast.
+
+You may wonder how std::forward can know whether its argument was initialized with an rvalue.
+The brief answer is that that information is encoded in logAndProcess's template parameter T. That parameter is passwd to std::forward, which recovers the encoded information.
+
