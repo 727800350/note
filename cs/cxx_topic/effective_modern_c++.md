@@ -760,3 +760,96 @@ auto timeFunctionInvocation = [](auto&& func, auto&&... params) {
 };
 ```
 
+## use std::move on rvalue references, std::forward on universal references
+```C++
+class Widget {
+ public:
+  Widget(Widget&& rhs) : name(std::move(rhs.name)), p(std::move(rhs.p)) {}
+  ...
+ private:
+  std::string name;
+  std::shared_ptr<SomeDataStructure> p;
+};
+```
+
+```C++
+class Widget {
+ public:
+  template<typename T>
+  void setName(T&& newName) {
+    name = std::forward<T>(newName);
+    ...
+  }
+};
+```
+In short, rvalue references should be unconditionally cast to rvalues (via std::move) when forwarding them to other functions, because they're always bound to rvalues.
+And universal references should be conditionally cast to rvalues (via std::forward) when forwarding them, because they're only sometimes bound to rvalues.
+
+If you're in a function that returns by value, and you're returning an object bound to an rvalue reference or a universal reference,
+you'll want to apply std::move or std::forward when you return the reference.
+```C++
+Matrix operator+(Matrice&& lhs, const Matrix& rhs) {
+  lhs += rhs;
+  return std::move(lhs);
+}
+```
+Assume that Matrix has move constructor, lhs will be moved into the function's return value location.
+If Matrix does not support moving, lhs will simply be copied, nothing hurts.
+
+```C++
+template<typename T>
+Fraction reduceAndCopy(T&& frac) {
+  frac.reduce();
+  return std::forward<T>(frac);  // move rvalue into return value, copy lvalue
+}
+```
+
+有些人就会滥用这个特性来过度优化.
+```C++
+// "copying" version of makeWidget
+Widget makeWidget() {
+  Widget w;
+  return w;  // "copy" w into return value
+}
+
+// "moving" version of makeWidget
+Widget makeWidget() {
+  Widget w;
+  return std::move(w);  // "move" w into return value, wrong, do not do this
+}
+```
+The standardization Committe is way ahead of such programmers when it comes to this kind of optimization.
+It was recognized long ago that the "copying" version of makeWidget can avoid the need to copy the local variable w by constructing it the memory allocated for the function's return value.
+This is also known as the **return value optimization(RVO)**, and it's been expressly blessed by the C++ Standard with two conditions:
+
+1. The type of the local object is the same as that returned by the function
+1. The local object is what's being returned directly.
+
+The "copying" version has fulled both conditions.
+
+While the "moving" version does not. What's being returned here isn't the local object w, it's a reference to w, the result of std::move(w).
+So compilers must move w into the function's return value location.
+
+The part of the standard blessing the RVO goes on to say that if the conditions for RVO are met, but compilers choose not to perform copy elision,
+the object being returned must be treated as an rvalue.
+In effect, the Standart requires that when RVO is permitted, either copy elision takes places or std::move is implicitly applied to local objects being returned.
+
+The situation is similar for by-value function parameters.
+They're not eligible for copy elision with respect to their function's return value, but compilers must treat them as rvalues if they're returned.
+As a result, if your souce code lookes like this:
+```C++
+// by value parameter of same type as function's return
+Widget makeWidget(Widget w) {
+  ...
+  return w;
+}
+```
+Compilers must treat as if it had been written this way:
+```C++
+Widget makeWidget(Widget w) {
+  ...
+  return std::move(w);  // treat as rvalue
+}
+```
+所以完全没有必要自己显示的加 std::move, 这样反而不利于编译器的RVO.
+
