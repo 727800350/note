@@ -853,3 +853,51 @@ Widget makeWidget(Widget w) {
 ```
 所以完全没有必要自己显示的加 std::move, 这样反而不利于编译器的RVO.
 
+## avoid overloading on universal references
+Functions taking universal references are the greediest functions in C++.
+They instantiate to create exact matches for almost any type of argument.
+This is why combining overloading and universal references is almost always a bad idea.
+```
+std::set<std::string> names;
+template<typename T>
+void logAndAdd(T&& name) {
+  LOG(INFO) << time(nullptr);
+  names.emplace(std::forward<T>(name));
+}
+
+std::string nameFromIdx(int idx);
+
+void logAndAdd(int idx) {
+  logAndAdd(nameFromIdx(idx));
+}
+
+std::string petName("Darla");
+logAndAdd(petName);  // copy lvalue into set
+logAndAdd(std::string("Persephone"));  // move rvalue instread copying it
+logAndAdd("Patty Dog");  // create std::string in set instead of copying a temporary std::string
+logAndAdd(22);  // calls int overload
+
+short nameIdx = 2;
+logAndAdd(nameIdx);  // error, function template 会实例出exact match 的 void logAndAdd(short& idx)
+```
+
+## familiarize yourself with alternatives to overloading on universal references
+By default, all templates are enabled, but a template using `std::enable_if` is enabled only if the condition specified by `std::enable_if` is satified.
+
+```C++
+// the templatized constructor should be enabled only if T is a type other than Person
+class Person {
+ public:
+  template<typename T, typename = std::enable_if_t<!std::is_base_of_v<Person, std::decay_t<T>> && !std::is_integral_v<std::remove_reference_t<T>>>>
+  explict Person(T&& name) : name_(std::forward<T>(name)) {
+    // assert during compilation
+    static_assert(std::is_constructible<std::string, T>::value, "Parameter name can't be used to construct a std::string");
+  }
+
+  explict Person(int idx) : name_(nameFromIndx(idx)) {}
+
+ private:
+  std::string name_;
+};
+```
+
