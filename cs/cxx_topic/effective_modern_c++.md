@@ -857,7 +857,7 @@ Widget makeWidget(Widget w) {
 Functions taking universal references are the greediest functions in C++.
 They instantiate to create exact matches for almost any type of argument.
 This is why combining overloading and universal references is almost always a bad idea.
-```
+```C++
 std::set<std::string> names;
 template<typename T>
 void logAndAdd(T&& name) {
@@ -900,4 +900,61 @@ class Person {
   std::string name_;
 };
 ```
+
+## understand reference collapsing
+```C++
+template<typename T>
+void func(T&& param);
+```
+The deduced template parameter T will encode whether the argument passwd to param was an lvalue or an rvalue.
+The encoding mechanism is simple, when an lvalue is passwd as an argument, T is deduced to be an lvalue reference, when an rvalue is passed, T is deduced to be a non-reference.
+```C++
+Widget widgetFactory();  // function returning rvalue
+Widget w;  // an lvalue
+func(w);  // call func with lvalue, T deduced to be Widget&
+func(widgetFactory());  // call func with rvalue, T deduced to be Widget
+```
+
+If either reference is an lvalue reference, the result is an lvalue reference. Otherwise(i.e., if both are rvalue references) the result is an rvalue reference.
+
+A common use case of std::forward and universal reference lookes like this:
+```C++
+template<typename T>
+void f(T&& param) {
+  someFunc(std::forward<T>(param));
+}
+```
+Here is how std::forward can be implemented
+```C++
+// C++14, in namespace std
+template<typename T>
+T&& forward(remove_refrence_t<T>& param) {
+  retrun static_cast<T&&>(param);
+}
+```
+Suppose that the argument passed to f is an lvalue of type Widget. T will be deduced as Widget&, and the call to std::forward will instantiate as `std::forward<Widget&>` yielding this:
+```C++
+Widget& && forward(remove_reference_t<Widget&>& param) {
+  return static_cast<Widget& &&>(param);
+}
+
+// becomes
+Widget& forward(Widget& param) {
+  return static_cast<Widget&>(param);
+}
+```
+We can see, when an lvalue argument is passed to the function template f, std::forward is instantiated to take and return an lvalue reference.
+
+Suppose that the argument passed to f is an rvalue of type Widget, T will be deduced as Widget, and the call to std::forward will instantiate as `std::forward<Widget>` yielding this:
+```C++
+Widget&& forward(remove_reference_t<Widget>& param) {
+  return static_cast<Widget&&>(param);
+}
+
+// becomes
+Widget&& forward(Widget& param) {
+  return static_cast<Widget&&>(param);
+}
+```
+In this case, std::forward will turn f's parameter param(an lvalue) into an rvalue. The end result is that an rvalue agrument passed to f will be forwarded to someFunc as an rvalue.
 
