@@ -958,3 +958,61 @@ Widget&& forward(Widget& param) {
 ```
 In this case, std::forward will turn f's parameter param(an lvalue) into an rvalue. The end result is that an rvalue agrument passed to f will be forwarded to someFunc as an rvalue.
 
+# Lambda Expressions
+## use init capture to move objects into closures
+```C++
+class Widget {
+ public:
+  bool isValidated() const;
+};
+
+auto pw = std::make_unique<Widget>();
+auto func = [p = std::move(pw)](){
+  return p->isValidated();
+};
+```
+The name p refers to a data member in the closure class, while the name pw refers to the object declared above the lambda.
+
+## use decltype on auto&& parameters to std::forward them
+One of the most exciting features of C++14 is generic lambdas --- lambdas that use auto in their parameter specifications.
+The implementation of this feature is straight-forward: operator().
+```C++
+auto f = [](auto&& x){return func(normalize(std::forward<decltype(x)>(x)));};
+
+// 产生的对应的 closure class
+class SomeCompilerGeneratedClassName {
+ public:
+  template<typename T>
+  auto operator()(T&& x) const {
+    return func(normalize(std::forward<decltype(x)>(x)));
+  }
+};
+
+template<typename T>
+T&& forward(remove_reference_t<T>& param) {
+  return static_cast<T&&>(param);
+}
+```
+If client code wants to perfect-forward an rvalue of type Widget, it noramlly instantiates std::forward with the type Widget(i.e., a non-reference type).
+But now, what we have is `std::forward<decltype(x)>`, that is `std::forward<Widget&&>` with T as Widget&&, the forward is instantiated as following:
+```C++
+Widget&& && forward(remove_reference_t<Widget&&>& param) {
+  return static_cast<Widget&& &&>(param);
+}
+
+Widget&& forward(Widget& param) {
+  return static_cast<Widget&&>(param);
+}
+```
+If you compare this instantiation with the one that results when std::forward is called with T as Widget, you'll see that they're identical. That's good news.
+
+```C++
+// variadic lambda
+auto f = [](auto&&... params) {
+  return func(normalize(std::forward<decltype(params)>(params)...));
+};
+```
+
+## prefer lambdas to std::bind
+In C++11, lambdas are almost always a better choice that std::bind. As of C++14, the case for lambdas isn't just stronger, it's downright ironclad.
+
