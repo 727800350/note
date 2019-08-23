@@ -1016,3 +1016,75 @@ auto f = [](auto&&... params) {
 ## prefer lambdas to std::bind
 In C++11, lambdas are almost always a better choice that std::bind. As of C++14, the case for lambdas isn't just stronger, it's downright ironclad.
 
+# The Concurrency API
+## use std::atomic for concurrency, volatile for special memory
+- std::atomic is useful for concurrent programming, but not for accessing special memory.
+- volatile is useful for accessing special memory, but not for concurrent programming.
+
+```C++
+volatile int vi(0);
+vi = 10;
+std::cout << vi;
+++vi;
+--vi;
+```
+During execution of this code, if other threads are reading the value of vi, they may see anything, e.g., -12, 68, 4090727 - anything!
+Such code would have undefined behavior, because these statements modify vi, so if other threads are reading vi at the same time,
+there are simultaneous readers and writers of memory that's neither std::atomic nor protected by mutex, and that's the definition of a data race.
+
+As a general rule, compilers are permitted to reorder such unrelated assignments. That is, given this sequence of assignments (where a, b, x and y correspond to independent variables).
+```C++
+a = b;
+x = y;
+```
+compilers may generally reorder them as follows:
+```C++
+x = y;
+a = b;
+```
+Even if compilers don't reorder them, the underlying hardware might do it.
+However, the use of std::atomic imposes restrictions on how code can be reordered, and one such restriction is that no code that precedes a write of a std::atomic variable may take place afterwards.
+```C++
+std::atomic<bool> valAvailable(false);
+auto imptValue = computeImportantValue();
+valAvailable = true;  // tell other task is's available
+```
+So not only must compilers retain the order of the assignments to imptValue and valAvailable, they must generate code that ensures that the underlying hardware does, too.
+
+Declaring valAvailable as volatile doesn't impose the same reordering restrictions.
+No guarantee of operation atomicity and insufficient restrictions on code reordering --- explain why volatile's not useful for concurrent programming.
+
+volatile is for telling compilers that they're dealing with memory that doesn't behave normally.
+
+Normal memory has the following characteristic:
+
+1. if you write a value to a memory location, the value remains there until something overwrites it.
+1. if you write a value to a memory location, never read it and then write to that memory location again, the first write can be eliminated, because it was never used.
+
+```C++
+volatile int x = 0;
+auto y = x;  // y is deduce as int
+y = x;
+x = 10;
+x = 20;
+
+// compilers can treat if as if it had been written like this:
+auto y = x;
+x = 20;
+```
+Such optimizations are valid only if memory behaves normally. Special memory doesn't.
+volatile is the way we tell compilers that we're dealing with special memory. Its meaning to compilers is "Don't perform any optimizaiton on operatons on this memory".
+
+Compilers are permitted to eliminate such redundant operations on std::atomic.
+
+volatile and std::atomic can be used together for special memory that is concurrently accessed by multiple threads.
+
+```C++
+std::atomic<int> x(0);
+std::atomic<int> y(x.load());
+y.store(x.load());
+```
+Copy operatons for std::atomic are deleted. Because read x and write y are two independent atomic operations, hardware can't do that in a single atomic operation.
+So copy constructor isn't supported by std::atomic, copy assignment is deleted for the same reason.
+And as copy operations are deleted, move operations are deleted too.
+
