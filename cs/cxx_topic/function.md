@@ -2,9 +2,9 @@
 ref: [深入理解C语言函数指针](http://www.cnblogs.com/windlaughing/archive/2013/04/10/3012012.html)
 
 ```C++
-int myFun(int x){
-	fprintf(stdout, "myFun: %d\n", x);
-	return x;
+int myFun(int x) {
+  fprintf(stdout, "myFun: %d\n", x);
+  return x;
 }
 ```
 一个数据变量的内存地址可以存储在相应的指针变量中,函数的首地址也可以存储在某个函数指针变量中. 这样,我就可以通过这个函数指针变量来调用所指向的函数了.
@@ -69,12 +69,12 @@ funP(400);
 `[ capture ] ( params ) { body }`
 
 - capture 指定了在可见域范围内 lambda 表达式的代码内可见得外部变量的列表,具体解释如下
-	- `[]`: 未定义变量.试图在Lambda内使用任何外部变量都是错误的.
-	- `[x, &y]`: x 按值捕获, y 按引用捕获.
-	- `[&]`: 用到的任何外部变量都隐式按引用捕获
-	- `[=]`: 用到的任何外部变量都隐式按值捕获
-	- `[&, x]`: x显式地按值捕获. 其它变量按引用捕获
-	- `[=, &z]`: z按引用捕获. 其它变量按值捕获
+  - `[]`: 未定义变量.试图在Lambda内使用任何外部变量都是错误的.
+  - `[x, &y]`: x 按值捕获, y 按引用捕获.
+  - `[&]`: 用到的任何外部变量都隐式按引用捕获
+  - `[=]`: 用到的任何外部变量都隐式按值捕获
+  - `[&, x]`: x显式地按值捕获. 其它变量按引用捕获
+  - `[=, &z]`: z按引用捕获. 其它变量按值捕获
 - params 指定 lambda 表达式的参数
 
 ```C++
@@ -94,11 +94,11 @@ std::bind 是一个通用的函数适配器,它接受一个可调用对象,生�
 closure implementation using lambda:
 ```C++
 #include <functional>
-std::function<int(void)> func(int x){
-	int state = x;
-	return [&](){
-		return state++;
-	};
+std::function<int(void)> func(int x) {
+  int state = x;
+  return [&]() {
+    return state++;
+  };
 }
 
 auto f = func(100);
@@ -109,26 +109,20 @@ fprintf(stdout, "%d\n", f()); // 102
 
 # Functors: Function Objects in C++
 ```C++
-#include <iostream>
+class myFunctorClass {
+ public:
+  myFunctorClass(int x) : x_(x) {}
+  // C++ allows you to overload operator(), the "function call" operator
+  int operator()(int y) {
+    return x_ + y;
+  }
 
-class myFunctorClass{
-public:
-	myFunctorClass(int x) : _x( x ) {}
-	// C++ allows you to overload operator(), the "function call" operator
-	int operator()(int y){
-		return _x + y;
-	}
-
-private:
-	int _x;
+ private:
+  int x_;
 };
 
-int main(){
-	myFunctorClass addFive(5);
-	std::cout << addFive(6);
-
-	return 0;
-}
+myFunctorClass addFive(5);
+std::cout << addFive(6);
 ```
 the act of constructing an object lets you give the functor information that it can use inside the implementation of its function-like behavior(when the functor is called through operator()).
 
@@ -137,21 +131,19 @@ the act of constructing an object lets you give the functor information that it 
 If you understand **closure as a reference to a function that has an embedded, persistent, hidden and unseparable context(memory, state).**
 
 ```C++
-class summer{
-public:
-	summer() : sum(0) {}
-	int operator() (int x){
-		return sum += x;
-	}
-private:
-	int sum; // sum 保存求和的状态
+class summer {
+ public:
+  summer() : sum_(0) {}
+  int operator() (int x){
+    return sum_ += x;
+  }
+ private:
+  int sum_;  // sum 保存求和的状态
 };
 
-// make a closure
 summer adder;
-// use closure
 adder(3);
-adder(4);
-std::cout << adder(0) << std::endl;
+auto res = adder(4);
+ASSERT_EQ(7, res);
 ```
 
