@@ -1,11 +1,11 @@
-# introduction
+# Introduction
 In concept(though not always in practice), rvalues correspond to temporary objects returned from functions,
 while lvalues correspond to objects you can refer to, either by name or by following a pointer or lvalue reference.
 
 A useful heuristic to determine whether an expression is an lvalue is to ask if you can take its address.
 If you can, it typically is. If you can't, it's usually an rvalue.
 
-In a function call, the expressions passed at the call site are the functions's arguemnts. The parameters are used to initialize the function's parameters.
+**In a function call, the expressions passed at the call site are the functions's arguemnts. The parameters are used to initialize the function's parameters**.
 ```C++
 void someFunc(Widget w);
 Widget wid;
@@ -96,7 +96,7 @@ const int& rx = x;
 
 f(x);  // x is lvalue, so T is int&, param's type is also int&
 f(cx);  // cx is lvalue, so T is const int&, param's type is also const int&
-f(rx);  // xx is lvalue, so T is const int&, param's type is also const int&
+f(rx);  // rx is lvalue, so T is const int&, param's type is also const int&
 f(27);  // 27 is rvalue, so T is int, param's type is therefore int&&.
         // 27 is of type int&&, we first ignore the reference part, and we got int, so T is int, and param's type is int&&
 ```
@@ -106,7 +106,7 @@ f(27);  // 27 is rvalue, so T is int, param's type is therefore int&&.
 template<typename T>
 void f(T param);  // param is now passed by value
 ```
-That means that param will be a copy of whatever is passed in - a completely new object.
+That means that **param will be a copy of whatever is passed in - a completely new object**.
 The fact that param will be a new object motivates the rules that govern how T is deduced from expr.
 
 1. As before, if expr's type is a reference, ignore the reference part.
@@ -344,11 +344,11 @@ int sum2{x + y + z};  // error, sum of doubles may not be expressible as int
 ```
 
 Another noteworthy characteristic of braced initialization is its immunity to C++'s most vexing parse.
-A side effect of C++'s rule that anything that can be parsed as a declaration must be interpreted as one.
+A side effect of C++'s rule that **anything that can be parsed as a declaration must be interpreted as one**.
 The most vexing parse most frequently afflicts developers when they want to default-construct an object, but in inadvertently end up declaring a function instead.
 
 The root of the problem is that if you want to call a constructor with an argument, you can do it as usual.
-But if you want to call a Widget ctor with zero arguments using the analogous syntax, you declare a function instead of an object:
+But if you want to **call a Widget ctor with zero arguments using the analogous syntax, you declare a function instead of an object**:
 ```C++
 Widget w1(10);  // call Widget ctor with argument 10
 Widget w2();  // most vexing parse! declares a function named w2 that returns a Widget
@@ -444,7 +444,7 @@ std::add_lvalue_reference_t<T>  // C++14 equivalent
 ```
 
 ## perfer deleted functions to private undefined ones
-An important adavantage of deleted functions is that any function may be delted, while only member functions may be private.
+An important adavantage of deleted functions is that any function may be deleted, while only member functions may be private.
 For example, suppose we have a non-member function that takes an integer and returns whether it's a lucky number:
 ```C++
 bool isLucky(int number);
@@ -544,6 +544,8 @@ That means that there will be different threads reading and writing the same mem
 ## understand special member function generation
 The two copy operations(copy ctor and copy assignment) are independent: declaring one doesn't prevent compilers from generating the other.
 
+TODO: why copy operations 之前不相互影响, 而move operations 却要受限制.
+
 The two move operations(move ctor and move assignment) are not independent. If you declare either, that prevents compilers from generating the other.
 The rationale is that if you declare, say, a move ctor, you're indicating that the move ctor is different from the default memberwise move that compilers would generate.
 And if there's something wrong with memberwise move construnction, there'd probably be something wrong with memberwise move assignment, too.
@@ -583,8 +585,10 @@ auto loggingDel = [](Widget* pw) {
   delete pw;
 };
 
-std::unique_ptr<Widget, decltype(loggingDel)> upw(new Widget, loggingDel);  // deleter type is part of ptr type
-std::shared_ptr<Widget> spw(new Widget, loggingDel);  // deleter type is not part of ptr type
+// deleter type is part of unique ptr type
+std::unique_ptr<Widget, decltype(loggingDel)> upw(new Widget, loggingDel);
+// deleter type is not part of shared ptr type
+std::shared_ptr<Widget> spw(new Widget, loggingDel);
 ```
 
 The `std::shared_ptr` design is more flexible. Consider two `std::shared_ptr<Widget>`s, each with a custom deleter of a different type.
@@ -607,7 +611,7 @@ Control block contains reference count, weak count, a copy of the custom deleter
 ```C++
 class Widget : public std::enable_shared_from_this<Widget> {
  public:
-  void process(std::vector<std::shared_ptr<Widget>* processed_widgets) {
+  void process(std::vector<std::shared_ptr<Widget>>* processed_widgets) {
     // xxxx
     processed_widgets.emplace_back(std::shared_from_this());
   }
@@ -619,7 +623,7 @@ The design relies on the current object having an associated control block. For 
 Another difference from `std::unique_ptr`, `std::shared_ptr` has an API that's designed only for pointers to single objects.
 There's no `std::shared_ptr<T[]>`, but from time to time, "clever" programmers stumble on the idea of using `std::shared_ptr<T>` to point to an array,
 specifying a custom deleter to perform an array delete.
-This can be made to compile, but it's a horrible idea. `std::shared_ptr` offers no operator[].
+This can be made to compile, but it's a horrible idea. `std::shared_ptr` offers no operator[](C++17 开始提供了).
 Given the variety of C++11 alternatives to `std::vector`, declaring a smart pointer to a dump array is almost always a sign of bad design.
 
 ## use `std::weak_ptr` for `std::shared_ptr` like pointers that can dangle
@@ -629,7 +633,8 @@ Consider a factory function that produces smart pointers to read-only objects ba
 std::unique_ptr<const Widget> loadWidget(WidgetID id);
 ```
 If loadWidget is an expensive call, a reasonable optimization would be using a cache.
-For this caching factory function, a `std::unique_ptr` return type is not a good fit. Callers should certainly receive smart pointers to cached objects, at callers should certainly determine the lifetime of those objects, but the cache needs a pointer to the objects, too.
+For this caching factory function, a `std::unique_ptr` return type is not a good fit.
+Callers should certainly receive smart pointers to cached objects, and callers should certainly determine the lifetime of those objects, but the cache needs a pointer to the objects, too.
 The cache's pointers need to be able to detect when they dangle, because when factory clients are finished using an object returned by the factory,
 that object will be destroyed, and the corresponding cache entry will dangle.
 The cached pointers should therefore be `std::weak_ptr`.
@@ -717,7 +722,7 @@ template<typename T>
 void f(const T&& param);  // rvalue reference
 ```
 
-Being in a template doesn't guarantee the presence of type deduction, consider this `push_back` member function in `std::vector`:
+Being in a template doesn't guarantee the presence of type deduction, consider the `push_back` member function in `std::vector`:
 ```C++
 // from C++ standards
 template<class T, class Allocator = allocator<T>>
@@ -728,7 +733,7 @@ class vector {
 };
 ```
 `push_back`'s parameter certainly has the right form for a universal reference, but there's no type deduction in this case.
-That's because push back can't exist without a particular vector instantiation for it to be part of, and the type of that instantiation fully determines the declaration for push back.
+That's because push back can't exist without a particular vector instantiation for it to be part of, and the type of that instantiation fully determines the declaration for push back. For example:
 ```C++
 std::vector<Widget> v;
 
@@ -785,8 +790,8 @@ class Widget {
 In short, rvalue references should be unconditionally cast to rvalues (via std::move) when forwarding them to other functions, because they're always bound to rvalues.
 And universal references should be conditionally cast to rvalues (via std::forward) when forwarding them, because they're only sometimes bound to rvalues.
 
-If you're in a function that returns by value, and you're returning an object bound to an rvalue reference or a universal reference,
-you'll want to apply std::move or std::forward when you return the reference.
+**If you're in a function that returns by value, and you're returning an object bound to an rvalue reference or a universal reference,
+you'll want to apply std::move or std::forward when you return the reference**.
 ```C++
 Matrix operator+(Matrice&& lhs, const Matrix& rhs) {
   lhs += rhs;
@@ -819,7 +824,7 @@ Widget makeWidget() {
 }
 ```
 The standardization Committe is way ahead of such programmers when it comes to this kind of optimization.
-It was recognized long ago that the "copying" version of makeWidget can avoid the need to copy the local variable w by constructing it the memory allocated for the function's return value.
+It was recognized long ago that the "copying" version of makeWidget can avoid the need to copy the local variable w by constructing it in the memory allocated for the function's return value.
 This is also known as the **return value optimization(RVO)**, and it's been expressly blessed by the C++ Standard with two conditions:
 
 1. The type of the local object is the same as that returned by the function
@@ -836,7 +841,7 @@ In effect, the Standart requires that when RVO is permitted, either copy elision
 
 The situation is similar for by-value function parameters.
 They're not eligible for copy elision with respect to their function's return value, but compilers must treat them as rvalues if they're returned.
-As a result, if your souce code lookes like this:
+As a result, if your source code lookes like this:
 ```C++
 // by value parameter of same type as function's return
 Widget makeWidget(Widget w) {
