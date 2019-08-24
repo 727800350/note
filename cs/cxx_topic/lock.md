@@ -11,12 +11,12 @@ memory_order_seq_cst
 其中`memory_order_acq_rel`并不是一个内存模型,只是`memory_order_acquire`和`memory_order_release`的合并,在一些读取并且修改的操作中(比如cas操作)用到.
 这5中内存模型中,有些用于写值(store),有些用于读值(load),有些需要配对使用,有些两者都能用.下面这张表是所有的用法
 
-| load                 	  | store                	  |
-|-----------------------	|-----------------------	|
-| `memory_order_seq_cst` 	| `memory_order_seq_cst` 	|
-| `memory_order_acquire` 	| `memory_order_release` 	|
-| `memory_order_consume` 	| `memory_order_release` 	|
-| `memory_order_relaxed` 	| `memory_order_relaxed` 	|
+| load                     | store                    |
+|-----------------------  |-----------------------  |
+| `memory_order_seq_cst`   | `memory_order_seq_cst`   |
+| `memory_order_acquire`   | `memory_order_release`   |
+| `memory_order_consume`   | `memory_order_release`   |
+| `memory_order_relaxed`   | `memory_order_relaxed`   |
 
 永远不要混用这些模型,比如load用`memory_order_seq_cst`,store用`memory_order_release`.不作死就不会死.
 
@@ -66,35 +66,36 @@ spin lock是一种死等的机制, 当前的执行thread会不断的重新尝试
 
 ```C++
 // atomic_flag as a spinning lock
-#include <iostream>			 // std::cout
-#include <atomic>				 // std::atomic_flag
-#include <thread>				 // std::thread
-#include <vector>				 // std::vector
-#include <sstream>				// std::stringstream
+#include <iostream>       // std::cout
+#include <atomic>         // std::atomic_flag
+#include <thread>         // std::thread
+#include <vector>         // std::vector
+#include <sstream>        // std::stringstream
 
-std::atomic_flag lock_stream = ATOMIC_FLAG_INIT;	// init to cleared state
+std::atomic_flag lock_stream = ATOMIC_FLAG_INIT;  // init to cleared state
 std::stringstream stream;
 
-void append_number(int x){
-	while(lock_stream.test_and_set(std::memory_order_acquire)){}
-	stream << "thread #" << x << '\n';
-	lock_stream.clear(std::memory_order_release);
+void append_number(int x) {
+  while (lock_stream.test_and_set(std::memory_order_acquire)) {
+  }
+  stream << "thread #" << x << '\n';
+  lock_stream.clear(std::memory_order_release);
 }
 
-int main(){
-	std::vector<std::thread> threads;
+int main() {
+  std::vector<std::thread> threads;
 
-	for(int i = 0; i < 10; ++i){
-		threads.push_back(std::thread(append_number,i));
-	}
+  for (int i = 0; i < 10; ++i) {
+    threads.push_back(std::thread(append_number, i));
+  }
 
-	for(auto& th : threads){
-		th.join();
-	}
+  for (auto&& th : threads) {
+    th.join();
+  }
 
-	std::cout << stream.str();
+  std::cout << stream.str();
 
-	return 0;
+  return 0;
 }
 ```
 `lock_stream` 被初始化为clear 的状态, 第一个运行到while 语句里面的 `lock_stream.test_and_set` 时候, 返回false, 同时会把状态更改为set.
@@ -136,26 +137,26 @@ lock-free version
 
 int count = 0;
 
-void *adding(void *input){
-	(void)input;
-	int val;
-	for(int i = 0; i < 1000000; ++i){
-		do{
-			val = count;
-		}while(!atomic_compare_exchange_weak(&count, &val, val + 1));
-	}
-	pthread_exit(NULL);
+void* adding(void* input) {
+  (void)input;
+  int val;
+  for (int i = 0; i < 1000000; ++i) {
+    do {
+      val = count;
+    } while(!atomic_compare_exchange_weak(&count, &val, val + 1));
+  }
+  pthread_exit(NULL);
 }
 
-int main(){
-	pthread_t tid[10];
-	for(int i = 0; i < 10; ++i){
-		pthread_create(&tid[i], NULL, adding, NULL);
-	}
-	for(int i=0; i<10; ++i){
-		pthread_join(tid[i], NULL);
-	}
-	printf("the value of count is %d\n", count);
+int main() {
+  pthread_t tid[10];
+  for (int i = 0; i < 10; ++i) {
+    pthread_create(&tid[i], NULL, adding, NULL);
+  }
+  for (int i=0; i<10; ++i) {
+    pthread_join(tid[i], NULL);
+  }
+  printf("the value of count is %d\n", count);
 }
 ```
 
@@ -168,38 +169,40 @@ spin lock version
 int count = 0;
 int lock = 0;
 
-void *adding(void *input){
-	(void)input;
-	int expected = 0;
-	for(int i = 0; i < 1000000; ++i){
-		/* if the lock is 0(unlock), then set it to 1(lock)
-		 * if the CAS fails, the expected will be set to 1, so we need to change it to 0 again.
-		 */
-		while(!atomic_compare_exchange_weak(&lock, &expected, 1)){
-			expected = 0;
-		}
-		++count;
-		lock = 0;
-	}
-	pthread_exit(NULL);
+void* adding(void* input){
+  (void)input;
+  int expected = 0;
+  for (int i = 0; i < 1000000; ++i) {
+    /* if the lock is 0(unlock), then set it to 1(lock)
+     * if the CAS fails, the expected will be set to 1, so we need to change it to 0 again.
+     */
+    while (!atomic_compare_exchange_weak(&lock, &expected, 1)) {
+      expected = 0;
+    }
+    ++count;
+    lock = 0;
+  }
+  pthread_exit(NULL);
 }
 
-int main(){
-	pthread_t tid[10];
-	for(int i = 0; i < 10; ++i){
-		pthread_create(&tid[i], NULL, adding, NULL);
-	}
-	for(int i = 0; i < 10; ++i){
-		pthread_join(tid[i], NULL);
-	}
-	printf("the value of count is %d\n", count);
+int main() {
+  pthread_t tid[10];
+  for (int i = 0; i < 10; ++i) {
+    pthread_create(&tid[i], NULL, adding, NULL);
+  }
+  for (int i = 0; i < 10; ++i) {
+    pthread_join(tid[i], NULL);
+  }
+  printf("the value of count is %d\n", count);
 }
 ```
-In lock-free program,  while thread 1 is accessing the shared variable count, other threads could also get access to the count and make progress for the program(Although sometimes, there could be some conflicts(just like thread 1), and the thread should redo its work).
+In lock-free program,  while thread 1 is accessing the shared variable count, other threads could also get access to the count and make progress for the program.
+(Although sometimes, there could be some conflicts(just like thread 1), and the thread should redo its work).
 However, for the lock-based program, while thread 1 is accessing the shared variable count, it holds the lock and other threads could not access the count but busy-waiting.
 
 # [ABA - A is not the same as A](http://www.modernescpp.com/index.php/aba-a-is-not-the-same-as-a)
-A common problem in concurrency is the so-called ABA problem. That means you read a value twice and each time it returns the same value A. Therefore you conclude that nothing changed in between. But you forgot the B.
+A common problem in concurrency is the so-called ABA problem. That means you read a value twice and each time it returns the same value A.
+Therefore you conclude that nothing changed in between. But you forgot the B.
 
 Let me first use a simple scenario to introduce the problem.
 
@@ -213,11 +216,13 @@ Of course, it happened that the traffic light became green (B) between your two 
 
 [ABA problem](https://lumian2015.github.io/lockFreeProgramming/aba-problem.html)
 
-The problem arises from the C of CAS, where the comparison is value based. That is, as long as the value involved in the comparison is the same, the swap can proceed. However, there are still occasions that fool the CAS solution we presented.
+The problem arises from the C of CAS, where the comparison is value based. That is, as long as the value involved in the comparison is the same, the swap can proceed.
+However, there are still occasions that fool the CAS solution we presented.
 
 [上篇 | 说说无锁(Lock-Free)编程那些事](https://mp.weixin.qq.com/s/T_z2_gsYfs6A-XjVTVV_uQ)
 
-由于通过LL/SC对实现的CAS并不是一个原子性操作,于是,该CAS在执行过程中,可能会被中断,例如:线程Ⅹ在执行L行后,OS决定将X调度出去,等OS重新调度恢复Ⅹ之后,SC将不再响应,这时CAS将返回false, CAS失败的原因不在数据本身(数据没变化),而是其他外部事件(线程被中断了).
+由于通过LL/SC对实现的CAS并不是一个原子性操作,于是,该CAS在执行过程中,可能会被中断.
+例如:线程Ⅹ在执行L行后,OS决定将X调度出去,等OS重新调度恢复Ⅹ之后,SC将不再响应,这时CAS将返回false, CAS失败的原因不在数据本身(数据没变化),而是其他外部事件(线程被中断了).
 正是因为如此, C++11标准中添入两个 compare exchange原语-弱的和强的, `compare_exchange_weak`和 `compare_exchange_strong`.
 即使当前的变量值等于预期值,这个弱的版本也可能失败,比如返回fase.可见任何weak CAS都能破坏CAS语乂,并返回 false,而它本应返回true.而 Strong CAS会严格遵循CAS语义.
 

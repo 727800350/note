@@ -271,30 +271,30 @@ class HashTable {
  public:
   // caution: not thread safe
   std::string lookup(const std::string& key) const {
-    if (key == _last_key) {
-      return _last_value;
+    if (key == last_key_) {
+      return last_value_;
     }
 
     std::string value{this->lookupInternal(key)};
 
-    _last_key   = key;
-    _last_value = value;
+    last_key_ = key;
+    last_value_ = value;
 
     return value;
   }
 
  private:
-  mutable std::string _last_key;
-  mutable std::string _last_value;
+  mutable std::string last_key_;
+  mutable std::string last_value_;
 };
 ```
 这里,我们呈现了一个哈希表的部分实现.显然,对哈希表的查询操作,在逻辑上不应该修改哈希表本身.因此,HashTable::lookup 是一个 const 成员函数.
-在 HashTable::lookup 中,我们使用了 `_last_key` 和 `_last_value` 实现了一个简单的「缓存」逻辑.
-当传入的 key 与前次查询的 `_last_key` 一致时,直接返回 `_last_value`,否则,则返回实际查询得到的 value 并更新 `_last_key` 和 `_last_value`.
+在 HashTable::lookup 中,我们使用了 `last_key_` 和 `last_value_` 实现了一个简单的「缓存」逻辑.
+当传入的 key 与前次查询的 `last_key_` 一致时,直接返回 `last_value_`,否则,则返回实际查询得到的 value 并更新 `last_key_` 和 `last_value_`.
 
-在这里,`_last_key` 和 `_last_value` 是 HashTable 的数据成员.按照一般的理解,const 成员函数是不允许修改数据成员的.
-但是,另一方面,`_last_key` 和 `_last_value` 在类的外部是看不到的,从逻辑上说,修改它们的值,外部是无有感知的,因此也就不会破坏逻辑上的 const.
-为了解决这一矛盾,我们用 mutable 来修饰 `_last_key` 和 `_last_value`,以便在 lookup 函数中更新缓存的键值.
+在这里,`last_key_` 和 `last_value_` 是 HashTable 的数据成员.按照一般的理解,const 成员函数是不允许修改数据成员的.
+但是,另一方面,`last_key_` 和 `last_value_` 在类的外部是看不到的,从逻辑上说,修改它们的值,外部是无有感知的,因此也就不会破坏逻辑上的 const.
+为了解决这一矛盾,我们用 mutable 来修饰 `last_key_` 和 `last_value_`,以便在 lookup 函数中更新缓存的键值.
 
 # define
 - `#str`: 生成`"str"`

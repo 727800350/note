@@ -23,10 +23,10 @@ ref:
 
 ### C结构(struct)
 ```C++
-struct A{
-	char c;
-	int i;
-}a;
+struct A {
+  char c;
+  int i;
+} a;
 ```
 因为内存对齐的原因, `char c`占用4 个字节, 但实际使用1个字节, `int i` 占用4个字节.
 `&a.c == (char *)&a, (char *)&a.i == &a.c + 4`
@@ -35,15 +35,15 @@ C++标准委员会不限制由"public/protected/private"关键字分开的各段
 
 ### 单继承
 ```C++
-struct C{
-	int c1;
-	void cf();
-}c;
+struct C {
+  int c1;
+  void cf();
+} c;
 
-struct D: C{
-	int d1;
-	void df();
-}d;
+struct D: C {
+  int d1;
+  void df();
+} d;
 ```
 &d.c1 == &d
 在D中,并不是说基类C的数据一定要放在D的数据之前,只不过这样放的话,**能够保证D中的C对象地址,恰好是D对象地址的第一个字节**.
@@ -52,9 +52,9 @@ struct D: C{
 
 ### 多重继承
 ```C++
-struct F: C, E{
-	int f1;
-	void ff();
+struct F: C, E {
+  int f1;
+  void ff();
 };
 ```
 与单继承相同的是,F实例拷贝了每个基类的所有数据.与单继承不同的是,在多重继承下,内嵌的两个基类的对象指针不可能全都与派生类对象指针相同.
@@ -85,9 +85,9 @@ struct MiddleManager : Manager, Worker { ... };
 请看下例:
 
 ```C++
-struct G: virtual C{
-	int g1;
-	void gf();
+struct G: virtual C {
+  int g1;
+  void gf();
 };
 ```
 ![G的内存布局](http://img.my.csdn.net/uploads/201108/9/5419476_13128780806dbk.jpg)
@@ -95,17 +95,17 @@ struct G: virtual C{
 - GdGvbptrC(In G, the displacement of G's virtual base pointer to C)意思是:在G中,C对象的指针与G的虚基类表指针之间的偏移量,在此可见为8.
 
 ```C++
-struct H: virtual C{
-	int h1;
-	void hf();
+struct H: virtual C {
+  int h1;
+  void hf();
 };
 ```
 ![H 的内存布局](http://img.my.csdn.net/uploads/201108/9/5419476_1312878118CwgC.jpg)
 
 ```C++
-struct I: G, H{
-	int i1;
-	void if();
+struct I: G, H {
+  int i1;
+  void if();
 };
 ```
 ![I的内存布局](http://img.my.csdn.net/uploads/201108/9/5419476_13128781759JQM.jpg)
@@ -130,19 +130,19 @@ vptr 指向一个被称为 vtbl(virtual table,虚函数表)的函数指针数组
 当一个对象调用了虚函数,实际的被调用函数通过下面的步骤确定:找到对象的 vptr 指向的 vtbl,然后在 vtbl 中寻找合适的函数指针.
 
 ```C++
-class CA{
-public:
-	int a;
+class CA {
+ public:
+  int a;
 };
 
-class CB{
-public:
-	int b;
+class CB {
+ public:
+  int b;
 };
 
-class CL:public CB, public CA{
-public:
-	int c;
+class CL : public CB, public CA {
+ public:
+  int c;
 };
 ```
 对于CL类,它的内存布局是:
@@ -153,10 +153,10 @@ int c;
 ```
 但是把CA 类改为下面的
 ```C++
-class CA{
-public:
-	int a;
-	virtual void af(){};
+class CA {
+ public:
+  int a;
+  virtual void af(){};
 };
 ```
 对于CL类,它的内存布局是:
@@ -174,42 +174,43 @@ int c;
 
 如果从多个有虚函数的基类继承,一个实例就有可能包含多个vfptr
 ```C++
-struct P{
-	int p1;
-	void pf();
-	virtual void pvf(){
-		cout << "P::pvf" << endl;
-	};
+struct P {
+  int p1;
+  void pf();
+  virtual void pvf(){
+    cout << "P::pvf" << endl;
+  };
 };
 
-struct R{
-	int r1;
-	virtual void pvf(){
-		cout << "R::pvf" << endl;
-	};
-	virtual void rvf(){
-		cout << "R::rvf" << endl;
-	};
+struct R {
+  int r1;
+  virtual void pvf(){
+    cout << "R::pvf" << endl;
+  };
+  virtual void rvf(){
+    cout << "R::rvf" << endl;
+  };
 };
 
-struct S: P, R{
-	int s1;
-	// overrides P::pvf and R::pvf
-	void pvf(){
-		cout << "S::pvf" << endl;
-	};
-	// overrides R::rvf
-	void rvf(){
-		cout << "S::rvf" << endl;
-	};
-	void svf(){
-		cout << "S::svf" << endl;
-	};
+struct S : P, R {
+  int s1;
+  // overrides P::pvf and R::pvf
+  void pvf() {
+    cout << "S::pvf" << endl;
+  };
+  // overrides R::rvf
+  void rvf() {
+    cout << "S::rvf" << endl;
+  };
+  void svf() {
+    cout << "S::svf" << endl;
+  };
 };
 ```
 
 ```C++
-S s; S* ps = &s;  
+S s;
+S* ps = &s;  
 ((P*)ps)->pvf(); // (*(P*)ps)->P::vfptr[0])((S*)(P*)ps), 输出 S::pvf
 ((R*)ps)->pvf(); // (*(R*)ps)->R::vfptr[0])((S*)(R*)ps), 输出 S::pvf
 ps->pvf();       // one of the above; calls S::pvf(), 输出 S::pvf
@@ -225,22 +226,22 @@ ps->pvf();       // one of the above; calls S::pvf(), 输出 S::pvf
 
 ### 虚继承下的虚函数
 ```C++
-struct P{
-	int p1;
-	void pf();
-	virtual void pvf(){
-		cout << "P::pvf" << endl;
-	};
+struct P {
+  int p1;
+  void pf();
+  virtual void pvf() {
+    cout << "P::pvf" << endl;
+  };
 };
 
-struct T: virtual P{
-	int t1;
-	void pvf(){
-		cout << "T::pvf" << endl;
-	};
-	virtual void tvf(){
-		cout << "T::tvf" << endl;
-	};
+struct T: virtual P {
+  int t1;
+  void pvf() {
+    cout << "T::pvf" << endl;
+  };
+  virtual void tvf() {
+    cout << "T::tvf" << endl;
+  };
 };
 ```
 ![内存布局](http://img.my.csdn.net/uploads/201108/9/5419476_1312878510F137.jpg)
