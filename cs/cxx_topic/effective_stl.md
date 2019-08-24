@@ -16,7 +16,7 @@ The standard contiguous-memory containers are vector, string, and deque.
 **Node-based containers** store only a single element per chunk of (dynamically allocated) memory.
 Insertion or erasure of a container element affects only pointers to nodes, not the contents of the nodes themselves, so element values need not be moved when something is inserted or erased.
 
-In general, insertions or erasures on contiguous-memory containers may invalidate all iterators, pointers, and ref- erences into the container.
+In general, insertions or erasures on contiguous-memory containers may invalidate all iterators, pointers, and references into the container.
 While insertions and erasures on node-based containers never invalidate iterators, pointers, or references (unless they point to an element you are erasing).
 That is why the form of erase taking an iterator returns a new iterator when invoked on a sequence container, but it returns nothing when invoked on an associative container.
 

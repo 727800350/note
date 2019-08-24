@@ -1,26 +1,26 @@
 # constructor and operator
 ```C++
-class Empty{}; // sizeof(Empty) 为 1
+class Empty {}; // sizeof(Empty) 为 1
 ```
 Thanks to C++ compiler, actually it becomes something like this:
 ```C++
-class Empty{
-public:
-	Empty(){}                           // default constructor
-	Empty(const Empty&){}               // copy constructor
-	~Empty(){}                          // destructor
-	Empty& operator=(const Empty&){     // assignment operator
-		return *this;
-	}
+class Empty {
+ public:
+  Empty() {}  // default constructor
+  Empty(const Empty&) {}  // copy constructor
+  ~Empty() {}  // destructor
+  Empty& operator=(const Empty&) {  // assignment operator
+    return *this;
+  }
 };
 ```
 
 ```C++
-Empty eA;                        // default constructor
-~Empty();                        // destructor
-Empty eB(eA);                    // copy constructor(creating a new object)
-eB = eA;                         // assignment operator(assign to an existing object)
-Empty eC = eA;                   // copy constructor(creating a new object)
+Empty eA;  // default constructor
+~Empty();  // destructor
+Empty eB(eA);  // copy constructor(creating a new object)
+eB = eA;  // assignment operator(assign to an existing object)
+Empty eC = eA;  // copy constructor(creating a new object)
 ```
 
 ## operator=
@@ -28,47 +28,19 @@ Empty eC = eA;                   // copy constructor(creating a new object)
 
 1. 返回引用可以减少一次拷贝构造和析构函数导致不必要的开销,因为如果返回值类型不是引用,会创建一个匿名对象,这个匿名对象时个右值,获取return的值.
 1. 可以实现连续赋值, 在例子中 `b = c = a;`, 运算顺序 `b = (c = a);` 返回值不是引用类型也是可以的, c得到一个右值,再将右值赋给b,所以逻辑上没有问题的.
-	但是如果是 `(b = c) = a;` 这里将会出错,`b = c`后b是一个右值,所以`b = a`时将会出错.
+  但是如果是 `(b = c) = a;` 这里将会出错,`b = c`后b是一个右值,所以`b = a`时将会出错.
 
 ## copy contructor
 The copy constructor should have one of the following forms:
 
-- `MyClass(const MyClass &);`
-- `MyClass(MyClass & );`
-- `MyClass(volatile MyClass &);`
-- `MyClass(volatile const MyClass &);`
+- `MyClass(const MyClass&);`
+- `MyClass(MyClass&);`
+- `MyClass(volatile MyClass&);`
+- `MyClass(volatile const MyClass&);`
 
 copy constructor 必须以引用的方式传递参数.
 因为,在值传递的方式传递给一个函数的时候,会调用拷贝构造函数生成函数的实参.如果拷贝构造函数的参数仍然是以值的方式,就会无限循环的调用下去,直到函数的栈溢出.
 **拷贝构造函数使用传入对象的值生成一个新的对象的实例,而赋值运算符是将对象的值复制给一个已经存在的实例**.
-
-```C++
-Empty f1(const Empty &e){
-	Empty x;
-	return e;
-}
-
-Empty f2(const Empty &e){
-	Empty x;
-	return x;
-}
-
-Empty e;
-Empty e1 = f1(e);
-Empty e2 = f2(e);
-```
-
-调用f1, 会发生
-
-1. default constructor, 创建x
-1. copy constructor, 从e创建一个临时对象, 供出f1 的作用域之后使用
-1. destuctor, 出f1 的scope 之后销毁x
-1. 注: copy constructor 出来的对象, 没有看到显式的销毁, 因为编译器会进行优化, 从e copy 出来的一个对象直接成了e1
-
-调用f2, 会发生
-
-1. default constructor, 创建x
-1. 注: 应该是首先从x copy 出一个临时对象tmp, 然后再由tmp copy 出e2, 也就是会调用两次拷贝构造函数.不过,都被编译器优化掉了
 
 friend关键字,它能让被修饰的对象冲破本class的封装特性,从而能够访问本class的私有对象.
 
@@ -79,37 +51,37 @@ friend关键字,它能让被修饰的对象冲破本class的封装特性,从而�
 
 ```C++
 class Complx {
-public:
-	Complx() {}
-	Complx(double r, double i): real(r), imag(i) {}
+ public:
+  Complx() {}
+  Complx(double r, double i): real(r), imag(i) {}
 
-	Complx operator+(const Complx & c) const{
-		return Complx(real + c.real, imag + c.imag);
-	}
+  Complx operator+(const Complx & c) const{
+    return Complx(real + c.real, imag + c.imag);
+  }
 
-	Complx & operator=(const Complx &c){
-		if(this == &c){
-			return *this;
-		}
-		real = c.real;
-		imag = c.imag;
-		return *this;
-	}
+  Complx& operator=(const Complx& c) {
+    if (this == &c) {
+      return *this;
+    }
+    real = c.real;
+    imag = c.imag;
+    return *this;
+  }
 
-	friend std::ostream& operator<<(std::ostream &os, const Complx &c); // friend 标记不能少
+  friend std::ostream& operator<<(std::ostream& os, const Complx& c); // friend 标记不能少
 
-	double size() const{
-		return sqrt(real * real + imag * imag);
-	}
+  double size() const {
+    return sqrt(real * real + imag * imag);
+  }
 
-private:
-	double real;
-	double imag;
+ private:
+  double real;
+  double imag;
 };
 
-std::ostream& operator<<(std::ostream &os, const Complx &c){
-	os << "(" << c.real << ", " << c.imag << ")";
-	return os;
+std::ostream& operator<<(std::ostream& os, const Complx& c){
+  os << "(" << c.real << ", " << c.imag << ")";
+  return os;
 }
 ```
 
@@ -133,12 +105,12 @@ In the code, the return value of `operator<<(cout, c4)` becomes the object used 
 ## Returning a const Object
 The `Complx::operator+()` in the example has a strange property. The intended use is this:
 ```C++
-Complx c6 = c1 + c2;	// #1
+Complx c6 = c1 + c2;  // #1
 ```
 But the definition also allows us to use the following:
 ```C++
 Complx c7;
-c1 + c2 = c7;	// #2
+c1 + c2 = c7;  // #2
 ```
 This code is possible because the copy constructor constructs a temporary object to represent the return value.
 So, in the code, the expression c1 + c2 stands for that temporary object. In statement #1, the temporary object is assigned to c6. In statement #2, c7 is assigned to the temporary object.
@@ -149,7 +121,7 @@ and then discards the temporary object. The original complex numbers are all lef
 If we declare the return type as a const object, we can avoid the problem.
 ```C++
 const Complx operator+(const Complx & c) const{
-	return Complx(real + c.real, imag + c.imag);
+  return Complx(real + c.real, imag + c.imag);
 }
 ```
 
@@ -170,28 +142,28 @@ const对象不能调用非const函数
 [C++类内存分布(非常重要)](https://www.cnblogs.com/jerry19880126/p/3616999.html)
 
 ```C++
-class Animal{
-public:
-	void walk(){
-		LOG(INFO) << "animal walk";
-	}
+class Animal {
+ public:
+  void walk() {
+    LOG(INFO) << "animal walk";
+  }
 
-class Dog : public Animal{
-public:
-	void walk(){
-		LOG(INFO) << "dog walk";
-	}
+class Dog : public Animal {
+ public:
+  void walk() {
+    LOG(INFO) << "dog walk";
+  }
 };
 
 int main(int argc, char* argv[]){
-	Animal animal;
-	animal.walk(); // 输出animal walk
+  Animal animal;
+  animal.walk(); // 输出animal walk
 
-	Dog dog;
-	dog.walk(); // 输出dog walk
+  Dog dog;
+  dog.walk(); // 输出dog walk
 
-	Animal *x = &dog;
-	x->walk(); // 输出animal walk, 而不是预期的 dog walk
+  Animal *x = &dog;
+  x->walk(); // 输出animal walk, 而不是预期的 dog walk
 }
 ```
 将Animal 的walk 定义为虚函数, `virtual void walk()`, 则可以达到这个目的, 这就是虚函数.
@@ -203,54 +175,54 @@ int main(int argc, char* argv[]){
 
 ### vector of base objects
 ```C++
-class A{
-public:
-	A(int n = 0) : m(n) {}
-	virtual ~A() { }
+class A {
+ public:
+  A(int n = 0) : m(n) {}
+  virtual ~A() {}
 
-	virtual int getVal() const {
-		std::cout << "A::getVal() = ";
-		return m;
-	}
+  virtual int getVal() const {
+    std::cout << "A::getVal() = ";
+    return m;
+  }
 
-protected:
-	int m;
+ protected:
+  int m;
 };
 
-class B : public A{
-public:
-	B(int n = 0) : A(n) {}
+class B : public A {
+ public:
+  B(int n = 0) : A(n) {}
 
-	int getVal() const {
-		std::cout << "B::getVal() = ";
-		return m + 1;
-	}
+  int getVal() const {
+    std::cout << "B::getVal() = ";
+    return m + 1;
+  }
 };
 
-int main(){
-	const A a(1);
-	const B b(3);
-	const A *pA[2] = {&a, &b};
-	std::cout << pA[0]->getVal() << std::endl; // A::getVal() = 1
-	std::cout << pA[1]->getVal() << std::endl; // B::getVal() = 4
+int main() {
+  const A a(1);
+  const B b(3);
+  const A *pA[2] = {&a, &b};
+  std::cout << pA[0]->getVal() << std::endl; // A::getVal() = 1
+  std::cout << pA[1]->getVal() << std::endl; // B::getVal() = 4
 
-	std::vector<A> vA;
-	vA.push_back(a);
-	vA.push_back(b);
-	std::cout << vA[0].getVal() << std::endl; // A::getVal() = 1
-	std::cout << vA[1].getVal() << std::endl; // A::getVal() = 3
+  std::vector<A> vA;
+  vA.push_back(a);
+  vA.push_back(b);
+  std::cout << vA[0].getVal() << std::endl; // A::getVal() = 1
+  std::cout << vA[1].getVal() << std::endl; // A::getVal() = 3
 
-	const A &c = b;
-	std::cout << c.getVal() << std::endl;	 // B::getVal() = 4
+  const A &c = b;
+  std::cout << c.getVal() << std::endl;   // B::getVal() = 4
 
-	return 0;
+  return 0;
 }
 ```
 从执行结果可以看到, 把 derived object 放到base object 的 vector 中, 就真的成了base object(通过往B 中添加新的member, 然后求sizeof 可以验证).
 
 Deleting an array of objects using a base class pointer is undefined
 ```C++
-A *a = new B[10];
+A* a = new B[10];
 delete []a;
 ```
 因为a 是一个数组, `a[1] = *(a + 1)`, 而a 是A 类型的, 所以a + 1 实际上偏移的是 sizeof(A), 与我们实际需要的不符.
@@ -258,29 +230,29 @@ delete []a;
 ### parameter of an overriding function
 虚函数body 可以被覆盖掉, 但是默认参数还是使用base class 中声明的.
 ```C++
-class A{
-public:
-	virtual ~A() {}
-	virtual int foo(int x = 99){
-		std::cout << "A:foo" << std::endl;
-		return x;
-	}
+class A {
+ public:
+  virtual ~A() {}
+  virtual int foo(int x = 99) {
+    std::cout << "A:foo" << std::endl;
+    return x;
+  }
 };
 
-class B : public A{
-public:
-	int foo(int x = 77){
-		std::cout << "B:foo" << std::endl;
-		return x;
-	}
+class B : public A {
+ public:
+  int foo(int x = 77) {
+    std::cout << "B:foo" << std::endl;
+    return x;
+  }
 };
 
-int main(int argc, char** argv){
-	A* a = new B;
-	std::cout << a->foo() << std::endl; // output B:foo and 99
-	delete a;
+int main(int argc, char* argv[]) {
+  A* a = new B;
+  std::cout << a->foo() << std::endl; // output B:foo and 99
+  delete a;
 
-	return 0;
+  return 0;
 }
 ```
 
@@ -289,37 +261,37 @@ int main(int argc, char** argv){
 - Virtual Destructor can be pure, but we must provide a function body for the pure virtual destructor. 作用仅仅是在没有其他纯虚函数的情况下, 指名这个class 不能被实例化
 
 ```C++
-class Base{
-public:
-    Base(){
-		LOG(INFO) << "constructor in base";
-	};
-    virtual ~Base(){
-		LOG(INFO) << "destructor in base";
-	};
+class Base {
+ public:
+  Base() {
+    LOG(INFO) << "constructor in base";
+  };
+  virtual ~Base() {
+    LOG(INFO) << "destructor in base";
+  };
 
-    virtual void faire(){
-		LOG(INFO) << "do something in base";
-	};
+  virtual void faire() {
+    LOG(INFO) << "do something in base";
+  };
 };
 
-class Derived : public Base{
-public:
-    Derived(){
-		LOG(INFO) << "constructor in derived";
-	};
-    ~Derived(){
-		LOG(INFO) << "destructor in derived";
-	}
+class Derived : public Base {
+ public:
+  Derived() {
+    LOG(INFO) << "constructor in derived";
+  };
+  ~Derived() {
+    LOG(INFO) << "destructor in derived";
+  }
 
-    void faire(){
-		LOG(INFO) << "do something in derived";
-	}
+  void faire() {
+    LOG(INFO) << "do something in derived";
+  }
 };
 ```
 
 ```C++
-Base *instance = new Derived();
+Base* instance = new Derived();
 instance->faire();
 delete instance;
 ```
@@ -345,59 +317,59 @@ I0605 15:50:43.765859   167 test.cpp:17] destructor in base
 ### 在非虚函数中调用虚函数
 ```C++
 class RowOrientedBenchmark{
-public:
-	virtual ~RowOrientedBenchmark(){}
-	virtual void DoRow(int i){
-		LOG(INFO) << "DoRow in RowOrientedBenchmark";
-	}
-	void run(){
-		for(int i = 0; i < 10; ++i){
-			DoRow(i);
-		}
-	}
+ public:
+  virtual ~RowOrientedBenchmark(){ }
+  virtual void DoRow(int i) {
+    LOG(INFO) << "DoRow in RowOrientedBenchmark";
+  }
+  void run() {
+    for(int i = 0; i < 10; ++i){
+      DoRow(i);
+    }
+  }
 };
 
-class ReadBenchmark : public RowOrientedBenchmark{
-public:
-	void DoRow(int i){
-		LOG(INFO) << "DoRow in ReadBenchmark";
-	}
+class ReadBenchmark : public RowOrientedBenchmark {
+ public:
+  void DoRow(int i) {
+    LOG(INFO) << "DoRow in ReadBenchmark";
+  }
 };
 
-std::unique_ptr<RowOrientedBenchmark> bc1(new RowOrientedBenchmark);
+auto bc1 = std::make_unique<RowOrientedBenchmark>();
 bc1->run(); // output "DoRow in RowOrientedBenchmark"
 
-std::unique_ptr<RowOrientedBenchmark> bc2(new ReadBenchmark);
+auto bc2 = std::make_unique<RowOrientedBenchmark>();
 bc2->run(); // output "DoRow in ReadBenchmark"
 ```
 通过这种方式可以看到一个明显的优点, 先在base 中把框架确定下来(这里就是run), 然后再子类中具体实现怎么做.
 
 ### 子类调用父类的方法
 ```C++
-class A{
-public:
-	virtual ~A(){}
-	void faire(){
-		LOG(INFO) << "A faire";
-	}
-	virtual void say(){
-		LOG(INFO) << "A say";
-	}
+class A {
+ public:
+  virtual ~A() {}
+  void faire() {
+    LOG(INFO) << "A faire";
+  }
+  virtual void say() {
+    LOG(INFO) << "A say";
+  }
 };
 
-class B : public A{
-public:
-	void faire(){
-		A::faire();
-		LOG(INFO) << "B faire";
-	}
-	/* 如果派生类在虚函数声明时使用了override描述符,那么该函数必须重载其基类中的同名函数,否则代码将无法通过编译. 不加也可以, 只是加了编译检查会更严格.
-	 * 如果是声明和实现分开到.h 和 .cpp 文件中, 声明可以加override 关键字, 但是实现不能加.
-	 */
-	void say() override{
-		A::say();
-		LOG(INFO) << "B say";
-	}
+class B : public A {
+ public:
+  void faire() {
+    A::faire();
+    LOG(INFO) << "B faire";
+  }
+  /* 如果派生类在虚函数声明时使用了override描述符,那么该函数必须重载其基类中的同名函数,否则代码将无法通过编译. 不加也可以, 只是加了编译检查会更严格.
+   * 如果是声明和实现分开到.h 和 .cpp 文件中, 声明可以加override 关键字, 但是实现不能加.
+   */
+  void say() override {
+    A::say();
+    LOG(INFO) << "B say";
+  }
 };
 
 std::unique_ptr<A> a(new B);
@@ -413,25 +385,26 @@ b->say(); // output "A say" "B say"
 # 嵌套类
 嵌套中的局部类可以访问外层的private 元素(包括变量和函数), eg:
 ```C++
-class A{
-public:
-	void say(){
-		LOG(INFO) << "this is A";
-	}
+class A {
+ public:
+  void say() {
+    LOG(INFO) << "this is A";
+  }
 
-	class B{
-	public:
-		void faire(){
-			A a(2);
-			a.say();
-			LOG(INFO) << a.x_;
-		}
-	};
+  class B {
+   public:
+    void faire() {
+      A a(2);
+      a.say();
+      LOG(INFO) << a.x_;
+    }
+  };
 
-private:
-	A(int x) : x_(x) {}
-private:
-	int x_;
+ private:
+  A(int x) : x_(x) {}
+
+ private:
+  int x_;
 };
 
 A::B b;
@@ -444,7 +417,7 @@ b.faire();
 派生类构造函数的语法:
 ```
 派生类名::派生类名(参数总表):基类名1(参数表1),....基类名n(参数名n),内嵌子对象1(参数表1),...内嵌子对象n(参数表n){
-	派生类新增成员的初始化语句;
+  派生类新增成员的初始化语句;
 }
 ```
 **注:构造函数的初始化顺序并不以上面的顺序进行,而是根据声明的顺序初始化.**
@@ -474,19 +447,19 @@ class 派生类名::virtual 继承方式 基类名,
 ```
 
 ```C++
-class Worker{
-public:
-	std::string name;
+class Worker {
+ public:
+  std::string name;
 };
 
-class Student: public virtual Worker{
-public:
-	int studentID;
+class Student: public virtual Worker {
+ public:
+  int studentID;
 };
 
-class Assistant: virtual public Worker{
-public:
-	int employerID;
+class Assistant: virtual public Worker {
+ public:
+  int employerID;
 };
 
 class StudentAssitant: public Student, public Assistant {};
