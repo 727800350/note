@@ -7,10 +7,10 @@ For pointers, we can specify whether the pointer itself is const, the data it po
 
 ```C++
 char str[] = "constantness";
-char *p = str;                 //non-const pointer to non-const data
-const char *pc = str;          //non-const pointer to const data
-char * const cp = str;         //const pointer to non-const data
-const char * const cpc = str;  //const pointer to const data
+char* p = str;  // non-const pointer to non-const data
+const char* pc = str;  // non-const pointer to const data
+char* const cp = str;  // const pointer to non-const data
+const char* const cpc = str;  // const pointer to const data
 ```
 When const appears to the left of the `*`, what's pointed to is constant,
 and if const appears to the right of the `*`, the pointer itself is constant.
@@ -41,29 +41,28 @@ In this case, the constness of the class object determines which of the two func
 #include <iostream>
 using namespace std;
 
-class Testing{
-public:
-	Testing(int n):val(n){}
-	int getVal() const {
-		cout << "getVal() const" << endl;
-		return val;
-	}
-	int getVal() {
-		cout << "getVal() non-const" << endl;
-		return val;
-	}
+class Testing {
+ public:
+  Testing(int n) : val(n) {}
+  int getVal() const {
+    cout << "getVal() const" << endl;
+    return val;
+  }
+  int getVal() {
+    cout << "getVal() non-const" << endl;
+    return val;
+  }
 
-private:
-	int val;
+ private:
+  int val;
 };
 
-
-int main(){
-	const Testing ctest(10);
-	Testing test(20);
-	ctest.getVal(); // output: getVal() const
-	test.getVal();  // getVal() non-const
-	return 0;
+int main() {
+  const Testing ctest(10);
+  Testing test(20);
+  ctest.getVal(); // output: getVal() const
+  test.getVal();  // getVal() non-const
+  return 0;
 }
 ```
 
@@ -76,11 +75,11 @@ So, declaring an iterator as const is like declaring a pointer const. If we want
 ```C++
 vector<int> v;
 vector<int>::const_iterator itc = v.begin();
-*itc = 2012;                                   // error: *itc is cost
-itc++;                                         // ok, itc is not const
+*itc = 2012;  // error: *itc is cost
+itc++;  // ok, itc is not const
 ```
 
-How about `T *const iterator`:
+How about `T* const iterator`:
 ```C++
 vector<int> v;
 const vector<int>::iterator cit = v.begin;
@@ -135,7 +134,7 @@ static局部变量中文名叫静态局部变量.它与普通的局部变量比�
 1. 位置:静态局部变量被编译器放在全局存储区.data(注意:不在.bss段内,原因见3)),所以它虽然是局部的,但是在程序的整个生命周期中存在.
 2. 访问权限:静态局部变量只能被其作用域内的变量或函数访问.也就是说虽然它会在程序的整个生命周期中存在,由于它是static的,它不能被其他的函数和源文件访问.
 3. 值:静态局部变量如果没有被用户初始化,则会被编译器自动赋值为0,以后每次调用静态局部变量的时候都用上次调用后的值.
-	这个比较好理解,每次函数调用静态局部变量的时候都修改它然后离开,下次读的时候从全局存储区读出的静态局部变量就是上次修改后的值.
+  这个比较好理解,每次函数调用静态局部变量的时候都修改它然后离开,下次读的时候从全局存储区读出的静态局部变量就是上次修改后的值.
 
 需要注意的是由于static局部变量的这种特性,使得含静态局部变量的函数变得不可重入,即每次调用可能会产生不同的结果.这在多线程编程时可能会成为一种隐患.需要多加注意.
 
@@ -167,22 +166,22 @@ We allocate and initialize memory by creating an object using that format.
 The exception to the initialization of a static data member inside the class declaration is if the static data member is a const of integral or enumeration type. 但是这能二选一
 
 ```C++
-class Car{
-public:
-	enum Color {silver = 0, maroon, red };
-	int year;
-	int mileage = 34289;                   // error: not-static data members, only static const integral data members can be initialized within a class
-	static int vin = 12345678;             // error: non-constant data member, only static const integral data members can be initialized within a class
-	static const string model = "Sonata";  // error: not-integral type cannot have in-class initializer
-	static const int engine = 6;           // allowed: static const integral type(二选一)
+class Car {
+ public:
+  enum Color {silver = 0, maroon, red };
+  int year;
+  int mileage = 34289;  // error: not-static data members, only static const integral data members can be initialized within a class
+  static int vin = 12345678;  // error: non-constant data member, only static const integral data members can be initialized within a class
+  static const string model = "Sonata";  // error: not-integral type cannot have in-class initializer
+  static const int engine = 6;  // allowed: static const integral type(二选一)
 };
 
 int Car::year = 2013;                      // error: non-static data members cannot be defined out-of-class
 int Car::vin = 1234;                       // ok
 const int engine = 6;                      // allowed: static const integral type(二选一)
 
-int main(){
-	return 0;
+int main() {
+  return 0;
 }
 ```
 
@@ -196,31 +195,31 @@ Note that if this method is not static, there is no way to invoke the getInstanc
 #include <iostream>
 using namespace std;
 
-class Singleton{
-public:
-	static Singleton *getInstance(){
-		if(instance == NULL){
-			instance = new Singleton();
-			cout << "getInstance(): First instance\n";
-			return instance;
-		}
-		else{
-			cout << "getInstance(): previous instance\n";
-			return instance;
-		}
-	}
+class Singleton {
+ public:
+  static Singleton* getInstance() {
+    if (!instance) {
+      instance = new Singleton();
+      cout << "getInstance(): First instance\n";
+      return instance;
+    }
+    else {
+      cout << "getInstance(): previous instance\n";
+      return instance;
+    }
+  }
 
 private:
-	Singleton() {}
-	static Singleton *instance;
+  Singleton() {}
+  static Singleton* instance;
 };
-Singleton* Singleton::instance = NULL;
+Singleton* Singleton::instance = nullptr;
 
-int main(){
-	Singleton* s1 = Singleton::getInstance();
-	Singleton* s2 = Singleton::getInstance();
+int main() {
+  Singleton* s1 = Singleton::getInstance();
+  Singleton* s2 = Singleton::getInstance();
 
-	return 0;
+  return 0;
 }
 ```
 output
@@ -228,9 +227,6 @@ output
 getInstance(): First instance
 getInstance(): previous instance
 ```
-
-# namespace
-避免每次写全称: `namespace mapi = mixer::common::api;`
 
 # goto
 在goto 之后是不允许定义的新的变量的, 局部变量也不行.
@@ -265,31 +261,31 @@ C++ 中,不可变的变量,称之为常量,使用 const 来修饰.然而,若是 
 
 - 二进制层面的 const,也就是「绝对的」常量,在任何情况下都不可修改(除非用 `const_cast`).
 - 引入 mutable 之后,C++ 可以有逻辑层面的 const,也就是对一个常量实例来说,从外部观察,它是常量而不可修改,但是内部可以有非常量的状态.
-	当然,所谓的「逻辑 const」,只是为了方便理解,而创造出来的名词.
-	显而易见,mutable 只能用来修饰类的数据成员,而被 mutable 修饰的数据成员,可以在 const 成员函数中修改.
+  当然,所谓的「逻辑 const」,只是为了方便理解,而创造出来的名词.
+  显而易见,mutable 只能用来修饰类的数据成员,而被 mutable 修饰的数据成员,可以在 const 成员函数中修改.
 
 这里举一个例子,展现这类情形.
 
 ```C++
 class HashTable {
-public:
-	//...
-	std::string lookup(const std::string& key) const {
-		if (key == _last_key) {
-			return _last_value;
-		}
+ public:
+  // caution: not thread safe
+  std::string lookup(const std::string& key) const {
+    if (key == _last_key) {
+      return _last_value;
+    }
 
-		std::string value{this->lookupInternal(key)};
+    std::string value{this->lookupInternal(key)};
 
-		_last_key   = key;
-		_last_value = value;
+    _last_key   = key;
+    _last_value = value;
 
-		return value;
-	}
+    return value;
+  }
 
-private:
-	mutable std::string _last_key;
-	mutable std::string _last_value;
+ private:
+  mutable std::string _last_key;
+  mutable std::string _last_value;
 };
 ```
 这里,我们呈现了一个哈希表的部分实现.显然,对哈希表的查询操作,在逻辑上不应该修改哈希表本身.因此,HashTable::lookup 是一个 const 成员函数.
