@@ -21,10 +21,10 @@ But note that, the flexibility and performance come at the cost of poor error di
 
 ```C++
 template <typename T>
-int compare(const T &v1, const T &v2){
-	if(v1 < v2) return -1;
-	if(v2 < v1) return 1;
-	return 0;
+int compare(const T& v1, const T& v2){
+  if(v1 < v2) return -1;
+  if(v2 < v1) return 1;
+  return 0;
 }
 
 Sales_data data1, data2;
@@ -35,36 +35,36 @@ Errors such as this one cannot be detected until the compiler instantiates the d
 
 ## Terminology of Templates
 - Instantiation
-	This is when the compiler generates a regular class, method, or function by substituting each of the template's parameters with a concrete type.
-	This can happen implicitly when we create an object based on a template or explicitly if we want to control when the code generation happens.
-	For instance, the following code creates two specific stack instances and will normally cause the compiler to generate code for these two different types:
+  This is when the compiler generates a regular class, method, or function by substituting each of the template's parameters with a concrete type.
+  This can happen implicitly when we create an object based on a template or explicitly if we want to control when the code generation happens.
+  For instance, the following code creates two specific stack instances and will normally cause the compiler to generate code for these two different types:
 
-	```
-	Stack<int> myIntStack;
-	Stack<std::string> myStringStack;
-	```
+  ```
+  Stack<int> myIntStack;
+  Stack<std::string> myStringStack;
+  ```
 
 - Implicit Instantiation
-	This is when the compiler decides when to generate code for our template instances.
-	Leaving the decision to the compiler means that it must find an appropriate place to insert the code,
-	and it must also make sure that only one instance of the code exists to avoid duplicate symbol errors.
-	This is non-trivial problem and can cause extra bloat in our object files or longer compile time.
-	Most importantly, **implicit instantiation means that we have to include the template definitions in our header files
-	so that the compiler has an access to the definitions whenever it needs to generate the instantiation code**.
+  This is when the compiler decides when to generate code for our template instances.
+  Leaving the decision to the compiler means that it must find an appropriate place to insert the code,
+  and it must also make sure that only one instance of the code exists to avoid duplicate symbol errors.
+  This is non-trivial problem and can cause extra bloat in our object files or longer compile time.
+  Most importantly, **implicit instantiation means that we have to include the template definitions in our header files
+  so that the compiler has an access to the definitions whenever it needs to generate the instantiation code**.
 
 - Explicit Instantiation
-	This is when the programmer determine when the compiler should generate the code for a specific specialization.
-	This can make for much more efficient compilation and link times because the compiler no longer needs to maintain bookkeeping information for all of its implicit instantiations.
-	The onus, however, is then placed on the programmer to ensure that a particular specialization is explicitly instantiated only once.
-	So, explicit instantiation allows us to move the template implementation into the .cpp file, and so hide from the user.
+  This is when the programmer determine when the compiler should generate the code for a specific specialization.
+  This can make for much more efficient compilation and link times because the compiler no longer needs to maintain bookkeeping information for all of its implicit instantiations.
+  The onus, however, is then placed on the programmer to ensure that a particular specialization is explicitly instantiated only once.
+  So, explicit instantiation allows us to move the template implementation into the .cpp file, and so hide from the user.
 
 - Lazy Instantiation
-	This describes **the standard implicit instantation behavior of a C++ compiler wherein it will only generate code for the parts of a template that are actually used**.
-	Given the previous two instantiations, for example, if we never called `isEmpty()` on the myStringStack object,
-	then the compiler would not generate code for the std::string specialization of that method.
-	This means that we can instantiate a template with a type that can be used by some, but not all methods of a class template.
-	If one method uses the >= operator, but the type we want to instantiate does not define this operator.
-	This is fine as long as we don't call the particular method that attempts to use the `>=` operator.
+  This describes **the standard implicit instantation behavior of a C++ compiler wherein it will only generate code for the parts of a template that are actually used**.
+  Given the previous two instantiations, for example, if we never called `isEmpty()` on the myStringStack object,
+  then the compiler would not generate code for the std::string specialization of that method.
+  This means that we can instantiate a template with a type that can be used by some, but not all methods of a class template.
+  If one method uses the >= operator, but the type we want to instantiate does not define this operator.
+  This is fine as long as we don't call the particular method that attempts to use the `>=` operator.
 
 从解释上来看, 我们的GCC 编译器采用的是 Lazy Instantiation
 
@@ -72,7 +72,7 @@ Errors such as this one cannot be detected until the compiler instantiates the d
 ```C++
 template <typename T>
 const T& min(const T& a, const T& b) {
-	return a < b ? a : b;
+  return a < b ? a : b;
 }
 
 LOG(INFO) << min<int>(100, 200);
@@ -91,31 +91,32 @@ Implementation and the declaration of a class template should be [in the same he
 ```C++
 // template declaration
 template <typename T>
-class Complx{
-public:
-	Complx(T&, T&);
-	const T& getReal() const;
-	const T& getImag() const;
-private:
-	T real;
-	T imag;
+class Complx {
+ public:
+  Complx(T&, T&);
+  const T& getReal() const;
+  const T& getImag() const;
+
+ private:
+  T real;
+  T imag;
 };
 
 // template definition
 template <typename T>
 Complx<T>::Complx(T& a, T& b){
-	real = a;
-	imag = b;
+  real = a;
+  imag = b;
 }
 
 template <class T>
 const T& Complx<T>::getReal() const{
-	return real;
+  return real;
 }
 
 template <class T>
 const T& Complx<T>::getImag() const{
-	return imag;
+  return imag;
 }
 
 Complx<double> myComplx(1.0, 2.5);
@@ -127,24 +128,24 @@ A nontype parameter can be used when constant expressions are required, for exam
 
 For the standard class `bitset<>`, we can pass the number of bits as the template argument.
 ```C++
-bitset<32> b32;		// bitset with 32 bits
-bitset<64> b64;		// bitset with 64 bits
+bitset<32> b32;    // bitset with 32 bits
+bitset<64> b64;    // bitset with 64 bits
 ```
 The bitsets have different types because they use different template arguments. So, we can't assign or compare them.
 
 ```C++
 template <class T, unsigned int N>
-void arrayInit(T (&a)[N]){
-	for(unsigned int i = 0; i < N; ++i){
-		a[i] = 0;
-	}
+void arrayInit(T (&a)[N]) {
+  for (unsigned int i = 0; i < N; ++i) {
+    a[i] = 0;
+  }
 }
 
-int main(){
-	int i[10];
-	double d[20];
-	arrayInit(i);	// arrayInit(int(&)[10])
-	arrayInit(d);	// arrayInit(double (&)[20])
+int main() {
+  int i[10];
+  double d[20];
+  arrayInit(i);  // arrayInit(int(&)[10])
+  arrayInit(d);  // arrayInit(double (&)[20])
 }
 ```
 `arrayInit` is a function template which takes a single parameter, which is a reference to an array.
@@ -158,18 +159,18 @@ We may be able to take advantage of some specific knowledge about a type to writ
 In the example below, we have `add()` function which takes two parameter and returns the same type of data after adding the two args.
 ```C++
 template <typename T>
-T add(T x, T y){
-	cout << "Normal template\n";
-	return x + y;
+T add(T x, T y) {
+  cout << "Normal template\n";
+  return x + y;
 }
 
 // specialized function
 template <>
-char add<char>(char x, char y){
-	cout << "Specialized template\n";
-	int i = x - '0';
-	int j = y - '0';
-	return i + j;
+char add<char>(char x, char y) {
+  cout << "Specialized template\n";
+  int i = x - '0';
+  int j = y - '0';
+  return i + j;
 }
 
 LOG(INFO) << add(1, 2);
@@ -183,30 +184,32 @@ So, if the intention of the design is different from the initial one, we may wan
 ```C++
 // Normal class
 template <typename T>
-class A{
-public:
-	A(){ cout << "A()\n"; }
-	static T add(T x, T y);
+class A {
+ public:
+  A() {
+    cout << "A()\n";
+  }
+  static T add(T x, T y);
 };
 
 template <typename T>
 T A<T>::add(T x, T y){
-	return x + y;
+  return x + y;
 }
 
 // Specialized class
 template <>
-class A <char>{
+class A <char> {
 public:
-	A() { cout << "Special A()\n"; }
-	static char add(char x, char y);
+  A() { cout << "Special A()\n"; }
+  static char add(char x, char y);
 };
 
 // template <>   <= this is not needed if defined outside of class, do not know why
-char A<char>::add(char x, char y){
-	int i = x - '0';
-	int j = y - '0';
-	return i + j;
+char A<char>::add(char x, char y) {
+  int i = x - '0';
+  int j = y - '0';
+  return i + j;
 }
 
 LOG(INFO) << A<int>::add(1, 2);
