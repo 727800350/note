@@ -61,3 +61,22 @@ class TextBlock {
 - `static_cast`: 用来强迫隐式转换, 例如将 non-const 对象转换为const 对象, 或将int 转换为 double.
   它也可以用来执行上述多种转换的反向转换, 例如将pointer-to-based 转为 pointer-to-derived, 但它无法将 const 转为non-const, 这个只有`const_cast` 才办得到.
 
+## make sure that objects are initialized before they're used
+函数内的 static 对象称为local static 对象, 其他static 对象称为non-local static 对象.
+
+如果某编译单元内的某个non-local static 对象的初始化使用了另外一个编译单元的某个non-local static 对象, 它所用到的这个对象可能尚未被初始化,
+因为C++ 对定义于不同编译单元内的 non-local static 对象的初始化次序并无明确定义.
+
+幸运的是一个小小的设计便可以完全消除这个问题. 唯一需要做的就是将每个non-local static 对象搬到自己的专属函数内.
+这种手法的基础在于: C++ 保证, 函数内的local static 对象会在 该函数被调用期间, 首次遇上该对象之定义式时被初始化.
+所以如果你以函数调用替换直接访问non-local static 对象, 你就获得了保证.
+```C++
+class FileSystem {};
+FileSystem& tfs() {
+  static FileSystem fs;
+  return fs;
+}
+```
+任何一种 non-const static 对象, 不论它是local 还是non-local, 在多线程环境下等待某事发生都会有麻烦.
+处理这个麻烦的手法一种做法是: 在程序的单线程启动阶段手工调用所有reference-returning 函数, 以消除与初始化有关的race conditions
+
