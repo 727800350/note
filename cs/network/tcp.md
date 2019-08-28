@@ -1,4 +1,3 @@
-# TCP
 Note that TCP does not guarantee that the data will be received by the other endpoint, as this is impossible.
 It delivers data to the other endpoint if possible, and notifies the user (by giving up on retransmissions and breaking the connection) if it is not possible.
 Therefore, TCP cannot be described as a 100% reliable protocol; it provides **reliable delivery of data or reliable notification of failure.**
@@ -35,7 +34,7 @@ TCP标记和他们的意义如下所列:
 * E : ECE - 显式拥塞提醒回应
 * W : CWR - 拥塞窗口减少
 
-## [tcp连接的11种状态](https://blog.csdn.net/shanliangliuxing/article/details/36500731)
+# [tcp连接的11种状态](https://blog.csdn.net/shanliangliuxing/article/details/36500731)
 ![tcp state](pics/tcp_state.jpg)
 
 1. LISTEN: 首先服务端需要打开一个socket进行监听,状态为 LISTEN.
@@ -56,27 +55,24 @@ TCP标记和他们的意义如下所列:
 而必须再等2倍的MSL(Maximum Segment Lifetime, MSL是一个数据报在网络中能存在的时间)时间之后双方才能把状态都改为CLOSED以关闭连接.
 目前RHEL里保持`TIME_WAIT`状态的时间为60秒.
 
-### [TIME WAIT状态](https://blog.csdn.net/u013616945/article/details/77510925)
-#### time wait状态如何产生?
+## [TIME WAIT状态](https://blog.csdn.net/u013616945/article/details/77510925)
+### time wait状态如何产生?
 主动调用close() 发起主动关闭的一方, 在再接收到被动关闭方的FIN 请求后, 发送最后一个ACK之后会进入time wait的状态,
 也就说该发送方会保持2MSL时间之后才会回到初始状态. MSL(Maximum Segment Lifetime)是数据包在网络中的最大生存时间.
 产生这种结果使得这个TCP连接在2MSL连接等待期间,定义这个连接的四元组(客户端IP地址和端口,服务端IP地址和端口号)不能被使用.
 
-#### time wait状态产生的原因
-1. 为实现TCP全双工连接的可靠释放
+### time wait状态产生的原因
+1. **为实现TCP全双工连接的可靠释放**: 由TCP状态变迁图可知,假设发起主动关闭的一方(client)最后发送的ACK在网络中丢失,由于TCP协议的重传机制,执行被动关闭的一方(server)将会重发其FIN,
+  在该FIN到达client之前,client必须维护这条连接状态,也就说这条TCP连接所对应的资源(client方的`local_ip, local_port`)不能被立即释放或重新分配,直到另一方重发的FIN达到之后,
+  client重发ACK后,经过2MSL时间周期没有再收到另一方的FIN之后,该TCP连接才能恢复初始的CLOSED状态.
+  如果主动关闭一方不维护这样一个time wait状态,那么当被动关闭一方重发的FIN到达时,主动关闭一方的TCP传输层会用RST包响应对方,这会被对方认为是有错误发生,然而这事实上只是正常的关闭连接过程,并非异常.
 
-由TCP状态变迁图可知,假设发起主动关闭的一方(client)最后发送的ACK在网络中丢失,由于TCP协议的重传机制,执行被动关闭的一方(server)将会重发其FIN,
-在该FIN到达client之前,client必须维护这条连接状态,也就说这条TCP连接所对应的资源(client方的`local_ip, local_port`)不能被立即释放或重新分配,直到另一方重发的FIN达到之后,
-client重发ACK后,经过2MSL时间周期没有再收到另一方的FIN之后,该TCP连接才能恢复初始的CLOSED状态.
-如果主动关闭一方不维护这样一个time wait状态,那么当被动关闭一方重发的FIN到达时,主动关闭一方的TCP传输层会用RST包响应对方,这会被对方认为是有错误发生,然而这事实上只是正常的关闭连接过程,并非异常.
+2. **为使旧的数据包在网络因过期而消失**: 为说明这个问题,我们先假设TCP协议中不存在time wait状态的限制,再假设当前有一条TCP连接:`(local_ip, local_port, remote_ip, remote_port)`,
+  因某些原因,我们先关闭,接着很快以相同的四元组建立一条新连接. 本文前面介绍过,TCP连接由四元组唯一标识,因此,在我们假设的情况中,TCP协议栈是无法区分前后两条TCP连接的不同的,
+  在它看来,这根本就是同一条连接,中间先释放再建立的过程对其来说是"感知"不到的. 这样就可能发生这样的情况:
+  前一条TCP连接由local peer发送的数据到达remote peer后,会被该remot peer的TCP传输层当做当前TCP连接的正常数据接收并向上传递至应用层,从而引起数据错乱进而导致各种无法预知的诡异现象.
 
-2. 为使旧的数据包在网络因过期而消失
-
-为说明这个问题,我们先假设TCP协议中不存在time wait状态的限制,再假设当前有一条TCP连接:`(local_ip, local_port, remote_ip, remote_port)`,因某些原因,我们先关闭,接着很快以相同的四元组建立一条新连接.
-本文前面介绍过,TCP连接由四元组唯一标识,因此,在我们假设的情况中,TCP协议栈是无法区分前后两条TCP连接的不同的,在它看来,这根本就是同一条连接,中间先释放再建立的过程对其来说是"感知"不到的.
-这样就可能发生这样的情况:前一条TCP连接由local peer发送的数据到达remote peer后,会被该remot peer的TCP传输层当做当前TCP连接的正常数据接收并向上传递至应用层,从而引起数据错乱进而导致各种无法预知的诡异现象.
-
-#### time wait状态如何避免
+### time wait 状态如何避免
 进入time wait 状态的一般情况下是客户端.大多数服务器端一般执行被动关闭,服务器不会进入time wait状态.当在服务器端关闭某个服务再重新启动时,服务器是会进入time wait状态的.
 
 首先服务器可以设置`SO_REUSEADDR`套接字选项来通知内核,如果端口忙,但TCP连接位于time wait状态时可以重用端口.
@@ -85,7 +81,7 @@ client重发ACK后,经过2MSL时间周期没有再收到另一方的FIN之后,�
 一个套接字由相关五元组构成,<协议,本地地址,本地端口,远程地址,远程端口>.`SO_REUSEADDR` 仅仅表示可以重用本地本地地址,本地端口,整个相关五元组还是唯一确定的.
 所以,重启后的服务程序有可能收到非期望数据.必须慎重使用`SO_REUSEADDR` 选项.
 
-## 异常情况分析
+# 异常情况分析
 [针对TCP连接异常断开的分析](https://www.cnblogs.com/549294286/p/5208357.html)
 [code](https://gist.github.com/ericuni/4d6eb09a6af73d15fa3004707c958f32)
 
@@ -186,38 +182,10 @@ errno
 (如果没有消失,那么可能网络本身确实存在延时的问题,特别是跨机房的情况下).  
 在长连接的处理中出现了延时, 而且时间固定,基本都是40ms, 出现40ms延时最大的可能就是由于没有设置`TCP_NODELAY`.  
 在长连接的交互中,有些时候一个发送的数据包非常的小,加上一个数据包的头部就会导致浪费,而且由于传输的数据多了,就可能会造成网络拥塞的情况,
-在系统底层默认采用了Nagle算法,可以把连续发送的多个小包组装为一个更大的数据包然后再进行发送.
+在系统底层默认采用了**Nagle算法,可以把连续发送的多个小包组装为一个更大的数据包然后再进行发送**.
 但是对于我们交互性的应用程序意义就不大了,在这种情况下我们发送一个小数据包的请求,就会立刻进行等待,不会还有后面的数据包一起发送,
 这个时候Nagle算法就会产生负作用,在我们的环境下会产生40ms的延时,这样就会导致客户端的处理等待时间过长, 导致程序压力无法上去.
 在代码中无论是服务端还是客户端都是建议设置这个选项,避免某一端造成延时.所以对于长连接的情况我们建议都需要设置`TCP_NODELAY`.  
 对于服务端程序而言, 采用的模式一般是bind -> listen -> accept, 这个时候accept出来的句柄的各项属性其实是从listen的句柄中继承,
 所以对于多数服务端程序只需要对于listen进行监听的句柄设置一次`TCP_NODELAY`就可以了,不需要每次都accept一次.
-
-# UDP
-We also say that UDP provides a connectionless service, as there need not be any long-term relationship between a UDP client and server. 
-For example, a UDP client can create a socket and send a datagram to a given server and then immediately send another datagram on the same socket to a different server. 
-Similarly, a UDP server can receive several datagrams on a single UDP socket, each from a different client.
-
-![UDP客户/服务器程序所用的套接字函数](http://pic002.cnblogs.com/images/2012/367190/2012081121141279.jpg)  
-如上图所示, 客户不与服务器建立连接, 而是只管使用`sendto`函数给服务器发送数据报, 其中必须指定目的地(即服务器)第地址作为参数. 
-类似的, 服务器不接受来自客户的连接, 而是只管调用`recvfrom` 函数, 等待来自某个客户的数据到达.
-recvfrom将接收到的数据与client 的地址一并返回, 因此服务器可以把响应发送给正确的客户.
-
-写一个长度为0 的数据报是可行的. 在UDP情况下, 这会形成一个只包含一个IP首部和一个UDP首部而没有数据的IP数据报. 这也意味着对于UDP协议, recvfrom返回0 值是可接受的.
-他并不像TCP套接字上read 返回0值那样表示对端已关闭连接. 既然UDP是无连接的, 因此也没有诸如关闭一个UDP连接之类的事情.
-
-大多数TCP服务器是并发的, 而大多数UDP服务器是迭代的
-
-由于UDP面向无连接,它可以随时发送数据.再加上UDP本身的处理既简单又高效,因此经常用于以下几个方面:
-
-1. 包总量较少的通信(DNS,SNMP等)
-2. 视频,音频等多媒体通信(即时通信)
-3. 限定于LAN等特定网络中的应用通信
-4. 广播通信(广播,多播)
-
-可能有人会认为,鉴于TCP是可靠的传输协议,那么它一定优于UDP.其实不然.TCP与UDP的优缺点无法简单地,绝对地去做比较.那么,对这两种协议应该如何加以区分使用呢?下面,我就对此问题做一简单说明.
-
-- TCP用于在传输层有必要实现可靠的情况.由于它是面向有连接并具备顺序控制,重发控制等机制的,所以它可以为应用提供可靠传输.
-- 而UDP主要用于那些对高速传输和实时性有较高要求的通信或广播通信. 我们拿通过IP电话进行通话作为例子. 如果使用TCP,数据在传送途中如果丢失会重发,但这样无法流畅地传输通话人的声音,会导致无法进行正常交流.
-	而采用UDP,它不会进行重发处理.从而也就不会有声音大幅度延迟到达的问题.即使有部分数据丢失,也只是会影响某一小部分的通话.此外,在多播与广播通信中也使用UDP而不是TCP.RIP,DHCP等基于广播的协议也要依赖于UDP.因此,TCP和UDP应该根据应用的目的按需使用.
 
