@@ -1,20 +1,21 @@
 # TCP
-Note that TCP does not guarantee that the data will be received by the other endpoint, as this is impossible. It delivers data to the other endpoint if possible, and notifies the user (by giving up on retransmissions and breaking the connection) if it is not possible. Therefore, TCP cannot be described as a 100% reliable protocol; it provides **reliable delivery of data or reliable notification of failure.**
+Note that TCP does not guarantee that the data will be received by the other endpoint, as this is impossible.
+It delivers data to the other endpoint if possible, and notifies the user (by giving up on retransmissions and breaking the connection) if it is not possible.
+Therefore, TCP cannot be described as a 100% reliable protocol; it provides **reliable delivery of data or reliable notification of failure.**
 
 **socket中TCP的三次握手建立连接**  
-![socket中TCP的三次握手建立连接详解](http://images.cnblogs.com/cnblogs_com/skynet/201012/201012122157467258.png)  
-从图中可以看出:
+![socket中TCP的三次握手建立连接详解](./pics/tcp_connect_and_close.jpg)
 
 1. 当客户端调用connect时,触发了连接请求,向服务器发送了SYN J包,这时connect进入阻塞状态.  
-1. 服务器监听到连接请求,即收到SYN J包,调用accept函数接收请求向客户端发送SYN K ,ACK J+1,这时accept进入阻塞状态.  
-1. 客户端收到服务器的SYN K ,ACK J+1之后,这时connect返回,并对SYN K进行确认,服务器收到ACK K+1时,accept返回,至此三次握手完毕,连接建立.
+1. 服务器监听到连接请求,即收到SYN J包,调用accept函数接收请求向客户端发送SYN K, ACK J+1,这时accept进入阻塞状态.  
+1. 客户端收到服务器的SYN K, ACK J+1之后,这时connect返回,并对SYN K进行确认,服务器收到ACK K+1时,accept返回,至此三次握手完毕,连接建立.
 
-客户端的`connect`在三次握手的第二个次返回,而服务器端的`accept`在三次握手的第三次返回.
+客户端的connect在三次握手的第二个次返回,而服务器端的accept在三次握手的第三次返回.
 
 内核为任何一个给定的监听套接字维护两个队列:
 
 1. **未完成连接队列(incomplete connection queue)**: 每个这样的SYN 分节对应其中一项:
-已由某个客户发出并到达服务器,而服务器正在等待完成相应的TCP三路握手过程.这些套接字处于SYN_RCVD状态
+  已由某个客户发出并到达服务器,而服务器正在等待完成相应的TCP三路握手过程.这些套接字处于`SYN_RCVD`状态
 2. **已完成连接队列(completed connection queue)**, 每个已完成TCP 三路握手过程的客户对应其中一项. 这些套接字处于established 状态
 
 当来自客户的SYN到达时,TCP在未完成连接队列中创建一个新项.  
@@ -35,6 +36,8 @@ TCP标记和他们的意义如下所列:
 * W : CWR - 拥塞窗口减少
 
 ## [tcp连接的11种状态](https://blog.csdn.net/shanliangliuxing/article/details/36500731)
+![tcp state](pics/tcp_state.jpg)
+
 1. LISTEN: 首先服务端需要打开一个socket进行监听,状态为 LISTEN.
 2. `SYN_SENT`: 客户端通过应用程序调用 connect 进行active open. 于是客户端tcp发送一个SYN以请求建立一个连接.之后状态置为`SYN_SENT`. 在发送连接请求后等待匹配的连接请求
 3. `SYN_RECV`: 服务端收到client 的SYN 后发出ACK 进行确认, 同时自己向客户端发送一个SYN(两个数据包合二为一). 之后状态置为`SYN_RECV`. 在收到和发送一个连接请求后等待对连接请求的确认
@@ -54,35 +57,33 @@ TCP标记和他们的意义如下所列:
 目前RHEL里保持`TIME_WAIT`状态的时间为60秒.
 
 ### [TIME WAIT状态](https://blog.csdn.net/u013616945/article/details/77510925)
-#### `time_wait`状态如何产生?
-主动调用close() 发起主动关闭的一方, 在再接收到被动关闭方的FIN 请求后, 发送最后一个ACK之后会进入`time_wait`的状态,
+#### time wait状态如何产生?
+主动调用close() 发起主动关闭的一方, 在再接收到被动关闭方的FIN 请求后, 发送最后一个ACK之后会进入time wait的状态,
 也就说该发送方会保持2MSL时间之后才会回到初始状态. MSL(Maximum Segment Lifetime)是数据包在网络中的最大生存时间.
 产生这种结果使得这个TCP连接在2MSL连接等待期间,定义这个连接的四元组(客户端IP地址和端口,服务端IP地址和端口号)不能被使用.
 
-#### `time_wait`状态产生的原因
+#### time wait状态产生的原因
 1. 为实现TCP全双工连接的可靠释放
 
 由TCP状态变迁图可知,假设发起主动关闭的一方(client)最后发送的ACK在网络中丢失,由于TCP协议的重传机制,执行被动关闭的一方(server)将会重发其FIN,
 在该FIN到达client之前,client必须维护这条连接状态,也就说这条TCP连接所对应的资源(client方的`local_ip, local_port`)不能被立即释放或重新分配,直到另一方重发的FIN达到之后,
 client重发ACK后,经过2MSL时间周期没有再收到另一方的FIN之后,该TCP连接才能恢复初始的CLOSED状态.
-如果主动关闭一方不维护这样一个`TIME_WAIT`状态,那么当被动关闭一方重发的FIN到达时,主动关闭一方的TCP传输层会用RST包响应对方,这会被对方认为是有错误发生,然而这事实上只是正常的关闭连接过程,并非异常.
+如果主动关闭一方不维护这样一个time wait状态,那么当被动关闭一方重发的FIN到达时,主动关闭一方的TCP传输层会用RST包响应对方,这会被对方认为是有错误发生,然而这事实上只是正常的关闭连接过程,并非异常.
 
 2. 为使旧的数据包在网络因过期而消失
 
-为说明这个问题,我们先假设TCP协议中不存在`TIME_WAIT`状态的限制,再假设当前有一条TCP连接:`(local_ip, local_port, remote_ip, remote_port)`,因某些原因,我们先关闭,接着很快以相同的四元组建立一条新连接.
+为说明这个问题,我们先假设TCP协议中不存在time wait状态的限制,再假设当前有一条TCP连接:`(local_ip, local_port, remote_ip, remote_port)`,因某些原因,我们先关闭,接着很快以相同的四元组建立一条新连接.
 本文前面介绍过,TCP连接由四元组唯一标识,因此,在我们假设的情况中,TCP协议栈是无法区分前后两条TCP连接的不同的,在它看来,这根本就是同一条连接,中间先释放再建立的过程对其来说是"感知"不到的.
-这样就可能发生这样的情况:前一条TCP连接由local peer发送的数据到达remote peer后,会被该remot peer的TCP传输层当做当前TCP连接的正常数据接收并向上传递至应用层
-(而事实上,在我们假设的场景下,这些旧数据到达remote peer前,旧连接已断开且一条由相同四元组构成的新TCP连接已建立,因此,这些旧数据是不应该被向上传递至应用层的),从而引起数据错乱进而导致各种无法预知的诡异现象.
-作为一种可靠的传输协议,TCP必须在协议层面考虑并避免这种情况的发生,这正是`TIME_WAIT`状态存在的第2个原因.
+这样就可能发生这样的情况:前一条TCP连接由local peer发送的数据到达remote peer后,会被该remot peer的TCP传输层当做当前TCP连接的正常数据接收并向上传递至应用层,从而引起数据错乱进而导致各种无法预知的诡异现象.
 
-3. 总结
+#### time wait状态如何避免
+进入time wait 状态的一般情况下是客户端.大多数服务器端一般执行被动关闭,服务器不会进入time wait状态.当在服务器端关闭某个服务再重新启动时,服务器是会进入time wait状态的.
 
-具体而言,local peer主动调用close后,此时的TCP连接进入`TIME_WAIT`状态,处于该状态下的TCP连接不能立即以同样的四元组建立新连接, 即发起active close的那方占用的local port在`TIME_WAIT`期间不能再被重新分配.
-由于`TIME_WAIT`状态持续时间为2MSL,这样保证了旧TCP连接双工链路中的旧数据包均因过期(超过MSL)而消失,此后,就可以用相同的四元组建立一条新连接而不会发生前后两次连接数据错乱的情况.
+首先服务器可以设置`SO_REUSEADDR`套接字选项来通知内核,如果端口忙,但TCP连接位于time wait状态时可以重用端口.
+在一个非常有用的场景就是,如果你的服务器程序停止后想立即重启,而新的套接字依旧希望使用同一端口,此时`SO_REUSEADDR`选项就可以避免time wait状态.
 
-#### `time_wait`状态如何避免
-首先服务器可以设置`SO_REUSEADDR`套接字选项来通知内核,如果端口忙,但TCP连接位于`TIME_WAIT`状态时可以重用端口.
-在一个非常有用的场景就是,如果你的服务器程序停止后想立即重启,而新的套接字依旧希望使用同一端口,此时`SO_REUSEADDR`选项就可以避免`TIME_WAIT`状态.
+一个套接字由相关五元组构成,<协议,本地地址,本地端口,远程地址,远程端口>.`SO_REUSEADDR` 仅仅表示可以重用本地本地地址,本地端口,整个相关五元组还是唯一确定的.
+所以,重启后的服务程序有可能收到非期望数据.必须慎重使用`SO_REUSEADDR` 选项.
 
 ## 异常情况分析
 [针对TCP连接异常断开的分析](https://www.cnblogs.com/549294286/p/5208357.html)
