@@ -80,3 +80,52 @@ FileSystem& tfs() {
 任何一种 non-const static 对象, 不论它是local 还是non-local, 在多线程环境下等待某事发生都会有麻烦.
 处理这个麻烦的手法一种做法是: 在程序的单线程启动阶段手工调用所有reference-returning 函数, 以消除与初始化有关的race conditions
 
+# Constructors, Destructors and Assignment Operators
+## Nevel call virtual functions during construction or destruction
+你不该在构造函数和析构函数期间调用virtual 函数, 这样的调用不会带来你预想的结果.
+
+1. base class 构造期间, 对象的类型时base class 而不是virtual class.
+  不止virtual 函数会被编译器解析至base class, 若使用运行期类型信息(runtime type information, 例如`dynamic_cast` 和 typeid), 也会被视为base class 类型.
+1. base class 的执行更早于derived class 构造函数, 当base class 构造函数执行时, derived class 的成员变量尚未初始化.
+
+## Have assignment operators return a reference to `\*this`
+```C++
+int x, y, z;
+x = y = z = 15;  // 赋值连锁形式
+```
+同样有趣的是, 赋值采用右结合律, 所以上述连锁赋值被解析为:
+```C++
+x = (y = (z = 15));
+```
+为了实现连锁赋值, assignment operator 必须返回一个reference 指向操作符的左侧实参.
+```C++
+class Widget {
+ public:
+  Widget& operator=(const Widget& rhs) {
+    ...
+    return *this;
+  }
+};
+```
+
+## Hanle assignment to self in operator=
+```C++
+class Bitmap { ... };
+class Widget {
+ private:
+  Bitmap* pb;
+};
+
+Widget& Widget::operator=(const Widget& rhs) {
+  if (this == &rhs) {
+    return *this;
+  }
+
+  auto* pb_bak = pb;
+  pb = new Bitmap(*rhs.pb);
+  delete pb_bak;
+  return *this;
+}
+```
+如果去掉pb bak, 直接使用 `pb = new Bitmap(*rhs.pb)`, 不具备异常安全性, 如果new Bitmap 导致异常, Widget 最终会持有一个指向一块已经被删除掉的Bitmap.
+
