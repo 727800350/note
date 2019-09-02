@@ -129,3 +129,42 @@ Widget& Widget::operator=(const Widget& rhs) {
 ```
 如果去掉pb bak, 直接使用 `pb = new Bitmap(*rhs.pb)`, 不具备异常安全性, 如果new Bitmap 导致异常, Widget 最终会持有一个指向一块已经被删除掉的Bitmap.
 
+# Resouce Management
+## use the same form in corresponding uses of new and delete
+当你使用new, 有两件事发生:
+
+1. 内存被分配出来
+1. 针对此内存会有一个(或多个)构造函数被调用
+
+当你使用delete, 也有两件事发生
+
+1. 针对此内存会有一个(或多个)析构函数被调用
+1. 然后内存才被释放
+
+# Designs and Declarations
+## Declare non-member functions when type conversions should apply to all parameters
+```C++
+// 分数形式的有理数
+class Rational {
+ public:
+  Rational(int numerator = 0, int denominator = 1);  // 构造函数刻意不为explicit, 允许int-to-Rational 隐式转换
+  const Rational operator*(const Rational& rhs) const;
+};
+
+Rational oneHalf(1, 2);
+auto res = oneHalf * 2;  // ok, oneHalf.operator*(2)
+res = 2 * oneHalf; // error, 2.operator*(oneHalf)
+```
+只有当参数被列于parameter list 内, 这个参数才是隐式类型转换的合格参与者. 地位相当于"被调用之成员函数所隶属的那个对象"--- 即this对象.
+如果一定要支持混合式算数运算, 让`operator*`成为一个non-member 函数, 便允许编译器在每一个实参身上执行隐式类型转换.
+```C++
+const Rational operator*(const Rational& lhs, const Rational& rhs) {
+  return Rational(lhs.numerator() * rhs.numerator(), lhs.denominator() * rhs.denominator());
+}
+```
+返回的类型const, 是为了避免下面这种代码, 加了const 之后编译无法通过.
+```C++
+Rational a, b, c;
+(a * b) = c;
+```
+
