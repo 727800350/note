@@ -178,3 +178,67 @@ Rational a, b, c;
 
 成员版swap 绝不可抛出异常, 这一约束只施行于成员版. 不可施行于非成员版, 因为swap 缺省版本是以copy ctor 和 copy assignment 操作符为基础, 而一般情况下, 两者都允许抛出异常.
 
+# Inheritance and Object-Oriented Design
+## make sure public inheritance model "is-a"
+如果你令class D("Derived") 以public 形式继承class B("Base"), 你便是告诉编译器说, 每一个类型为D 的对象同时也是一个类型为B 的对象, 反之不成立.
+B 比D 表现出更一般化的概念, 而D 比B 表现出更特殊化的概念.
+B 对象可派上用场的地方, D 对象一样可以派上用场, 因为每一个D 对象都是一个B 对象.
+
+## Avoid hiding inherited names
+这个题材其实和继承五个, 而是和作用域(scopes) 有关.
+```C++
+int x;  // global 变量
+void someFunc() {
+  double x;  // local 变量
+  std::cin >> x;
+}
+```
+这个读取数据的语句指涉的是local 变量x, 而不是global 变量x.
+本例的someFunc 的x 是double 类型, 而global x 是int 类型, 但那不要紧. C++ 的名称遮掩规则(name-hiding rules) 所做的唯一事情就是: 遮掩名称. 至于名称的类型, 并不重要.
+
+```C++
+class Base {
+ public:
+  virtual void mf1() = 0;
+  virtual void mf1(int);
+  virtual void mf2();
+  void mf3();
+  void mf3(double);
+
+ private:
+  int x;
+};
+
+class Derived : public Base {
+ public:
+  virtual void mf1();
+  void mf3();
+  void mf4();
+};
+```
+base class 内所有名为mf1 和 mf3 的函数都被derived class 内的mf1 和 mf3 函数遮掩调了.
+```C++
+Drived d;
+int x;
+double y;
+d.mf1();  // call Dervied::mf1
+d.mf1(x);  // error, Base::mf1 was hidden
+d.mf2();  // call Base::mf2
+d.mf3();  // call Derived::mf3
+d.mf3(y);  // error, Base::mf3 was hidden
+```
+即使base class 和 derived class 内的函数有不同的参数类型也适用, 而且不论函数是virtual 或non-virtual 一样适用.
+
+这些行为背后的基本理由是为了防止你在程序内建立新的derived class 附带地从疏远地base class 继承重载函数.
+如果一定要使用默认被遮掩的函数, 可以使用using 来让被遮掩的函数重新可见.
+```C++
+class Derived : public Base {
+ public:
+  using Base::mf1;  // 让base class 内名为mf1, mf3 的所有东西在derived 作用域内都可见并且public
+  using Base::mf3;
+  virtual void mf1();
+  void mf3();
+  void mf4();
+};
+```
+
