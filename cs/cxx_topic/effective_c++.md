@@ -242,3 +242,65 @@ class Derived : public Base {
 };
 ```
 
+## differentiate between inheritance of interface and inheritance of implementation
+```C++
+class Shape {
+ public:
+  virtual void draw() const = 0;
+  virtual void error(const std::string& msg);
+  int objectID() const;
+};
+
+class Rectangle : public Shape {...};
+class Ellipse : public Shape {...};
+```
+我们可以为pure virtual 函数提供定义, 但调用它的唯一途径是调用时明确指出其名称.
+
+```C++
+void Shape::draw() const {
+  ...
+}
+
+Shape* ps1 = new Rectangle;
+ps1->draw();
+Shape* ps2 = new Ellipse;
+ps2->draw();
+
+ps1->Shape::draw();  // call Shape::draw
+ps2->Shape::draw();
+```
+
+## never redefine an inherited non-virtual function
+```C++
+class B {
+ public:
+  void mf();
+};
+
+class D : public B{
+ public:
+  void mf();  // hides B::mf
+};
+
+D x;
+B* pB = &x;
+pB->mf();  // call B::mf
+
+D* pD = &x;
+pD->mf();  // call D::mf
+```
+造成这种差异的原因是, non-virtual 函数都是静态绑定的(statically bound), virtual 函数是动态绑定(dynamicaly bound).
+
+## never redefine a function inherited default parameter value
+virtual 函数系动态绑定, 而缺省参数值缺是静态绑定.
+
+所谓静态类型(static type) 就是它在程序中被声明时所采用的类型.
+动态类型(dynamic type) 则是指目前所指对象的类型.
+
+```C++
+Shape* ps;
+Shape* pc = new Circle;
+Shape* pr = new Rectangle;
+```
+他们三个的静态类型都是pointer to Shape
+
