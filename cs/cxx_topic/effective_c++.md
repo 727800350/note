@@ -168,3 +168,13 @@ Rational a, b, c;
 (a * b) = c;
 ```
 
+## consider support for a non-throwing swap
+如果swap 默认实现版的效率不足(那几乎总是意味着你的class 或template 使用了某种pimpl 手法), 试着做以下事情:
+
+1. 提供一个public swap 函数, 让它高效地置换你的类型的两个对象值. 这个函数不该抛出异常
+1. 在你的class 或者template 所在地命名空间内提供一个non-member swap, 并令它调用上述swap 成员函数
+1. 如果你正编写一个class(而非class template)`, 为你的class 特化std::swap, 并令它调用你的swap 成员函数.
+1. 最后, 请使用using 声明式, 以便让std::swap 在你的函数内曝光可见, 然后不加任何namespace 修饰符, 赤裸裸的调用swap.
+
+成员版swap 绝不可抛出异常, 这一约束只施行于成员版. 不可施行于非成员版, 因为swap 缺省版本是以copy ctor 和 copy assignment 操作符为基础, 而一般情况下, 两者都允许抛出异常.
+
