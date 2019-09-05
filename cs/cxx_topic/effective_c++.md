@@ -291,7 +291,7 @@ pD->mf();  // call D::mf
 ```
 造成这种差异的原因是, non-virtual 函数都是静态绑定的(statically bound), virtual 函数是动态绑定(dynamicaly bound).
 
-## never redefine a function inherited default parameter value
+## never redefine a function's inherited default parameter value
 virtual 函数系动态绑定, 而缺省参数值缺是静态绑定.
 
 所谓静态类型(static type) 就是它在程序中被声明时所采用的类型.
@@ -303,4 +303,57 @@ Shape* pc = new Circle;
 Shape* pr = new Rectangle;
 ```
 他们三个的静态类型都是pointer to Shape
+
+## Use private inheritance judiciously
+private 继承在软件设计层面上没有意义, 其意义只及于软件实现层面.
+尽可能使用复合, 必要时才使用private 继承.
+
+这种所谓的empty class 对象不使用任何空间, 因为没有任何隶属对象的数据需要存储. 然而由于技术上的理由, C++ 裁定凡是独立(非附属)对象都必须有非零大小.
+```C++
+class Empty {};
+class HoldsAnInt {
+ private:
+  int x;
+  Empty e;
+};
+
+```
+`sizeof(Empty)` 大多数编译器中为 1, 因为面对零之独立对象, 通常C++ 勒令默默安插一个char 到空对象内.
+`sizeof(HoldsAnInt)` 通常为8, 因为内存对齐的原因.
+
+## use multiple inheritance judiciously
+程序有可能从一个以上的base classes 继承相同名称(如函数, typedef 等), 那会导致较多的歧义机会.
+```C++
+class BorrowableItem {
+ public:
+  void checkOut();
+};
+
+class ElectronicGadget {
+ private:
+  void checkOut() const;  // 执行自我检测
+};
+
+class MP3Player : public BorrowableItem, public ElectronicGadget { };
+
+MP3Player mp;
+mp.checkOut();  // error, ambiguous
+```
+可以看到即使ElectronicGadget 中的 checkOut 是private 的, 仍然会造成歧义, 因为名称还是一样.
+
+钻石型多重继承
+![diamond inheritance](pics/effective_c++/diamond_inheritance.png)
+```C++
+class File {...};
+class InputFile: public File {...};
+class OutputFile: public File{...};
+class IOFile: public InputFile, public OutputFile {...};
+```
+任何时候只要你的继承体系中某个 base class 和某个 derived class 之间有一条以上的想通路线,你就必须面对这样一个问题:是否打算让 base class 内的成员经由每一条路径被复制?
+假设 File 有个成员变量 fileName,那么 IOFile 应给有两份 fileName 成员变量.但从另一个角度来说,简单的逻辑告诉我们,IOFile 对象只有一个文件名称,所以他继承自两个 base class 而来的 fileName 不能重复.
+C++ 的缺省做法是执行重复.如果那不是你要的,你必须令那个带有此数据的 base class(也就是 File)成为一个 virtual base class.必须令所有直接继承自它的 classes 采用 "virtual 继承":
+
+从正确行为的观点看, public 继承应该总是virtual.
+但是正确性并不是唯一观点, 为避免继承得来的成员变量重复, 编译器必须提供若干幕后戏法, 而其后果是: 使用virtual 继承的那些classes 所产生的对象往往比使用non-virtual 继承的兄弟们体积大,
+访问virtual base classes 的成员变量时, 也比访问non-virtual base classes 的成员变量速度慢.
 
