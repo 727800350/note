@@ -445,6 +445,7 @@ class MsgSender<CompanyZ> {
 为了重头来过来过, 我们必须有某种办法令C++ "不进入 templatized base classes 观察" 的行为失效. 有三个办法:
 
 1. 在调用base class 函数之前加上`this->`
+
   ```C++
   template<typename Company>
   class LoggingMsgSender : public MsgSender<Company> {
@@ -457,6 +458,7 @@ class MsgSender<CompanyZ> {
   };
   ```
 1. 使用using 声明式
+
   ```C++
   template<typename Company>
   class LoggingMsgSender : public MsgSender<Company> {
@@ -470,6 +472,7 @@ class MsgSender<CompanyZ> {
   };
   ```
 1. 显式调用, 但这往往是最不让人满意的一个解法, 因为如果调用的是virtual 函数, 上述的explicit qualification 会关闭virtual 绑定行为.
+
   ```C++
   template<typename Company>
   class LoggingMsgSender : public MsgSender<Company> {
