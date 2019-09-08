@@ -357,3 +357,128 @@ C++ 的缺省做法是执行重复.如果那不是你要的,你必须令那个�
 但是正确性并不是唯一观点, 为避免继承得来的成员变量重复, 编译器必须提供若干幕后戏法, 而其后果是: 使用virtual 继承的那些classes 所产生的对象往往比使用non-virtual 继承的兄弟们体积大,
 访问virtual base classes 的成员变量时, 也比访问non-virtual base classes 的成员变量速度慢.
 
+# Templates and Generic Programming
+C++ template 机制自身是一部完整的图灵机, 它可以被用来计算任何可计算的值. 于是导出了模板元编程(template metaprogramming), 创造出在C++ 编译器内执行并于编译完成时停止执行的程序.
+
+## understand the two meanings of typename
+template 内出现的名称如果相依于某个template参数, 称之为从属名称(dependent names). 如果从属名称在class 内呈嵌套状, 我们称之为nested dependent name.
+```C++
+template<typename C>
+void print2nd(const C& container) {
+  if (container.size() >= 2) {
+    // it 声明式只有在C::const_iterator 是个类型时才合理, 所以需要在前面加typename
+    // 实际上用auto 就行了, 可以省掉typename
+    typename C::const_iterator it(container.begin());
+    ++it;
+    std::cout << *it;
+  }
+}
+```
+如果`C::const_iterator` 不是一个类型呢? 如果C 有个static 成员变量碰巧的被命名为 `const_iterator`, 撰写C++ 解析器的人必须操心所有可能得输入.
+在我们知道C 是什么之前, 没有任何办法可以知道`C::const_iterator` 是否为一个类型, 而当编译器开始解析template print2nd 时, 尚未确知C 是什么东西.
+C++ 有一个规则可以resolve 此一歧义状态: 如果解析器在template 中遭遇一个嵌套从属名称, 它便假设这个名称不是一个类型, 除非你告诉它是. 所以缺省情况下, 嵌套从属名称不是类型.
+
+## know how to access names in templateized base classes
+```C++
+class CompanyA {
+ public:
+  void sendCleartext(const std::string& msg);
+  void sendEncrypted(const string& msg);
+};
+
+class CompanyB {
+ public:
+  void sendCleartext(const std::string& msg);
+  void sendEncrypted(const string& msg);
+};
+
+class MsgInfo{};
+
+template<typename Company>
+class MsgSender {
+ public:
+  void sendClear(const MsgInfo& info) {
+    string msg;
+    ... // fill msg with info
+    Company c;
+    c.sendCleartext(msg);
+  }
+
+  void sendSecret(const MsgInfo& info) { ... }  // 类似sendClear
+};
+
+// 假设我们想要在每次送出信息时log 某些信息, derived class 可轻易加上这样的能力, 并且似乎是个合情合理的做法
+template<typename Company>
+class LoggingMsgSender : public MsgSender<Company> {
+ public:
+  void sendClearMsg(const MsgInfo& info) {
+    // log before
+    sendClear(info);  // 调用base class 函数, 这段代码无法通过编译
+    // log after
+  }
+};
+```
+注意这个derived class 的信息传送函数有一个不同的名称(sendClearMsg), 与其base class 内的名称(sendClear) 不同. 这是个好设计, 因为它避免遮掩继承得来的名称.
+
+上述代码无法通过编译,至少是对严守规律的编译器而言.这样的编译器会抱怨sendClear不存在.虽然我们看到sendClear确实在基类内,然而编译器就是看不到它们.
+问题在于, 当编译器遭遇class template LoggingMsgSender 定义式时, 并不知道它继承什么样的class. 当然它继承的是MsgSender<Company>, 但其中的Company 是template 参数,
+不到后来(当LoggingMsgSender 被具现化) 无法确切知道它是什么. 而如果不知道Company 是什么, 就无法知道class MsgSender<Company> 是否有sendClear 函数.
+其原因是因为有一种所谓的模板全特化,在这个特化版的基类里可能没有sendClear这个函数,因此C++拒绝这个调用的原因是:
+它知道基类模板有可能被特化,而那个特化版本可能不提供和一般模板相同的接口.因此它往往拒绝在模板化基类内寻找继承而来的名称.
+
+例如有一家公司只使用加密通信:
+```C++
+class CompanyZ {
+ public:
+  void sendEncrypted(const std::string& msg);
+};
+```
+之前定义的MsgSender模板对CompanyZ并不合适,因为该模板还提供了sendClear发送明文的函数.因此要针对CompanyZ产生一个MsgSender特化版:
+```C++
+template<>
+class MsgSender<CompanyZ> {
+ public:
+  void sendSecret(const MsgInfo& info) {.........}
+};
+```
+
+为了重头来过来过, 我们必须有某种办法令C++ "不进入 templatized base classes 观察" 的行为失效. 有三个办法:
+
+1. 在调用base class 函数之前加上`this->`
+```C++
+template<typename Company>
+class LoggingMsgSender : public MsgSender<Company> {
+ public:
+  void sendClearMsg(const MsgInfo& info) {
+    // log before
+    this->sendClear(info);  // 成立, 假设sendClear 将被继承
+    // log after
+  }
+};
+```
+1. 使用using 声明式
+```C++
+template<typename Company>
+class LoggingMsgSender : public MsgSender<Company> {
+ public:
+  using MsgSender<Company>::sendClear;  // 告诉编译器, 请它假设sendClear 位于base class 内
+  void sendClearMsg(const MsgInfo& info) {
+    // log before
+    sendClear(info);  // 成立, 假设sendClear 将被继承
+    // log after
+  }
+};
+```
+1. 显式调用, 但这往往是最不让人满意的一个解法, 因为如果调用的是virtual 函数, 上述的explicit qualification 会关闭virtual 绑定行为.
+```C++
+template<typename Company>
+class LoggingMsgSender : public MsgSender<Company> {
+ public:
+  void sendClearMsg(const MsgInfo& info) {
+    // log before
+    MsgSender<Company>::sendClear(info);  // 成立, 假设sendClear 将被继承
+    // log after
+  }
+};
+```
+
