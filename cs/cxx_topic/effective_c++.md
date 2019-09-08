@@ -445,40 +445,40 @@ class MsgSender<CompanyZ> {
 为了重头来过来过, 我们必须有某种办法令C++ "不进入 templatized base classes 观察" 的行为失效. 有三个办法:
 
 1. 在调用base class 函数之前加上`this->`
-```C++
-template<typename Company>
-class LoggingMsgSender : public MsgSender<Company> {
- public:
-  void sendClearMsg(const MsgInfo& info) {
-    // log before
-    this->sendClear(info);  // 成立, 假设sendClear 将被继承
-    // log after
-  }
-};
-```
+  ```C++
+  template<typename Company>
+  class LoggingMsgSender : public MsgSender<Company> {
+   public:
+    void sendClearMsg(const MsgInfo& info) {
+      // log before
+      this->sendClear(info);  // 成立, 假设sendClear 将被继承
+      // log after
+    }
+  };
+  ```
 1. 使用using 声明式
-```C++
-template<typename Company>
-class LoggingMsgSender : public MsgSender<Company> {
- public:
-  using MsgSender<Company>::sendClear;  // 告诉编译器, 请它假设sendClear 位于base class 内
-  void sendClearMsg(const MsgInfo& info) {
-    // log before
-    sendClear(info);  // 成立, 假设sendClear 将被继承
-    // log after
-  }
-};
-```
+  ```C++
+  template<typename Company>
+  class LoggingMsgSender : public MsgSender<Company> {
+   public:
+    using MsgSender<Company>::sendClear;  // 告诉编译器, 请它假设sendClear 位于base class 内
+    void sendClearMsg(const MsgInfo& info) {
+      // log before
+      sendClear(info);  // 成立, 假设sendClear 将被继承
+      // log after
+    }
+  };
+  ```
 1. 显式调用, 但这往往是最不让人满意的一个解法, 因为如果调用的是virtual 函数, 上述的explicit qualification 会关闭virtual 绑定行为.
-```C++
-template<typename Company>
-class LoggingMsgSender : public MsgSender<Company> {
- public:
-  void sendClearMsg(const MsgInfo& info) {
-    // log before
-    MsgSender<Company>::sendClear(info);  // 成立, 假设sendClear 将被继承
-    // log after
-  }
-};
-```
+  ```C++
+  template<typename Company>
+  class LoggingMsgSender : public MsgSender<Company> {
+   public:
+    void sendClearMsg(const MsgInfo& info) {
+      // log before
+      MsgSender<Company>::sendClear(info);  // 成立, 假设sendClear 将被继承
+      // log after
+    }
+  };
+  ```
 
