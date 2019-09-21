@@ -485,3 +485,76 @@ class MsgSender<CompanyZ> {
   };
   ```
 
+## use member function templates to accept all compatible types
+真实指针做得很好的一件事是, 支持隐式转换(implicit conversions). derived class 指针可以隐式转换为base class 指针; 指向non-const 的指针可以转换为指向const 对象等.
+```C++
+class Top {};
+class Middle : public Top {};
+class Bottom : public Middle {};
+Top* pt1 = new Middle;
+Top* pt1 = new Bottom;
+```
+但如果想在自定义的智能指针上模拟上述转换, 稍微有点儿麻烦, 我们希望以下代码通过编译:
+```C++
+template<typename T>
+class SmartPtr {
+ public:
+  explicit SmartPtr(T* realPtr);  // 智能指针通常以原始指针完成初始化
+};
+
+SmartPtr<Top> pt1 = SmartPtr<Middle>(new Middle);
+SmartPtr<Top> pt1 = SmartPtr<Bottom>(new Bottom);
+```
+但是, 同一个template 的不同instantiations 之间并不存在什么与生俱来的固有关系(这里指如果以带有base-derived 关系到B, D两类型分别具现化于某个template, 产生出来的两个具现体并不带有base-derived关系).
+所以编译器视 SmartPtr<Top> 和 SmartPtr<Middle> 为完全不同的class, 没有base-derived 关系.
+
+因为一个template 可以被无限量具现化, 以致生成无限量函数, 因为我们需要的不是为SmartPtr 写一个构造函数, 而是为它写一个构造模板, 这样的模板是所谓member function templates.
+```C++
+template<typename T>
+class SmartPtr {
+ public:
+  template<typename U>
+  SmartPtr(const SmartPtr<U>& other);
+};
+```
+这一构造函数根据对象u 创建对象 t(例如根据`SmartPtr<U>` 创建一个`SmartPtr<T>`), 而u 和 v 的类型是同一个template 的不同具现体, 有时我们称之为generalized copy 构造函数.
+上面的泛化copy 构造函数并未被声明为explicit, 那是蓄意的, 因为原始指针类型之间的转换(例如从derived class 指针转为base class 指针) 是隐式转换, 无需明白写出转型cast, 所以让智能指针仿效这种行径也属合理.
+
+完成声明后, 这个泛化copy 构造函数提供的东西比我们需要的多, 我们希望根据一个 `SmartPtr<Bottom>` 创建一个`SmartPtr<Top>`, 却不希望根据一个`SmartPtr<Top>` 创建一个`SmartPtr<Bottom>`;
+我们也不希望根据`SmartPtr<double>` 创建一个`SmartPtr<int>`, 因为现实中并没有见过`int*`转换为`double*` 的对应隐式转换行为, 我们必须从某方面对这一泛化构造函数进行拣选或筛除.
+```C++
+template<typename T>
+class SmartPtr {
+ public:
+  template<typename U>
+  SmartPtr(const SmartPtr<U>& other) : heldPtr(other.get()) {}
+
+  T* get() const {
+    return heldPtr;
+  }
+
+ private:
+  T* heldPtr;
+};
+```
+这个行为只有当可以将`U*`隐式转换为`T*` 时才能通过编译, 正是我们想要的, 最终效益是`SmartPtr<T>` 先在有一个泛化copy 构造函数, 且只有其实参隶属兼容类型时才能通过编译.
+(实际上也可以通过`std::enable_of` 元编程的方式来限制T 和 U 的关系).
+
+member function templates 并不改变语言规则, 而语言规则说, 如果程序需要一个copy 构造函数, 你却没有声明它, 编译器会为你暗自生成一个.
+在class 内声明泛化copy 构造函数, 并不阻止编译器生成一个它们自己的copy 构造函数(一个non-template), 所以如果你想要控制copy 构造函数的方方面面, 你必须同时声明泛化copy 构造函数和正常的copy 构造函数.
+相同规则也适用于assignment 操作.
+
+标准的`std::shared_ptr` 的定义
+```C++
+template<class T>
+class shared_ptr {
+ public:
+  shared_ptr(const shared_ptr& r);  // copy 构造函数
+  template<class Y>
+  shared_ptr(const shared_ptr<Y>& r);  // 泛化copy 构造函数
+  shared_ptr& operator=(const shared_ptr& r);  // copy assignment
+  template<class Y>
+  shared_ptr& operator=(const shared_ptr<Y>& r);  // 泛化copy assignment
+};
+```
+
