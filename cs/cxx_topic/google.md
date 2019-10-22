@@ -17,9 +17,9 @@
 
 ## 控制选项
 - `--minloglevel=0`: 打印级别大于0的日志, 也就是INFO 及以上都会打印
-- `--v=0`: 默认不打印vlog, eg: `vlog(100) << "vlog"` 则需要 --v=100 才能打印出来, 还可以配合`--vmodule` 进行文件级别的控制
-- `--vmodule(string, default="")`: 分文件(不包括文件名后缀,支持通配符)设置自定义日志的可输出级别. 如果同时使用 `--v` 选项,将覆盖 `--v` 选项.
-	如:`--vmodule=server=2,client=3` 表示文件名为`server.*` 的只输出小于 2 的日志,文件名为 `client.*` 的只输出小于 3 的日志.
+- `--v=0`: Show all VLOG(m) messages for m less or equal the value of this flag. Overridable by --vmodule. eg: `vlog(100) << "vlog"` 则需要 --v >= 100 才能打印出来
+- `--vmodule(string, default="")`: 分文件(不包括文件名后缀,支持通配符)设置自定义日志的可输出级别. 如:`--vmodule=server=2,client=3` 表示文件名为`server.*` 的只输出小于 2 的日志,文件名为 `client.*` 的只输出小于 3 的日志.
+- `VLOG_IS_ON(n)`: "verbose level" condition macro. returns true when the --v is equal or greater than n
 - `--logbuflevel(int, default=0)`: 缓存小于或等于这个级别的日志信息. (-1表示不缓存; 0表示只缓存INFO级别日志; ...)
 - `--logbufsecs(int, default=30)`: 最多缓存这么多秒的日志信息.
 - `--log_backtrace_at=server_status_manager.cc:177`: 可以看到指定行的调用堆栈信息
