@@ -9,8 +9,8 @@
 - `git fetch origin branch1:branch2`: 将远程分支branch1 拉到本地作为branch2
 - `git add -p <file>` 把对某个文件的修改添加到下次提交中
 
-## git cherry-pick. 
-What git cherry-pick does, basically, is take a commit from somewhere else, and "play it back" wherever you are right now. 
+## git cherry-pick
+What git cherry-pick does, basically, is take a commit from somewhere else, and "play it back" wherever you are right now.
 Because this introduces the same change with a different parent, Git builds a new commit with a different ID.
 
 实际问题: 在本地 master 分支上做了一个commit(38361a68138140827b31b72f8bbfd88b3705d77a), 如何把它放到本地 old_cc 分支上?
@@ -24,7 +24,7 @@ $ git cherry-pick 38361a68138140827b31b72f8bbfd88b3705d77a
 ## git stash
 Stash the changes in a dirty working directory away
 
-The modifications stashed away by this command can be 
+The modifications stashed away by this command can be
 
 - listed with `git stash list`
 - inspected with `git stash show`
@@ -33,8 +33,8 @@ The modifications stashed away by this command can be
 Calling git stash without any arguments is equivalent to `git stash save`.
 A stash is by default listed as "WIP on branchname …", but you can give a more descriptive message on the command line when you create one.
 
-The latest stash you created is stored in refs/stash; 
-older stashes are found in the reflog of this reference and can be named using the usual reflog syntax 
+The latest stash you created is stored in refs/stash;
+older stashes are found in the reflog of this reference and can be named using the usual reflog syntax
 (e.g. stash@{0} is the most recently created stash, stash@{1} is the one before it, stash@{2.hours.ago} is also possible).
 
 - git stash: 备份当前的工作区的内容,从最近的一次提交中读取相关内容,让工作区保证和上次提交的内容一致.同时,将当前的工作区内容保存到Git栈中
@@ -92,133 +92,69 @@ Git 使用的标签有两种类型:轻量级的(lightweight)和含附注的(anno
 - `git reset --keep <commit>` 将HEAD重置到上一次提交的版本,并保留未提交的本地修改:
 
 ## 回滚
-1. `git reset --hard <commit>` reset index和working directory, 自从<commit>以来在working directory中的任何改变都被丢弃, 并把HEAD指向<commit>. git log 看不到这个commit 之后的commits, 但是git reflog 可以看到
+1. `git reset --hard <commit>` reset index和working directory, 自从<commit>以来在working directory中的任何改变都被丢弃, 并把HEAD指向<commit>.
+  git log 看不到这个commit 之后的commits, 但是git reflog 可以看到
 1. `git push --force origin master`
 
 - 把<commit> 换成某一个tag的名字, 可以回滚到指定的tag
 - 不指定<commit>时, 默认为HEAD, 即最新的一次提交
 
-# repo
-## Create repo
-创建 git 仓库
+Git Your branch is ahead of 'origin/master' by X commits解决方法
 
-	mkdir projet
-	cd projet
-	git init
-	touch README.md
-	git add README.md
-	git commit -m "first commit" 
-	git remote add origin git@git.oschina.net:eric_uni/projet.git 
-	git push -u origin master
-
-已有项目?
-
-	cd projet
-	git remote add origin git@git.oschina.net:eric_uni/projet.git 
-	git push -u origin master
-
-Git Stripspace
-
-- 去掉行尾空白符
-- 多个空行压缩成一行
-- 必要时在文件末尾增加一个空行
-- 使用此命令时必须传入一个文件,像这样:
-```
-$ git stripspace < README.md
-```
-
-提交空的改动
-```
-git commit -m "Big-ass commit" --allow-empty
-```
-这样做在如下几种情况下是有意义的:
-
-- 标记一批工作或一个新功能的开始.
-- 记录你对项目进行了跟代码无关的改动.
-- 跟使用你仓库的其他人交流.
-- 作为仓库的第一次提交,因为第一次提交日后是不能被rebase的: git commit -m "init repo" --allow-empty.
-
-在任意diff页面的URL后加上?w=1,可以去掉那些只是空白字符的变化,使你能更专注于代码的变化
-在diff或者file页面的URL后面加上?ts=4,这样当显示tab字符的长度时就会是4个空格的长度,不再是默认的8个空格.ts后面的数字还可以根据你个人的偏好进行修改.不过,在在Gists页面和raw file页面不起作用
-查看某个用户的所有提交历史,只需在commits页面URL后加上?author=username.
-
-当你点击某个仓库的分支(Branches)选项卡时
-```
-https://github.com/{user}/{repo}/branches
-```
-你会看到一个包含所有未合并的分支的列表.
-
-有的时候我们需要将多个分支与一个非主分支(master)进行对比,此时可以通过在URL后加入要比较的分支名来实现:
-```
-https://github.com/{user}/{repo}/branches/{branch}
-```
-可以在URL后加上?merged=1来查看已经合并了的分支.
-
-如果我们想要比较两个分支,可以像下面一样修改URL:
-```
-https://github.com/user/repo/compare/{range}
-其中{range} = master...4-1-stable
-```
-例如:
-```
-https://github.com/rails/rails/compare/master...4-1-stable
-https://github.com/rails/rails/compare/master@{1.day.ago}...master
-https://github.com/rails/rails/compare/master@{2014-10-04}...master
-这样你就能查看master分支上一段时间或者指定日期内的改动.
-```
+- If you work in another way and your local changes should be pushed then just, `git push origin`
+- If your local changes are bad then just remove them or reset your local master to the state on remote. `git reset --hard origin/master`
 
 # FAQ
 ## 撤销操作
 1. 运行了`git add`, 但是还没有运行`git commit`, 可以执行下面的两个方法:
 
-	- `git rm --cached <added_file_to_undo>`
-	- `git reset .`: (to undo my entire initial add), 修改的文件还将处于修改的状态
+  - `git rm --cached <added_file_to_undo>`
+  - `git reset .`: (to undo my entire initial add), 修改的文件还将处于修改的状态
 
-1. Checkout all files except one.  
-When I do a git status, I see files like this:
+1. Checkout all files except one. When I do a git status, I see files like this:
+  ```
+  modified:  dir/A/file.txt
+  modified:  dir/B/file.txt
+  modified:  dir/C/file.txt
+  modified:  dir/D/file.txt
+  ```
+  What I want to do is to discard changes to all files EXCEPT for dir/C/file.txt 操作步骤:
+  ```
+  git add dir/C/file.txt # this file will stay modified and staged
+  git checkout .
+  ```
 
-		modified:  dir/A/file.txt
-		modified:  dir/B/file.txt
-		modified:  dir/C/file.txt
-		modified:  dir/D/file.txt
-What I want to do is to discard changes to all files EXCEPT for dir/C/file.txt
-操作步骤:
+1. commit 之后发现commit的message有错误, `git commit --amend`: lets you edit the previous commit message
 
-	1. git add dir/C/file.txt # this file will stay modified and staged
-	1. git checkout .
+1. commit 之后想起忘了add 另外一个修改的文件, 操作步骤如下
+  ```
+  # Edit hello.py and main.py
+  git add hello.py
+  git commit
 
-1. commit 之后发现commit的message有错误  
-`git commit --amend`: lets you edit the previous commit message
-
-1. commit 之后想起忘了add 另外一个修改的文件  
-操作步骤如下
-
-		# Edit hello.py and main.py
-		git add hello.py
-		git commit
-		
-		# Realize you forgot to add the changes from main.py
-		git add main.py
-		git commit --amend --no-edit
+  # Realize you forgot to add the changes from main.py
+  git add main.py
+  git commit --amend --no-edit
+  ````
 
 ## 分支操作
 1. Using git in two computers, after merging one branch a into master with computer c1, delte the branch a in c1 both locally and remotely,
-switch to computer c2, delelte the branch a locally, and want to delete the branch a remotely in c2, 
-but an error is reported, as the remote branch a has been deleted by computer c1, so what should I do to clean the branch status in computer c2?  
+switch to computer c2, delelte the branch a locally, and want to delete the branch a remotely in c2,
+but an error is reported, as the remote branch a has been deleted by computer c1, so what should I do to clean the branch status in computer c2?
 original branch status:
 
-		[eric@iis ntop]$ git branch -a
-		* master
-		  note
-		  remotes/origin/HEAD -> origin/master
-		  remotes/origin/master
-		  remotes/origin/note
+    [eric@iis ntop]$ git branch -a
+    * master
+      note
+      remotes/origin/HEAD -> origin/master
+      remotes/origin/master
+      remotes/origin/note
 note branch 是在其他机器上删除的一个分支
 
-	1. `$ git branch -d note`: delete the branch locally
-	1. `$ git remote prune origin`: clean the remote branch status
-	1. `$ git remote set-head origin -a`: query the remote and automatically set the origin/HEAD pointer to the remote current branch.
-	1. `$ git remote set-head origin -d`: delete the origin/HEAD symbolic ref
+  1. `$ git branch -d note`: delete the branch locally
+  1. `$ git remote prune origin`: clean the remote branch status
+  1. `$ git remote set-head origin -a`: query the remote and automatically set the origin/HEAD pointer to the remote current branch.
+  1. `$ git remote set-head origin -d`: delete the origin/HEAD symbolic ref
 
 1. 比如你同事在Git的remote branch中新增branch xxx, 但是你发现在本地中查看存在的branch时, 并看不到他增加的branch, `git fetch` 可以将远程新的分支拉到本地
 
@@ -229,46 +165,46 @@ note branch 是在其他机器上删除的一个分支
 
 1. To test if SSH over the HTTPS port is possible, run this SSH command:
 
-	```
-	$ ssh -T -p 443 git@ssh.github.com
-	# Hi username! You have successfully authenticated, but GitHub does not provide shell access.
-	```
+  ```
+  $ ssh -T -p 443 git@ssh.github.com
+  # Hi username! You have successfully authenticated, but GitHub does not provide shell access.
+  ```
 If that worked, great!
 1. Enabling SSH connections over HTTPS
 
-	```
-	[eric@alien ~]$ cat .ssh/config
-	Host github.com
-		Hostname ssh.github.com
-			Port 443
-	```
+  ```
+  [eric@alien ~]$ cat .ssh/config
+  Host github.com
+    Hostname ssh.github.com
+      Port 443
+  ```
 1. verification
 
-	```
-	$ ssh -T git@github.com
-	# Hi username! You have successfully authenticated, but GitHub does not provide shell access.
-	```
+  ```
+  $ ssh -T git@github.com
+  # Hi username! You have successfully authenticated, but GitHub does not provide shell access.
+  ```
 
 ## [GIT更新fork出来的代码](http://blog.sina.com.cn/s/blog_411fed0c0102vhlb.html)
 1. 增加远程分支: `git remote add source https://github.com/antirez/redis.git`
-	如果你运行命令:git remote -v你会发现多出来了一个source的远程分支.如下:
+  如果你运行命令:git remote -v你会发现多出来了一个source的远程分支.如下:
 
-	```
-	origin	git@github.com:ericuni/redis.git (fetch)
-	origin	git@github.com:ericuni/redis.git (push)
-	source	https://github.com/antirez/redis.git (fetch)
-	source	https://github.com/antirez/redis.git (push)
-	```
-	.git/config 中remote 的部分会变为:
+  ```
+  origin  git@github.com:ericuni/redis.git (fetch)
+  origin  git@github.com:ericuni/redis.git (push)
+  source  https://github.com/antirez/redis.git (fetch)
+  source  https://github.com/antirez/redis.git (push)
+  ```
+  .git/config 中remote 的部分会变为:
 
-	```
-	[remote "origin"]
-		url = git@github.com:ericuni/redis.git
-		fetch = +refs/heads/*:refs/remotes/origin/*
-	[remote "source"]
-		url = https://github.com/antirez/redis.git
-		fetch = +refs/heads/*:refs/remotes/source/*
-	```
+  ```
+  [remote "origin"]
+    url = git@github.com:ericuni/redis.git
+    fetch = +refs/heads/*:refs/remotes/origin/*
+  [remote "source"]
+    url = https://github.com/antirez/redis.git
+    fetch = +refs/heads/*:refs/remotes/source/*
+  ```
 1. 把对方的代码拉到你本地: `git fetch source`
 1. 合并对方的代码: `git merge source/master`
 1. 把最新的代码推送到你的github上: `git push origin master`
@@ -278,15 +214,15 @@ If that worked, great!
 
 ```
 [remote "origin"]
-	url = git@github.com:ericuni/note.git
-	url = git@git.oschina.net:ericuni/note.git
-	fetch = +refs/heads/*:refs/remotes/origin/*
+  url = git@github.com:ericuni/note.git
+  url = git@git.oschina.net:ericuni/note.git
+  fetch = +refs/heads/*:refs/remotes/origin/*
 ```
 然后通过git remote -v 就可以看到多出来的一个
 ```
-origin	git@github.com:ericuni/note.git (fetch)
-origin	git@github.com:ericuni/note.git (push)
-origin	git@git.oschina.net:ericuni/note.git (push)
+origin  git@github.com:ericuni/note.git (fetch)
+origin  git@github.com:ericuni/note.git (push)
+origin  git@git.oschina.net:ericuni/note.git (push)
 ```
 这样之后的 git push origin master 就会将commit 同时推送到 github 和 oschina 上.
 
