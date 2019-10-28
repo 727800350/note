@@ -139,93 +139,17 @@ const对象不能调用非const函数
 - Once a function is declared as virtual, it remains virtual in all the dervied classes. 既不需要在dervied class 中显式指定virtual
 - 虚函数不能定义为内联函数, inline是在编译器将函数类容替换到函数调用处, 是静态编译的, 而虚函数是动态调用的, 在编译器并不知道需要调用的是父类还是子类的虚函数, 所以不能够inline声明展开, 所以编译器会忽略
 
-[C++类内存分布(非常重要)](https://www.cnblogs.com/jerry19880126/p/3616999.html)
+## [虚函数的实现的基本原理](https://www.cnblogs.com/malecrab/p/5572730.html)
+简单地说,每一个含有虚函数(无论是其本身的,还是继承而来的)的类都至少有一个与之对应的虚函数表,其中存放着该类所有的虚函数对应的函数指针.例:
+![内存布局](./pics/virtual_function_table.png)
 
-```C++
-class Animal {
- public:
-  void walk() {
-    LOG(INFO) << "animal walk";
-  }
+其中(为了描述方便,本文在探讨对象内存布局时,将忽略内存对齐对布局的影响)
 
-class Dog : public Animal {
- public:
-  void walk() {
-    LOG(INFO) << "dog walk";
-  }
-};
+- B的虚函数表中存放着B::foo和B::bar两个函数指针.
+- D的虚函数表中存放的既有继承自B的虚函数B::foo,又有重写(override)了基类虚函数B::bar的D::bar,还有新增的虚函数D::quz.
 
-int main(int argc, char* argv[]){
-  Animal animal;
-  animal.walk(); // 输出animal walk
-
-  Dog dog;
-  dog.walk(); // 输出dog walk
-
-  Animal *x = &dog;
-  x->walk(); // 输出animal walk, 而不是预期的 dog walk
-}
-```
-将Animal 的walk 定义为虚函数, `virtual void walk()`, 则可以达到这个目的, 这就是虚函数.
-通过这种方式, 可以实现运行时多态性, 比如有一个api: `void walk(Animal animal)`, 在编译的时候, 并不清楚animal 是具体哪一种动物, 也不需要关心, 运行的时候, 根据传入的参数来动态决定.
-
-实现的方式, 会有一个虚函数表, 类里面会有一个指针指向这个表.
-
-进一步, 如果不想让Animal 实例化, 只作为接口派生其他类, 可以将walk 定义为纯虚函数`virtual void walk() = 0`, 这样子类必须实现walk 这个函数.
-
-### vector of base objects
-```C++
-class A {
- public:
-  A(int n = 0) : m(n) {}
-  virtual ~A() {}
-
-  virtual int getVal() const {
-    std::cout << "A::getVal() = ";
-    return m;
-  }
-
- protected:
-  int m;
-};
-
-class B : public A {
- public:
-  B(int n = 0) : A(n) {}
-
-  int getVal() const {
-    std::cout << "B::getVal() = ";
-    return m + 1;
-  }
-};
-
-int main() {
-  const A a(1);
-  const B b(3);
-  const A *pA[2] = {&a, &b};
-  std::cout << pA[0]->getVal() << std::endl; // A::getVal() = 1
-  std::cout << pA[1]->getVal() << std::endl; // B::getVal() = 4
-
-  std::vector<A> vA;
-  vA.push_back(a);
-  vA.push_back(b);
-  std::cout << vA[0].getVal() << std::endl; // A::getVal() = 1
-  std::cout << vA[1].getVal() << std::endl; // A::getVal() = 3
-
-  const A &c = b;
-  std::cout << c.getVal() << std::endl;   // B::getVal() = 4
-
-  return 0;
-}
-```
-从执行结果可以看到, 把 derived object 放到base object 的 vector 中, 就真的成了base object(通过往B 中添加新的member, 然后求sizeof 可以验证).
-
-Deleting an array of objects using a base class pointer is undefined
-```C++
-A* a = new B[10];
-delete []a;
-```
-因为a 是一个数组, `a[1] = *(a + 1)`, 而a 是A 类型的, 所以a + 1 实际上偏移的是 sizeof(A), 与我们实际需要的不符.
+从编译器的角度来说, B的虚函数表很好构造, D的虚函数表构造过程相对复杂. 下面给出了构造D的虚函数表的一种方式(仅供参考):
+![虚函数表构建过程](./pics/build_virtual_function_table.png)
 
 ### parameter of an overriding function
 虚函数body 可以被覆盖掉, 但是默认参数还是使用base class 中声明的.
