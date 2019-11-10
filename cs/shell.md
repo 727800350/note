@@ -6,10 +6,10 @@
 
 `$ echo hello | mail -s 'subject' target@xxx.com -- -f 12306@rails.com.cn`: 任意指定发件人(这里要注意先是有两个短杠, 所以, 电子邮件是可以伪造的)
 
-```
+```bash
 cmds_0
 {
-	cmds_1
+  cmds_1
 } &
 cmds_2
 ```
@@ -17,7 +17,7 @@ cmds_2
 但是需注意: **这种后台方式是新开一个shell环境来执行cmds_1, 所以在后台cmds_1中改变的变量, 新定义的变量在cmds_2 都无效**.
 
 目录
-```
+```bash
 $ dirname /dir/path.sh
 /dir
 $ basename /dir/path.sh
@@ -34,7 +34,7 @@ path.sh
 - `date +"%Y%m%d" --date="-1 week"`
 
 构造命令字符串, 然后执行(双引号不能丢)
-```
+```bash
 $ bash -c "date"
 Wed Apr 22 19:08:12 CST 2015
 ```
@@ -45,7 +45,7 @@ Wed Apr 22 19:08:12 CST 2015
 
 ## && and ||
 `command1  && command2`  
-&&左边的命令(命令1)返回真(即返回0,成功被执行)后,&&右边的命令(命令2)才能够被执行,换句话说,"如果这个命令执行成功&&那么执行这个命令". 
+&&左边的命令(命令1)返回真(即返回0,成功被执行)后,&&右边的命令(命令2)才能够被执行,换句话说,"如果这个命令执行成功&&那么执行这个命令".
 
 `command1 || command2`  
 ||则与&&相反.
@@ -53,13 +53,6 @@ Wed Apr 22 19:08:12 CST 2015
 
 ## 注释
 以"#"开头的行就是注释,会被解释器忽略.
-
-多行注释
-```
-<<mark
-code
-mark
-```
 
 # IO
 `printf %05d 123`: 输出是00123,且没有换行符, 显示5位数,不够5位的用0补充, 多余的不会进行截断
@@ -122,7 +115,7 @@ Shift 命令一次移动参数的个数由其所带的参数指定.例如当 she
 注意:将需要运算的表达式写入在expr 后面即可,保证**参数与运算符号中间有空格隔开**
 
 上面的两种方式都不支持浮点运算, 如果需要, 可以借用bc 或 awk 来实现.
-```
+```bash
 $ c=$(echo "5.01-4*2.0"|bc)
 $ echo $c
 -2.99
@@ -152,7 +145,7 @@ $ echo $c
 - -n   非空串
 
 ### 获取字符串长度 String Length
-```
+```bash
 str="abcABC123ABCabc"
 echo ${#str}
 echo `expr length ${str}`
@@ -164,7 +157,7 @@ echo `expr length ${str}`
 **字符串的第一个字符, position 为 0**
 
 position 可以为负值
-```
+```bash
 echo ${str: -0}
 echo ${str: -1} ## c
 echo ${str: -3:2} ## ab
@@ -183,7 +176,7 @@ echo `expr match "$str" '.*\([A-C][A-C][A-C][a-c]*\)'`    # ABCabc
 - ${string#substring} Deletes **shortest** match of $substring from **front** of $string.
 - ${string##substring} Deletes **longest** match of $substring from **front** of $string.
 
-```
+```bash
 echo ${str#a*C}      # 123ABCabc
 echo ${str##a*C}     # abc
 ```
@@ -192,7 +185,7 @@ a*C 在 str 中有两个匹配, abcABC, abcABC123ABC, `#` 使用短的, `##` 使
 - ${string%substring} Deletes **shortest** match of $substring from **back** of $string.
 - ${string%%substring} Deletes **longest** match of $substring from **back** of $string.
 
-```
+```bash
 echo ${str%b*c}      # abcABC123ABCa
 echo ${str%%b*c}     # a
 ```
@@ -201,13 +194,13 @@ echo ${str%%b*c}     # a
 - ${string/substring/replacement} Replace first match of $substring with $replacement
 - ${string//substring/replacement} Replace all matchs
 
-```
+```bash
 echo ${str/abc/xyz}       # xyzABC123ABCabc
 echo ${str//abc/xyz}      # xyzABC123ABCxyz
 ```
 
 What happens if no $replacement string is supplied?
-```
+```bash
 echo ${str/abc}           # ABC123ABCabc
 echo ${str//abc}          # ABC123ABC
 ```
@@ -218,7 +211,7 @@ A simple deletion takes place.
 
 使用了 `#` 或者 `%` 之后, 即时加上了 `//`, 也还是只对 `#, %` 部分生效
 
-```
+```bash
 echo ${str/#abc/XYZ}          # XYZABC123ABCabc
 echo ${str/%abc/XYZ}          # abcABC123ABCXYZ
 ```
@@ -232,61 +225,60 @@ bash支持一维数组(不支持多维数组),并且没有限定数组的大小.
 
 ### 定义数组
 在Shell中,用括号来表示数组,数组元素用"空格"符号分割开.定义数组的一般形式为:
-```
+```bash
 array_name=(value1 ... valuen)
 ```
 例如:
-```
+```bash
 array_name=(value0 value1 value2 value3)
 ```
-或者
-
-    array_name=(
-    value0
-    value1
-    value2
-    value3
-    )
-
 还可以单独定义数组的各个分量:
+```bash
+array_name[0]=value0
+array_name[1]=value1
+array_name[2]=value2
+```
 
-    array_name[0]=value0
-    array_name[1]=value1
-    array_name[2]=value2
+```
+list=()
+list=(v0 v1 v2)
+list+=(v3)  ## append
+```
 
-可以不使用连续的下标,而且下标的范围没有限制. 
+可以不使用连续的下标,而且下标的范围没有限制.
 
 ### 读取数组
 读取数组元素值的一般格式是:
-```
+```bash
 ${array_name[index]}
 ```
 例如: `valuen=${array_name[2]}`
 
 使用@ 或 * 可以获取数组中的所有元素,例如:
-
-    ${array_name[*]}
-    ${array_name[@]}
+```bash
+${array_name[*]}
+${array_name[@]}
+```
 
 遍历数组
-```
+```bash
 for item in ${array[*]}
 do
-	...
+  ...
 done
 ```
 
-当数组的元素中含有空格时, 例如 `array=("bash -x ./test.sh")`, 本来我们预期结果是array 就一个元素, 
+当数组的元素中含有空格时, 例如 `array=("bash -x ./test.sh")`, 本来我们预期结果是array 就一个元素,
 但是如果采用上面的遍历方式, 这个元素会被拆分为 3 个元素,`bash`, `-x`, `./test.sh`.
 解决方法: "${array[@]}". [ref](http://unix.stackexchange.com/questions/108635/why-i-cant-escape-spaces-on-a-bash-script)
 
-- `${arr[*]}`: will suffer splitting on all spaces, leading to an unpredictable number of separate words, 
+- `${arr[*]}`: will suffer splitting on all spaces, leading to an unpredictable number of separate words,
 - `"${arr[*]}"`: will yield all the array members in one string
 - `"${arr[@]}"`: will very nicely offer each array member as an individual unbroken quoted string.
 
 ### 获取数组的长度
 获取数组长度的方法与获取字符串长度的方法相同,例如:
-```
+```bash
 # 取得数组元素的个数
 num_items=${#array_name[@]}
 num_items=${#array_name[*]}
@@ -300,14 +292,14 @@ num_items=${#array_name[*]}
 ### 数值测试
 **数值的运算最好通过awk 来进行, shell 本身只支持整数运算**
 
-两种格式: 
-```
+两种格式:
+```bash
 "number"  number_operator  "number"
 [ "number"  number_operator  "number" ]
 ```
 其中:number_operator 可以为:`-eq, -ne, -gt, -lt, -ge`
 例如:
-```
+```bash
 NUMBER=130
 [ "990"  –le  "995"  –a  "NUMBER"  -gt  "133" ]
 (其中-a表示前后结果相"与")
@@ -326,30 +318,30 @@ NUMBER=130
 ```
 
 ```
--a file exists. 
--b file exists and is a block special file. 
--c file exists and is a character special file. 
--g file exists and has its setgid(2) bit set. 
--G file exists and has the same group ID as this process. 
--k file exists and has its sticky bit set. 
--L file exists and is a symbolic link. 
--n string length is not zero. 
--o Named option is set on. 
--O file exists and is owned by the user ID of this process. 
--p file exists and is a first in, first out (FIFO) special file or named pipe. 
--r file exists and is readable by the current process. 
--s file exists and has a size greater than zero. 
--S file exists and is a socket. 
--t file descriptor number fildes is open and associated with a terminal device. 
--u file exists and has its setuid(2) bit set. 
+-a file exists.
+-b file exists and is a block special file.
+-c file exists and is a character special file.
+-g file exists and has its setgid(2) bit set.
+-G file exists and has the same group ID as this process.
+-k file exists and has its sticky bit set.
+-L file exists and is a symbolic link.
+-n string length is not zero.
+-o Named option is set on.
+-O file exists and is owned by the user ID of this process.
+-p file exists and is a first in, first out (FIFO) special file or named pipe.
+-r file exists and is readable by the current process.
+-s file exists and has a size greater than zero.
+-S file exists and is a socket.
+-t file descriptor number fildes is open and associated with a terminal device.
+-u file exists and has its setuid(2) bit set.
 ```
 
 ## 流程控制
 
 还要注意,sh里的`if [ $foo -eq 0 ]`,这个方括号跟Java/PHP里if后面的圆括号大不相同,它是一个可执行程序(和cd, ls, grep一样),相不到吧?在CentOS上,它在/usr/bin目录下:
 
-	ll /usr/bin/[
-	-rwxr-xr-x. 1 root root 33408 6月  22 2012 /usr/bin/[
+  ll /usr/bin/[
+  -rwxr-xr-x. 1 root root 33408 6月  22 2012 /usr/bin/[
 
 正因为方括号在这里是一个可执行程序,方括号后面必须加空格,不能写成`if [$foo -eq 0]`
 
@@ -364,37 +356,37 @@ ssh "bash run.sh" & < /dev/null
 ### if else
 #### if
 
-	if condition; then
-		commands
-	fi
+  if condition; then
+    commands
+  fi
 或者then换行, 那么condition后面的分号就不要了
 
 写成一行(适用于终端命令提示符):
 
-	if `ps -ef | grep ssh`;  then echo hello; fi
-	
+  if `ps -ef | grep ssh`;  then echo hello; fi
+
 末尾的fi就是if倒过来拼写,后面还会遇到类似的
 
 #### if else
 
-	if condition
-	then
-		command
-	else
-		command
-	fi
+  if condition
+  then
+    command
+  else
+    command
+  fi
 
 #### if else-if else
 
-	if condition1
-	then
-		command1
-	elif condition2
-	then
-		command2
-	else
-		commandN
-	fi
+  if condition1
+  then
+    command1
+  elif condition2
+  then
+    command2
+  else
+    commandN
+  fi
 
 ### for while
 [Shell 循环控制break/continue](http://www.yiibai.com/shell/unix-loop-control.html)
@@ -407,70 +399,82 @@ ssh "bash run.sh" & < /dev/null
 #### for
 在开篇的示例里演示过了:
 
-	for var in item1 item2 ... itemN
-	do
-		command
-	done
+  for var in item1 item2 ... itemN
+  do
+    command
+  done
 
 写成一行:
 
-	for var in item1 item2 ... itemN; do command1; command2… done;
+  for var in item1 item2 ... itemN; do command1; command2… done;
 
 #### C风格的for
 
-	num=100
-	for((i=0;i<=$num;i++))
-	do
-		command
-	done
+  num=100
+  for((i=0;i<=$num;i++))
+  do
+    command
+  done
 
 #### while
 
-	while condition
-	do
-		command
-	done
+  while condition
+  do
+    command
+  done
 
 ex:
-```
-while(($i<100))	
+```bash
+while(($i<100))
 do
-	...
+  ...
 done
 ```
 
 #### 无限循环
 
-	while true
-	do
-		command
-	done
+  while true
+  do
+    command
+  done
 
 #### until
 
-	until condition
-	do
-		command
-	done
+  until condition
+  do
+    command
+  done
 
 ### case
+```bash
+case "${command}" in
+  "add")
+    ...
+  ;;
+  "check"|"clear")
+    ...
+  ;;
+  *)
+    echo "${command} not supported."
+    exit 1
+esac
+```
 
-	case "${command}" in
-		"add")
-			...
-		;;
-		"check"|"clear")
-			...
-		;;
-		*) 
-			echo "${command} not supported."
-			exit 1
-	esac
+```bash
+while getopts p:m:d option; do
+  case "$option" in
+    p) path=$OPTARG;;
+    m) module=$OPTARG;;
+    d) debug=$OPTARG;;
+    ?) echo "unsupported option" >&2
+  esac
+done
+```
 
 ## 函数
 ### 定义
 [ref](http://www.cnblogs.com/chengmo/archive/2010/10/17/1853356.html)
-```
+```bash
 [ function ] funname[()]
 {
     action;
@@ -483,7 +487,7 @@ done
 1. 必须在调用函数地方之前,声明函数,shell脚本是逐行运行.不会像其它语言一样先预编译,一次必须在使用函数前先声明函数
 1. 可以带function fun()定义,也可以直接fun()定义,不带任何参数
 2. 参数返回,可以显示加:return 返回, 也可以不加.
-如果不加,将以最后一条命令运行结果作为返回值. 
+如果不加,将以最后一条命令运行结果作为返回值.
 return后跟数值n( n 的范围必须在0-255之间, 如果n>255, 返回的实际结果为 n % 256),
 
 [变量作用域demo](../demo/shell/function_variable_scope.sh)
