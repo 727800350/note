@@ -1,13 +1,18 @@
 ## fork vs vfork
 [fork与vfork的区别](https://www.jianshu.com/p/6a83ac98e77a)
 [fork和vfork](https://www.cnblogs.com/1932238825qq/p/7373443.html)
+[Linux中fork,vfork和clone详解(区别与联系)](https://blog.csdn.net/gatieme/article/details/51417488)
 
-- 共享的数据
-  - fork(): 子进程拷贝父进程的数据段, 代码段
-  - vfork(): 子进程与父进程共享数据段
-- 执行次序
+- fork
+  - fork子进程拷贝父进程的数据段, 代码段
   - fork()父子进程的执行次序不确定
-  - vfork()保证子进程先运行,在她调用exec 或exit 之后父进程才可能被调度运行.如果在调用这两个函数之前子进程依赖于父进程的进一步动作,则会导致死锁.
+- vfork
+  - 由vfork创造出来的子进程还会导致父进程挂起,除非子进程exit或者execve才会唤起父进程. 如果在调用这两个函数之前子进程依赖于父进程的进一步动作,则会导致死锁.
+  - 由vfok创建出来的子进程共享了父进程的所有内存,包括栈地址,直至子进程使用execve启动新的应用程序为止
+  - 由vfork创建出来得子进程不应该使用return返回调用者,或者使用exit()退出,但是它可以使用`_exit()`函数来退出, 如果我们使用return来退出,你会发现程序陷入一种逻辑混乱的重复vfork状态.
+- clone
+  - clone函数功能强大,带了众多参数,因此由他创建的进程要比前面2种方法要复杂.
+  - clone可以让你有选择性的继承父进程的资源,你可以选择想vfork一样和父进程共享一个虚存空间,从而使创造的是线程,你也可以不和父进程共享,你甚至可以选择创造出来的进程和父进程不再是父子关系,而是兄弟关系.
 
 为什么会有vfork,因为以前的fork 很傻, 它创建一个子进程时,将会创建一个新的地址空间,并且拷贝父进程的资源,而往往在子进程中会执行exec 调用,这样,前面的拷贝工作就是白费力气了,
 这种情况下,聪明的人就想出了vfork,它产生的子进程刚开始暂时与父进程共享地址空间(其实就是线程的概念了),因为这时候子进程在父进程的地址空间中运行,所以子进程不能进行写操作,
@@ -19,6 +24,15 @@
 
 Under Linux, fork(2) is implemented using copy-on-write pages, so the only penalty incurred by fork(2) is
 the time and memory required to duplicate the parent's page tables, and to create a unique task structure for the child.
+
+[A much faster popen() and system() implementation for Linux](https://blog.famzah.net/2009/11/20/a-much-faster-popen-and-system-implementation-for-linux/)
+
+The parent process calling the popen() function(will call fork internally) communicates with the child process by reading its standard output.
+Therefore, we cannot use vfork() to speed things up, because it doesn’t allow the child process to close its standard output and duplicate the passed file descriptors from the parent to
+its standard output before exec()'uting the command.
+A child process created by vfork() can only call exec() right away, nothing more.
+If we used threads to re-implement popen(), because the creation of a thread is very light-weight, we couldn't then use exec(),
+because invoking exec() from a thread terminates the execution of all other threads, including the parent one.
 
 ### 同步进程和异步进程
 Tests show that fork() calls on Linux get slower as the parent process uses more memory. So do popen() and system().
