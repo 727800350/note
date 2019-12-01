@@ -1,7 +1,20 @@
 ## fork vs vfork
 [fork与vfork的区别](https://www.jianshu.com/p/6a83ac98e77a)
+
 [fork和vfork](https://www.cnblogs.com/1932238825qq/p/7373443.html)
+
 [Linux中fork,vfork和clone详解(区别与联系)](https://blog.csdn.net/gatieme/article/details/51417488)
+
+[fork() gets slower as parent process uses more memory](https://blog.famzah.net/2009/11/20/fork-gets-slower-as-parent-process-use-more-memory/)
+
+There are two main fork() patterns when a parent process wants to execute a command:
+
+1. The parent does not need to communicate with the child process in any way – the child process executes, and the parent gets its exit code back.
+  No input/output with the child is done at all, only the inital command line arguments are passed.
+1. The parent needs to communicate with the child process – either it needs to supply something at the standard input or some other file descriptor of the child,
+  or it wants to get some information from the standard output or some other file descriptor of the child, or both.
+
+For the case when there is no communication involved, Unix guys developed the vfork() call. It is a very light-weight version of fork(), very close to threading.
 
 - fork
   - fork子进程拷贝父进程的数据段, 代码段
