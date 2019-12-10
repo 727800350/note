@@ -210,3 +210,98 @@ origin  git@git.oschina.net:ericuni/note.git (push)
 ```
 这样之后的 git push origin master 就会将commit 同时推送到 github 和 oschina 上.
 
+# theory in git
+[这才是真正的 Git(freeCodeConf 2019 深圳站)](https://www.bilibili.com/video/av77252063)
+
+## Git是怎么储存信息的
+这里会用一个简单的例子让大家直观感受一下git是怎么储存信息的。
+
+首先我们先创建两个文件
+```bash
+$ git init
+$ echo '111' > a.txt
+$ echo '222' > b.txt
+$ git add *.txt
+```
+Git会将整个数据库储存在.git/目录下，如果你此时去查看.git/objects目录，你会发现仓库里面多了两个object。
+
+```
+$ tree .git/objects
+.git/objects
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── info
+└── pack
+```
+好奇的我们来看一下里面存的是什么东西.
+```bash
+$ cat .git/objects/58/c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+xKOR0a044K%
+```
+怎么是一串乱码？这是因为Git将信息压缩成二进制文件。但是不用担心，因为Git也提供了一个能够帮助你探索它的api.
+git cat-file [-t] [-p] [-s] -t可以查看object的类型，-p可以查看object储存的具体内容, -s 查看大小.
+```bash
+$ git cat-file -t 58c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+blob
+$ git cat-file -p 58c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+111
+$ git cat-file -s 58c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+4
+```
+可以发现这个object是一个blob类型的节点，他的内容是111，也就是说这个object储存着a.txt文件的内容。
+
+这里我们遇到第一种Git object，blob类型，它只储存的是一个文件的内容，不包括文件名等其他信息。然后将这些信息经过SHA1哈希算法得到对应的哈希值
+58c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c，作为这个object在Git仓库中的唯一身份证。
+
+注意:
+
+1. 传文件的绝对路径会错误, `$ git cat-file -t .git/objects/58/c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c`, 提示. fatal: Not a valid object name .git/objects/58/c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c.
+	因为sha1 需要40个字节, 所以会需要把目录的名字也包括进去
+1. -s 的结果是4, 因为还有一个换行符"\n"
+
+```bash
+$ git commit -am '[+] init'
+$ tree .git/objects
+.git/objects
+├── 0c
+│   └── 96bfc59d0f02317d002ebbf8318f46c7e47ab2
+├── 4c
+│   └── aaa1a9ae0b274fba9e3675f9ef071616e5b209
+...
+```
+我们会发现当我们commit完成之后，Git仓库里面多出来两个object。同样使用cat-file命令，我们看看它们分别是什么类型以及具体的内容是什么。
+```
+$ git cat-file -t 4caaa1a9ae0b274fba9e3675f9ef071616e5b209
+tree
+$ git cat-file -p 4caaa1a9ae0b274fba9e3675f9ef071616e5b209
+100644 blob 58c9bdf9d017fcd178dc8c0...     a.txt
+100644 blob c200906efd24ec5e783bee7... b.txt
+```
+这里我们遇到了第二种Git object类型——tree，它将当前的目录结构打了一个快照。
+从它储存的内容来看可以发现它储存了一个目录结构（类似于文件夹），以及每一个文件（或者子文件夹）的权限、类型、对应的身份证（SHA1值）、以及文件名。
+
+```bash
+$ git cat-file -t 0c96bf
+commit
+$ git cat-file -p 0c96bf
+tree 4caaa1a9ae0b274fba9e3675f9ef071616e5b209
+author lzane 李泽帆  1573302343 +0800
+committer lzane 李泽帆  1573302343 +0800
+[+] init
+```
+接着我们发现了第三种Git object类型——commit，它储存的是一个提交的信息，包括对应目录结构的快照tree的哈希值，上一个提交的哈希值（这里由于是第一个提交，所以没有父节点。
+在一个merge提交中还会出现多个父节点），提交的作者以及提交的具体时间，最后是该提交的信息。
+
+到这里我们就知道Git是怎么储存一个提交的信息的了，那有同学就会问，我们平常接触的分支信息储存在哪里呢？
+```bash
+$ cat .git/HEAD
+ref: refs/heads/master
+
+$ cat .git/refs/heads/master
+0c96bfc59d0f02317d002ebbf8318f46c7e47ab2
+```
+
+所以整个的树形结构就是下面这样的:
+
