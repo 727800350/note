@@ -3,7 +3,7 @@ For example, a UDP client can create a socket and send a datagram to a given ser
 Similarly, a UDP server can receive several datagrams on a single UDP socket, each from a different client.
 
 ![UDP客户/服务器程序所用的套接字函数](http://pic002.cnblogs.com/images/2012/367190/2012081121141279.jpg)  
-如上图所示, 客户不与服务器建立连接, 而是只管使用`sendto`函数给服务器发送数据报, 其中必须指定目的地(即服务器)第地址作为参数. 
+如上图所示, 客户不与服务器建立连接, 而是只管使用`sendto`函数给服务器发送数据报, 其中必须指定目的地(即服务器)地址作为参数. 
 类似的, 服务器不接受来自客户的连接, 而是只管调用`recvfrom` 函数, 等待来自某个客户的数据到达.
 recvfrom将接收到的数据与client 的地址一并返回, 因此服务器可以把响应发送给正确的客户.
 
