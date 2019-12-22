@@ -7,7 +7,9 @@ reference
 ZooKeeper是一个分布式协调服务,可用于服务发现,分布式锁,分布式领导选举,配置管理等.
 
 这一切的基础,都是ZooKeeper提供了一个类似于Linux文件系统的树形结构(可认为是轻量级的内存文件系统,但只适合存少量信息,完全不适合存储大量文件或者大文件),同时提供了对于每个节点的监控与通知机制.
-既然是一个文件系统,就不得不提ZooKeeper是如何保证数据的一致性的.本节将将介绍ZooKeeper如何保证数据一致性,如何进行领导选举,以及数据监控/通知机制的语义保证
+既然是一个文件系统,就不得不提ZooKeeper是如何保证数据的一致性的.
+
+本节将将介绍ZooKeeper如何保证数据一致性,如何进行领导选举,以及数据监控/通知机制的语义保证
 
 Zookeeper基于ZAB(Zookeeper Atomic Broadcast) 实现了主备模式下的系统架构,保持集群中各个副本之间的数据一致性.
 
@@ -25,9 +27,9 @@ ZooKeeper集群是一个基于主从复制的高可用集群,每个服务器承�
 
 zk集群的一个节点,有三种状态:
 
-- looking 选举状态,当前群龙无首,
-- leading leader才有的状态,
-- following follower才有的状态,
+- looking: 选举状态,当前群龙无首,
+- leading: leader才有的状态,
+- following: follower才有的状态,
 
 每次写成功的消息,都有一个全局唯一的标识,叫zxid.是64bit的正整数,高32为叫epoch表示选举纪元,低32位是自增的id,每写一次加一.
 
@@ -53,7 +55,7 @@ zk集群的一个节点,有三种状态:
 ## basic paxos
 1. 每个looking节点先发出请求,询问其他节点的投票.其他节点返回自己的投票 <zk的id,zxid>.第一次都投自己.
 1. 收到结果后,如果收到的投票比自己投票的zxid大,更新自己的投票.
-1. 当收到所有节点返回后,统计投票,有一个节点的选举达到一半以上,则选举成功.否则继续开始下一轮询问,直到选择出leader结束.
+1. **当收到所有节点返回后**,统计投票,有一个节点的选举达到一半以上,则选举成功.否则继续开始下一轮询问,直到选择出leader结束.
 
 ## basic paxos和fast paxos区别
 这里fast是主动推送出,只要结果有更新,就马上同步给其他节点.其他节点可能还没把自己的票通知给所有节点,就发现自己投的票优先级低,要更新投票,然后更新再重新通知给所有节点.
@@ -79,8 +81,8 @@ fast比basic快的地方,是一个节点,不用和每个节点都交换投票信
 1. Leader得到过半数的ACK(Leader对自己默认有一个ACK)后, 对事务提交, 再通知向所有的Follower和Observer Commmit
 1. Leader将处理结果返回给客户端
 
-通过只有主控制写然后同步从,保证了生成全局zxid不冲突.全局唯一的zxid能够给选举和同步数据区分出优先级.
-同时全局唯一递增的zxid, 保证了能够有优先级最高的节点当主.
+通过只有leader 控制写然后同步follower and observer, 保证了生成全局zxid不冲突.
+全局唯一的zxid能够给选举和同步数据区分出优先级. 同时全局唯一递增的zxid, 保证了能够有优先级最高的节点当主.
 
 ## 写Follower/Observer
 <img src="./pics/zab/write_through_follower.jpg" alt="write through follower" width="50%"/>
@@ -152,7 +154,7 @@ Watch 有如下特点:
 <img src="./pics/zab/unfair_choose_leader.jpg" alt="choose leader" width="50%"/>
 
 如上图所示,由于是Non-sequence节点,这三个客户端只会有一个创建成功,其它节点均创建失败.
-此时,创建成功的客户端(即上图中的Client 1)即成功竞选为 Leader .其它客户端(即上图中的Client 2和Client 3)此时匀为 Follower.
+此时,创建成功的客户端(即上图中的Client 1)即成功竞选为 Leader .其它客户端(即上图中的Client 2和Client 3)此时均为 Follower.
 
 ### 放弃领导权
 如果 Leader 打算主动放弃领导权,直接删除 /zkroot/leader 节点即可.
@@ -187,6 +189,7 @@ Watch 有如下特点:
 <img src="./pics/zab/fair_choose_leader.jpg" alt="choose leader" width="50%"/>
 
 由于是Sequence类型节点,故上图中三个客户端均创建成功,只是序号不一样.此时,每个客户端都会判断自己创建成功的节点的序号是不是当前最小的.如果是,则该客户端为 Leader,否则即为 Follower.
+(判断最小就意味着需要遍历这个目录下所有节点, 然后才能判断)
 
 在上图中,Client 1 创建的节点序号为1, Client 2 创建的节点序号为2, Client 3 创建的节点序号为3. 由于最小序号为 1, 且该节点由Client 1 创建,故Client 1 为 Leader .
 
@@ -195,7 +198,7 @@ Leader 如果主动放弃领导权,直接删除其创建的节点即可.
 如果 Leader 所在进程意外宕机,其与 ZooKeeper 间的 Session 结束,由于其创建的节点为Ephemeral类型,故该节点自动被删除.
 
 ### 感知领导权的放弃
-与非公平模式不同,每个 Follower 并非都 Watch 由 Leader 创建出来的节点,而是 Watch 序号刚好比自己序号小的节点.
+与非公平模式不同,每个 Follower 并非都 Watch 由 Leader 创建出来的节点,而是 **Watch 序号刚好比自己序号小的节点**.
 在上图中,总共有 1,2,3 共三个节点,因此Client 2 Watch /zkroot/leader1,Client 3 Watch /zkroot/leader2.(注:序号应该是10位数字,而非一位数字,这里为了方便,以一位数字代替)
 一旦 Leader 宕机,/zkroot/leader1 被删除,Client 2可得到通知.此时Client 3由于 Watch 的是 /zkroot/leader2 ,故不会得到通知.
 
