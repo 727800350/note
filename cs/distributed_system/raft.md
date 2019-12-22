@@ -47,11 +47,13 @@ If two identical, deterministic processes begin in the same state and get the sa
 如何保证所有节点 get the same inputs in the same order, 使用replicated log是一个很不错的idea, log具有持久化, 保序的特点, 是大多数分布式系统的基石.
 
 因此,可以这么说,在raft中,leader将客户端请求(command)封装到一个个log entry,将这些log entries复制(replicate)到所有follower节点,然后大家按相同顺序应用(apply)log entry中的command,则状态肯定是一致的.
+
 <img src="./pics/raft/replicated_state_machine.png" alt="replicated state machine" width="60%"/>
 
 Leader选出后,就开始接收客户端的请求.
 Leader把请求作为日志条目(Log entries)加入到它的日志中,然后并行的向其他服务器发起 AppendEntries RPC 复制日志条目.
 当这条日志被复制到大多数服务器上,Leader将这条日志应用到它的状态机并向客户端返回执行结果.
+
 <img src="./pics/raft/log_replication.jpg" alt="log replication" width="60%"/>
 
 某些Followers可能没有成功的复制日志,Leader会无限的重试 AppendEntries RPC直到所有的Followers最终存储了所有的日志条目.
@@ -84,6 +86,7 @@ Raft增加了如下两条限制以保证安全性:
 - Leader只能推进commit index来提交当前term的已经复制到大多数服务器上的日志,旧term日志的提交要等到提交当前term的日志来间接提交(log index 小于 commit index的日志被间接提交).
 
 之所以要这样,是因为可能会出现已提交的日志又被覆盖的情况:
+
 <img src="./pics/raft/log_rewrite.jpg" alt="log rewrite" width="60%"/>
 
 1. 在阶段a,term为2,S1是Leader,且S1写入日志(term, index)为(2, 2),并且日志被同步写入了S2,

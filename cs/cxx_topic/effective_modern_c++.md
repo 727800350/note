@@ -685,7 +685,7 @@ The returned rvalues are candidates for moving, so applying std::move to an obje
 That's why std::move has the name it does: to make it easy to designate objects that may be moved from.
 
 1. Don't declare objects const if you want to able to move from them. Move requests on const objects are silently transformed into copy operations.
-1. std::move not only doesn't actually move anything, it doesn't even guarantee that the object is it's casting will be eligible to moved.
+1. std::move not only doesn't actually move anything, it doesn't even guarantee that the object it's casting will be eligible to moved.
 
 Recall how std::forward is typically used. The most common scenario is a function template taking a universal reference parameter that is to be passed to another function.
 ```C++
