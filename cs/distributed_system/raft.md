@@ -1,5 +1,5 @@
 # intro
-![Raft算法详解](https://zhuanlan.zhihu.com/p/32052223)
+[Raft算法详解](https://zhuanlan.zhihu.com/p/32052223)
 
 不同于Paxos算法直接从分布式一致性问题出发推导出来,Raft算法则是从多副本状态机的角度提出,用于管理多副本状态机的日志复制.
 Raft实现了和Paxos相同的功能,它将一致性分解为多个子问题: Leader选举(Leader election),日志同步(Log replication),安全性(Safety),日志压缩(Log compaction),成员变更(Membership change)等.
@@ -12,25 +12,15 @@ Raft将系统中的角色分为领导者(Leader),跟从者(Follower)和候选人
 - Candidate:Leader选举过程中的临时角色.
 
 Raft算法角色状态转换如下:
-![role](./pics/raft/role.jpg)
+<img src="./pics/raft/role.jpg" alt="role transition" width="60%"/>
 
 Follower只响应其他服务器的请求.如果Follower超时没有收到Leader的消息,它会成为一个Candidate并且开始一次Leader选举.
 收到大多数服务器投票的Candidate会成为新的Leader.Leader在宕机之前会一直保持Leader的状态.
 
-![term](./pics/raft/term.jpg)
+<img src="./pics/raft/term.jpg" alt="term" width="60%"/>
 Raft算法将时间分为一个个的任期(term),每一个term的开始都是Leader选举.在成功选举Leader之后,Leader会在整个term内管理整个集群.如果Leader选举失败,该term就会因为没有Leader而结束.
 
 ## leader election
-共识算法的实现一般是基于复制状态机(Replicated state machines),何为复制状态机:
-
-If two identical, deterministic processes begin in the same state and get the same inputs in the same order, they will produce the same output and end in the same state.
-
-简单来说:相同的初识状态 + 相同的输入 = 相同的结束状态.
-引文中有一个很重要的词deterministic,就是说不同节点要以相同且确定性的函数来处理输入,而不要引入一下不确定的值,比如本地时间等.
-如何保证所有节点 get the same inputs in the same order,使用replicated log是一个很不错的注意,log具有持久化,保序的特点,是大多数分布式系统的基石.
-
-因此,可以这么说,在raft中,leader将客户端请求(command)封装到一个个log entry,将这些log entries复制(replicate)到所有follower节点,然后大家按相同顺序应用(apply)log entry中的command,则状态肯定是一致的.
-
 Raft 使用心跳(heartbeat)触发Leader选举.当服务器启动时,初始化为Follower.
 Leader向所有Followers周期性发送heartbeat.如果Follower在选举超时时间内没有收到Leader的heartbeat,就会等待一段随机的时间后发起一次Leader选举.
 
@@ -45,10 +35,20 @@ Follower将其当前term加一然后转换为Candidate.它首先给自己投票�
 Raft保证选举出的Leader上一定具有最新的已提交的日志,这一点将在四,安全性中说明.
 
 ## log replication
+共识算法的实现一般是基于复制状态机(Replicated state machines),何为复制状态机:
+If two identical, deterministic processes begin in the same state and get the same inputs in the same order, they will produce the same output and end in the same state.
+
+简单来说: 相同的初识状态 + 相同的输入 = 相同的结束状态.
+引文中有一个很重要的词deterministic,就是说不同节点要以相同且确定性的函数来处理输入,而不要引入一下不确定的值,比如本地时间等.
+如何保证所有节点 get the same inputs in the same order,使用replicated log是一个很不错的注意,log具有持久化,保序的特点,是大多数分布式系统的基石.
+
+因此,可以这么说,在raft中,leader将客户端请求(command)封装到一个个log entry,将这些log entries复制(replicate)到所有follower节点,然后大家按相同顺序应用(apply)log entry中的command,则状态肯定是一致的.
+<img src="./pics/raft/replicated_state_machine.png" alt="replicated state machine" width="60%"/>
+
 Leader选出后,就开始接收客户端的请求.
 Leader把请求作为日志条目(Log entries)加入到它的日志中,然后并行的向其他服务器发起 AppendEntries RPC (RPC细节参见八,Raft算法总结)复制日志条目.
 当这条日志被复制到大多数服务器上,Leader将这条日志应用到它的状态机并向客户端返回执行结果.
-![Raft日志同步过程](./pics/raft/log_replication.jpg)
+<img src="./pics/raft/log_replication.jpg" alt="log replication" width="60%"/>
 
 某些Followers可能没有成功的复制日志,Leader会无限的重试 AppendEntries RPC直到所有的Followers最终存储了所有的日志条目.
 
@@ -63,7 +63,14 @@ Leader通过强制Followers复制它的日志来处理日志的不一致,Followe
 Leader为了使Followers的日志同自己的一致,Leader需要找到Followers同它的日志一致的地方,然后覆盖Followers在该位置之后的条目.
 Leader会从后往前试,每次AppendEntries失败后尝试前一个日志条目,直到成功找到每个Follower的日志一致位点,然后向后逐条覆盖Followers在该位置之后的条目.
 
-## State Machine Safety
+举例说明这个过程，如图所示。
+
+- leader 要把 index 为10的日志复制给 a，则会匹配 index 为9处的 term，即 prevLogIndex 为9，prevLogTerm 为6，此时可以匹配成功，则复制AppendEntry RPC携带的 log
+- leader 要把 index 为8的日志复制给e，则会匹配 index 为7处的 term，即 prevLogIndex 为7，prevLogTerm 为5。由于 eindex 为7处的 term 为4，匹配失败，则 leader 会向前搜索并进行匹配，
+  直至 index 为5处的 log 匹配成功，则发送6之后所有的 log 给 e
+<img src="./pics/raft/log_replication_example.png" alt="log replication example" width="60%"/>
+
+## Safety
 State Machine Safety: if a server has applied a log entry at a given index to its state machine, no other server will ever apply a different log entry for the same index.
 
 Raft增加了如下两条限制以保证安全性:
@@ -74,7 +81,7 @@ Raft增加了如下两条限制以保证安全性:
 - Leader只能推进commit index来提交当前term的已经复制到大多数服务器上的日志,旧term日志的提交要等到提交当前term的日志来间接提交(log index 小于 commit index的日志被间接提交).
 
 之所以要这样,是因为可能会出现已提交的日志又被覆盖的情况:
-![日志覆盖](./pics/raft/log_rewrite.jpg)
+<img src="./pics/raft/log_rewrite.jpg" alt="log rewrite" width="60%"/>
 
 1. 在阶段a,term为2,S1是Leader,且S1写入日志(term, index)为(2, 2),并且日志被同步写入了S2,
 1. 在阶段b,S1离线,触发一次新的选主,此时S5被选为新的Leader,此时系统term为3,且写入了日志(term, index)为(3, 2);
@@ -119,7 +126,7 @@ Snapshot中包含以下内容:
 
 为了解决这一问题,Raft提出了两阶段的成员变更方法.
 集群先从旧成员配置Cold切换到一个过渡成员配置,称为共同一致(joint consensus),共同一致是旧成员配置Cold和新成员配置Cnew的组合Cold U Cnew,一旦共同一致Cold U Cnew被提交,系统再切换到新成员配置Cnew.
-![Raft两阶段成员变更](./pics/raft/node_change.jpg)
+<img src="./pics/raft/node_change.jpg" alt="raft 两阶段成员变更" width="60%"/>
 
 Raft两阶段成员变更过程如下:
 
