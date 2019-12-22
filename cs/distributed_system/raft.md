@@ -2,7 +2,9 @@
 [Raft算法详解](https://zhuanlan.zhihu.com/p/32052223)
 
 不同于Paxos算法直接从分布式一致性问题出发推导出来,Raft算法则是从多副本状态机的角度提出,用于管理多副本状态机的日志复制.
+
 Raft实现了和Paxos相同的功能,它将一致性分解为多个子问题: Leader选举(Leader election),日志同步(Log replication),安全性(Safety),日志压缩(Log compaction),成员变更(Membership change)等.
+
 同时,Raft算法使用了更强的假设来减少了需要考虑的状态,使之变的易于理解和实现.
 
 Raft将系统中的角色分为领导者(Leader),跟从者(Follower)和候选人(Candidate):
@@ -12,6 +14,7 @@ Raft将系统中的角色分为领导者(Leader),跟从者(Follower)和候选人
 - Candidate:Leader选举过程中的临时角色.
 
 Raft算法角色状态转换如下:
+
 <img src="./pics/raft/role.jpg" alt="role transition" width="60%"/>
 
 Follower只响应其他服务器的请求.如果Follower超时没有收到Leader的消息,它会成为一个Candidate并且开始一次Leader选举.
@@ -22,9 +25,10 @@ Raft算法将时间分为一个个的任期(term),每一个term的开始都是Le
 
 ## leader election
 Raft 使用心跳(heartbeat)触发Leader选举.当服务器启动时,初始化为Follower.
-Leader向所有Followers周期性发送heartbeat.如果Follower在选举超时时间内没有收到Leader的heartbeat,就会等待一段随机的时间后发起一次Leader选举.
+如果Follower在选举超时时间内没有收到Leader的heartbeat,就会等待一段随机的时间后发起一次Leader选举.
 
-Follower将其当前term加一然后转换为Candidate.它首先给自己投票并且给集群中的其他服务器发送 RequestVote RPC (RPC细节参见八,Raft算法总结).结果有以下三种情况:
+Follower将其当前term加一然后转换为Candidate.它首先给自己投票并且给集群中的其他服务器发送 RequestVote RPC.
+结果有以下三种情况:
 
 1. 赢得了多数的选票,成功选举为Leader,
 1. 收到了Leader的消息,表示有其它服务器已经抢先当选了Leader,
@@ -32,7 +36,7 @@ Follower将其当前term加一然后转换为Candidate.它首先给自己投票�
 
 选举出Leader后,Leader通过定期向所有Followers发送心跳信息维持其统治.若Follower一段时间未收到Leader的心跳则认为Leader可能已经挂了,再次发起Leader选举过程.
 
-Raft保证选举出的Leader上一定具有最新的已提交的日志,这一点将在四,安全性中说明.
+Raft保证选举出的Leader上一定具有最新的已提交的日志,这一点将Safety 那一节中说明.
 
 ## log replication
 共识算法的实现一般是基于复制状态机(Replicated state machines),何为复制状态机:
@@ -40,13 +44,13 @@ If two identical, deterministic processes begin in the same state and get the sa
 
 简单来说: 相同的初识状态 + 相同的输入 = 相同的结束状态.
 引文中有一个很重要的词deterministic,就是说不同节点要以相同且确定性的函数来处理输入,而不要引入一下不确定的值,比如本地时间等.
-如何保证所有节点 get the same inputs in the same order,使用replicated log是一个很不错的注意,log具有持久化,保序的特点,是大多数分布式系统的基石.
+如何保证所有节点 get the same inputs in the same order, 使用replicated log是一个很不错的idea, log具有持久化, 保序的特点, 是大多数分布式系统的基石.
 
 因此,可以这么说,在raft中,leader将客户端请求(command)封装到一个个log entry,将这些log entries复制(replicate)到所有follower节点,然后大家按相同顺序应用(apply)log entry中的command,则状态肯定是一致的.
 <img src="./pics/raft/replicated_state_machine.png" alt="replicated state machine" width="60%"/>
 
 Leader选出后,就开始接收客户端的请求.
-Leader把请求作为日志条目(Log entries)加入到它的日志中,然后并行的向其他服务器发起 AppendEntries RPC (RPC细节参见八,Raft算法总结)复制日志条目.
+Leader把请求作为日志条目(Log entries)加入到它的日志中,然后并行的向其他服务器发起 AppendEntries RPC 复制日志条目.
 当这条日志被复制到大多数服务器上,Leader将这条日志应用到它的状态机并向客户端返回执行结果.
 <img src="./pics/raft/log_replication.jpg" alt="log replication" width="60%"/>
 
@@ -60,14 +64,13 @@ Raft日志同步保证如下两点:
 一个Follower可能会丢失掉Leader上的一些条目,也有可能包含一些Leader没有的条目,也有可能两者都会发生.丢失的或者多出来的条目可能会持续多个任期.
 
 Leader通过强制Followers复制它的日志来处理日志的不一致,Followers上的不一致的日志会被Leader的日志覆盖.
-Leader为了使Followers的日志同自己的一致,Leader需要找到Followers同它的日志一致的地方,然后覆盖Followers在该位置之后的条目.
-Leader会从后往前试,每次AppendEntries失败后尝试前一个日志条目,直到成功找到每个Follower的日志一致位点,然后向后逐条覆盖Followers在该位置之后的条目.
+Leader为了使Followers的日志同自己的一致,Leader需要从后往前找到Followers同它的日志一致的地方,然后覆盖Followers在该位置之后的条目.
 
-举例说明这个过程，如图所示。
+举例说明这个过程,如图所示.
 
-- leader 要把 index 为10的日志复制给 a，则会匹配 index 为9处的 term，即 prevLogIndex 为9，prevLogTerm 为6，此时可以匹配成功，则复制AppendEntry RPC携带的 log
-- leader 要把 index 为8的日志复制给e，则会匹配 index 为7处的 term，即 prevLogIndex 为7，prevLogTerm 为5。由于 eindex 为7处的 term 为4，匹配失败，则 leader 会向前搜索并进行匹配，
-  直至 index 为5处的 log 匹配成功，则发送6之后所有的 log 给 e
+- leader 要把 index 为10的日志复制给 a,则会匹配 index 为9处的 term,即 prevLogIndex 为9,prevLogTerm 为6,此时可以匹配成功,则复制AppendEntry RPC携带的 log
+- leader 要把 index 为8的日志复制给e,则会匹配 index 为7处的 term,即 prevLogIndex 为7,prevLogTerm 为5.由于 eindex 为7处的 term 为4,匹配失败,则 leader 会向前搜索并进行匹配,
+  直至 index 为5处的 log 匹配成功,则发送6之后所有的 log 给 e
 <img src="./pics/raft/log_replication_example.png" alt="log replication example" width="60%"/>
 
 ## Safety
@@ -119,13 +122,14 @@ Snapshot中包含以下内容:
 - 系统当前状态.
 
 当Leader要发给某个日志落后太多的Follower的log entry被丢弃,Leader会将snapshot发给Follower.或者当新加进一台机器时,也会发送snapshot给它.
-发送snapshot使用InstalledSnapshot RPC(RPC细节参见八,Raft算法总结)
+发送snapshot使用InstalledSnapshot RPC.
 
 ## 成员变更
 成员变更是在集群运行过程中副本发生变化,如增加/减少副本数,节点替换等.
 
 为了解决这一问题,Raft提出了两阶段的成员变更方法.
 集群先从旧成员配置Cold切换到一个过渡成员配置,称为共同一致(joint consensus),共同一致是旧成员配置Cold和新成员配置Cnew的组合Cold U Cnew,一旦共同一致Cold U Cnew被提交,系统再切换到新成员配置Cnew.
+
 <img src="./pics/raft/node_change.jpg" alt="raft 两阶段成员变更" width="60%"/>
 
 Raft两阶段成员变更过程如下:
