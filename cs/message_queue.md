@@ -114,7 +114,18 @@ Regular reads are served directly by Pulsar brokers, while durable writes are ma
 It's important to provide predictable latency for publishing applications under all circumstances.
 With I/O isolation, you can achieve lower and more predictable publish latency even when disks are saturated due to heavy read activity.
 
+## Partitioned topics
+Normal topics can be served only by a single broker, which limits the topic's maximum throughput.
+Partitioned topics are a special type of topic that be handled by multiple brokers, which allows for much higher throughput.
+
+Behind the scenes, a partitioned topic is actually implemented as N internal topics, where N is the number of partitions.
+When publishing messages to a partitioned topic, each message is routed to one of several brokers. The distribution of partitions across brokers is handled automatically by Pulsar.
+
 ## Pulsar Comparison with Apache Kafka
+There are many techniques that Pulsar uses to improve performance. The most important technique is used to handle tailing reads.
+In a scenario where readers are only interested in the most recent data, the readers are served from an in-memory cache in the serving layer (the Pulsar brokers),
+and only catch-up readers end up having to be served from the storage layer (Apache BookKeeper). This approach is key to improving the latency and throughput compared to systems such as Kafka.
+
 - Concepts
   - Kafka: Producer-topic-consumer group-consumer
   - Pulsar: Producer-topic-subscription-consumer
@@ -137,4 +148,28 @@ If you would like to hear a short sentence about how Apache Pulsar differs from 
 
 Apache Pulsar combines high-performance streaming (which Apache Kafka pursues) and flexible traditional queuing (which RabbitMQ pursues) into a unified messaging model and API.
 Pulsar gives you one system for both streaming and queuing, with the same high performance, using a unified API.
+
+[PERFORMANCE COMPARISON BETWEEN APACHE PULSAR AND KAFKA: LATENCY](https://kafkaesque.io/performance-comparison-between-apache-pulsar-and-kafka-latency/)
+
+### END-TO-END LATENCY:
+End-to-end latency is simply the time from when the message is sent by the producer to when it received by the consumer.
+Where end-to-end latency gets complicated is with the clocks used to take those timestamp measurements.
+When measuring end-to-end latency the clocks used for the timestamps must be synchronized. If they are not synchronized, the difference between the clocks will impact your measurements.
+
+### PUBLISHING LATENCY
+Publishing latency is the amount of time that passes from when the message is sent until the time an acknowledgment is received from the messaging system.
+The acknowledgment indicates that the messaging system has persisted the message and will guarantee its delivery.
+Essentially, the acknowledgment indicates the responsibility for handling the message has been successfully passed from the producing application to the messaging system.
+Low, consistent publishing latency is good for applications. When the application is ready to hand off the delivery of a message, the messaging system quickly accepts the message,
+allowing the application to continue working on application-level concerns, such as business logic. This handoff of responsibility for the message is a key feature of any messaging system.
+
+In the benchmark tests, the publishing latency is measured from the time when calling the send method until the acknowledgment callback is triggered.
+These two timestamps are done in the producer, so clock synchronization is not a concern.
+也就是只要mq 收到并给producer 回包确认收到就可以了.
+
+### MESSAGE REPLICATION
+Kafka uses a leader-follower replication model.
+One of the Kafka brokers is elected the leader for a partition. All messages are initially written to the leader, and the followers read and replicate the messages from the leader.
+Pulsar uses a quorum-vote replication model.
+Multiple copies of the message (write quorum) are written in parallel. Once some number of copies have been confirmed stored, then the message is acknowledged (ack quorum).
 
