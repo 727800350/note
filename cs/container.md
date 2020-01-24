@@ -147,6 +147,11 @@ Service是定义一系列Pod以及访问这些Pod的策略的一层抽象.Servic
 1. 现在前端已经得到了后台服务的IP地址,但是它应该访问2个后台Pod的哪一个呢?
   Service在这2个后台Pod之间提供透明的负载均衡,会将请求分发给其中的任意一个(如下面的动画所示).通过每个Node上运行的代理(kube-proxy)完成.这里有更多技术细节.
 
+#### Service Discovery
+Service Discovery(服务发现)作为编排系统,Kubernetes 控制着不同工作负载的众多资源,负责管理 Pod,作业及所有需要通信的物理资源的网络.
+为此,Kubernetes 使用了 ETCD.ETCD 是 Kubernetes 的"内部"数据库,Master 通过它来获取所有资源的位置.
+Kubernetes 还为服务提供了实际的"服务发现", 所有 Pod 使用了一个自定义的 DNS 服务器,通过解析其他服务的名称以获取其 IP 地址和端口.它在 Kubernetes 集群中"开箱即用",无须进行设置.
+
 ### Node
 节点(上图橘色方框)是物理或者虚拟机器,作为Kubernetes worker,通常称为Minion.每个节点都运行如下Kubernetes关键组件:
 
@@ -156,9 +161,4 @@ Service是定义一系列Pod以及访问这些Pod的策略的一层抽象.Servic
 
 ### Kubernetes Master
 Kubernetes Master提供集群的独特视角,并且拥有一系列组件,比如Kubernetes API Server.API Server提供可以用来和集群交互的REST端点.master节点包括用来创建和复制Pod的Replication Controller.
-
-### Service Discovery
-Service Discovery(服务发现)作为编排系统,Kubernetes 控制着不同工作负载的众多资源,负责管理 Pod,作业及所有需要通信的物理资源的网络.
-为此,Kubernetes 使用了 ETCD.ETCD 是 Kubernetes 的"内部"数据库,Master 通过它来获取所有资源的位置.
-Kubernetes 还为服务提供了实际的"服务发现"-所有 Pod 使用了一个自定义的 DNS 服务器,通过解析其他服务的名称以获取其 IP 地址和端口.它在 Kubernetes 集群中"开箱即用",无须进行设置.
 
