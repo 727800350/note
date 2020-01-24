@@ -1,4 +1,5 @@
 # docker
+## intro
 build once, configure once and run anywhere
 
 Docker有三个组件和三个基本元素.
@@ -42,7 +43,7 @@ options:
 - --rm=true|false: Automatically remove the container when it exits (incompatible with -d). The default is false.
 - -w:  The default working directory for running binaries within a container is the root directory (/), 可以指定任意一个目录, container 启动的时候会自动创建这个目录
 
-# container
+## container
 container 只是 image的一个实例
 
 The operator can identify a container in three ways:
@@ -62,28 +63,18 @@ The operator can identify a container in three ways:
 
 命令中需要指定 container 时, 既可使用其名称, 也可使用其id.
 
-# image
-- docker rmi image_id: 删除image, `docker rmi $(docker images -q -a)`删除所有的
+## image
+- `docker rmi image_id`: 删除image
 - docker diff 它可以列出容器内发生变化的文件和目录.这些变化包括添加(A-add),删除(D-delete),修改(C-change).
 
-## 下载镜像
+### 下载镜像
 在本地 docker 环境中输入以下命令,就可以pull一个镜像到本地了.                    
 `sudo docker pull index.tenxcloud.com/<namespace>/<repository>:<tag>`
 
 注意:为了在本地方便使用,下载后您可以修改tag成短标签,比如
 `sudo docker tag index.tenxcloud.com/mysql:latst mysql:latest`
 
-除了docker官方的镜像仓库之外,还有很多第三方的docker镜像下载站点.
-国内的docker镜像站点有:DockerPool,阿里云,对于国内用户来说,这些站点的速度要快很多.
-
-- dockerpull: http://dockerpool.com/.  修改/etc/sysconfig/docker文件,修改OPTIONS='--selinux-enabled --insecure-registry dl.dockerpool.com:5000'
-- 阿里云: http://help.aliyun.com/knowledge_detail/5974865.html, 暂时还没有连接成功
-
-## 创建镜像
-### 通过container
-`docker commit [container] image:tag`
-
-### 通过docker file
+### 创建镜像
 当前目录下包含Dockerfile, 使用命令build来创建新的image:
 `docker build -t image:tag PATH`
 
@@ -105,4 +96,69 @@ docker load < image.tar
 
 - 导出后再导入(exported-imported)的镜像会丢失所有的历史, 意味着将无法回滚到之前的层(layer)
 - 保存后再加载(saveed-loaded)的镜像没有丢失历史和层(layer), 就可以做到层回滚(可以执行docker tag <LAYER ID> <IMAGE NAME>来回滚之前的层)
+
+# Kubernetes
+[十分钟带你理解Kubernetes核心概念](http://dockone.io/article/932)
+
+## intro
+Kubernetes(k8s)是自动化容器操作的开源平台,这些操作包括部署,调度和节点集群间扩展.
+如果你曾经用过Docker容器技术部署容器,那么可以将Docker看成Kubernetes内部使用的低级别组件.Kubernetes不仅仅支持Docker,还支持Rocket,这是另一种容器技术.
+使用Kubernetes可以:
+
+- 自动化容器的部署和复制
+- 随时扩展或收缩容器规模
+- 将容器组织成组,并且提供容器间的负载均衡
+- 很容易地升级应用程序容器的新版本
+- 提供容器弹性,如果容器失效就替换它,等等...
+
+实际上,使用Kubernetes只需一个部署文件,使用一条命令就可以部署多层容器(前端,后台等)的完整集群:
+```bash
+$ kubectl create -f single-config-file.yaml
+```
+
+## cluster
+kubectl是和Kubernetes API交互的命令行程序.现在介绍一些核心概念.
+
+<img src="./pics/kubernetes/cluster.png" alt="kubernetes cluster" align="middle" width="70%"/>
+
+### pod
+Pod 是 Kubernetes 中最小的可互动单元.一个 Pod 可以由多个容器组成,这些容器运行在同一个节点上,并共享资源,如文件系统,内核命名空间和IP地址(可以使用localhost互相通信).
+在微服务世界中,一个 Pod 可以是执行后台工作或服务请求的微服务的单个实例.
+
+### label and annotation
+Label 是 Kubernetes 及其最终用户用于过滤系统中相似资源的方式,也是资源与资源相互"访问"或关联的粘合剂.
+比如说,为 Deployment 打开端口的 Service.不论是监控,日志,调试或是测试,任何 Kubernetes 资源都应打上标签以供后续查验.
+例如,给系统中所有 Worker Pod 打上标签:app=worker,之后即可在 kubectl 或 Kubernetes API 中使用 --selector 字段对其进行选择.
+
+Annotation 与 Label 非常相似,但通常用于以自由的字符串形式保存不同对象的元数据,例如"更改原因: 安全补丁升级".
+
+### Replication Controller
+Replication Controller确保任意时间都有指定数量的Pod"副本"在运行.
+如果为某个Pod创建了Replication Controller并且指定3个副本,它会创建3个Pod,并且持续监控它们.如果某个Pod不响应,那么Replication Controller会替换它,保持总数为3.
+
+### Service
+如果Pods是短暂的,那么重启时IP地址可能会改变,怎么才能从前端容器正确可靠地指向后台容器呢?
+
+Service是定义一系列Pod以及访问这些Pod的策略的一层抽象.Service通过Label找到Pod组.因为Service是抽象的,所以在图表里通常看不到它们的存在,这也就让这一概念更难以理解.
+
+现在,假定有2个后台Pod,并且定义后台Service的名称为'backend-service',lable选择器为(tier=backend, app=myapp).backend-service 的Service会完成如下两件重要的事情:
+
+1. 会为Service创建一个本地集群的DNS入口,因此前端Pod只需要DNS查找主机名为 'backend-service',就能够解析出前端应用程序可用的IP地址.
+1. 现在前端已经得到了后台服务的IP地址,但是它应该访问2个后台Pod的哪一个呢?
+  Service在这2个后台Pod之间提供透明的负载均衡,会将请求分发给其中的任意一个(如下面的动画所示).通过每个Node上运行的代理(kube-proxy)完成.这里有更多技术细节.
+
+### Node
+节点(上图橘色方框)是物理或者虚拟机器,作为Kubernetes worker,通常称为Minion.每个节点都运行如下Kubernetes关键组件:
+
+- Kubelet:是主节点代理.
+- Kube-proxy:Service使用其将链接路由到Pod,如上文所述.
+- Docker或Rocket:Kubernetes使用的容器技术来创建容器.
+
+### Kubernetes Master
+Kubernetes Master提供集群的独特视角,并且拥有一系列组件,比如Kubernetes API Server.API Server提供可以用来和集群交互的REST端点.master节点包括用来创建和复制Pod的Replication Controller.
+
+### Service Discovery
+Service Discovery(服务发现)作为编排系统,Kubernetes 控制着不同工作负载的众多资源,负责管理 Pod,作业及所有需要通信的物理资源的网络.
+为此,Kubernetes 使用了 ETCD.ETCD 是 Kubernetes 的"内部"数据库,Master 通过它来获取所有资源的位置.
+Kubernetes 还为服务提供了实际的"服务发现"-所有 Pod 使用了一个自定义的 DNS 服务器,通过解析其他服务的名称以获取其 IP 地址和端口.它在 Kubernetes 集群中"开箱即用",无须进行设置.
 
