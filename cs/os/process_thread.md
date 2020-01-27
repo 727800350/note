@@ -94,10 +94,14 @@ int semctl(int semid, int sem_num, int cmd, ...);  // 控制信号量的相关�
 ```C++
 #include <sys/shm.h>
 int shmget(key_t key, size_t size, int flag);  // 创建或获取一个共享内存:成功返回共享内存ID,失败返回-1
-void *shmat(int shm_id, const void *addr, int flag);  // 连接共享内存到当前进程的地址空间:成功返回指向共享内存的指针,失败返回-1
-int shmdt(void *addr);  // 断开与共享内存的连接:成功返回0,失败返回-1
-int shmctl(int shm_id, int cmd, struct shmid_ds *buf);  // 控制共享内存的相关信息:成功返回0,失败返回-1
+void* shmat(int shm_id, const void* addr, int flag);  // 连接共享内存到当前进程的地址空间:成功返回指向共享内存的指针,失败返回-1
+int shmdt(void* addr);  // 断开与共享内存的连接:成功返回0,失败返回-1
+int shmctl(int shm_id, int cmd, struct shmid_ds* buf);  // 控制共享内存的相关信息:成功返回0,失败返回-1
 ```
+- 当用shmget函数创建一段共享内存时,必须指定其 size,而如果引用一个已存在的共享内存,则将 size 指定为0 .
+- 当一段共享内存被创建以后,它并不能被任何进程访问.必须使用shmat函数连接该共享内存到当前进程的地址空间,连接成功后把共享内存区对象映射到调用进程的地址空间,随后可像本地空间一样访问.
+- shmdt函数是用来断开shmat建立的连接的.注意,这并不是从系统中删除该共享内存,只是当前进程不能再访问该共享内存而已.
+- shmctl函数可以对共享内存执行多种操作,根据参数 cmd 执行相应的操作.常用的是`IPC_RMID`(从系统中删除该共享内存).
 
 ### 信号 signal
 信号是一种比较复杂的通信方式,用于通知接收进程某个事件已经发生, 信号注册函数
