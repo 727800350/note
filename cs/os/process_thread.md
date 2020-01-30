@@ -22,7 +22,9 @@
 ## 进程的通信方式
 [进程间的五种通信方式介绍](https://www.cnblogs.com/zgq0/p/8780893.html)
 
-主要分为: 匿名管道pipe, 有名管道FIFO, 消息队列, 信号量semaphore, 共享内存shared memory, 信号signal, 套接字socket
+主要分为: 匿名管道pipe, 有名管道FIFO, 消息队列, 锁, 信号量semaphore, 共享内存shared memory, 信号signal, 套接字socket
+
+`ipcs`: report System V interprocess communication facilities status
 
 ### 匿名管道pipe
 特性
@@ -39,6 +41,12 @@ int pipe(int fd[2]);  // 返回值, 若成功返回0, 失败返回-1
 - 要关闭管道只需将这两个文件描述符关闭即可.
 - 单个进程中的管道几乎没有任何用处.所以,通常调用 pipe 的进程接着调用 fork,这样就创建了父进程与子进程之间的 IPC 通道
 
+<img src="./pics/process_thread/pipe_fork.png" alt="pipe in parent and child process" width="70%"/>
+
+从图中可以看到, 调用pipe 之后创建了一个管道, 然后在调用fork 创建子进程, 由于子进程会从父进程拷贝文件描述符, 所以pipe 产生的两个fd 也会复制过去.
+这样, 父子进程就能通过这两个fd 来通信, 父进程写fd[1], 子进程读fd[0]; 或者子进程写fd[1], 父进程读fd[0].
+如果只需要单向通信, 可以把不需要的fd close 掉.
+
 ### 有名管道FIFO
 FIFO,也称为命名管道,它是一种文件类型.
 
@@ -46,6 +54,17 @@ FIFO,也称为命名管道,它是一种文件类型.
 
 1. FIFO可以在无关的进程之间交换数据,与无名管道不同.
 1. FIFO有路径名与之相关联,它以一种特殊设备文件形式存在于文件系统中.
+
+```bash
+# terminal 1
+mkfifo pf
+echo "hello world" > pf
+
+# terminal 2
+cat pf
+```
+当echo 之后, 但是还没有在terminal 2 执行cat 的读操作之前, echo 会阻塞住.
+同样的, 如果先在terminal 2 执行cat 读, 但是terminal 1 此时还没写, 读操作也会被阻塞住.
 
 [Named Pipe or FIFO with example C program](https://www.geeksforgeeks.org/named-pipe-fifo-example-c-program)
 
@@ -64,6 +83,33 @@ int msgget(key_t key, int flag);  // 创建或打开消息队列:成功返回队
 int msgsnd(int msqid, const void *ptr, size_t size, int flag);  // 添加消息:成功返回0,失败返回-1
 int msgrcv(int msqid, void *ptr, size_t size, long type,int flag);  // 读取消息:成功返回消息数据的长度,失败返回-1
 ```
+当消息队列为空, 调用msgrcv 会阻塞住
+
+msgget, msgsnd, msgrcv 这一套是system V 的实现.
+posix 还有一套自己的实现, `mq_open`, 返回一个`mqd_t` 类型的message queue descriptor.
+posix 的优势在于返回的描述符是一个文件描述符, 因为可以作为epoll 等多路复用的监听对象, 而system V 的那套实现都是通过msgid 来弄的, 无法给epoll 使用.
+
+## 锁
+进程间的文件锁
+```C++
+#include <sys/file.h>
+int flock(int fd, int operation);  // 通过operation 来表明是加互斥锁/共享锁, 还是解锁
+```
+- `LOCK_SH`: Place a shared lock
+- `LOCK_EX`: Place an exclusive lock
+- `LOCK_UN`: Remove an existing lock held by this process
+
+Locks created by flock are associated with an open file description.
+This means that duplicate file descriptors (created by, for example, fork(2) or dup(2)) refer to the same lock, and this lock may be modified or released using any of these file descriptors.
+Furthermore, the lock is released either by an explicit `LOCK_UN` operation on any of these duplicate file descriptors, or when all such file descriptors have been closed.
+
+如果一个进程使用flock 独占锁锁住了一个文件, 另外一个文件不去调用flock 进行检查, 直接打开文件进行操作, 是否可以进行写操作取决于内核的实现是强制锁还是建议锁.
+
+强制锁的概念是传统UNIX为了强制应用程序遵守锁规则而引入的一个概念,与之对应的概念就是建议锁(Advisory locking).
+我们日常使用的基本都是建议锁,它并不强制生效.这里的不强制生效的意思是,如果某一个进程对一个文件持有一把锁之后,其他进程仍然可以直接对文件进行各种操作的,比如open,read,write.
+只有当多个进程在操作文件前都去检查和对相关锁进行锁操作的时候,文件锁的规则才会生效.这就是一般建议锁的行为.
+而强制性锁试图实现一套内核级的锁操作.当有进程对某个文件上锁之后,其他进程即使不在操作文件之前检查锁,也会在open,read或write等文件操作时发生错误.
+内核将对有锁的文件在任何情况下的锁规则都生效,这就是强制锁的行为.由此可以理解,如果内核想要支持强制锁,将需要在内核实现open,read,write等系统调用内部进行支持.
 
 ### 信号量 semaphore
 信号量是一个计数器, 用于实现进程间的互斥与同步,而不是用于存储进程间通信数据.
