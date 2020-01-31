@@ -13,11 +13,56 @@
 
 操作系统中进程调度策略有哪几种? FCFS(First Come First Service),优先级,时间片轮转,多级反馈
 
-进程有哪几种状态?
+[Linux进程状态](https://www.cnblogs.com/diegodu/p/9167671.html)
 
-- 就绪状态:进程已获得除处理机以外的所需资源,等待分配处理机资源
-- 运行状态:占用处理机资源运行,处于此状态的进程数小于等于CPU数
-- 阻塞状态: 进程等待某种条件,在条件满足之前无法执行
+- R(`TASK_RUNNING`): Running or runnable (on run queue)
+
+- S(`TASK_INTERRUPTIBLE`): Interruptible sleep (waiting for an event to complete)
+	处于这个状态的进程因为等待某某事件的发生(比如等待socket连接,等待信号量),而被挂起.这些进程的task_struct结构被放入对应事件的等待队列中.
+	当这些事件发生时(由外部中断触发,或由其他进程触发),对应的等待队列中的一个或多个进程将被唤醒.
+  通过ps命令我们会看到,一般情况下,进程列表中的绝大多数进程都处于`TASK_INTERRUPTIBLE`状态(除非机器的负载很高).
+	毕竟CPU就这么一两个,进程动辄几十上百个,如果不是绝大多数进程都在睡眠,CPU又怎么响应得过来.
+
+- D(`TASK_UNINTERRUPTIBLE`): Uninterruptible sleep (usually IO)
+	与TASK_INTERRUPTIBLE状态类似,进程处于睡眠状态,但是此刻进程是不可中断的.不可中断,指的并不是CPU不响应外部硬件的中断,而是指进程不响应异步信号.
+	绝大多数情况下,进程处在睡眠状态时,总是应该能够响应异步信号的.否则你将惊奇的发现,kill -9竟然杀不死一个正在睡眠的进程了!
+	于是我们也很好理解,为什么ps命令看到的进程几乎不会出现TASK_UNINTERRUPTIBLE状态,而总是TASK_INTERRUPTIBLE状态.
+  而`TASK_UNINTERRUPTIBLE`状态存在的意义就在于,内核的某些处理流程是不能被打断的.
+	在进程对某些硬件进行操作时(比如进程调用read系统调用对某个设备文件进行读操作,而read系统调用最终执行到对应设备驱动的代码,并与对应的物理设备进行交互),
+	可能需要使用TASK_UNINTERRUPTIBLE状态对进程进行保护,以避免进程与设备交互的过程被打断,造成设备陷入不可控的状态.这种情况下的TASK_UNINTERRUPTIBLE状态总是非常短暂的,通过ps命令基本上不可能捕捉到.
+
+- T(`TASK_STOPPED or TASK_TRACED`): Stopped, either by a job control signal or because it is being traced.
+	向进程发送一个SIGSTOP信号,它就会因响应该信号而进入TASK_STOPPED状态(除非该进程本身处于TASK_UNINTERRUPTIBLE状态而不响应信号).
+	(SIGSTOP与SIGKILL信号一样,是非常强制的.不允许用户进程通过signal系列的系统调用重新设置对应的信号处理函数.)
+	向进程发送一个SIGCONT信号,可以让其从TASK_STOPPED状态恢复到TASK_RUNNING状态.
+
+	当进程正在被跟踪时,它处于TASK_TRACED这个特殊的状态."正在被跟踪"指的是进程暂停下来,等待跟踪它的进程对它进行操作.
+	比如在gdb中对被跟踪的进程下一个断点,进程在断点处停下来的时候就处于TASK_TRACED状态.而在其他时候,被跟踪的进程还是处于前面提到的那些状态.
+
+	对于进程本身来说,TASK_STOPPED和TASK_TRACED状态很类似,都是表示进程暂停下来.
+	而TASK_TRACED状态相当于在TASK_STOPPED之上多了一层保护,处于TASK_TRACED状态的进程不能响应SIGCONT信号而被唤醒.
+	只能等到调试进程通过ptrace系统调用执行PTRACE_CONT,PTRACE_DETACH等操作(通过ptrace系统调用的参数指定操作),或调试进程退出,被调试的进程才能恢复TASK_RUNNING状态.
+
+- Z(`TASK_DEAD - EXIT_ZOMBIE`): Defunct ("zombie") process, 退出状态,进程成为僵尸进程
+	进程在退出的过程中,处于TASK_DEAD状态.
+	在这个退出过程中,进程占有的所有资源将被回收,除了task_struct结构(以及少数资源)以外.于是进程就只剩下task_struct这么个空壳,故称为僵尸.
+	之所以保留task_struct,是因为task_struct里面保存了进程的退出码,以及一些统计信息.而其父进程很可能会关心这些信息.
+	比如在shell中,$?变量就保存了最后一个退出的前台进程的退出码,而这个退出码往往被作为if语句的判断条件.
+
+	父进程可以通过wait系列的系统调用(如wait4,waitid)来等待某个或某些子进程的退出,并获取它的退出信息.然后wait系列的系统调用会顺便将子进程的尸体(task_struct)也释放掉.
+  子进程在退出的过程中,内核会给其父进程发送一个信号,通知父进程来"收尸".这个信号默认是SIGCHLD,但是在通过clone系统调用创建子进程时,可以设置这个信号.
+
+- X(`TASK_DEAD - EXIT_DEAD`): dead (should never be seen)
+
+其他附加状态
+
+- <: 高优先级
+- N: 低优先级
+- L: 有些页被锁进内存
+- s: 包含子进程
+- +: 位于后台的进程组
+- l: 多线程, 克隆线程 multi-threaded(using `CLONE_THREAD`, like NPTL pthreads do)
+
 
 ## 进程的通信方式
 [进程间的五种通信方式介绍](https://www.cnblogs.com/zgq0/p/8780893.html)
