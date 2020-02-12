@@ -10,7 +10,7 @@ Raft实现了和Paxos相同的功能,它将一致性分解为多个子问题: Le
 Raft将系统中的角色分为领导者(Leader),跟从者(Follower)和候选人(Candidate):
 
 - Leader:接受客户端请求,并向Follower同步请求日志,当日志同步到大多数节点上后告诉Follower提交日志.
-- Follower:接受并持久化Leader同步的日志,在Leader告之日志可以提交之后,提交日志.
+- Follower:接受并持久化Leader同步的日志,在Leader告诉日志可以提交之后,提交日志.
 - Candidate:Leader选举过程中的临时角色.
 
 Raft算法角色状态转换如下:
@@ -71,7 +71,7 @@ Leader为了使Followers的日志同自己的一致,Leader需要从后往前找�
 举例说明这个过程,如图所示.
 
 - leader 要把 index 为10的日志复制给 a,则会匹配 index 为9处的 term,即 prevLogIndex 为9,prevLogTerm 为6,此时可以匹配成功,则复制AppendEntry RPC携带的 log
-- leader 要把 index 为8的日志复制给e,则会匹配 index 为7处的 term,即 prevLogIndex 为7,prevLogTerm 为5.由于 eindex 为7处的 term 为4,匹配失败,则 leader 会向前搜索并进行匹配,
+- leader 要把 index 为8的日志复制给e,则会匹配 index 为7处的 term,即 prevLogIndex 为7,prevLogTerm 为5.由于index 为7处的 term 为4,匹配失败,则 leader 会向前搜索并进行匹配,
   直至 index 为5处的 log 匹配成功,则发送6之后所有的 log 给 e
 <img src="./pics/raft/log_replication_example.png" alt="log replication example" width="60%"/>
 
