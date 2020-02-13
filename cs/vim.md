@@ -9,21 +9,21 @@ Markdown 高亮配置
 - `[[`  跳转到代码块的开头去(但要求代码块中'{'必须单独占一行)
 - `''`  跳转到光标上次停靠的地方, 是两个, 而不是一个
 
-对于已保存的文件，可以使用下面的方法进行[空格和TAB的替换](http://blog.csdn.net/jiang1013nan/article/details/6298727)：
-TAB替换为空格：
+对于已保存的文件,可以使用下面的方法进行[空格和TAB的替换](http://blog.csdn.net/jiang1013nan/article/details/6298727):
+TAB替换为空格:
 ```
 :set ts=4
 :set expandtab
 :%retab!
 ```
 
-空格替换为TAB：
+空格替换为TAB:
 ```
 :set ts=4
 :set noexpandtab
 :%retab!
 ```
-加!是用于处理非空白字符之后的TAB，即所有的TAB，若不加!，则只处理行首的TAB。
+加!是用于处理非空白字符之后的TAB,即所有的TAB,若不加!,则只处理行首的TAB.
 
 # Move
 | Movement                            | Commands   |
@@ -56,6 +56,14 @@ TAB替换为空格：
 - Vim高亮显示的那个特殊的`^M`, 是Ctrl+V
 - `Shift-v shift-g`  选择当前位置到文章结尾
 - `shfit-v $` 选择当前位置到当前行尾
+- 列删除
+  1. 按下组合键"CTRL+v" 进入"可视 块"模式,选取这一列操作多少行
+  1. 按下d 即可删除被选中的整块
+- 列插入
+  1. 按下组合键"CTRL+v" 进入"可视 块"模式,选取这一列操作多少行
+  1. 按下shift+i(或者大写的字母"i")
+  1. 输入要插入的内容
+  1. 按ESC,之后就会看到插入的效果.
 
 transposing two letters `xp`, 也就是一个`x`, 然后再`p`
 
