@@ -48,15 +48,15 @@ alias bt="blade test"
 alias br="blade run"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
+## go
+export GOPATH="${HOME}/git/code/go"
+
 ## java
 export JAVA_HOME="$HOME/opt/jdk"
 export PATH="$HOME/opt/jdk/bin":$PATH
 
 # enterprise
-if [ -f ~/svn/trunk/thirdparty/perftools/bin/pprof ]
-then
-  alias pprof="~/svn/trunk/thirdparty/perftools/bin/pprof"
-fi
+export PATH="$PATH:$HOME/.ft"
 
 # udf
 ## docker
@@ -65,15 +65,3 @@ then
   source $HOME/git/docker/.dockerfunc
 fi
 
-## weather report
-function weather(){
-  if [ $# -eq 1 ]
-  then
-    city=$1
-  else
-    city="shenzhen"
-  fi
-  curl http://wttr.in/~$city
-}
-
-export PATH="$PATH:$HOME/.ft"
