@@ -136,6 +136,40 @@ Pulsar的Topic分区数据会被分为一个个的segment.每个segment会作为
 
 通过segment-oriented方式存储,Topic分区可以均匀平衡地分布于集群中的所有bookie节点中.这意味着Topic分区的大小不会像Kafka一样受限于一个节点容量的限制,相反,它可以扩展到整个Bookeeper集群的总容量.
 
+### Apache BookKeeper存储结构
+Pulsar的底层消息数据以Ledger(对应到pulasr 里面的场景就是 Segment)形式存储在多个 BookKeeper上,Ledger是一个只追加的数据结构,并且只有一个写入器,
+这个写入器负责多个BookKeeper存储节点(就是Bookies)的写入.Ledger的条目会被复制到多个bookies.同时bookkeeper会写入相关的数据来保证数据的一致性.
+
+Bookeeper需要保存的数据包括:
+
+- Journals
+  这个journals文件里存储的相当于BookKeeper的事务log或者说是写前log, 在任何针对ledger的更新发生前,都会先将这个更新的描述信息持久化到这个journal文件中.
+  Bookeeper提供有单独的sync线程根据当前journal文件的大小来作journal文件的rolling;
+- EntryLogFile
+  存储真正数据的文件,写入的时候Entry数据先缓存在内存buffer中,然后批量flush到EntryLogFile中;
+  默认情况下,所有ledger的数据都是聚合然后顺序写入到同一个EntryLog文件中,避免磁盘随机写;
+- Index文件
+  所有Ledger的entry数据都写入相同的EntryLog文件中,为了加速数据读取,会作 ledgerId + entryId 到文件offset的映射,这个映射会缓存在内存中,称为IndexCache;
+  IndexCache容量达到上限时,会被 Sync线程flush到文件;
+
+三类数据文件的读写交互如下图:
+
+<img src="./pics/pulsar/bookkeeper_write.png" alt="bookkeeper write" width="70%"/>
+
+集群配置注意事项:
+
+- journal, entrylog, index最好设置在不同磁盘上,避免IO竞争;
+- journal 最好写在SSD等高速磁盘上,journal的IO性能有可能成为bookkeeper吞吐瓶颈.
+
+数据一致性保证: LastLogMark
+
+从上面的的讲述可知, 写入的EntryLog和Index都是先缓存在内存中,再根据一定的条件周期性的flush到磁盘,
+这就造成了从内存到持久化到磁盘的时间间隔,如果在这间隔内BookKeeper进程崩溃,在重启后,我们需要根据journal文件内容来恢复,这个LastLogMark就记录了从journal中什么位置开始恢复;
+
+它其实是存在内存中,当IndexCache被flush到磁盘后其值会被更新,其也会周期性持久化到磁盘文件,供BookKeeper进程启动时读取来从journal中恢复;
+
+LastLogMark一旦被持久化到磁盘,即意味着在其之前的Index和EntryLog都已经被持久化到了磁盘,那么journal在这个LastLogMark之前的数据都可以被清除了.
+
 ## Pulsar Comparison with Apache Kafka
 Apache Kafka和Apache pulsar都有类似的消息概念.客户端通过Topic与消息系统进行交互.每个Topic都可以划分为多个分区.然而,Apache Pulsar和Apache Kafka的根本区别有两点:
 
