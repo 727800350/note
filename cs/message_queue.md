@@ -70,7 +70,7 @@ A namespace can then contain any number of topics.
 
 Authorization is managed at the property level, and the permissions are managed at the namespace level.
 
-<img src="./pics/pulsar/hierarchy.png" alt="pulsar hierarchy" align="middle" width="70%"/>
+<img src="./pics/pulsar/hierarchy.png" alt="pulsar hierarchy" width="70%"/>
 
 The namespace is the basic administrative unit in Pulsar.
 At the namespace level, you can set permissions, fine-tune replication settings, manage geo-replication of message data across clusters, control message expiry, and perform critical operations.
@@ -121,7 +121,33 @@ Partitioned topics are a special type of topic that be handled by multiple broke
 Behind the scenes, a partitioned topic is actually implemented as N internal topics, where N is the number of partitions.
 When publishing messages to a partitioned topic, each message is routed to one of several brokers. The distribution of partitions across brokers is handled automatically by Pulsar.
 
+每个Topic分区由Pulsar分配给某个Broker,该Broker称为该Topic分区的所有者(owner broker).
+Puslar生产者和消费者连接到该Topic分区的owner broker,向其发送消息并消费消息.具体如下图所示.
+
+<img src="./pics/pulsar/topic_partition.png" alt="pulsar topic partition" width="70%"/>
+
+## Bookie消息存储层及其segment-oriented 存储机制
+Apache Bookeeper是Pulsar的持久化存储层.Pulsar的每一个Topic分区事实上都是存储于Bookeeper中的分布式日志.Pulsar的Topic分区在Bookeeper中存储结构如下图所示.
+
+<img src="./pics/pulsar/bookie_segment.png" alt="segments in bookie" width="70%"/>
+
+Pulsar的Topic分区数据会被分为一个个的segment.每个segment会作为Bookeeper中的一个Ledger,均匀分布并存储于Bookeeper集群中的多个Bookie中(Bookeeper的存储节点).
+如上图3所示的一个被分为x个segment的Topic分区,每个segment存储3个副本.所有的segment都分布并存储于Bookeeper集群中的3个bookie中.
+
+通过segment-oriented方式存储,Topic分区可以均匀平衡地分布于集群中的所有bookie节点中.这意味着Topic分区的大小不会像Kafka一样受限于一个节点容量的限制,相反,它可以扩展到整个Bookeeper集群的总容量.
+
 ## Pulsar Comparison with Apache Kafka
+Apache Kafka和Apache pulsar都有类似的消息概念.客户端通过Topic与消息系统进行交互.每个Topic都可以划分为多个分区.然而,Apache Pulsar和Apache Kafka的根本区别有两点:
+
+- Apache Puslar采用"服务-存储"分离的分层框架,而Apache Kafka的存储和服务都由Broker完成.
+  Pulsar得益于其分层框架,可以独立扩展存储层和服务层,更具成本效益,而Kafka无论服务达到瓶颈还是存储达到瓶颈,都需对Broker进行整体扩容,且扩容需要迁移数据,扩容成本较高.
+- Apache Kafka是partition-oriented的存储机制,而Pulsar是segment-oriented的.
+
+<img src="./pics/pulsar/pulsar_vs_kafka.png" alt="pulsar vs kafka" width="100%"/>
+
+上图显示了partition-oriented同segment-oriented之间的差异.
+在Kafka中,分区只能存储在单个节点上并复制到其他节点.其存储容量受最小节点容量的限制.且Kafka扩容需要手动Rebalance分区,以平衡已有Topic的数据和流量,扩容成本较高.
+
 There are many techniques that Pulsar uses to improve performance. The most important technique is used to handle tailing reads.
 In a scenario where readers are only interested in the most recent data, the readers are served from an in-memory cache in the serving layer (the Pulsar brokers),
 and only catch-up readers end up having to be served from the storage layer (Apache BookKeeper). This approach is key to improving the latency and throughput compared to systems such as Kafka.
