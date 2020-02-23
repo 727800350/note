@@ -4,7 +4,7 @@
 每个 Go 程序都是由包组成的.
 
 程序运行的入口是包 main.
-```
+```go
 package main
 
 import (
@@ -16,8 +16,6 @@ func main() {
 	fmt.Println("My favorite number is", rand.Intn(10))
 }
 ```
-
-Go支持C语言风格的/* */块注释, //行注释
 
 # IO
 fmt.Println()
@@ -71,7 +69,7 @@ eg: `Foo` 和 `FOO` 都是被导出的名称.名称 `foo` 是不会被导出的.
 在import 了 math 包之后, math 中的常量pi就就成为exported name, 但是需要使用首字母大写的形式来访问: `math.Pi`
 
 var 语句定义了一个变量的列表
-```
+```go
 var c, python, java bool
 var i, j int = 1, 2
 var c, python, java = true, false, "no!" //如果初始化是使用表达式,则可以省略类型,变量从初始值中获得类型.
@@ -89,7 +87,7 @@ The distinction between type and expression syntax makes it easy to write and in
 `sum := func(a, b int) int {return a + b} (3, 4)`
 
 结构体
-```
+```go
 type Vertex struct {
 	X int
 	Y int
@@ -102,11 +100,12 @@ p  = &Vertex{1, 2} // 类型为 *Vertex
 
 ## slice
 一个 slice 会指向一个序列的值,并且包含了长度信息.
+```go
 s := []int{2, 3, 5, 7, 11, 13}
 len(s)
 
-s[lo:hi]
-表示从 lo 到 hi-1 的 slice 元素,含两端.因此
+s[lo:hi] 表示从 lo 到 hi-1 的 slice 元素,含两端.因此
+```
 
 slice 由函数 make 创建.这会分配一个零长度的数组并且返回一个 slice 指向这个数组:
 a := make([]int, 5)  // len(a)=5
@@ -116,7 +115,7 @@ b := make([]int, 0, 5) // len(b)=0, cap(b)=5
 slice2 := append(slice1, element) // 向slice1 中添加元素element, 结果为slice2, 注意slice1 保持不变
 
 ## map
-```
+```go
 type Vertex struct {
 	Lat, Long float64
 }
@@ -139,7 +138,7 @@ var m = map[string]Vertex{
 
 # Function
 函数也是值.
-```
+```go
 func add(x int, y int) int {
 	return x + y
 }
@@ -147,7 +146,7 @@ func add(x int, y int) int {
 由于两个参数x,y 都是int 类型, 可以缩写为: `x, y int`
 
 多值返回
-```
+```go
 func swap(x, y string) (string, string) {
 	return y, x
 }
@@ -156,7 +155,7 @@ a, b := swap("hello", "world")
 
 命名返回值
 Go 的返回值可以被命名,并且像变量那样使用.
-```
+```go
 func split(sum int) (x, y int) {
 	x = sum * 4 / 9
 	y = sum - x
@@ -168,7 +167,7 @@ func split(sum int) (x, y int) {
 Go 没有类.然而,仍然可以在结构体类型上定义方法.
 
 方法接收者 出现在 func 关键字和方法名之间的参数中.
-```
+```go
 type Vertex struct {
 	X, Y float64
 }
@@ -196,7 +195,7 @@ Go 只有一种循环结构- for 循环.
 
 基本的 for 循环除了没有了 ( ) 之外(甚至强制不能使用它们),看起来跟 C 或者 Java 中做的一样,而 { } 是必须的.
 
-```
+```go
 sum := 0
 for i := 0; i < 10; i++ {
 	sum += i
@@ -204,7 +203,7 @@ for i := 0; i < 10; i++ {
 ```
 
 跟 C 或者 Java 中一样,可以让前置,后置语句为空.
-```
+```go
 sum := 1
 for ; sum < 1000; {
 	sum += sum
@@ -212,7 +211,7 @@ for ; sum < 1000; {
 ```
 
 for 是 Go 的 "while"
-```
+```go
 sum := 1
 for sum < 1000 {
 	sum += sum
@@ -220,14 +219,14 @@ for sum < 1000 {
 ```
 
 死循环
-```
+```go
 for {
 }
 ```
 
 ### range
 for 循环的 range 格式可以对 slice 或者 map 进行迭代循环.
-```
+```go
 var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
 for i, v := range pow {
 	fmt.Printf("2**%d = %d\n", i, v)
@@ -235,7 +234,7 @@ for i, v := range pow {
 ```
 i 为 index, v index 处的value
 
-```
+```go
 pow := make([]int, 10)
 for i := range pow {
 	pow[i] = 1 << uint(i)
@@ -243,7 +242,7 @@ for i := range pow {
 ```
 可以省略掉value 部分
 
-```
+```go
 for _, value := range pow {
 	fmt.Printf("%d\n", value)
 }
@@ -254,7 +253,7 @@ for _, value := range pow {
 if 也一样
 
 跟 for 一样, if 语句可以在条件之前执行一个简单的语句.
-```
+```go
 func pow(x, n, lim float64) float64 {
 	if v := math.Pow(x, n); v < lim {
 		return v
@@ -264,7 +263,7 @@ func pow(x, n, lim float64) float64 {
 ```
 
 ## switch
-```
+```go
 switch os := runtime.GOOS; os
 case "darwin":
 	fmt.Println("OS X.")
@@ -276,7 +275,7 @@ default:
 	fmt.Printf("%s.", os)
 ```
 没有条件的 switch 同 switch true 一样.
-```
+```go
 t := time.Now()
 switch {
 	case t.Hour() < 12:
@@ -298,7 +297,7 @@ f,x,y 和 z 是当前 goroutine 中定义的,但是在新的 goroutine 中运行
 
 # channel
 channel 是有类型的管道,可以用 channel 操作符 `<-` 对其发送或者接收值.
-```
+```go
 ch <- v    // 将 v 送入 channel ch.
 v := <-ch  // 从 ch 接收,并且赋值给 v.
 ```
@@ -318,3 +317,4 @@ Buffering removes synchronization.
 Buffering makes them more like Erlang mailboxes.
 
 Do not communicate by sharing memory, share memory by communicating.
+
