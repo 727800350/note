@@ -8,12 +8,12 @@
 package main
 
 import (
-	"fmt"
-	"math/rand"
+  "fmt"
+  "math/rand"
 )
 
 func main() {
-	fmt.Println("My favorite number is", rand.Intn(10))
+  fmt.Println("My favorite number is", rand.Intn(10))
 }
 ```
 
@@ -89,8 +89,8 @@ The distinction between type and expression syntax makes it easy to write and in
 结构体
 ```go
 type Vertex struct {
-	X int
-	Y int
+  X int
+  Y int
 }
 v := Vertex{1, 2}
 p := &v // 结构体指针, 访问也通过`.`, 而不是 `->`, eg: p.X
@@ -117,17 +117,17 @@ slice2 := append(slice1, element) // 向slice1 中添加元素element, 结果为
 ## map
 ```go
 type Vertex struct {
-	Lat, Long float64
+  Lat, Long float64
 }
 
 // string 到 vertex 的map 映射
 var m = map[string]Vertex{
-	"Bell Labs": Vertex{
-		40.68433, -74.39967,
-	},
-	"Google": Vertex{
-		37.42202, -122.08408,
-	},
+  "Bell Labs": Vertex{
+    40.68433, -74.39967,
+  },
+  "Google": Vertex{
+    37.42202, -122.08408,
+  },
 }
 ```
 
@@ -140,7 +140,7 @@ var m = map[string]Vertex{
 函数也是值.
 ```go
 func add(x int, y int) int {
-	return x + y
+  return x + y
 }
 ```
 由于两个参数x,y 都是int 类型, 可以缩写为: `x, y int`
@@ -148,7 +148,7 @@ func add(x int, y int) int {
 多值返回
 ```go
 func swap(x, y string) (string, string) {
-	return y, x
+  return y, x
 }
 a, b := swap("hello", "world")
 ```
@@ -157,9 +157,9 @@ a, b := swap("hello", "world")
 Go 的返回值可以被命名,并且像变量那样使用.
 ```go
 func split(sum int) (x, y int) {
-	x = sum * 4 / 9
-	y = sum - x
-	return x,y
+  x = sum * 4 / 9
+  y = sum - x
+  return x,y
 }
 ```
 
@@ -169,16 +169,16 @@ Go 没有类.然而,仍然可以在结构体类型上定义方法.
 方法接收者 出现在 func 关键字和方法名之间的参数中.
 ```go
 type Vertex struct {
-	X, Y float64
+  X, Y float64
 }
 
 func (v *Vertex) Abs() float64 {
-	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+  return math.Sqrt(v.X*v.X + v.Y*v.Y)
 }
 
 func main() {
-	v := &Vertex{3, 4}
-	fmt.Println(v.Abs())
+  v := &Vertex{3, 4}
+  fmt.Println(v.Abs())
 }
 ```
 `v *Vertex` 就是接收者, 使用指针与C 中原因一样, 通过指针可以直接访问原来的变量, 而不是副本
@@ -198,7 +198,7 @@ Go 只有一种循环结构- for 循环.
 ```go
 sum := 0
 for i := 0; i < 10; i++ {
-	sum += i
+  sum += i
 }
 ```
 
@@ -206,7 +206,7 @@ for i := 0; i < 10; i++ {
 ```go
 sum := 1
 for ; sum < 1000; {
-	sum += sum
+  sum += sum
 }
 ```
 
@@ -214,7 +214,7 @@ for 是 Go 的 "while"
 ```go
 sum := 1
 for sum < 1000 {
-	sum += sum
+  sum += sum
 }
 ```
 
@@ -229,7 +229,7 @@ for 循环的 range 格式可以对 slice 或者 map 进行迭代循环.
 ```go
 var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
 for i, v := range pow {
-	fmt.Printf("2**%d = %d\n", i, v)
+  fmt.Printf("2**%d = %d\n", i, v)
 }
 ```
 i 为 index, v index 处的value
@@ -237,14 +237,14 @@ i 为 index, v index 处的value
 ```go
 pow := make([]int, 10)
 for i := range pow {
-	pow[i] = 1 << uint(i)
+  pow[i] = 1 << uint(i)
 }
 ```
 可以省略掉value 部分
 
 ```go
 for _, value := range pow {
-	fmt.Printf("%d\n", value)
+  fmt.Printf("%d\n", value)
 }
 ```
 可以通过赋值给 _ 来忽略序号index 或者value
@@ -255,10 +255,10 @@ if 也一样
 跟 for 一样, if 语句可以在条件之前执行一个简单的语句.
 ```go
 func pow(x, n, lim float64) float64 {
-	if v := math.Pow(x, n); v < lim {
-		return v
-	}
-	return lim
+  if v := math.Pow(x, n); v < lim {
+    return v
+  }
+  return lim
 }
 ```
 
@@ -266,24 +266,24 @@ func pow(x, n, lim float64) float64 {
 ```go
 switch os := runtime.GOOS; os
 case "darwin":
-	fmt.Println("OS X.")
+  fmt.Println("OS X.")
 case "linux":
-	fmt.Println("Linux.")
+  fmt.Println("Linux.")
 default:
-	// freebsd, openbsd,
-	// plan9, windows...
-	fmt.Printf("%s.", os)
+  // freebsd, openbsd,
+  // plan9, windows...
+  fmt.Printf("%s.", os)
 ```
 没有条件的 switch 同 switch true 一样.
 ```go
 t := time.Now()
 switch {
-	case t.Hour() < 12:
-		fmt.Println("Good morning!")
-	case t.Hour() < 17:
-		fmt.Println("Good afternoon.")
-	default:
-		fmt.Println("Good evening.")
+  case t.Hour() < 12:
+    fmt.Println("Good morning!")
+  case t.Hour() < 17:
+    fmt.Println("Good afternoon.")
+  default:
+    fmt.Println("Good evening.")
 }
 ```
 这一构造使得可以用更清晰的形式来编写长的 if-then-else 链.
