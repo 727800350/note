@@ -6,6 +6,9 @@ eg: `Foo` 和 `FOO` 都是被导出的名称.名称 `foo` 是不会被导出的.
 # IO
 - `fmt.Println`
 - `fmt.Printf`
+  ```go
+  fmt.Printf("%v, %T\n", x, x)  // 输出x 的值和类型
+  ```
 
 io 包指定了 io.Reader 接口, 它表示从数据流读取, 有一个 Read 方法:
 `func (T) Read(b []byte) (n int, err error)`
@@ -40,18 +43,35 @@ Go 的基本类型有Basic types
 - slice 的零值是 nil, 一个 nil 的 slice 的长度和容量是0.
 
 ## array
-- the size of an array is part of its type, which limits its expressive power.
-- copies refer to different underlying data, 也就是值拷贝
+An array type definition specifies a length and an element type. For example, the type `[4]int` represents an array of four integers.
+
+Go's arrays are values. An array variable denotes the entire array; it is not a pointer to the first array element (as would be the case in C).
+This means that when you assign or pass around an array value you will make a copy of its contents.
+(To avoid the copy you could pass a pointer to the array, but then that's a pointer to an array, not an array.)
 
 ## slice
 slices, which built on fixed-size arrays to give a flexible, extensible data structure.
 
-slice 由函数 make 创建.这会分配一个零长度的数组并且返回一个 slice 指向这个数组:
-a := make([]int, 5)  // len(a)=5
-为了指定容量,可传递第三个参数到 make:
-b := make([]int, 0, 5) // len(b)=0, cap(b)=5
+The type specification for a slice is `[]T`, where T is the type of the elements of the slice. Unlike an array type, a slice type has no specified length.
 
-slice2 := append(slice1, element) // 向slice1 中添加元素element, 结果为slice2, 注意slice1 保持不变
+The zero value of a slice is nil. The len and cap functions will both return 0 for a nil slice.
+
+- `func copy(dst, src []T) int`: The copy function supports copying between slices of different lengths (it will copy only up to the smaller number of elements).
+  In addition, copy can handle source and destination slices that share the same underlying array, handling overlapping slices correctly.
+- `func append(s []T, x ...T) []T`
+
+As mentioned earlier, re-slicing a slice doesn't make a copy of the underlying array.
+The full array will be kept in memory until it is no longer referenced. Occasionally this can cause the program to hold all the data in memory when only a small piece of it is needed.
+To fix this problem one can copy the interesting data to a new slice before returning it:
+```go
+func CopyDigits(filename string) []byte {
+    b, _ := ioutil.ReadFile(filename)
+    b = digitRegexp.Find(b)
+    c := make([]byte, len(b))
+    copy(c, b)
+    return c
+}
+```
 
 ## 类型转换
 表达式 T(v) 将值 v 转换为类型 T .
