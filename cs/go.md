@@ -24,9 +24,15 @@ All assignment operations in Go are copy operations.
 
 slice and map contain internal pointers, so copies point to the same underlying data.
 
-## 基本类型
-Go 的基本类型有Basic types
+变量在定义时没有明确的初始化时会赋值为**零值**.
 
+- 数值类型为 0 ,
+- 布尔类型为 false ,
+- 字符串为 "" (空字符串)
+- 引用类型为nil
+- slice 的零值是 nil, 一个 nil 的 slice 的长度和容量是0.
+
+## 基本类型
 - bool
 - string: string is immutable
 - int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, uintptr
@@ -35,22 +41,20 @@ Go 的基本类型有Basic types
 - float32, float64
 - complex64, complex128
 
-变量在定义时没有明确的初始化时会赋值为**零值**.
-
-- 数值类型为 0 ,
-- 布尔类型为 false ,
-- 字符串为 "" (空字符串)
-- 指针为nil
-- slice 的零值是 nil, 一个 nil 的 slice 的长度和容量是0.
-
-## array
+- array
 An array type definition specifies a length and an element type. For example, the type `[4]int` represents an array of four integers.
 
 Go's arrays are values. An array variable denotes the entire array; it is not a pointer to the first array element (as would be the case in C).
 This means that when you assign or pass around an array value you will make a copy of its contents.
 (To avoid the copy you could pass a pointer to the array, but then that's a pointer to an array, not an array.)
 
-## slice
+## 引用类型
+- slice
+- map
+- interface
+- channel
+
+### slice
 slices, which built on fixed-size arrays to give a flexible, extensible data structure.
 
 The type specification for a slice is `[]T`, where T is the type of the elements of the slice. Unlike an array type, a slice type has no specified length.
@@ -73,6 +77,57 @@ func CopyDigits(filename string) []byte {
     return c
 }
 ```
+
+### map
+可以比较的数据类型才能作为一个map的键，所以map的键都是基本类型。
+
+### channel
+Do not communicate by sharing memory, share memory by communicating.
+
+channels are first class values, just like strings or integers.
+
+```go
+ch <- v  // 将 v 送入 channel ch.
+v := <-ch  // 从 ch 接收,并且赋值给 v.
+```
+
+和 map 与 slice 一样,channel 使用前必须创建: `ch := make(chan int)`
+
+By default channels are unbuffered, meaning that they will only accept sends (chan <-) if there is a corresponding receive (<- chan) ready to receive the sent value.
+Buffered channels accept a limited number of values without a corresponding receiver for those values.
+
+The select statement provides another way to handle multiple channels.
+It's like a switch, but each case is a communication:
+
+- All channels are evaluated
+- Selection blocks until one communication can proceed, which then does.
+- If multiple can proceed, select chooses pseudo-randomly.
+- A defalut clause, if present, executes immediately if no channel is ready.
+
+```go
+select {
+  case v1 := <- c1:
+    fmt.Printf("received %v from c1\n", v1)
+  case v2 := <- c2:
+    fmt.Printf("received %v from c2\n", v2)
+  default:
+    fmt.Printf("no one ready to communicate\n")
+}
+```
+
+## [interface](https://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go)
+The `interface{}` type, the empty interface, is the source of much confusion. The interface{} type is the interface that has no methods.
+Since there is no implements keyword, all types implement at least zero methods, and satisfying an interface is done automatically, all types satisfy the empty interface.
+That means that if you write a function that takes an interface{} value as a parameter, you can supply that function with any value. So, this function:
+```go
+func DoSomething(v interface{}) {
+   // ...
+}
+```
+will accept any parameter.
+
+An interface value is constructed of two words of data;
+one word is used to point to a method table for the value’s underlying type, and the other word is used to point to the actual data being held by that value.
 
 ## 类型转换
 表达式 T(v) 将值 v 转换为类型 T .
@@ -149,44 +204,6 @@ It's not a thread.
 There might be only one thread in a program with thousands of goroutines.
 Instread, goroutines are multiplexed dynamically onto threads as needed to keep all the goroutines running.
 But if you think of it as a very cheap thread, you won't be far off.
-
-# channel
-Do not communicate by sharing memory, share memory by communicating.
-
-channels are first class values, just like strings or integers.
-
-```go
-ch <- v  // 将 v 送入 channel ch.
-v := <-ch  // 从 ch 接收,并且赋值给 v.
-```
-
-和 map 与 slice 一样,channel 使用前必须创建: `ch := make(chan int)`
-
-默认情况下,在另一端准备好之前,发送和接收都会阻塞.
-这使得 goroutine 可以在没有明确的锁或竞态变量的情况下进行同步.
-
-channel 可以是 带缓冲的.为 make 提供第二个参数作为缓冲长度来初始化一个缓冲 channel:
-`ch := make(chan int, 100)`
-通过`cap(chan)` 获取缓冲区大小
-向缓冲 channel 发送数据的时候,只有在缓冲区满的时候才会阻塞.
-
-The select statement provides another way to handle multiple channels.
-It's like a switch, but each case is a communication:
-
-- All channels are evaluated
-- Selection blocks until one communication can proceed, which then does.
-- If multiple can proceed, select chooses pseudo-randomly.
-- A defalut clause, if present, executes immediately if no channel is ready.
-```go
-select {
-  case v1 := <- c1:
-    fmt.Printf("received %v from c1\n", v1)
-  case v2 := <- c2:
-    fmt.Printf("received %v from c2\n", v2)
-  default:
-    fmt.Printf("no one ready to communicate\n")
-}
-```
 
 # concurrency vs parallelism
 Concurrency is not parallelism, althouth it enables parallelism.
