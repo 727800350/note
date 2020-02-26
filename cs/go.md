@@ -8,6 +8,7 @@ eg: `Foo` 和 `FOO` 都是被导出的名称.名称 `foo` 是不会被导出的.
 - `fmt.Printf`
   ```go
   fmt.Printf("%v, %T\n", x, x)  // 输出x 的值和类型
+  fmt.Sprintf("%s %d", "hello", 123)
   ```
 
 io 包指定了 io.Reader 接口, 它表示从数据流读取, 有一个 Read 方法:
@@ -137,10 +138,23 @@ the functionality is analogous to the & on the end of a shell command
 - `runtime.GOMAXPROCS(num int)`: 控制并发度, -1 会用到所有的core
 - `go run -race file.go`: dead lock 检测
 
+What is a goroutine? It's an independently executing function, launched by a go statement.
+
+It has its own call stack, which grows and shrinks as required.
+
+It's very cheap. It's practical to have thousands, even hundreds of thousands of goroutines.
+
+It's not a thread.
+
+There might be only one thread in a program with thousands of goroutines.
+Instread, goroutines are multiplexed dynamically onto threads as needed to keep all the goroutines running.
+But if you think of it as a very cheap thread, you won't be far off.
+
 # channel
 Do not communicate by sharing memory, share memory by communicating.
 
-channel 是有类型的管道,可以用 channel 操作符 `<-`(箭头的指向就是数据流的方向) 对其发送或者接收值.
+channels are first class values, just like strings or integers.
+
 ```go
 ch <- v  // 将 v 送入 channel ch.
 v := <-ch  // 从 ch 接收,并且赋值给 v.
@@ -155,4 +169,34 @@ channel 可以是 带缓冲的.为 make 提供第二个参数作为缓冲长度�
 `ch := make(chan int, 100)`
 通过`cap(chan)` 获取缓冲区大小
 向缓冲 channel 发送数据的时候,只有在缓冲区满的时候才会阻塞.
+
+The select statement provides another way to handle multiple channels.
+It's like a switch, but each case is a communication:
+
+- All channels are evaluated
+- Selection blocks until one communication can proceed, which then does.
+- If multiple can proceed, select chooses pseudo-randomly.
+- A defalut clause, if present, executes immediately if no channel is ready.
+```go
+select {
+  case v1 := <- c1:
+    fmt.Printf("received %v from c1\n", v1)
+  case v2 := <- c2:
+    fmt.Printf("received %v from c2\n", v2)
+  default:
+    fmt.Printf("no one ready to communicate\n")
+}
+```
+
+# concurrency vs parallelism
+Concurrency is not parallelism, althouth it enables parallelism.
+
+If you have only one processor, your program can still be concurrent but it cannot be parallel.
+
+On the other hand, a well-written concurrent program might run efficiently in parallel on a multiprocessor.
+
+Usually
+
+- I/O Bound == Concurrency
+- CPU Bound == Parallelism
 
