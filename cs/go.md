@@ -79,7 +79,7 @@ func CopyDigits(filename string) []byte {
 ```
 
 ### map
-可以比较的数据类型才能作为一个map的键，所以map的键都是基本类型。
+可以比较的数据类型才能作为一个map的键,所以map的键都是基本类型.
 
 ### channel
 Do not communicate by sharing memory, share memory by communicating.
@@ -100,9 +100,12 @@ The select statement provides another way to handle multiple channels.
 It's like a switch, but each case is a communication:
 
 - All channels are evaluated
-- Selection blocks until one communication can proceed, which then does.
+- Selection blocks until one communication can proceed
 - If multiple can proceed, select chooses pseudo-randomly.
 - A defalut clause, if present, executes immediately if no channel is ready.
+
+当case上读一个通道时,如果这个通道是nil,则该case永远阻塞.
+这个功能有1个妙用,select通常处理的是多个通道,当某个读通道关闭了,但不想select再继续关注此case,继续处理其他case,把该通道设置为nil即可.
 
 ```go
 select {
@@ -127,7 +130,7 @@ func DoSomething(v interface{}) {
 will accept any parameter.
 
 An interface value is constructed of two words of data;
-one word is used to point to a method table for the value’s underlying type, and the other word is used to point to the actual data being held by that value.
+one word is used to point to a method table for the value's underlying type, and the other word is used to point to the actual data being held by that value.
 
 ## 类型转换
 表达式 T(v) 将值 v 转换为类型 T .
