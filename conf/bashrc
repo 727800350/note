@@ -50,6 +50,7 @@ test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
 ## go
 export GOPATH="${HOME}/git/code/go"
+export PATH="$PATH:$GOPATH/bin"
 
 ## java
 export JAVA_HOME="$HOME/opt/jdk"
