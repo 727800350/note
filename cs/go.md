@@ -11,6 +11,14 @@ eg: `Foo` 和 `FOO` 都是被导出的名称.名称 `foo` 是不会被导出的.
   fmt.Sprintf("%s %d", "hello", 123)
   ```
 
+when you pass a value to the fmt.Print function, it checks to see if it implements the fmt.Stringer interface
+```go
+type Stringer interface {
+  String() string
+}
+```
+Any type that implements a String() string method is a stringer, and the fmt package will use that method to format values of that type.
+
 io 包指定了 io.Reader 接口, 它表示从数据流读取, 有一个 Read 方法:
 `func (T) Read(b []byte) (n int, err error)`
 Read 用数据填充指定的字节 slice,并且返回填充的字节数和错误信息. 在遇到数据流结尾时,返回 io.EOF 错误.
@@ -41,12 +49,20 @@ slice and map contain internal pointers, so copies point to the same underlying 
 - float32, float64
 - complex64, complex128
 
-- array
+### array
 An array type definition specifies a length and an element type. For example, the type `[4]int` represents an array of four integers.
 
 Go's arrays are values. An array variable denotes the entire array; it is not a pointer to the first array element (as would be the case in C).
 This means that when you assign or pass around an array value you will make a copy of its contents.
 (To avoid the copy you could pass a pointer to the array, but then that's a pointer to an array, not an array.)
+
+### string
+Strings are actually very simple: they are just read-only slices of bytes with a bit of extra syntactic support from the language.
+Because they are read-only, there is no need for a capacity (you can't grow them), but otherwise for most purposes you can treat them just like read-only slices of bytes.
+
+The array underlying a string is hidden from view; there is no way to access its contents except through the string.
+That means that when we do either of these conversions, a copy of the array must be made. Go takes care of this, of course, so you don't have to.
+After either of these conversions, modifications to the array underlying the byte slice don't affect the corresponding string.
 
 ## 引用类型
 - slice
@@ -55,11 +71,22 @@ This means that when you assign or pass around an array value you will make a co
 - channel
 
 ### slice
-slices, which built on fixed-size arrays to give a flexible, extensible data structure.
+built on fixed-size arrays to give a flexible, extensible data structure.
+
+It's important to understand that even though a slice contains a pointer, it is itself a value.
+Under the covers, it is a struct value holding a pointer, a length and a capacity. It is not a pointer to a struct.
+```go
+type sliceHeader struct {
+  Length        int
+  Capacity      int
+  ZerothElement *byte
+}
+```
 
 The type specification for a slice is `[]T`, where T is the type of the elements of the slice. Unlike an array type, a slice type has no specified length.
 
-The zero value of a slice is nil. The len and cap functions will both return 0 for a nil slice.
+The zero value of a slice is nil(the element pointer is still nil). The len and cap functions will both return 0 for a nil slice.
+However the slice created by `array[0:0]` has length zero (and maybe even capacity zero) but its pointer is not nil, so it is not a nil slice.
 
 - `func copy(dst, src []T) int`: The copy function supports copying between slices of different lengths (it will copy only up to the smaller number of elements).
   In addition, copy can handle source and destination slices that share the same underlying array, handling overlapping slices correctly.
