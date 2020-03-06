@@ -206,6 +206,8 @@ Instread, goroutines are multiplexed dynamically onto threads as needed to keep 
 But if you think of it as a very cheap thread, you won't be far off.
 
 # concurrency vs parallelism
+并发是指程序的逻辑结构, 并行是指程序的运行状态.
+
 Concurrency is not parallelism, althouth it enables parallelism.
 
 If you have only one processor, your program can still be concurrent but it cannot be parallel.
