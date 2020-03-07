@@ -4,12 +4,17 @@ eg: `Foo` 和 `FOO` 都是被导出的名称.名称 `foo` 是不会被导出的.
 在import 了 math 包之后, math 中的常量pi就就成为exported name, 但是需要使用首字母大写的形式来访问: `math.Pi`
 
 # IO
-- `fmt.Println`
-- `fmt.Printf`
-  ```go
-  fmt.Printf("%v, %T\n", x, x)  // 输出x 的值和类型
-  fmt.Sprintf("%s %d", "hello", 123)
-  ```
+## fmt
+Formatted printing in Go uses a style similar to C's printf family but is richer and more general.
+
+- fmt.Printf, fmt.Fprintf, fmt.Sprintf
+- fmt.Println, fmt.Printf, fmt.Print
+
+- `%v`: When printing a struct, the modified format `%+v` annotates the fields of the structure with their names, and for any value the alternate format `%#v` prints the value in full Go syntax.
+- `%q`: That quoted string format is also available through %q when applied to a value of type string or []byte. The alternate format %#q will use backquotes instead if possible.
+  (The %q format also applies to integers and runes, producing a single-quoted rune constant.)
+- `%x`: works on strings, byte arrays and byte slices as well as on integers, generating a long hexadecimal string, and with a space in the format (`% x`) it puts spaces between the bytes.
+- `%T`: prints the type of a value.
 
 when you pass a value to the fmt.Print function, it checks to see if it implements the fmt.Stringer interface
 ```go
@@ -175,7 +180,20 @@ p := &v // 结构体指针, 访问也通过`.`, 而不是 `->`, eg: p.X
 p  = &Vertex{1, 2} // 类型为 *Vertex
 ```
 
-# Function
+## new and make
+Go has two allocation primitives, the built-in functions new and make. They do different things and apply to different types.
+
+new is a built-in function that allocates memory, but unlike its namesakes in some other languages it does not initialize the memory, it only zeros it.
+It returns a pointer to a newly allocated zero value of type T.
+
+`new(File)` and `&File{}` are equivalent
+
+The built-in function `make(T, args)` serves a purpose different from `new(T)`. It creates slices, maps, and channels only, and it returns an initialized (not zeroed) value of type `T (not *T)`.
+The reason for the distinction is that these three types represent, under the covers, references to data structures that must be initialized before use.
+A slice, for example, is a three-item descriptor containing a pointer to the data (inside an array), the length, and the capacity, and until those items are initialized, the slice is nil.
+For slices, maps, and channels, make initializes the internal data structure and prepares the value for use.
+
+# function
 函数也是值.
 ```go
 func add(x int, y int) int {
@@ -191,6 +209,9 @@ func swap(x, y string) (string, string) {
 }
 a, b := swap("hello", "world")
 ```
+
+Finally, each source file can define its own niladic init function to set up whatever state is required.
+init is called after all the variable declarations in the package have evaluated their initializers, and those are evaluated only after all the imported packages have been initialized.
 
 ## method
 Go 没有类.然而,仍然可以在结构体类型上定义方法.
