@@ -1,4 +1,6 @@
 # intro
+[Go by Example](https://gobyexample.com)
+
 在 Go 中,首字母大写的名称是被导出的.
 eg: `Foo` 和 `FOO` 都是被导出的名称.名称 `foo` 是不会被导出的.
 在import 了 math 包之后, math 中的常量pi就就成为exported name, 但是需要使用首字母大写的形式来访问: `math.Pi`
