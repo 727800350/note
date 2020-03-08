@@ -270,7 +270,16 @@ Usually
 - I/O Bound == Concurrency
 - CPU Bound == Parallelism
 
-# [scheduler](http://morsmachine.dk/go-scheduler)
+# runtime
+Go does have an extensive library, called the runtime, that is part of every Go program.
+The runtime library implements garbage collection, concurrency, stack management, and other critical features of the Go language.
+Although it is more central to the language, Go's runtime is analogous to libc, the C library.
+
+It is important to understand, however, that Go's runtime does not include a virtual machine, such as is provided by the Java runtime.
+Go programs are compiled ahead of time to native machine code.
+Thus, although the term is often used to describe the virtual environment in which a program runs, in Go the word "runtime" is just the name given to the library providing critical language services.
+
+## [scheduler](http://morsmachine.dk/go-scheduler)
 What does the Go runtime need with a scheduler?
 
 - The POSIX thread API is very much a logical extension to the existing Unix process model and as such, threads get a lot of the same controls as processes.
@@ -317,7 +326,17 @@ Contexts also periodically check the global runqueue for goroutines. Otherwise t
 
 This handling of syscalls is why Go programs run with multiple threads, even when GOMAXPROCS is 1. The runtime uses goroutines that call syscalls, leaving threads behind.
 
-# [Garbage Collection](https://www.youtube.com/watch?v=q4HoWwdZUHs)
+Goroutine 在 system call 和 channel call 时都可能发生阻塞,但这两种阻塞发生后,处理方式又不一样的.
+
+- 当程序发生 system call,M 会发生阻塞,同时唤起(或创建)一个新的 M 继续执行其他的 G.
+  If the Go code requires the M to block, for instance by invoking a system call, then another M will be woken up from the global queue of idle M's.
+  This is done to ensure that goroutines, still capable of running, are not blocked from running by the lack of an available M.[11]
+- 当程序发起一个 channel call,程序可能会阻塞,但不会阻塞 M,G 的状态会设置为 waiting,M 继续执行其他的 G.当 G 的调用完成,会有一个可用的 M 继续执行它.
+  If a goroutine makes a channel call, it may need to block, but there is no reason that the M running that G should be forced to block as well.
+  In a case such as this, the G's status is set to waiting and the M that was previously running it continues running other G's until the channel communication is complete.
+  At that point the G's status is set back to runnable and will be run as soon as there is an M capable of running it.
+
+## [Garbage Collection](https://www.youtube.com/watch?v=q4HoWwdZUHs)
 Responsibility
 
 - tracking memory allocation in heap memory
