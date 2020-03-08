@@ -256,7 +256,7 @@ There might be only one thread in a program with thousands of goroutines.
 Instread, goroutines are multiplexed dynamically onto threads as needed to keep all the goroutines running.
 But if you think of it as a very cheap thread, you won't be far off.
 
-# concurrency vs parallelism
+## concurrency vs parallelism
 并发是指程序的逻辑结构, 并行是指程序的运行状态.
 
 Concurrency is not parallelism, althouth it enables parallelism.
@@ -269,4 +269,33 @@ Usually
 
 - I/O Bound == Concurrency
 - CPU Bound == Parallelism
+
+# [Garbage Collection](https://www.youtube.com/watch?v=q4HoWwdZUHs)
+Responsibility
+
+- tracking memory allocation in heap memory
+- releasing allocations that are no longer needed
+- keeping allocation that are still in-use
+
+As of version 1.12, Go uses a non-generational, concurrent, tri-color, mark and sweep collector.
+
+Three phases of the gargage collector
+
+1. mark setup, STW(stop the world)
+  - When a collection starts, the first activity that must be berformed is turning on the Write Barrier.
+  - In order to turn the Write Barrier on, every application goroutine runing must be stopped
+  (all goroutines must find themself in a safe point, and right now, that safe point is only going to occur when we are inside of a function call, so now we are waiting function calls to happend).
+1. marking, concurrent
+  - Inspect the stacks to find root pointers to the heap
+  - Traverse the heap graph form those root pointers
+  - Mark values on the heap that are still in-use
+1. mark termination, STW
+  - Turn the Write Barrier off
+  - Various clean up tasks are performed
+  - Next collection goal is calculated
+
+Sweeping - Freeing heap memory
+
+- Occurs when Goroutines attemp to allocate new heap memory
+- The latency os Sweeping is added to the cost of performing an allocation, not GC.
 
