@@ -270,6 +270,53 @@ Usually
 - I/O Bound == Concurrency
 - CPU Bound == Parallelism
 
+# [scheduler](http://morsmachine.dk/go-scheduler)
+What does the Go runtime need with a scheduler?
+
+- The POSIX thread API is very much a logical extension to the existing Unix process model and as such, threads get a lot of the same controls as processes.
+  Threads have their own signal mask, can be assigned CPU affinity, can be put into cgroups and can be queried for which resources they use.
+  All these controls add overhead for features that are simply not needed for how Go programs use goroutines and they quickly add up when you have 100,000 threads in your program.
+- Another problem is that the OS can't make informed scheduling decisions, based on the Go model.
+  For example, the Go garbage collector requires that all threads are stopped when running a collection and that memory must be in a consistent state.
+  This involves waiting for running threads to reach a point where we know that the memory is consistent.
+  When you have many threads scheduled out at random points, chances are that you're going to have to wait for a lot of them to reach a consistent state.
+  The Go scheduler can make the decision of only scheduling at points where it knows that memory is consistent.
+  This means that when we stop for garbage collection, we only have to wait for the threads that are being actively run on a CPU core.
+
+GPM M:N scheduler
+
+- G: The circle represents a goroutine. It includes the stack, the instruction pointer and other information important for scheduling goroutines, like any channel it might be blocked on.
+- P: The rectangle represents a context for scheduling. You can look at it as a localized version of the scheduler which runs Go code on a single thread.
+  It's the important part that lets us go from a N:1 scheduler to a M:N scheduler. In the runtime code, it's called P for processor.
+- M: The triangle represents an OS thread
+
+<img src="./pics/go/GPM.png" alt="GPM model" width="70%"/>
+
+Here we see 2 threads (M), each holding a context (P), each running a goroutine (G).
+In order to run goroutines, a thread must hold a context.
+
+*Who you gonna (sys)call?*
+
+You might wonder now, why have contexts at all? Can't we just put the runqueues on the threads and get rid of contexts? Not really.
+The reason we have contexts is so that we can hand them off to other threads if the running thread needs to block for some reason.
+
+An example of when we need to block, is when we call into a syscall.
+Since a thread cannot both be executing code and be blocked on a syscall, we need to hand off the context so it can keep scheduling.
+
+<img src="./pics/go/syscall.png" alt="block on a syscall" width="70%"/>
+
+Here we see a thread giving up its context so that another thread can run it. The scheduler makes sure there are enough threads to run all contexts.
+M1 in the illustration above might be created just for the purpose of handling this syscall or it could come from a thread cache.
+The syscalling thread will hold on to the goroutine that made the syscall since it's technically still executing, albeit blocked in the OS.
+
+When the syscall returns, the thread must try and get a context in order to run the returning goroutine.
+The normal mode of operation is to steal a context from one of the other threads. If it can't steal one, it will put the goroutine on a global runqueue, put itself on the thread cache and go to sleep.
+
+The global runqueue is a runqueue that contexts pull from when they run out of their local runqueue.
+Contexts also periodically check the global runqueue for goroutines. Otherwise the goroutines on global runqueue could end up never running because of starvation.
+
+This handling of syscalls is why Go programs run with multiple threads, even when GOMAXPROCS is 1. The runtime uses goroutines that call syscalls, leaving threads behind.
+
 # [Garbage Collection](https://www.youtube.com/watch?v=q4HoWwdZUHs)
 Responsibility
 
