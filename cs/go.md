@@ -290,12 +290,12 @@ GPM M:N scheduler
   It's the important part that lets us go from a N:1 scheduler to a M:N scheduler. In the runtime code, it's called P for processor.
 - M: The triangle represents an OS thread
 
-<img src="./pics/go/GPM.png" alt="GPM model" width="70%"/>
+<img src="./pics/go/GPM.jpg" alt="GPM model" width="40%"/>
 
 Here we see 2 threads (M), each holding a context (P), each running a goroutine (G).
 In order to run goroutines, a thread must hold a context.
 
-*Who you gonna (sys)call?*
+**Who you gonna (sys)call?**
 
 You might wonder now, why have contexts at all? Can't we just put the runqueues on the threads and get rid of contexts? Not really.
 The reason we have contexts is so that we can hand them off to other threads if the running thread needs to block for some reason.
@@ -303,7 +303,7 @@ The reason we have contexts is so that we can hand them off to other threads if 
 An example of when we need to block, is when we call into a syscall.
 Since a thread cannot both be executing code and be blocked on a syscall, we need to hand off the context so it can keep scheduling.
 
-<img src="./pics/go/syscall.png" alt="block on a syscall" width="70%"/>
+<img src="./pics/go/syscall.jpg" alt="block on a syscall" width="50%"/>
 
 Here we see a thread giving up its context so that another thread can run it. The scheduler makes sure there are enough threads to run all contexts.
 M1 in the illustration above might be created just for the purpose of handling this syscall or it could come from a thread cache.
