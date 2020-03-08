@@ -104,11 +104,11 @@ The full array will be kept in memory until it is no longer referenced. Occasion
 To fix this problem one can copy the interesting data to a new slice before returning it:
 ```go
 func CopyDigits(filename string) []byte {
-    b, _ := ioutil.ReadFile(filename)
-    b = digitRegexp.Find(b)
-    c := make([]byte, len(b))
-    copy(c, b)
-    return c
+  b, _ := ioutil.ReadFile(filename)
+  b = digitRegexp.Find(b)
+  c := make([]byte, len(b))
+  copy(c, b)
+  return c
 }
 ```
 
