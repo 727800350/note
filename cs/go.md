@@ -16,7 +16,7 @@ Formatted printing in Go uses a style similar to C's printf family but is richer
 - `%q`: That quoted string format is also available through %q when applied to a value of type string or []byte. The alternate format %#q will use backquotes instead if possible.
   (The %q format also applies to integers and runes, producing a single-quoted rune constant.)
 - `%x`: works on strings, byte arrays and byte slices as well as on integers, generating a long hexadecimal string, and with a space in the format (`% x`) it puts spaces between the bytes.
-- `%T`: prints the type of a value.
+- `%T`: prints the type(actually dynamic type) of a value.
 
 when you pass a value to the fmt.Print function, it checks to see if it implements the fmt.Stringer interface
 ```go
@@ -152,20 +152,6 @@ select {
 }
 ```
 
-## [interface](https://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go)
-The `interface{}` type, the empty interface, is the source of much confusion. The interface{} type is the interface that has no methods.
-Since there is no implements keyword, all types implement at least zero methods, and satisfying an interface is done automatically, all types satisfy the empty interface.
-That means that if you write a function that takes an interface{} value as a parameter, you can supply that function with any value. So, this function:
-```go
-func DoSomething(v interface{}) {
-   // ...
-}
-```
-will accept any parameter.
-
-An interface value is constructed of two words of data;
-one word is used to point to a method table for the value's underlying type, and the other word is used to point to the actual data being held by that value.
-
 ## 类型转换
 表达式 T(v) 将值 v 转换为类型 T .
 与 C 不同的是 Go 的在不同类型之间的项目赋值时需要显式转换.
@@ -194,6 +180,60 @@ The built-in function `make(T, args)` serves a purpose different from `new(T)`. 
 The reason for the distinction is that these three types represent, under the covers, references to data structures that must be initialized before use.
 A slice, for example, is a three-item descriptor containing a pointer to the data (inside an array), the length, and the capacity, and until those items are initialized, the slice is nil.
 For slices, maps, and channels, make initializes the internal data structure and prepares the value for use.
+
+# [interface](https://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go)
+## `interface{}`
+The `interface{}` type, the empty interface, is the source of much confusion. The `interface{}` type is the interface that has no methods.
+So all types satisfy the empty interface.
+That means that if you write a function that takes an interface{} value as a parameter, you can supply that function with any value. So, this function:
+```go
+func DoSomething(v interface{}) {
+   // ...
+}
+```
+will accept any parameter.
+
+An interface value is constructed of two words of data;
+one word is used to point to a method table for the value's underlying type, and the other word is used to point to the actual data being held by that value.
+
+static type and dynamic type
+```go
+var foo interface{}  // foo is of static type interface{}
+
+foo {
+  value: nil
+  type: nil
+}
+
+// foo is of dynamic type float64
+foo = 3.14
+foo {
+  value: 3.14
+  type: float64
+}
+
+// foo is of dynamic type *Person
+foo = &Person{}
+foo {
+  value: 0x11face04
+  type: *Person
+}
+```
+
+## type switch
+```go
+func Println(x interface{}) {
+  switch x.(type) {
+  case bool:
+    fmt.Println(x.(bool))
+  case int:
+    fmt.Println(x.(int))
+  default:
+    fmt.Println("unkown type")
+  }
+}
+```
+the clause `x.(type)` is only valid in type switch
 
 # function
 函数也是值.
