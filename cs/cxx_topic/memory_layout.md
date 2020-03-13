@@ -1,9 +1,48 @@
 ### 内存分区
-- 栈区(stack): 由编译器自动分配释放 ,存放函数的参数值,局部变量的值等.
+我们知道知道在UNIX操作系统中,一个C语言文件经过预处理(cpp),编译(cc1),汇编(as)和链接(ld)后可以得到可执行文件a.out.
+我们可以用size命令(或nm, dump)检查可执行文件,它会告诉你这个文件中的三个段(文本段.text, 数据段.data, .bss段)的大小.
+
+- text segment: 通常是指用来存放程序执行代码的一块内存区域.这部分区域的大小在程序运行前就已经确定,并且内存区域通常属于只读.在代码段中,也有可能包含一些只读的常数变量,例如字符串常量等.
+- data segment: 通常是指用来存放程序中**已初始化的全局变量和静态变量**的一块内存区域, 属于静态内存分配.
+- bbs segment: 通常是指用来存放程序中**未初始化的全局变量和静态变量**的一块内存区域, 紧跟在data segment 之后. 属于静态内存分配.
+  - 当这个内存区进入程序的地址空间后全部清零,通常是memset全部置0.
+  - 在Programming ground up里对.bss的解释为: There is another section called the .bss. This section is like the data section, except that it doesn't take up space in the executable.
+
+通常把data segment 和bbs segment 统一称为数据区.上面这些内容可以通过size命令很直观的查看与验证.
+
+```C
+// main.c data segment
+int array[30000] = {1, 2, 3, 4, 5, 6};
+void main() {}
+```
+```
+[root@dev:code]$ ll -trh a.out
+-rwxr-xr-x 1 root root 126K Mar 13 07:38 a.out
+[root@dev:code]$ size a.out
+   text	   data	    bss	    dec	    hex	filename
+   1367	 120560	      8	 121935	  1dc4f	a.out
+```
+
+```C
+// main.c bbs segment
+int array[30000];
+void main() {}
+```
+```
+[root@dev:code]$ ll -trh a.out
+-rwxr-xr-x 1 root root 8.0K Mar 13 07:33 a.out
+[root@dev:code]$ size a.out
+   text	   data	    bss	    dec	    hex	filename
+   1367	    544	 120032	 121943	  1dc57	a.out
+[root@dev:code]$
+```
+
+除了上面提到的程序指令, 全局和静态变量, 我们还有局部变量等数据需要存储.这就引出了堆栈段(stack)和堆空间(heap).
+
+- 栈区(stack): 由编译器自动分配释放, 存放函数的参数值, 局部变量的值等.
 - 堆区(heap): 一般由程序员分配释放, 若程序员不释放,程序结束时可能由os回收 .注意它与数据结构中的堆是两回事,分配方式倒是类似于链表.
-- 全局区(静态区): 全局变量和静态变量的存储是放在一块的,初始化的全局变量和静态变量在一块区域, 未初始化的全局变量和未初始化的静态变量在相邻的另一块区域.程序结束后有系统释放.
-- 文字常量区: 常量字符串就是放在这里的. 程序结束后由系统释放.
-- 程序代码区: 存放函数体的二进制代码.
+
+栈,是向下生长的,而堆是向上生长的,正好形成一个闭区间.
 
 `std::vector v;` 中只有对象v本身是在栈上的,它所管理的数据(这些数据大多数时候都会远大于其本身的大小)还是保存在堆上.
 
