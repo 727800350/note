@@ -182,6 +182,8 @@ A slice, for example, is a three-item descriptor containing a pointer to the dat
 For slices, maps, and channels, make initializes the internal data structure and prepares the value for use.
 
 # [interface](https://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go)
+**duck typing**: When I see a bird that walks like a duck and swins like a duck and quacks like a duck, I call that bird a duck. – James Whitcomb Riley
+
 ## `interface{}`
 The `interface{}` type, the empty interface, is the source of much confusion. The `interface{}` type is the interface that has no methods.
 So all types satisfy the empty interface.
