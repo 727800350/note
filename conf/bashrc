@@ -49,6 +49,7 @@ alias br="blade run"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
 ## go
+export PATH=$PATH:"/usr/local/go/bin"
 export GOPATH="${HOME}/opt/go"
 export PATH="$PATH:$GOPATH/bin"
 export GO111MODULE=on
@@ -56,7 +57,7 @@ export GOPROXY="https://goproxy.io"
 
 ## java
 export JAVA_HOME="$HOME/opt/jdk"
-export PATH="$HOME/opt/jdk/bin":$PATH
+export PATH=$PATH:"$HOME/opt/jdk/bin"
 
 # enterprise
 export PATH="$PATH:$HOME/.ft"
