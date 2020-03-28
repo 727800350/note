@@ -7,7 +7,7 @@
     "key": "ctrl+g",
     "command": "-workbench.action.gotoLine"
   },
-	{
+  {
     "key": "ctrl+[",
     "command": "workbench.action.navigateBack"
   },
