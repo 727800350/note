@@ -23,10 +23,6 @@ fi
 export PATH=$PATH:/usr/local/sbin
 export PATH=$PATH:${HOME}/git/note/bin
 export PATH=$PATH:${HOME}/bin
-if [ -d /data/gcc-8.2.0/bin ]
-then
-  export PATH=/data/gcc-8.2.0/bin:$PATH
-fi
 
 ulimit -c unlimited
 
@@ -49,7 +45,6 @@ alias br="blade run"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
 ## go
-export PATH=$PATH:"/usr/local/go/bin"
 export GOPATH="${HOME}/opt/go"
 export PATH="$PATH:$GOPATH/bin"
 export GO111MODULE=on
@@ -60,7 +55,9 @@ export JAVA_HOME="$HOME/opt/jdk"
 export PATH=$PATH:"$HOME/opt/jdk/bin"
 
 # enterprise
-export PATH="$PATH:$HOME/.ft"
+if [ ~/.bashrc_enterprise ]; then
+  source ~/.bashrc_enterprise
+fi
 
 # udf
 ## docker
