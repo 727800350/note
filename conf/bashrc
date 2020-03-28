@@ -55,7 +55,7 @@ export JAVA_HOME="$HOME/opt/jdk"
 export PATH=$PATH:"$HOME/opt/jdk/bin"
 
 # enterprise
-if [ ~/.bashrc_enterprise ]; then
+if [ -f ~/.bashrc_enterprise ]; then
   source ~/.bashrc_enterprise
 fi
 
