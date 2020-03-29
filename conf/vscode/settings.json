@@ -1,6 +1,7 @@
 {
     "editor.suggestSelection": "first",
     "editor.tabSize": 2,
+    "go.autocompleteUnimportedPackages": true,
     "go.formatTool": "goimports",
     "go.useLanguageServer": true,
     "remote.SSH.showLoginTerminal": true,
