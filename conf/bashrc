@@ -45,8 +45,10 @@ alias br="blade run"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
 ## go
-export GOROOT="${HOME}/opt/go"
-export PATH="$PATH:$GOROOT/bin"
+if [ "x$os" == "xlinux" ]; then
+  export GOROOT="${HOME}/opt/go"
+  export PATH="$PATH:$GOROOT/bin"
+fi
 export GOPATH="${HOME}/go"
 export PATH="$PATH:$GOPATH/bin"
 export GO111MODULE=on
