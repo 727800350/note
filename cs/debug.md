@@ -2,10 +2,17 @@
 - `lsof -p pid` 可以看到这个进程打开的所有文件, 如果文件被其他进程删除, 会有一个删除的标记
 
 # perf
-1. `perf record -t tid -g`: record thread tid's profile into perf.data
+- `perf record -g -t tid`: record thread tid's profile into perf.data
   - `-g`: means doing call-graph (stack chain/backtrace) recording
-  - `-p`: pid
-1. `perf report`: read perf.data (created by perf record) and display the profile
+  - `-t`: thread id
+  - `-p`: process id
+  - `-o`: output file name, default perf.data
+- `perf report`: read perf.data(created by perf record) and display the profile
+  - `-i`: 指定文件
+- `perf diff [oldfile] [newfile]`
+
+- `gstack pid`: print a stack trace of a running process.
+  当进程卡住时, 可以用这个命令来看他的各个线程的堆栈信息, 然后推断是哪个线程造成卡住.
 
 # gdb
 - `bt`: Show stack frames, useful to find the calling sequence that produced a crash.
