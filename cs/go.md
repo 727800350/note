@@ -333,6 +333,20 @@ The behavior of defer statements is straightforward and predictable. There are t
   }
   ```
 
+# error
+The error type is an interface type. An error variable represents any value that can describe itself as a string. Here is the interface's declaration:
+```go
+type error interface {
+  Error() string
+}
+```
+a useful function is the fmt package's Errorf. It formats a string according to Printf's rules and returns it as an error created by errors.New.
+```go
+if f < 0 {
+  return 0, fmt.Errorf("math: square root of negative number %g", f)
+}
+```
+
 # goroutine
 goroutine 是由 Go 运行时环境管理的轻量级线程.
 the functionality is analogous to the & on the end of a shell command
