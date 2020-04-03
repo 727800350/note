@@ -10,7 +10,7 @@
 
 
 - the @latest suffix will use the latest git tag of gopls.
-- 运行go get如果有版本的更改，那么go.mod文件也会更改
+- 运行go get如果有版本的更改,那么go.mod文件也会更改
 
 # go mod
 Using Go 1.13, GO111MODULE's default (auto) changes:
@@ -29,7 +29,7 @@ Otherwise, it will update all the dependencies to their latest minor revision. A
 when you want to hack one of your dependencies, for example for testing purposes.
 
 1. Solution 1: use go mod vendor + go build -mod=vendor.
-  That will force go to use the vendor/ files instead of using the $GOPATH/pkg/mod ones. This option also solves the problem of vim and VSCode not opening the right version of a package’s file.
+  That will force go to use the vendor/ files instead of using the $GOPATH/pkg/mod ones. This option also solves the problem of vim and VSCode not opening the right version of a package's file.
 1. Solution 2: add a 'replace' line at the end of your go.mod:
   ```
   use replace github.com/maelvls/beers => ../beers
@@ -37,13 +37,24 @@ when you want to hack one of your dependencies, for example for testing purposes
   where ../beers is a local copy I made of the dependency I want to inspect and hack.
 
 使用replace替换无法直接获取的package
-由于某些已知的原因，并不是所有的package都能成功下载，比如：golang.org(这个下面可以使用GOPROXY 环境变量)下的包。
-modules 可以通过在 go.mod 文件中使用 replace 指令替换成github上对应的库，比如：
+由于某些已知的原因,并不是所有的package都能成功下载,比如:golang.org(这个下面可以使用GOPROXY 环境变量)下的包.
+modules 可以通过在 go.mod 文件中使用 replace 指令替换成github上对应的库,比如:
 ```
 replace (
   golang.org/x/crypto v0.0.0-20190313024323-a1f597ede03a => github.com/golang/crypto v0.0.0-20190313024323-a1f597ede03a
 )
 ```
+
+# go vendor
+govender 是对Golang的包依赖管理的一个插件,该工具将项目依赖的外部包拷贝到项目下的 vendor 目录下,并通过 vendor.json 文件来记录依赖包的版本,方便用户使用相对稳定的依赖.
+
+安装govendor
+```bash
+go get -u github.com/kardianos/govendor
+```
+
+- `govendor add`: Add packages from $GOPATH
+- `govendor fetch`: Add new or update vendor folder packages from remote repository
 
 # go 的版本号
 v0 is a compatibility-free zone
