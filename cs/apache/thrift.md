@@ -1,0 +1,3 @@
+- required: must exist on read, must be set on write
+- optional: may or may not be set, entirely optional
+- default: may not exist on read, always written (unless it is a null pointer)
