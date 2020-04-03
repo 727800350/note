@@ -115,6 +115,25 @@ func CopyDigits(filename string) []byte {
 ### map
 可以比较的数据类型才能作为一个map的键,所以map的键都是基本类型.
 
+### struct
+The key point is that Go gives the programmer tools to limit allocation by controlling the layout of data structures. Consider this simple type definition of a data structure containing a buffer (array) of bytes:
+```go
+type X struct {
+  a, b, c int
+  buf [256]byte
+}
+```
+In Java, the buf field would require a second allocation and accesses to it a second level of indirection.
+In Go, however, the buffer is allocated in a single block of memory along with the containing struct and no indirection is required.
+For systems programming, this design can have a better performance as well as reducing the number of items known to the collector. At scale it can make a significant difference.
+
+To give the programmer this flexibility, Go must support what we call interior pointers to objects allocated in the heap.
+The X.buf field in the example above lives within the struct but it is legal to capture the address of this inner field, for instance to pass it to an I/O routine.
+In Java, as in many garbage-collected languages, it is not possible to construct an interior pointer like this, but in Go it is idiomatic.
+This design point affects which collection algorithms can be used, and may make them more difficult, but after careful thought we decided that it was necessary to allow interior pointers
+because of the benefits to the programmer and the ability to reduce pressure on the (perhaps harder to implement) collector.
+So far, our experience comparing similar Go and Java programs shows that use of interior pointers can have a significant effect on total arena size, latency, and collection times.
+
 ### channel
 Do not communicate by sharing memory, share memory by communicating.
 
@@ -180,62 +199,6 @@ The built-in function `make(T, args)` serves a purpose different from `new(T)`. 
 The reason for the distinction is that these three types represent, under the covers, references to data structures that must be initialized before use.
 A slice, for example, is a three-item descriptor containing a pointer to the data (inside an array), the length, and the capacity, and until those items are initialized, the slice is nil.
 For slices, maps, and channels, make initializes the internal data structure and prepares the value for use.
-
-# [interface](https://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go)
-**duck typing**: When I see a bird that walks like a duck and swins like a duck and quacks like a duck, I call that bird a duck. – James Whitcomb Riley
-
-## `interface{}`
-The `interface{}` type, the empty interface, is the source of much confusion. The `interface{}` type is the interface that has no methods.
-So all types satisfy the empty interface.
-That means that if you write a function that takes an interface{} value as a parameter, you can supply that function with any value. So, this function:
-```go
-func DoSomething(v interface{}) {
-   // ...
-}
-```
-will accept any parameter.
-
-An interface value is constructed of two words of data;
-one word is used to point to a method table for the value's underlying type, and the other word is used to point to the actual data being held by that value.
-
-static type and dynamic type
-```go
-var foo interface{}  // foo is of static type interface{}
-
-foo {
-  value: nil
-  type: nil
-}
-
-// foo is of dynamic type float64
-foo = 3.14
-foo {
-  value: 3.14
-  type: float64
-}
-
-// foo is of dynamic type *Person
-foo = &Person{}
-foo {
-  value: 0x11face04
-  type: *Person
-}
-```
-
-## type switch
-```go
-func Println(x interface{}) {
-  switch x.(type) {
-  case bool:
-    fmt.Println(x.(bool))
-  case int:
-    fmt.Println(x.(int))
-  default:
-    fmt.Println("unkown type")
-  }
-}
-```
-the clause `x.(type)` is only valid in type switch
 
 # function
 函数也是值.

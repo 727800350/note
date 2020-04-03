@@ -20,6 +20,10 @@ It has its own call stack, which grows and shrinks as required.
 
 It's very cheap. It's practical to have thousands, even hundreds of thousands of goroutines.
 
+To make the stacks small, Go's run-time uses resizable, bounded stacks.
+A newly minted goroutine is given a few kilobytes, which is almost always enough.
+When it isn't, the run-time grows (and shrinks) the memory for storing the stack automatically, allowing many goroutines to live in a modest amount of memory.
+
 It's not a thread.
 
 There might be only one thread in a program with thousands of goroutines.
@@ -105,6 +109,7 @@ Responsibility
 - keeping allocation that are still in-use
 
 As of version 1.12, Go uses a non-generational, concurrent, tri-color, mark and sweep collector.
+If the machine is a multiprocessor, the collector runs on a separate CPU core in parallel with the main program.
 
 Three phases of the gargage collector
 
@@ -126,7 +131,8 @@ Sweeping - Freeing heap memory
 - Occurs when Goroutines attemp to allocate new heap memory
 - The latency os Sweeping is added to the cost of performing an allocation, not GC.
 
-# Dependencies in Go and compilation speed
+# compile
+## dependencies in Go and compilation speed
 ```go
 import "B"
 ```
@@ -135,4 +141,10 @@ when B is compiled, the generated object file includes type information for all 
 This design has the important effect that when the compiler executes an import clause, it opens exactly one file, the object file identified by the string in the import clause.
 
 To make compilation even more efficient, the object file is arranged so the export data is the first thing in the file, so the compiler can stop reading as soon as it reaches the end of that section.
+
+## compiler implementation
+There are three Go compiler implementations supported by the Go team.
+These are gc, the default compiler, gccgo, which uses the GCC back end, and a somewhat less mature gollvm, which uses the LLVM infrastructure.
+Gc uses a different calling convention and linker from C and therefore cannot be called directly from C programs, or vice versa.
+The cgo program provides the mechanism for a "foreign function interface" to allow safe calling of C libraries from Go code. SWIG extends this capability to C++ libraries.
 
