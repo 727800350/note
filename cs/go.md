@@ -281,6 +281,58 @@ func main() {
 但是,不能对来自其他包的类型或基础类型定义方法.
 [demo](../demo/go/method_for_MyFloat64.go)
 
+# defer
+The behavior of defer statements is straightforward and predictable. There are three simple rules:
+
+1. A deferred function's arguments are evaluated when the defer statement is evaluated.
+  ```go
+  // the expression "i" is evaluated when the Println call is deferred.
+  // the deferred call will print "0" after the function returns.
+  func a() {
+    i := 0
+    defer fmt.Println(i)
+    i++
+    return
+  }
+  ```
+1. Deferred function calls are executed in Last In First Out order after the surrounding function returns.
+  ```go
+  // prints "3210":
+  func b() {
+    for i := 0; i < 4; i++ {
+      defer fmt.Print(i)
+    }
+  }
+  ```
+1. Deferred functions may read and assign to the returning function's named return values.
+   [return xxx这一条语句并不是一条原子指令](https://tiancaiamao.gitbooks.io/go-internals/content/zh/03.4.html)
+   用一个简单的转换规则改写一下,就不会迷糊了.改写规则是将return语句拆成两句写,return xxx会被改写成:
+  ```
+  返回值 = xxx
+  调用defer函数
+  空的return
+  ```
+  因此
+
+  ```go
+  func f() (result int) {
+    defer func() {
+      result++
+    }()
+    return 0
+  }
+  ```
+  实际执行的时候, 相当于
+  ```go
+  func f() (result int) {
+    result = 0  // return语句不是一条原子调用,return xxx其实是赋值＋ret指令
+    func() {  // defer被插入到return之前执行,也就是赋返回值和ret指令之间
+      result++
+    }()
+    return
+  }
+  ```
+
 # goroutine
 goroutine 是由 Go 运行时环境管理的轻量级线程.
 the functionality is analogous to the & on the end of a shell command
@@ -394,7 +446,7 @@ Three phases of the gargage collector
 1. mark setup, STW(stop the world)
   - When a collection starts, the first activity that must be berformed is turning on the Write Barrier.
   - In order to turn the Write Barrier on, every application goroutine runing must be stopped
-  (all goroutines must find themself in a safe point, and right now, that safe point is only going to occur when we are inside of a function call, so now we are waiting function calls to happend).
+    (all goroutines must find themself in a safe point, and right now, that safe point is only going to occur when we are inside of a function call, so now we are waiting function calls to happend).
 1. marking, concurrent
   - Inspect the stacks to find root pointers to the heap
   - Traverse the heap graph form those root pointers
