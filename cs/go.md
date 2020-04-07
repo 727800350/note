@@ -71,6 +71,20 @@ The array underlying a string is hidden from view; there is no way to access its
 That means that when we do either of these conversions, a copy of the array must be made. Go takes care of this, of course, so you don't have to.
 After either of these conversions, modifications to the array underlying the byte slice don't affect the corresponding string.
 
+字符串和字节数组有密切关系,我们可以轻易的将它们转换成对方:
+```go
+stra := "the spice must flow"
+byts := []byte(stra)
+strb := string(byts)
+```
+在你使用[]byte(X)或者string(X)时务必注意,你创建的是数据的拷贝.这是由于字符串的不可变性.
+
+当字符串有由unicode字符码runes组成时.如果你计算字符串的长度时,可能得到的结果和你期待的不同.下面结果是输出3:
+```go
+fmt.Println(len("�"))
+```
+如果你通过range遍历一个字符串,你将得到runes,而不是bytes.当然,当你将一个字符串转换成一个[]byte时,你将得到正确的数据.
+
 ## 引用类型
 - slice
 - map
