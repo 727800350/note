@@ -1,4 +1,5 @@
 # docker
+[Docker — 从入门到实践](https://yeasy.gitbooks.io/docker_practice)
 ## intro
 build once, configure once and run anywhere
 
@@ -30,16 +31,15 @@ options:
 
 - -i: 交互模式, Keep STDIN open even if not attached
 - -t: 分配一个tty
-- -p 选项用于设置虚拟机的端口,让我们可以在本地访问Jupyter notebook服务器.
+- -p <宿主端口>:<容器端口> 设置端口映射
 - -d 选项用于以detached模式运行容器,也就是作为背景进程运行.
 - -v 选项让我们指定在本地机器中使用哪个文件夹存储notebook.通过这种方式可以在container 与 host 之间传输文件
-- --device=[]: Add a host device to the container (e.g. --device=/dev/sdc:/dev/xvdc:rwm)
 - -e|--env[=[]]: Set environment variables
 - --env-file[=[]]: Read in a line delimited file of environment variables
 - -h|--host‐name[=HOSTNAME]: set hostname
 - --name[=NAME]: 这个最好设置, 之后操作container 的时候都可以通过这个名字来指定, 而不用使用不便于记忆的 UUID
 - --mac-address[=MAC-ADDRESS]
-- --volumes-from[=[]]: 从其他container(不需要启动) 到获取挂载目录
+- --volumes-from[=[]]: 从其他container(不需要启动) 获取挂载目录
 - --rm=true|false: Automatically remove the container when it exits (incompatible with -d). The default is false.
 - -w:  The default working directory for running binaries within a container is the root directory (/), 可以指定任意一个目录, container 启动的时候会自动创建这个目录
 
@@ -66,6 +66,10 @@ The operator can identify a container in three ways:
 ## image
 - `docker rmi image_id`: 删除image
 - docker diff 它可以列出容器内发生变化的文件和目录.这些变化包括添加(A-add),删除(D-delete),修改(C-change).
+
+## dockerfile
+EXPOSE 指令是声明运行时容器提供服务端口,这只是一个声明,在运行时并不会因为这个声明应用就会开启这个端口的服务.
+在 Dockerfile 中写入这样的声明有两个好处,一个是帮助镜像使用者理解这个镜像服务的守护端口,以方便配置映射,另一个用处则是在运行时使用随机端口映射时,也就是 docker run -P 时,会自动随机映射 EXPOSE 的端口.
 
 ### 下载镜像
 在本地 docker 环境中输入以下命令,就可以pull一个镜像到本地了.                    
