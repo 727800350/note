@@ -4,7 +4,7 @@ a.out
 .DS_Store
 ._.DS_Store
 *.dSYM
-conf/.vim/.netrwhist
+conf/vim/.netrwhist
 
 ## tex
 *.aux

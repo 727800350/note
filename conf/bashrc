@@ -19,6 +19,7 @@ then
 else
   os="linux"
 fi
+export os=$os
 
 export PATH=$PATH:/sbin
 export PATH=$PATH:/usr/local/sbin
