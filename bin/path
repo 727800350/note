@@ -11,7 +11,7 @@ shift 1
 list=$@
 
 host=`hostname`
-host=`ifconfig eth1 | awk '{print $2}' | awk -F ":" '{print $NF}'`
+host=`ifconfig eth0 | awk '{print $2}' | awk -F ":" '{print $NF}'`
 
 if [ "x$method" = "xlocal" ]
 then
