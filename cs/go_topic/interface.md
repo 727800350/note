@@ -17,6 +17,10 @@ An interface value is constructed of two words of data;
 - one word is used to point to a method table for the value's underlying type, that is the dynamic type
 - and the other word is used to point to the actual data being held by that value.
 
+Copying an interface value makes a copy of the thing stored in the interface value.
+If the interface value holds a struct, copying the interface value makes a copy of the struct.
+If the interface value holds a pointer, copying the interface value makes a copy of the pointer, but again not the data it points to.
+
 # static type and dynamic type
 ```go
 var foo interface{}  // foo is of static type interface{}
