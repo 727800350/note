@@ -6,6 +6,7 @@
     "go.formatTool": "goimports",
     "go.useLanguageServer": true,
     "remote.SSH.showLoginTerminal": true,
+    "vsicons.dontShowNewVersionMessage": true,
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "window.nativeTabs": true,
     "workbench.editor.enablePreview": false,
