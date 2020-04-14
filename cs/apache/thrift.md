@@ -2,6 +2,11 @@
 - optional: may or may not be set, entirely optional
 - default: may not exist on read, always written (unless it is a null pointer)
 
+```bash
+thrift -r --gen go tutorial.thrift
+thrift -r --gen cpp tutorial.thrift
+```
+
 # type
 thrift type vs C++ type
 ```c++
