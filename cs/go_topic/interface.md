@@ -100,3 +100,25 @@ for i, v := range t {
 }
 ```
 
+# nil
+[Why is nil not equal to nil in this example?](https://yourbasic.org/golang/gotcha-why-nil-error-not-equal-nil)
+```go
+func Foo() error {
+  var err *os.PathError = nil
+  // …
+  return err
+}
+
+func main() {
+  err := Foo()
+  fmt.Println(err)        // <nil>
+  fmt.Println(err == nil) // false
+}
+```
+An interface value is equal to nil only if both its dynamic type and value are nil. In the example above, Foo() returns `[*os.PathError, nil]` and we compare it with `[nil, nil]`.
+
+If we convert nil to the correct type, the values are indeed equal.
+```go
+fmt.Println(err == (*os.PathError)(nil)) // true
+```
+
