@@ -1,4 +1,14 @@
-# go get 升级
+# go tool
+## go doc
+- `go doc fmt`: 查看fmt 包的doc
+- `go doc fmt Fprintf`: 查看 fmt 包中Fprintf 的doc
+- `godoc -http :6060` 在localhost:6060 查看本地所有的doc
+
+## go vet
+Vet examines Go source code and reports suspicious constructs, such as Printf calls whose arguments do not align with the format string.
+Vet uses heuristics that do not guarantee all reports are genuine problems
+
+## go get 升级
 - go get
   - if the latest A requires module B v1.2.3, while B v1.2.4 and v1.3.1 are also available, then `go get A` will use the latest A but then use B v1.2.3, as requested by A.
 - go get -u: 将会升级到最新的次要版本或者修订版本(x.y.z, z是修订版本号, y是次要版本号)
@@ -12,7 +22,7 @@
 - the @latest suffix will use the latest git tag of gopls.
 - 运行go get如果有版本的更改,那么go.mod文件也会更改
 
-# go mod
+## go mod
 Using Go 1.13, GO111MODULE's default (auto) changes:
 
 - behaves like GO111MODULE=on anywhere there is a go.mod OR anywhere outside the GOPATH even if there is no go.mod. So you can keep all your repositories in your GOPATH with Go 1.13.
@@ -45,7 +55,7 @@ replace (
 )
 ```
 
-# go vendor
+## go vendor
 govender 是对Golang的包依赖管理的一个插件,该工具将项目依赖的外部包拷贝到项目下的 vendor 目录下,并通过 vendor.json 文件来记录依赖包的版本,方便用户使用相对稳定的依赖.
 
 安装govendor
@@ -56,7 +66,27 @@ go get -u github.com/kardianos/govendor
 - `govendor add`: Add packages from $GOPATH
 - `govendor fetch`: Add new or update vendor folder packages from remote repository
 
-# go 的版本号
+# go tool options
+-toolexec: add a prefix to every command it runs
+```bash
+% go build -toolexec=... github.com/pkg/profile
+% go test -toolexec=... net/http
+```
+
+-x that shows each command the go tool invokes
+```bash
+% go build -x fmt
+WORK=/var/folders/lv/028ssy8n19v56_k2q43kkb5r0000gn/T/go-build339335935
+mkdir -p $WORK/fmt/_obj/
+mkdir -p $WORK/
+cd /Users/dfc/go/src/fmt
+/Users/dfc/go/pkg/tool/darwin_amd64/compile -o $WORK/fmt.a -trimpath $WORK -p fmt -complete -buildi
+```
+
+# env
+- `GOOS=windows go build`: 生成exe 文件
+
+## go 的版本号
 v0 is a compatibility-free zone
 
 v2.3.4 semantic versioning

@@ -1,20 +1,3 @@
-# go tool
--toolexec: add a prefix to every command it runs
-```bash
-% go build -toolexec=... github.com/pkg/profile
-% go test -toolexec=... net/http
-```
-
--x that shows each command the go tool invokes
-```bash
-% go build -x fmt
-WORK=/var/folders/lv/028ssy8n19v56_k2q43kkb5r0000gn/T/go-build339335935
-mkdir -p $WORK/fmt/_obj/
-mkdir -p $WORK/
-cd /Users/dfc/go/src/fmt
-/Users/dfc/go/pkg/tool/darwin_amd64/compile -o $WORK/fmt.a -trimpath $WORK -p fmt -complete -buildi
-```
-
 # go debug
 The Go runtime collects various statistics during the life of your program.
 These stats are always collected, but normally supressed, you can enable their display by setting the GODEBUG environment variable.
