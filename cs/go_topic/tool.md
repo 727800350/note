@@ -1,4 +1,6 @@
 # go tool
+[Go Tooling in Action](https://www.youtube.com/watch?v=uBjoTxosSys)
+
 ## go doc
 - `go doc fmt`: 查看fmt 包的doc
 - `go doc fmt Fprintf`: 查看 fmt 包中Fprintf 的doc
