@@ -10,13 +10,7 @@ method=$1
 shift 1
 list=$@
 
-if [ "x$os" == "xmac" ]
-then
-  host=`ifconfig en0 | awk '{print $2}' | awk -F ":" '{print $NF}'`
-else
-  host=`ifconfig eth0 | awk '{print $2}' | awk -F ":" '{print $NF}'`
-fi
-
+host=$ip
 if [ "x$method" = "xlocal" ]
 then
   for target in $list

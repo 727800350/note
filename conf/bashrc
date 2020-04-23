@@ -15,11 +15,12 @@ user=`whoami`
 uname -a | grep Darwin 1>/dev/null 2>&1
 if [ $? -eq 0 ]
 then
-  os="mac"
+  export os="mac"
+  export ip=`ifconfig en0 | grep inet | grep -v inet6 | awk '{print $2}'`
 else
-  os="linux"
+  export os="linux"
+  export ip=`ifconfig eth0 | grep inet | grep -v inet6 | awk '{print $2}'`
 fi
-export os=$os
 
 export PATH=$PATH:/sbin
 export PATH=$PATH:/usr/local/sbin
@@ -38,6 +39,8 @@ then
 else
   alias ls="ls --color=auto"
 fi
+
+export no_proxy="localhost,127.0.0.1,$ip"
 
 # blade
 export BLADE_AUTO_UPGRADE="no"
