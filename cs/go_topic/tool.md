@@ -3,7 +3,8 @@
 
 ## go doc
 - `go doc fmt`: 查看fmt 包的doc
-- `go doc fmt Fprintf`: 查看 fmt 包中Fprintf 的doc
+- `go doc fmt.Fprintf`: 查看 fmt 包中Fprintf 的doc
+- `go doc -src fmt.Fprintf`: 查看 fmt 包中Fprintf 的源码
 - `godoc -http :6060` 在localhost:6060 查看本地所有的doc
 
 ## go vet
