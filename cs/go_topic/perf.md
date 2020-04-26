@@ -11,9 +11,9 @@ $ GODEBUG=gctrace=1 ./myserver
 ```
 
 # pprof
-[Golang UK Conference 2016 - Dave Cheney - Seven ways to Profile Go Applications](https://www.youtube.com/watch?v=zzAdEt3xZ1M)
-[Seven ways to profile a Go program](https://talks.godoc.org/github.com/davecheney/presentations/seven.slide)
-[Debugging performance issues in Go programs](https://software.intel.com/en-us/blogs/2014/05/10/debugging-performance-issues-in-go-programs)
+- [youtube Golang UK Conference 2016 - Dave Cheney - Seven ways to Profile Go Applications](https://www.youtube.com/watch?v=zzAdEt3xZ1M)
+- [Seven ways to profile a Go program](https://talks.godoc.org/github.com/davecheney/presentations/seven.slide)
+- [Debugging performance issues in Go programs](https://software.intel.com/en-us/blogs/2014/05/10/debugging-performance-issues-in-go-programs)
 
 A profiler runs your program and configures the operating system to interrupt it at regular intervals.
 This is done by sending SIGPROF to the program being profiled, which suspends and transfers execution to the profiler.
