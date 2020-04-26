@@ -189,6 +189,7 @@ func main() {
 If your program runs a webserver you can enable debugging over http.
 ```go
 import _ "net/http/pprof"
+// init函数会启动一个异步协程采集该进程实例的资源占用情况,并以http服务接口方式提供给用户查询
 
 func main() {
   log.Println(http.ListenAndServe("localhost:3999", nil))
