@@ -34,7 +34,42 @@ Read 用数据填充指定的字节 slice,并且返回填充的字节数和错�
 
 [read from a string](../demo/go/reader_string.go)
 
+# variable
+- A declaration names a program entity and specifies some or all of its properties. There are four major kinds of declarations: var, const, type and func.
+- Package-level(even if none main pkg) variables are initialized before main begins.
+- `s := ""` may be used only within a function, not for package level-variables.
+- tuple assignment: all of the right-hand side expressions are evaluated before any of the variables are updated, making this form most useful when some of the variables appear on both sides of assignment, as happends, for example,
+  when swapping the values of two variables.
+  ```go
+  i, j = j, i  // swap values of i and j
+  a[i], a[j] = a[j], a[i]
+
+  // the greatest common divisor
+  func gcd(x, y int) int {
+    for y != 0 {
+      x, y = y, x % y
+    }
+    return x
+  }
+  ```
+
+A type declaration defines a new named type that has the same underlying-type as an existing type.
+```go`
+type name underlying-type
+```
+The underlying type determines its structure and reprensentation, and also the set of intrinsic operations it supports, which are the same as if the underlying type had been used directly.
+
+That meas that arithmetic operations work the same for Celsius and Fahrenheit as they do for float64.
+
+```go
+type Celsius float64
+type Fahrenheit float64
+```
+Even though both have the same underlying type float64, they are not the same type, so they cannot be compared or combined in arithmetic expressions.
+
 # 数据类型
+Go's type fall into four categoires: basic types, aggregate types, refrence type and interface types.
+
 All assignment operations in Go are copy operations.
 
 slice and map contain internal pointers, so copies point to the same underlying data.
@@ -47,7 +82,7 @@ slice and map contain internal pointers, so copies point to the same underlying 
 - 引用类型为nil
 - slice 的零值是 nil, 一个 nil 的 slice 的长度和容量是0.
 
-## 基本类型
+## basic types
 - bool
 - string: string is immutable
 - int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, uintptr
@@ -55,13 +90,6 @@ slice and map contain internal pointers, so copies point to the same underlying 
 - rune  // int32 的别名, 代表一个Unicode码
 - float32, float64
 - complex64, complex128
-
-### array
-An array type definition specifies a length and an element type. For example, the type `[4]int` represents an array of four integers.
-
-Go's arrays are values. An array variable denotes the entire array; it is not a pointer to the first array element (as would be the case in C).
-This means that when you assign or pass around an array value you will make a copy of its contents.
-(To avoid the copy you could pass a pointer to the array, but then that's a pointer to an array, not an array.)
 
 ### string
 Strings are actually very simple: they are just read-only slices of bytes with a bit of extra syntactic support from the language.
@@ -79,16 +107,49 @@ strb := string(byts)
 ```
 在你使用[]byte(X)或者string(X)时务必注意,你创建的是数据的拷贝.这是由于字符串的不可变性.
 
+如果确定得到的[]byte 不会被修改, 可以考虑使用unsafe.Pointer 来强制转换, 具体可见 [golang-string 和 bytes 之间的 unsafe 转换](https://jaycechant.info/2019/golang-unsafe-cast-between-string-and-bytes)
+
 当字符串有由unicode字符码runes组成时.如果你计算字符串的长度时,可能得到的结果和你期待的不同.下面结果是输出3:
 ```go
 fmt.Println(len("�"))
 ```
 如果你通过range遍历一个字符串,你将得到runes,而不是bytes.当然,当你将一个字符串转换成一个[]byte时,你将得到正确的数据.
 
-## 引用类型
+## aggregate types
+array and struct
+
+### array
+An array type definition specifies a length and an element type. For example, the type `[4]int` represents an array of four integers.
+
+Go's arrays are values. An array variable denotes the entire array; it is not a pointer to the first array element (as would be the case in C).
+This means that when you assign or pass around an array value you will make a copy of its contents.
+(To avoid the copy you could pass a pointer to the array, but then that's a pointer to an array, not an array.)
+
+### struct
+The key point is that Go gives the programmer tools to limit allocation by controlling the layout of data structures. Consider this simple type definition of a data structure containing a buffer (array) of bytes:
+```go
+type X struct {
+  a, b, c int
+  buf [256]byte
+}
+```
+In Java, the buf field would require a second allocation and accesses to it a second level of indirection.
+In Go, however, the buffer is allocated in a single block of memory along with the containing struct and no indirection is required.
+For systems programming, this design can have a better performance as well as reducing the number of items known to the collector. At scale it can make a significant difference.
+
+To give the programmer this flexibility, Go must support what we call interior pointers to objects allocated in the heap.
+The X.buf field in the example above lives within the struct but it is legal to capture the address of this inner field, for instance to pass it to an I/O routine.
+In Java, as in many garbage-collected languages, it is not possible to construct an interior pointer like this, but in Go it is idiomatic.
+This design point affects which collection algorithms can be used, and may make them more difficult, but after careful thought we decided that it was necessary to allow interior pointers
+because of the benefits to the programmer and the ability to reduce pressure on the (perhaps harder to implement) collector.
+So far, our experience comparing similar Go and Java programs shows that use of interior pointers can have a significant effect on total arena size, latency, and collection times.
+
+## refrence types
+Refrence types are a diverse group that inclues pointers.
+
 - slice
 - map
-- interface
+- function
 - channel
 
 ### slice
@@ -128,25 +189,6 @@ func CopyDigits(filename string) []byte {
 
 ### map
 可以比较的数据类型才能作为一个map的键,所以map的键都是基本类型.
-
-### struct
-The key point is that Go gives the programmer tools to limit allocation by controlling the layout of data structures. Consider this simple type definition of a data structure containing a buffer (array) of bytes:
-```go
-type X struct {
-  a, b, c int
-  buf [256]byte
-}
-```
-In Java, the buf field would require a second allocation and accesses to it a second level of indirection.
-In Go, however, the buffer is allocated in a single block of memory along with the containing struct and no indirection is required.
-For systems programming, this design can have a better performance as well as reducing the number of items known to the collector. At scale it can make a significant difference.
-
-To give the programmer this flexibility, Go must support what we call interior pointers to objects allocated in the heap.
-The X.buf field in the example above lives within the struct but it is legal to capture the address of this inner field, for instance to pass it to an I/O routine.
-In Java, as in many garbage-collected languages, it is not possible to construct an interior pointer like this, but in Go it is idiomatic.
-This design point affects which collection algorithms can be used, and may make them more difficult, but after careful thought we decided that it was necessary to allow interior pointers
-because of the benefits to the programmer and the ability to reduce pressure on the (perhaps harder to implement) collector.
-So far, our experience comparing similar Go and Java programs shows that use of interior pointers can have a significant effect on total arena size, latency, and collection times.
 
 ### channel
 Do not communicate by sharing memory, share memory by communicating.
