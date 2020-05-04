@@ -54,7 +54,7 @@ Read 用数据填充指定的字节 slice,并且返回填充的字节数和错�
   ```
 
 A type declaration defines a new named type that has the same underlying-type as an existing type.
-```go`
+```go
 type name underlying-type
 ```
 The underlying type determines its structure and reprensentation, and also the set of intrinsic operations it supports, which are the same as if the underlying type had been used directly.
@@ -92,8 +92,7 @@ slice and map contain internal pointers, so copies point to the same underlying 
 - complex64, complex128
 
 ### string
-Strings are actually very simple: they are just read-only slices of bytes with a bit of extra syntactic support from the language.
-Because they are read-only, there is no need for a capacity (you can't grow them), but otherwise for most purposes you can treat them just like read-only slices of bytes.
+A string is an immutable sequence of bytes.
 
 The array underlying a string is hidden from view; there is no way to access its contents except through the string.
 That means that when we do either of these conversions, a copy of the array must be made. Go takes care of this, of course, so you don't have to.
@@ -109,11 +108,72 @@ strb := string(byts)
 
 如果确定得到的[]byte 不会被修改, 可以考虑使用unsafe.Pointer 来强制转换, 具体可见 [golang-string 和 bytes 之间的 unsafe 转换](https://jaycechant.info/2019/golang-unsafe-cast-between-string-and-bytes)
 
+The built-in len function returns the number of bytes (not runes) in a string.
+Attempting to access a byte outside its range results in a panic.
+
 当字符串有由unicode字符码runes组成时.如果你计算字符串的长度时,可能得到的结果和你期待的不同.下面结果是输出3:
 ```go
 fmt.Println(len("�"))
 ```
 如果你通过range遍历一个字符串,你将得到runes,而不是bytes.当然,当你将一个字符串转换成一个[]byte时,你将得到正确的数据.
+
+Immutability means that it is safe for two copies of a string to share the same underlying memory, making it cheap to copy strings of any length.(string 传参也是这样的?)
+Similarly, a string s and a substring like s[7:] may share the same data, so the substring operation is also cheap.
+
+Raw string literals, delimited by back quotes, are interpreted literally. Within the quotes, any character may appear except back quote. They can contain line breaks, and backslashes have no special meaning.
+
+#### UTF8
+UTF-8 is a variable-length encoding of Unicode points as bytes. UTF-8 was invented by Ken Thompson and Rob Pike, two of the creators of Go.
+It uses between 1 and 4 bytes to represent each rune, but only 1 byte for ASCII characters, and only 2 or 3 bytes for most runes in common use.
+
+Many Unicode characters are hard to typ e on a key board or to distinguish visually from similarlooking ones; some are even invisible.
+Unicode escapes in Go string literals allow us to specify them by their numeric code point value. There are two forms, \uhhhh for a 16-bit value and \Uhhhhhhhh for a 32-bit value, where each h is a hexadecimal digit;
+the need for the 32-bit form arises very infrequently.
+
+Thus, for example, the following string literals all represent the same six-byte string:
+```go
+"世界"
+"\xe4\xb8\x96\xe7\x95\x8c"
+"\u4e16\u754c"
+"\U00004e16\U0000754c"
+```
+The three escape sequences above provide alternative notations for the first string , but the values they denote are identical.
+
+```go
+import "unicode/utf8"
+s := "Hello, BF"
+fmt.Println(len(s)) // "13"
+fmt.Println(utf8.RuneCountInString(s)) // "9"
+```
+
+To process those characters, we nee d a UTF-8 decoder. The unicode/utf8 package provides one that we can use like this:
+```go
+for i := 0; i < len(s); {
+  r, size := utf8.DecodeRuneInString(s[i:])
+  fmt.Printf("%d\t%c\n", i, r)
+  i += size
+}
+```
+
+Go's range loop, when applied to a string, performs UTF-8 decoding implicitly.
+
+- A []rune conversion applied to a UTF-8 encoded string returns the sequence of Unicode code points that the string encodes.
+- If a slice of runes is converted to a string, it produces the concatenation of the UTF-8 encodings of each rune.
+- Converting an integer value to a string interprets the interger as a rune value, and yields the UTF-8 representation of that rune.
+
+```go
+// "program" in Japanese katakana
+s := "プログラム"
+fmt.Printf("% x\n", s) // "e3 83 97 e3 83 ad e3 82 b0 e3 83 a9 e3 83 a0"
+r := []rune(s)
+fmt.Printf("%x\n", r) // "[30d7 30ed 30b0 30e9 30e0]"
+
+fmt.Println(string(r)) // "プログラム"
+
+fmt.Println(string(65)) // "A", not "65"
+fmt.Println(string(0x4eac)) // "京"
+```
+The verb % x in the first Printf inserts a space between each pair of hex digits.
 
 ## aggregate types
 array and struct
