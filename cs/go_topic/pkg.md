@@ -59,6 +59,15 @@ const (
 # flag
 The non-flag arguments are available from `flag.Args()` as a slice of strings.
 
+# math
+```go
+var z float64
+glog.Infoln(z, -z, 1/z, -1/z, z/z)  // output 0 -0 +Inf -Inf NaN
+glog.Infoln(math.IsNaN(z / z))  // true
+glog.Infoln(z/z == math.NaN())  // false, any comparison with NaN always yields false
+```
+但是直接写`1/0`就会编译错误.
+
 # context
 The same Context may be passed to functions running in different goroutines; Contexts are safe for simultaneous use by multiple goroutines.
 
