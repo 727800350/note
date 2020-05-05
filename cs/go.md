@@ -204,6 +204,8 @@ Go's arrays are values. An array variable denotes the entire array; it is not a 
 This means that when you assign or pass around an array value you will make a copy of its contents.
 (To avoid the copy you could pass a pointer to the array, but then that's a pointer to an array, not an array.)
 
+If an array's element type is comparable then the array is comparable too.
+
 ### struct
 The key point is that Go gives the programmer tools to limit allocation by controlling the layout of data structures. Consider this simple type definition of a data structure containing a buffer (array) of bytes:
 ```go
@@ -222,6 +224,44 @@ In Java, as in many garbage-collected languages, it is not possible to construct
 This design point affects which collection algorithms can be used, and may make them more difficult, but after careful thought we decided that it was necessary to allow interior pointers
 because of the benefits to the programmer and the ability to reduce pressure on the (perhaps harder to implement) collector.
 So far, our experience comparing similar Go and Java programs shows that use of interior pointers can have a significant effect on total arena size, latency, and collection times.
+
+The struct type with no fields is called the empty struct, written struct{}. It has size zero and carries no information but may be useful nonetheless.
+Some go programmers use it instead of bool as the value type of a map that represents a set, to emphasize that only the keys are significant.
+but the space saving is marginal and the syntax more cumbersome, so we generally avoid it.
+
+If all the fields of a struct are comparable, the struct itself is comparable.
+Comparable struct types, like other comparable types, may be used as the key type of a map.
+
+#### struct embedding and anonymous fields
+Go lets us declare a field with a type but no name; such fields are called anonymous fields.
+The type of the field must be a named type or a pointer to a named type.
+It provides a convenient syntactic shortcut so that a simple dot expression like x.f can stand for a chain of fields like x.d.e.f.
+```go
+type Point struct {
+  X, Y int
+}
+type Circle struct {
+  Point
+  Radius int
+}
+type Wheel struct {
+  Circle
+  Spokes int
+}
+
+var w Wheel
+w.X = 8  // equivalent to w.Circle.Point.X = 8
+```
+However there's no coresponding shorthand for the struct literal syntax.
+```go
+x := Wheel{
+  Circle: Circle{
+    Point:  Point{X: 8, Y: 8},
+    Radius: 5,
+  },
+  Spokes: 20,
+}
+```
 
 ## refrence types
 Refrence types are a diverse group that inclues pointers.
@@ -249,6 +289,9 @@ The type specification for a slice is `[]T`, where T is the type of the elements
 The zero value of a slice is nil(the element pointer is still nil). The len and cap functions will both return 0 for a nil slice.
 However the slice created by `array[0:0]` has length zero (and maybe even capacity zero) but its pointer is not nil, so it is not a nil slice.
 
+slices are not comparable, so we cannot use == to test whether two slices contains the same elements.
+The standard library provides the highly optimized bytes.Equal function for comparing two slices of bytes ([]byte), but for other types of slice, we must do the comparison ourselves.
+
 - `func copy(dst, src []T) int`: The copy function supports copying between slices of different lengths (it will copy only up to the smaller number of elements).
   In addition, copy can handle source and destination slices that share the same underlying array, handling overlapping slices correctly.
 - `func append(s []T, x ...T) []T`
@@ -268,6 +311,9 @@ func CopyDigits(filename string) []byte {
 
 ### map
 可以比较的数据类型才能作为一个map的键,所以map的键都是基本类型.
+
+Most operations on maps, including lookup, delete, len and range loops are safe to perform on a nil map reference, since it behaves like an empty map.
+But storing to a nil map causes panic. You must allocate the map before you can store into it.
 
 ### channel
 Do not communicate by sharing memory, share memory by communicating.
