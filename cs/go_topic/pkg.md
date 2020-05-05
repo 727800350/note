@@ -26,13 +26,14 @@
 # bufio
 bufio pkg helps make input and output efficient and convenient.
 
-- `func NewScanner(r io.Reader) *Scanner`
+- `func NewScanner(r io.Reader) *Scanner`: 默认以\n为分隔符
   ```go
   in := bufio.NewScanner(os.stdin)
   for in.Scan() {
     glog.Infoln(in.Text())  // Text 会把行尾的\n 自动去掉
   }
   ```
+- `func NewReader(rd io.Reader) *Reader`
 
 # ioutil
 - `Discard`: is an io.Writer on which all Write calls succeed without doing anything.
