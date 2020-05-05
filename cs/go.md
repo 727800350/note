@@ -401,31 +401,95 @@ a, b := swap("hello", "world")
 Finally, each source file can define its own niladic init function to set up whatever state is required.
 init is called after all the variable declarations in the package have evaluated their initializers, and those are evaluated only after all the imported packages have been initialized.
 
-## method
-Go 没有类.然而,仍然可以在结构体类型上定义方法.
-
-方法接收者 出现在 func 关键字和方法名之间的参数中.
+## anonymous functions
+Function values can have state(closure):
 ```go
-type Vertex struct {
-  X, Y float64
+func squares() func() int {
+  var x int
+  return func() int {
+    x++
+    return x * x
+  }
 }
 
-func (v *Vertex) Abs() float64 {
-  return math.Sqrt(v.X * v.X + v.Y * v.Y)
+f := squares()
+fmt.Println(f())  // 1
+fmt.Println(f())  // 4
+fmt.Println(f())  // 9
+```
+Here again we see an example where the lifetime of a varaible is not determined by its scope:
+the variable x exists after squares has returned within main, even thouth x is hidden inside f.
+
+When an anonymous function requires rescursion, we must first declare a variable and then assign the anonymous function to that variable.
+
+## capture iteration variables
+Consider a program that must create a set of directories and later remove them.
+```go
+var rmdirs []func()
+for _, d := range tempDirs() {
+  dir := d               // NOTE: necessary!
+  os.MkdirAll(dir, 0755) // creates parent directories too
+  rmdirs = append(rmdirs, func() {
+    os.RemoveAll(dir)
+  })
 }
 
-func main() {
-  v := &Vertex{3, 4}
-  fmt.Println(v.Abs())
+// ...do some work...
+for _, rmdir := range rmdirs {
+  rmdir() // clean up
 }
 ```
-`v *Vertex` 就是接收者, 使用指针与C 中原因一样, 通过指针可以直接访问原来的变量, 而不是副本
+You may b e wondering why we assigned the loop variable d to a new local variable dir within the loop body, instead of just naming the loop variable dir as in this subtly incorrect variant:
+```go
+var rmdirs []func()
+for _, dir := range tempDirs() {
+  os.MkdirAll(dir, 0755)
+  rmdirs = append(rmdirs, func() {
+    os.RemoveAll(dir) // NOTE: incorrect!
+  })
+}
+```
+The reason is a consequence of the scope rules for loop variables. In the programimme diately above, the for loop introduces a new lexical block in which the variable dir is declared.
+**All function values created by this loop "capture" and share the same variable—an addressable storage location, not its value at that particular moment.**
+The value of dir is updated in successive iterations, so by the time the cleanup functions are called, the dir variable has been updated several times by the now-completed for loop.
+Thus dir holds the value from the final iteration, and consequently all calls to os.RemoveAll will attempt to remove the same directory.
 
-你可以对包中的 任意 类型定义任意方法,而不仅仅是针对结构体.
-但是,不能对来自其他包的类型或基础类型定义方法.
-[demo](../demo/go/method_for_MyFloat64.go)
+Frequently, the inner variable introduce d to work around this problem—dir in our example— is given the exact same name as the outer variable of which it is a copy,
+leading to o dd-looking but crucial variable declarations like this:
+```go
+for _, dir := range tempDirs() {
+  dir := dir // declares inner dir, initialized to outer dir
+  // ...
+}
+```
 
-# defer
+The problem of iteration variable capture is most often encountered when using the go statement or with defer since both may delay the execution of a function value until after the loop has finished.
+
+## variadic functions
+```go
+func sum(vals ...int) int {
+  total := 0
+  for _, val := range vals {
+    total += val
+  }
+  return total
+}
+
+fmt.Println(sum())
+fmt.Println(sum(3))
+fmt.Println(sum(1, 2, 3, 4))
+```
+Within the body of the function, the type of vals is an []int type.
+
+Implicitly, the caller allocates an array, copies the arguments into it, and passes a slice of the entire array to the function.
+```go
+values := []int{1, 2, 3, 4}
+fmt.Println(sum(values...)) // "10"
+```
+
+## defer
+Deferred functions run after return statements have updated the function's result variables.
+
 The behavior of defer statements is straightforward and predictable. There are three simple rules:
 
 1. A deferred function's arguments are evaluated when the defer statement is evaluated.
@@ -477,6 +541,40 @@ The behavior of defer statements is straightforward and predictable. There are t
   }
   ```
 
+The defer statement can also be used to pair "on entry" and "on exit" actions when debugging a complex function.
+```
+func bigSlowOperation() {
+  defer trace("bigSlowOperation")() // don't forget the extra parentheses
+  // ...lots of work...
+  time.Sleep(10 * time.Second) // simulate slow operation by sleeping
+}
+
+func trace(msg string) func() {
+  start := time.Now()
+  log.Printf("enter %s", msg)
+  return func() { log.Printf("exit %s (%s)", msg, time.Since(start)) }
+}
+```
+Each time bigSlowOperation is called, it logs its entry and exit and the elapsed time between them. 
+
+## panic and recover
+For diagnostic purposes, the runtime package lets the programmer dump the stack using the same machinery.
+```go
+func main() {
+  defer printStack()
+  f(3)
+}
+
+func printStack() {
+  var buf [4096]byte
+  n := runtime.Stack(buf[:], false)
+  os.Stdout.Write(buf[:n])
+}
+```
+
+# method
+Methods may be declared on **any named type in the same package**, so long as its underlying type is neither a pointer nor an interface.
+
 # error
 The error type is an interface type. An error variable represents any value that can describe itself as a string. Here is the interface's declaration:
 ```go
@@ -490,4 +588,18 @@ if f < 0 {
   return 0, fmt.Errorf("math: square root of negative number %g", f)
 }
 ```
+
+Go’s approach sets it apart from many other languages in which failures are reported using exceptions, not ordinary values.
+The reason for this design is that exceptions tend to entangle the description of an error with the control flow required to handle it, often leading to an undesirable outcome:
+routine errors are reported to the end user in the form of an incomprehensible stack trace, full of information about the structure of the program but lacking intelligible context about what went wrong.
+By contrast, Go programs use ordinary control-flow mechanisms like if and return to respond to errors. This style undeniably demands that more attention be paid to error-handling logic, but that is precisely the point.
+
+If the failure has only one possible cause, the result is boolean, usually called ok.
+
+Error should provide a clear causal chain from the root problem to the overall failure, reminiscent of a NASA accident investigation:
+```
+genesis: crashed: no parachute: G-switch failed: bad relay orientation
+```
+Because error messages are frequently chained together, message strings should not be capitalized and newlines should be avoided.
+The resulting errors may be long, but they will be self-contained when found by tools like grep.
 
