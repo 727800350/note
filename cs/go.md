@@ -175,6 +175,25 @@ fmt.Println(string(0x4eac)) // "京"
 ```
 The verb % x in the first Printf inserts a space between each pair of hex digits.
 
+### untyped constants
+many constants are not committed to a particular type. The compiler represents these uncommitted constants with much greater numeric precisiont han values of basic types, and arithmetic on them is more precise than machine arithmetic;
+you may assume at least 256 bits of precision.
+There are six flavors of these uncommitted constants, called untyped boolean, untyped integer, untyped rune, untyped floating-point, untyped complex, and untyped string.
+
+By deferring this commitment, untyped constants not only retain their higher precision until later, but they can participate in many more expressions than committe dconstants without requiring conversions.
+For example, the values ZiB and YiB are too big to store in any integer variable, but they are legitimate constants that may be used in expressions like this one:
+```go
+fmt.Println(YiB/ZiB) // "1024"
+```
+
+the floating-point constant math.Pi may be used wherever any floating-point or complex value is needed:
+```go
+var x float32 = math.Pi
+var y float64 = math.Pi
+var z complex128 = math.Pi
+```
+If math.Pi had been committed to a specific type such as float64, the result would not be as precise, and type conversions would be required to use it when a float32 or complex128 value is wanted.
+
 ## aggregate types
 array and struct
 
