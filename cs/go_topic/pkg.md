@@ -58,6 +58,13 @@ const (
 )
 ```
 
+This is one of those weird things in go due to its simplistic type system (lack of operator overloading in this case).
+you have to cast the multiplication to Duration * Duration = Duration, instead of the original one which actually makes more sense: Duration * int = Duration
+```go
+seconds := 3600
+time.Duration(seconds) * time.Second  // 3600s
+```
+
 - `func Now() Time`
 - `func (t Time) Unix() int64`: ex `time.Now().Unix()`
 - `func Since(t Time) Duration`:  shorthand for time.Now().Sub(t)
