@@ -575,6 +575,102 @@ func printStack() {
 # method
 Methods may be declared on **any named type in the same package**, so long as its underlying type is neither a pointer nor an interface.
 
+## Composing types by struct embedding
+A similar mechanism of field embedding applies to the method. We can call methods of the embedded field using a receiver of outer ColoredPoint, even though the outer type has no declared methods.
+```go
+var (
+  mutex   sync.Mutex
+  mapping = make(map[string]string)
+)
+
+func Lookup(key string) string {
+  mutex.Lock()
+  v := mapping[key]
+  mutex.Unlock()
+  return v
+}
+```
+
+This version below is functionally equivalent but groups together two related variables in a single package-level variable, cache:
+```go
+var cache = struct {
+  sync.Mutex
+  mapping map[string]string
+}{
+  mapping: make(map[string]string),
+}
+
+func Lookup(key string) string {
+  cache.Lock()
+  v := cache.mapping[key]
+  cache.Unlock()
+  return v
+}
+```
+The new variable gives more expressive names to the variables related to the cache, and because the sync.Mutex field is embedded within it, its Lock and Unlock methods are promoted to the unnamed struct type.
+
+## method values and expressions
+Usually we select and call a method in the same expression, as in p.Distance(), but it's possible to separate these two operations.
+The selector p.Distance yields a method value, a function that binds a method (Point.Distance) to a specific receiver value p. This function can then be invoked without a receiver value; it needs only the non-receiver arguments.
+```go
+func (p Point) Distance(q Point) { /* ... */ }
+
+p := Point{1, 2}
+q := Point{4, 6}
+distanceFromP := p.Distance // method value
+fmt.Println(distanceFromP(q))
+```
+
+Method values are useful when a package’s API calls for a function value, and the client’s desired behavior for that function is to call a method on a specific receiver.
+```go
+type Rocket struct { /* ... */ }
+func (r *Rocket) Launch() { /* ... */ }
+
+r := &Rocket{}
+time.AfterFunc(10 * time.Second, func() { r.Launch() })
+```
+The method value syntax is shorter:
+```go
+time.AfterFunc(10 * time.Second, r.Launch())
+```
+
+Related to the method value is the method expression.
+A method expression, written `T.f or (*T).f` where T is a type, yields a function value with a regular first parameter taking the place of the receiver, so it can be called in the usual way.
+```go
+p := Point{1, 2}
+q := Point{4, 6}
+distance := Point.Distance   // method expression
+fmt.Println(distance(p, q))  // "5"
+fmt.Printf("%T\n", distance) // "func(Point, Point) float64"
+
+scale := (*Point).ScaleBy
+scale(&p, 2)
+fmt.Println(p)            // "{2 4}"
+fmt.Printf("%T\n", scale) // "func(*Point, float64)"
+```
+
+Method expressions can be helpful when you need a value to represent a choice among several methods belonging to the same type so that you can call the chosen method with many different receivers.
+In the following example, the variable op represents either the addition or the subtraction method of type Point, and Path.TranslateBy calls it for each point int he Path:
+```go
+type Point struct{ X, Y float64 }
+func (p Point) Add(q Point) Point { return Point{p.X + q.X, p.Y + q.Y} }
+func (p Point) Sub(q Point) Point { return Point{p.X - q.X, p.Y - q.Y} }
+type Path []Point
+
+func (path Path) TranslateBy(offset Point, add bool) {
+  var op func(p, q Point) Point
+  if add {
+    op = Point.Add
+  } else {
+    op = Point.Sub
+  }
+  for i := range path {
+    // Call either path[i].Add(offset) or path[i].Sub(offset).
+    path[i] = op(path[i], offset)
+  }
+}
+```
+
 # error
 The error type is an interface type. An error variable represents any value that can describe itself as a string. Here is the interface's declaration:
 ```go
