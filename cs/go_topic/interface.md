@@ -64,20 +64,38 @@ foo {
 }
 ```
 
-## type switch
+## type assertion
+A type assertion is an operation applied to an interface value.
+```go
+x.(T)
+```
+- x is an expression of an interface type
+- T is a type, called the "asserted" type
+
+Two possibilities
+
+- If T is a concrete type, then the type assertion checks whether x's dynamic type is identical to T. If this check succeeds, the result is x's dynamic value, whose type is of course T.
+- If T is an interface type, then the type assertion checks whether x's dynamic type satifies T. If this check succeeds, the result is still an interface value with the same type and value components, but T's methods are accessible.
+
+if type assertion fails, then the operation panics. We could use a boolean to check whether it succeeds.
+
+### type switch
 ```go
 func Println(x interface{}) {
-  switch x.(type) {
+  switch x := x.(type) {
   case bool:
-    fmt.Println(x.(bool))
+    fmt.Println(x)
   case int:
-    fmt.Println(x.(int))
+    fmt.Println(x)
   default:
     fmt.Println("unkown type")
   }
 }
 ```
 the clause `x.(type)` is only valid in type switch
+
+Like a switch statement, a type switch implicitly creates a lexical block, so the declaration of the new variable called x does conflict with a variable x in an outer block.
+Each case also implicitly creats a separate lexical block.
 
 # Why doesn't type T satisfy the Equal interface?
 Consider this simple interface to represent an object that can compare itself with another value:
@@ -142,4 +160,28 @@ If we convert nil to the correct type, the values are indeed equal.
 ```go
 fmt.Println(err == (*os.PathError)(nil)) // true
 ```
+
+# http.Handler interface
+```go
+package http
+
+type Handler interface {
+  ServeHTTP(w ResponseWriter, r *Request)
+}
+
+func ListenAndServe(address string, h Handler) error
+
+type HandlerFunc func(w ResponseWriter, r *Request)
+
+func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+  f(w, r)
+}
+```
+HandlerFunc demonstrates some unusual features of Go's interface mechanism.
+It is a function type that has methods and satifies an interface, http.Handler.
+
+For convenience, net/http provides a global ServeMux instance called DefaultServeMux and package-level functions called http.Handle and http.HandleFunc.
+To use DefaultMux as the server's main handler, we needn't pass it to ListenAndServe; nil will do.
+
+Finally, an important reminder, the web server invokes each handler in a new goroutinue.
 
