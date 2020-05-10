@@ -74,8 +74,12 @@ time.Duration(seconds) * time.Second  // 3600s
 - `func Tick(d Duration) <-chan Time`: 每经过duration, 产生一个Time
 - `func Sleep(d Duration)`
 
+- `func Parse(layout, value string) (Time, error)`
+
 # flag
 The non-flag arguments are available from `flag.Args()` as a slice of strings.
+
+- `flag.Duration`, 可以解析诸如 50ms, 2m30s, 1.5h 这样的duration
 
 # math
 ```go

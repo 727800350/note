@@ -1,7 +1,35 @@
 **duck typing**: When I see a bird that walks like a duck and swins like a duck and quacks like a duck, I call that bird a duck. – James Whitcomb Riley
 
-[How to use interfaces in Go](https://jordanorelli.com/post/32665860244/how-to-use-interfaces-in-go)
+This freedom to substitute one type for another that satisfies the same interface is called substitutability, and is a hallmark of object-oriented programming.
 
+An interface type specifies a set of methods that a concrete type must posses to be considered an instance of that interface.
+
+Like an envelope that wraps and conceals the letter it holds, an interface wraps and conceals the concrete type and value that it holds.
+Only the methods reveald by the interface type may be called, even if the concrete type has others.
+```go
+os.Stdout.Write([]byte("hello"))
+os.Stdout.Close()
+
+var w io.Writer
+w = os.Stdout
+w.Write([]byte("hello"))
+w.Close()  // compile error: io.Writer lacks Close method
+```
+
+An interface value is constructed of two words of data;
+
+- one word is used to point to a method table for the value's underlying type, that is the dynamic type
+- and the other word is used to point to the actual data being held by that value, that is the dynamic value.
+
+Copying an interface value makes a copy of the thing stored in the interface value.
+
+- If the interface value holds a struct, copying the interface value makes a copy of the struct.
+- If the interface value holds a pointer, copying the interface value makes a copy of the pointer, but not the data it points to.
+
+Interface values may be compared using == and !=.
+Two interface values are equal if both are nil or if their dynamic type are identical and their dynamic values are equal according to the usual behavior of == of that type.
+
+# empty interface
 The `interface{}` type, the empty interface, is the source of much confusion. The `interface{}` type is the interface that has no methods.
 So all types satisfy the empty interface.
 That means that if you write a function that takes an interface{} value as a parameter, you can supply that function with any value. So, this function:
@@ -12,16 +40,7 @@ func DoSomething(v interface{}) {
 ```
 will accept any parameter.
 
-An interface value is constructed of two words of data;
-
-- one word is used to point to a method table for the value's underlying type, that is the dynamic type
-- and the other word is used to point to the actual data being held by that value.
-
-Copying an interface value makes a copy of the thing stored in the interface value.
-If the interface value holds a struct, copying the interface value makes a copy of the struct.
-If the interface value holds a pointer, copying the interface value makes a copy of the pointer, but again not the data it points to.
-
-# static type and dynamic type
+## static type and dynamic type
 ```go
 var foo interface{}  // foo is of static type interface{}
 
@@ -101,6 +120,8 @@ for i, v := range t {
 ```
 
 # nil
+A nil interface value, which contains no value at all, is not the same as in interface value containning a pointer that happends to be nil.
+
 [Why is nil not equal to nil in this example?](https://yourbasic.org/golang/gotcha-why-nil-error-not-equal-nil)
 ```go
 func Foo() error {
