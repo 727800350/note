@@ -22,6 +22,7 @@ list<t1>: std::vector<t1>
 set<t1>: std::set<t1>
 map<t1,t2>: std::map<T1, T2>
 ```
+Note the absence of unsigned integer types. This is due to the fact that there are no native unsigned integer types in many programming languages.
 
 ## Typedefs
 Thrift supports C/C++ style typedefs.
