@@ -29,20 +29,15 @@ sed script file should only contain sed commands
 - `$ sed '3,6 {/This/{/fish/d}}' pets.txt`: 对3行到第6行,匹配/This/成功后,再匹配/fish/,成功后执行d命令
 - `$ sed '1,${/This/d;s/^ *//g}' pets.txt` 从第一行到最后一行,如果匹配到This,则删除之,如果前面有空格,则去除空格
 
-## s:替换
-- `$ sed "s/my/Hao Chen's/g" pets.txt`, g 表示每一行中所有出现 my 都被替换
-- 在每一行最前面加点东西, 也就是替换开头的位置: `$ sed 's/^/#/g' pets.txt`
-- 在每一行最后面加点东西: `$ sed 's/$/ --- /g' pets.txt`
-- 替换指定行: 
-	- 一行: $ sed "3s/my/your/g" pets.txt
-	- 多行: $ sed "3,6s/my/your/g" pets.txt, 第3行到6行
-	- 多行: $ sed "3,$s/my/your/g" pets.txt, 从第3行开始的所有
-- 替换一行的指定出现
-	- 第一个s: $ sed 's/s/S/1' my.txt
-	- 第二个s: $ sed 's/s/S/2' my.txt
-	- 第3个以后的s: $ sed 's/s/S/3g' my.txt
+# s:替换
+```
+[address]s/pattern/replacement/flags
+```
+flags
 
-使用 -i 参数可以直接修改原有的文件内容: `$ sed -i "s/my/Hao Chen's/g" pets.txt`
+- n: 1~512 之间的数字,表示指定要替换的字符串出现第几次时才进行替换,例如,一行中有 3 个 A,但用户只想替换第二个 A,这是就用到这个标记,
+- g: 对数据中所有匹配到的内容进行替换,如果没有 g,则只会在第一次匹配成功时做替换操作.例如,一行数据中有 3 个 A,则只会替换第一个 A,
+- n 和g 一起使用, eg: 第3个以后的src: `sed -i '/pattern/s/src/dst/3g' my.txt`
 
 指代变量
 
@@ -56,26 +51,36 @@ sed script file should only contain sed commands
 
 - `$ sed 'N;s/my/your/' pets.txt`
 
-## a: 追加, i 前插
+# a: 追加, i 前插
 a命令就是append, i命令就是insert,它们是用来添加行的
 
 - 在第1行前插入一行(insert): `$ sed "1 i insert" my.txt`
 - 最后1行后追加一行(append): `$ sed "$ a append" my.txt`
 - 先匹配再添加文本: `$ sed "/pattern/a append" my.txt` 匹配到/fish/后就追加一行
 
-## c: 整行替换
+# c: 整行替换
 - 替换第二行: `$ sed "2 c new line" my.txt`
 - 替换匹配行: `$ sed "/fish/c new line" my.txt`
 
-## d: 删除
+# d: 删除
+```
+[address]d
+```
+
 - 删除匹配行: `$ sed '/fish/d' my.txt`
 - 删除第二行: `$ sed '2d' my.txt`
 - 从第二行开始删除: `$ sed '2,$d' my.txt`
 - `sed '/start/,/end/d'`: 从start 匹配行开始, end 匹配行结束执行删除, 包括边界的两行
 
-暂时还不知道如何实现`sed '/start/,/end/-1 d'`: 从start 匹配行开始, end 匹配行的上一行结束执行删除
+# sed y 转换脚本命令
+y 转换命令是唯一可以处理单个字符的 sed 脚本命令,其基本格式如下:
+```
+[address]y/inchars/outchars/
+```
+转换命令会对 inchars 和 outchars 值进行一对一的映射,即 inchars 中的第一个字符会被转换为 outchars 中的第一个字符,第二个字符会被转换成 outchars 中的第二个字符...这个映射过程会一直持续到处理完指定字符.
+如果 inchars 和 outchars 的长度不同,则 sed 会产生一条错误消息.
 
-## p: 打印
+# p: 打印
 类似 grep
 
 - 只显示匹配行: `$ sed -n '/fish/p' my.txt`
