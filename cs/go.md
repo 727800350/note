@@ -320,6 +320,13 @@ Do not communicate by sharing memory, share memory by communicating.
 
 channels are first class values, just like strings or integers.
 
+- The zero value for a channel is nil. Send and receive operations on a nil channel block forever, a case in a select statement whose channel is nil is never selected.
+- 关闭已经关闭的channel会导致panic
+- 发送值到已经关闭的channel会导致panic
+- 读取关闭后的无缓存通道,不管通道中是否有数据,返回值都为zero value 和false.
+- 读取关闭后的有缓存通道,将缓存数据读取完后,再读取返回值为zero value 和false.
+- range 遍历通道,通道写完后,必须关闭通道,否则range 遍历会出现死锁
+
 ```go
 ch <- v  // 将 v 送入 channel ch.
 v := <-ch  // 从 ch 接收,并且赋值给 v.
@@ -337,9 +344,6 @@ It's like a switch, but each case is a communication:
 - Selection blocks until one communication can proceed
 - If multiple can proceed, select chooses pseudo-randomly.
 - A defalut clause, if present, executes immediately if no channel is ready.
-
-当case上读一个通道时,如果这个通道是nil,则该case永远阻塞.
-这个功能有1个妙用,select通常处理的是多个通道,当某个读通道关闭了,但不想select再继续关注此case,继续处理其他case,把该通道设置为nil即可.
 
 ```go
 select {
@@ -621,7 +625,7 @@ distanceFromP := p.Distance // method value
 fmt.Println(distanceFromP(q))
 ```
 
-Method values are useful when a package’s API calls for a function value, and the client’s desired behavior for that function is to call a method on a specific receiver.
+Method values are useful when a package's API calls for a function value, and the client's desired behavior for that function is to call a method on a specific receiver.
 ```go
 type Rocket struct { /* ... */ }
 func (r *Rocket) Launch() { /* ... */ }
@@ -685,7 +689,7 @@ if f < 0 {
 }
 ```
 
-Go’s approach sets it apart from many other languages in which failures are reported using exceptions, not ordinary values.
+Go's approach sets it apart from many other languages in which failures are reported using exceptions, not ordinary values.
 The reason for this design is that exceptions tend to entangle the description of an error with the control flow required to handle it, often leading to an undesirable outcome:
 routine errors are reported to the end user in the form of an incomprehensible stack trace, full of information about the structure of the program but lacking intelligible context about what went wrong.
 By contrast, Go programs use ordinary control-flow mechanisms like if and return to respond to errors. This style undeniably demands that more attention be paid to error-handling logic, but that is precisely the point.

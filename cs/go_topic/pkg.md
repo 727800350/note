@@ -41,6 +41,7 @@ bufio pkg helps make input and output efficient and convenient.
 - `func readAll(r io.Reader, capacity int64) (b []byte, err error)`
 - `func ReadFile(filename string) ([]byte, error)`
 - `func WriteFile(filename string, data []byte, perm os.FileMode) error`
+- `func ReadDir(dirname string) ([]os.FileInfo, error)`
 
 # net
 ## http
@@ -70,8 +71,33 @@ time.Duration(seconds) * time.Second  // 3600s
 - `func Since(t Time) Duration`:  shorthand for time.Now().Sub(t)
 - `func Until(t Time) Duration`: shorthand for t.Sub(time.Now())
 
-- `func After(d Duration) <-chan Time`: After waits for the duration to elapse and then sends the current time on the returned channel.
-- `func Tick(d Duration) <-chan Time`: 每经过duration, 产生一个Time
+- `func After(d Duration) <-chan Time`: immediately returns a channel, and starts a new goroutine that sends a single value on that channel after the specified time.
+- `func Tick(d Duration) <-chan Time`: 每经过duration, 产生一个Time, it behaves as if it creates a goroutinue that calls time.Sleep in a loop, sending an event each time it wakes up.
+  ```go
+  func main() {
+    // ...create abort channel...
+    fmt.Println("commencing countdown. Press return to abort.")
+    tick := time.Tick(1 * time.Second)
+    for countdown := 10; countdown > 0; countdown-- {
+      fmt.Println(countdown)
+      select {
+        case <- tick:
+          // Do nothing.
+        case <- abort:
+          fmt.Println("Launch aborted!")
+          return
+      }
+    }
+  }
+  ```
+  When the countdown function above returns, it stops receiving from tick, but the ticker goroutine is still there, try in vain to send on a channel from which no goroutine is receiving - a goroutine leak.
+  The Tick function is convenient, but it's appropriate only when the tick will be needed throughout the lifetime of the application. Otherwise, we should use this pattern.
+  ```go
+  ticker := time.NewTicker(1 * time.Second)
+  <- ticker.C  // receive from the ticker's channel
+  ticker.Stop() // cause the ticker's goroutine to terminate
+  ```
+
 - `func Sleep(d Duration)`
 
 - `func Parse(layout, value string) (Time, error)`
