@@ -1,6 +1,14 @@
 # go tool
 [Go Tooling in Action](https://www.youtube.com/watch?v=uBjoTxosSys)
 
+## go list
+`...` wildcard, matches any substring of a pkg's import path.
+
+- `go list ...`: list all pkgs with a Go workspace
+- `go list gopl.io/...`: list all pkgs within a specific subtree
+- `go list ...xml...`: list all pkgs related to a particular topic
+- `go list -json`: print the entire record in json format
+
 ## go doc
 - `go doc fmt`: 查看fmt 包的doc
 - `go doc fmt.Fprintf`: 查看 fmt 包中Fprintf 的doc
@@ -11,7 +19,7 @@
 Vet examines Go source code and reports suspicious constructs, such as Printf calls whose arguments do not align with the format string.
 Vet uses heuristics that do not guarantee all reports are genuine problems
 
-## go get 升级
+## go get
 - go get
   - if the latest A requires module B v1.2.3, while B v1.2.4 and v1.3.1 are also available, then `go get A` will use the latest A but then use B v1.2.3, as requested by A.
 - go get -u: 将会升级到最新的次要版本或者修订版本(x.y.z, z是修订版本号, y是次要版本号)
@@ -20,7 +28,7 @@ Vet uses heuristics that do not guarantee all reports are genuine problems
   - `go get -u=patch A@latest` will use the latest A with B v1.2.4 (not B v1.2.3)
   - `go get -u=patch A` will use a patch release of A instead
 - go get package@version 将会升级到指定的版本号version
-
+- `go get pkg/...`: download an entire subtree or repository
 
 - the @latest suffix will use the latest git tag of gopls.
 - 运行go get如果有版本的更改,那么go.mod文件也会更改
@@ -69,6 +77,19 @@ go get -u github.com/kardianos/govendor
 - `govendor add`: Add packages from $GOPATH
 - `govendor fetch`: Add new or update vendor folder packages from remote repository
 
+## go test
+- `-run regex`: cause go test to run only thouse tests whose function name matches the pattern
+- `t.Fatal` or `t.Fatalf` must be called from the same goroutine as the Test function, not from another one created during the test.
+
+Sometimes an external test pkg may need privileged access to the internals of the pkg under test.
+In such cases, we use a trick: we add declarations to in in-pkg `_test.go` file to expose the necessary internals to the external test.
+This file thus offers the test a back door to the pkg. If the source file exists only for this purpose and contains no tests itself, it is called `export_test.go`
+```go
+// export_test.go
+package fmt
+var IsIspace = isSpace  // isSpace is a function
+```
+
 # go tool options
 -toolexec: add a prefix to every command it runs
 ```bash
@@ -88,6 +109,10 @@ cd /Users/dfc/go/src/fmt
 
 # env
 - `GOOS=windows go build`: 生成exe 文件
+- `runtime.GOOS`, `runtime.GOARCH`
+
+Some packages may need to compile different versions of the code for certain platforms or processors.
+If a file name includes an operating system or processor architecutre name like `net_linux.go` or `asm_amd64.s`, then the go tool will compile the file when building for that target.
 
 ## go 的版本号
 v0 is a compatibility-free zone
