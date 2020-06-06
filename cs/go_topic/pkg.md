@@ -1,3 +1,15 @@
+Package names usually take the singular form.
+
+An internal pkg may be imported only by another pkg that is inside the tree rooted at the parent of the internal directory.
+For example, given the pkgs below
+```
+net/http
+net/http/internal/chunked
+net/http/httputil
+net/url
+```
+net/http/internal/chunked could be imported from net/http or net/http/httputil, but not from net/url.
+
 # strings
 - `func Join(a []string, sep string) string`
 - `func Split(s, sep string) []string`
