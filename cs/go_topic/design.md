@@ -57,6 +57,10 @@ What does the Go runtime need with a scheduler?
   The Go scheduler can make the decision of only scheduling at points where it knows that memory is consistent.
   This means that when we stop for garbage collection, we only have to wait for the threads that are being actively run on a CPU core.
 
+Unlike the operating system's thread scheduler, the Go scheduler is not invoked periodically by a hardware timer, but implicitly by cretain Go language constructs.
+For example, when a goroutine calls time.Sleep or blocks in a channel or mutex operation, the scheduler puts it to sleep and runs another goroutine until it is time to wake the first one up.
+Because it does not need a switch to kernel context, rescheduling a goroutine is much cheaper that rescheduling a thread.
+
 GPM M:N scheduler
 
 - G: The circle represents a goroutine. It includes the stack, the instruction pointer and other information important for scheduling goroutines, like any channel it might be blocked on.
@@ -100,6 +104,9 @@ Goroutine 在 system call 和 channel call 时都可能发生阻塞,但这两种
   If a goroutine makes a channel call, it may need to block, but there is no reason that the M running that G should be forced to block as well.
   In a case such as this, the G's status is set to waiting and the M that was previously running it continues running other G's until the channel communication is complete.
   At that point the G's status is set back to runnable and will be run as soon as there is an M capable of running it.
+
+Goroutines that are sleeping or blocked in a communication do not need a thread at all.
+Goroutines that are blocked in IO or other system calles or are calling non-Go functions, do need an OS thread, but GOMAXPROCS need not account for them.
 
 # [Garbage Collection](https://www.youtube.com/watch?v=q4HoWwdZUHs)
 Responsibility
