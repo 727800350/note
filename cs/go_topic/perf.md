@@ -11,6 +11,13 @@ $ GODEBUG=gctrace=1 ./myserver
 ```
 
 # pprof
+## go test
+go test tool has a build-in support for several kinds of profiling
+- `go test -cpuprofole=cpu.out`
+- `go test -blockprofole=block.out`
+- `go test -memprofole=mem.out`
+
+## intro
 - [youtube Golang UK Conference 2016 - Dave Cheney - Seven ways to Profile Go Applications](https://www.youtube.com/watch?v=zzAdEt3xZ1M)
 - [Seven ways to profile a Go program](https://talks.godoc.org/github.com/davecheney/presentations/seven.slide)
 - [Debugging performance issues in Go programs](https://software.intel.com/en-us/blogs/2014/05/10/debugging-performance-issues-in-go-programs)
