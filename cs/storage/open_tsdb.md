@@ -1,11 +1,13 @@
 # intro
+[Opentsdb简介](https://www.jianshu.com/p/0bafd0168647)
+
 OpenTSDB is a distributed, scalable Time Series Database (TSDB) written on top of HBase.
 主要用途,就是做监控系统,譬如收集大规模集群(包括网络设备,操作系统,应用程序)的监控数据并进行存储,查询.
 
 存储到OpenTSDB的数据,是以metric为单位的,metric就是1个监控项,譬如服务器的话,会有CPU使用率,内存使用率这些metric,
 
-OpenTSDB(Opentime series database)底层使用HBase、BlueFlood和KairosDB底层使用Cassandra，InfluxDB底层是自研的与LSM类似的TSM存储引擎，Prometheus是直接基于LevelDB存储引擎。
-可以看到，主流的时序数据库的实现，底层存储基本都会采用LSM树加上分布式架构，只不过有的是直接使用已有的成熟数据库，有的是自研或者基于LevelDB自己实现。
+OpenTSDB(Opentime series database)底层使用HBase,BlueFlood和KairosDB底层使用Cassandra,InfluxDB底层是自研的与LSM类似的TSM存储引擎,Prometheus是直接基于LevelDB存储引擎.
+可以看到,主流的时序数据库的实现,底层存储基本都会采用LSM树加上分布式架构,只不过有的是直接使用已有的成熟数据库,有的是自研或者基于LevelDB自己实现.
 
 # OpenTSDB存储相关的概念
 介绍这些概念的时候,我们先看一个实际的场景.
