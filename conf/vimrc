@@ -2,12 +2,10 @@ set nocompatible
 set pastetoggle=<F9> "raw copy, do not use auto indent etc.
 set mouse-=a "disable visual mode
 
-"=============================== font and encoding ===============================
-set guifont=Lucida\ Console:h10
-set guifont=fangsong:h12
+"=============================== encoding ===============================
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set encoding=utf-8
-"=============================== font and encoding ===============================
+"=============================== encoding ===============================
 
 set nu "show number
 set showmatch "colorscheme evening
@@ -137,22 +135,6 @@ function! Uncomment() range
   endif
 endfunction
 "==============================comments===================================
-
-"=============================== New File Header ===================================================
-autocmd BufNewFile *.cpp,*.h,*.sh exec ":call SetHeader()"
-func SetHeader()
-  if &filetype == 'sh'
-    call setline(1,"\# File Name: ".expand("%"))
-    call append(line(".")+0, "\# Created Time: ".strftime("%Y%m%d %H:%M:%S"))
-    call append(line(".")+1, "\#!/bin/bash")
-    call append(line(".")+2, "\set -x")
-    call append(line(".")+3, "")
-  endif
-
-  "jump to the end of file
-  autocmd BufNewFile * normal G
-endfunc
-"=============================== New File Header ===================================================
 
 "===========================Chinese Punctuation: ctrl-s or :%call CheckChineseMark ==================
 map <C-S> :call CheckChineseMark()<CR>
