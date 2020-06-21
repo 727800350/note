@@ -1,6 +1,5 @@
 - `echo *`: 会输出当前目录的文件
 - `echo "*"`: 才会输出`*`
-
 - `watch -d -n 1 command`: 间隔1秒钟, 执行一次command, 并将结果的diff 高亮显示
 
 # 监控
@@ -100,7 +99,6 @@ eg:
 
 - `iptables -A INPUT -p tcp --dport 22 -j ACCEPT`: 允许 SSH 通过 tcp 端口 22 来连接本机
 - `iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP`: 将从本机发出的带有RST 标记的包丢弃
-
 
 # File System
 - 垃圾箱位置: .local/share/Trash/
