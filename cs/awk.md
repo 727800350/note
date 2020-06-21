@@ -7,8 +7,8 @@ pattern scanning and processing language
 - GAWK - The FGNU Project implementation, linux 中默认的版本.
 
 **特性**
-It can be considered to be a **pseudo-C interpretor, as it understands the same arithmatic operators as C**. 
-AWK also has string manipulation functions, so it can search for particular strings and modify the output. 
+It can be considered to be a **pseudo-C interpretor, as it understands the same arithmatic operators as C**.
+AWK also has string manipulation functions, so it can search for particular strings and modify the output.
 AWK also has associative arrays, which are incredible useful, and is a feature most computing languages lack. Associative arrays can make a complex problem a trivial exercise.
 
 ## awk脚本
@@ -48,12 +48,12 @@ awk 的输出列由于内容长度不一样, 经常不是对齐的, 看起来不
 语法模式: `pattern {action}`
 
 The pattern specifies where the action is performed.
-A pattern or condition is simply an abbreviated test. 
+A pattern or condition is simply an abbreviated test.
 If the condition is true, the action is performed. All relational tests can be used as a pattern.
 
 可以使用逻辑运算符和括号: AND(`&&`), OR(`||`) and NOT(`!`)
 
-AWK is line oriented. 
+AWK is line oriented.
 
 - 默认是所有行都匹配
 - 两个特殊的pattern
@@ -142,7 +142,7 @@ NAWK has a function system() that can execute any program. It returns the exit s
 if (system("/bin/rm junk") != 0)
 print "command did not work";
 ```
-The command can be a string, so you can dynamically create commands based on input. 
+The command can be a string, so you can dynamically create commands based on input.
 Note that the output is not sent to the NAWK program. You could send it to a file, and open that file for reading. There is another solution, however.
 
 **getline**
@@ -151,7 +151,7 @@ AWK has a command that allows you to force a new line. It does not take any argu
 As a side effect, the line containing the input changes.没有理解这个side effet 是什么意思?
 
 **strftime**: GAWK has a special function for creating strings based on the current time.
-The systime() function returns the current date in seconds. 
+The systime() function returns the current date in seconds.
 使用起来不是很方便,仅仅是在计算时间差的比较方便
 `strftime("%y_%m_%d_%H_%M_%S")` => 94_12_25_12_00_00
 
@@ -165,4 +165,3 @@ function error(message){
     printf("line # %d, %s, line: %s\n", NR, message, $0) >> "/dev/tty";
 }
 ```
-

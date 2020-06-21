@@ -132,7 +132,7 @@ PTable非常类似于并行化的Python dict, 其包含key到value的映射,但�
 
 - `x.flatten()`: 对于给定PTable中的key和value中每一个元素，构造(key, value)对，结果保存在PCollection中
 
-	```
+	```python
 	>>> _p = _pipeline.parallelize({"A": [2, 3], "B": [4, 5]})
 	>>> transforms.flatten(_p).get()
 	[("A", 2), ("A", 3), ("B", 4), ("B", 5)]

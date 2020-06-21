@@ -168,7 +168,7 @@ cron把命令行保存在/etc/crontab文件里,每个系统用户如果设置了
 cron服务器每分钟读取一次/var/crontab/cron目录内的所有文件和/etc/crontab文件
 
 格式
-```
+```bash
 # Example of job definition:
 # .---------------- minute (0 - 59)
 # |  .------------- hour (0 - 23)
@@ -194,4 +194,3 @@ eg:
 1. `* 23 * * 2-5 /usr/local/bin/esbbak`: 表示在星期二到星期五每天的23点执行
 
 crontab 中生成时间必须加转义`date +"\%Y\%m\%d"`
-
