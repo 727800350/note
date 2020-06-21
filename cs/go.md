@@ -519,7 +519,7 @@ The behavior of defer statements is straightforward and predictable. There are t
 1. Deferred functions may read and assign to the returning function's named return values.
    [return xxx这一条语句并不是一条原子指令](https://tiancaiamao.gitbooks.io/go-internals/content/zh/03.4.html)
    用一个简单的转换规则改写一下,就不会迷糊了.改写规则是将return语句拆成两句写,return xxx会被改写成:
-  ```
+  ```info
   返回值 = xxx
   调用defer函数
   空的return
@@ -546,7 +546,7 @@ The behavior of defer statements is straightforward and predictable. There are t
   ```
 
 The defer statement can also be used to pair "on entry" and "on exit" actions when debugging a complex function.
-```
+```go
 func bigSlowOperation() {
   defer trace("bigSlowOperation")() // don't forget the extra parentheses
   // ...lots of work...
@@ -559,7 +559,7 @@ func trace(msg string) func() {
   return func() { log.Printf("exit %s (%s)", msg, time.Since(start)) }
 }
 ```
-Each time bigSlowOperation is called, it logs its entry and exit and the elapsed time between them. 
+Each time bigSlowOperation is called, it logs its entry and exit and the elapsed time between them.
 
 ## panic and recover
 For diagnostic purposes, the runtime package lets the programmer dump the stack using the same machinery.
@@ -697,9 +697,8 @@ By contrast, Go programs use ordinary control-flow mechanisms like if and return
 If the failure has only one possible cause, the result is boolean, usually called ok.
 
 Error should provide a clear causal chain from the root problem to the overall failure, reminiscent of a NASA accident investigation:
-```
+```info
 genesis: crashed: no parachute: G-switch failed: bad relay orientation
 ```
 Because error messages are frequently chained together, message strings should not be capitalized and newlines should be avoided.
 The resulting errors may be long, but they will be self-contained when found by tools like grep.
-
