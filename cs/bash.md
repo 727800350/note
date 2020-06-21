@@ -1,11 +1,9 @@
-- CTRL-R: 回溯搜索(Backwards search)history缓冲区内的文本(在命令行下)
-
 - `echo *`: 会输出当前目录的文件
 - `echo "*"`: 才会输出`*`
 
 - `watch -d -n 1 command`: 间隔1秒钟, 执行一次command, 并将结果的diff 高亮显示
 
-## 监控
+# 监控
 - 每个逻辑cpu的使用率, 只需要运行top命令, 按下数字键1即可
 
 总核数 = 物理CPU个数 X 每颗物理CPU的核数
@@ -15,69 +13,13 @@
 - 查看每个物理CPU中core的个数(即核数): `cat /proc/cpuinfo | grep "cpu cores" | uniq`
 - 查看逻辑CPU的个数: `cat /proc/cpuinfo | grep "processor" | wc -l`
 
-## 查找
-ack, search inside files with no extensions: `ack -a -G regex what-to-search-for`
-
-[find](http://os.51cto.com/art/200908/141119_all.htm)的使用格式如下:
-```
-$ find <指定目录> <指定条件> <指定动作>
-- <指定目录>: 所要搜索的目录及其所有子目录.默认为当前目录.
-- <指定条件>: 所要搜索的文件的特征.
-- <指定动作>: 对搜索结果进行特定的处理.
-```
-如果什么参数也不加,find**默认搜索当前目录及其子目录**,并且不过滤任何结果(也就是返回所有文件),将它们全都显示在屏幕上.
-```
-$ find . -name 'my*' 搜索当前目录(含子目录,以下同)中,所有文件名以my开头的文件.
-$ find . -name 'my*' -ls 搜索当前目录中,所有文件名以my开头的文件,并显示它们的详细信息.
-find . -name "*.txt" -print
-$ find . -type f -mmin -10 搜索当前目录中,所有过去10分钟中更新过的普通文件.如果不加-type f参数,则搜索普通文件+特殊文件+目录.
-$ find . ! -type d -print 在当前目录下查找除目录以外的所有类型的文件
-```
-
-指定条件
-```
--name 按照文件名查找文件.
--iname 按照文件名(不区分大小写)查找文件.
--perm 按照文件权限来查找文件.
--user 按照文件属主来查找文件.
--group 按照文件所属的组来查找文件.
--mtime -n +n 按照文件的更改时间来查找文件, - n表示文件更改时间距现在n天以内,+ n表示文件更改时间距现在n天以前.
--newer file1 ! file2 查找更改时间比文件file1新但比文件file2旧的文件.
--type 查找某一类型的文件,诸如:
-    b - 块设备文件.
-    d - 目录.
-    c - 字符设备文件.
-    p - 管道文件.
-    l - 符号链接文件.
-    f - 普通文件.
-```
-
-使用find命令时,只要把想要的操作写在一个文件里,就可以用exec来配合find命令查找,很方便的
-
-```
-find . -type f -exec ls -l {} \;
-输出当前目录下的所有普通文件的属性信息
- \ 的意思,是作为转义字符来用的, 且 \ 与 ; 之间不能有空格
-
-与下面的命令效果一样
-find . -type f | xargs ls -l
-```
-在使用find命令的-exec选项处理匹配到的文件时, find命令将所有匹配到的文件一起传递给exec执行.
-但有些系统对能够传递给exec的命令长度有限制,这样在find命令运行几分钟之后,就会出现溢出错误.错误信息通常是"参数列太长"或"参数列溢出".
-这就是xargs命令的用处所在,特别是与find命令一起使用.
-
-find命令把匹配到的文件传递给xargs命令,而xargs命令每次只获取一部分文件而不是全部,不像-exec选项那样.
-这样它可以先处理最先获取的一部分文件,然后是下一批,并如此继续下去.
-
-在有些系统中,使用-exec选项会为处理每一个匹配到的文件而发起一个相应的进程,并非将匹配到的文件全部作为参数一次执行,这样在有些情况下就会出现进程过多,系统性能下降的问题,因而效率不高,
-
-而使用xargs命令则只有一个进程.另外,在使用xargs命令时,究竟是一次获取所有的参数,还是分批取得参数,以及每一次获取参数的数目都会根据该命令的选项及系统内核中相应的可调参数来确定.
-
-locate命令其实是"find -name"的另一种写法,但是要比后者快得多,原因在于它不搜索具体目录,而是搜索一个数据库(/var/lib/locatedb), 使用updatedb 来更新这个数据库
-
-grep  
-Normally, the exit status is 0 if selected lines are found and 1 otherwise. 
-But the exit status is 2 if an error occurred, unless the -q or --quiet or --silent option is used and a selected line is found
+# 查找
+- ctrl r: 回溯搜索(Backwards search)history缓冲区内的文本(在命令行下)
+- j: autojump
+- fd: a simple, fast and user-friendly alternative to 'find'
+- locate: 其实是`find -name`的另一种写法,但是要比后者快得多, 原因在于它不搜索具体目录,而是搜索一个数据库(/var/lib/locatedb), 使用updatedb 来更新这个数据库
+- ack: search inside files with no extensions: `ack -a -G regex what-to-search-for`
+- grep: the exit status is 0 if selected lines are found and 1 otherwise
 
 在directory及其子目录下的c 文件中查找keyword
 ```bash
@@ -95,11 +37,6 @@ grep -R --include="*.c" keyword directory
 - -C: 相当于-B and -A
 - ^ 符号输出所有以某指定模式开头的行
 - $ 符号输出所有以指定模式结尾的行, `^$` 就表示空行
-
-Uppercase to lowercase:
-`$ tr '[:upper:]' '[:lower:]' < input` or `tr '[A-Z]' '[a-z]' < input`
-
-`tr -d'\n'` 删除回车符
 
 # 网络
 - `netstat -anupl`: a表示all, n表示用数字形式显示端口号, u/t,表示UDP/TCP协议类型, p是程序PID, l表示处于监听状态的
@@ -121,19 +58,23 @@ Uppercase to lowercase:
 
 - wget 一个目录: `wget  -r ftp://xxx_path_xxx ./`
 
-- `ssh -o StrictHostKeyChecking=no user@ip "bash shell.sh" < /dev/null` 登陆一台机器, 自动yes, 并在登录后的机器上执行命令.
+## ssh
+产生一个新的密钥对(如果已有, 这步可以跳过) `cd ~/.ssh; ssh-keygen -t rsa -C "your_email@example.com"`
+
+把公钥上传到想要免密登录的服务器, 可使用ssh-copy-id命令来完成,
+```bash
+ssh-copy-id root@remote-server -p port
+```
+代替了手动拷贝到 `authorized_keys` 中
+
+`ssh -o StrictHostKeyChecking=no user@ip "bash shell.sh" < /dev/null` 登陆一台机器, 自动yes, 并在登录后的机器上执行命令.
 	- [StrictHostKeyChecking=no ssh: automatically accept keys](https://askubuntu.com/questions/123072/ssh-automatically-accept-keys).
 	- 在远程执行的命令的stdout 和 stderr 是发起ssh 命令的机器.
 	- 加上`/dev/null` 是为了避免可能的干扰
-- iterm 文件传输(本地和服务器都需要安转 lrzsz)
+
+iterm 文件传输(本地和服务器都需要安转 lrzsz)
 	- `rz`: 将文件传到远端服务器
 	- `sz file`: 从远端服务器下载文件
-
-添加ssh 公钥到github
-
-1. 产生一个新的密钥对(如果已有, 这步可以跳过) `cd ~/.ssh; ssh-keygen -t rsa -C "your_email@example.com"`
-1. 把生成的公钥加到github中
-1. 测试添加是否成功: `ssh -T git@github.com`
 
 putty connection refused error
 `sudo service sshd status`
