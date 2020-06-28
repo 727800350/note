@@ -64,7 +64,7 @@ grep -R --include="*.c" keyword directory
 ```bash
 ssh-copy-id root@remote-server -p port
 ```
-代替了手动拷贝到 `authorized_keys` 中
+代替了手动拷贝到 `authorized_keys` 中, 速度快, 而且可以自动设置文件权限.
 
 `ssh -o StrictHostKeyChecking=no user@ip "bash shell.sh" < /dev/null` 登陆一台机器, 自动yes, 并在登录后的机器上执行命令.
 	- [StrictHostKeyChecking=no ssh: automatically accept keys](https://askubuntu.com/questions/123072/ssh-automatically-accept-keys).
