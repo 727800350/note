@@ -4,7 +4,7 @@
 如果想把标题放在表格下方,就把caption放在\end{table}和\end{tabular}之间.
 
 ```latex
-\begin{table}[h]\small 
+\begin{table}[h]\small
 \begin{tabular}
 ...
 \end{tabular}
