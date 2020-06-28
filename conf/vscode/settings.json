@@ -1,10 +1,14 @@
 {
+    "C_Cpp.clang_format_sortIncludes": true,
+    "C_Cpp.experimentalFeatures": "Enabled",
+    "C_Cpp.updateChannel": "Insiders",
     "editor.suggestSelection": "first",
     "editor.tabSize": 2,
     "go.autocompleteUnimportedPackages": true,
     "go.inferGopath": true,
     "go.formatTool": "goimports",
     "go.useLanguageServer": true,
+    "http.proxySupport": "off",
     "markdownlint.config": {
         "MD007": false,
         "MD010": false,
