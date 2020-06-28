@@ -1,1 +1,0 @@
-/root/opt/blade-build/vim/syntax/blade.vim

@@ -1,1 +1,0 @@
-/root/opt/blade-build/vim/ftdetect/blade_root.vim

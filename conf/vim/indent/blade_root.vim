@@ -1,1 +1,0 @@
-/root/opt/blade-build/vim/indent/blade_root.vim
