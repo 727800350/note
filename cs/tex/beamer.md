@@ -18,4 +18,3 @@ note 的显示方式
 \note[item]<2>{tell joke about plants}
 \note[item]<2>{make it short}
 ```
-

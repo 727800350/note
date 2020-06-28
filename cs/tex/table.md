@@ -71,7 +71,6 @@ X 参数表示某栏可以折行, 当这个cell 内容比较长时比较实用.
 label-1 & label-2 & label-3 & label-4 & label-5 \\ \hline
 \end{tabular}
 ```
-[result]()
 
 斜线
 
@@ -79,7 +78,7 @@ label-1 & label-2 & label-3 & label-4 & label-5 \\ \hline
 
 使用颜色
 
-- ` \cellcolor[gray]{.8} Unix/Linux`: cell 级别
+- `\cellcolor[gray]{.8} Unix/Linux`: cell 级别
 - `\rowcolor[gray]{.8} Unix/Linux & TeX Live & Emacs \\`: row 级别
 - `\begin{tabular}{|l|>{\columncolor[gray]{0.8}[0pt]}c|r|}`: col 级别
 
@@ -134,7 +133,7 @@ longtable
 ```
 
 图表混排
-```
+```latex
 \makeatletter\def\@captype{figure}\makeatother
 \begin{minipage}{.45\textwidth}
 \centering
@@ -158,4 +157,3 @@ longtable
 \end{minipage}
 ```
 [达到的效果](http://photo.blog.sina.com.cn/list/blogpic.php?pid=5e16f1774ae896b1696df&bid=5e16f1770102dxz2&uid=1578561911)
-

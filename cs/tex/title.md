@@ -16,7 +16,7 @@
 
 - \titlepage: 对于普通的article, book 等类型
 - \begin{frame}[plain] \titlepage \end{frame}: 对于beamer类型
-	
+
 如果需要在author 中使用tabular 以产生对齐效果, 那么需要把`\author` 命令放在`\begin{document}`之后, 否则 tabular 命令不认.  
 如果使用`\quad` 等空白符, 还是需要加上`$$`符号.
 
@@ -30,7 +30,7 @@ Beamer provides `\logo{<logo code>}` to set the logo(s)
 ```
 
 [logo in the first page only](http://tex.stackexchange.com/questions/61051/logo-in-the-first-page-only)
-```
+```latex
 \titlegraphic{%
 	\includegraphics[width=2cm]{logopolito}\hspace*{4.75cm}~%
 	\includegraphics[width=2cm]{logopolito}
@@ -44,4 +44,3 @@ Beamer provides `\logo{<logo code>}` to set the logo(s)
 \mbox{}
 \newpage
 ```
-

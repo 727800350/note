@@ -43,13 +43,13 @@
 **把参考文献的字体调小**  
 And if you use the natbib package:  
 `\def\bibfont{\footnotesize}`  
-If you are having problems with getting itshapes, you can use 
-`\renewcommand{\bibfont}{\normalfont\small}` 
+If you are having problems with getting itshapes, you can use
+`\renewcommand{\bibfont}{\normalfont\small}`
 
 Using the biblatex package you could also write  
 `\renewcommand*{\bibfont}{\footnotesize}`  
 Using beamer+biblatex you could also write  
-`\frame[shrink=50] {\printbibliography}` 
+`\frame[shrink=50] {\printbibliography}`
 
 **如何在章节标题中应用参考文献?**  
 为实现章节标题中对参考文献的引用,采取保护脆弱命令的措施,如下所示:
@@ -64,4 +64,3 @@ index
 1. `\usepackage{makeidx}`
 1. 在导言区使用`\makeindex`激活导言
 1. 索引的内容通过`\index{key}`
-

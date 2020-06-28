@@ -60,9 +60,9 @@ text border example(\usepackage{fancybox}):
 如果不出意外的话,因该就可以使用这些新安装的字体文件了,比如在主题中改改系统字体设置之类的.
 
 # Special Characters
-## [french characters](http://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped codes)
+## [french characters](http://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped\_codes)
 LaTeX command	Sample	Description
-```
+```latex
 \`{o}	grave accent
 \''{o}	(single)acute accent
 \^{o}	circumflex
@@ -82,16 +82,16 @@ LaTeX command	Sample	Description
 \t{oo}	"tie" (inverted u) over the two letters
 \o		slashed o (o with stroke)
 ```
-#French Ordinal Numbers
+
+# French Ordinal Numbers
 After having included `\usepackage[greek,francais]{babel}`, use
-```
-– 1\ier{}, 
-– 1\iere{} or 
+```latex
+– 1\ier{}
+– 1\iere{} or
 – 1\ieres{}
 ```
 For other ordinal numbers, use
-```
+```latex
 – \ieme{} or
 – \iemes{}
 ```
-

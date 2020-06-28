@@ -6,8 +6,8 @@
 	- cm 厘米  
 	- bp big point, 1/72 in, big point 是Adobe 推出PS 时新定义的单位
 	- mm 毫米  
-	- pc pica, 12 pt   
-	- mu math unit,1/18 em 
+	- pc pica, 12 pt
+	- mu math unit,1/18 em
 - 相对单位  
 	- em 当前字体中字母M的宽度, em 是个相对单位,比如当前字体是11pt 时,1em 就是11pt.
 	- ex 当前字体中字母X的高度
@@ -34,20 +34,20 @@ but TeX normally ignores white space, so what to do? This is what `\phantom{}` i
 - `\linewidth` is a variable that represents the current size of the line of text, whether inside a column or a minipage or a list
 
 In general, then, it is **best to always use `\linewidth`** if you are specifying the relative size of an image or a box, since it will adapt to the current situation.  
-Note: `\linewidth` also appears to work in table columns, not just text columns. 
+Note: `\linewidth` also appears to work in table columns, not just text columns.
 
 通过下面的代码可以看出这几个宽度的不同
 
-```Latex
+```latex
 \documentclass[twocolumn]{article}
 \parindent=0pt
 \begin{document}
-	
+
 \leavevmode\rlap{text:}\rule{\textwidth}{2pt}\par
 \leavevmode\rlap{line:}\rule{\linewidth}{2pt}\par
 \leavevmode\rlap{hsize:}\rule{\hsize}{2pt}\par
 \leavevmode\rlap{column:}\rule{\columnwidth}{2pt}
-	
+
 \begin{itemize}
 \item \rule{\textwidth}{5pt}
 \item \rule{\linewidth}{5pt}
@@ -60,26 +60,25 @@ Note: `\linewidth` also appears to work in table columns, not just text columns.
 
 - `\hfill`:  insert a horizontal stretched space in a line so that the rest gets "pushed" toward the right margin.
 	\hfill 用在`\newline`后没有效果.
-- `\vfill`: you can insert vertical stretched space with 
+- `\vfill`: you can insert vertical stretched space with
 
 正文间距
 
 - `\baselineskip` 正文中的行间距, 但是要改变行间距的时候, 一般不直接修改`\baselineskip`, 而是修改 `\baselinestretch` 的值
 - `\baselinestretch` 是对 `\baselineskip` 进行缩放的, 默认是1. 因此, 设置2倍行间距的正确操作为: `\renewcommand{\baselinestretch}{2}`
 
-- `parskip`: 段落前后间距, `\setlength{\parskip}{.5\baselineskip}`, 
+- `parskip`: 段落前后间距, `\setlength{\parskip}{.5\baselineskip}`,
 
 段落首行缩进
 
 - 局部取消: `\noindent`
 - 全局取消: `\setlength{\parindent}{0pt}`
 
-页边距
-http://www.52souji.net/set-the-margin-header-footer-of-latex/
- 
+[页边距](http://www.52souji.net/set-the-margin-header-footer-of-latex/)
+
 - `\hrule` 画一条水平标尺
 - `\vrule` 竖直标尺
- 
+
 # floats
 [ref](http://techshangrila.blogspot.com/2014/01/reduce-space-around-floats-algorithm.html)
 
@@ -96,4 +95,3 @@ http://www.52souji.net/set-the-margin-header-footer-of-latex/
 	For floats at top - length between float and text below it,
 	For floats at bottom - length between float and text above it.
 	- \setlength\{textfloatsep}{1.25\baselineskip plus 3pt minus 2pt}
- 

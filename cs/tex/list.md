@@ -12,8 +12,8 @@ If you want each item of a list to appear in order, use the `[<+->]` option. (i.
 - `| alert@1-3`: 表示从第1到第3页都是alert
 
 setbeamertemplate
-```Latex
-\setbeamertemplate{itemize items}{\color{red}$\bullet$} 
+```latex
+\setbeamertemplate{itemize items}{\color{red}$\bullet$}
 \setbeamertemplate{itemize item}{$\infty$}
 \setbeamertemplate{itemize subitem}{$\bullet$}
 \setbeamertemplate{itemize subsubitem}{$\diamond$}
@@ -21,7 +21,7 @@ setbeamertemplate
 
 改变序号
 
-```Latex
+```latex
 \begin{enumerate}[step 1]
 \item good morning...
 \item good morning....
@@ -56,9 +56,9 @@ setbeamertemplate
 ## FAQ 溢出
 如果一页溢出,考虑以下解决方法:
 
-1. 减小字体,变成/small, /tiny字体 
+1. 减小字体,变成/small, /tiny字体
 2. 幻灯片写成plain格式: `\begin{frame}[plain]`
-3.  由beamer 自动分页, `\begin{frame}[allowframebreaks]`\\
+3. 由beamer 自动分页, `\begin{frame}[allowframebreaks]`\\
 有时这种方法给出的自动分页不是很好, 好不如自己手动分页, 这样可以控制在那里断开
 
 # article

@@ -1,7 +1,7 @@
 # Table of contents
 - `\tableofcontents`: 生成目录.
 	如果不想让某个章节标题出现在目录中,可以使用以下带* 的命令来声明章节, eg: `\chapter*{...}, \section*{...}, \subsection*{...}`
-- `\listoffigures, \listoftables`: 插图和表格的目录 
+- `\listoffigures, \listoftables`: 插图和表格的目录
 
 - `\setcounter{tocdepth}{2}`: 目录只显示两级
 - `\renewcommand{\thesection}{\Alph{section}}`: 将(section)的序号改成大写字母的型式, 如图 ![Alph Table of Contents](http://i.imgbox.com/VPal8xXr.jpg)
@@ -47,4 +47,3 @@ eg:
 \tableofcontents[part=1,pausesections]
 \end{frame}
 ```
-

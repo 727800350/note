@@ -50,7 +50,6 @@ The alignment options
 - [plain]: headlines, footlines, and sidebars to be suppressed, useful for showing large pictures.
 - [fragile]: 可以对代码, list 自动分页
 
-
 摘录
 
 - `\begin{quote} \end{quote}`: 引文两端都缩进
@@ -62,4 +61,3 @@ The alignment options
 - flushleft
 - flushright
 - center
-

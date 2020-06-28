@@ -11,7 +11,7 @@ h: here, t: top, b: bottom, H: Here
 
 ## Special figure effect
 ### Side captions
-have a caption appear on the side of a float, rather than above or below. 
+have a caption appear on the side of a float, rather than above or below.
 
 `SCfigure` environment
 
@@ -23,7 +23,7 @@ have a caption appear on the side of a float, rather than above or below.
 
 ### Lists of figures and tables
 `\caption[short]{long}`, used for the List of Tables or List of Figures.
-Typically the short description is for the caption listing(table of contents for figure or table), 
+Typically the short description is for the caption listing(table of contents for figure or table),
 and the long description will be placed beside the figure or table.
 
 	\listoffigures
@@ -35,7 +35,7 @@ and the long description will be placed beside the figure or table.
 ![list figure](http://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/LaTeX_figure_caption_with_lof_entry.png/400px-LaTeX_figure_caption_with_lof_entry.png)
 
 ### Wrapping text around figures
-```
+```latex
 \usepackage{wrapfig}
 \begin{wrapfigure}[lineheight]{position}{width}
 ```
@@ -60,7 +60,7 @@ The uppercase-character allows the figure to float, while the lowercase version 
 [result figure](http://upload.wikimedia.org/wikipedia/commons/d/dc/Latex_example_wrapfig_vspace.png)
 
 ## subfloat
-```
+```latex
 \usepackage{subfig}
 \subfloat[list entry][sub-caption]{\label{sub-label}body}
 body 可以为figure, 也可以是table
@@ -84,4 +84,3 @@ LATEX 支持点阵图形格式JPEG 和PNG,也支持矢量格式EPS 和PDF.
 `\usepackage{epstopdf}`  
 但是在使用`\includegraphics`的时候仍然使用: `\includegraphics [width=5cm]{back1.eps}`  
 而不需要换成相应的pdf文件, 在编译的时候, 会生成`back1-eps-converted-to.pdf`文件
-

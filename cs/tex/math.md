@@ -26,7 +26,7 @@ There are three basic styles provided:
 cases环境产生一个大括号
 ```latex
 $$
-f(n) = 
+f(n) =
 \begin{cases}
 n/2       & \si n \equiv 0 \\
 (3n +1)/2 & \si n \equiv 1
@@ -67,4 +67,3 @@ gather 一行一个公式序号, 不需要对齐的公式组用 gather 环境,�
 [Avoid eqnarray](https://tug.org/pracjourn/2006-4/madsen/madsen.pdf)
 
 ![数学注音符号](http://i.imgbox.com/I7RSbdFC.jpg)
-

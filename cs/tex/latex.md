@@ -37,19 +37,18 @@ Files can also be linked using the url or the href commands. You simply have to 
 	\url{run:/path/to/my/file.ext}
 	\href{run:/path/to/my/file.ext}{text displayed}
 
-
 用renewcommand定义了命令后怎么恢复原来的命令啊?
 利用原始命令`\let,renew` 之前保存一下,以后再恢复:
-```
+```latex
 \let\oldfoo\foo
 \renewcommand\foo{new def}
 ...
 \let\foo\oldfoo
 ```
-在使用book 类型的class 时, chapter 默认会在新的一页开始, 如果要让chapter连续而不分页, 那么我们可以把clearpage 这个命令给关闭掉, 
+在使用book 类型的class 时, chapter 默认会在新的一页开始, 如果要让chapter连续而不分页, 那么我们可以把clearpage 这个命令给关闭掉,
 但是关闭掉之后, 又出现了另外一个问题, 参考文献部分会出现问题(文献会显示不全), 所以我们就需要在参考文献部分将clearpage的命令恢复
 
-```
+```latex
 \let\old\clearpage
 \renewcommand\clearpage{}
 正文内容
@@ -68,7 +67,7 @@ Files can also be linked using the url or the href commands. You simply have to 
 `\todo[inline, color=green!40]{This is an inline comment.}`
 
 根据条件进行不同的设置
-```
+```latex
 \newif\ifdirector
 \directorfalse %I set the conditional to false
 \ifdirector
