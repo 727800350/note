@@ -16,6 +16,7 @@
         "MD025": false,
         "MD031": false,
         "MD032": false,
+        "MD036": false,
         "MD041": false
     },
     "remote.SSH.showLoginTerminal": true,

@@ -21,7 +21,7 @@ trunk: 模式的端口用于交换机与交换机,交换机与路由器,大多�
 Access: 多用于接入层也叫接入模式.目前般交换设备端口默认都access模式
 Multi: 在一个线路中承载多个vlan,但不像trunk,它不对承载的数据打标签.主要用于接入支持多vlan的服务器或者一些网络分析设备.现在基本不使用此类接口,在cisco的网络设备中,也基本不支持此类接口了.
 
-当对端口执行 `no switchport`后, 端口变成路由口,启用三层功能,直接连接终端. 
+当对端口执行 `no switchport`后, 端口变成路由口,启用三层功能,直接连接终端.
 这时, 如果使用`show run`查看, 可以再这些interface 下面看到`no switchport, no ip address`, 因为, 变成了路由口之后, 需要一个IP 地址, 这个端口才能正常工作
 switchport是交换口, 二层功能, 不需要IP地址就能工作, 所有二层功能的端口都会相互转发数据, 所以正常工作不需要IP 地址
 这时想要恢复到原来默认的状态, 可以执行 `switchport`
@@ -29,7 +29,7 @@ switchport是交换口, 二层功能, 不需要IP地址就能工作, 所有二�
 [基本命令](http://network.51cto.com/art/200604/25601.htm)
 
 **交换机基本状态**
-```
+```info
 switch: ;ROM状态, 路由器是rommon>
 hostname> ;用户模式
 hostname# ;特权模式
@@ -38,7 +38,7 @@ hostname(config-if)# ;接口状态
 ```
 
 **交换机口令设置**
-```
+```info
 switch>enable ;进入特权模式
 switch#config terminal ;进入全局配置模式
 switch(config)#hostname  ;设置交换机的主机名
@@ -53,9 +53,9 @@ switch#exit ;返回命令
 如果你同时配了enable secret和enable password的时候,后者就失效了,登陆的时候,只需输入enable secret的密码即可
 
 **交换机VLAN(Virtual Local Area Networks)**
-By creating a VLAN you are separating the network. There are some several reasons, 
-like separating your production network from a guest network, and separating a test environment from a production network. 
-This all adds security to your network. 
+By creating a VLAN you are separating the network. There are some several reasons,
+like separating your production network from a guest network, and separating a test environment from a production network.
+This all adds security to your network.
 新交换机出厂时的默认配置是预配置为VLAN1
 VTP 模式为服务器
 
@@ -65,7 +65,7 @@ VTP 模式为服务器
 1. put the ports 1 – 10 into an access mode
 2. apply a VLAN 2 on ports 1 – 10.
 
-```
+```info
 Switch>enable
 Switch#configure terminal
 Switch(config)#interface range gigabitEthernet 1/0/1 - 10  ## 端口的名字可能不同
@@ -78,7 +78,7 @@ Switch#show vlan  ## 可以看到端口的1 到10 已经在新建的一个vlan 2
 ```
 
 **创建一个自定义名字的vlan**
-```
+```info
 Switch(config)#interface vlan 3
 Switch(config-if)#exit
 Switch(config)#vlan 3
@@ -91,12 +91,12 @@ Switch(config-if-range)#exit
 Switch(config)#exit
 Switch#show vlan  ## 可以看到端口的11 到15 已经在新建的一个一个名为NewName 的vlan 3中
 ```
-So in the end we have three VLANs on this switch, VLAN 1, VLAN 2, VLAN 3 (NewName). 
-If we connected PCs to these three different VLANs none of them would be able to communicate, 
+So in the end we have three VLANs on this switch, VLAN 1, VLAN 2, VLAN 3 (NewName).
+If we connected PCs to these three different VLANs none of them would be able to communicate,
 because each VLAN is like a different network. So you would need to configure a router in order for inter-vlan commutation to work.
 
 **删除vlan**
-```
+```info
 switch(config)#no vlan 2 ;删除vlan 2
 switch(config)#no interface vlan 2
 ```
@@ -107,7 +107,7 @@ VTP(VLAN Trunking Protocol): 是VLAN中继协议,也被称为虚拟局域网干�
 作用是十几台交换机在企业网中,配置VLAN工作量大,可以使用VTP协议,把一台交换机配置成VTP Server, 其余交换机配置成VTP Client,
 这样他们可以自动学习到server 上的VLAN 信息.
 
-```
+```cmd
 switch(config)#int f0/1 ;进入端口1
 switch(config-if)#switchport access vlan 2 ;当前端口加入vlan 2(先要新建一个vlan 2)
 switch(config-if)#switchport mode trunk ;设置为干线
@@ -120,35 +120,8 @@ Switch(config)#show vtp status ; 查看VTP运行状态
 Switch(config)#show vtp counters ; 查看交换机收到和发出广告的数目
 ```
 
-**交换机设置IP地址**
-确定interface to be configured as a Layer 3 interface, and enter interface configuration mode.
-```
-interface {{fastethernet | gigabitethernet} interface-id} | {vlan vlan-id} | {port-channel port-channel-number}
-```
-eg: `switch(config)#interface vlan 1 ;进入vlan 1`
-
-```
-switch(config-if)#ip address 192.168.2.100 255.255.255.0  ;设置IP地址及其subnet mask
-switch(config)#ip default-gateway  ;设置默认网关
-switch(config)#no shutdown ## Enable the interface.
-switch(config)#end ## Return to privileged EXEC mode
-```
-
-验证
-```
-show interfaces [interface-id] 
-show ip interface [interface-id]
-show running-config interface [interface-id]
-```
-
-optional: 保存
-```
-copy running-config startup-config
-
-```
-
 **交换机显示命令**
-```
+```cmd
 switch#write ;保存配置信息
 switch#show vtp ;查看vtp配置信息
 switch#show run ;查看当前配置信息
@@ -158,8 +131,8 @@ switch#show int f0/0 ;查看指定端口信息
 ```
 
 **端口**
-```
-#sh ip int b 命令查看端口状态
+```bash
+sh ip int b 命令查看端口状态
 ```
 
 `#sh cdp nei命令查看相邻路由器`
@@ -173,9 +146,9 @@ SecureCRT
 ### Telnet 连接
 [ref](http://blog.sina.com.cn/s/blog_62449fcf0100hv7b.html)
 
-```
-configure terminal 
-line vty 0 15 
+```bash
+configure terminal
+line vty 0 15
 password password  ## 设置telnet的密码
 login  ## 登陆要求口令验证
 end
@@ -193,8 +166,8 @@ There are 16 possible sessions on a command-capable switch. The 0 and 15 mean th
 命令后,才能使这些信息显示在MS-DOS窗口上
 
 ## 端口镜像
-```
-configure terminal 
+```bash
+configure terminal
 no monitor session {session_number | all | local | remote}
 monitor session session_number source {interface interface_id | vlan vlan_id} [both |rx |tx]
 monitor session session_number destination {interface interface_id | vlan vlan_id [encapsulation replicate]}
@@ -213,8 +186,8 @@ copy running-config startup-config ## Optional) Save the configuration in the co
 
 # router
 网关(Gateway)又称网间连接器,协议转换器. 网关在网络层以上实现网络互连,是最复杂的网络互连设备,仅用于两个高层协议不同的网络互连.
-网关既可以用于广域网互连,也可以用于局域网互连. 网关是一种充当转换重任的计算机系统或设备. 
-在使用不同的通信协议,数据格式或语言,甚至体系结构完全不同的两种系统之间,网关是一个翻译器. 
+网关既可以用于广域网互连,也可以用于局域网互连. 网关是一种充当转换重任的计算机系统或设备.
+在使用不同的通信协议,数据格式或语言,甚至体系结构完全不同的两种系统之间,网关是一个翻译器.
 与网桥只是简单地传达信息不同,网关对收到的信息要重新打包,以适应目的系统的需求.
 **网关基本上都是路由器**, 如果机器能够ping 通网关,那么一般机器就是可以上网的,如果不能上网, 那么可以尝试ping 一下DNS 服务器
 
@@ -246,4 +219,3 @@ IBM服务器硬盘指示灯
 - 如果黄灯闪烁是硬盘在同步数据,同步完成会熄灭,DASD灯亮需作测试报告以进一步确定故障原因
 - 如果是长亮黄灯,不一定是盘挂了,但是可能性比较大,有时候也可能是你的系统问题,比如RAID没做好.(如果你不会操作RAID管理软件的话,比较简单的办法就是把黄灯的盘拔下来再安上去,看看能不能自动同步,必须在开机的状态下,如果重新插拔后故障盘出现黄灯闪烁,那就是已经同步了,等同步完成,也就是黄灯不闪,绿灯正常的闪了,那就再观察一段时间,不出问题的话就没什么了)
 - 如果是绿灯长亮, 一般是没有数据在读写.或者硬盘没有格式化.  
-
