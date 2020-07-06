@@ -1,8 +1,9 @@
 `mysql -u user -p$passwd -h host -P port -D db --default-character-set=utf8`
 
+## conf
 mysql的配置文件: `/etc/my.cnf`.  
-mysql server 自己带有一些示例配置文件: `rpm -ql mysql-server | grep cnf`, 
-得到的结果有`my-huge.cnf, my-innodb-heavy-4G.cnf, my-large.cnf, my-medium.cnf, my-small.cnf`,   
+mysql server 自己带有一些示例配置文件: `rpm -ql mysql-server | grep cnf`,
+得到的结果有`my-huge.cnf, my-innodb-heavy-4G.cnf, my-large.cnf, my-medium.cnf, my-small.cnf`,
 将这些文件复制为`/etc/my.cnf`, 就可以修改mysql的默认配置, 对于现在的硬件配置, 使用`my-huge.cnf`就可以.
 
 当由于系统的空间不够时, mysql 会在`/var/lib/mysql` 目录下创建一个hostname.error 的文件对错误进行说明, 而不会在 `/var/log/mysqld.log` 中说明.  
@@ -39,9 +40,9 @@ datetime 直接之间作差得到结果不是时间意义上的作差.
 - `char_length()`
 
 ### 复制数据到新表
-- 复制表结构(包括index, key 等): 
+- 复制表结构(包括index, key 等)
 	1. `CREATE TABLE 新表 LIKE 旧表`
--  复制数据
+- 复制数据
 	1. `CREATE TABLE 新表 SELECT * FROM 旧表`
 	1. `INSERT INTO 新表 SELECT * FROM 旧表`
 
@@ -65,7 +66,7 @@ MySql避免重复插入记录(根据主键判重)
 - `update a, b set a.age = b.age where a.name = b.name`: 比上面的子查询效率会高很多, 尤其是在建立有合适的索引时.
 
 ## Alter
-```
+```sql
 ALTER TABLE table_name ADD column_name datatype
 alter table flows add column ip_prot tinyint(4) null default 0;
 
@@ -81,7 +82,7 @@ ALTER TABLE table_name RENAME TO new_table_name;
 mysql中提供了一个G标志,放到sql语句后,可以使一行的每个列打印到单独的行.
 对于列数比较多, 屏幕不够宽时很好用.  
 这样的显示效果与MYSQL命令的-E参数是一样的. 使用-E参数后,结果集默认以列的方式显示
-```
+```sql
 mysql> select * from t_goods \G  
 *************************** 1. row ***************************  
          id: 1  
@@ -120,14 +121,15 @@ position 指示从哪里开始查询,如果是0则是从头开始,counter 表示
 	SELECT * FROM Pre_Company ORDER BY ID DESC limit $n) as a
 	ORDER BY ID  ASC limit $display) as b 
 	ORDER BY ID DESC";
+
 ### group by, where, having
 可以在包含 GROUP BY 子句的查询中使用 WHERE 子句.在完成任何分组之前,将消除不符合 WHERE 子句中的条件的行.例如:
-```
+```sql
 SELECT ProductModelID, AVG(ListPrice) AS 'Average List Price'
 FROM Production.Product
 WHERE ListPrice > $1000
 GROUP BY ProductModelID
-ORDER BY ProductModelID ;
+ORDER BY ProductModelID;
 ```
 
 having子句与where有相似之处但也有区别,都是设定条件的语句.
@@ -137,7 +139,7 @@ having子句与where有相似之处但也有区别,都是设定条件的语句.
 3. where后的条件表达式里不允许使用聚合函数,而having可以
 
 在查询过程中优先级
-```
+```sql
 where 子句 > 聚合语句(sum,min,max,avg,count) > having子句
 ```
 eg:  
@@ -165,12 +167,12 @@ eg: 完成一个复杂的查询语句,需求如下: 按由高到低的顺序显�
 1. 要求显示学生姓名和平均分, 因此确定第1步`select s_name,avg(score) from student`
 2. 计算平均分前不包括分数在60分以下的成绩,因此确定第2步 `where score>=60`
 3. 显示个人平均分, 相同名字的学生(同一个学生)考了多门科目,因此按姓名分组.确定第3步 `group by s_name` 
-4. 显示个人平均分在70分以上 因此确定第4步 `having avg(s_score)>=70` 
+4. 显示个人平均分在70分以上 因此确定第4步 `having avg(s_score)>=70`
 5. 按由高到低的顺序, 因此确定第5步 `order by avg(s_score) desc`
 
 合起来就是:
-```
-select s_name,avg(s_score) from student 
+```sql
+select s_name,avg(s_score) from student
 where score>=60
 group by s_name
 having avg(s_score)>=70
@@ -191,7 +193,7 @@ There are 4 different types of SQL joins:
 
 例子中用到的数据  
 We have a table called suppliers with two fields (supplier_id and supplier_name). It contains the following data:
-```
+```sql
 supplier_id	supplier_name
 10000	IBM
 10001	Hewlett Packard
@@ -199,7 +201,7 @@ supplier_id	supplier_name
 10003	NVIDIA
 ```
 We have another table called orders with three fields (order_id, supplier_id, and order_date). It contains the following data:
-```
+```sql
 order_id	supplier_id	order_date
 500125	10000	2003/05/12
 500126	10001	2003/05/13
@@ -211,9 +213,9 @@ It is the most common type of SQL join.
 SQL INNER JOINS return all rows from multiple tables where the join condition is met.
 
 The syntax for the SQL INNER JOIN is:
-```
+```sql
 SELECT columns
-FROM table1 
+FROM table1
 INNER JOIN table2
 ON table1.column = table2.column;
 ```
@@ -223,14 +225,14 @@ In this visual diagram, the SQL INNER JOIN returns the shaded area:
 The SQL INNER JOIN would return the records where table1 and table2 intersect.
 
 ex:
-```
+```sql
 SELECT s.supplier_id, s.supplier_name, od.order_date
 FROM suppliers AS s
 INNER JOIN order AS od
 ON s.supplier_id = od.supplier_id;
 ```
 result
-```
+```sql
 supplier_id	name	order_date
 10000	IBM	2003/05/12
 10001	Hewlett Packard	2003/05/13
@@ -239,7 +241,7 @@ supplier_id	name	order_date
 #### SQL LEFT OUTER JOIN
 This type of join returns all rows from the LEFT-hand table specified in the ON condition and only those rows from the other table where the joined fields are equal (join condition is met).
 
-```
+```sql
 SELECT columns
 FROM table1
 LEFT OUTER JOIN table2
@@ -249,14 +251,14 @@ In some databases, the LEFT OUTER JOIN keywords are replaced with LEFT JOIN.
 
 ![left outer join](http://www.techonthenet.com/sql/images/left_outer_join.gif)
 
-```
+```sql
 SELECT suppliers.supplier_id, suppliers.supplier_name, orders.order_date
 FROM suppliers
 LEFT OUTER JOIN orders
 ON suppliers.supplier_id = orders.supplier_id;
 ```
 Our result set would look like this:
-```
+```sql
 supplier_id	supplier_name	order_date
 10000	IBM	2003/05/12
 10001	Hewlett Packard	2003/05/13
@@ -267,7 +269,7 @@ supplier_id	supplier_name	order_date
 ##### 选取 A - B(也就是在A中不在B中)
 ![A - B](http://blog.codinghorror.com/content/images/uploads/2007/10/6a0120a85dcdae970b012877702754970c-pi.png)
 
-```
+```sql
 SELECT * FROM TableA
 LEFT OUTER JOIN TableB
 ON TableA.name = TableB.name
@@ -278,14 +280,14 @@ WHERE TableB.id IS null
 ![right outer join](http://www.techonthenet.com/sql/images/right_outer_join.gif)
 
 Example
-```
+```sql
 SELECT orders.order_id, orders.order_date, suppliers.supplier_name
 FROM suppliers
 RIGHT OUTER JOIN orders
 ON suppliers.supplier_id = orders.supplier_id;
 ```
 result
-```
+```sql
 order_id	order_date	supplier_name
 500125	2013/08/12	Apple
 500126	2013/08/13	Google
@@ -294,7 +296,7 @@ order_id	order_date	supplier_name
 
 #### SQL FULL OUTER JOIN
 This type of join returns all rows from the LEFT-hand table and RIGHT-hand table **with nulls in place where the join condition is not met**.
-```
+```sql
 SELECT columns
 FROM table1
 FULL OUTER JOIN table2
@@ -304,14 +306,14 @@ ON table1.column = table2.column;
 ![full outer join](http://www.techonthenet.com/sql/images/full_outer_join.gif)
 
 Example
-```
+```sql
 SELECT suppliers.supplier_id, suppliers.supplier_name, orders.order_date
 FROM suppliers
 FULL OUTER JOIN orders
 ON suppliers.supplier_id = orders.supplier_id;
 ```
 result
-```
+```sql
 supplier_id	supplier_name	order_date
 10000	IBM	2013/08/12
 10001	Hewlett Packard	2013/08/13
@@ -322,7 +324,7 @@ supplier_id	supplier_name	order_date
 
 ##### 选取 (A - B) \CUP (B - A)
 ![set of records unique to Table A and Table B](http://blog.codinghorror.com/content/images/uploads/2007/10/6a0120a85dcdae970b012877702769970c-pi.png)
-```
+```sql
 SELECT * FROM TableA
 FULL OUTER JOIN TableB
 ON TableA.name = TableB.name
@@ -331,7 +333,7 @@ OR TableB.id IS null
 ```
 
 mysql 不支持full outer join, 但是可以使用left join 和right join来模拟.
-```
+```sql
 SELECT * FROM t1
 LEFT JOIN t2 ON t1.id = t2.id
 UNION
@@ -343,11 +345,11 @@ RIGHT JOIN t2 ON t1.id = t2.id
 mysql的查看执行计划的语句很简单,explain+你要执行的sql语句就OK了.
 
 举一个例子
-```
+```sql
 EXPLAIN SELECT * from employees where employees.gender='M'
 ```
 结果示例:
-```
+```sql
 id, select_type, table,     type, possible_keys, key,  key_len, ref,  rows,   Extra
 1,  SIMPLE,      employees, ALL,  NULL,          NULL, NULL,    NULL, 300252, Using where
 ```
@@ -366,7 +368,7 @@ id如果相同,则可以认为是一组,从上往下顺序执行,所有组中,id
 - 在from的列表中包含的子查询被标记成derived.
 - 若第二个select出现在union后,则被标记成union,若union在from子句的子查询中,外层的select被标记成derived.
 - 从union表获取结果的select被标记成union result.
- 
+
 1. type叫访问类型,表示在表中找到所需行的方式,常见类型有all,index,range,ref,eq_ref,const,system,NULL 性能从做至右由差至好.
 
 - ALL,即full table scan,mysql将遍历全表来找到所需要的行.
@@ -377,7 +379,7 @@ id如果相同,则可以认为是一组,从上往下顺序执行,所有组中,id
 - const 表示当对查询部分进行优化,并转化成一个常量时,使用这些类型访问.比如将主键置于where列表中,mysql就能把该查询置成一个常量.
 - system是const的一个特例,当查询表中只有一行的情况下使用的是system
 - NULL表示在执行语句中,不用查表或索引.
- 
+
 1. possiblekey表示能使用哪个索引在表中找到行,查询涉及到的字段上若存在索引,则该索引被列出,但不一定被查询使用.
 
 1. key表示查询时使用的索引.若查询中使用了覆盖索引,则该索引仅出现在key中举个例子
@@ -405,7 +407,7 @@ mysq的执行计划有一定局限性:
 
 ### Backup
 备份
-```
+```sql
 备份整个数据库
 $mysqldump -u 用户名 -p 数据库名 > 导出的文件名
 
@@ -413,14 +415,14 @@ $mysqldump -u 用户名 -p 数据库名 > 导出的文件名
 $mysqldump -u 用户名 -p 数据库名 表名 > 导出的文件名
 ```
 恢复
-```
+```sql
 mysql>source 导入的文件名
 $mysql -u root -p voice<voice.sql
 ```
 
 ## index
 在执行CREATE TABLE语句时可以创建索引,也可以单独用CREATE INDEX或ALTER TABLE来为表增加索引
-```
+```sql
 INDEX index_name(`field`),
 ```
 
@@ -461,18 +463,18 @@ PRIMARY KEY索引和UNIQUE索引非常类似.
 如果我们的查询where条件只有一个,我们完全可以用单列索引,这样的查询速度较快,索引也比较瘦身.
 如果我们的业务场景是需要经常查询多个组合列,**不要试图分别基于单个列建立多个单列索引(因为虽然有多个单列索引,但是MySQL只能用到其中的那个它认为似乎最有效率的单列索引)**.  
 这是因为当SQL语句所查询的列,全部都出现在复合索引中时,此时由于只需要查询索引块即可获得所有数据,当然比使用多个单列索引要快得多.下面以实际例子说明:
-```
+```sql
 CREATE TABLE people(
-peopleid SMALLINT NOT NULL AUTO_INCREMENT, 
-firstname CHAR(50)　NOT NULL, 
-lastname CHAR(50) NOT NULL, 
-age SMALLINT NOT NULL, 
-townid SMALLINT NOT　NULL, 
+peopleid SMALLINT NOT NULL AUTO_INCREMENT,
+firstname CHAR(50)　NOT NULL,
+lastname CHAR(50) NOT NULL,
+age SMALLINT NOT NULL,
+townid SMALLINT NOT　NULL,
 PRIMARY KEY (peopleid)
 );
 ```
 例如,我们可能需要查找姓名为Mike Sullivan,年龄17岁用户的peopleid
-```
+```sql
 SELECT peopleid FROM people WHERE firstname="Mike" AND lastname="Sullivan" AND age=17;
 ```
 由于我们不想让MySQL每次执行查询就去扫描整个表,这里需要考虑运用索引.
@@ -484,7 +486,7 @@ MySQL将通过这个索引迅速把搜索范围限制到那些firstname="Mike"�
 但我们要求MySQL扫描的记录数量仍旧远远超过了实际所需要的.虽然我们可以删除firstname列上的索引,再创建lastname或者age列的索引,但总地看来,不论在哪个列上创建索引搜索效率仍旧相似.  
 为了提高搜索效率,我们需要考虑运用多列索引.  
 如果为firstname,lastname和age这三个列创建一个多列索引,MySQL只需一次检索就能够找出正确的结果!下面是创建这个多列索引的SQL命令:
-```
+```sql
 ALTER TABLE people ADD INDEX fname_lname_age (firstname,lastname,age);
 ```
 由于索引文件以B+树格式保存,MySQL能够立即转到合适的firstname,然后再转到合适的lastname,最后转到合适的age.在没有扫描数据文件任何一个记录的情况下,MySQL就正确地找出了搜索的目标记录!
@@ -503,7 +505,7 @@ ALTER TABLE people ADD INDEX fname_lname_age (firstname,lastname,age);
 - CONVERT()	Cast a value as a certain type
 
 The BINARY operator casts the string following it to a binary string. This is an easy way to force a column comparison to be done byte by byte rather than character by character.
-```
+```sql
 mysql> SELECT 'a' = 'A';
         -> 1
 mysql> SELECT BINARY 'a' = 'A';
@@ -515,7 +517,7 @@ mysql> SELECT BINARY 'a' = 'a ';
 ```
 
 `BINARY str` is shorthand for `CAST(str AS BINARY)`.
-```
+```sql
 CONVERT(expr,type), CONVERT(expr USING transcoding_name)
 ```
 The CONVERT() and CAST() functions take an expression of any type and produce a result value of a specified type. 
@@ -529,7 +531,7 @@ The type for the result can be one of the following values:
 - DECIMAL[(M[,D])]
 - SIGNED [INTEGER]
 - TIME
-- UNSIGNED [INTEGER] 
+- UNSIGNED [INTEGER]
 
 ## [用户管理及权限管理](http://www.libuchao.com/2013/04/06/mysql-user-and-privilege)
 
@@ -538,7 +540,7 @@ The type for the result can be one of the following values:
 	FLUSH PRIVILEGES;
 
 将权限给本地用户,且不需要用密码验证
-```
+```sql
 GRANT ALL PRIVILEGES ON test.* TO ''@'localhost';
 ```
 
@@ -563,7 +565,7 @@ MySQL 默认有个root用户,但是这个用户权限太大,一般只在管理�
 `FLUSH PRIVILEGES;`
 
 查看权限
-```
+```sql
 show grants for 'test'@'%';
 
 select * from mysql.user where user='test'
@@ -577,7 +579,7 @@ SELECT User, Host FROM user;`
 当然,这个表中还包含很多其它例如用户密码,权限设置等很多内容,操作时候尤其需要小心.
 
 ## trigger
-```
+```sql
 mysql> help create trigger
 Name: 'CREATE TRIGGER'
 Description:
@@ -597,7 +599,7 @@ FOR EACH ROW表示任何一条记录上的操作满足触发事件都会触发�
 
 插入的record 用new 代指, 删除的record 用old代指, 具体见[trigger demo](../demo/sql/trigger.sql)
 
-```
+```sql
 mysql> CREATE TRIGGER trig1 AFTER INSERT
     -> ON work FOR EACH ROW
     -> INSERT INTO time VALUES(NOW());
@@ -606,7 +608,7 @@ mysql> CREATE TRIGGER trig1 AFTER INSERT
 
 tips:一般情况下,mysql默认是以; 作为结束执行语句,与触发器中需要的分行起冲突, 
 为解决此问题可用DELIMITER,如:`DELIMITER ||`,可以将结束符号变成||当触发器创建完成后,可以用`DELIMITER ;`来将结束符号变成;
-```
+```sql
 mysql> DELIMITER ||
 mysql> CREATE TRIGGER trig2 BEFORE DELETE
     -> ON work FOR EACH ROW
@@ -621,7 +623,7 @@ mysql> DELIMITER ;
 ```
 
 删除触发器
-```
+```sql
 mysql> DROP TRIGGER trig1;
 ```
 
@@ -666,4 +668,3 @@ innodb存储引擎可将所有数据存放于`ibdata*`的共享表空间, 也可
 1. RocksDB占总数据量90%的最底层数据,行内不需要存储系统列seqid
 1. MyRocks在MySQL 5.6/5.7就实现了逆序索引,基于逆序的列族实现,显然,逆序索引不能使用默认的default列族.
 1. 基于LSM特性,MyRocks还以很低的成本实现了TTL索引,类似于HBase.
-
