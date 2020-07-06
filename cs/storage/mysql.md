@@ -80,10 +80,10 @@ having子句与where有相似之处但也有区别,都是设定条件的语句.
 ```sql
 where 子句 > 聚合语句(sum, min, max, avg, count) > having子句
 ```
-eg:  
+eg:
 
-1. `select sum(num) as rmb from order where id>10` 只有对id大于10的记录才对进行聚合语句  
-1. `select reportsto as manager, count(*) as reports from employees group by reportsto having count(*) > 4`  
+1. `select sum(num) as rmb from order where id>10` 只有对id大于10的记录才对进行聚合语句
+1. `select reportsto as manager, count(*) as reports from employees group by reportsto having count(*) > 4`
 首先将reportsto相同的group起来, 统计各个group里面成员的个数, 然后再筛选出大于4的groups.
 如果把上面的having换成where则会出错.
 
@@ -99,7 +99,8 @@ having就是来弥补where在分组数据判断时的不足. 因为where执行�
 5. 针对第4个结果集排序
 
 eg: 完成一个复杂的查询语句,需求如下: 按由高到低的顺序显示个人平均分在70分以上的学生姓名和平均分,
-为了尽可能地提高平均分,在计算平均分前不包括分数在60分以下的成绩  
+为了尽可能地提高平均分,在计算平均分前不包括分数在60分以下的成绩.
+
 分析
 
 1. 要求显示学生姓名和平均分, 因此确定第1步`select s_name,avg(score) from student`
@@ -129,7 +130,7 @@ There are 4 different types of SQL joins:
 - SQL RIGHT OUTER JOIN (or sometimes called RIGHT JOIN)
 - SQL FULL OUTER JOIN (or sometimes called FULL JOIN)
 
-例子中用到的数据  
+例子中用到的数据
 We have a table called suppliers with two fields (supplier_id and supplier_name). It contains the following data:
 ```sql
 supplier_id	supplier_name
@@ -158,8 +159,10 @@ INNER JOIN table2
 ON table1.column = table2.column;
 ```
 
-In this visual diagram, the SQL INNER JOIN returns the shaded area:  
-![sql inner join](http://www.techonthenet.com/sql/images/inner_join.gif)  
+In this visual diagram, the SQL INNER JOIN returns the shaded area:
+
+![sql inner join](http://www.techonthenet.com/sql/images/inner_join.gif)
+
 The SQL INNER JOIN would return the records where table1 and table2 intersect.
 
 ex:
@@ -291,38 +294,38 @@ EXPLAIN SELECT * from employees where employees.gender='M'
 |---|------------|----------|-----|--------------|-----|--------|-----|-------|-----------|
 |1  |SIMPLE      |employees |ALL  |NULL          |NULL |NULL    |NULL |300252 |Using where|
 
-1. id是一组数字,表示查询中执行select子句或操作表的顺序.  
-  - 如果id相同,则执行顺序从上至下.
-  - 如果是子查询,id的序号会递增,id越大则优先级越高,越先会被执行.
-  - id如果相同,则可以认为是一组,从上往下顺序执行,所有组中,id越高,优先级越高,越容易执行
-1. select_type有simple,primary,subquery,derived(衍生),union,unionresult.
-  - simple: 表示查询中不包含子查询或者union.
-  - primary: 当查询中包含任何复杂的子部分,最外层的查询被标记成primary.
-  - subquery: 在select或where列表中包含了子查询,则子查询被标记成subquery.
-  - derived: 在from的列表中包含的子查询被标记成derived.
-  - union: 若第二个select出现在union后,则被标记成union,若union在from子句的子查询中,外层的select被标记成derived.
-  - 从union表获取结果的select被标记成union result.
+1. id是一组数字, 表示查询中执行select子句或操作表的顺序.
+	- 如果id相同, 则执行顺序从上至下.
+	- 如果是子查询, id的序号会递增, id越大则优先级越高, 越先会被执行.
+	- id如果相同, 则可以认为是一组, 从上往下顺序执行, 所有组中, id越高, 优先级越高, 越容易执行
+1. select_type有simple, primary, subquery, derived, union, unionresult.
+	- simple: 表示查询中不包含子查询或者union.
+	- primary: 当查询中包含任何复杂的子部分, 最外层的查询被标记成primary.
+	- subquery: 在select或where列表中包含了子查询, 则子查询被标记成subquery.
+	- derived: 在from的列表中包含的子查询被标记成derived.
+	- union: 若第二个select出现在union后, 则被标记成union, 若union在from子句的子查询中, 外层的select被标记成derived.
+	- union result: 从union表获取结果的select被标记成union result.
 1. table: 访问哪个表
 1. type叫访问类型, 表示在表中找到所需行的方式, 常见类型有all, index, range, ref, eq_ref, const, system, NULL 性能从左至右由差至好.
-  - ALL: 即full table scan,mysql将遍历全表来找到所需要的行.
-  - index: 为full index scan, 只遍历索引树.
-  - range: 表示索引范围扫描, 对索引的扫描开始于一点,返回匹配的值域的行,常见于between, <, > 的查询.
-  - ref: 为非唯一性索引扫描, 返回匹配某个单独值的所有行,常 见于非唯一索引即唯一索引的非唯一前缀进行的查找.
-  - eq_ref: 表示唯一性索引扫描, 对于每个索引键, 表中只有一条记录与之匹配, 常见于主键或者唯一索引扫描.
-  - const: 表示当对查询部分进行优化, 并转化成一个常量时, 使用这些类型访问. 比如将主键置于where列表中, mysql就能把该查询置成一个常量.
-  - system: const的一个特例,当查询表中只有一行的情况下使用的是system
-  - NULL: 表示在执行语句中,不用查表或索引.
-1. possible keys: 表示能使用哪个索引在表中找到行,查询涉及到的字段上若存在索引,则该索引被列出,但不一定被查询使用.
-1. key表示查询时使用的索引.若查询中使用了覆盖索引,则该索引仅出现在key中举个例子
-1. keylen表示索引所使用的字节数,可以通过该列结算查询中使用的索引长度
-1. ref表示上述表的链接匹配条件,即哪些列或常量可被用于查找索引列上的值.
-1. rows表示根据mysql表统计信息及索引选用情况,估算找到所需记录要读取的行数.
+	- ALL: 即full table scan, mysql将遍历全表来找到所需要的行.
+	- index: 为full index scan, 只遍历索引树.
+	- range: 表示索引范围扫描, 对索引的扫描开始于一点,返回匹配的值域的行,常见于between, <, > 的查询.
+	- ref: 为非唯一性索引扫描, 返回匹配某个单独值的所有行, 常见于非唯一索引即唯一索引的非唯一前缀进行的查找.
+	- eq_ref: 表示唯一性索引扫描, 对于每个索引键, 表中只有一条记录与之匹配, 常见于主键或者唯一索引扫描.
+	- const: 表示当对查询部分进行优化, 并转化成一个常量时, 使用这些类型访问. 比如将主键置于where列表中, mysql就能把该查询置成一个常量.
+	- system: const的一个特例,当查询表中只有一行的情况下使用的是system
+	- NULL: 表示在执行语句中,不用查表或索引.
+1. possible keys: 表示能使用哪个索引在表中找到行, 查询涉及到的字段上若存在索引, 则该索引被列出, 但不一定被查询使用.
+1. key表示查询时使用的索引. 若查询中使用了覆盖索引, 则该索引仅出现在key 中举个例子
+1. keylen表示索引所使用的字节数, 可以通过该列结算查询中使用的索引长度
+1. ref表示上述表的链接匹配条件, 即哪些列或常量可被用于查找索引列上的值.
+1. rows表示根据mysql表统计信息及索引选用情况, 估算找到所需记录要读取的行数.
 1. extra表示不在其他列并且也很重要的额外信息.
-  - using index: 表示在相应的select中使用了覆盖索引.
-  - using where: 表示存储引擎搜到记录后进行了后过滤(POST-FILTER),
-		如果查询未能使用索引,using where的作用只是提醒我们mysql要用where条件过滤结果集.
-  - using temporay: 表示用临时表来存储结果集,常见于排序和分组查询.
-  - using file sort: mysql中无法用索引完成的排序成为文件排序.
+	- using index: 表示在相应的select中使用了覆盖索引.
+	- using where: 表示存储引擎搜到记录后进行了后过滤(POST-FILTER),
+		如果查询未能使用索引, using where的作用只是提醒我们mysql要用where条件过滤结果集.
+	- using temporay: 表示用临时表来存储结果集, 常见于排序和分组查询.
+	- using file sort: mysql中无法用索引完成的排序成为文件排序.
 
 mysq的执行计划有一定局限性:
 
@@ -346,7 +349,8 @@ ALTER TABLE table_name ADD UNIQUE (column_list)
 ALTER TABLE table_name ADD PRIMARY KEY (column_list)
 ```
 
-`column_list` 指出对哪些列进行索引,多列时各列之间用逗号分隔.  
+`column_list` 指出对哪些列进行索引,多列时各列之间用逗号分隔.
+
 索引名`index_name`可选,缺省时,MySQL将根据第一个索引列赋一个名称
 
 PRIMARY KEY索引仅是一个名称为 PRIMARY 的 UNIQUE索引. 这表示一个表只能包含一个PRIMARY KEY, 因为一个表中不可能具有两个同名的索引.
