@@ -1,43 +1,8 @@
-`mysql -u user -p$passwd -h host -P port -D db --default-character-set=utf8`
-
-## conf
-mysql的配置文件: `/etc/my.cnf`.  
-mysql server 自己带有一些示例配置文件: `rpm -ql mysql-server | grep cnf`,
-得到的结果有`my-huge.cnf, my-innodb-heavy-4G.cnf, my-large.cnf, my-medium.cnf, my-small.cnf`,
-将这些文件复制为`/etc/my.cnf`, 就可以修改mysql的默认配置, 对于现在的硬件配置, 使用`my-huge.cnf`就可以.
-
-当由于系统的空间不够时, mysql 会在`/var/lib/mysql` 目录下创建一个hostname.error 的文件对错误进行说明, 而不会在 `/var/log/mysqld.log` 中说明.  
-如果经常出现空间不够的错误提示, 可以再`/etc/my.cnf` 中 修改数据的位置 `datadir=/var/lib/mysql`
-
-## 查看
-- `desc t1;`
-- `show full columns from t1;`
-- `show index from t1;`
-- `show create table t1;`
-- `show triggers;`
-- `show triggers from db1;`
-
-## Create
-MySQL默认情况下指定字段为NULL修饰符
-
-## Data Type
-### date time
-[时间差](http://blog.csdn.net/yzsind/article/details/8831429)
-
-datetime 直接之间作差得到结果不是时间意义上的作差.
-实际是mysql的时间相减是做了一个隐式转换操作, 直接把年月日时分秒拼起来, 如`2013-04-21 16:59:33` 直接转换为`20130421165933`, 由于时间不是十进制,所以最后得到的结果没有意义,这也是导致出现坑爹的结果.
-
-要得到正确的时间相减秒值,有以下3种方法:
-
-1. `time_to_sec(timediff(t2, t1))`: timediff 得到的结果是一个时间格式
-2. `timestampdiff(second, t1, t2)`
-3. `unix_timestamp(t2) - unix_timestamp(t1)`
-
-时间位移: `ADDTIME('2014-05-26 18:26:21', '0:0:2')` 求后2秒的时间.
-
-### str
-- `length()`
-- `char_length()`
+# sql
+## create
+```sql
+show create table tb;  // 查看建表语句
+```
 
 ### 复制数据到新表
 - 复制表结构(包括index, key 等)
@@ -56,7 +21,9 @@ MySql避免重复插入记录(根据主键判重)
 1. `replace into xxx`
 
 ## update
-`UPDATE table_name SET column1 = value1, column2 = value2, ...  WHERE some_column = some_value;`
+```sql
+UPDATE table_name SET column1 = value1, column2 = value2, ...  WHERE some_column = some_value;
+```
 
 如果update 的一条记录在数据库不存在(就是说后面的where语句没有找到record), 不会对数据库产生影响, 同时语句的执行也不会报错.
 
@@ -65,7 +32,7 @@ MySql避免重复插入记录(根据主键判重)
 - `update a set age = (select age from b where b.name = a.name)`: 用到了子查询, 当数据量大的时候, 效率非常低
 - `update a, b set a.age = b.age where a.name = b.name`: 比上面的子查询效率会高很多, 尤其是在建立有合适的索引时.
 
-## Alter
+## alter
 ```sql
 ALTER TABLE table_name ADD column_name datatype
 alter table flows add column ip_prot tinyint(4) null default 0;
@@ -78,49 +45,20 @@ ALTER TABLE table_name CHANGE old_col_name new_col_name column_definition
 ALTER TABLE table_name RENAME TO new_table_name;
 ```
 
-## Select
+## select
 mysql中提供了一个G标志,放到sql语句后,可以使一行的每个列打印到单独的行.
-对于列数比较多, 屏幕不够宽时很好用.  
-这样的显示效果与MYSQL命令的-E参数是一样的. 使用-E参数后,结果集默认以列的方式显示
 ```sql
-mysql> select * from t_goods \G  
-*************************** 1. row ***************************  
-         id: 1  
- goods_name: MYSQL5  
-   quantity: 50  
-   add_date: 2012-12-12  
-description: A book that has been read but is in good condition.
-1 row in set (0.00 sec)
+select * from t_goods \G
 ```
 
-mysql不支持`select top n`的语法,应该用这个替换:  
-`select * from tablename order by orderfield desc/asc limit position, counter;`
-position 指示从哪里开始查询,如果是0则是从头开始,counter 表示查询的个数
+### limit
+mysql不支持`select top n`的语法,应该用这个替换:
+```sql
+select * from tablename order by orderfield desc/asc limit offset, counter;
+```
+offset 指示从哪里开始查询,如果是0则是从头开始, counter 表示查询的个数
 
-取前15条记录:
-`select * from tablename order by orderfield desc/asc limit 0,15`
-
-//为了检索从某一个偏移量到记录集的结束所有的记录行,可以指定第二个参数为 -1:
-`mysql> SELECT * FROM table LIMIT 95,-1; // 检索记录行 96-last.`
-//如果只给定一个参数, 它表示返回最大的记录行数目:
-`mysql> SELECT * FROM table LIMIT 5;` //检索前 5 个记录行,也就是说,LIMIT n 等价于 LIMIT 0,n.
-
-**mySQL error: #1248 - Every derived table must have its own alias**  
-如果按照下面的写法会报上面的错误:
-
-	$sql3="SELECT * FROM (
-	SELECT * FROM (
-	SELECT * FROM Pre_Company ORDER BY ID DESC limit $n)
-	ORDER BY ID  ASC limit $display)
-	ORDER BY ID DESC";
-
-需要为子查询指定别名, 如下所示:
-
-	$sql3="SELECT * FROM (
-	SELECT * FROM (
-	SELECT * FROM Pre_Company ORDER BY ID DESC limit $n) as a
-	ORDER BY ID  ASC limit $display) as b 
-	ORDER BY ID DESC";
+为了检索从某一个偏移量到记录集的结束所有的记录行,可以指定counter 为 -1:
 
 ### group by, where, having
 可以在包含 GROUP BY 子句的查询中使用 WHERE 子句.在完成任何分组之前,将消除不符合 WHERE 子句中的条件的行.例如:
@@ -135,18 +73,18 @@ ORDER BY ProductModelID;
 having子句与where有相似之处但也有区别,都是设定条件的语句.
 
 1. **having只能用在group by之后,对分组后的结果进行筛选**(即使用having的前提条件是分组).
-2. where肯定在group by 之前,即也在having之前
+2. where肯定在group by 之前, 即也在having之前
 3. where后的条件表达式里不允许使用聚合函数,而having可以
 
 在查询过程中优先级
 ```sql
-where 子句 > 聚合语句(sum,min,max,avg,count) > having子句
+where 子句 > 聚合语句(sum, min, max, avg, count) > having子句
 ```
 eg:  
 
 1. `select sum(num) as rmb from order where id>10` 只有对id大于10的记录才对进行聚合语句  
-1. `select reportsto as manager, count(\*) as reports from employees group by reportsto having count(\*) > 4`  
-首先将reportsto相同的group起来, 统计各个group里面成员的个数, 然后再筛选出各个大于4的groups.  
+1. `select reportsto as manager, count(*) as reports from employees group by reportsto having count(*) > 4`  
+首先将reportsto相同的group起来, 统计各个group里面成员的个数, 然后再筛选出大于4的groups.
 如果把上面的having换成where则会出错.
 
 统计分组数据时用到聚合语句, 对分组数据再次判断时要用having. 如果不用这些关系就不存在使用having, 直接使用where就行了.
@@ -166,7 +104,7 @@ eg: 完成一个复杂的查询语句,需求如下: 按由高到低的顺序显�
 
 1. 要求显示学生姓名和平均分, 因此确定第1步`select s_name,avg(score) from student`
 2. 计算平均分前不包括分数在60分以下的成绩,因此确定第2步 `where score>=60`
-3. 显示个人平均分, 相同名字的学生(同一个学生)考了多门科目,因此按姓名分组.确定第3步 `group by s_name` 
+3. 显示个人平均分, 相同名字的学生(同一个学生)考了多门科目,因此按姓名分组.确定第3步 `group by s_name`
 4. 显示个人平均分在70分以上 因此确定第4步 `having avg(s_score)>=70`
 5. 按由高到低的顺序, 因此确定第5步 `order by avg(s_score) desc`
 
@@ -179,7 +117,7 @@ having avg(s_score)>=70
 order by avg(s_score) desc
 ```
 
-### JOIN
+### join
 [sql joins](http://www.techonthenet.com/sql/joins.php)
 
 [A Visual Explanation of SQL Joins](http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/)
@@ -209,7 +147,7 @@ order_id	supplier_id	order_date
 ```
 
 #### SQL INNER JOIN (SIMPLE JOIN)
-It is the most common type of SQL join. 
+It is the most common type of SQL join.
 SQL INNER JOINS return all rows from multiple tables where the join condition is met.
 
 The syntax for the SQL INNER JOIN is:
@@ -341,61 +279,50 @@ SELECT * FROM t1
 RIGHT JOIN t2 ON t1.id = t2.id
 ```
 
-### [Execution Plan](http://my.oschina.net/zimingforever/blog/60233)
-mysql的查看执行计划的语句很简单,explain+你要执行的sql语句就OK了.
+# [execution plan](http://my.oschina.net/zimingforever/blog/60233)
+mysql的查看执行计划的语句很简单,explain + 你要执行的sql语句就OK了.
 
 举一个例子
 ```sql
 EXPLAIN SELECT * from employees where employees.gender='M'
 ```
 结果示例:
-```sql
-id, select_type, table,     type, possible_keys, key,  key_len, ref,  rows,   Extra
-1,  SIMPLE,      employees, ALL,  NULL,          NULL, NULL,    NULL, 300252, Using where
-```
-对上面各个column 的解释
+|id |select_type |table     |type |possible_keys |key  |key_len |ref  |rows   |Extra      |
+|---|------------|----------|-----|--------------|-----|--------|-----|-------|-----------|
+|1  |SIMPLE      |employees |ALL  |NULL          |NULL |NULL    |NULL |300252 |Using where|
 
 1. id是一组数字,表示查询中执行select子句或操作表的顺序.  
-如果id相同,则执行顺序从上至下.  
-如果是子查询,id的序号会递增,id越大则优先级越高,越先会被执行.  
-id如果相同,则可以认为是一组,从上往下顺序执行,所有组中,id越高,优先级越高,越容易执行  
-
-1. select_type有simple,primary,subquery,derived(衍生),union,unionresult.  
-
-- simple表示查询中不包含子查询或者union.
-- 当查询中包含任何复杂的子部分,最外层的查询被标记成primary.
-- 在select或where列表中包含了子查询,则子查询被标记成subquery.
-- 在from的列表中包含的子查询被标记成derived.
-- 若第二个select出现在union后,则被标记成union,若union在from子句的子查询中,外层的select被标记成derived.
-- 从union表获取结果的select被标记成union result.
-
-1. type叫访问类型,表示在表中找到所需行的方式,常见类型有all,index,range,ref,eq_ref,const,system,NULL 性能从做至右由差至好.
-
-- ALL,即full table scan,mysql将遍历全表来找到所需要的行.
-- index为full index scan,只遍历索引树.
-- range表示索引范围扫描 ,对索引的扫描开始于一点,返回匹配的值域的行,常见于between,<,>的查询.
-- ref为非唯一性索引扫描,返回匹配某个单独值的所有行,常见于非唯一索引即唯一索引的非唯一前缀进行的查找.
-- eq_ref表示唯一性索引扫描,对于每个索引键,表中只有一条记录与之匹配,常见于主键或者唯一索引扫描.
-- const 表示当对查询部分进行优化,并转化成一个常量时,使用这些类型访问.比如将主键置于where列表中,mysql就能把该查询置成一个常量.
-- system是const的一个特例,当查询表中只有一行的情况下使用的是system
-- NULL表示在执行语句中,不用查表或索引.
-
-1. possiblekey表示能使用哪个索引在表中找到行,查询涉及到的字段上若存在索引,则该索引被列出,但不一定被查询使用.
-
+  - 如果id相同,则执行顺序从上至下.
+  - 如果是子查询,id的序号会递增,id越大则优先级越高,越先会被执行.
+  - id如果相同,则可以认为是一组,从上往下顺序执行,所有组中,id越高,优先级越高,越容易执行
+1. select_type有simple,primary,subquery,derived(衍生),union,unionresult.
+  - simple: 表示查询中不包含子查询或者union.
+  - primary: 当查询中包含任何复杂的子部分,最外层的查询被标记成primary.
+  - subquery: 在select或where列表中包含了子查询,则子查询被标记成subquery.
+  - derived: 在from的列表中包含的子查询被标记成derived.
+  - union: 若第二个select出现在union后,则被标记成union,若union在from子句的子查询中,外层的select被标记成derived.
+  - 从union表获取结果的select被标记成union result.
+1. table: 访问哪个表
+1. type叫访问类型, 表示在表中找到所需行的方式, 常见类型有all, index, range, ref, eq_ref, const, system, NULL 性能从左至右由差至好.
+  - ALL: 即full table scan,mysql将遍历全表来找到所需要的行.
+  - index: 为full index scan, 只遍历索引树.
+  - range: 表示索引范围扫描, 对索引的扫描开始于一点,返回匹配的值域的行,常见于between, <, > 的查询.
+  - ref: 为非唯一性索引扫描, 返回匹配某个单独值的所有行,常 见于非唯一索引即唯一索引的非唯一前缀进行的查找.
+  - eq_ref: 表示唯一性索引扫描, 对于每个索引键, 表中只有一条记录与之匹配, 常见于主键或者唯一索引扫描.
+  - const: 表示当对查询部分进行优化, 并转化成一个常量时, 使用这些类型访问. 比如将主键置于where列表中, mysql就能把该查询置成一个常量.
+  - system: const的一个特例,当查询表中只有一行的情况下使用的是system
+  - NULL: 表示在执行语句中,不用查表或索引.
+1. possible keys: 表示能使用哪个索引在表中找到行,查询涉及到的字段上若存在索引,则该索引被列出,但不一定被查询使用.
 1. key表示查询时使用的索引.若查询中使用了覆盖索引,则该索引仅出现在key中举个例子
-
 1. keylen表示索引所使用的字节数,可以通过该列结算查询中使用的索引长度
-
 1. ref表示上述表的链接匹配条件,即哪些列或常量可被用于查找索引列上的值.
-
 1. rows表示根据mysql表统计信息及索引选用情况,估算找到所需记录要读取的行数.
-
 1. extra表示不在其他列并且也很重要的额外信息.
-
-- using index表示在相应的select中使用了覆盖索引.
-- usingwhere表示存储引擎搜到记录后进行了后过滤(POST-FILTER),如果查询未能使用索引,usingwhere的作用只是提醒我们mysql要用where条件过滤z结果集.
-- using temporay表示用临时表来存储结果集,常见于排序和分组查询.
-- usingfilesort,mysql中无法用索引完成的排序成为文件排序.
+  - using index: 表示在相应的select中使用了覆盖索引.
+  - using where: 表示存储引擎搜到记录后进行了后过滤(POST-FILTER),
+		如果查询未能使用索引,using where的作用只是提醒我们mysql要用where条件过滤结果集.
+  - using temporay: 表示用临时表来存储结果集,常见于排序和分组查询.
+  - using file sort: mysql中无法用索引完成的排序成为文件排序.
 
 mysq的执行计划有一定局限性:
 
@@ -405,227 +332,104 @@ mysq的执行计划有一定局限性:
 - 部分统计信息是估算的,并非精确值
 - EXPALIN只能解释SELECT操作,其他操作要重写为SELECT后查看执行计划
 
-### Backup
-备份
-```sql
-备份整个数据库
-$mysqldump -u 用户名 -p 数据库名 > 导出的文件名
-
-备份一个表
-$mysqldump -u 用户名 -p 数据库名 表名 > 导出的文件名
-```
-恢复
-```sql
-mysql>source 导入的文件名
-$mysql -u root -p voice<voice.sql
-```
-
-## index
-在执行CREATE TABLE语句时可以创建索引,也可以单独用CREATE INDEX或ALTER TABLE来为表增加索引
+# index
+## CREATE INDEX
+建表的时候创建索引
 ```sql
 INDEX index_name(`field`),
 ```
 
-### CREATE INDEX
-CREATE INDEX可对表增加普通索引或UNIQUE索引
-
-	 CREATE INDEX index_name ON table_name (column_list)
-	 CREATE UNIQUE INDEX index_name ON table_name (column_list)
-
 ALTER TABLE用来创建普通索引,UNIQUE索引或PRIMARY KEY索引
-
-	ALTER TABLE table_name ADD INDEX index_name (column_list)
-	ALTER TABLE table_name ADD UNIQUE (column_list)
-	ALTER TABLE table_name ADD PRIMARY KEY (column_list)
+```sql
+ALTER TABLE table_name ADD INDEX index_name (column_list)
+ALTER TABLE table_name ADD UNIQUE (column_list)
+ALTER TABLE table_name ADD PRIMARY KEY (column_list)
+```
 
 `column_list` 指出对哪些列进行索引,多列时各列之间用逗号分隔.  
 索引名`index_name`可选,缺省时,MySQL将根据第一个索引列赋一个名称
 
-### 索引类型
-在创建索引时,可以规定索引能否包含重复值,如果不包含,则索引应该创建为PRIMARY KEY或UNIQUE索引,对于单列惟一性索引,这保证单列不包含重复的值;
-对于多列惟一性索引,保证多个值的组合不重复.
+PRIMARY KEY索引仅是一个名称为 PRIMARY 的 UNIQUE索引. 这表示一个表只能包含一个PRIMARY KEY, 因为一个表中不可能具有两个同名的索引.
 
-PRIMARY KEY索引和UNIQUE索引非常类似.
-事实上,PRIMARY KEY索引仅是一个具有名称PRIMARY的UNIQUE索引.这表示一个表只能包含一个PRIMARY KEY,因为一个表中不可能具有两个同名的索引.
-
-### 删除索引
-可利用ALTER TABLE或DROP INDEX语句来删除索引.类似于CREATE INDEX语句,DROP INDEX可以在ALTER TABLE内部作为一条语句处理,语法如下:
-
-	DROP INDEX index_name ON talbe_name
-	ALTER TABLE table_name DROP INDEX index_name
-	ALTER TABLE table_name DROP PRIMARY KEY
-
-### 查看索引
-	mysql> show index from tblname;
-	mysql> show keys from tblname;
-
-### [性能调优](http://blog.csdn.net/xtdhqdhq/article/details/17582779)
-如果我们的查询where条件只有一个,我们完全可以用单列索引,这样的查询速度较快,索引也比较瘦身.
-如果我们的业务场景是需要经常查询多个组合列,**不要试图分别基于单个列建立多个单列索引(因为虽然有多个单列索引,但是MySQL只能用到其中的那个它认为似乎最有效率的单列索引)**.  
-这是因为当SQL语句所查询的列,全部都出现在复合索引中时,此时由于只需要查询索引块即可获得所有数据,当然比使用多个单列索引要快得多.下面以实际例子说明:
+## 删除索引
 ```sql
-CREATE TABLE people(
-peopleid SMALLINT NOT NULL AUTO_INCREMENT,
-firstname CHAR(50)　NOT NULL,
-lastname CHAR(50) NOT NULL,
-age SMALLINT NOT NULL,
-townid SMALLINT NOT　NULL,
-PRIMARY KEY (peopleid)
-);
-```
-例如,我们可能需要查找姓名为Mike Sullivan,年龄17岁用户的peopleid
-```sql
-SELECT peopleid FROM people WHERE firstname="Mike" AND lastname="Sullivan" AND age=17;
-```
-由于我们不想让MySQL每次执行查询就去扫描整个表,这里需要考虑运用索引.
-
-首先,我们可以考虑在单个列上创建索引,比如firstname,lastname或者age列.  
-如果我们创建firstname列的索引(`ALTER TABLE people ADD INDEX firstname (firstname);`),  
-MySQL将通过这个索引迅速把搜索范围限制到那些firstname="Mike"的记录,然后再在这个"中间结果集"上进行其他条件的搜索.
-由于建立了firstname列的索引,与执行表的完全扫描相比,MySQL的效率提高了很多,  
-但我们要求MySQL扫描的记录数量仍旧远远超过了实际所需要的.虽然我们可以删除firstname列上的索引,再创建lastname或者age列的索引,但总地看来,不论在哪个列上创建索引搜索效率仍旧相似.  
-为了提高搜索效率,我们需要考虑运用多列索引.  
-如果为firstname,lastname和age这三个列创建一个多列索引,MySQL只需一次检索就能够找出正确的结果!下面是创建这个多列索引的SQL命令:
-```sql
-ALTER TABLE people ADD INDEX fname_lname_age (firstname,lastname,age);
-```
-由于索引文件以B+树格式保存,MySQL能够立即转到合适的firstname,然后再转到合适的lastname,最后转到合适的age.在没有扫描数据文件任何一个记录的情况下,MySQL就正确地找出了搜索的目标记录!
-
-那么,如果在firstname,lastname,age这三个列上分别创建单列索引,效果是否和创建一个firstname,lastname,age的多列索引一样呢?答案是否定的,两者完全不同.  
-当我们执行查询的时候,MySQL只能使用一个索引.**如果你有三个单列的索引,MySQL会试图选择一个限制最严格的索引**.
-但是,即使是限制最严格的单列索引,它的限制能力也肯定远远低于firstname,lastname,age这三个列上的多列索引.
-
-注意:
-继续考虑前面的例子,现在我们有一个firstname,lastname,age列上的多列索引,我们称这个索引为fname_lname_age.  
-它相当于我们创建了(firstname,lastname,age),(firstname,lastname)以及(firstname)这些列组合上的索引.
-
-## Cast Functions and Operators
-- BINARY	Cast a string to a binary string
-- `CAST(expr AS type)` Cast a value as a certain type
-- CONVERT()	Cast a value as a certain type
-
-The BINARY operator casts the string following it to a binary string. This is an easy way to force a column comparison to be done byte by byte rather than character by character.
-```sql
-mysql> SELECT 'a' = 'A';
-        -> 1
-mysql> SELECT BINARY 'a' = 'A';
-        -> 0
-mysql> SELECT 'a' = 'a ';
-        -> 1
-mysql> SELECT BINARY 'a' = 'a ';
-        -> 0
+ALTER TABLE table_name DROP INDEX index_name
+ALTER TABLE table_name DROP PRIMARY KEY
 ```
 
-`BINARY str` is shorthand for `CAST(str AS BINARY)`.
+## 查看索引
 ```sql
-CONVERT(expr,type), CONVERT(expr USING transcoding_name)
-```
-The CONVERT() and CAST() functions take an expression of any type and produce a result value of a specified type. 
-
-The type for the result can be one of the following values:
-
-- BINARY[(N)]
-- CHAR[(N)]
-- DATE
-- DATETIME
-- DECIMAL[(M[,D])]
-- SIGNED [INTEGER]
-- TIME
-- UNSIGNED [INTEGER]
-
-## [用户管理及权限管理](http://www.libuchao.com/2013/04/06/mysql-user-and-privilege)
-
-	CREATE USER test IDENTIFIED BY '123456';
-	GRANT ALL PRIVILEGES ON test.* TO 'test'@'localhost' IDENTIFIED BY '123456';
-	FLUSH PRIVILEGES;
-
-将权限给本地用户,且不需要用密码验证
-```sql
-GRANT ALL PRIVILEGES ON test.* TO ''@'localhost';
+show index from tblname;
+show keys from tblname;
 ```
 
-MySQL 默认有个root用户,但是这个用户权限太大,一般只在管理数据库时候才用.如果在项目中要连接 MySQL 数据库,则建议新建一个权限较小的用户来连接.
-
-在 MySQL 命令行模式下输入如下命令可以为 MySQL 创建一个新用户:  
-`CREATE USER username IDENTIFIED BY 'password';`  
-新用户创建完成,但是此刻如果以此用户登陆的话,会报错,因为我们还没有为这个用户分配相应权限,分配权限的命令如下:
-
-`GRANT ALL PRIVILEGES ON *.* TO 'username'@'localhost' IDENTIFIED BY 'password';`  
-授予username用户在所有数据库上的所有权限.
-
-如果此时发现刚刚给的权限太大了,如果我们只是想授予它在某个数据库上的权限,那么需要切换到root 用户撤销刚才的权限,重新授权:  
-`EVOKE ALL PRIVILEGES ON *.* FROM 'username'@'localhost';`  
-`GRANT ALL PRIVILEGES ON wordpress.* TO 'username'@'localhost' IDENTIFIED BY 'password';`  
-
-甚至还可以指定该用户只能执行 select 和 update 命令:  
-`GRANT SELECT, UPDATE ON wordpress.* TO 'username'@'localhost' IDENTIFIED BY 'password';`  
-这样一来,再次以username登陆 MySQL,只有wordpress数据库是对其可见的,并且如果你只授权它select权限,那么它就不能执行delete 语句.
-
-另外每当调整权限后,通常需要执行以下语句刷新权限:  
-`FLUSH PRIVILEGES;`
-
-查看权限
+## [联合索引最左匹配](https://segmentfault.com/a/1190000015416513)
+在mysql建立联合索引时会遵循最左前缀匹配的原则,即最左优先,在检索数据时从联合索引的最左边开始匹配,示例:
+对列col1,列col2和列col3建一个联合索引
 ```sql
-show grants for 'test'@'%';
+KEY test_col1_col2_col3 on test(col1,col2,col3);
+```
+联合索引 test_col1_col2_col3 实际建立了`(col1),(col1,col2),(col,col2,col3)`三个索引.
 
-select * from mysql.user where user='test'
+mysql创建联合索引的规则是首先会对联合合索引的最左边的,也就是第一个字段col1的数据进行排序,在第一个字段的排序基础上
+然后再对后面第二个字段col2进行排序.其实就相当于实现了类似 order by col1 col2这样一种排序规则.
+
+对于联合索引(col1,col2,col3),查询语句`SELECT * FROM test WHERE col2=2`;是否能够触发索引?
+大多数人都会说NO,实际上却是YES.
+原因:
+```sql
+EXPLAIN SELECT * FROM test WHERE col2=2;
+EXPLAIN SELECT * FROM test WHERE col1=1;
+```
+观察上述两个explain结果中的type字段, 结果分别是 index, ref.
+结合前面的execution plan 那一节, index 类型也是使用到了索引,只是是遍历整个索引树.
+
+# Data Type And Functions
+## date time
+[时间差](http://blog.csdn.net/yzsind/article/details/8831429)
+
+datetime 直接之间作差得到结果不是时间意义上的作差.
+实际是mysql的时间相减是做了一个隐式转换操作, 直接把年月日时分秒拼起来, 如`2013-04-21 16:59:33` 直接转换为`20130421165933`, 由于时间不是十进制,所以最后得到的结果没有意义,这也是导致出现坑爹的结果.
+
+要得到正确的时间相减秒值,有以下3种方法:
+
+1. `time_to_sec(timediff(t2, t1))`: timediff 得到的结果是一个时间格式
+2. `timestampdiff(second, t1, t2)`
+3. `unix_timestamp(t2) - unix_timestamp(t1)`
+
+时间位移: `ADDTIME('2014-05-26 18:26:21', '0:0:2')` 求后2秒的时间.
+
+## str
+- `length()`
+- `char_length()`
+
+## cast functions and operators
+- BINARY: cast a string to a binary string, `BINARY str` is a shorthand for `CAST(str AS BINARY)`.
+- `CAST(expr AS type)`: cast a value as a certain type
+- CONVERT(): cast a value as a certain type
+
+The BINARY operator casts the string following it to a binary string.
+This is an easy way to force a column comparison to be done byte by byte rather than character by character.
+```sql
+SELECT 'a' = 'A';  // 1
+SELECT BINARY 'a' = 'A';  // 0
+SELECT 'a' = 'a ';  // 1
+SELECT BINARY 'a' = 'a ';  // 0
 ```
 
-删除刚才创建的用户:  
-`DROP USER username@localhost;`
+## bit operators
+[Bit Functions and Operators](https://dev.mysql.com/doc/refman/8.0/en/bit-functions.html)
+|Name	       |Description                           |
+|------------|--------------------------------------|
+|&	         |Bitwise AND                           |
+|>>	         |Right shift                           |
+|<<	         |Left shift                            |
+|^	         |Bitwise XOR                           |
+|BIT_COUNT() |Return the number of bits that are set|
+||	         |Bitwise OR                            |
+|~	         |Bitwise inversion                     |
 
-仔细上面几个命令,可以发现不管是授权,还是撤销授权,都要指定响应的host(即 @ 符号后面的内容),因为以上及格命令实际上都是在操作mysql 数据库中的user表,可以用如下命令查看相应用户及对应的host:  
-SELECT User, Host FROM user;`  
-当然,这个表中还包含很多其它例如用户密码,权限设置等很多内容,操作时候尤其需要小心.
-
-## trigger
-```sql
-mysql> help create trigger
-Name: 'CREATE TRIGGER'
-Description:
-Syntax:
-CREATE
-    [DEFINER = { user | CURRENT_USER }]
-    TRIGGER trigger_name
-    trigger_time trigger_event
-    ON tbl_name FOR EACH ROW
-    trigger_body
-
-trigger_time: { BEFORE | AFTER }
-trigger_event: { INSERT | UPDATE | DELETE }
-```
-FOR EACH ROW表示任何一条记录上的操作满足触发事件都会触发该触发器  
-当trigger body是多句sql语句时, 需要使用BEGIN END
-
-插入的record 用new 代指, 删除的record 用old代指, 具体见[trigger demo](../demo/sql/trigger.sql)
-
-```sql
-mysql> CREATE TRIGGER trig1 AFTER INSERT
-    -> ON work FOR EACH ROW
-    -> INSERT INTO time VALUES(NOW());
-```
-上面创建了一个名为trig1的触发器,一旦在work中有插入动作,就会自动往time表里插入当前时间
-
-tips:一般情况下,mysql默认是以; 作为结束执行语句,与触发器中需要的分行起冲突, 
-为解决此问题可用DELIMITER,如:`DELIMITER ||`,可以将结束符号变成||当触发器创建完成后,可以用`DELIMITER ;`来将结束符号变成;
-```sql
-mysql> DELIMITER ||
-mysql> CREATE TRIGGER trig2 BEFORE DELETE
-    -> ON work FOR EACH ROW
-    -> BEGIN
-    -> INSERT INTO time VALUES(NOW());
-    -> INSERT INTO time VALUES(NOW());
-    -> END
-    -> ||
-Query OK, 0 rows affected (0.06 sec)
-
-mysql> DELIMITER ;
-```
-
-删除触发器
-```sql
-mysql> DROP TRIGGER trig1;
-```
+优先级: ~ > ^ > & > >> = << > |
 
 # 存储引擎
 ## MyISAM
@@ -659,7 +463,8 @@ innodb存储引擎可将所有数据存放于`ibdata*`的共享表空间, 也可
 
 ## RocksDB
 ### RocksDB与innodb的比较
-1. innodb空间浪费, B tree分裂导致page内有较多空闲,尤其是刚分裂完成时, page利用率不高.对于顺序插入的场景,块的填充率较高.但对于随机场景,每个块的空间利用率就急剧下降了.
+1. innodb空间浪费, B tree分裂导致page内有较多空闲,尤其是刚分裂完成时, page利用率不高.
+	对于顺序插入的场景,块的填充率较高.但对于随机场景,每个块的空间利用率就急剧下降了.
   反映到整体上就是一个表占用的存储空间远大于实际数据所需空间.
 1. innodb现有的压缩效率也不高,压缩以block为单位,也会造成浪费.
 1. 写入放大:innodb 更新以页为单位,最坏的情况更新N行会更新N个页.RocksDB append only方式
@@ -668,3 +473,39 @@ innodb存储引擎可将所有数据存放于`ibdata*`的共享表空间, 也可
 1. RocksDB占总数据量90%的最底层数据,行内不需要存储系统列seqid
 1. MyRocks在MySQL 5.6/5.7就实现了逆序索引,基于逆序的列族实现,显然,逆序索引不能使用默认的default列族.
 1. 基于LSM特性,MyRocks还以很低的成本实现了TTL索引,类似于HBase.
+
+# 运维
+## login
+```bash
+mysql -u user -p$passwd -h host -P port -D db --default-character-set=utf8
+```
+
+## conf
+mysql的配置文件: `/etc/my.cnf`.
+
+mysql server 自己带有一些示例配置文件: `rpm -ql mysql-server | grep cnf`,
+得到的结果有`my-huge.cnf, my-innodb-heavy-4G.cnf, my-large.cnf, my-medium.cnf, my-small.cnf`,
+将这些文件复制为`/etc/my.cnf`, 就可以修改mysql的默认配置, 对于现在的硬件配置, 使用`my-huge.cnf`就可以.
+
+当由于系统的空间不够时, mysql 会在`/var/lib/mysql` 目录下创建一个hostname.error 的文件对错误进行说明,
+而不会在 `/var/log/mysqld.log` 中说明.
+如果经常出现空间不够的错误提示, 可以再`/etc/my.cnf` 中 修改数据的位置 `datadir=/var/lib/mysql`
+
+## Backup
+备份
+```bash
+## 备份整个数据库
+mysqldump -u 用户名 -p 数据库名 > 导出的文件名
+
+## 备份一个表
+mysqldump -u 用户名 -p 数据库名 表名 > 导出的文件名
+```
+
+恢复
+```sql
+mysql > source 导入的文件名
+```
+或者
+```bash
+mysql -u root -p voice<voice.sql
+```
