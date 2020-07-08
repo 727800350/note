@@ -406,6 +406,7 @@ datetime 直接之间作差得到结果不是时间意义上的作差.
 ## str
 - `length()`
 - `char_length()`
+- `locate(substr, str)`: 如果包含, 返回 > 0 的数, 否则返回0
 
 ## cast functions and operators
 - BINARY: cast a string to a binary string, `BINARY str` is a shorthand for `CAST(str AS BINARY)`.
