@@ -121,8 +121,6 @@ order by avg(s_score) desc
 ### join
 [sql joins](http://www.techonthenet.com/sql/joins.php)
 
-[A Visual Explanation of SQL Joins](http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/)
-
 There are 4 different types of SQL joins:
 
 - SQL INNER JOIN (or sometimes called simple join)
@@ -130,24 +128,7 @@ There are 4 different types of SQL joins:
 - SQL RIGHT OUTER JOIN (or sometimes called RIGHT JOIN)
 - SQL FULL OUTER JOIN (or sometimes called FULL JOIN)
 
-例子中用到的数据
-We have a table called suppliers with two fields (supplier_id and supplier_name). It contains the following data:
-```sql
-supplier_id	supplier_name
-10000	IBM
-10001	Hewlett Packard
-10002	Microsoft
-10003	NVIDIA
-```
-We have another table called orders with three fields (order_id, supplier_id, and order_date). It contains the following data:
-```sql
-order_id	supplier_id	order_date
-500125	10000	2003/05/12
-500126	10001	2003/05/13
-500127	10004	2003/05/14
-```
-
-#### SQL INNER JOIN (SIMPLE JOIN)
+#### INNER JOIN (SIMPLE JOIN)
 It is the most common type of SQL join.
 SQL INNER JOINS return all rows from multiple tables where the join condition is met.
 
@@ -158,129 +139,31 @@ FROM table1
 INNER JOIN table2
 ON table1.column = table2.column;
 ```
-
 In this visual diagram, the SQL INNER JOIN returns the shaded area:
 
-![sql inner join](http://www.techonthenet.com/sql/images/inner_join.gif)
+<img src="./pics/mysql/inner_join.gif" alt="inner join" width="20%"/>
 
 The SQL INNER JOIN would return the records where table1 and table2 intersect.
 
-ex:
-```sql
-SELECT s.supplier_id, s.supplier_name, od.order_date
-FROM suppliers AS s
-INNER JOIN order AS od
-ON s.supplier_id = od.supplier_id;
-```
-result
-```sql
-supplier_id	name	order_date
-10000	IBM	2003/05/12
-10001	Hewlett Packard	2003/05/13
-```
+#### LEFT OUTER JOIN
+This type of join returns all rows from the LEFT-hand table specified in the ON condition and only those rows from the other
+table where the joined fields are equal (join condition is met).
 
-#### SQL LEFT OUTER JOIN
-This type of join returns all rows from the LEFT-hand table specified in the ON condition and only those rows from the other table where the joined fields are equal (join condition is met).
-
-```sql
-SELECT columns
-FROM table1
-LEFT OUTER JOIN table2
-ON table1.column = table2.column;
-```
 In some databases, the LEFT OUTER JOIN keywords are replaced with LEFT JOIN.
 
-![left outer join](http://www.techonthenet.com/sql/images/left_outer_join.gif)
-
-```sql
-SELECT suppliers.supplier_id, suppliers.supplier_name, orders.order_date
-FROM suppliers
-LEFT OUTER JOIN orders
-ON suppliers.supplier_id = orders.supplier_id;
-```
-Our result set would look like this:
-```sql
-supplier_id	supplier_name	order_date
-10000	IBM	2003/05/12
-10001	Hewlett Packard	2003/05/13
-10002	Microsoft	<null>
-10003	NVIDIA	<null>
-```
-
-##### 选取 A - B(也就是在A中不在B中)
-![A - B](http://blog.codinghorror.com/content/images/uploads/2007/10/6a0120a85dcdae970b012877702754970c-pi.png)
-
-```sql
-SELECT * FROM TableA
-LEFT OUTER JOIN TableB
-ON TableA.name = TableB.name
-WHERE TableB.id IS null
-```
+<img src="./pics/mysql/left_outer_join.gif" alt="left outer join" width="20%"/>
 
 #### SQL RIGHT OUTER JOIN
-![right outer join](http://www.techonthenet.com/sql/images/right_outer_join.gif)
+This type of join returns all rows from the RIGHT-hand table specified in the ON condition and only those rows from the 
+other table where the joined fields are equal (join condition is met).
 
-Example
-```sql
-SELECT orders.order_id, orders.order_date, suppliers.supplier_name
-FROM suppliers
-RIGHT OUTER JOIN orders
-ON suppliers.supplier_id = orders.supplier_id;
-```
-result
-```sql
-order_id	order_date	supplier_name
-500125	2013/08/12	Apple
-500126	2013/08/13	Google
-500127	2013/08/14	<null>
-```
+<img src="./pics/mysql/right_outer_join.gif" alt="right outer join" width="20%"/>
 
 #### SQL FULL OUTER JOIN
-This type of join returns all rows from the LEFT-hand table and RIGHT-hand table **with nulls in place where the join condition is not met**.
-```sql
-SELECT columns
-FROM table1
-FULL OUTER JOIN table2
-ON table1.column = table2.column;
-```
+This type of join returns all rows from the LEFT-hand table and RIGHT-hand table
+**with nulls in place where the join condition is not met**.
 
-![full outer join](http://www.techonthenet.com/sql/images/full_outer_join.gif)
-
-Example
-```sql
-SELECT suppliers.supplier_id, suppliers.supplier_name, orders.order_date
-FROM suppliers
-FULL OUTER JOIN orders
-ON suppliers.supplier_id = orders.supplier_id;
-```
-result
-```sql
-supplier_id	supplier_name	order_date
-10000	IBM	2013/08/12
-10001	Hewlett Packard	2013/08/13
-10002	Microsoft	<null>
-10003	NVIDIA	<null>
-<null>	<null>	2013/08/14
-```
-
-##### 选取 (A - B) \CUP (B - A)
-![set of records unique to Table A and Table B](http://blog.codinghorror.com/content/images/uploads/2007/10/6a0120a85dcdae970b012877702769970c-pi.png)
-```sql
-SELECT * FROM TableA
-FULL OUTER JOIN TableB
-ON TableA.name = TableB.name
-WHERE TableA.id IS null
-OR TableB.id IS null
-```
-
-mysql 不支持full outer join, 但是可以使用left join 和right join来模拟.
-```sql
-SELECT * FROM t1
-LEFT JOIN t2 ON t1.id = t2.id
-UNION
-SELECT * FROM t1
-RIGHT JOIN t2 ON t1.id = t2.id
-```
+<img src="./pics/mysql/full_outer_join.gif" alt="full outer join" width="20%"/>
 
 # [execution plan](http://my.oschina.net/zimingforever/blog/60233)
 mysql的查看执行计划的语句很简单,explain + 你要执行的sql语句就OK了.
