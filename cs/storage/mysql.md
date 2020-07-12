@@ -154,7 +154,7 @@ In some databases, the LEFT OUTER JOIN keywords are replaced with LEFT JOIN.
 <img src="./pics/mysql/left_outer_join.gif" alt="left outer join" width="20%"/>
 
 #### SQL RIGHT OUTER JOIN
-This type of join returns all rows from the RIGHT-hand table specified in the ON condition and only those rows from the 
+This type of join returns all rows from the RIGHT-hand table specified in the ON condition and only those rows from the
 other table where the joined fields are equal (join condition is met).
 
 <img src="./pics/mysql/right_outer_join.gif" alt="right outer join" width="20%"/>
