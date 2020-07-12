@@ -63,7 +63,7 @@ VersionSet中除了Version的双向链表外还会记录一些如LogNumber，Seq
 
 VersionEdit 表示Version之间的变化,相当于delta 增量,表示有增加了多少文件,删除了文件:
 
-```
+```info
 Version0 + VersionEdit --> Version1
 Version0->Version1->Version2->Version3
 ```
@@ -79,4 +79,3 @@ RocksDB支持一次获取多个K-V,还支持Key范围查找.LevelDB只能获取�
 
 RocksDB支持管道式的Memtable,也就说允许根据需要开辟多个Memtable,以解决Put与Compact速度差异的性能瓶颈问题.
 在LevelDB里面因为只有一个Memtable,如果Memtable满了却还来不及持久化,这个时候LevelDB将会减缓Put操作,导致整体性能下降.
-

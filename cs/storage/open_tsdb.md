@@ -49,4 +49,3 @@ RowKey其实和 metric|timestamp|value|host=web42|pool=static 类似,
 这里其实保存的就是一些metric,tagk,tagv的一些映射关系.
 
 <img src="./pics/open_tsdb/tsdb-uid.jpg" alt="tsdb-uid" width="60%"/>
-
