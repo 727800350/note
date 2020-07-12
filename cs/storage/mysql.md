@@ -556,6 +556,9 @@ ANSI SQL标准没有从隔离程度进行定义,而是定义了事务的隔离�
 	但是RR隔离级别,即使不符合where条件的记录,也不会释放行锁和gap lock,所以从锁方面来看,RC的并发应该要好于RR.
 
 ## InnoDB Locking
+- 表级锁: 开销小, 加锁快, 不会出现死锁, 锁定粒度大, 发生锁冲突的概率最高, 并发度最低.
+- 行级锁: 开销大, 加锁慢, 会出现死锁, 锁定粒度最小, 发生锁冲突的概率最低, 并发度也最高.
+
 ### [锁的种类](https://dev.mysql.com/doc/refman/5.6/en/innodb-locking.html)
 #### Shared Lock And Exclusive Locks
 InnoDB implements standard row-level locking where there are two types of locks, shared (S) locks and exclusive (X) locks.
@@ -602,6 +605,8 @@ Next-key锁是记录锁和Gap锁的结合,锁住了记录和记录之前的一�
 An insert intention lock is a type of gap lock set by INSERT operations prior to row insertion.
 This lock signals the intent to insert in such a way that multiple transactions inserting into the same index gap
 need not wait for each other if they are not inserting at the same position within the gap.
+
+[论 MySql InnoDB 如何通过插入意向锁控制并发插入](https://juejin.im/post/5b865859e51d4538e331ae9a)
 
 ### [加锁原则](https://juejin.im/post/5dc6c5325188250b92054dd8)
 对于 InnoDB 而言,虽然加锁的类别繁多,加锁形式也灵活多样,但也遵循了一些原则:
@@ -744,4 +749,3 @@ insert into t_user(id, no, name, age) values(4, '00004', '小灰灰', 8);
 
 #### Serializable 级别
 Serializable 级别是事务隔离的最高级别,在此级别下所有的请求会进行串行化处理.在InnoDB中该级别下的 更新语句加锁过程与Read Repeatable下一致.
-
