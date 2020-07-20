@@ -136,8 +136,7 @@ Paxos 的执行条件
   - 消息丢失(节点不可达)
   - 消息乱序
 
-Paxos 概念
-
+## Paxos 概念
 - Proposer: 发起paxos 的进程, 可以理解为客户端.
 - Acceptor: 存储节点, 接受, 处理和存储消息
 - Quorum: 在99%的场景里都是指多数派, 也就是半数以上的Acceptor.
@@ -153,6 +152,85 @@ Paxos 概念
 v 和 vrnd 是用于恢复一次未完成的paxos 用的.
 一次未完成的paxos算法运行可能留下一些没有达到多数派的值的写入(就像原生的多数派写的脏读的问题), paxos中通过vrnd来决定哪些值是最后写入的, 并决定恢复哪个未完成的paxos运行.
 后面我们会通过几个例子来描述vrnd的作用.
+
+## phase-1
+首先是paxos的phase-1, 它相当于之前提到的写前读取过程. 它用来在存储节点(Acceptor)上记录一个标识: 我后面要写入;
+并从Acceptor上读出是否有之前未完成的paxos运行. 如果有则尝试恢复它; 如果没有则继续做自己想做的事情.
+
+<img src="./pics/paxos/phase1.jpg" alt="phase 1" width="40%"/>
+
+phase-1成功后, acceptor应该记录X的rnd=1, 并返回自己之前保存的v和vrnd.
+
+TODO: 如果请求的 rnd 等于acceptor 的 last_rnd?
+
+Proposer X收到多数(quorum)个应答, 就认为是可以继续运行的.如果没有联系到多于半数的acceptor, 整个系统就hang住了, 这也是paxos声称的只能运行少于半数的节点失效.
+
+收到多数应答后, 这时Proposer面临2种情况:
+
+1. 所有应答中都没有任何非空的v, 这表示系统之前是干净的, 没有任何值已经被其他paxos客户端完成了写入(因为一个多数派读一定会看到一个多数派写的结果).
+  这时Proposer X继续将它要写的值在phase-2中真正写入到多于半数的Acceptor中.
+1. 如果收到了某个应答包含被写入的v和vrnd, 这时, Proposer X 必须假设有其他客户端(Proposer) 正在运行, 虽然X不知道对方是否已经成功结束, 但任何已经写入的值都不能被修改!
+  所以X必须保持原有的值. 于是X将看到的最大vrnd对应的v作为X的phase-2将要写入的值. 这时实际上可以认为X执行了一次(不知是否已经中断的)其他客户端(Proposer)的修复.
+
+TODO: 第一种情况, 为什么只有都是空的v, 才断定系统之前是干净的, 难道每次2 阶段的paxos 正常结束后, v 会被置为nil, vrnd 被置为0?
+
+## phase-2
+Proposer X将它选定的值写入到Acceptor中, 这个值可能是它自己要写入的值, 或者是它从某个Acceptor上读到的v(修复).
+
+<img src="./pics/paxos/phase2.jpg" alt="phase 2" width="40%"/>
+
+当然这时(在X收到phase-1应答, 到发送phase-2请求的这段时间), 可能已经有其他Proposer又完成了一个rnd更大的phase-1, 所以这时X不一定能成功运行完phase-2.
+
+Acceptor通过比较phase-2请求中的rnd, 和自己本地记录的rnd, 来确定X是否还有权写入.
+如果请求中的rnd和Acceptor本地记录的rnd一样, 那么这次写入就是被允许的, Acceptor将v写入本地, 并将phase-2请求中的rnd记录到本地的vrnd中.
+
+TODO: 如果在Proposer X 的 phase 2 还未开始, 另外一个proposer Y 用一个更大的rnd 发起了phase 1 的请求, 那么会怎样?
+acceptor 会用Y 的rnd 覆盖掉之前本地保存的 X 的吗?
+
+## example: X和Y同时运行paxos, Y迫使X中断的例子
+1. X成功完成了写前读取(phase-1), 将rnd=1写入到左边2个Acceptor.
+1. Y用更大的rnd=2, 覆盖了X的rnd, 将rnd=2写入到右边2个Acceptor.
+1. X以为自己还能运行phase-2, 但已经不行了, X只能对最左边的Acceptor成功运行phase-2, 而中间的Acceptor拒绝了X的phase-2.
+1. Y对右边2个Acceptor成功运行了phase-2, 完成写入v=y, vrnd=2.
+
+<img src="./pics/paxos/example_1.jpg" alt="解决并发写冲突" width="40%"/>
+
+继续上面的例子, 看X如何处理被抢走写入权的情况:
+
+这时X的phase-2没成功, 它需要重新来一遍, 用更大的rnd=3.
+
+X成功在左边2个Acceptor上运行phase-1之后, X发现了2个被写入的值: v=x, vrnd=1 和 v=y, vrnd=2; 这时X就不能再写入自己想要写入的值了.
+它这次paxos运行必须不能修改已存在的值, 这次X的paxos的运行唯一能做的就是, 修复(可能)已经中断的其他proposer的运行.
+
+这里v=y, vrnd=2 是可能在phase-2达到多数派的值.
+v=x, vrnd=1不可能是, 因为其他proposer也必须遵守算法约定, 如果v=x, vrnd=1在某个phase-2达到多数派了, Y一定能在phase-1中看到它, 从而不会写入v=y, vrnd=2.
+
+因此这时X选择v=y, 并使用rnd=3继续运行, 最终把v=y, vrnd=3写入到所有Acceptor中.
+
+<img src="./pics/paxos/example_2.jpg" alt="X不会修改确定的Y" width="40%"/>
+
+## 其他
+### learner
+Paxos 还有一个不太重要的角色Learner, 是为了让系统完整加入的, 但并不是整个算法执行的关键角色, 只有在最后在被通知一下.
+
+- Acceptor 发送phase-3 到所有learner 角色, 让learner 知道一个值被确定了
+- 多数场合proposer 就是1 个learner
+
+### livelock
+多个proposer 并发对1 个值运行paxos 的时候, 可能会互相覆盖对方的rnd, 然后提示自己的rnd 再次尝试, 然后再次产生冲突, 一直无法完成.
+
+# Paxos 优化
+## multi-paxos
+paxos诞生之初为人诟病的一个方面就是每写入一个值就需要2轮rpc: phase-1和phase-2. 因此一个寻常的优化就是用一次rpc为多个paxos实例运行phase-1.
+
+例如, Proposer X可以一次性为i₁~i₁₀这10个值, 运行phase-1, 例如为这10个paxos实例选择rnd为1001, 1002…1010. 这样就可以节省下9次rpc, 而所有的写入平均下来只需要1个rpc就可以完成了.
+
+这么看起来就有点像raft了:
+
+- 再加上commit概念(commit可以理解为: 值v送达到多数派这件事情是否送达到多数派了),
+- 和组成员变更(将quorum的定义从”多于半数”扩展到”任意2个quourm必须有交集”).
+
+## fast-paxos
 
 # why zab
 那既然Paxos如此强大,那为什么还会出现ZAB协议?
