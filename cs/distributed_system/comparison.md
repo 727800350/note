@@ -39,4 +39,3 @@ Zk 之所以可以这样做,很大程度上依赖于其状态机的实现,比如
 ## Client read
 - Raft 严格禁止 stale read 的存在,无论是 Raft log read 或 readIndex read 或 lease read 都不会出现 stale read.
 - Zk 默认情况下会出现 stale read,如果想避免 stale read 必须使用 sync() + read()
-
