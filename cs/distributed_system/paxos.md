@@ -82,7 +82,7 @@ node-3: a=y₂
 
 而paxos就是为了解决这类问题提出的, 它需要让Y能检测到这种并发冲突, 进而采取措施避免更新丢失.
 
-<img src="./pics/paxos/concurrent_inc_conflict.jpg" alt="inc 的并发冲突" width="40%"/>
+<img src="./pics/paxos/concurrent_inc_conflict.jpg" alt="inc 的并发冲突" width="50%"/>
 
 提取一下上面提到的问题: 让Y去更新的时候不能直接更新i₂, 而是应该能检测到i₂的存在, 进而将自己的结果保存在下一个版本i₃中, 再写回系统中.
 
@@ -100,7 +100,7 @@ node-3: a=y₂
 
 这个方法之所以能工作也是因为多数派写中, 一个系统最多只能允许一个多数派写成功. paxos也是通过2次多数派读写来实现的强一致.
 
-<img src="./pics/paxos/note_the_latest.jpg" alt="记住最后一个做过写前读取的" width="40%"/>
+<img src="./pics/paxos/note_the_latest.jpg" alt="记住最后一个做过写前读取的" width="50%"/>
 TODO: 这里有个疑问, 如图中所说, 最后, 1节点只接受X 的写入, 2, 3 节点只接受Y 的写入, 那在多数派写的时候, 如果Y 联系到的是 1和2 怎么办, 1 他写不进去, 会怎么处理.
 还是Y 在做写前读取的时候, 读取的是 2 和 3, 写的时候直接写这两个节点?
 
@@ -157,7 +157,7 @@ v 和 vrnd 是用于恢复一次未完成的paxos 用的.
 首先是paxos的phase-1, 它相当于之前提到的写前读取过程. 它用来在存储节点(Acceptor)上记录一个标识: 我后面要写入;
 并从Acceptor上读出是否有之前未完成的paxos运行. 如果有则尝试恢复它; 如果没有则继续做自己想做的事情.
 
-<img src="./pics/paxos/phase1.jpg" alt="phase 1" width="40%"/>
+<img src="./pics/paxos/phase1.jpg" alt="phase 1" width="50%"/>
 
 phase-1成功后, acceptor应该记录X的rnd=1, 并返回自己之前保存的v和vrnd.
 
@@ -177,7 +177,7 @@ TODO: 第一种情况, 为什么只有都是空的v, 才断定系统之前是干
 ## phase-2
 Proposer X将它选定的值写入到Acceptor中, 这个值可能是它自己要写入的值, 或者是它从某个Acceptor上读到的v(修复).
 
-<img src="./pics/paxos/phase2.jpg" alt="phase 2" width="40%"/>
+<img src="./pics/paxos/phase2.jpg" alt="phase 2" width="50%"/>
 
 当然这时(在X收到phase-1应答, 到发送phase-2请求的这段时间), 可能已经有其他Proposer又完成了一个rnd更大的phase-1, 所以这时X不一定能成功运行完phase-2.
 
@@ -193,7 +193,7 @@ acceptor 会用Y 的rnd 覆盖掉之前本地保存的 X 的吗?
 1. X以为自己还能运行phase-2, 但已经不行了, X只能对最左边的Acceptor成功运行phase-2, 而中间的Acceptor拒绝了X的phase-2.
 1. Y对右边2个Acceptor成功运行了phase-2, 完成写入v=y, vrnd=2.
 
-<img src="./pics/paxos/example_1.jpg" alt="解决并发写冲突" width="40%"/>
+<img src="./pics/paxos/example_1.jpg" alt="解决并发写冲突" width="50%"/>
 
 继续上面的例子, 看X如何处理被抢走写入权的情况:
 
@@ -207,7 +207,7 @@ v=x, vrnd=1不可能是, 因为其他proposer也必须遵守算法约定, 如果
 
 因此这时X选择v=y, 并使用rnd=3继续运行, 最终把v=y, vrnd=3写入到所有Acceptor中.
 
-<img src="./pics/paxos/example_2.jpg" alt="X不会修改确定的Y" width="40%"/>
+<img src="./pics/paxos/example_2.jpg" alt="X不会修改确定的Y" width="50%"/>
 
 ## 其他
 ### learner
@@ -243,7 +243,7 @@ fast-paxos通过增加quorum的数量来达到一次rpc就能达成一致的目�
 fast-paxos为了能在退化成classic paxos时不会选择不同的值, 就必须扩大quorum的值. 也就是说fast-round时, quorum的大小跟classic paxos的大小不一样.
 同样我们先来看看为什么fast-quorum不能跟classic-quorum一样, 这样的配置会引起classic阶段回复时选择错误的值 y₀:
 
-<img src="./pics/paxos/fast_paxos_1.jpg" alt="fast paxos 中的多数派" width="40%"/>
+<img src="./pics/paxos/fast_paxos_1.jpg" alt="fast paxos 中的多数派" width="50%"/>
 
 要解决这个问题, 最粗暴的方法是把fast-quorum设置为n, 也就是全部的acceptor都写入成功才认为fast-round成功(实际上是退化到了主从同步复制).
 这样, 如果X和Y两个proposer并发写入, 谁也不会成功, 因此X和Y都退化到classic paxos进行修复, 选任何值去修复都没问题. 因为之前没有Proposer认为自己成功写入了.
@@ -262,12 +262,12 @@ TODO: 3/4 的严格推倒
 X已经成功写入到4(fast-quorum>¾n)个acceptor, Y只写入1个, 这时Y进入classic-round进行修复,
 可以看到, 不论Y选择哪3(classic quorum)个acceptor, 都可以看到至少2个x₀, 因此Y总会选择跟X一样的值, 保证了写入的值就不会被修改的条件.
 
-<img src="./pics/paxos/fast_paxos_example_1.jpg" alt="fast paxos Y 发现冲突" width="40%"/>
+<img src="./pics/paxos/fast_paxos_example_1.jpg" alt="fast paxos Y 发现冲突" width="50%"/>
 
 ### X和Y都没有达到fast-quorum的冲突
 这时X和Y都不会认为自己的fast-round成功了, 因此修复过程选择任何值都是可以的. 最终选择哪个值, 就回归到X和Y两个classic-paxos进程的竞争问题了. 最终会选择x₀或y₀中的一个.
 
-<img src="./pics/paxos/fast_paxos_example_2.jpg" alt="fast paxos X 和Y 发现冲突" width="40%"/>
+<img src="./pics/paxos/fast_paxos_example_2.jpg" alt="fast paxos X 和Y 发现冲突" width="50%"/>
 
 # why zab
 那既然Paxos如此强大,那为什么还会出现ZAB协议?
