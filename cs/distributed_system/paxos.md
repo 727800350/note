@@ -231,6 +231,43 @@ paxos诞生之初为人诟病的一个方面就是每写入一个值就需要2�
 - 和组成员变更(将quorum的定义从”多于半数”扩展到”任意2个quourm必须有交集”).
 
 ## fast-paxos
+fast-paxos通过增加quorum的数量来达到一次rpc就能达成一致的目的. 如果fast-paxos没能在一次rpc达成一致, 则要退化到classic paxos.
+
+- proposer 直接发送phase-2
+- fast paxos 的rnd 是0. 0 保证它一定小于任何一个classic rnd, 所以可以在出现冲突时安全的回退到classic paxos
+- acceptor 只在v 是空时才接受fast phase-2 的请求
+- 如果发生冲突, 回退到classic paxos, 开始用一个rnd > 0 来运行
+
+但是 fast paxos 比classic paxos 高效吗?
+
+fast-paxos为了能在退化成classic paxos时不会选择不同的值, 就必须扩大quorum的值. 也就是说fast-round时, quorum的大小跟classic paxos的大小不一样.
+同样我们先来看看为什么fast-quorum不能跟classic-quorum一样, 这样的配置会引起classic阶段回复时选择错误的值 y₀:
+
+<img src="./pics/paxos/fast_paxos_1.jpg" alt="fast paxos 中的多数派" width="40%"/>
+
+要解决这个问题, 最粗暴的方法是把fast-quorum设置为n, 也就是全部的acceptor都写入成功才认为fast-round成功(实际上是退化到了主从同步复制).
+这样, 如果X和Y两个proposer并发写入, 谁也不会成功, 因此X和Y都退化到classic paxos进行修复, 选任何值去修复都没问题. 因为之前没有Proposer认为自己成功写入了.
+
+如果再把问题深入下, 可以得出, 如果classic paxos的quorum是n/2+1, 那么fast-round的quorum应该是大于¾n,
+¾的由来可以简单理解为: 在最差情况下, 达到fast-quorum的acceptor在classic-quorum中必须大于半数, 才不会导致修复进程选择一个跟fast-round不同的值.
+
+TODO: 3/4 的严格推倒
+
+结果就是
+
+- fast paxos 的可用性降低, 需要更多的acceptor 才能work
+- fast paxos 需要至少5 个acceptors 才能容忍1 个acceptor 不可用
+
+### fast-round中X成功, Y失败的冲突的例子
+X已经成功写入到4(fast-quorum>¾n)个acceptor, Y只写入1个, 这时Y进入classic-round进行修复,
+可以看到, 不论Y选择哪3(classic quorum)个acceptor, 都可以看到至少2个x₀, 因此Y总会选择跟X一样的值, 保证了写入的值就不会被修改的条件.
+
+<img src="./pics/paxos/fast_paxos_example_1.jpg" alt="fast paxos Y 发现冲突" width="40%"/>
+
+### X和Y都没有达到fast-quorum的冲突
+这时X和Y都不会认为自己的fast-round成功了, 因此修复过程选择任何值都是可以的. 最终选择哪个值, 就回归到X和Y两个classic-paxos进程的竞争问题了. 最终会选择x₀或y₀中的一个.
+
+<img src="./pics/paxos/fast_paxos_example_2.jpg" alt="fast paxos X 和Y 发现冲突" width="40%"/>
 
 # why zab
 那既然Paxos如此强大,那为什么还会出现ZAB协议?
