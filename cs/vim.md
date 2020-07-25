@@ -11,14 +11,14 @@ Markdown 高亮配置
 
 对于已保存的文件,可以使用下面的方法进行[空格和TAB的替换](http://blog.csdn.net/jiang1013nan/article/details/6298727):
 TAB替换为空格:
-```
+```vim
 :set ts=4
 :set expandtab
 :%retab!
 ```
 
 空格替换为TAB:
-```
+```vim
 :set ts=4
 :set noexpandtab
 :%retab!
@@ -26,21 +26,21 @@ TAB替换为空格:
 加!是用于处理非空白字符之后的TAB,即所有的TAB,若不加!,则只处理行首的TAB.
 
 # Move
-| Movement                            | Commands   |
-|-------------------------------------|------------|
-| To first character of next line     | +          |
-| To first character of previous line | -          |
-| To end of word                      | e or E     |
-| Forward by word                     | w or W     |
-| Backward by word                    | b or B     |
-| Forward by window                   | ctrl + f   |
-| Backward by window                  | ctrl + b   |
-| %									  | 跳到配对的括号|
-| gD 								  | 跳转到局部变量的定义处|
-|nG or :n							  | 到第n行| 
-|H									  | high, 跳到屏幕上端|
-|L 									  | low, 跳到屏幕下端|
-|M 									  | middle, 跳到屏幕中间|
+| Movement                            | Commands               |
+|-------------------------------------|------------------------|
+| To first character of next line     | +                      |
+| To first character of previous line | -                      |
+| To end of word                      | e or E                 |
+| Forward by word                     | w or W                 |
+| Backward by word                    | b or B                 |
+| Forward by window                   | ctrl + f               |
+| Backward by window                  | ctrl + b               |
+| %                                   | 跳到配对的括号         |
+| gD                                  | 跳转到局部变量的定义处 |
+| nG or :n                            | 到第n行                |
+| H                                   | high, 跳到屏幕上端     |
+| L                                   | low, 跳到屏幕下端      |
+| M                                   | middle, 跳到屏幕中间   |
 
 书签
 
@@ -76,7 +76,6 @@ Editing action
 | Toggle case                                  | ~       |
 | Repeat last action                           | .       |
 
-
 Edit commands
 
 | Text object                         | Change     | Delete     | Copy       |
@@ -89,7 +88,6 @@ Edit commands
 | To beginning of line                | c0         | d0         | y0         |
 | Single character                    | r          | x or X     | yl or yh   |
 | Five characters                     | 5s         | 5x         | 5yl        |
-
 
 More editing commands
 
@@ -107,18 +105,18 @@ More editing commands
 | c13G       | d13G       | y13G       | Line number 13            |
 
 # 大小写
-| Command | Explanation        |
-|---------|--------------------|
-| ?~       | 将光标下的字母改变大小写       |
-| 3~      | 将光标位置开始的3个字母改变其大小写 |
-| g~~     | 改变当前行字母的大小写        |
+| Command | Explanation                          |
+|---------|--------------------------------------|
+| ?~      | 将光标下的字母改变大小写             |
+| 3~      | 将光标位置开始的3个字母改变其大小写  |
+| g~~     | 改变当前行字母的大小写               |
 | U       | 将可视模式下选择的字母全改成大写字母 |
-| u       | 将可视模式下选择的字母全改成小写   |
-| gUU     | 将当前行的字母改成大写        |
-| 3gUU    | 将从光标开始到下面3行字母改成大写  |
-| guu     | 将当前行的字母全改成小写       |
-| gUw     | 将光标下的单词改成大写        |
-| guw     | 将光标下的单词改成小写        |
+| u       | 将可视模式下选择的字母全改成小写     |
+| gUU     | 将当前行的字母改成大写               |
+| 3gUU    | 将从光标开始到下面3行字母改成大写    |
+| guu     | 将当前行的字母全改成小写             |
+| gUw     | 将光标下的单词改成大写               |
+| guw     | 将光标下的单词改成小写               |
 
 - `\u or \l`: Causes the next character in the replacement string to be changed to uppercase or lowercase, respectively.
 - `\U or \L and \e or \E`: all following characters are converted to uppercase or lowercase until the end of the replacement string or until \e or \E is reached.
@@ -145,7 +143,7 @@ More editing commands
 | .      | 匹配任意字符                                     |
 | [abc]  | 匹配方括号中的任意一个字符.可以使用-表示字符范围 |
 | [^abc] | 表示匹配除方括号中字符之外的任意字符.            |
-| \| 	 | 或, 如 for\|bar 表示匹配for或者bar               |
+| \|    | 或, 如 for\|bar 表示匹配for或者bar                |
 | \d     | 匹配阿拉伯数字,等同于[0-9].                      |
 | \D     | 匹配阿拉伯数字之外的任意字符,等同于[^0-9]        |
 | \x     | 匹配十六进制数字,等同于[0-9A-Fa-f].              |
@@ -206,7 +204,7 @@ More editing commands
 - `:w!` force write
 - `:r` read
 - `:$r filename` #place the content of `filename` at the end of the current session
-- `:e filename` # editing another file, use `Ctrl+^` to swith to another file 
+- `:e filename` # editing another file, use `Ctrl+^` to swith to another file
 - `:! command` execute the command in the shell
 - `vi + filename` open file at last line
 - `vi +/pattern filename` open file at the first occurrence of pattern
@@ -232,7 +230,7 @@ you will get a list of any files that the system has saved
 ## 打开多个窗口
 横向切割窗口
 
-- :new+窗口名(保存后就是文件名) 
+- :new+窗口名(保存后就是文件名)
 - :split+窗口名,也可以简写为:sp+窗口名
 
 纵向切割窗口名  
@@ -281,7 +279,7 @@ you will get a list of any files that the system has saved
 - :n 跳至下一个文件,也可以直接指定要跳的文件,如:n c,可以直接跳到c文件
 - :e# 回到刚才编辑的文件
 
-##文件浏览
+## 文件浏览
 - :Ex 开启目录浏览器,可以浏览当前目录下的所有文件,并可以选择
 - :Sex 水平分割当前窗口,并在一个窗口中开启目录浏览器
 - :ls 显示当前buffer情况
@@ -294,11 +292,11 @@ you will get a list of any files that the system has saved
 ## cscope
 cscope 自身带一个基于文本的用户界面,不过 gvim 提供了cscope接口
 
-	$cscope -Rbkq
-	R 表示把所有子目录里的文件也建立索引
-	b 表示cscope不启动自带的用户界面,而仅仅建立符号数据库
-	q 生成cscope.in.out和cscope.po.out文件,加快cscope的索引速度
-	k 在生成索引文件时,不搜索/usr/include目录
+  $cscope -Rbkq
+  R 表示把所有子目录里的文件也建立索引
+  b 表示cscope不启动自带的用户界面,而仅仅建立符号数据库
+  q 生成cscope.in.out和cscope.po.out文件,加快cscope的索引速度
+  k 在生成索引文件时,不搜索/usr/include目录
 
 使用cs find 查找[3] (也可以简化写成 cs f)后面添加需要字符串类型
 
@@ -323,11 +321,11 @@ press `Ctrl + o` or `Ctrl + t` to climb back
 
 You can also go directly to a tag definition by entering one of the following in vim command mode:  
 
-	:tag function_name
-	:ta function_name
+  :tag function_name
+  :ta function_name
 
-These commands will also accept regular expressions, so, for example,   
-`:tag /^asserts_*` would find all tags that start with `asserts_`   
+These commands will also accept regular expressions, so, for example,
+`:tag /^asserts_*` would find all tags that start with `asserts_`
 By default vim will jump to the first result, but a number of commands can be used to sort through the list of tags:
 
 - :ts or :tselect shows the list
@@ -346,10 +344,11 @@ By default vim will jump to the first result, but a number of commands can be us
 - 缩进当前以下10行 `10==`
 - 缩进第10行到第20行 `10G=20G`
 
-Explanation:   
-`gg` goes to the top of the file,   
-`=` is a command to fix the indentation and  
-`G` tells it to perform the operation to the end of the file.
+Explanation:
+
+- `gg` goes to the top of the file
+- `=` is a command to fix the indentation and
+- `G` tells it to perform the operation to the end of the file.
 
 ### astyle
 Artistic Style is a source code indenter, formatter, and beautifier for the `C, C++, C# and Java` programming languages
@@ -362,12 +361,11 @@ Open vim, gVim or MacVim, and after editing some C/C++ files, use the following 
 ## autocomplete
 在使用autocompletion的功能时,`ctrl-n` 与`ctrl-p`在选择项中移动,`enter`确定选择,`ctrl-e` 取消自动完成
 
-	(comm)(number)(text object)
-	(number)(command)(text object)
+  (comm)(number)(text object)
+  (number)(command)(text object)
 `text object` is ofen a movement command
 `ex` indicates text block with line address
 `vi` indicates text block with text object,that is movement command
 
 `sed` steam editor
 `awk` data manipulation language
-
