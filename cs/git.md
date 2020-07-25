@@ -4,34 +4,51 @@
 
 添加密钥, 参见[bash](./bash.md) 中的ssh部分
 
-在日常的git操作中,git checkout,是我们的常用命令,既可以是某一个具体的commit hash值,也可以是某个分支名称, 还可以是tag名称
+# 常用
+- `git stash`: stash the changes in a dirty working directory away
+- `git remote prune origin`: clean the remote branch status
 
-- `git fetch origin branch1:branch2`: 将远程分支branch1 拉到本地作为branch2
-- `git add -p <file>` 把对某个文件的修改添加到下次提交中
+## 撤销
+- `git reset HEAD` 移除缓存区的所有文件(i.e. 撤销上次git add):
+- `git revert <commit>` 重置一个提交(通过创建一个截然不同的新提交)
+- `git reset <commit>` 将HEAD重置到上一次提交的版本,并将之后的修改标记为未添加到缓存区的修改:
+- `git reset --keep <commit>` 将HEAD重置到上一次提交的版本,并保留未提交的本地修改:
+
+## 回滚
+1. `git reset --hard <commit>` reset index和working directory, 自从<commit>以来在working directory中的任何改变都被丢弃, 并把HEAD指向<commit>.
+  git log 看不到这个commit 之后的commits, 但是git reflog 可以看到
+1. `git push --force origin master`
+
+- 把<commit> 换成某一个tag的名字, 可以回滚到指定的tag
+- 不指定<commit>时, 默认为HEAD, 即最新的一次提交
+
+Git Your branch is ahead of 'origin/master' by X commits解决方法
+
+- If you work in another way and your local changes should be pushed then just, `git push origin`
+- If your local changes are bad then just remove them or reset your local master to the state on remote. `git reset --hard origin/master`
 
 ## git cherry-pick
 What git cherry-pick does, basically, is take a commit from somewhere else, and "play it back" wherever you are right now.
 Because this introduces the same change with a different parent, Git builds a new commit with a different ID.
 
-实际问题: 在本地 master 分支上做了一个commit(38361a68138140827b31b72f8bbfd88b3705d77a), 如何把它放到本地 old_cc 分支上?
+实际问题: 在本地 master 分支上做了一个commit(38361a68138140827b31b72f8bbfd88b3705d77a), 如何把它放到本地 old cc 分支上?
+```bash
+git checkout old_cc
+git cherry-pick 38361a68138140827b31b72f8bbfd88b3705d77a
 ```
-$ git checkout old_cc
-$ git cherry-pick 38361a68138140827b31b72f8bbfd88b3705d77a
 如果顺利, 就会正常commit
 如果出现冲突, 像解决git merge 一样解决就行了
-```
 
-## git stash
-Stash the changes in a dirty working directory away
+## git log
+- `git log -p filename`: 显示该文件每次提交的diff
+- `git log filename`: 可以看到该文件相关的commit记录
+- `git blame filename`: 谁, 在什么时间, 修改了文件的什么内容
+- `git show commit-id`: 根据commit-id查看某个提交
+- `git show commit-id filename`: 查看某次提交中的某个文件变化
 
-- `git stash`: 备份当前的工作区的内容,从最近的一次提交中读取相关内容,让工作区保证和上次提交的内容一致.同时,将当前的工作区内容保存到Git栈中
-- `git stash list`: 显示Git栈内的所有备份,可以利用这个列表来决定从那个地方恢复
-  ```
-  stash@{0}: WIP on branch x
-  stash@{1}: WIP on branch y
-  ```
-- `git stash pop`: 从Git栈中读取最近一次保存的内容,恢复工作区的相关内容.由于可能存在多个Stash的内容,所以用栈来管理,pop会从最近的一个stash中读取内容并恢复, 可以通过list 的结果来恢复特定的, 例如 `git stash pop stash@{1}`
-- `git stash clear`: 清空Git栈
+## git grep
+- `git grep "hello"` 从当前目录的所有文件中搜索
+- `git grep "hello"` v2.5 在某一版本中搜索
 
 ## git tag
 - `git tag` 列出现有标签的命令非常简单
@@ -51,97 +68,29 @@ Git 使用的标签有两种类型:轻量级的(lightweight)和含附注的(anno
 
 一般我们都建议使用含附注型的标签,以便保留相关信息:当然,如果只是临时性加注标签,或者不需要旁注额外信息,用轻量级标签也没问题
 
-## git log
-- `git log -p filename`: 显示该文件每次提交的diff
-- `git log filename`: 可以看到该文件相关的commit记录
-- `git blame filename`: 谁, 在什么时间, 修改了文件的什么内容
-- `git show commit-id`: 根据commit-id查看某个提交
-- `git show commit-id filename`: 查看某次提交中的某个文件变化
-
-## git grep
-- git grep "hello" 从当前目录的所有文件中搜索
-- git grep "hello" v2.5 在某一版本中搜索
-
-## 合并与重置
-- `git merge <branch>` 将分支合并到当前HEAD中:
-- `git rebase <branch>` 将当前HEAD版本重置到分支中(请勿重置已发布的提交!)
-- `git rebase --abort` 退出重置
-- `git rebase --continue` 解决冲突后继续重置:
-
-## 撤销
-- `git reset HEAD` 移除缓存区的所有文件(i.e. 撤销上次git add):
-- `git checkout HEAD <file>` 放弃某个文件的所有本地修改:
-- `git revert <commit>` 重置一个提交(通过创建一个截然不同的新提交)
-- `git reset <commit>` 将HEAD重置到上一次提交的版本,并将之后的修改标记为未添加到缓存区的修改:
-- `git reset --keep <commit>` 将HEAD重置到上一次提交的版本,并保留未提交的本地修改:
-
-## 回滚
-1. `git reset --hard <commit>` reset index和working directory, 自从<commit>以来在working directory中的任何改变都被丢弃, 并把HEAD指向<commit>.
-  git log 看不到这个commit 之后的commits, 但是git reflog 可以看到
-1. `git push --force origin master`
-
-- 把<commit> 换成某一个tag的名字, 可以回滚到指定的tag
-- 不指定<commit>时, 默认为HEAD, 即最新的一次提交
-
-Git Your branch is ahead of 'origin/master' by X commits解决方法
-
-- If you work in another way and your local changes should be pushed then just, `git push origin`
-- If your local changes are bad then just remove them or reset your local master to the state on remote. `git reset --hard origin/master`
-
 # FAQ
 ## 撤销操作
-1. 运行了`git add`, 但是还没有运行`git commit`, 可以执行下面的两个方法:
+### 撤销 git add
+运行了`git add`, 但是还没有运行`git commit`, 可以执行下面的两个方法:
 
-  - `git rm --cached <added_file_to_undo>`
-  - `git reset .`: (to undo my entire initial add), 修改的文件还将处于修改的状态
+- `git rm --cached <added_file_to_undo>`
+- `git reset .`: (to undo my entire initial add), 修改的文件还将处于修改的状态
 
-1. Checkout all files except one. When I do a git status, I see files like this:
-  ```
-  modified:  dir/A/file.txt
-  modified:  dir/B/file.txt
-  modified:  dir/C/file.txt
-  modified:  dir/D/file.txt
-  ```
-  What I want to do is to discard changes to all files EXCEPT for dir/C/file.txt 操作步骤:
-  ```
-  git add dir/C/file.txt # this file will stay modified and staged
-  git checkout .
-  ```
+### 撤销commit message
+commit 之后发现commit的message有错误.
 
-1. commit 之后发现commit的message有错误, `git commit --amend`: lets you edit the previous commit message
+`git commit --amend`: lets you edit the previous commit message
 
-1. commit 之后想起忘了add 另外一个修改的文件, 操作步骤如下
-  ```
-  # Edit hello.py and main.py
-  git add hello.py
-  git commit
+### commit 之后忘记add 另外一个修改的文件
+```bash
+# Edit hello.py and main.py
+git add hello.py
+git commit
 
-  # Realize you forgot to add the changes from main.py
-  git add main.py
-  git commit --amend --no-edit
-  ````
-
-## 分支操作
-1. Using git in two computers, after merging one branch a into master with computer c1, delte the branch a in c1 both locally and remotely,
-switch to computer c2, delelte the branch a locally, and want to delete the branch a remotely in c2,
-but an error is reported, as the remote branch a has been deleted by computer c1, so what should I do to clean the branch status in computer c2?
-original branch status:
-
-    [eric@iis ntop]$ git branch -a
-    * master
-      note
-      remotes/origin/HEAD -> origin/master
-      remotes/origin/master
-      remotes/origin/note
-note branch 是在其他机器上删除的一个分支
-
-  1. `$ git branch -d note`: delete the branch locally
-  1. `$ git remote prune origin`: clean the remote branch status
-  1. `$ git remote set-head origin -a`: query the remote and automatically set the origin/HEAD pointer to the remote current branch.
-  1. `$ git remote set-head origin -d`: delete the origin/HEAD symbolic ref
-
-1. 比如你同事在Git的remote branch中新增branch xxx, 但是你发现在本地中查看存在的branch时, 并看不到他增加的branch, `git fetch` 可以将远程新的分支拉到本地
-
+# Realize you forgot to add the changes from main.py
+git add main.py
+git commit --amend --no-edit
+```
 
 # git config
 ## [Using ssh over https](https://help.github.com/articles/using-ssh-over-the-https-port/)
@@ -149,14 +98,14 @@ note branch 是在其他机器上删除的一个分支
 
 1. To test if SSH over the HTTPS port is possible, run this SSH command:
 
-  ```
+  ```bash
   $ ssh -T -p 443 git@ssh.github.com
   # Hi username! You have successfully authenticated, but GitHub does not provide shell access.
   ```
 If that worked, great!
 1. Enabling SSH connections over HTTPS
 
-  ```
+  ```bash
   [eric@alien ~]$ cat .ssh/config
   Host github.com
     Hostname ssh.github.com
@@ -164,7 +113,7 @@ If that worked, great!
   ```
 1. verification
 
-  ```
+  ```bash
   $ ssh -T git@github.com
   # Hi username! You have successfully authenticated, but GitHub does not provide shell access.
   ```
@@ -173,7 +122,7 @@ If that worked, great!
 1. 增加远程分支: `git remote add source https://github.com/antirez/redis.git`
   如果你运行命令:git remote -v你会发现多出来了一个source的远程分支.如下:
 
-  ```
+  ```info
   origin  git@github.com:ericuni/redis.git (fetch)
   origin  git@github.com:ericuni/redis.git (push)
   source  https://github.com/antirez/redis.git (fetch)
@@ -181,7 +130,7 @@ If that worked, great!
   ```
   .git/config 中remote 的部分会变为:
 
-  ```
+  ```info
   [remote "origin"]
     url = git@github.com:ericuni/redis.git
     fetch = +refs/heads/*:refs/remotes/origin/*
@@ -196,14 +145,14 @@ If that worked, great!
 ## [git 给远程库添加多个url地址](http://my.oschina.net/shede333/blog/299032)
 修改.git/config 中 url 部分
 
-```
+```info
 [remote "origin"]
   url = git@github.com:ericuni/note.git
   url = git@git.oschina.net:ericuni/note.git
   fetch = +refs/heads/*:refs/remotes/origin/*
 ```
 然后通过git remote -v 就可以看到多出来的一个
-```
+```info
 origin  git@github.com:ericuni/note.git (fetch)
 origin  git@github.com:ericuni/note.git (push)
 origin  git@git.oschina.net:ericuni/note.git (push)
@@ -218,14 +167,14 @@ origin  git@git.oschina.net:ericuni/note.git (push)
 
 首先我们先创建两个文件
 ```bash
-$ git init
-$ echo '111' > a.txt
-$ echo '222' > b.txt
-$ git add *.txt
+git init
+echo '111' > a.txt
+echo '222' > b.txt
+git add *.txt
 ```
 Git会将整个数据库储存在.git/目录下，如果你此时去查看.git/objects目录，你会发现仓库里面多了两个object。
 
-```
+```bash
 $ tree .git/objects
 .git/objects
 ├── 58
@@ -272,7 +221,7 @@ $ tree .git/objects
 ...
 ```
 我们会发现当我们commit完成之后，Git仓库里面多出来两个object。同样使用cat-file命令，我们看看它们分别是什么类型以及具体的内容是什么。
-```
+```bash
 $ git cat-file -t 4caaa1a9ae0b274fba9e3675f9ef071616e5b209
 tree
 $ git cat-file -p 4caaa1a9ae0b274fba9e3675f9ef071616e5b209
@@ -304,4 +253,3 @@ $ cat .git/refs/heads/master
 ```
 
 所以整个的树形结构就是下面这样的:
-
