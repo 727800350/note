@@ -2,7 +2,7 @@ Package names usually take the singular form.
 
 An internal pkg may be imported only by another pkg that is inside the tree rooted at the parent of the internal directory.
 For example, given the pkgs below
-```
+```info
 net/http
 net/http/internal/chunked
 net/http/httputil
@@ -72,7 +72,7 @@ const (
 ```
 
 This is one of those weird things in go due to its simplistic type system (lack of operator overloading in this case).
-you have to cast the multiplication to Duration * Duration = Duration, instead of the original one which actually makes more sense: Duration * int = Duration
+you have to cast the multiplication to `Duration * Duration = Duration`, instead of the original one which actually makes more sense: Duration * int = Duration
 ```go
 seconds := 3600
 time.Duration(seconds) * time.Second  // 3600s
