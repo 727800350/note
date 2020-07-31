@@ -42,8 +42,8 @@ Otherwise, it will update all the dependencies to their latest minor revision. A
 [Go Modules 内部分享](https://xuanwo.io/2019/05/27/go-modules/)
 
 ## 导入版本控制
-如果旧包和新包具有相同的导入路径，则新包必须向后兼容旧包。
-换言之，如果他们的导入路径不同，他们就无需保持兼容。
+如果旧包和新包具有相同的导入路径,则新包必须向后兼容旧包.
+换言之,如果他们的导入路径不同,他们就无需保持兼容.
 
 v2.3.4 semantic versioning
 
@@ -51,16 +51,16 @@ v2.3.4 semantic versioning
 - minor version: incremental for new features
 - patch version: increment for bug fixes
 
-其次, 当主版本号大于等于 v2 时，这个 Module 的 import path 必须在尾部加上 /vN。
+其次, 当主版本号大于等于 v2 时,这个 Module 的 import path 必须在尾部加上 /vN.
 
-- 在 go.mod 文件中： module github.com/my/mod/v2
-- 在 require 的时候： require github.com/my/mod/v2 v2.0.0
-- 在 import 的时候： import "github.com/my/mod/v2/mypkg"
+- 在 go.mod 文件中: module github.com/my/mod/v2
+- 在 require 的时候: require github.com/my/mod/v2 v2.0.0
+- 在 import 的时候: import "github.com/my/mod/v2/mypkg"
 
-最后，当主版本号为 v0 或者 v1 时，尾部的 /v0 或 /v1 可以省略。
+最后,当主版本号为 v0 或者 v1 时,尾部的 /v0 或 /v1 可以省略.
 
-根据语义化版本的要求，v0 是不需要保证兼容性的，可以随意的引入破坏性变更，所以不需要显式的写出来；
-而省略 v1 更大程度上是现实的考虑，毕竟 99% 的包都不会有 v2，同时考虑到现有代码库的兼容，省略 v1 是一个合情合理的决策。
+根据语义化版本的要求,v0 是不需要保证兼容性的,可以随意的引入破坏性变更,所以不需要显式的写出来,
+而省略 v1 更大程度上是现实的考虑,毕竟 99% 的包都不会有 v2,同时考虑到现有代码库的兼容,省略 v1 是一个合情合理的决策.
 
 ## go.mod
 Using Go 1.13, GO111MODULE's default (auto) changes:
@@ -72,7 +72,7 @@ Using Go 1.13, GO111MODULE's default (auto) changes:
 with Go 1.14, the GO111MODULE variable has the same behavior as with Go 1.13.
 
 ### module
-用来声明当前 module，如果当前版本大于 v1 的话，还需要在尾部显式的声明 /vN。
+用来声明当前 module,如果当前版本大于 v1 的话,还需要在尾部显式的声明 /vN.
 ```info
 module /path/to/your/mod/v2
 
@@ -80,10 +80,10 @@ module github.com/Xuanwo/go-mod-intro/v2
 ```
 
 ### require
-这是最为常用的部分，在 mod 之后可以写任意有效的、能指向一个引用的字符串，比如 Tag，Branch，Commit 或者是使用 latest 来表示引用最新的 commit。
-如果对应的引用刚好是一个 Tag 的话，这个字符串会被重写为对应的 tag；
-如果不是的话，这个字符串会被规范化为形如 v2.0.0-20180128182452-d3ae77c26ac8 这样的字符串。
-我们后面会发现这个字符串与底层的 mod 存储形式是相对应的。
+这是最为常用的部分,在 mod 之后可以写任意有效的,能指向一个引用的字符串,比如 Tag,Branch,Commit 或者是使用 latest 来表示引用最新的 commit.
+如果对应的引用刚好是一个 Tag 的话,这个字符串会被重写为对应的 tag,
+如果不是的话,这个字符串会被规范化为形如 v2.0.0-20180128182452-d3ae77c26ac8 这样的字符串.
+我们后面会发现这个字符串与底层的 mod 存储形式是相对应的.
 ```info
 require /your/mod tag/branch/commit
 
@@ -92,9 +92,9 @@ require gopkg.in/urfave/cli.v2 v2.0.0-20180128182452-d3ae77c26ac8
 ```
 
 ### replace
-replace 这边的花样比较多，主要是两种，一个是与 require 类似，可以指向另外一个 repo，另一种是可以指向本地的一个目录。
+replace 这边的花样比较多,主要是两种,一个是与 require 类似,可以指向另外一个 repo,另一种是可以指向本地的一个目录.
 
-需要额外注意的是，如果引用一个本地路径的话，那这个目录下必须要有 go.mod 文件，这个目录可以是绝对路径，也可以是相对路径。
+需要额外注意的是,如果引用一个本地路径的话,那这个目录下必须要有 go.mod 文件,这个目录可以是绝对路径,也可以是相对路径.
 
 ```info
 replace original_name => real_name tag/branch/commit
