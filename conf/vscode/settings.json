@@ -2,6 +2,7 @@
     "C_Cpp.clang_format_sortIncludes": true,
     "C_Cpp.experimentalFeatures": "Enabled",
     "C_Cpp.updateChannel": "Insiders",
+    "editor.rulers": [120],
     "editor.suggestSelection": "first",
     "editor.tabSize": 2,
     "go.autocompleteUnimportedPackages": true,
