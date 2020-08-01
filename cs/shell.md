@@ -2,10 +2,6 @@
 1. [Shell脚本编程30分钟入门](https://github.com/qinjx/30min_guides/blob/master/shell.md)
 1. [ShellProgramming](http://mprc.pku.edu.cn/mentors/training/TrainingCourses/material/ShellProgramming.HTM#\_Toc37518066)
 
-当运行一个需要很长时间才能结束的脚本时, 通过`nohup &` 让其在后台运行, 且在脚本的末尾加上 `mail`, 发送邮件通知
-
-`$ echo hello | mail -s 'subject' target@xxx.com -- -f 12306@rails.com.cn`: 任意指定发件人(这里要注意先是有两个短杠, 所以, 电子邮件是可以伪造的)
-
 ```bash
 cmds_0
 {
@@ -16,17 +12,7 @@ cmds_2
 一组命令作为一个整体在后台运行.
 但是需注意: **这种后台方式是新开一个shell环境来执行cmds_1, 所以在后台cmds_1中改变的变量, 新定义的变量在cmds_2 都无效**.
 
-目录
-```bash
-$ dirname /dir/path.sh
-/dir
-$ basename /dir/path.sh
-path.sh
-```
-在shell 脚本里一定要注意路径.
-
-脚本里没有`ll`命令, 需要使用 `ls -l`
-
+# time
 计算时间差
 
 - `date +"%Y%m%d"`
@@ -39,20 +25,22 @@ $ bash -c "date"
 Wed Apr 22 19:08:12 CST 2015
 ```
 
-## set 选项
+# tips
 - `set -x`
 - `set -o pipefail`: the return value of pipeline is the value of the last (rightmost) command to exit with a non-zero status, or zero if all are zero
 
-## && and ||
-`command1  && command2`  
-&&左边的命令(命令1)返回真(即返回0,成功被执行)后,&&右边的命令(命令2)才能够被执行,换句话说,"如果这个命令执行成功&&那么执行这个命令".
-
-`command1 || command2`  
-||则与&&相反.
-如果||左边的命令(命令1)未执行成功,那么就执行||右边的命令(命令2),或者换句话说,"如果这个命令执行失败了||那么就执行这个命令."
-
-## 注释
-以"#"开头的行就是注释,会被解释器忽略.
+- && and ||: 如果这个命令执行成功&&那么执行这个命令", || 则相反
+- 脚本里没有`ll`命令, 需要使用 `ls -l`
+- 在shell 脚本里一定要注意路径
+  ```bash
+  dirname /dir/path.sh  ## /dir
+  basename /dir/path.sh  ## path.sh
+  readlink -f ./file  ## 获得绝对路径
+  ```
+- 当运行一个需要很长时间才能结束的脚本时, 通过`nohup &` 让其在后台运行, 且在脚本的末尾加上 `mail`, 发送邮件通知
+  ```bash
+  echo hello | mail -s 'subject' target@xxx.com -- -f 12306@rails.com.cn  ## 任意指定发件人(这里要注意先是有两个短杠, 所以, 电子邮件是可以伪造的)
+  ```
 
 # IO
 `printf %05d 123`: 输出是00123,且没有换行符, 显示5位数,不够5位的用0补充, 多余的不会进行截断
@@ -62,34 +50,30 @@ Wed Apr 22 19:08:12 CST 2015
 管道会产生了子shell, 在管道命令里面修改的全局变量在管道之后是无效的.
 
 ## 输出重定向
-文件描述符必须放在重定向符号前, 该值必须紧紧地放在重定向符号前, eg: `2> log.error`
+文件描述符必须放在重定向符号前, 该值必须紧紧地放在重定向符号前, eg: `2>log.error`
 
-- 重定向数据和错误: `command 1> log.out 2> log.error`
-- 重定向到同一个文件: `command &> log`(注意: bash shell 会自动给错误消息更高的优先级, 使得可以在一处地方查看错误消息, 不用翻遍整个输出文件)
-- 临时重定向: `echo "this is an error" >&2`: 将这条输出重定向到错误输出.(& 不能丢, 否则是将输出重定向到一个名为2的文件)
-- 永久重定向: `exec 2> error`: 将错误消息全部重定向到error 文件. 相应的, 永久输入重定向为: `exec 0< input`([redirect input demo](../demo/shell/input.sh))
+- `cmd 1>out 2>err.log`: 重定向stdout 和stderr
+- `cmd 1>out 2>&1`: 把 stderr 也重定向到 stdout
 
-## 创建文件描述符
-除了0,1,2, 我们还可以自己定义文件描述符.
+## [Here Document](https://juejin.im/post/6844903854023114760)
+Here Document 就是标准输入的一种替代品.它使得脚本开发人员可以不必使用临时文件来构建输入信息,而是直接就地生产出一个文件并用作命令的标准输入.
+一般来说其格式是这样的:
+```bash
+COMMAND <<IDENT
+...
+IDENT
+```
+在这里,<< 是引导标记,IDENT 是一个限定符,由开发人员自行选定,两个 IDENT 限定符之间的内容将被当做是一个文件并用作 COMMAND 的标准输入.
+例如echo大段文本时, 我们可以使用 cat file 的语法:
+```bash
+cat <<EOF
+SOME TEXT
+HERE
+!
+EOF
+```
 
-[重定向标准输出到一个文件, 然后再恢复](../demo/shell/redirect.sh)  
-同样的操作可以应用到输入上
-
-关闭文件描述符: `exec 3>&-`(最后的4个字符之间不能有空格). [demo](../demo/shell/close_file_descriptor.sh)
-
-[创建临时文件](../demo/shell/tmp_file.sh)
-
-- in default, mktemp will create the tmp file in the current directory
-- `mktemp -t`: 会强制mktemp 在系统的临时目录创建该文件, 在使用这个特性时, 命令会返回这个临时文件的全路径
-- `mktemp -d`: 创建一个临时目录
-
-# 变量
-[variable demo](../demo/shell/variable.sh)
-
-**注意:
-1. 变量名和等号之间不能有空格**
-1. 只有在使用变量的时候, 才需要用$符号, 同时有时为了避免歧义, 还需要使用括号将变量名字括起来
-
+# variables and types
 ## 一些常用的shell变量
 ```info
 $#  传递到脚本的参数个数, 不包括脚本名字本身
@@ -103,7 +87,7 @@ $?  显示最后命令的退出状态,0表示无错误
 ```
 
 位置参数可以用shift命令左移.  
-比如shift 3表示原来的$4现在变成$1,原来的$5现在变成$2等等,原来的$1,$2,$3丢弃,$0不移动.
+比如`shift 3` 表示原来的$4现在变成$1,原来的$5现在变成$2等等,原来的$1,$2,$3丢弃,$0不移动.
 不带参数的shift命令相当于shift 1.  
 Shift 命令还有另外一个重要用途, Bash 定义了9个位置变量,从 $1 到 $9,这并不意味着用户在命令行只能使用9个参数,借助 shift 命令可以访问多于9个的参数.
 Shift 命令一次移动参数的个数由其所带的参数指定.例如当 shell 程序处理完前九个命令行参数后,可以使用 shift 9 命令把 $10 移到 $1.
@@ -131,27 +115,29 @@ $ echo $c
 字符串是shell编程中最常用最有用的数据类型(除了数字和字符串,也没啥其它类型好用了),
 字符串可以用单引号,也可以用双引号,也可以不用引号.单双引号的区别跟PHP类似.
 
-- 单引号里的任何字符都会原样输出,单引号字符串中的变量是无效的, 转意符也不太好用
+- 单引号里的任何字符都会原样输出,单引号字符串中的变量是无效的, 转义符也不太好用
 - 双引号里可以有变量,双引号里可以出现转义字符
 
 ### 比较大小
 类似于的 C 语言的strcmp
 
-- `>`: 大于
-- `\>`: 不大于, 也就是小于等于
-- =     两字符串相等
-- !=    两字符串不等
-- -z   空串
-- -n   非空串
+| operator | meaning                |
+|----------|------------------------|
+| >        | 大于                   |
+| \>       | 不大于, 也就是小于等于 |
+| =        | 相等                   |
+| !=       | 不等                   |
+| -z       | 空串                   |
+| -n       | 非空串                 |
 
-### 获取字符串长度 String Length
+### String Length
 ```bash
 str="abcABC123ABCabc"
 echo ${#str}  ## 15
 echo `expr length ${str}`  ## 15
 ```
 
-### 提取子字符串 Substring Extraction
+### Substring
 - `${string:position}`: 在$string中, 从位置$position开始提取子串
 - `${string:position:length}`: 在$string中, 从位置$position开始提取长度为$length的子串
 
@@ -295,20 +281,9 @@ num_items=${#array_name[*]}
 - `-a`: 逻辑和
 
 ### 数值测试
-**数值的运算最好通过awk 来进行, shell 本身只支持整数运算**
+数值的运算最好通过awk 来进行, shell 本身只支持整数运算
 
-两种格式:
-```bash
-"number"  number_operator  "number"
-[ "number"  number_operator  "number" ]
-```
 其中:number_operator 可以为:`-eq, -ne, -gt, -lt, -ge`
-例如:
-```bash
-NUMBER=130
-[ "990"  –le  "995"  –a  "NUMBER"  -gt  "133" ]
-(其中-a表示前后结果相"与")
-```
 
 ### 文件状态测试(常用的)
 ```info
@@ -322,133 +297,54 @@ NUMBER=130
 -x  测试文件是否可执行
 ```
 
-```ifno
--a file exists.
--b file exists and is a block special file.
--c file exists and is a character special file.
--g file exists and has its setgid(2) bit set.
--G file exists and has the same group ID as this process.
--k file exists and has its sticky bit set.
--L file exists and is a symbolic link.
--n string length is not zero.
--o Named option is set on.
--O file exists and is owned by the user ID of this process.
--p file exists and is a first in, first out (FIFO) special file or named pipe.
--r file exists and is readable by the current process.
--s file exists and has a size greater than zero.
--S file exists and is a socket.
--t file descriptor number fildes is open and associated with a terminal device.
--u file exists and has its setuid(2) bit set.
-```
-
 ## 流程控制
-
-还要注意,sh里的`if [ $foo -eq 0 ]`,这个方括号跟Java/PHP里if后面的圆括号大不相同,它是一个可执行程序(和cd, ls, grep一样),相不到吧?在CentOS上,它在/usr/bin目录下:
-
-  ll /usr/bin/[
-  -rwxr-xr-x. 1 root root 33408 6月  22 2012 /usr/bin/[
-
-正因为方括号在这里是一个可执行程序,方括号后面必须加空格,不能写成`if [$foo -eq 0]`
-
-**wait**  
-当脚本里需要执行多个命令, 但是需要并行执行.  
-例如, 需要在一个机器列表上的每个机器上执行一个耗时很长的命令, 那么可以
+### if
 ```bash
-ssh "bash run.sh" & < /dev/null
+if condition; then
+  commands
+fi
 ```
-让命令在后台运行, 但是需要等待所有的命令执行完毕, 这时就需wait 命令.
-
-### if else
-#### if
-
-  if condition; then
-    commands
-  fi
 或者then换行, 那么condition后面的分号就不要了
 
-写成一行(适用于终端命令提示符):
-
-  if `ps -ef | grep ssh`;  then echo hello; fi
-
-末尾的fi就是if倒过来拼写,后面还会遇到类似的
-
-#### if else
-
-  if condition
-  then
-    command
-  else
-    command
-  fi
-
-#### if else-if else
-
-  if condition1
-  then
-    command1
-  elif condition2
-  then
-    command2
-  else
-    commandN
-  fi
+```bash
+if condition1
+then
+  command1
+elif condition2
+then
+  command2
+else
+  commandN
+fi
+```
 
 ### for while
-[Shell 循环控制break/continue](http://www.yiibai.com/shell/unix-loop-control.html)
-
-- break: 退出循环
-- continue: 直接跳到下次循环
-
-两者都可以带一个整数参数, 表示跳出第n个封闭的循环
-
-#### for
 在开篇的示例里演示过了:
-
-  for var in item1 item2 ... itemN
-  do
-    command
-  done
-
-写成一行:
-
-  for var in item1 item2 ... itemN; do command1; command2… done;
-
-#### C风格的for
-
-  num=100
-  for((i=0;i<=$num;i++))
-  do
-    command
-  done
-
-#### while
-
-  while condition
-  do
-    command
-  done
-
-ex:
 ```bash
-while(($i<100))
+for var in item1 item2 ... itemN
 do
-  ...
+  command
+done
+
+num=100
+for((i=0;i<=$num;i++))
+do
+  command
+done
+
+while condition
+do
+  command
 done
 ```
 
-#### 无限循环
-
-  while true
-  do
-    command
-  done
-
-#### until
-
-  until condition
-  do
-    command
-  done
+无限循环
+```bash
+while true
+do
+  command
+done
+```
 
 ### case
 ```bash
@@ -487,15 +383,7 @@ done
 }
 ```
 
-[user defined func demo](../demo/shell/function.sh)
-
-1. 必须在调用函数地方之前,声明函数,shell脚本是逐行运行.不会像其它语言一样先预编译,一次必须在使用函数前先声明函数
-1. 可以带function fun()定义,也可以直接fun()定义,不带任何参数
-1. 参数返回,可以显示加:return 返回, 也可以不加.
-如果不加,将以最后一条命令运行结果作为返回值.
-return后跟数值n( n 的范围必须在0-255之间, 如果n>255, 返回的实际结果为 n % 256),
-
-[变量作用域demo](../demo/shell/function_variable_scope.sh)
+变量作用域
 
 1. 定义函数可以与系统命令相同, 自定义的函数命令比系统自带的命令优先级高
 1. 如果需要传出其它类型函数值,可以在函数调用之前,定义变量(这个就是全局变量),在函数内部就可以直接修改,然后在执行函数就可以修改
@@ -516,8 +404,6 @@ echo $name
 ```
 - 当operation 为 bash 时, 最后一个 $name 仍为 "b", 也就是说bash ./a.sh 是在另外一个shell 环境中运行的.
 - 当operation 为source时, 最后一个 $name 仍为 "a", 也就是说source ./a.sh 是将a.sh 引入到当前的shell 中运行.
-
-`readlink -f ./file`: 获得决定路径
 
 # Util
 [Shell脚本实现乱序排列文件内容的多种方法](http://www.cnblogs.com/clarke/p/5447389.html)
