@@ -91,7 +91,7 @@ Wed Apr 22 19:08:12 CST 2015
 1. 只有在使用变量的时候, 才需要用$符号, 同时有时为了避免歧义, 还需要使用括号将变量名字括起来
 
 ## 一些常用的shell变量
-```
+```info
 $#  传递到脚本的参数个数, 不包括脚本名字本身
 $0  shell 脚本本身的文件名, $1, ... $9 其他参数
 $$  脚本运行的当前进程的ID号
@@ -124,7 +124,7 @@ $ c=$(awk 'BEGIN{print 7.01*5-4.01 }')
 $ echo $c
 31.04
 ```
-在shell 中单括号里面,可以是命令语句, 
+在shell 中单括号里面,可以是命令语句,
 也就是$() 与 ``等效, 中间包含命令语句执行,返回执行结果
 
 ## [字符串](http://tldp.org/LDP/abs/html/string-manipulation.html)
@@ -147,14 +147,15 @@ $ echo $c
 ### 获取字符串长度 String Length
 ```bash
 str="abcABC123ABCabc"
-echo ${#str}
-echo `expr length ${str}`
+echo ${#str}  ## 15
+echo `expr length ${str}`  ## 15
 ```
 
 ### 提取子字符串 Substring Extraction
-- `${string:position}`在$string中, 从位置$position开始提取子串
-- `${string:position:length}`在$string中, 从位置$position开始提取长度为$length的子串
-**字符串的第一个字符, position 为 0**
+- `${string:position}`: 在$string中, 从位置$position开始提取子串
+- `${string:position:length}`: 在$string中, 从位置$position开始提取长度为$length的子串
+
+字符串的第一个字符, position 为 0
 
 position 可以为负值
 ```bash
@@ -163,13 +164,17 @@ echo ${str: -1} ## c
 echo ${str: -3:2} ## ab
 ```
 
-substr: str 的第一个字符position 为 1: `echo `expr substr $str 1 2` ## ab`
+substr: 提取子字符串的另外一种方式, str 的第一个字符position 为 1
+```bash
+echo `expr substr $str 1 2` ## ab
+```
 
 - `expr match "$string" '\($substring\)'`: Extracts $substring at **beginning** of $string, where $substring is a regular expression.
-- expr match "$string" '.*\($substring\)': Extracts $substring at **end** of $string. 这个实际上还是从beginning 开始匹配, 但是 `.*` 匹配开头所有部分, 只有 substring 是在 `\(\)` 里面
-```
-echo `expr match "$str" '\(.[b-c]\)'` ## ab
-echo `expr match "$str" '.*\([A-C][A-C][A-C][a-c]*\)'`    # ABCabc
+- `expr match "$string" '.*\($substring\)'`: Extracts $substring at **end** of $string.
+  这个实际上还是从beginning 开始匹配, 但是 `.*` 匹配开头所有部分, 只有 substring 是在 `\(\)` 里面
+```bash
+echo `expr match "$str" '\(.[b-c]\)'`  ## ab
+echo `expr match "$str" '.*\([A-C][A-C][A-C][a-c]*\)'`  ## ABCabc
 ```
 
 ### Substring Removal
@@ -239,7 +244,7 @@ array_name[1]=value1
 array_name[2]=value2
 ```
 
-```
+```bash
 list=()
 list=(v0 v1 v2)
 list+=(v3)  ## append
@@ -305,8 +310,8 @@ NUMBER=130
 (其中-a表示前后结果相"与")
 ```
 
-###  文件状态测试(常用的)
-```
+### 文件状态测试(常用的)
+```info
 -e  测试文件是否存在
 -d  测试是否文件夹
 -f  测试是否一般文件
@@ -317,7 +322,7 @@ NUMBER=130
 -x  测试文件是否可执行
 ```
 
-```
+```ifno
 -a file exists.
 -b file exists and is a block special file.
 -c file exists and is a character special file.
@@ -348,7 +353,7 @@ NUMBER=130
 **wait**  
 当脚本里需要执行多个命令, 但是需要并行执行.  
 例如, 需要在一个机器列表上的每个机器上执行一个耗时很长的命令, 那么可以
-```
+```bash
 ssh "bash run.sh" & < /dev/null
 ```
 让命令在后台运行, 但是需要等待所有的命令执行完毕, 这时就需wait 命令.
@@ -486,7 +491,7 @@ done
 
 1. 必须在调用函数地方之前,声明函数,shell脚本是逐行运行.不会像其它语言一样先预编译,一次必须在使用函数前先声明函数
 1. 可以带function fun()定义,也可以直接fun()定义,不带任何参数
-2. 参数返回,可以显示加:return 返回, 也可以不加.
+1. 参数返回,可以显示加:return 返回, 也可以不加.
 如果不加,将以最后一条命令运行结果作为返回值.
 return后跟数值n( n 的范围必须在0-255之间, 如果n>255, 返回的实际结果为 n % 256),
 
