@@ -24,6 +24,7 @@
         "MD041": false,
         "MD046": false
     },
+    "python.languageServer": "Microsoft",
     "remote.SSH.showLoginTerminal": true,
     "vsicons.dontShowNewVersionMessage": true,
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
