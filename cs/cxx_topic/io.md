@@ -240,7 +240,7 @@ DMA(Direct Memory Access):直接存储器访问.DMA 是一种无需 CPU 的参�
 
 同时,还伴随着四次上下文切换,如下图所示:
 
-<img src="./pics/io/context_switch.png" alt="4次上下文切换" width="50%"/>
+<img src="./pics/io/context_switch.png" alt="4次上下文切换" width="65%"/>
 
 对于 Kafka 来说, Producer 生产的数据存到Broker, 这个过程读取到 socket buffer 的网络数据, 其实可以直接在内核空间完成落盘.
 在此特殊场景下:接收来自 socket buffer 的网络数据,应用进程不需要中间处理,直接进行持久化时.可以使用 mmap 内存文件映射.
@@ -262,7 +262,7 @@ Memory Mapped Files:简称 mmap,使用 mmap 的目的是将内核中缓冲区的
 mmap 也有一个很明显的缺陷:不可靠,写到 mmap 中的数据并没有被真正的写到硬盘,操作系统会在程序主动调用 Flush 的时候才把数据
 真正的写到硬盘.
 
-<img src="./pics/io/mmap.png" alt="mmap" width="50%"/>
+<img src="./pics/io/mmap.png" alt="mmap" width="65%"/>
 
 ## 磁盘文件通过网络发送(Broker 到 Consumer)
 传统方式实现:先读取磁盘,再用 Socket 发送,实际也是进过四次 Copy.
@@ -283,5 +283,5 @@ Linux 2.4+ 内核通过sendfile 系统调用,提供了零拷贝.数据通过 DMA
 除了减少数据拷贝外, 因为整个读文件, 网络发送由一个sendfile 调用完成,整个过程总共发生 2 次内核数据拷贝,2 次上下文切换和
 一次系统调用, 消除了 CPU 数据拷贝, 因此大大提高了性能.
 
-<img src="./pics/io/sendfile.png" alt="sendfile" width="50%"/>
+<img src="./pics/io/sendfile.png" alt="sendfile" width="65%"/>
 
