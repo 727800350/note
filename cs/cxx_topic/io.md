@@ -7,7 +7,7 @@
 - 信号驱动式I/O(SIGIO)
 - 异步IO
 
-![模型的比较](https://i.imgbox.com/OsCC0HMm.gif) 
+![模型的比较](https://i.imgbox.com/OsCC0HMm.gif)
 
 读:
 
@@ -169,7 +169,7 @@ example: lib/connect_timeo.c, advio/dgclitimeo.c, lib/readable_timeo.c
 可能阻塞的套接字调用可分为以下四类
 
 1. 输入操作: 包括`read, readv, recv, recvfrom, recvmsg` 共5 个函数.  
-  - 如果某个进程对一个阻塞的TCP套接字(默认设置)调用这些输入函数, 而且**该套接字的接收缓冲区中没有数据可读**, 该进程将被投入睡眠, 直到有一些数据到达. 
+  - 如果某个进程对一个阻塞的TCP套接字(默认设置)调用这些输入函数, 而且**该套接字的接收缓冲区中没有数据可读**, 该进程将被投入睡眠, 直到有一些数据到达.
     既然TCP 是字节流协议, 该进程的唤醒就是只要有一些数据到达, 可以使单个字节, 也可以是一个完整的TCP分节.
     如果想等到某个固定数目的数据可读为止, 那么可以调用我们的`readn` 函数或者指定`MSG_WAITALL` 标志.
   - 既然UDP是数据报协议, 如果一个阻塞的UDP套接字的接收缓冲区为空, 对它调用输入函数的进程将被投入睡眠, 直到有UDP数据报到达.  
@@ -211,4 +211,77 @@ example: lib/connect_timeo.c, advio/dgclitimeo.c, lib/readable_timeo.c
 举例来说, 如果一个进程即读自又写往一个TCP套接字, 那么当有新数据到达时或者当以前写出的数据得到确认时, SIGIO信号均会产生, 而且信号处理函数中无法区分这两种情况.  
 如果SIGIO用于这种数据读写情形, 那么TCP套接字应该设置成非阻塞式, 以防`read`或`write`发生阻塞.  
 我们应该考虑**只对监听套接字使用SIGIO**, 因为对于监听套接字产生SIGIO的唯一条件式某个新连接的完成
+
+# 零拷贝
+[终于知道Kafka为什么这么快了](https://mp.weixin.qq.com/s/0gRuvW-WBMOljOGJMFKvtg)
+
+传统的 Linux 系统中,标准的 I/O 接口(例如 read,write)都是基于数据拷贝操作的,
+即 I/O 操作会导致数据在内核地址空间的缓冲区和用户地址空间的缓冲区之间进行拷贝,所以标准 I/O 也被称作缓存 I/O.
+这样做的好处是,如果所请求的数据已经存放在内核的高速缓冲存储器中,那么就可以减少实际的 I/O 操作,但坏处就是数据拷贝的过程,
+会导致CPU 开销.
+
+## 网络数据持久化到磁盘 (Producer 到 Broker)
+传统模式下, 数据从网络传输到文件需要4 次数据拷贝, 4 次上下文切换和两次系统调用.
+```C++
+data = socket.read()  // 读取网络数据
+File file = new File()
+file.write(data)  // 持久化到磁盘
+file.flush()
+```
+这一过程实际上发生了四次数据拷贝:
+
+1. 首先通过 DMA copy 将网络数据拷贝到内核态 Socket Buffer.
+1. 然后应用程序将内核态 Buffer 数据读入用户态(CPU copy).
+1. 接着用户程序将用户态 Buffer 再拷贝到内核态(CPU copy).
+1. 最后通过 DMA copy 将数据拷贝到磁盘文件.
+
+DMA(Direct Memory Access):直接存储器访问.DMA 是一种无需 CPU 的参与,让外设和系统内存之间进行双向数据传输的硬件机制.
+使用 DMA 可以使系统 CPU 从实际的 I/O 数据传输过程中摆脱出来,从而大大提高系统的吞吐率.
+
+同时,还伴随着四次上下文切换,如下图所示:
+
+<img src="./pics/io/context_switch.png" alt="4次上下文切换" width="50%"/>
+
+对于 Kafka 来说, Producer 生产的数据存到Broker, 这个过程读取到 socket buffer 的网络数据, 其实可以直接在内核空间完成落盘.
+在此特殊场景下:接收来自 socket buffer 的网络数据,应用进程不需要中间处理,直接进行持久化时.可以使用 mmap 内存文件映射.
+
+TODO: 这里有点儿没太懂, broker 难道不需要拿到具体的消息, 然后根据消息的key 计算需要把这个消息写到哪个partition 中吗?
+
+猜测是下面的过程:
+```C++
+ptr = mmap()  // 拿到内核空间的地址, 同时可以在用户空间使用
+ptr = socket.read()  // 把数据从网卡拷贝到socket 缓冲区, 再拷贝到内核缓冲区
+munmap()  // 把数据从内核缓冲区flush 到磁盘
+```
+
+Memory Mapped Files:简称 mmap,使用 mmap 的目的是将内核中缓冲区的地址与用户空间的缓冲区进行映射.
+从而实现内核缓冲区与应用程序内存的共享.
+它的工作原理是直接利用操作系统的 Page 来实现文件到物理内存的直接映射.完成映射之后你对物理内存的操作会被同步到硬盘上.
+使用这种方式可以获取很大的 I/O 提升,省去了用户空间到内核空间复制的开销.
+
+mmap 也有一个很明显的缺陷:不可靠,写到 mmap 中的数据并没有被真正的写到硬盘,操作系统会在程序主动调用 Flush 的时候才把数据
+真正的写到硬盘.
+
+<img src="./pics/io/mmap.png" alt="mmap" width="50%"/>
+
+## 磁盘文件通过网络发送(Broker 到 Consumer)
+传统方式实现:先读取磁盘,再用 Socket 发送,实际也是进过四次 Copy.
+```C++
+buffer = File.read
+Socket.send(buffer)
+```
+这一过程可以类比上边的生产消息:
+
+1. 首先通过系统调用将文件数据读入到内核态 Buffer(DMA 拷贝).
+1. 然后应用程序将内存态 Buffer 数据读入到用户态 Buffer(CPU 拷贝).
+1. 接着用户程序通过 Socket 发送数据时将用户态 Buffer 数据拷贝到内核态 Buffer(CPU 拷贝).
+1. 最后通过 DMA 拷贝将数据拷贝到 NIC Buffer.
+
+Linux 2.4+ 内核通过sendfile 系统调用,提供了零拷贝.数据通过 DMA 拷贝到内核态 Buffer 后,直接通过 DMA 拷贝到 NIC Buffer,
+无需CPU 拷贝. 这也是零拷贝这一说法的来源.
+
+除了减少数据拷贝外, 因为整个读文件, 网络发送由一个sendfile 调用完成,整个过程总共发生 2 次内核数据拷贝,2 次上下文切换和
+一次系统调用, 消除了 CPU 数据拷贝, 因此大大提高了性能.
+
+<img src="./pics/io/sendfile.png" alt="sendfile" width="50%"/>
 
