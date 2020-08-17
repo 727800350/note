@@ -35,6 +35,7 @@ set smartindent
 set shiftwidth=2
 set tabstop=2 "for python, tabstop will be overwritten by /usr/share/vim/vim80/ftplugin/python.vim, need to change tabstop in this file to 4 too
 set expandtab "2 backspace to replace a tab
+set colorcolumn=121
 
 " nobackup
 set nobackup
