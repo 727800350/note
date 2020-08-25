@@ -135,6 +135,79 @@ By default, all members of a class are private. 结构体的成员默认是publi
 
 const对象不能调用非const函数
 
+# 初始化列表
+构造函数的执行可以分成两个阶段,初始化阶段和计算阶段,初始化阶段先于计算阶段.
+
+- 初始化阶段: 所有类类型(class type)的成员都会在初始化阶段初始化,即使该成员没有出现在构造函数的初始化列表中.
+- 计算阶段: 一般用于执行构造函数体内的赋值操作
+
+成员是按照他们在类中出现的顺序进行初始化的, 而不是按照他们在初始化列表出现的顺序初始化的.
+
+```C++
+class Foo {
+ public:
+  Foo() {
+    LOG(INFO) << "default construct for Foo";
+  }
+
+  Foo(const Foo& foo) {
+    LOG(INFO) << "copy constructor for Foo";
+    this->a_ = foo.a_;
+  }
+
+  Foo& operator=(const Foo& foo) {
+    LOG(INFO) << "assignment for Foo";
+    this->a_ = foo.a_;
+    return *this;
+  }
+
+ private:
+  int a_;
+};
+```
+
+不使用初始化列表时
+```C++
+class Bar {
+ public:
+  Bar(const Foo &foo) {
+    foo_ = foo;
+  }
+
+ private:
+  Foo foo_;
+};
+
+Foo foo;
+Bar bar(foo);
+```
+
+```log
+I0825 09:31:59.868443 167398 main_test.cc:16] default construct for Foo
+I0825 09:31:59.868752 167398 main_test.cc:16] default construct for Foo
+I0825 09:31:59.868777 167398 main_test.cc:25] assignment for Foo
+```
+
+使用初始化列表
+```C++
+class Bar {
+ public:
+  Bar(const Foo &foo) : foo_(foo) {}
+
+ private:
+  Foo foo_;
+};
+
+Foo foo;
+Bar bar(foo);
+```
+
+```log
+I0825 09:33:34.305039 167620 main_test.cc:16] default construct for Foo
+I0825 09:33:34.305356 167620 main_test.cc:20] copy constructor for Foo
+```
+可以看到使用初始化列表之后, 可以减少一次构造函数的调用
+
 # Virtual Function
 - Once a function is declared as virtual, it remains virtual in all the dervied classes. 既不需要在dervied class 中显式指定virtual
 - 虚函数不能定义为内联函数, inline是在编译器将函数类容替换到函数调用处, 是静态编译的, 而虚函数是动态调用的, 在编译器并不知道需要调用的是父类还是子类的虚函数, 所以不能够inline声明展开, 所以编译器会忽略
@@ -220,7 +293,7 @@ instance->faire();
 delete instance;
 ```
 在将 `~Base` 声明为虚函数时, 上面的代码会输出:
-```
+```log
 I0605 15:45:05.518903   159 test.cpp:14] constructor in base
 I0605 15:45:05.519145   159 test.cpp:28] constructor in derived
 I0605 15:45:05.519162   159 test.cpp:35] do something in derived
@@ -230,7 +303,7 @@ I0605 15:45:05.519187   159 test.cpp:17] destructor in base
 可以看到, 析构的时候, 先调用的Derived 的析构函数, 然后再调用的Base 的析构函数.
 
 如果将 `~Base` 不声明为虚函数, 上面的代码会输出
-```
+```log
 I0605 15:50:43.765009   167 test.cpp:14] constructor in base
 I0605 15:50:43.765822   167 test.cpp:28] constructor in derived
 I0605 15:50:43.765849   167 test.cpp:35] do something in derived
@@ -339,7 +412,7 @@ b.faire();
 
 ## 派生
 派生类构造函数的语法:
-```
+```info
 派生类名::派生类名(参数总表):基类名1(参数表1),....基类名n(参数名n),内嵌子对象1(参数表1),...内嵌子对象n(参数表n){
   派生类新增成员的初始化语句;
 }
@@ -366,7 +439,7 @@ b.faire();
 
 为了解决前面提到的多重拷贝的问题,可以将共同基类设置为**虚基类**,这时从**不同的路径继承过来的同名数据成员在内存中就只有一个拷贝,同一个函数也只有一个映射**.
 虚基类的声明是在派生类的声明过程,其语法形式为:
-```
+```info
 class 派生类名::virtual 继承方式 基类名,
 ```
 
@@ -388,7 +461,8 @@ class Assistant: virtual public Worker {
 
 class StudentAssitant: public Student, public Assistant {};
 ```
-Now a StudentAssitant object will contain a single copy of a Worker. Actually, the inherited Student and Assitant objects share a common Worker object instead of each carrying its own copy.
+Now a StudentAssitant object will contain a single copy of a Worker. Actually, the inherited Student and Assitant
+objects share a common Worker object instead of each carrying its own copy.
 
 Here, the virtual key word does not have any obvious connection to the virtual in virtual functions.
 
