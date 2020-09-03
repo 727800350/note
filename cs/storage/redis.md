@@ -84,19 +84,41 @@ typedef struct redisReply {
 `redisReply *reply = (redisReply *)redisCommand(redis, cmd);` 每次都需要执行`freeReplyObject(reply);`
 释放redisCommand 函数为reply 申请的内存
 
-pipeline
+## pipeline
+[Redis: Pipelining, Transactions and Lua Scripts](
+	https://rafaeleyng.github.io/redis-pipelining-transactions-and-lua-scripts)
 
-1. redis的底层通信协议对管道(Pipelining)提供了支持,
-2. 通过管道可以一次发送多条命令,并在执行完命令后将结果统一返回,
-3. 当一组命令中每条命令都不依赖于之前命令的执行结果时,就可以将这组命令一起放入管道中发出,
-4. 管道通过减少通信次数,降低往返时延累加造成的性能消耗,从而提升效率,
+The server buffers all the answers in memory and sends all at once when the pipeline is done.
+Using a few thousands of commands inside a pipeline is usually a good starting point.
+
+Benefits of pipelining
+
+1. batching several commands in a single message allows us to save multiple times the round trip time between the client
+	and the Redis server
+1. it avoids context switching, both in the client and in the server. When the server or the client need to read from or
+	write to the network, a syscall is made and an expensive context switch happens between user space and kernel space.
+	If we send 10 messages, each with a single command, 10 context switches will happen. If we send a single message with
+	10 commands, it's likely that a single context switch will be needed.
+
+注意点
+
+1. pipelining is not atomic.
+1. pipelining is non-blocking on the server. This means that even if a Client 1 has a huge and slow pipeline, other
+	clients won't be blocked, because the commands from the other clients will be interleaved with the commands from
+	Client 1 pipeline.
+1. If some command fails, the pipeline continues and an error is returned at the end, as the response for that specific
+	command (not for the whole pipeline).
+
+## Transactions
+A transaction works by issuing a MULTI command, then sending all the commands that compose the pipeline, and an EXEC or
+a DISCARD at the end.
 
 # lua
 [深入分析 Redis Lua 脚本运行原理](https://juejin.im/post/6844903697034510343)
 
 Redis 服务器会单线程原子性执行 lua 脚本,保证 lua 脚本在处理的过程中不会被任意其它请求打断.
 
-比如在分布式锁小节,我们提到了 `del_if_equals` 伪指令,它可以将匹配 key 和删除 key 合并在一起原子性执行,Redis 原生没有提供这样功能的指令,它可
+比如在分布式锁小节,我们提到了`del_if_equals`伪指令,它可以将匹配 key 和删除 key 合并在一起原子性执行,Redis 原生没有提供这样功能的指令,它可
 以使用 lua 脚本来完成.
 ```lua
 if redis.call("get", KEYS[1]) == ARGV[1] then
@@ -114,9 +136,11 @@ EVAL SCRIPT KEY_NUM KEY1 KEY2 ... KEYN ARG1 ARG2 ....
 ```redis
 127.0.0.1:6379> set foo bar
 OK
-127.0.0.1:6379> eval 'if redis.call("get",KEYS[1]) == ARGV[1] then return redis.call("del",KEYS[1]) else return 0 end' 1 foo bar
+127.0.0.1:6379> eval 'if redis.call("get",KEYS[1]) == ARGV[1] then return redis.call("del",KEYS[1]) else return 0 end'
+1 foo bar
 (integer) 1
-127.0.0.1:6379> eval 'if redis.call("get",KEYS[1]) == ARGV[1] then return redis.call("del",KEYS[1]) else return 0 end' 1 foo bar
+127.0.0.1:6379> eval 'if redis.call("get",KEYS[1]) == ARGV[1] then return redis.call("del",KEYS[1]) else return 0 end'
+1 foo bar
 (integer) 0
 ```
 
@@ -142,7 +166,8 @@ return curVal
 
 加载脚本
 ```redis
-127.0.0.1:6379> script load 'local curVal = redis.call("get", KEYS[1]); if curVal == false then curVal = 0 else curVal = tonumber(curVal) end; curVal = curVal * tonumber(ARGV[1]); redis.call("set", KEYS[1], curVal); return curVal'
+127.0.0.1:6379> script load 'local curVal = redis.call("get", KEYS[1]); if curVal == false then curVal = 0 else
+curVal = tonumber(curVal) end; curVal = curVal * tonumber(ARGV[1]); redis.call("set", KEYS[1], curVal); return curVal'
 "be4f93d8a5379e5e5b768a74e77c8a4eb0434441"
 ```
 
