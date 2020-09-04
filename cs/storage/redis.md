@@ -113,6 +113,23 @@ Benefits of pipelining
 A transaction works by issuing a MULTI command, then sending all the commands that compose the pipeline, and an EXEC or
 a DISCARD at the end.
 
+```redis
+> MULTI
+OK
+> INCR foo
+QUEUED
+> INCR bar
+QUEUED
+> EXEC
+1) (integer) 1
+2) (integer) 1
+```
+
+However if the Redis server crashes or is killed by the system administrator in some hard way it is possible that only
+a partial number of operations are registered. Redis will detect this condition at restart, and will exit with an error.
+Using the redis-check-aof tool it is possible to fix the append only file that will remove the partial transaction so
+that the server can start again.
+
 # lua
 [深入分析 Redis Lua 脚本运行原理](https://juejin.im/post/6844903697034510343)
 
