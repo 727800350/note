@@ -34,16 +34,28 @@ typedef Tweet ReTweet
 ## Enums
 
 ## Constants
-```
+```C++
 const i32 INT_CONST = 1234;
 const map<string,string> MAP_CONST = {"hello": "world", "goodnight": "moon"}
 ```
+
+# 序列化及反序列化
+[Is safe to rename a field in Thrift IDL?](
+    https://stackoverflow.com/questions/52882370/is-safe-to-rename-a-field-in-thrift-idl)
+Yes it is 100% safe. Thrift only deals with field IDs internally. The names of a struct as well as method argument names
+are used to generate field names in the generated code only. They do not even go over the wire.
+
+Furthermore, it is a recommended way to deprecate fields. Even in the case where a field is fully retired, one should
+comment it out but leave it in the IDL to prevent the numeric field ID from being accidentally reused.
+
+The only place where names are used as names is with service method calls. Methods do not have numeric identifiers, in
+that case the name is used. Changing the name actually declares a new method.
 
 # Generated Code
 [Thrift: The Missing Guide](https://diwakergupta.github.io/thrift-missing-guide)
 
 The Thrift Network Stack
-```
+```graph
 +-------------------------------------------+
 | cGRE                                      |
 | Server                                    |
@@ -93,7 +105,7 @@ Thus the protocol implementation governs the encoding scheme and is responsible 
 Some examples of protocols in this sense include JSON, XML, plain text, compact binary etc.
 
 Here is the Protocol interface:
-```
+```C++
 writeMessageBegin(name, type, seq)
 writeMessageEnd()
 writeStructBegin(name)
