@@ -592,11 +592,50 @@ func printStack() {
 }
 ```
 
+[错误和异常](https://chai2010.cn/advanced-go-programming-book/ch1-basic/ch1-07-error-and-panic.html)
+
+recover 只能刚好捕获上一层的panic, 必须要和有异常的栈帧只隔一个栈帧, recover函数才能正常捕获异常.
+也就是必须是下面这样的,
+```go
+func main() {
+  defer func() {
+    if r := recover(); r != nil {
+      glog.Errorln(r)
+    }
+  }()
+  panic("panic")
+}
+```
+下面两种方式都不会recover
+```go
+// 同一层
+func main() {
+  defer recover()
+  panic("panic")
+}
+```
+
+```go
+// 跨域两层
+func main() {
+  defer func() {
+    func() {
+      if r := recover(); r != nil {
+        glog.Errorln(r)
+      }
+    }()
+  }()
+  panic("panic")
+}
+```
+
 # method
-Methods may be declared on **any named type in the same package**, so long as its underlying type is neither a pointer nor an interface.
+Methods may be declared on **any named type in the same package**, so long as its underlying type is neither a pointer
+nor an interface.
 
 ## Composing types by struct embedding
-A similar mechanism of field embedding applies to the method. We can call methods of the embedded field using a receiver of outer ColoredPoint, even though the outer type has no declared methods.
+A similar mechanism of field embedding applies to the method. We can call methods of the embedded field using a receiver
+of outer ColoredPoint, even though the outer type has no declared methods.
 ```go
 var (
   mutex   sync.Mutex
@@ -611,7 +650,8 @@ func Lookup(key string) string {
 }
 ```
 
-This version below is functionally equivalent but groups together two related variables in a single package-level variable, cache:
+This version below is functionally equivalent but groups together two related variables in a single package-level
+variable, cache:
 ```go
 var cache = struct {
   sync.Mutex
