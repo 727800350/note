@@ -312,15 +312,30 @@ func CopyDigits(filename string) []byte {
 ### map
 可以比较的数据类型才能作为一个map的键,所以map的键都是基本类型.
 
-Most operations on maps, including lookup, delete, len and range loops are safe to perform on a nil map reference, since it behaves like an empty map.
+Most operations on maps, including lookup, delete, len and range loops are safe to perform on a nil map reference, since
+it behaves like an empty map.
 But storing to a nil map causes panic. You must allocate the map before you can store into it.
+
+[Why does Go forbid taking the address of (&) map member, yet allows (&) slice element?](
+  https://stackoverflow.com/questions/32495402/why-does-go-forbid-taking-the-address-of-map-member-yet-allows-slice-el)
+
+There is a major difference between slices and maps: Slices are backed by a backing array and maps are not.
+
+If a map grows or shrinks a potential pointer to a map element may become a dangling pointer pointing into nowhere
+(uninitialised memory). The problem here is not "confusion of the user" but that it would break a major design element
+of Go: No dangling pointers.
+
+If a slice runs out of capacity a new, larger backing array is created and the old backing array is copied into the new;
+and the old backing array remains existing. Thus any pointers obtained from the "ungrown" slice pointing into the old
+backing array are still valid pointers to valid memory.
 
 ### channel
 Do not communicate by sharing memory, share memory by communicating.
 
 channels are first class values, just like strings or integers.
 
-- The zero value for a channel is nil. Send and receive operations on a nil channel block forever, a case in a select statement whose channel is nil is never selected.
+- The zero value for a channel is nil. Send and receive operations on a nil channel block forever, a case in a select
+  statement whose channel is nil is never selected.
 - 关闭已经关闭的channel会导致panic
 - 发送值到已经关闭的channel会导致panic
 - 读取关闭后的无缓存通道,不管通道中是否有数据,返回值都为zero value 和false.
@@ -334,7 +349,8 @@ v := <-ch  // 从 ch 接收,并且赋值给 v.
 
 和 map 与 slice 一样,channel 使用前必须创建: `ch := make(chan int)`
 
-By default channels are unbuffered, meaning that they will only accept sends (chan <-) if there is a corresponding receive (<- chan) ready to receive the sent value.
+By default channels are unbuffered, meaning that they will only accept sends (chan <-) if there is a corresponding
+receive (<- chan) ready to receive the sent value.
 Buffered channels accept a limited number of values without a corresponding receiver for those values.
 
 The select statement provides another way to handle multiple channels.
