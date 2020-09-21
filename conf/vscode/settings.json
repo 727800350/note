@@ -5,6 +5,8 @@
     "editor.rulers": [120],
     "editor.suggestSelection": "first",
     "editor.tabSize": 2,
+    "explorer.confirmDragAndDrop": false,
+    "extensions.ignoreRecommendations": false,
     "go.autocompleteUnimportedPackages": true,
     "go.inferGopath": true,
     "go.formatTool": "goimports",
