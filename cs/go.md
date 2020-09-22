@@ -629,18 +629,19 @@ func main() {
 }
 ```
 
-defer 的函数都可以得到执行, 即使是在recover 之后的部分, 但是之后的defer 实际执行是在panic.go 中.
+假设函数包含多个defer函数, 前面的defer通过recover()消除panic后, 函数中剩余的defer仍然会执行, 但不能再次recover().
+但是之后的defer 实际执行是在panic.go 中.
 ```go
 func main() {
-	glog.Infoln("gopher")
+  glog.Infoln("gopher")
 
-	defer glog.Infoln("before")
-	defer func() {
-		glog.Errorln(recover())
-	}()
-	defer glog.Infoln("after")
+  defer glog.Infoln("before")
+  defer func() {
+    glog.Errorln(recover())
+  }()
+  defer glog.Infoln("after")
 
-	panic("panic")
+  panic("panic")
 }
 ```
 ```log
@@ -650,6 +651,92 @@ I0922 09:06:22.801456 3869408 panic.go:969] after
 E0922 09:06:22.801466 3869408 main.go:23] panic
 I0922 09:06:22.801475 3869408 main.go:27] before
 ```
+
+### recover 的实现与设计
+[recover源码剖析](https://my.oschina.net/renhc/blog/3217650)
+
+```go
+// recover/compile.go
+package recover
+
+func compile() {
+  defer func() {
+    recover()
+  }()
+}
+```
+然后使用以下命令编译代码:
+```bash
+go tool compile -S recover/compile.go
+```
+接着根据代码行号找出recover()语句对应的汇编码:
+```asm
+0x0024 00036 (recover/compile.go:5)     PCDATA  $0, $1
+0x0024 00036 (recover/compile.go:5)     PCDATA  $1, $0
+0x0024 00036 (recover/compile.go:5)     LEAQ    ""..fp+40(SP), AX
+0x0029 00041 (recover/compile.go:5)     PCDATA  $0, $0
+0x0029 00041 (recover/compile.go:5)     MOVQ    AX, (SP)
+0x002d 00045 (recover/compile.go:5)     CALL    runtime.gorecover(SB)
+```
+我们可以看到recover()函数调用被替换成了runtime.gorecover()函数. runtime.gorecover()实现源码位于src/runtime/panic.go.
+
+runtime.gorecover()函数实现很简短:
+```go
+func gorecover(argp uintptr) interface{} {
+  gp := getg()
+  // 获取panic实例, 只有发生了panic, 实例才不为nil
+  p := gp._panic
+  // recover限制条件
+  if p != nil && !p.goexit && !p.recovered && argp == uintptr(p.argp) {
+    p.recovered = true
+    return p.arg
+  }
+  return nil
+}
+```
+
+通过代码的if语句可以看到需要满足四个条件才可以恢复panic,且四个条件缺一不可:
+
+1. p != nil: 必须存在panic,
+1. !p.goexit: 非runtime.Goexit(),
+1. !p.recovered: panic还未被恢复,
+1. argp == uintptr(p.argp): recover()必须被defer()直接调用(TODO: 这里直接调用的表述有疑问, 这里的defer 直接调用, 都是指
+  `defer func(){ call })`
+
+内置函数recover 没有参数,runtime.gorecover 函数却有参数,为什么呢? 这正是为了限制recover()必须被defer()直接调用.
+
+runtime.gorecover 函数的参数为调用recover 函数的参数地址, 通常是defer函数的参数地址, 同时 panic实例中也保存了当前defer
+函数的参数地址, 如果二者一致,说明recover()被defer函数直接调用, 否则不是, 无法recover. 举例如下:
+```go
+func foo() {
+  defer func() { // 假设函数为A
+    func() { // 假设函数为B
+      // runtime.gorecover(B),传入函数B的参数地址
+      // argp == uintptr(p.argp) 检测失败,无法恢复
+      if err := recover(); err != nil {
+        fmt.Println("A")
+      }
+    }()
+  }()
+  panic(errors.New("panic test"))
+}
+```
+通过上面的分析,从代码层面我们理解了为什么recover()函数必须被defer直接调用才会生效.但为什么要有这样的设计呢?
+
+考虑下面的代码:
+```go
+func foo() {
+  defer func() {
+    thirdPartPkg.Clean() // 调用第三方包清理资源
+  }()
+
+  if err != nil { // 条件不满足触发panic
+    panic(xxx)
+  }
+}
+```
+有时我们会在代码里显式地触发panic,同时往往还会在defer函数里调用第三方包清理资源,如果第三方包也使用了recover(),那么我们触
+发的panic将会被拦截,而且这种拦截可能是非预期的,并不我们期望的结果.
 
 # method
 Methods may be declared on **any named type in the same package**, so long as its underlying type is neither a pointer
@@ -780,3 +867,4 @@ genesis: crashed: no parachute: G-switch failed: bad relay orientation
 ```
 Because error messages are frequently chained together, message strings should not be capitalized and newlines should be avoided.
 The resulting errors may be long, but they will be self-contained when found by tools like grep.
+
