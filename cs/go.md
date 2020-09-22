@@ -629,6 +629,28 @@ func main() {
 }
 ```
 
+defer 的函数都可以得到执行, 即使是在recover 之后的部分, 但是之后的defer 实际执行是在panic.go 中.
+```go
+func main() {
+	glog.Infoln("gopher")
+
+	defer glog.Infoln("before")
+	defer func() {
+		glog.Errorln(recover())
+	}()
+	defer glog.Infoln("after")
+
+	panic("panic")
+}
+```
+```log
+[09:05:21 liuqi.victor@n227-022-231:gocode]$ go run main.go
+I0922 09:06:22.801349 3869408 main.go:19] gopher
+I0922 09:06:22.801456 3869408 panic.go:969] after
+E0922 09:06:22.801466 3869408 main.go:23] panic
+I0922 09:06:22.801475 3869408 main.go:27] before
+```
+
 # method
 Methods may be declared on **any named type in the same package**, so long as its underlying type is neither a pointer
 nor an interface.
