@@ -592,43 +592,6 @@ func printStack() {
 }
 ```
 
-[错误和异常](https://chai2010.cn/advanced-go-programming-book/ch1-basic/ch1-07-error-and-panic.html)
-
-recover 只能刚好捕获上一层的panic, 必须要和有异常的栈帧只隔一个栈帧, recover函数才能正常捕获异常.
-也就是必须是下面这样的,
-```go
-func main() {
-  defer func() {
-    if r := recover(); r != nil {
-      glog.Errorln(r)
-    }
-  }()
-  panic("panic")
-}
-```
-下面两种方式都不会recover
-```go
-// 同一层
-func main() {
-  defer recover()
-  panic("panic")
-}
-```
-
-```go
-// 跨域两层
-func main() {
-  defer func() {
-    func() {
-      if r := recover(); r != nil {
-        glog.Errorln(r)
-      }
-    }()
-  }()
-  panic("panic")
-}
-```
-
 假设函数包含多个defer函数, 前面的defer通过recover()消除panic后, 函数中剩余的defer仍然会执行, 但不能再次recover().
 但是之后的defer 实际执行是在panic.go 中.
 ```go
@@ -701,7 +664,8 @@ func gorecover(argp uintptr) interface{} {
 1. !p.goexit: 非runtime.Goexit(),
 1. !p.recovered: panic还未被恢复,
 1. argp == uintptr(p.argp): recover()必须被defer()直接调用(TODO: 这里直接调用的表述有疑问, 这里的defer 直接调用, 都是指
-  `defer func(){ call })`
+  `defer func(){ call })`, 至于panic 的调用有没有嵌套func(){}() 不重要.
+  [Handling panics](https://golang.org/ref/spec#Handling_panics)
 
 内置函数recover 没有参数,runtime.gorecover 函数却有参数,为什么呢? 这正是为了限制recover()必须被defer()直接调用.
 
