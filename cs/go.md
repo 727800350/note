@@ -645,6 +645,12 @@ go tool compile -S recover/compile.go
 
 runtime.gorecover()函数实现很简短:
 ```go
+// Must be in a function running as part of a deferred call during the panic.
+// Must be called from the topmost function of the call
+// (the function used in the defer statement).
+// p.argp is the argument pointer of that topmost deferred function call.
+// Compare against argp reported by caller.
+// If they match, the caller is the one who can recover.
 func gorecover(argp uintptr) interface{} {
   gp := getg()
   // 获取panic实例, 只有发生了panic, 实例才不为nil
