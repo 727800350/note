@@ -8,19 +8,19 @@ thrift -r --gen cpp tutorial.thrift
 ```
 
 # type
-|thrift      |C++              |Go        |
-|------------|-----------------|----------|
-|bool        |bool             |bool      |
-|byte        |int8_t           |int8      |
-|i16         |int16_t          |int16     |
-|i32         |int32_t          |int32     |
-|i64         |int64_t          |int64     |
-|double      |double           |float64   |
-|string      |std::string      |string    |
-|binary      |std::string      |[]byte    |
-|list<t1>    |std::vector<t1>  |[]t1      |
-|set<t1>     |std::set<t1>     |          |
-|map<t1, t2> |std::map<t1, t2> |map[t1]t2 |
+|thrift      |C++                  |Go          |
+|--------------|-------------------|------------|
+|bool          |bool               |bool        |
+|byte          |int8_t             |int8        |
+|i16           |int16_t            |int16       |
+|i32           |int32_t            |int32       |
+|i64           |int64_t            |int64       |
+|double        |double             |float64     |
+|string        |std::string        |string      |
+|binary        |std::string        |[]byte      |
+|`list<t1>`    |`std::vector<t1>`  |[]t1        |
+|`set<t1>`     |`std::set<t1>`     |            |
+|`map<t1, t2>` |`std::map<t1, t2>` |`map[t1]t2` |
 
 - 如果 t1, t2 是复合类型, Go 里面会成为指针类型
 
