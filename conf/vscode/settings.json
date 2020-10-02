@@ -10,6 +10,7 @@
     "go.autocompleteUnimportedPackages": true,
     "go.inferGopath": true,
     "go.formatTool": "goimports",
+    "go.testFlags": ["-v"],
     "go.useLanguageServer": true,
     "http.proxySupport": "off",
     "markdownlint.config": {
