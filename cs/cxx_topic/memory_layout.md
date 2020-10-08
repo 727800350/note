@@ -1,12 +1,20 @@
 ### 内存分区
+<img src="./pics/memory_layout/memory_layout.png" alt="memory layout" width="35%"/>
+
+- stack: grows downwards, from upper to lower adresses. The top of the stack is the stack pointer(sp).
+- heap: grows upwards, from lower to upper addresses. The top of the heap is known as program break(brk).
+- data segment: 通常是指用来存放程序中**已初始化的全局变量和静态变量**的一块内存区域, 属于静态内存分配.
+- bbs segment: 通常是指用来存放程序中**未初始化的全局变量和静态变量**的一块内存区域, 紧跟在data segment 之后. 属于静态内
+  存分配.
+  - 当这个内存区进入程序的地址空间后全部清零,通常是memset全部置0.
+  - 在Programming ground up里对.bss的解释为: There is another section called the .bss. This section is like the data
+    section, except that it doesn't take up space in the executable.
+
+- text segment(code segment): 通常是指用来存放程序执行代码的一块内存区域.这部分区域的大小在程序运行前就已经确定,并且内存
+  区域通常属于只读.在代码段中,也有可能包含一些只读的常数变量,例如字符串常量等.
+
 我们知道知道在UNIX操作系统中,一个C语言文件经过预处理(cpp),编译(cc1),汇编(as)和链接(ld)后可以得到可执行文件a.out.
 我们可以用size命令(或nm, dump)检查可执行文件,它会告诉你这个文件中的三个段(文本段.text, 数据段.data, .bss段)的大小.
-
-- text segment: 通常是指用来存放程序执行代码的一块内存区域.这部分区域的大小在程序运行前就已经确定,并且内存区域通常属于只读.在代码段中,也有可能包含一些只读的常数变量,例如字符串常量等.
-- data segment: 通常是指用来存放程序中**已初始化的全局变量和静态变量**的一块内存区域, 属于静态内存分配.
-- bbs segment: 通常是指用来存放程序中**未初始化的全局变量和静态变量**的一块内存区域, 紧跟在data segment 之后. 属于静态内存分配.
-  - 当这个内存区进入程序的地址空间后全部清零,通常是memset全部置0.
-  - 在Programming ground up里对.bss的解释为: There is another section called the .bss. This section is like the data section, except that it doesn't take up space in the executable.
 
 通常把data segment 和bbs segment 统一称为数据区.上面这些内容可以通过size命令很直观的查看与验证.
 
@@ -15,7 +23,7 @@
 int array[30000] = {1, 2, 3, 4, 5, 6};
 void main() {}
 ```
-```
+```bash
 [root@dev:code]$ ll -trh a.out
 -rwxr-xr-x 1 root root 126K Mar 13 07:38 a.out
 [root@dev:code]$ size a.out
@@ -28,7 +36,7 @@ void main() {}
 int array[30000];
 void main() {}
 ```
-```
+```bash
 [root@dev:code]$ ll -trh a.out
 -rwxr-xr-x 1 root root 8.0K Mar 13 07:33 a.out
 [root@dev:code]$ size a.out
@@ -48,17 +56,17 @@ void main() {}
 
 ### 位
 32位平台
-```
-int          4个字节32位 
+```info
+int          4个字节32位
 long         4个字节32位
 long long    8个字节64位  
 指针         4个字节32位  
 ```
 
 64位平台
-```
+```info
 int          4个字节  
-long         8个字节(区别) 
+long         8个字节(区别)
 long long    8个字节  
 指针         8个字节(区别)
 ```
@@ -97,7 +105,7 @@ struct D: C {
 &d.c1 == &d
 在D中,并不是说基类C的数据一定要放在D的数据之前,只不过这样放的话,**能够保证D中的C对象地址,恰好是D对象地址的第一个字节**.
 这种安排之下,**有了派生类D的指针,要获得基类C的指针, 就不必要计算偏移量了**.几乎所有知名的C++厂商都采用这种内存安排(基类成员在前).
-在单继承类层次下,每一个新的派生类都简单地把自己的成员变量添加到基类的成员变量之后 
+在单继承类层次下,每一个新的派生类都简单地把自己的成员变量添加到基类的成员变量之后
 
 ### 多重继承
 ```C++
@@ -195,7 +203,7 @@ class CL : public CB, public CA {
 };
 ```
 对于CL类,它的内存布局是:
-```
+```C
 int b;
 int a;
 int c;
@@ -209,7 +217,7 @@ class CA {
 };
 ```
 对于CL类,它的内存布局是:
-```
+```C
 vfptr
 int a;
 int b;
