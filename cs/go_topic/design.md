@@ -108,23 +108,26 @@ Goroutine 在 system call 和 channel call 时都可能发生阻塞,但这两种
 Goroutines that are sleeping or blocked in a communication do not need a thread at all.
 Goroutines that are blocked in IO or other system calles or are calling non-Go functions, do need an OS thread, but GOMAXPROCS need not account for them.
 
-# [Garbage Collection](https://www.youtube.com/watch?v=q4HoWwdZUHs)
+# Garbage Collection
+[Garbage Collection Semantics - GopherCon SG 2019](https://www.youtube.com/watch?v=q4HoWwdZUHs)
+
 Responsibility
 
 - tracking memory allocation in heap memory
 - releasing allocations that are no longer needed
 - keeping allocation that are still in-use
 
-As of version 1.12, Go uses a non-generational, concurrent, tri-color, mark and sweep collector.
+As of version 1.12, Go uses a **non-generational, concurrent, tri-color, mark and sweep collector**.
+
 If the machine is a multiprocessor, the collector runs on a separate CPU core in parallel with the main program.
 
 Three phases of the gargage collector
 
-1. mark setup, STW(stop the world)
-  - When a collection starts, the first activity that must be berformed is turning on the Write Barrier.
-  - In order to turn the Write Barrier on, every application goroutine runing must be stopped
-    (all goroutines must find themself in a safe point, and right now, that safe point is only going to occur when we are inside of a function call, so now we are waiting function calls to happend).
-1. marking, concurrent
+1. mark setup, STW(stop the world): your application is not getting done at all
+  - Turn on the Write Barrier. In order to turn the Write Barrier on, every application goroutine runing must be stopped
+    (all goroutines must find themself in a safe point, and right now, that safe point is only going to occur when we
+    are inside of a function call, so now we are waiting function calls to happend).
+1. marking, concurrent: we'll be able to work at the same time that marking is going on
   - Inspect the stacks to find root pointers to the heap
   - Traverse the heap graph form those root pointers
   - Mark values on the heap that are still in-use
