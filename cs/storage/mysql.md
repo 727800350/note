@@ -4,6 +4,11 @@
 show create table tb;  // 查看建表语句
 ```
 
+MySQL 的utf8实际上不是真正的UTF-8.
+在MySQL 中,"utf8"编码只支持每个字符最多三个字节,而真正的 UTF-8 是每个字符最多四个字节.
+在utf8 编码中,中文是占3 个字节,其他数字,英文,符号占一个字节.
+但emoji 符号占4 个字节,一些较复杂的文字,繁体字也是4 个字节, 应该改成utf8mb4, utf8mb4 才是真正的UTF-8
+
 ### 复制数据到新表
 - 复制表结构(包括index, key 等)
 	1. `CREATE TABLE 新表 LIKE 旧表`
