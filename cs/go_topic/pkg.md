@@ -131,3 +131,14 @@ glog.Infoln(z/z == math.NaN())  // false, any comparison with NaN always yields 
 # context
 The same Context may be passed to functions running in different goroutines; Contexts are safe for simultaneous use by multiple goroutines.
 
+# runtime
+## control the GC
+- GC(): start gc(bloking)
+- KeepAlive(obj): obj is needed at least until now
+- SetFinalizer(obj, f): call f when obj no longer needed
+
+## control the scheduler
+- GOMAXPROCS(n): set maximum simulaneously executing processors
+- Goexist(): terminate the calling goroutine
+- Gosched(): yield processor allowing other goroutines to run
+- LockOSThread() / UnlickOSThread(): wire/unwire goroutine to current OS thread
