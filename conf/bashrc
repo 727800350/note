@@ -1,5 +1,17 @@
 # .bashrc
 
+user=`whoami`
+uname -a | grep Darwin 1>/dev/null 2>&1
+if [ $? -eq 0 ]
+then
+  export os="mac"
+  export ip=`ifconfig en0 | grep inet | grep -v inet6 | awk '{print $2}'`
+else
+  export os="linux"
+  export ip=`ifconfig eth0 | grep inet | grep -v inet6 | awk '{print $2}'`
+fi
+export env=`systemd-detect-virt`
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
   . /etc/bashrc
@@ -15,17 +27,6 @@ export PATH=$PATH:/sbin
 export PATH=$PATH:/usr/local/sbin
 export PATH=$PATH:${HOME}/git/note/bin
 export PATH=$PATH:${HOME}/bin
-
-user=`whoami`
-uname -a | grep Darwin 1>/dev/null 2>&1
-if [ $? -eq 0 ]
-then
-  export os="mac"
-  export ip=`ifconfig en0 | grep inet | grep -v inet6 | awk '{print $2}'`
-else
-  export os="linux"
-  export ip=`ifconfig eth0 | grep inet | grep -v inet6 | awk '{print $2}'`
-fi
 
 ulimit -c unlimited
 
@@ -53,7 +54,7 @@ alias br="blade run"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
 ## go
-if [[ -s "$HOME/.gvm/scripts/gvm" ]]
+if [ -s "$HOME/.gvm/scripts/gvm" -a "x$env" != "xdocker" ]
 then
   source "$HOME/.gvm/scripts/gvm"
   gvm use go1.14.4 >/dev/null
