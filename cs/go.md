@@ -513,17 +513,58 @@ Deferred functions run after return statements have updated the function's resul
 The behavior of defer statements is straightforward and predictable. There are three simple rules:
 
 1. A deferred function's arguments are evaluated when the defer statement is evaluated.
-  ```go
-  // the expression "i" is evaluated when the Println call is deferred.
-  // the deferred call will print "0" after the function returns.
-  func a() {
-    i := 0
-    defer fmt.Println(i)
-    i++
-    return
-  }
-  ```
+```go
+func TestInt(t *testing.T) {
+	x := 0
+	defer t.Log("1", x)
+	defer func() {
+		t.Log("2", x)
+	}()
+	x++
+	t.Log("3", x)
+}
+
+func TestSlice(t *testing.T) {
+	x := make([]int, 0)
+	defer t.Log("1", x, len(x))
+	defer func() {
+		t.Log("2", x, len(x))
+	}()
+	x = append(x, 1, 2)
+	t.Log("3", x, len(x))
+}
+
+func TestMap(t *testing.T) {
+	x := make(map[int]bool, 0)
+	defer t.Log("1", x, len(x))
+	defer func() {
+		t.Log("2", x, len(x))
+	}()
+	x[1] = true
+	x[2] = true
+	t.Log("3", x, len(x))
+}
+```
+```out
+=== RUN   TestInt
+    TestInt: main_test.go:14: 3 1
+    TestInt: main_test.go:11: 2 1
+    TestInt: main_test.go:15: 1 0
+--- PASS: TestInt (0.00s)
+=== RUN   TestSlice
+    TestSlice: main_test.go:24: 3 [1 2] 2
+    TestSlice: main_test.go:21: 2 [1 2] 2
+    TestSlice: main_test.go:25: 1 [] 0
+--- PASS: TestSlice (0.00s)
+=== RUN   TestMap
+    TestMap: main_test.go:35: 3 map[1:true 2:true] 2
+    TestMap: main_test.go:31: 2 map[1:true 2:true] 2
+    TestMap: main_test.go:36: 1 map[1:true 2:true] 0
+--- PASS: TestMap (0.00s)
+```
+**需要注意slice 和 map 的区别**
 1. Deferred function calls are executed in Last In First Out order after the surrounding function returns.
+
   ```go
   // prints "3210":
   func b() {
@@ -541,7 +582,6 @@ The behavior of defer statements is straightforward and predictable. There are t
   空的return
   ```
   因此
-
   ```go
   func f() (result int) {
     defer func() {
@@ -560,6 +600,7 @@ The behavior of defer statements is straightforward and predictable. There are t
     return
   }
   ```
+  所以最终的返回值是1, 而不是0
 
 The defer statement can also be used to pair "on entry" and "on exit" actions when debugging a complex function.
 ```go
