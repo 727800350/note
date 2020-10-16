@@ -124,11 +124,18 @@ $ echo $c
 | operator | meaning                |
 |----------|------------------------|
 | >        | 大于                   |
-| \>       | 不大于, 也就是小于等于 |
+| <        | 小于                   |
 | =        | 相等                   |
 | !=       | 不等                   |
 | -z       | 空串                   |
 | -n       | 非空串                 |
+
+```bash
+if [[ "x$var" < "xabc" ]]
+then
+  echo "xxx"
+fi
+```
 
 ### String Length
 ```bash
