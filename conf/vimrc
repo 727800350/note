@@ -7,10 +7,17 @@ set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set encoding=utf-8
 "=============================== encoding ===============================
 
+" 设置 vimrc 修改保存后立刻生效，不用在重新打开
+" 建议配置完成后将这个关闭，否则配置多了之后会很卡
+" autocmd BufWritePost $MYVIMRC source $MYVIMRC
+
 set nu "show number
+" set relativenumber "设置相对行号
+set cursorline "突出显示当前行
+" set cursorcolumn " 突出显示当前列
 set showmatch "colorscheme evening
 set laststatus=2 "always show status line
-set shortmess=atI "shortens messages"
+" set shortmess=atI "shortens messages"
 set showcmd
 set ruler
 
@@ -49,6 +56,64 @@ endif
 if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
+
+let g:go_version_warning = 0
+
+" 插件开始的位置
+call plug#begin('~/.vim/plugged')
+
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+" 可以快速对齐的插件
+Plug 'junegunn/vim-easy-align'
+
+" 用来提供一个导航目录的侧边栏
+Plug 'scrooloose/nerdtree'
+
+" 可以使 nerdtree 的 tab 更加友好些
+Plug 'jistr/vim-nerdtree-tabs'
+
+" 自动补全括号的插件，包括小括号，中括号，以及花括号
+Plug 'jiangmiao/auto-pairs'
+
+" Vim状态栏插件，包括显示行号，列号，文件类型，文件名，以及Git状态
+Plug 'vim-airline/vim-airline'
+
+" 有道词典在线翻译
+Plug 'ianva/vim-youdao-translater'
+
+" 代码自动完成，安装完插件还需要额外配置才可以使用
+" Plug 'Valloric/YouCompleteMe'
+
+" 可以在文档中显示 git 信息
+" Plug 'airblade/vim-gitgutter'
+
+" 可以在 vim 中使用 tab 补全
+"Plug 'vim-scripts/SuperTab'
+
+" 可以在 vim 中自动完成
+"Plug 'Shougo/neocomplete.vim'
+
+" 配色方案
+" colorscheme neodark
+Plug 'KeitaNakamura/neodark.vim'
+" colorscheme monokai
+Plug 'crusoexia/vim-monokai'
+" colorscheme github
+Plug 'acarapetis/vim-colors-github'
+" colorscheme one
+Plug 'rakr/vim-one'
+
+" go 主要插件
+" Plug 'fatih/vim-go', { 'tag': '*' }
+" go 中的代码追踪，输入 gd 就可以自动跳转
+" Plug 'dgryski/vim-godef'
+
+" markdown 插件
+Plug 'iamcco/mathjax-support-for-mkdp'
+Plug 'iamcco/markdown-preview.vim'
+
+" 插件结束的位置，插件全部放在此行上面
+call plug#end()
 
 " ======= auto match ===================
 :inoremap ( ()<ESC>i
