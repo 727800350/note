@@ -54,7 +54,7 @@ alias br="blade run"
 test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true
 
 ## go
-if [ -s "$HOME/.gvm/scripts/gvm" -a "x$env" != "xdocker" ]
+if [ -s "$HOME/.gvm/scripts/gvm" -a "x$os" == "xlinux" ]
 then
   source "$HOME/.gvm/scripts/gvm"
   gvm use go1.14.4 >/dev/null

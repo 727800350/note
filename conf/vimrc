@@ -1,3 +1,10 @@
+let os = "linux"
+if has('unix')
+  if has('mac')
+    let os = "mac"
+  endif
+endif
+
 set nocompatible
 set pastetoggle=<F9> "raw copy, do not use auto indent etc.
 set mouse-=a "disable visual mode
@@ -57,7 +64,8 @@ if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
-let g:go_version_warning = 0
+" 定义快捷键的前缀，即<Leader>
+let mapleader=";"
 
 " 插件开始的位置
 call plug#begin('~/.vim/plugged')
@@ -82,7 +90,9 @@ Plug 'vim-airline/vim-airline'
 Plug 'ianva/vim-youdao-translater'
 
 " 代码自动完成，安装完插件还需要额外配置才可以使用
-" Plug 'Valloric/YouCompleteMe'
+if os == "linux"
+  Plug 'Valloric/YouCompleteMe'
+endif
 
 " 可以在文档中显示 git 信息
 " Plug 'airblade/vim-gitgutter'
@@ -104,9 +114,9 @@ Plug 'acarapetis/vim-colors-github'
 Plug 'rakr/vim-one'
 
 " go 主要插件
-" Plug 'fatih/vim-go', { 'tag': '*' }
+Plug 'fatih/vim-go'
 " go 中的代码追踪，输入 gd 就可以自动跳转
-" Plug 'dgryski/vim-godef'
+Plug 'dgryski/vim-godef'
 
 " markdown 插件
 Plug 'iamcco/mathjax-support-for-mkdp'
@@ -114,6 +124,8 @@ Plug 'iamcco/markdown-preview.vim'
 
 " 插件结束的位置，插件全部放在此行上面
 call plug#end()
+
+let g:go_version_warning = 0
 
 " ======= auto match ===================
 :inoremap ( ()<ESC>i
