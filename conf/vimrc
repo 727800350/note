@@ -79,9 +79,6 @@ Plug 'scrooloose/nerdtree'
 " 可以使 nerdtree 的 tab 更加友好些
 Plug 'jistr/vim-nerdtree-tabs'
 
-" 可以在导航目录中看到 git 版本信息
-Plug 'Xuyuanp/nerdtree-git-plugin'
-
 " 查看当前代码文件中的变量和函数列表的插件,
 " 可以切换和跳转到代码中对应的变量和函数的位置
 " 大纲式导航, Go 需要 https://github.com/jstemmer/gotags 支持
@@ -97,7 +94,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'ianva/vim-youdao-translater'
 
 " 代码自动完成,安装完插件还需要额外配置才可以使用
-if os == "linux"
+if os == "linux" && env == "docker"
   Plug 'Valloric/YouCompleteMe'
 endif
 
@@ -147,7 +144,7 @@ let g:go_fmt_command = "goimports" " 格式化将默认的 gofmt 替换
 let g:go_autodetect_gopath = 1
 let g:go_list_type = "quickfix"
 
-let g:go_version_warning = 1
+let g:go_version_warning = 0
 let g:go_highlight_types = 1
 let g:go_highlight_fields = 1
 let g:go_highlight_functions = 1
@@ -215,25 +212,6 @@ let g:tagbar_type_go = {
     \ 'ctagsbin'  : 'gotags',
     \ 'ctagsargs' : '-sort -silent'
 \ }
-
-
-"==============================================================================
-"  nerdtree-git-plugin 插件
-"==============================================================================
-let g:NERDTreeGitStatusIndicatorMapCustom = {
-    \ "Modified"  : "✹",
-    \ "Staged"    : "✚",
-    \ "Untracked" : "✭",
-    \ "Renamed"   : "➜",
-    \ "Unmerged"  : "═",
-    \ "Deleted"   : "✖",
-    \ "Dirty"     : "✗",
-    \ "Clean"     : "✔︎",
-    \ 'Ignored'   : '☒',
-    \ "Unknown"   : "?"
-    \ }
-
-let g:NERDTreeGitStatusShowIgnored= 1
 
 
 "==============================================================================
