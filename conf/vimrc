@@ -256,56 +256,42 @@ vmap <F12> <ESC>:call Uncomment()<CR>
 
 " Comments range (handles multiple file types)
 function! Comment() range
-  if &filetype == "css"
-    execute ":" . a:firstline . "," . a:lastline . 's/^\(.*\)$/\/\* \1 \*\//'
-  elseif &filetype == "html" || &filetype == "xml" || &filetype == "xslt" || &filetype == "xsd" || &filetype == "xhtml"
-    execute ":" . a:firstline . "," . a:lastline . 's/^\(.*\)$/<!-- \1 -->/'
+  if &filetype == "c" || &filetype == "h" || &filetype == "java" || &filetype == "cs" || &filetype == "cpp" || &filetype == "hpp" || &filetype == "php" || &filetype == "go"
+    let commentString = "// "
+  elseif &filetype == "vim"
+    let commentString = '" '
+  elseif &filetype == "scheme"
+    let commentString = ';; '
+  elseif &filetype == "tex" || &filetype == "bib" || &filetype == "mp"
+    let commentString = "%% "
+  elseif &filetype == "sql"
+    let commentString = "-- "
+  elseif &filetype == "fortran"
+    let commentString = "!! "
   else
-    if &filetype == "c" || &filetype == "h" || &filetype == "java" || &filetype == "cs" || &filetype == "cpp" || &filetype == "hpp" || &filetype == "php" || &filetype == "javascript" || &filetype == "go"
-      let commentString = "// "
-    elseif &filetype == "vim"
-      let commentString = '" '
-    elseif &filetype == "scheme"
-      let commentString = ';; '
-    elseif &filetype == "tex" || &filetype == "bib" || &filetype == "mp"
-      let commentString = "%% "
-    elseif &filetype == "cmm"
-      let commentString = ";; "
-    elseif &filetype == "sql"
-      let commentString = "-- "
-    elseif &filetype == "fortran"
-      let commentString = "!! "
-    else
-      let commentString = "## "
-    endif
-    execute ":" . a:firstline . "," . a:lastline . 's,^,' . commentString . ','
+    let commentString = "## "
   endif
+  execute ":" . a:firstline . "," . a:lastline . 's,^,' . commentString . ','
 endfunction
 
 " Uncomments range (handles multiple file types)
 function! Uncomment() range
-  if &filetype == "css" || &filetype == "html" || &filetype == "xml" || &filetype == "xslt" || &filetype == "xsd" || &filetype == "xhtml"
-    execute ":" . a:firstline . "," . a:lastline . 's/^\([/(]\*\|<!--\) \(.*\) \(\*[/)]\|-->\)$/\2/'
+  if &filetype == "c" || &filetype == "h" || &filetype == "java" || &filetype == "cs" || &filetype == "cpp" || &filetype == "hpp" || &filetype == "php" || &filetype == "go"
+    let commentString = "// "
+  elseif &filetype == "vim"
+    let commentString = '" '
+  elseif &filetype == "scheme"
+    let commentString = ';; '
+  elseif &filetype == "tex" || &filetype == "bib" || &filetype == "mp"
+    let commentString = "%% "
+  elseif &filetype == "sql"
+    let commentString = "-- "
+  elseif &filetype == "fortran"
+    let commentString = "!! "
   else
-    if &filetype == "c" || &filetype == "h" || &filetype == "java" || &filetype == "cs" || &filetype == "cpp" || &filetype == "hpp" || &filetype == "php" || &filetype == "javascript" || &filetype == "go"
-      let commentString = "// "
-    elseif &filetype == "vim"
-      let commentString = '" '
-    elseif &filetype == "scheme"
-      let commentString = ';; '
-    elseif &filetype == "tex" || &filetype == "bib" || &filetype == "mp"
-      let commentString = "%% "
-    elseif &filetype == "cmm"
-      let commentString = ";; "
-    elseif &filetype == "sql"
-      let commentString = "-- "
-    elseif &filetype == "fortran"
-      let commentString = "!! "
-    else
-      let commentString = "## "
-    endif
-    execute ":" . a:firstline . "," . a:lastline . 's,^' . commentString . ',,'
+    let commentString = "## "
   endif
+  execute ":" . a:firstline . "," . a:lastline . 's,^' . commentString . ',,'
 endfunction
 "==============================comments===================================
 
