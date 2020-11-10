@@ -16,10 +16,6 @@ set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set encoding=utf-8
 "=============================== encoding ===============================
 
-" 设置 vimrc 修改保存后立刻生效,不用在重新打开
-" 建议配置完成后将这个关闭,否则配置多了之后会很卡
-" autocmd BufWritePost $MYVIMRC source $MYVIMRC
-
 set nu "show number
 set cursorline "突出显示当前行
 set showmatch "colorscheme evening
@@ -180,7 +176,7 @@ let g:nerdtree_tabs_open_on_console_startup=1
 
 
 "==============================================================================
-"  majutsushi/tagbar 插件
+" majutsushi/tagbar 插件
 "==============================================================================
 " majutsushi/tagbar 插件打开关闭快捷键
 nmap <F9> :TagbarToggle<CR>
@@ -215,7 +211,15 @@ let g:tagbar_type_go = {
 
 
 "==============================================================================
-"  其他插件配置
+" ianva/vim-youdao-translater
+"==============================================================================
+vnoremap <silent> <C-T> :<C-u>Ydv<CR>
+nnoremap <silent> <C-T> :<C-u>Ydc<CR>
+noremap <leader>yd :<C-u>Yde<CR>
+
+
+"==============================================================================
+" 其他插件配置
 "==============================================================================
 " markdwon 的快捷键
 map <silent> <F5> <Plug>MarkdownPreview
