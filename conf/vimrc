@@ -85,6 +85,7 @@ Plug 'jiangmiao/auto-pairs'
 
 " Vim状态栏插件,包括显示行号,列号,文件类型,文件名,以及Git状态
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 " 有道词典在线翻译
 Plug 'ianva/vim-youdao-translater'
@@ -141,6 +142,12 @@ xmap ga <Plug>(EasyAlign)
 
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
+
+
+"==============================================================================
+" junegunn/vim-easy-align
+"==============================================================================
+let g:airline_theme='base16'
 
 
 "==============================================================================
