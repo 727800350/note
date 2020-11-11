@@ -32,12 +32,17 @@ let mapleader=";"
 
 ## [junegunn/vim-easy-align](https://github.com/junegunn/vim-easy-align)
 
+## [preservim/nerdcommenter](https://github.com/preservim/nerdcommenter)
+- [count]<leader>cc: 注释从当前行往下数的 count 行,count 可省略,默认值为 1 (cc 是 NERDCommenterComment 的缩写).
+- [count]<leader>cu: 取消注释从当前行往下数的 count 行,count 可省略,默认值为 1 (cu 是 NERDCommenterUncomment 的缩写)
+- [count]<leader>ci: 切换从当前行往下数的 count 行的注释状态 (ci 是 NERDCommenterInvert 的缩写).
+- <leader>c$: 注释掉从当前光标所在位置到行尾的剩下内容,等价于在光标所在位置插入注释符(c$ 表示NERDCommenterToEOL 的缩写.
+- <leader>cA: 在光标所在当前行行尾添加注释符号并进入Vim 的插入模式(cA 是NERDCommenterAppend 的缩写).
+
 ## [ianva/vim-youdao-translater](https://github.com/ianva/vim-youdao-translater)
-在普通模式下,按 ctrl+t, 会翻译当前光标下的单词,
-
-在 visual 模式下选中单词或语句,按 ctrl+t,会翻译选择的单词或语句,
-
-点击引导键再点y,d,可以在命令行输入要翻译的单词或语句,
+- 在普通模式下,按 ctrl+t, 会翻译当前光标下的单词;
+- 在 visual 模式下选中单词或语句,按 ctrl+t, 会翻译选择的单词或语句;
+- <leader>yd 可以在命令行输入要翻译的单词或语句.
 
 译文将会在编辑器底部的命令栏显示.
 
