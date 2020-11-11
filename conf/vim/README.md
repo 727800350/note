@@ -9,15 +9,15 @@ let mapleader=";"
 
 使用下表中不同形式的map命令,可以针对特定的模式设置键盘映射:
 
-|Command命令  |常规模式|  可视化模式  |运算符模式  |插入模式|  命令行模式 |
-|------------|-------|------------|---------|-----|------|
-|:map  |√|  √|  √|  ||
-|:nmap|  √  ||||  |
-|:vmap  ||  √  ||||
-|:omap|||      √    |||
-|:map!  ||||      √  |√|
-|:imap  ||||      √  ||
-|:cmap||||          |√|
+| Command命令 | 常规模式 | 可视化模式 | 运算符模式 | 插入模式 | 命令行模式 |
+| ---         | ---      | ---        | ---        | ---      | ---        |
+| :map        | √        | √          | √          |          |            |
+| :nmap       | √        |            |            |          |            |
+| :vmap       |          | √          |            |          |            |
+| :omap       |          |            | √          |          |            |
+| :map!       |          |            |            | √        | √          |
+| :imap       |          |            |            | √        |            |
+| :cmap       |          |            |            |          | √          |
 
 
 - [thrift](https://github.com/solarnz/thrift.vim)
@@ -29,6 +29,8 @@ let mapleader=";"
 [将 VIM 打造成 go 语言的 ide](https://learnku.com/articles/24924)
 
 [junegunn/vim-plug](https://github.com/junegunn/vim-plug)
+
+## [junegunn/vim-easy-align](https://github.com/junegunn/vim-easy-align)
 
 ## [ianva/vim-youdao-translater](https://github.com/ianva/vim-youdao-translater)
 在普通模式下,按 ctrl+t, 会翻译当前光标下的单词,

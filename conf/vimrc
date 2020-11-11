@@ -134,6 +134,16 @@ set background=dark " 主题背景 dark-深色; light-浅色
 
 
 "==============================================================================
+" junegunn/vim-easy-align
+"==============================================================================
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+
+"==============================================================================
 " vim-go 插件
 "==============================================================================
 let g:go_fmt_command = "goimports" " 格式化将默认的 gofmt 替换
