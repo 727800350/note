@@ -69,16 +69,8 @@ call plug#begin('~/.vim/plugged')
 " 可以快速对齐的插件
 Plug 'junegunn/vim-easy-align'
 
-" 用来提供一个导航目录的侧边栏
-" Plug 'scrooloose/nerdtree'
-
-" 可以使 nerdtree 的 tab 更加友好些
-Plug 'jistr/vim-nerdtree-tabs'
-
-" 查看当前代码文件中的变量和函数列表的插件,
-" 可以切换和跳转到代码中对应的变量和函数的位置
-" 大纲式导航, Go 需要 https://github.com/jstemmer/gotags 支持
-Plug 'majutsushi/tagbar'
+" comment and uncomment
+Plug 'preservim/nerdcommenter'
 
 " 自动补全括号的插件,包括小括号,中括号,以及花括号
 Plug 'jiangmiao/auto-pairs'
@@ -89,6 +81,17 @@ Plug 'vim-airline/vim-airline-themes'
 
 " 有道词典在线翻译
 Plug 'ianva/vim-youdao-translater'
+
+" 用来提供一个导航目录的侧边栏
+" Plug 'scrooloose/nerdtree'
+
+" 可以使 nerdtree 的 tab 更加友好些
+Plug 'jistr/vim-nerdtree-tabs'
+
+" 查看当前代码文件中的变量和函数列表的插件,
+" 可以切换和跳转到代码中对应的变量和函数的位置
+" 大纲式导航, Go 需要 https://github.com/jstemmer/gotags 支持
+Plug 'majutsushi/tagbar'
 
 " 代码自动完成,安装完插件还需要额外配置才可以使用
 if os == "linux" && env == "docker"
@@ -148,6 +151,12 @@ nmap ga <Plug>(EasyAlign)
 " junegunn/vim-easy-align
 "==============================================================================
 let g:airline_theme='base16'
+
+"==============================================================================
+" preservim/nerdcommenter
+"==============================================================================
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
 
 
 "==============================================================================
@@ -242,56 +251,6 @@ noremap <leader>yd :<C-u>Yde<CR>
 map <silent> <F5> <Plug>MarkdownPreview
 map <silent> <F6> <Plug>StopMarkdownPreview
 
-
-"==============================comments===================================
-" F11 Comment F12 uncomment
-map <F11> :call Comment()<CR>
-imap <F11> <ESC>:call Comment()<CR>
-vmap <F11> <ESC>:call Comment()<CR>
-map <F12> :call Uncomment()<CR>
-imap <F12> <ESC>:call Uncomment()<CR>
-vmap <F12> <ESC>:call Uncomment()<CR>
-
-" Comments range (handles multiple file types)
-function! Comment() range
-  if &filetype == "c" || &filetype == "h" || &filetype == "java" || &filetype == "cs" || &filetype == "cpp" || &filetype == "hpp" || &filetype == "php" || &filetype == "go"
-    let commentString = "// "
-  elseif &filetype == "vim"
-    let commentString = '" '
-  elseif &filetype == "scheme"
-    let commentString = ';; '
-  elseif &filetype == "tex" || &filetype == "bib" || &filetype == "mp"
-    let commentString = "%% "
-  elseif &filetype == "sql"
-    let commentString = "-- "
-  elseif &filetype == "fortran"
-    let commentString = "!! "
-  else
-    let commentString = "## "
-  endif
-  execute ":" . a:firstline . "," . a:lastline . 's,^,' . commentString . ','
-endfunction
-
-" Uncomments range (handles multiple file types)
-function! Uncomment() range
-  if &filetype == "c" || &filetype == "h" || &filetype == "java" || &filetype == "cs" || &filetype == "cpp" || &filetype == "hpp" || &filetype == "php" || &filetype == "go"
-    let commentString = "// "
-  elseif &filetype == "vim"
-    let commentString = '" '
-  elseif &filetype == "scheme"
-    let commentString = ';; '
-  elseif &filetype == "tex" || &filetype == "bib" || &filetype == "mp"
-    let commentString = "%% "
-  elseif &filetype == "sql"
-    let commentString = "-- "
-  elseif &filetype == "fortran"
-    let commentString = "!! "
-  else
-    let commentString = "## "
-  endif
-  execute ":" . a:firstline . "," . a:lastline . 's,^' . commentString . ',,'
-endfunction
-"==============================comments===================================
 
 "===========================Chinese Punctuation: ctrl-s or :%call CheckChineseMark ==================
 map <C-S> :call CheckChineseMark()<CR>
