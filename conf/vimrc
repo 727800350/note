@@ -70,7 +70,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'junegunn/vim-easy-align'
 
 " 用来提供一个导航目录的侧边栏
-Plug 'scrooloose/nerdtree'
+" Plug 'scrooloose/nerdtree'
 
 " 可以使 nerdtree 的 tab 更加友好些
 Plug 'jistr/vim-nerdtree-tabs'
@@ -111,9 +111,9 @@ Plug 'acarapetis/vim-colors-github'
 Plug 'rakr/vim-one'
 
 " go 主要插件
-Plug 'fatih/vim-go', { 'tag': '*' }
+" Plug 'fatih/vim-go', { 'tag': '*' }
 " go 中的代码追踪,输入 gd 就可以自动跳转
-Plug 'dgryski/vim-godef'
+" Plug 'dgryski/vim-godef'
 
 " markdown 插件
 Plug 'iamcco/mathjax-support-for-mkdp'
