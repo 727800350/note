@@ -76,8 +76,8 @@ Plug 'preservim/nerdcommenter'
 Plug 'jiangmiao/auto-pairs'
 
 " Vim状态栏插件,包括显示行号,列号,文件类型,文件名,以及Git状态
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'itchyny/lightline.vim'
+Plug 'itchyny/vim-gitbranch'
 
 " 有道词典在线翻译
 Plug 'ianva/vim-youdao-translater'
@@ -148,9 +148,25 @@ nmap ga <Plug>(EasyAlign)
 
 
 "==============================================================================
-" junegunn/vim-easy-align
+" itchyny/lightline.vim
 "==============================================================================
-let g:airline_theme='simple'
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left':  [ [ 'mode', 'paste' ],
+      \              [ 'gitbranch', 'readonly', 'filename', 'modified' ] ],
+      \   'right': [ [ 'lineinfo' ],
+      \              [ 'percent' ],
+      \              [ 'fileformat', 'fileencoding', 'filetype', 'charvaluehex' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'gitbranch#name'
+      \ },
+      \ 'component': {
+      \   'charvaluehex': '0x%B'
+      \ },
+      \ }
+
 
 "==============================================================================
 " preservim/nerdcommenter
