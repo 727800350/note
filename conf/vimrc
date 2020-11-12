@@ -94,7 +94,7 @@ Plug 'jistr/vim-nerdtree-tabs'
 Plug 'majutsushi/tagbar'
 
 " 代码自动完成,安装完插件还需要额外配置才可以使用
-if os == "linux" && env == "docker"
+if os == "linux" && env == "docker\n"
   Plug 'Valloric/YouCompleteMe'
 endif
 

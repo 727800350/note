@@ -26,7 +26,10 @@ else
   export os="linux"
   export ip=`ifconfig eth0 | grep inet | grep -v inet6 | awk '{print $2}'`
 fi
-export env=`systemd-detect-virt`
+if [ "x$os" == "xlinux" ]
+then
+  export env=`systemd-detect-virt`
+fi
 
 ulimit -c unlimited
 
