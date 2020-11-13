@@ -93,11 +93,6 @@ Plug 'jistr/vim-nerdtree-tabs'
 " 大纲式导航, Go 需要 https://github.com/jstemmer/gotags 支持
 Plug 'majutsushi/tagbar'
 
-" 代码自动完成,安装完插件还需要额外配置才可以使用
-if os == "linux" && env == "docker\n"
-  Plug 'Valloric/YouCompleteMe'
-endif
-
 " 可以在 vim 中使用 tab 补全
 "Plug 'vim-scripts/SuperTab'
 
@@ -115,9 +110,9 @@ Plug 'acarapetis/vim-colors-github'
 Plug 'rakr/vim-one'
 
 " go 主要插件
-" Plug 'fatih/vim-go', { 'tag': '*' }
-" go 中的代码追踪,输入 gd 就可以自动跳转
-" Plug 'dgryski/vim-godef'
+" Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+" Plug 'govim/govim'
+" Plug 'Valloric/YouCompleteMe'
 
 " markdown 插件
 Plug 'iamcco/mathjax-support-for-mkdp'
