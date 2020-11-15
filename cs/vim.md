@@ -41,25 +41,39 @@ TAB替换为空格:
 - `mx`  设置书签,x 只能是 a-z 的 26 个字母
 - \`x  跳转到书签处(是 1 左边的键)
 
+# Edit
 缩进
 
 - `>`  增加缩进, `x>` 表示增加以下 x 行的缩进
 - `<`  减少缩进, `x<` 表示减少以下 x 行的缩进
 
-# Edit
 - Vim高亮显示的那个特殊的`^M`, 是Ctrl+V
-- `Shift-v shift-g`  选择当前位置到文章结尾
-- `shfit-v $` 选择当前位置到当前行尾
-- 列删除
-  1. 按下组合键"CTRL+v" 进入"可视 块"模式,选取这一列操作多少行
-  1. 按下d 即可删除被选中的整块
-- 列插入
-  1. 按下组合键"CTRL+v" 进入"可视 块"模式,选取这一列操作多少行
-  1. 按下shift+i(或者大写的字母"i")
-  1. 输入要插入的内容
-  1. 按ESC,之后就会看到插入的效果.
+- transposing two letters `xp`, 也就是一个`x`, 然后再`p`
 
-transposing two letters `xp`, 也就是一个`x`, 然后再`p`
+## visual mode
+在Vim里面有三种激活可视模式,并选择一块区域的方法,他们分别是:
+
+| 模式类型 | 激活方式 | 选择效果             | status  |
+| ---      | ---      | ---                  | ---     |
+| 字符文本 | v(小写)  | 逐个字符选择文本     | VISUAL  |
+| 行文本   | V(大写)  | 逐行选择文本         | V-LINE  |
+| 块文本   | <C-v>    | 按照块的方式选择文本 | V-BLOCK |
+
+visual mode 下
+
+- o: 可视模式的时候, 默认情况下只可以控制右下角的端点,使用o按键来在左上角和右下角之间进行切换.
+- G: 选择当前位置到文章结尾
+- $: 选择当前位置到当前行尾
+
+- 列删除
+  1. 按下组合键"CTRL+v" 进入可视块模式,选取这一列操作多少行
+  1. 按下d 即可删除被选中的整块
+
+- 列插入
+  1. 按下组合键"CTRL+v" 进入可视块模式,选取这一列操作多少行
+  1. 按下shift+i
+  1. 输入要插入的内容(这里要注意只会第一行会显示插入的内容, 其他行需要按下esc 之后才会显示, 新手应注意)
+  1. 按ESC,之后就会看到插入的效果
 
 Editing action
 
@@ -98,7 +112,7 @@ More editing commands
 | cG         | dG         | yG         | End of file               |
 | c13G       | d13G       | y13G       | Line number 13            |
 
-# 大小写
+## 大小写
 | Command | Explanation                          |
 |---------|--------------------------------------|
 | ?~      | 将光标下的字母改变大小写             |
@@ -132,44 +146,44 @@ More editing commands
 
 表示内容的元字符
 
-| 模式   | 含义                                             |
-|--------|--------------------------------------------------|
-| .      | 匹配任意字符                                     |
-| [abc]  | 匹配方括号中的任意一个字符.可以使用-表示字符范围 |
-| [^abc] | 表示匹配除方括号中字符之外的任意字符.            |
-| \|    | 或, 如 for\|bar 表示匹配for或者bar                |
-| \d     | 匹配阿拉伯数字,等同于[0-9].                      |
-| \D     | 匹配阿拉伯数字之外的任意字符,等同于[^0-9]        |
-| \x     | 匹配十六进制数字,等同于[0-9A-Fa-f].              |
-| \X     | 匹配十六进制数字之外的任意字符,等同于[^0-9A-Fa-f]|
-| \w     | 匹配单词字母,等同于`[0-9A-Za-z_]`                |
-| \W     | 匹配单词字母之外的任意字符,等同于`[^0-9A-Za-z_]` |
-| \t     | 匹配<TAB>字符.                                   |
-| \s     | 匹配空白字符,等同于[ \t].                        |
-| \S     | 匹配非空白字符,等同于[^ \t].                     |
-| \a     | 所有的字母字符. 等同于[a-zA-Z]                   |
-| \l     | 小写字母 [a-z]                                   |
-| \L     | 非小写字母 [^a-z]                                |
-| \u     | 大写字母 [A-Z]                                   |
-| \U     | 非大写字母 [^A-Z]                                |
+| 模式   | 含义                                              |
+| ---    | ---                                               |
+| .      | 匹配任意字符                                      |
+| [abc]  | 匹配方括号中的任意一个字符.可以使用-表示字符范围  |
+| [^abc] | 表示匹配除方括号中字符之外的任意字符.             |
+| \|     | 或, 如 for\ | bar 表示匹配for或者bar              |
+| \d     | 匹配阿拉伯数字,等同于[0-9].                       |
+| \D     | 匹配阿拉伯数字之外的任意字符,等同于[^0-9]         |
+| \x     | 匹配十六进制数字,等同于[0-9A-Fa-f].               |
+| \X     | 匹配十六进制数字之外的任意字符,等同于[^0-9A-Fa-f] |
+| \w     | 匹配单词字母,等同于`[0-9A-Za-z_]`                 |
+| \W     | 匹配单词字母之外的任意字符,等同于`[^0-9A-Za-z_]`  |
+| \t     | 匹配<TAB>字符.                                    |
+| \s     | 匹配空白字符,等同于[ \t].                         |
+| \S     | 匹配非空白字符,等同于[^ \t].                      |
+| \a     | 所有的字母字符. 等同于[a-zA-Z]                    |
+| \l     | 小写字母 [a-z]                                    |
+| \L     | 非小写字母 [^a-z]                                 |
+| \u     | 大写字母 [A-Z]                                    |
+| \U     | 非大写字母 [^A-Z]                                 |
 
 一般的正则表达式中表示或的方法:`(my name)|(your name)`
 
 表示数量的元字符
 
-| 模式   | 含义                                           |
-|--------|------------------------------------------------|
-| *      | 匹配0-任意个                                   |
-| \+     | 匹配1-任意个                                   |
-| \?     | 匹配0-1个                                      |
-| \{n,m} | 匹配n-m个                                      |
-| \{n}   | 匹配n个                                        |
-| \{n,}  | 匹配n-任意个                                   |
-| \{,m}  | 匹配0-m个                                      |
-| \_.    | 匹配包含换行在内的所有字符                     |
+| 模式   | 含义                                                                                       |
+| ---    | ---                                                                                        |
+| *      | 匹配0-任意个                                                                               |
+| \+     | 匹配1-任意个                                                                               |
+| \?     | 匹配0-1个                                                                                  |
+| \{n,m} | 匹配n-m个                                                                                  |
+| \{n}   | 匹配n个                                                                                    |
+| \{n,}  | 匹配n-任意个                                                                               |
+| \{,m}  | 匹配0-m个                                                                                  |
+| \_.    | 匹配包含换行在内的所有字符                                                                 |
 | \{-}   | 表示前一个字符可出现零次或多次,但在整个正则表达式可以匹配成功的前提下,匹配的字符数越少越好 |
-| \=     | 匹配一个可有可无的项                           |
-| \_s    | 匹配空格或断行                                 |
+| \=     | 匹配一个可有可无的项                                                                       |
+| \_s    | 匹配空格或断行                                                                             |
 
 懒惰模式
 
@@ -179,7 +193,7 @@ More editing commands
 **表示转义和位置的元字符**
 
 | 模式 | 含义          |
-|------|---------------|
+| ---  | ---           |
 | `\*` | 匹配 `*` 字符 |
 | `\.` | 匹配 `.` 字符 |
 | `\/` | 匹配 `/` 字符 |
@@ -203,8 +217,6 @@ More editing commands
 - `vi + filename` open file at last line
 - `vi +/pattern filename` open file at the first occurrence of pattern
 - `vi -R filename` readmode
-eg: `vi +/"you make"` filename or `vi +/you\ make filename`  
-Using `+/pattern` is helpful if you have to leave an editing session before you're finished. You can mark your place by inerting a pattern such as `ZZZ` or `HERE`. Then when you return to the file,all you have to remember is `/ZZZ or /HERE`
 - `vim -b file` edit binary file or we can use `:set binary`
 
 **gain root permission without leaving vim**  
@@ -213,7 +225,7 @@ To force a save use the following command
 `:w !sudo tee %`  
 It will prompt you for your password
 
-## Buffer
+# Buffer
 **recovering from buffer**  
 `$ex -r` or `$vi -r`  
 you will get a list of any files that the system has saved  
