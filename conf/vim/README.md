@@ -20,7 +20,7 @@ let mapleader=";"
 | :cmap       |          |            |            |          | √          |
 
 
-- [thrift](https://github.com/solarnz/thrift.vim)
+`:nmap`: 列出所有键盘映射
 
 # vim script
 [vim scripting cheatsheet](https://devhints.io/vimscript)
@@ -46,5 +46,18 @@ let mapleader=";"
 
 译文将会在编辑器底部的命令栏显示.
 
+## [neoclide/coc.nvim](https://github.com/neoclide/coc.nvim)
+need node
+
+- `:CocList services`
+- `:CocList sources`
+
+coc-go 和 languageserver.golang 只能使用其中的一个, 否则自动补全的时候会重复提示.
+[Duplicate Suggestions in autocompletion](https://github.com/neoclide/coc.nvim/issues/1824)
+
+### [coc-marketplace](https://github.com/fannheyward/coc-marketplace)
+`:CocList marketplace`: 进入marketplace
+
 ## go
 ### [jstemmer/gotags](https://github.com/jstemmer/gotags)
+
