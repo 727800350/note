@@ -68,6 +68,12 @@ export PATH="$PATH:$GOBIN"
 export GO111MODULE=on
 export GOPROXY="https://goproxy.io"
 
+## node
+if [ -d $HOME/opt/node ]
+then
+  export PATH="$PATH:$HOME/opt/node/bin"
+fi
+
 ## java
 export JAVA_HOME="$HOME/opt/jdk"
 export PATH=$PATH:"$HOME/opt/jdk/bin"
