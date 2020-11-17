@@ -106,6 +106,12 @@ Plug 'majutsushi/tagbar'
 " 可以在 vim 中自动完成
 "Plug 'Shougo/neocomplete.vim'
 
+" markdown 插件
+Plug 'iamcco/mathjax-support-for-mkdp'
+Plug 'iamcco/markdown-preview.vim'
+
+Plug 'solarnz/thrift.vim'
+
 " 配色方案
 " colorscheme neodark
 Plug 'KeitaNakamura/neodark.vim'
@@ -118,14 +124,9 @@ Plug 'rakr/vim-one'
 " colorscheme codedark
 Plug 'tomasiser/vim-code-dark'
 
-" markdown 插件
-Plug 'iamcco/mathjax-support-for-mkdp'
-Plug 'iamcco/markdown-preview.vim'
-
-Plug 'solarnz/thrift.vim'
-
 " 插件结束的位置,插件全部放在此行上面
 call plug#end()
+
 
 "==============================================================================
 " 主题配色
@@ -133,16 +134,7 @@ call plug#end()
 " 开启24bit的颜色,开启这个颜色会更漂亮一些
 set termguicolors
 " 配色方案, 可以从上面插件安装中的选择一个使用
-if os == 'linux'
-  if env == 'docker'
-    " colorscheme one
-    colorscheme codedark
-  else
-    colorscheme codedark
-  endif
-else
-  colorscheme monokai
-endif
+colorscheme codedark
 set background=dark " 主题背景 dark-深色; light-浅色
 
 
