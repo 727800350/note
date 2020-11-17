@@ -115,6 +115,8 @@ Plug 'crusoexia/vim-monokai'
 Plug 'acarapetis/vim-colors-github'
 " colorscheme one
 Plug 'rakr/vim-one'
+" colorscheme codedark
+Plug 'tomasiser/vim-code-dark'
 
 " markdown 插件
 Plug 'iamcco/mathjax-support-for-mkdp'
@@ -133,9 +135,10 @@ set termguicolors
 " 配色方案, 可以从上面插件安装中的选择一个使用
 if os == 'linux'
   if env == 'docker'
-    colorscheme one
+    " colorscheme one
+    colorscheme codedark
   else
-    colorscheme monokai
+    colorscheme codedark
   endif
 else
   colorscheme monokai
