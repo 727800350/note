@@ -83,6 +83,9 @@ Plug 'itchyny/vim-gitbranch'
 " 有道词典在线翻译
 Plug 'ianva/vim-youdao-translater'
 
+" conquer of completion
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
 " 用来提供一个导航目录的侧边栏
 " Plug 'scrooloose/nerdtree'
 
@@ -109,12 +112,6 @@ Plug 'crusoexia/vim-monokai'
 Plug 'acarapetis/vim-colors-github'
 " colorscheme one
 Plug 'rakr/vim-one'
-
-" go 主要插件
-" Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-" Plug 'govim/govim'
-" Plug 'Valloric/YouCompleteMe'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " markdown 插件
 Plug 'iamcco/mathjax-support-for-mkdp'
