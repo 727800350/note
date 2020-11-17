@@ -6,7 +6,10 @@ if has('unix')
 endif
 
 let env = system("systemd-detect-virt")
-let env = split(env, "\n")[0]
+let tokens = split(env, "\n")
+if len(tokens) > 0
+  let env = tokens[0]
+endif
 
 set nocompatible
 set pastetoggle=<F9> "raw copy, do not use auto indent etc.
