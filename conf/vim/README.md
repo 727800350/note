@@ -52,12 +52,45 @@ need node
 - `:CocList services`
 - `:CocList sources`
 
-coc-go 和 languageserver.golang 只能使用其中的一个, 否则自动补全的时候会重复提示.
-[Duplicate Suggestions in autocompletion](https://github.com/neoclide/coc.nvim/issues/1824)
-
 ### [coc-marketplace](https://github.com/fannheyward/coc-marketplace)
 `:CocList marketplace`: 进入marketplace
 
-## go
-### [jstemmer/gotags](https://github.com/jstemmer/gotags)
+### go
+coc-go 和 languageserver.golang 只能使用其中的一个, 否则自动补全的时候会重复提示.
+[Duplicate Suggestions in autocompletion](https://github.com/neoclide/coc.nvim/issues/1824)
+
+```json
+{
+  "languageserver": {
+    "golang": {
+      "command": "gopls",
+      "args": ["-remote=auto", "-listen.timeout=1h", "-remote.listen.timeout=2h"],
+      "rootPatterns": ["go.mod", ".git"],
+      "trace.server": "verbose",
+      "filetypes": ["go"],
+      "initializationOptions": {
+        "usePlaceholders": true,
+        "completeUnimported": true
+      }
+    }
+  }
+}
+```
+
+[jstemmer/gotags](https://github.com/jstemmer/gotags)
+
+### clangd
+同理, coc-clangd 和 languageserver.clangd 也只能用一个.
+
+```json
+{
+  "languageserver": {
+    "clangd": {
+      "command": "clangd",
+      "rootPatterns": ["compile_flags.txt", "compile_commands.json", ".git"],
+      "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"]
+    }
+  }
+}
+```
 
