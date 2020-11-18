@@ -35,6 +35,7 @@ ulimit -c unlimited
 
 alias grep='grep --color=auto'
 alias watch='watch -d -n 1'
+alias fd=fdfind
 
 alias ll="ls -l"
 if [ "x$os" == "xmac" ]

@@ -106,6 +106,11 @@ Plug 'majutsushi/tagbar'
 " 可以在 vim 中自动完成
 "Plug 'Shougo/neocomplete.vim'
 
+Plug 'octol/vim-cpp-enhanced-highlight'
+
+" parentheses improved
+Plug 'luochen1990/rainbow'
+
 " markdown 插件
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
@@ -245,6 +250,7 @@ vnoremap <silent> <C-T> :<C-u>Ydv<CR>
 nnoremap <silent> <C-T> :<C-u>Ydc<CR>
 noremap <leader>yd :<C-u>Yde<CR>
 
+let g:rainbow_active = 1
 
 "==============================================================================
 " 其他插件配置
