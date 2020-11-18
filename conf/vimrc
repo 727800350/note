@@ -175,14 +175,10 @@ let g:lightline = {
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
 
-so ~/git/note/conf/vim/coc.vim
-
-"==============================================================================
-" vim-go 插件
-"==============================================================================
-let g:go_fmt_command = "goimports" " 格式化将默认的 gofmt 替换
-let g:go_def_mapping_enabled = 0
-let g:go_gopls_enabled = 0  " disable gopls in vim-go, use gopls from coc
+for s in ["coc", "udf"]
+  let path = "~/git/note/conf/vim/" . s . ".vim"
+  exec "source" path
+endfor
 
 
 "==============================================================================
@@ -256,8 +252,6 @@ noremap <leader>yd :<C-u>Yde<CR>
 " markdwon 的快捷键
 map <silent> <F5> <Plug>MarkdownPreview
 map <silent> <F6> <Plug>StopMarkdownPreview
-
-so ~/git/note/conf/vim/udf.vim
 
 hi comment ctermfg=6  " comment color
 
