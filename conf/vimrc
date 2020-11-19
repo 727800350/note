@@ -69,6 +69,9 @@ let mapleader=";"
 " 插件开始的位置
 call plug#begin('~/.vim/plugged')
 
+Plug 'junegunn/fzf' , { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 " 可以快速对齐的插件
 Plug 'junegunn/vim-easy-align'
