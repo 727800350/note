@@ -37,6 +37,8 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 ```
 
+Most commands support CTRL-T / CTRL-X / CTRL-V key bindings to open in a new tab, a new split, or in a new vertical split
+
 ## [junegunn/vim-easy-align](https://github.com/junegunn/vim-easy-align)
 
 ## [preservim/nerdcommenter](https://github.com/preservim/nerdcommenter)

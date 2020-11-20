@@ -145,6 +145,13 @@ set termguicolors
 colorscheme codedark
 set background=dark " 主题背景 dark-深色; light-浅色
 
+" fzf
+" 查看文件列表
+nmap <C-p> :Files<CR>
+" 查看当前 Buffer, 两次 Ctrl + e 快速切换上次打开的 Buffer
+nmap <C-e> :Buffers<CR>
+let g:fzf_action = { 'ctrl-e': 'edit' }
+
 
 "==============================================================================
 " junegunn/vim-easy-align
