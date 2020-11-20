@@ -30,6 +30,13 @@ let mapleader=";"
 
 [junegunn/vim-plug](https://github.com/junegunn/vim-plug)
 
+## [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim)
+需要fzf 版本至少0.24, 通过apt-get 安装的版本比较低, 所以需要通过vim-plug 安装最新版
+```vim
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+```
+
 ## [junegunn/vim-easy-align](https://github.com/junegunn/vim-easy-align)
 
 ## [preservim/nerdcommenter](https://github.com/preservim/nerdcommenter)
