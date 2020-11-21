@@ -225,7 +225,35 @@ To force a save use the following command
 `:w !sudo tee %`  
 It will prompt you for your password
 
-# Buffer
+# Vim 多文件编辑
+<img src="./pics/vim/tabs-windows-buffers.png" alt="tabs windows buffers" width="70%"/>
+
+## [Buffer](https://harttle.land/2015/11/17/vim-buffer.html)
+A buffer is an area of Vim's memory used to hold text read from a file. In addition, an empty buffer with no associated
+file can be created to allow the entry of text. –vim.wikia
+
+打开与关闭
+
+不带任何参数打开多个文件便可以把它们都放入缓冲区(Buffer):
+```bash
+vim a.txt b.txt
+```
+
+缓冲区跳转
+
+缓冲区之间跳转最常用的方式便是 Ctrl+^(不需要按下Shift)来切换当前缓冲区和上一个缓冲区. 另外,还提供了很多跳转命令:
+
+- `:ls, :buffers`: 列出所有缓冲区
+- `:bn[ext]`: 下一个缓冲区
+- `:bp[revious]`: 上一个缓冲区
+- `:b {number, expression}`: 跳转到指定缓冲区
+	- `:b2`将会跳转到编号为2的缓冲区,如果你正在用:ls列出缓冲区,这时只需要输入编号回车即可.
+	- :`b exa`将会跳转到最匹配exa的文件名,比如example.html,模糊匹配打开文件正是Vim缓冲区的强大之处.
+
+然后按下`:b <Tab>`便可看到Vim提供的备选文件列表了, 按下`<Tab>`选择下一个,按下回车打开当前文件.
+
+有了fzf, 可以使用fzf 的buffer 模式来搜索跳转
+
 **recovering from buffer**  
 `$ex -r` or `$vi -r`  
 you will get a list of any files that the system has saved  
