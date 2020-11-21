@@ -49,7 +49,7 @@ export no_proxy="localhost,127.0.0.1,$ip"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 [[ -f /usr/local/etc/profile.d/autojump.sh ]] && source /usr/local/etc/profile.d/autojump.sh # mac homebrew
-[[ -s ~/.autojump/etc/profile.d/autojump.sh ]] && source ~/.autojump/etc/profile.d/autojump.sh # linux
+[[ -s /usr/share/autojump/autojump.sh ]] && source /usr/share/autojump/autojump.sh # linux
 
 # blade
 export BLADE_AUTO_UPGRADE="no"
