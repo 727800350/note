@@ -69,7 +69,7 @@ let mapleader=";"
 " 插件开始的位置
 call plug#begin('~/.vim/plugged')
 
-Plug 'junegunn/fzf' , { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
