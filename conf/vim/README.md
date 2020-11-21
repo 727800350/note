@@ -103,3 +103,13 @@ coc-go 和 languageserver.golang 只能使用其中的一个, 否则自动补全
 }
 ```
 
+## [liuchengxu/vista.vim](https://github.com/liuchengxu/vista.vim)
+| Command | Description                                       |
+| ---     | ---                                               |
+| Vista   | Open vista window for viewing tags or LSP symbols |
+| Vista!  | Close vista view window if already opened         |
+| Vista!! | Toggle vista view window                          |
+
+- :Vista [EXECUTIVE]: open vista window powered by EXECUTIVE.
+- :Vista finder [EXECUTIVE]: search tags/symbols generated from EXECUTIVE in fzf mode
+
