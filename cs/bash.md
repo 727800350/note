@@ -16,26 +16,38 @@
 - ctrl r: 回溯搜索(Backwards search)history缓冲区内的文本(在命令行下)
 - j: autojump
 - fd: a simple, fast and user-friendly alternative to 'find'
-- locate: 其实是`find -name`的另一种写法,但是要比后者快得多, 原因在于它不搜索具体目录,而是搜索一个数据库(/var/lib/locatedb), 使用updatedb 来更新这个数据库
+- locate: 其实是`find -name`的另一种写法,但是要比后者快得多, 原因在于它不搜索具体目录,而是搜索一个数据
+	库(/var/lib/locatedb), 使用updatedb 来更新这个数据库
 - ack: search inside files with no extensions: `ack -a -G regex what-to-search-for`
 - grep: the exit status is 0 if selected lines are found and 1 otherwise
 
-在directory及其子目录下的c 文件中查找keyword
+## fzf
+在没有使用 fzf 之前都是 Ctrl + r 来快速输入历史命令,用起来倒也没有太大的问题,fzf 使得 Ctrl-r 变得更加好用,按下 Ctrl-r 之
+后立即就能够显示之前的历史命令,通过模糊搜索能够展示一个列表,从列表中选择即可.
+
+搜索当前文件夹 Ctrl-t
+在命令行中按下 Ctrl-t 会打开 fzf 窗口,此时如果找到某文件,并选择 Enter,那么该文件名会被拷贝到命令行中.
+比如说想要打开某文件但是忘记了名字,那么可以先输入 vi 然后按下 Ctrl-t 那么会出现 fzf 的搜索窗口,在窗口中可以模糊搜索文件,
+然后将文件路径及文件拷贝到命令行中.
+
+同样的方式,如果要 mv 一个文件,同样先输入 mv 然后再 Ctrl-t 找到文件,继续输入目的地址即可.
+
+筛选进程
 ```bash
-grep -R --include="*.c" keyword directory
+ps aux | fzf
 ```
 
-- -n参数,在文件中查找指定模式并显示匹配行的行号(同时会列出文件名)
-- -v参数输出不包含指定模式的行
-- -i: 不区分大小写
-- -e 参数查找多个模式, **或**关系, 当和-v 一起使用时有疑问
-- -f 用文件指定待查找的模式
-- -c 参数计算模式匹配到的数量
-- -B: 输出匹配行的前n行
-- -A: 输出匹配行的后n行
-- -C: 相当于-B and -A
-- ^ 符号输出所有以某指定模式开头的行
-- $ 符号输出所有以指定模式结尾的行, `^$` 就表示空行
+fzf 的搜索语法其实非常强大,在熟悉正则的基础上,用 fzf 搜索语法可以实现很多的组合,比如使用 ! 来表示不包含
+
+比如:
+
+- ^music 以 music 开头
+- mp3$ 以 mp3 结尾
+- 'word 严格匹配
+- !word 不包含 word
+- !.mp3$ 不以 .mp3 结尾
+
+等等,可以在官方网站上看到.
 
 # 网络
 - `netstat -anupl`: a表示all, n表示用数字形式显示端口号, u/t,表示UDP/TCP协议类型, p是程序PID, l表示处于监听状态的
