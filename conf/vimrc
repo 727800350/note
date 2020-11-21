@@ -100,6 +100,9 @@ Plug 'jistr/vim-nerdtree-tabs'
 " 大纲式导航, Go 需要 https://github.com/jstemmer/gotags 支持
 Plug 'majutsushi/tagbar'
 
+" View and search LSP symbols, tags in Vim/NeoVim
+Plug 'liuchengxu/vista.vim'
+
 " 可以在 vim 中使用 tab 补全
 "Plug 'vim-scripts/SuperTab'
 
@@ -214,6 +217,11 @@ let NERDTreeShowBookmarks=2
 " 在终端启动vim时,共享NERDTree
 let g:nerdtree_tabs_open_on_console_startup=1
 
+
+let g:vista_stay_on_open = 0
+let g:vista_executive_for = {
+  \ 'cpp': 'coc',
+  \ }
 
 "==============================================================================
 " majutsushi/tagbar 插件
