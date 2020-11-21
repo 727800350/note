@@ -19,6 +19,7 @@ let mapleader=";"
 | :imap       |          |            |            | √        |            |
 | :cmap       |          |            |            |          | √          |
 
+nore: 表示非递归 not recursion
 
 `:nmap`: 列出所有键盘映射
 
