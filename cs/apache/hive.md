@@ -1,5 +1,5 @@
 # hive sql
-## collect_list和collect_set.
+## collect_list和collect_set
 [Hive笔记之collect_list/collect_set(列转行)](https://www.cnblogs.com/cc11001100/p/9043946.html)
 
 它们都是将分组中的某列转为一个数组返回,不同的是collect_list不去重而collect_set去重.

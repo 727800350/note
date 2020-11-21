@@ -57,7 +57,7 @@ IRB.conf[:HISTORY_FILE] = "#{ENV['HOME']}/.irb-save-history"
 	- Compact a single column family within a table: `hbase> major_compact 't1', 'c1'`
 - minor compact 的命令'compact' 也有和 major compact 的一样的使用方式, 可以指定table, region, column family
 - `balancer`: Trigger the cluster balancer
-- ` balance_switch true/false`: Enable/Disable balancer, 即使把集群重启, 这个配置会被保留
+- `balance_switch true/false`: Enable/Disable balancer, 即使把集群重启, 这个配置会被保留
 
 ### 特殊的命令
 ```shell
@@ -137,7 +137,7 @@ zookeeper
 关闭的时候需要逆着来操作
 
 1. `./bin/local-regionservers.sh stop 1 2`
-1. 然后再将配置的 `hbase.cluster.distributed  改回false, 再 `./bin/stop-hbase.sh`
+1. 然后再将配置的 `hbase.cluster.distributed` 改回false, 再 `./bin/stop-hbase.sh`
 
 # JRuby
 `./bin/hbase org.jruby.Main ./hbase-shell-status-2.rb`

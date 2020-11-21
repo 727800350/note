@@ -76,7 +76,7 @@
 - -D mapred.job.map.capacity: map并行度, 最多同时运行map任务数
 - -D mapred.job.reduce.capacity: reduce并行度, 最多同时运行reduce任务数
 - -D mapred.map.over.capacity.allowed (true): 是否允许当有空余资源时超过并发限制
-- -D mapred.reduce.over.capacity.allowed (true) 
+- -D mapred.reduce.over.capacity.allowed (true)
 
 - -D mapred.min.split.size: 最小分片大小(单位B),通过增大此值,可以减少Map数量
 
@@ -113,7 +113,7 @@
 - -D stream.reduce.output.field.separator
 - -D stream.num.reduce.output.key.fields定制key/value分隔方式
 
-```
+```shell
 hadoop streaming
 	-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner
 	-D stream.map.output.field.separator= . ## map输出分隔符为., 而不是默认的\t
@@ -122,7 +122,7 @@ hadoop streaming
 	-D num.key.fields.for.partition=2  ## 指定将key分隔出来的前两个部分而不是整个key用于Partitioner做partition
 ```
 例如Map的输出如下,第4个句号前的数字部分是key,后面是value:
-```
+```data
 raw input ==> <key, value> ==> <partition key, the rest of key, value>
 11.12.1.2.value3 ==> <11.12.1.2, value3> ==> <11.12, 1.2, value3>
 11.14.2.3.value5 ==> <11.14.2.3, value5> ==> <11.14, 2.3, value5>
