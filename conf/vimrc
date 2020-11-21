@@ -78,6 +78,8 @@ Plug 'preservim/nerdcommenter'
 
 " 自动补全括号的插件,包括小括号,中括号,以及花括号
 Plug 'jiangmiao/auto-pairs'
+" colored parentheses
+Plug 'luochen1990/rainbow'
 
 " Vim状态栏插件,包括显示行号,列号,文件类型,文件名,以及Git状态
 Plug 'itchyny/lightline.vim'
@@ -92,24 +94,10 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " 用来提供一个导航目录的侧边栏
 " Plug 'scrooloose/nerdtree'
 
-" 可以使 nerdtree 的 tab 更加友好些
-Plug 'jistr/vim-nerdtree-tabs'
-
-" 查看当前代码文件中的变量和函数列表的插件,
-" 可以切换和跳转到代码中对应的变量和函数的位置
-" 大纲式导航, Go 需要 https://github.com/jstemmer/gotags 支持
-Plug 'majutsushi/tagbar'
-
-" 可以在 vim 中使用 tab 补全
-"Plug 'vim-scripts/SuperTab'
-
-" 可以在 vim 中自动完成
-"Plug 'Shougo/neocomplete.vim'
+" View and search LSP symbols, tags in Vim/NeoVim
+Plug 'liuchengxu/vista.vim'
 
 Plug 'octol/vim-cpp-enhanced-highlight'
-
-" parentheses improved
-Plug 'luochen1990/rainbow'
 
 " markdown 插件
 Plug 'iamcco/mathjax-support-for-mkdp'
@@ -216,38 +204,14 @@ let g:nerdtree_tabs_open_on_console_startup=1
 
 
 "==============================================================================
-" majutsushi/tagbar 插件
+" liuchengxu/vista.vim
 "==============================================================================
-" majutsushi/tagbar 插件打开关闭快捷键
-nmap <F9> :TagbarToggle<CR>
-
-let g:tagbar_type_go = {
-    \ 'ctagstype' : 'go',
-    \ 'kinds'     : [
-        \ 'p:package',
-        \ 'i:imports:1',
-        \ 'c:constants',
-        \ 'v:variables',
-        \ 't:types',
-        \ 'n:interfaces',
-        \ 'w:fields',
-        \ 'e:embedded',
-        \ 'm:methods',
-        \ 'r:constructor',
-        \ 'f:functions'
-    \ ],
-    \ 'sro' : '.',
-    \ 'kind2scope' : {
-        \ 't' : 'ctype',
-        \ 'n' : 'ntype'
-    \ },
-    \ 'scope2kind' : {
-        \ 'ctype' : 't',
-        \ 'ntype' : 'n'
-    \ },
-    \ 'ctagsbin'  : 'gotags',
-    \ 'ctagsargs' : '-sort -silent'
-\ }
+let g:vista_stay_on_open = 0
+let g:vista_sidebar_width = 50
+let g:vista_executive_for = {
+  \ 'cpp': 'coc',
+  \ 'go': 'coc',
+  \ }
 
 
 "==============================================================================
