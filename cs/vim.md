@@ -57,7 +57,7 @@ TAB替换为空格:
 | ---      | ---      | ---                  | ---     |
 | 字符文本 | v(小写)  | 逐个字符选择文本     | VISUAL  |
 | 行文本   | V(大写)  | 逐行选择文本         | V-LINE  |
-| 块文本   | <C-v>    | 按照块的方式选择文本 | V-BLOCK |
+| 块文本   | `<C-v>`  | 按照块的方式选择文本 | V-BLOCK |
 
 visual mode 下
 
@@ -104,7 +104,6 @@ More editing commands
 | cH         | dH         | yH         | Top of screen             |
 | cL         | dL         | yL         | Bottom of screen          |
 | c+         | d+         | y+         | Next line                 |
-| c5|        | d5|        | y5|        | Column 5 of current line  |
 | 2c)        | 2d)        | 2y)        | Second sentence following |
 | c{         | d{         | y{         | Previous paragraph        |
 | c/ pattern | d/ pattern | y/ pattern | Pattern                   |
@@ -258,6 +257,38 @@ vim a.txt b.txt
 `$ex -r` or `$vi -r`  
 you will get a list of any files that the system has saved  
 `$vi -r file` #to recover the file
+
+## [tab](https://harttle.land/2015/11/12/vim-tabpage.html)
+### 打开与关闭
+使用-p参数来用多个标签页启动Vim：
+```bash
+vim -p main.cpp my-oj-toolkit.h /private/etc/hosts
+```
+
+| command           | description                                                         |
+| ---               | ---                                                                 |
+| :tabe[dit] {file} | edit specified file in a new tab                                    |
+| :tabf[ind] {file} | open a new tab with filename given, searching the 'path' to find it |
+| :tabc[lose]       | close current tab                                                   |
+| :tabc[lose] {i}   | close i-th tab                                                      |
+| :tabo[nly]        | close all other tabs (show only the current tab)                    |
+
+### 标签跳转
+
+| command   | description        |
+| ---       | ---                |
+| :tabn     | go to next tab     |
+| :tabp     | go to previous tab |
+| :tabfirst | go to first tab    |
+| :tablast  | go to last tab     |
+
+在正常模式（normal）下，还可以使用快捷键：
+
+| command | description             |
+| ---     | ---                     |
+| gt      | go to next tab          |
+| gT      | go to previous tab      |
+| {i}gt   | go to tab in position i |
 
 # Window
 [ref](http://www.linuxidc.com/Linux/2012-08/69363.htm)
