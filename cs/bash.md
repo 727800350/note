@@ -21,6 +21,13 @@
 - ack: search inside files with no extensions: `ack -a -G regex what-to-search-for`
 - grep: the exit status is 0 if selected lines are found and 1 otherwise
 
+## autojump
+### issues
+ValueError: could not convert string to float: '98..873015218'
+
+在 ~/.local/share/autojump/autojump.txt 中找到问题行, 删掉.
+Mac 在 ~/Library/autojump/autojump.txt
+
 ## fzf
 在没有使用 fzf 之前都是 Ctrl + r 来快速输入历史命令,用起来倒也没有太大的问题,fzf 使得 Ctrl-r 变得更加好用,按下 Ctrl-r 之
 后立即就能够显示之前的历史命令,通过模糊搜索能够展示一个列表,从列表中选择即可.

@@ -227,6 +227,8 @@ It will prompt you for your password
 # Vim 多文件编辑
 <img src="./pics/vim/tabs-windows-buffers.png" alt="tabs windows buffers" width="70%"/>
 
+A buffer is the in-memory text of a file. A window is a viewport on a buffer. A tab page is a collection of windows.
+
 ## [Buffer](https://harttle.land/2015/11/17/vim-buffer.html)
 A buffer is an area of Vim's memory used to hold text read from a file. In addition, an empty buffer with no associated
 file can be created to allow the entry of text. –vim.wikia
@@ -260,7 +262,7 @@ you will get a list of any files that the system has saved
 
 ## [tab](https://harttle.land/2015/11/12/vim-tabpage.html)
 ### 打开与关闭
-使用-p参数来用多个标签页启动Vim：
+使用-p参数来用多个标签页启动Vim:
 ```bash
 vim -p main.cpp my-oj-toolkit.h /private/etc/hosts
 ```
@@ -282,7 +284,7 @@ vim -p main.cpp my-oj-toolkit.h /private/etc/hosts
 | :tabfirst | go to first tab    |
 | :tablast  | go to last tab     |
 
-在正常模式（normal）下，还可以使用快捷键：
+在正常模式(normal)下,还可以使用快捷键:
 
 | command | description             |
 | ---     | ---                     |
@@ -290,64 +292,76 @@ vim -p main.cpp my-oj-toolkit.h /private/etc/hosts
 | gT      | go to previous tab      |
 | {i}gt   | go to tab in position i |
 
-# Window
-[ref](http://www.linuxidc.com/Linux/2012-08/69363.htm)
-## 打开多个窗口
-横向切割窗口
+## [window](https://harttle.land/2015/11/14/vim-window.html)
+分屏打开多个文件
 
-- :new+窗口名(保存后就是文件名)
-- :split+窗口名,也可以简写为:sp+窗口名
+使用-O参数可以让Vim以分屏的方式打开多个文件:
+```bash
+vim -O main.cpp my-oj-toolkit.h
+```
+使用小写的-o可以水平分屏.
 
-纵向切割窗口名  
-:vsplit+窗口名,也可以简写为:vsp+窗口名
+### 打开关闭命令
 
-## 关闭多窗口
-可以用:q!,也可以使用:close,最后一个窗口不能使用close关闭.使用close只是暂时关闭窗口,其内容还在缓存中,只有使用q!,w!或x才能真能退出.
+在进入Vim后,可以使用这些命令来打开/关闭窗口:
 
-- :tabc 关闭当前窗口
-- :tabo 关闭所有窗口
+| command          | description              |
+| ---              | ---                      |
+| :sp[lit] {file}  | 水平分屏                 |
+| :new {file}      | 水平分屏                 |
+| :sv[iew] {file}  | 水平分屏,以只读方式打开 |
+| :vs[plit] {file} | 垂直分屏                 |
+| :clo[se]         | 关闭当前窗口             |
 
-## 窗口切换
-快速双击ctrl+w依次切换窗口.
+上述命令中,如未指定file则打开当前文件.
 
-由于你可以用垂直分割和水平分割命令打开任意多的窗口,你就能够任意设置窗口的布
-局.接着,你可以用下面的命令在窗口之间跳转:
+### 打开关闭快捷键
+| command  | description                  |
+| ---      | ---                          |
+| Ctrl+w s | 水平分割当前窗口             |
+| Ctrl+w v | 垂直分割当前窗口             |
+| Ctrl+w q | 关闭当前窗口                 |
+| Ctrl+w n | 打开一个新窗口(空文件)       |
+| Ctrl+w o | 关闭出当前窗口之外的所有窗口 |
+| Ctrl+w T | 当前窗口移动到新标签页       |
 
-- CTRL-W h 跳转到左边的窗口
-- CTRL-W l 跳转到右边的窗口
-- CTRL-W j 跳转到下面的窗口
-- CTRL-W k 跳转到上面的窗口
-- CTRL-W t 跳转到最顶上的窗口
-- CTRL-W b 跳转到最底下的窗口
+### 切换窗口
+切换窗口的快捷键就是Ctrl+w前缀 + hjkl:
 
-## 窗口大小调整
-纵向调整
+| command  | description    |
+| ---      | ---            |
+| Ctrl+w h | 切换到左边窗口 |
+| Ctrl+w j | 切换到下边窗口 |
+| Ctrl+w k | 切换到上边窗口 |
+| Ctrl+w l | 切换到右边窗口 |
+| Ctrl+w w | 遍历切换窗口   |
 
-- :ctrl+w + 纵向扩大(行数增加)
-- :ctrl+w - 纵向缩小 (行数减少)
-- :res(ize) num  例如::res 5,显示行数调整为5行
-- :res(ize)+num 把当前窗口高度增加num行
-- :res(ize)-num 把当前窗口高度减少num行
+还有t切换到最上方的窗口,b切换到最下方的窗口.
+
+### 移动窗口
+分屏后还可以把当前窗口向任何方向移动,只需要将上述快捷键中的hjkl大写:
+
+| command  | description      |
+| ---      | ---              |
+| Ctrl+w H | 向左移动当前窗口 |
+| Ctrl+w J | 向下移动当前窗口 |
+| Ctrl+w K | 向上移动当前窗口 |
+| Ctrl+w L | 向右移动当前窗口 |
+
+### 调整大小
+调整窗口大小的快捷键仍然有Ctrl+W前缀:
+
+| command  | description  |
+| ---      | ---          |
+| Ctrl+w + | 增加窗口高度 |
+| Ctrl+w - | 减小窗口高度 |
+| Ctrl+w = | 统一窗口高度 |
 
 横向调整
 
 - :vertical res(ize) num 指定当前窗口为num列
 - :vertical res(ize) +num 把当前窗口增加num列
 - :vertical res(ize) -num 把当前窗口减少num列
-
-## 给窗口重命名
-:f file
-
-## vi打开多文件  
-`vi a b c`
-
-- :n 跳至下一个文件,也可以直接指定要跳的文件,如:n c,可以直接跳到c文件
-- :e# 回到刚才编辑的文件
-
-## 文件浏览
-- :Ex 开启目录浏览器,可以浏览当前目录下的所有文件,并可以选择
-- :Sex 水平分割当前窗口,并在一个窗口中开启目录浏览器
-- :ls 显示当前buffer情况
 
 ## vi与shell切换
 - :shell 可以在不关闭vi的情况下切换到shell命令行
