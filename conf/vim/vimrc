@@ -176,11 +176,6 @@ let g:lightline = {
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
 
-for s in ["coc", "udf"]
-  let path = "~/git/note/conf/vim/" . s . ".vim"
-  exec "source" path
-endfor
-
 
 "==============================================================================
 " NERDTree 插件
