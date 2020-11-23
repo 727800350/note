@@ -65,7 +65,7 @@ endif
 let mapleader=";"
 
 " 插件开始的位置
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.plugged')
 
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
