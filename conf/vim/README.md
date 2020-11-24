@@ -47,11 +47,30 @@ Most commands support CTRL-T / CTRL-X / CTRL-V key bindings to open in a new tab
 ## [junegunn/vim-easy-align](https://github.com/junegunn/vim-easy-align)
 
 ## [preservim/nerdcommenter](https://github.com/preservim/nerdcommenter)
-- [count]<leader>cc: 注释从当前行往下数的 count 行,count 可省略,默认值为 1 (cc 是 NERDCommenterComment 的缩写).
-- [count]<leader>cu: 取消注释从当前行往下数的 count 行,count 可省略,默认值为 1 (cu 是 NERDCommenterUncomment 的缩写)
-- [count]<leader>ci: 切换从当前行往下数的 count 行的注释状态 (ci 是 NERDCommenterInvert 的缩写).
-- <leader>c$: 注释掉从当前光标所在位置到行尾的剩下内容,等价于在光标所在位置插入注释符(c$ 表示NERDCommenterToEOL 的缩写.
-- <leader>cA: 在光标所在当前行行尾添加注释符号并进入Vim 的插入模式(cA 是NERDCommenterAppend 的缩写).
+- `[count]<leader>cc`: 注释从当前行往下数的 count 行,count 可省略,默认值为 1 (cc 是 NERDCommenterComment 的缩写).
+- `[count]<leader>cu`: 取消注释从当前行往下数的 count 行,count 可省略,默认值为 1 (cu 是 NERDCommenterUncomment 的缩写)
+- `[count]<leader>ci`: 切换从当前行往下数的 count 行的注释状态 (ci 是 NERDCommenterInvert 的缩写).
+- `<leader>c$`: 注释掉从当前光标所在位置到行尾的剩下内容,等价于在光标所在位置插入注释符(c$ 表示NERDCommenterToEOL 的缩写.
+- `<leader>cA`: 在光标所在当前行行尾添加注释符号并进入Vim 的插入模式(cA 是NERDCommenterAppend 的缩写).
+
+## [preservim/nerdtree](https://github.com/preservim/nerdtree)
+Pressing m would open a menu below and you can select from a list of actions.
+
+```info
+NERDTree Menu. Use j/k/enter and the shortcuts indicated
+==========================================================
+> (a)dd a childnode
+  (m)ove the current node
+  (d)elete the current node
+  (r)eveal in Finder the current node
+  (o)pen the current node with system editor
+  (q)uicklook the current node
+  (c)opy the current node
+Add a childnode
+==========================================================
+Enter the dir/file name to be created. Dirs end with a '/'
+/Library/WebServer/Documents/new-teacher-center/app/Model/
+```
 
 ## [ianva/vim-youdao-translater](https://github.com/ianva/vim-youdao-translater)
 - 在普通模式下,按 ctrl+t, 会翻译当前光标下的单词;
@@ -65,6 +84,10 @@ need node
 
 - `:CocList services`
 - `:CocList sources`
+
+| command      | description |
+| ---          | ---         |
+| `<leader>rn` | rename      |
 
 ### [coc-marketplace](https://github.com/fannheyward/coc-marketplace)
 `:CocList marketplace`: 进入marketplace

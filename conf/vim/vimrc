@@ -14,6 +14,7 @@ endif
 set nocompatible
 set pastetoggle=<F9> "raw copy, do not use auto indent etc.
 set mouse-=a "disable visual mode
+set modifiable  " nerdtree create dir/file
 
 "=============================== encoding ===============================
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
