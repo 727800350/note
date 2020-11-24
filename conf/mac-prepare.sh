@@ -7,9 +7,3 @@ brew install lrzsz
 brew install node aria2 ffmpeg
 npm install -g bilibili-get
 
-## blade
-brew install ninja scons
-
-## lib
-brew install glog gflags gperftools
-
