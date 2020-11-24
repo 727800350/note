@@ -2,22 +2,8 @@
 - typing two backquotes \`\` returns you to the position where you issued the G command
 - `[[`  跳转到代码块的开头去(但要求代码块中'{'必须单独占一行)
 - `''`  跳转到光标上次停靠的地方, 是两个, 而不是一个
-
-对于已保存的文件,可以使用下面的方法进行[空格和TAB的替换](http://blog.csdn.net/jiang1013nan/article/details/6298727):
-TAB替换为空格:
-```vim
-:set ts=2
-:set expandtab
-:%retab!
-```
-
-空格替换为TAB:
-```vim
-:set ts=2
-:set noexpandtab
-:%retab!
-```
-加!是用于处理非空白字符之后的TAB,即所有的TAB,若不加!,则只处理行首的TAB.
+- `:set var?`: 查看var 的值, vim 中没有get 方法
+- `:<C-f>`: command history
 
 # Move
 | Movement                            | Commands               |
@@ -49,6 +35,9 @@ TAB替换为空格:
 
 - Vim高亮显示的那个特殊的`^M`, 是Ctrl+V
 - transposing two letters `xp`, 也就是一个`x`, 然后再`p`
+- `:retab`: will replace all sequences of `<Tab>` with new strings of white-space using the new tabstop
+  (e.g. :set tabstop=2) value given, but all tabs inside of strings can be modified (e.g. in a C program, you should use
+  \t to avoid this)!
 
 ## visual mode
 在Vim里面有三种激活可视模式,并选择一块区域的方法,他们分别是:

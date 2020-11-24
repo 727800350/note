@@ -1,6 +1,10 @@
+# conf dir
+vim/after/ directory is a bit of a hack. Files in this directory will be loaded every time Vim starts, but after the
+files in ~/. vim/plugin/ . This allows you to override Vim's internal files.
+
 # vimrc
-vim 自带有很多快捷键,再加上各类插件的快捷键,大量快捷键出现在单层空间中难免引起冲突,为缓解该问题,引入了前缀键 <leader>,
-键r 可以配置成r, <leader>r, <leader><leader>r 等等多个快捷键.前缀键是 vim 使用率较高的一个键(最高的当属 Esc),选一个最方
+vim 自带有很多快捷键,再加上各类插件的快捷键,大量快捷键出现在单层空间中难免引起冲突,为缓解该问题,引入了前缀键 `<leader>`,
+键r 可以配置成r, `<leader>r, <leader><leader>r` 等等多个快捷键.前缀键是 vim 使用率较高的一个键(最高的当属 Esc),选一个最方
 便输入的键作为前缀键,将有助于提高编辑效率.找个无须眼睛查找,无须移动手指的键 - 分号键,挺方便的,就在你右手小指处:
 ```vim
 " 定义快捷键的前缀,即<Leader>
