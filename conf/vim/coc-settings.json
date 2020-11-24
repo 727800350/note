@@ -1,0 +1,20 @@
+{
+  "languageserver": {
+    "golang": {
+      "command": "gopls",
+      "args": ["-remote=auto", "-listen.timeout=1h", "-remote.listen.timeout=2h"],
+      "rootPatterns": ["go.mod", ".git"],
+      "trace.server": "verbose",
+      "filetypes": ["go"],
+      "initializationOptions": {
+        "usePlaceholders": true,
+        "completeUnimported": true
+      }
+    },
+    "clangd": {
+      "command": "clangd",
+      "rootPatterns": ["compile_flags.txt", ".git"],
+      "filetypes": ["c", "cc", "cpp", "h"]
+    }
+  }
+}
