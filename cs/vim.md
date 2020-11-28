@@ -2,8 +2,13 @@
 - typing two backquotes \`\` returns you to the position where you issued the G command
 - `[[`  跳转到代码块的开头去(但要求代码块中'{'必须单独占一行)
 - `''`  跳转到光标上次停靠的地方, 是两个, 而不是一个
-- `:set var?`: 查看var 的值, vim 中没有get 方法
-- `:<C-f>`: command history
+
+| command   | description                      |
+| ---       | ---                              |
+| :set var? | 查看var 的值, vim 中没有get 方法 |
+| `:<C-f>`  | command history                  |
+| :f[ile]   | 查看当前文件的全路径             |
+
 
 # Move
 | Movement                            | Commands               |
