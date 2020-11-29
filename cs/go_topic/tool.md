@@ -1,5 +1,26 @@
 [Go Tooling in Action](https://www.youtube.com/watch?v=uBjoTxosSys)
 
+# go test
+- `-run regex`: cause go test to run only thouse tests whose function name matches the pattern
+- `-testify.m`: 对于使用了 github.com/stretchr/testify/suite 的测试, 指定这个suite 下的具体某一个测试
+- `-count=1`: 关闭test cache
+- `-gcflags=all=-l`: 对于使用了 github.com/agiledragon/gomonkey 需要防止默认的 inline (如果inline了估计就不好在所有引用
+  到代码的地方设置jmp指令了, 所以要防止inline)
+
+- `t.Fatal` or `t.Fatalf` must be called from the same goroutine as the Test function, not from another one created
+  during the test.
+
+Sometimes an external test pkg may need privileged access to the internals of the pkg under test.
+In such cases, we use a trick: we add declarations to in in-pkg `_test.go` file to expose the necessary internals to the
+external test.
+This file thus offers the test a back door to the pkg. If the source file exists only for this purpose and contains no
+tests itself, it is called `export_test.go`
+```go
+// export_test.go
+package fmt
+var IsIspace = isSpace  // isSpace is a function
+```
+
 # go list
 `...` wildcard, matches any substring of a pkg's import path.
 
@@ -124,19 +145,6 @@ go get -u github.com/kardianos/govendor
 
 - `govendor add`: Add packages from $GOPATH
 - `govendor fetch`: Add new or update vendor folder packages from remote repository
-
-# go test
-- `-run regex`: cause go test to run only thouse tests whose function name matches the pattern
-- `t.Fatal` or `t.Fatalf` must be called from the same goroutine as the Test function, not from another one created during the test.
-
-Sometimes an external test pkg may need privileged access to the internals of the pkg under test.
-In such cases, we use a trick: we add declarations to in in-pkg `_test.go` file to expose the necessary internals to the external test.
-This file thus offers the test a back door to the pkg. If the source file exists only for this purpose and contains no tests itself, it is called `export_test.go`
-```go
-// export_test.go
-package fmt
-var IsIspace = isSpace  // isSpace is a function
-```
 
 # go tool options
 -toolexec: add a prefix to every command it runs
