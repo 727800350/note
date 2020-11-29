@@ -15,6 +15,7 @@ set nocompatible
 set pastetoggle=<F9> "raw copy, do not use auto indent etc.
 set mouse-=a "disable visual mode
 set modifiable  " nerdtree create dir/file
+set shell=/bin/bash
 
 "=============================== encoding ===============================
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
@@ -67,6 +68,9 @@ let mapleader=";"
 
 " 插件开始的位置
 call plug#begin('~/.plugged')
+
+" start screen for vim
+Plug 'mhinz/vim-startify'
 
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
