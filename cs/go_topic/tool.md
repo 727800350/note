@@ -62,6 +62,14 @@ Otherwise, it will update all the dependencies to their latest minor revision. A
 # go mod
 [Go Modules 内部分享](https://xuanwo.io/2019/05/27/go-modules/)
 
+go mod 常用命令
+
+| command  | description                    |
+| ---      | ---                            |
+| tidy     | 拉取缺少的模块, 移除不用的模块 |
+| graph    | 文本的形式打印模块依赖图       |
+| why $pkg | 解释为什么需要依赖这个模块     |
+
 ## 导入版本控制
 如果旧包和新包具有相同的导入路径,则新包必须向后兼容旧包.
 换言之,如果他们的导入路径不同,他们就无需保持兼容.
