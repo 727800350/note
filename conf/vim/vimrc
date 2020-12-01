@@ -136,6 +136,11 @@ set termguicolors
 colorscheme codedark
 set background=dark " 主题背景 dark-深色; light-浅色
 
+
+" startify
+let g:startify_change_to_dir = 0
+
+
 " fzf
 " 查看文件列表
 nmap <C-p> :Files<CR>
