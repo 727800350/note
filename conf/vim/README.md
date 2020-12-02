@@ -89,6 +89,12 @@ need node
 | ---          | ---         |
 | `<leader>rn` | rename      |
 
+### [coc-snippets](https://github.com/neoclide/coc-snippets)
+- `<C-j>`: Trigger key for going to the next snippet position, applied in insert and select mode.
+  Only works when snippet session is activated.
+- `<C-k>`: Trigger key for going to the previous snippet position, applied in insert and select mode.
+  Only works when snippet session is activated.
+
 ### [coc-marketplace](https://github.com/fannheyward/coc-marketplace)
 `:CocList marketplace`: 进入marketplace
 

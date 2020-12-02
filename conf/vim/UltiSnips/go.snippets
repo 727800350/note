@@ -1,0 +1,82 @@
+snippet handler "handler template"
+// $1Handler .
+type $1Handler struct {
+	ctx  context.Context
+	req  *$2.$1Request
+	rsp  *$2.$1Response
+	code int32
+	msg  string
+}
+
+// New$1Handler .
+func New$1Handler(ctx context.Context, req *$2.$1Request) *$1Handler {
+	return &$1Handler{
+		ctx: ctx,
+		req: req,
+		rsp: &$2.$1Response{
+			BaseResp: base.NewBaseResp(),
+		},
+		code: fault.RetCodeInternalErr,
+	}
+}
+
+// Handle .
+func (h *$1Handler) Handle() *$2.$1Response {
+	if err := h.isValid(); err != nil {
+		return h.returnAhead(errors.Trace(err))
+	}
+
+	if err := h.check(); err != nil {
+		return h.returnAhead(errors.Trace(err))
+	}
+
+	return h.rsp
+}
+
+func (h *$1Handler) isValid() error {
+	h.code = fault.RetCodeParamErr
+	return nil
+}
+
+func (h *$1Handler) check() error {
+	return nil
+}
+
+func (h *$1Handler) returnAhead(err error) *$2.$1Response {
+	if err == nil {
+		return h.rsp
+	}
+
+	logs.CtxError(h.ctx, "$1 error %d %+v", h.code, err)
+	h.rsp.BaseResp.StatusCode = h.code
+	if h.msg == "" {
+		h.msg = fault.GetErrorMessage(h.code)
+	}
+	h.rsp.BaseResp.StatusMessage = h.msg
+	return h.rsp
+}
+endsnippet
+
+snippet ut "unit test template"
+type $1Suite struct {
+	suite.Suite
+	ctx context.Context
+}
+
+func (s *$1Suite) SetupSuite() {
+	s.ctx = context.Background()
+}
+
+func (s *$1Suite) SetupTest() {
+}
+
+func (s *$1Suite) TestEx() {
+	assert := s.Assert()
+	t := s.T()
+}
+
+func Test$1(t *testing.T) {
+	suite.Run(t, new($1Suite))
+}
+endsnippet
+
