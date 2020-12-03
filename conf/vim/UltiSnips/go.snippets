@@ -1,5 +1,5 @@
 snippet handler "handler template"
-// $1Handler .
+// ${1:Temaplate}Handler .
 type $1Handler struct {
 	ctx  context.Context
 	req  *$2.$1Request
@@ -58,7 +58,7 @@ func (h *$1Handler) returnAhead(err error) *$2.$1Response {
 endsnippet
 
 snippet ut "unit test template"
-type $1Suite struct {
+type ${1:Temaplate}Suite struct {
 	suite.Suite
 	ctx context.Context
 }

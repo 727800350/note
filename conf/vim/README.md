@@ -95,6 +95,23 @@ need node
 - `<C-k>`: Trigger key for going to the previous snippet position, applied in insert and select mode.
   Only works when snippet session is activated.
 
+```
+snippet 关键词 "说明" 设定
+内容
+endsnippet
+```
+
+设定
+
+- b 代表只有关键词出现在行首的时候,才可以被展开
+- A 代表自动展开
+- w 代表可以展开这个 "词",具体 "词" 的定义可以查看 :help iskeyword.直观感觉就是,这个关键词是单独的,和其他文字分开的.比如
+  前后都是空格.
+- i 代表可以忽略前后字节,直接展开关键词.(这个设定比 w 要更松)
+- 其他的还有r, s, t, m 等等,都可以通过这个命令在自带文档里找到
+
+`${1:Class}` 就是代表可以替换的内容,如果不替换的话则会显示冒号后面的内容,在这个例子是就是 Class
+
 ### [coc-marketplace](https://github.com/fannheyward/coc-marketplace)
 `:CocList marketplace`: 进入marketplace
 
