@@ -95,6 +95,8 @@ need node
 - `<C-k>`: Trigger key for going to the previous snippet position, applied in insert and select mode.
   Only works when snippet session is activated.
 
+[vim 入坑指南(六)插件 UltiSnips](https://vimzijun.net/2016/10/30/ultisnip/)
+
 ```
 snippet 关键词 "说明" 设定
 内容
