@@ -1,3 +1,5 @@
+${toc}
+
 - `*`可以查找当前光标下的word(完全符合),`g*`则部分符合,以`#`代替`*`表示向后(上)找.
 - typing two backquotes \`\` returns you to the position where you issued the G command
 - `[[`  跳转到代码块的开头去(但要求代码块中'{'必须单独占一行)
@@ -21,10 +23,16 @@
 f (find) 和 t (till) 的功能都是在行内 向右 做单字符查找,并移动光标,只不过 f 是把光标挪到字符上, t 则是把光标挪到字符的左
 边 (till 的意思).如果想要 向左 做查找,使用 F 和 T 便好了.
 
-- 移至第一个 r 处：fr
-- 移至第二个 r 处：2fr
-- 移至第一个 r 的左边：tr
-- 移至第二个 r 的左边：2tr
+- 移至第一个 r 处: fr
+- 移至第二个 r 处: 2fr
+- 移至第一个 r 的左边: tr
+- 移至第二个 r 的左边: 2tr
+
+和 d 配合使用
+假设光标在 relativenumber 词首
+
+- 删除 relative, 按 dtn (delete till n)
+- 删除 relative, 按 d2fe (delete find 2 e)
 
 ## 跨行
 | command | movement                            |
