@@ -46,7 +46,6 @@ set autoread
 set autoindent
 set smartindent
 set shiftwidth=2
-set tabstop=2 "for python, tabstop will be overwritten by /usr/share/vim/vim80/ftplugin/python.vim, need to change tabstop in this file to 4 too
 set expandtab "2 backspace to replace a tab
 set colorcolumn=121
 
@@ -107,8 +106,10 @@ Plug 'liuchengxu/vista.vim'
 Plug 'octol/vim-cpp-enhanced-highlight'
 
 " markdown 插件
-Plug 'iamcco/mathjax-support-for-mkdp'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+if os == "mac"
+  Plug 'iamcco/mathjax-support-for-mkdp'
+  Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+endif
 
 Plug 'solarnz/thrift.vim'
 
