@@ -321,6 +321,10 @@ SELECT 'a' = 'a ';  // 1
 SELECT BINARY 'a' = 'a ';  // 0
 ```
 
+| name       | description                        |
+| ---        | ---                                |
+| COALESCE() | return the first non-NULL argument |
+
 ## bit operators
 [Bit Functions and Operators](https://dev.mysql.com/doc/refman/8.0/en/bit-functions.html)
 |Name	       |Description                           |

@@ -11,26 +11,46 @@
 
 
 # Move
-| Movement                            | Commands               |
-|-------------------------------------|------------------------|
-| To first character of next line     | +                      |
-| To first character of previous line | -                      |
-| To end of word                      | e or E                 |
-| Forward by word                     | w or W                 |
-| Backward by word                    | b or B                 |
-| Forward by window                   | ctrl + f               |
-| Backward by window                  | ctrl + b               |
-| %                                   | 跳到配对的括号         |
-| gD                                  | 跳转到局部变量的定义处 |
-| nG or :n                            | 到第n行                |
-| H                                   | high, 跳到屏幕上端     |
-| L                                   | low, 跳到屏幕下端      |
-| M                                   | middle, 跳到屏幕中间   |
+## 行内
+| command | movement         |
+| ---     | ---              |
+| e or E  | To end of word   |
+| w or W  | Forward by word  |
+| b or B  | Backward by word |
 
-书签
+f (find) 和 t (till) 的功能都是在行内 向右 做单字符查找,并移动光标,只不过 f 是把光标挪到字符上, t 则是把光标挪到字符的左
+边 (till 的意思).如果想要 向左 做查找,使用 F 和 T 便好了.
 
-- `mx`  设置书签,x 只能是 a-z 的 26 个字母
-- \`x  跳转到书签处(是 1 左边的键)
+- 移至第一个 r 处：fr
+- 移至第二个 r 处：2fr
+- 移至第一个 r 的左边：tr
+- 移至第二个 r 的左边：2tr
+
+## 跨行
+| command | movement                            |
+| ---     | ---                                 |
+| +       | To first character of next line     |
+| -       | To first character of previous line |
+
+## 大范围移动
+窗口内
+
+| command | movement             |
+| ---     | ---                  |
+| H       | Home, 跳到屏幕上端   |
+| L       | Last, 跳到屏幕下端   |
+| M       | Middle, 跳到屏幕中间 |
+
+文件范围内
+
+| command  | movement             |
+| ---      | ---                  |
+| gg       | 移光标至文件第一行   |
+| G        | 移光标至文件最后一行 |
+| ctrl + f | Forward by window    |
+| ctrl + b | Backward by window   |
+| %        | 跳到配对的括号       |
+| nG or :n | 到第n行              |
 
 # Edit
 缩进
@@ -144,7 +164,6 @@ More editing commands
 | .      | 匹配任意字符                                      |
 | [abc]  | 匹配方括号中的任意一个字符.可以使用-表示字符范围  |
 | [^abc] | 表示匹配除方括号中字符之外的任意字符.             |
-| \|     | 或, 如 for\ | bar 表示匹配for或者bar              |
 | \d     | 匹配阿拉伯数字,等同于[0-9].                       |
 | \D     | 匹配阿拉伯数字之外的任意字符,等同于[^0-9]         |
 | \x     | 匹配十六进制数字,等同于[0-9A-Fa-f].               |
@@ -360,15 +379,4 @@ vim -O main.cpp my-oj-toolkit.h
 ## vi与shell切换
 - :shell 可以在不关闭vi的情况下切换到shell命令行
 - exit 再从shell回到vi
-
-## 代码格式化
-- 全部缩进 `gg=G`
-- 缩进当前以下10行 `10==`
-- 缩进第10行到第20行 `10G=20G`
-
-Explanation:
-
-- `gg` goes to the top of the file
-- `=` is a command to fix the indentation and
-- `G` tells it to perform the operation to the end of the file.
 
