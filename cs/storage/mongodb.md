@@ -1,3 +1,4 @@
+# intro
 mongodb 是文档数据库,其很多概念可以与 RDBMS 一一对应
 
 | RDMS     | mongodb    |
@@ -24,6 +25,9 @@ The ObjectId value is a 12-byte value consists of
 This is by design, to make it unique across all the databases in the world so one ObjectId will be unique to that
 document only.
 
+MongoDB 内部采用 B-Tree 作为索引结构,此索引基于最左优先原则,且必须保证查询顺序与索引字段的顺序一致才有效.
+
+# api
 [Collection Methods](https://docs.mongodb.com/manual/reference/method/js-collection/)
 
 db.collection.insertOne(doc)
