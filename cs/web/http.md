@@ -1,3 +1,11 @@
+GET 和 POST 请求
+
+- GET 把参数包含在URL 中, POST 通过request body 传递参数;
+- GET 请求会被浏览器主动cache, 而 POST 不会,除非手动设置;
+- GET 请求只能进行url 编码, 而POST 支持多种编码方式.
+
+[HTTP POST请求发送两个TCP包?](https://blog.csdn.net/zerooffdate/article/details/78962818)
+
 [When should you use Path Variable, and how about Query Parameter?](
 https://medium.com/@fullsour/when-should-you-use-path-variable-and-query-parameter-a346790e8a6d)
 
