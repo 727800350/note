@@ -28,6 +28,17 @@ document only.
 MongoDB 内部采用 B-Tree 作为索引结构,此索引基于最左优先原则,且必须保证查询顺序与索引字段的顺序一致才有效.
 
 # api
+## operator
+### query
+#### Evaluation Query Operators
+[$regex](https://docs.mongodb.com/manual/reference/operator/query/regex/)
+```mongodb
+{ <field>: { $regex: /pattern/, $options: '<options>' } }
+{ <field>: { $regex: 'pattern', $options: '<options>' } }
+{ <field>: { $regex: /pattern/<options> } }
+```
+
+## collection
 [Collection Methods](https://docs.mongodb.com/manual/reference/method/js-collection/)
 
 db.collection.insertOne(doc)
