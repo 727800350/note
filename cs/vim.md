@@ -13,6 +13,8 @@ ${toc}
 
 
 # Move
+[vim 入坑指南(三)— motion 进阶](https://vimzijun.net/2016/08/06/vim-motion/)
+
 ## 行内
 | command | movement         |
 | ---     | ---              |
