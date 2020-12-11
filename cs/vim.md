@@ -407,6 +407,12 @@ vim --version | grep clipboard
 
 - Linux系统,`sudo apt install vim-gtk`
 
+目前over ssh 还没实验成功
+
+- [How can I copy text to the system clipboard from Vim?](
+https://vi.stackexchange.com/questions/84/how-can-i-copy-text-to-the-system-clipboard-from-vim)
+- [vim + COPY + mac over SSH](https://stackoverflow.com/questions/10694516/vim-copy-mac-over-ssh)
+
 ## [寄存器分类](https://harttle.land/2016/07/25/vim-registers.html)
 - 匿名寄存器 `""`: 默认unnamed寄存器,最近一次"d","c","s","x","y"复制,删除,修改内容
 - 编号寄存器 `"0` 到 `"9`

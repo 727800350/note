@@ -28,6 +28,12 @@ document only.
 MongoDB 内部采用 B-Tree 作为索引结构,此索引基于最左优先原则,且必须保证查询顺序与索引字段的顺序一致才有效.
 
 # api
+查询的字段必须在document 中存在, 如果要查不存在的, 需要使用 $exists operator.
+例如, 查询所有不存在name 字段的记录
+```mongodb
+db.users.find({name: {$exists: false}});
+```
+
 ## operator
 ### query
 #### Evaluation Query Operators
@@ -55,4 +61,19 @@ doc 可以是一个json 结构, 例如
 }
 ```
 建议都按照标准json 的格式来.
+
+## go
+bson tag 为 `bson:"-"` 时, replaceOne 和 insertOne 等方法保存到mongodb 中时, 这个tag 的字段不会保存到mongodb 中.
+
+```go
+type Document struct {
+  ID         primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+  Name       string             `json:"name" bson:"name"`
+  Closed     bool               `json:"closed" bson:"closed"`
+  CreateTime int64              `json:"create_time" bson:"create_time"`
+  ModifyTime int64              `json:"modify_time" bson:"modify_time"`
+}
+```
+`_id` 后面的 omitempty 是必需的, 这样在insertOne 的时候, 默认的ObjectID 才会被忽略掉, 从而mongodb 会生成一个新的, 否则就
+用的是默认的ObjectID (primitive.NilObjectID) 作为`_id`
 
