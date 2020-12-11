@@ -1,6 +1,8 @@
+- [2020年vim的C/C++配置](https://www.jianshu.com/p/249850f2cc64)
+
 # conf dir
-vim/after/ directory is a bit of a hack. Files in this directory will be loaded every time Vim starts, but after the
-files in ~/. vim/plugin/ . This allows you to override Vim's internal files.
+`vim/after/` directory is a bit of a hack. Files in this directory will be loaded every time Vim starts, but after the
+files in `~/.vim/plugin/`. This allows you to override Vim's internal files.
 
 # vimrc
 vim 自带有很多快捷键,再加上各类插件的快捷键,大量快捷键出现在单层空间中难免引起冲突,为缓解该问题,引入了前缀键 `<leader>`,
@@ -34,6 +36,8 @@ nore: 表示非递归 not recursion
 [将 VIM 打造成 go 语言的 ide](https://learnku.com/articles/24924)
 
 [junegunn/vim-plug](https://github.com/junegunn/vim-plug)
+
+对 vim 的版本有要求, 且需要vim 支持python.[Vim 8 支持 Python 3 的一些坑](https://www.mdeditor.tw/pl/2KE0)
 
 ## [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim)
 需要fzf 版本至少0.24, 通过apt-get 安装的版本比较低, 所以需要通过vim-plug 安装最新版
