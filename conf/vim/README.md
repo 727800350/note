@@ -44,6 +44,12 @@ Plug 'junegunn/fzf.vim'
 
 Most commands support CTRL-T / CTRL-X / CTRL-V key bindings to open in a new tab, a new split, or in a new vertical split
 
+fzf 配置使用fd 代替默认的 find 来之行搜素, 对 color 在mac, linux, docker 上还没完全配置正确.
+```bash
+export FZF_DEFAULT_COMMAND='fd --color=always --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+```
+
 ## [junegunn/vim-easy-align](https://github.com/junegunn/vim-easy-align)
 
 ## [preservim/nerdcommenter](https://github.com/preservim/nerdcommenter)

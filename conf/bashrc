@@ -36,23 +36,10 @@ ulimit -c unlimited
 alias grep='grep --color=auto'
 alias watch='watch -d -n 1'
 
-has_fd=0
 which fd >/dev/null
-if [ $? -eq 0 ]
+if [ $? -ne 0 ]
 then
-  has_fd=1
-else
-  which fdfind >/dev/null
-  if [ $? -eq 0 ]
-  then
-    alias fd=fdfind
-    has_fd=1
-  fi
-fi
-if [ $has_fd -eq 1 ]
-then
-  export FZF_DEFAULT_COMMAND='fd --color=always --hidden --follow --exclude .git'
-  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  alias fd="fdfind"
 fi
 
 alias ll="ls -l"
