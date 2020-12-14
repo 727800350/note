@@ -105,8 +105,6 @@ Plug 'scrooloose/nerdtree'
 " View and search LSP symbols, tags in Vim/NeoVim
 Plug 'liuchengxu/vista.vim'
 
-Plug 'octol/vim-cpp-enhanced-highlight'
-
 " markdown 插件
 if os == "mac"
   Plug 'iamcco/mathjax-support-for-mkdp'

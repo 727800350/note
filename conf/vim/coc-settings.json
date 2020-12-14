@@ -3,7 +3,7 @@
     "golang": {
       "command": "gopls",
       "args": ["-remote=auto", "-listen.timeout=1h"],
-      "rootPatterns": ["go.mod", ".git"],
+      "rootPatterns": ["go.mod"],
       "trace.server": "verbose",
       "filetypes": ["go"],
       "initializationOptions": {
@@ -13,7 +13,7 @@
     },
     "clangd": {
       "command": "clangd",
-      "rootPatterns": ["compile_flags.txt", ".git"],
+      "rootPatterns": ["compile_flags.txt"],
       "filetypes": ["c", "cc", "cpp", "h"]
     }
   }

@@ -8,7 +8,6 @@
     "explorer.confirmDragAndDrop": false,
     "extensions.ignoreRecommendations": false,
     "go.autocompleteUnimportedPackages": true,
-    "go.inferGopath": true,
     "go.formatTool": "goimports",
     "go.testFlags": ["-v", "-gcflags=all=-l"],
     "go.useLanguageServer": true,
