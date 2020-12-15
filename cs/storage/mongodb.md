@@ -27,6 +27,9 @@ document only.
 
 MongoDB 内部采用 B-Tree 作为索引结构,此索引基于最左优先原则,且必须保证查询顺序与索引字段的顺序一致才有效.
 
+MongoDB 的NumberLong 类型是可以存储math.Int64, 程序中可以正确的操作, 但是 MongoShell 是基于JavaScript 的, 所以操作会有问
+题, 可以使用显示指定数据类型的方式, e.g. `NumberLong("2090845886852")`
+
 # api
 查询的字段必须在document 中存在, 如果要查不存在的, 需要使用 $exists operator.
 例如, 查询所有不存在name 字段的记录
