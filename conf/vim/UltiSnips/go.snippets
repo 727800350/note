@@ -14,6 +14,7 @@ func New$1Handler(ctx context.Context, req *$2.$1Request) *$1Handler {
 		ctx: ctx,
 		req: req,
 		rsp: &$2.$1Response{
+			HTTPCode: http.StatusOK,
 			BaseResp: base.NewBaseResp(),
 		},
 		code: fault.RetCodeInternalErr,
@@ -35,6 +36,8 @@ func (h *$1Handler) Handle() *$2.$1Response {
 
 func (h *$1Handler) isValid() error {
 	h.code = fault.RetCodeParamErr
+
+	h.code = fault.RetCodeInternalErr,
 	return nil
 }
 
