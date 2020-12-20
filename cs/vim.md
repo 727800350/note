@@ -161,9 +161,9 @@ More editing commands
 ## Replacement
 - `%s/a/b/gc`: 末尾的c代表确认的意思, 在进行每一次替换时会询问是否替换
 - `&` is replaced by the entire text matched by the search pattern when used in a replacement
-- `:%s/Yazstremski/&,clar/`  #the result is `Yazstremski,clar`
-- `:1,10s/.*/(&)/` #surrend each line from line 1 to line 10 with parentheses
-- 在正规表达式中使用 `\(` 和 `\)` 符号括起正规表达式,即可在后面使用`\1`,`\2`等变量来访问 `\(` 和 `\)` 之间的内容
+  - `:%s/Yazstremski/&,clar/`  #the result is `Yazstremski,clar`
+  - `:1,10s/.*/(&)/` #surrend each line from line 1 to line 10 with parentheses
+- 在正则表达式中使用 `\(` 和 `\)` 符号括起正则表达式,即可在后面使用`\1`,`\2`等变量来访问 `\(` 和 `\)` 之间的内容
 
 [vim 正则表达式](http://blog.csdn.net/yyt8yyt8/article/details/7567455)
 

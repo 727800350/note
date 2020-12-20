@@ -288,11 +288,21 @@ EXPLAIN SELECT * FROM test WHERE col1=1;
 结合前面的execution plan 那一节, index 类型也是使用到了索引,只是是遍历整个索引树.
 
 # Data Type And Functions
+## numbers
+The DECIMAL and NUMERIC types store exact numeric data values. These types are used when it is important to preserve
+exact precision, for example with monetary data.
+In MySQL, NUMERIC is implemented as DECIMAL.
+
+```sql
+salary DECIMAL(5,2)
+```
+5 是有效数字个数, 2 是小数点位数, 存储的范围就是 [-999.99, 999.99]
+
 ## date time
 [时间差](http://blog.csdn.net/yzsind/article/details/8831429)
 
-datetime 直接之间作差得到结果不是时间意义上的作差.
-实际是mysql的时间相减是做了一个隐式转换操作, 直接把年月日时分秒拼起来, 如`2013-04-21 16:59:33` 直接转换为`20130421165933`, 由于时间不是十进制,所以最后得到的结果没有意义,这也是导致出现坑爹的结果.
+datetime 直接之间作差得到结果不是时间意义上的作差, 实际是mysql做了一个隐式转换操作, 直接把年月日时分秒拼起来,如
+`2013-04-21 16:59:33` 直接转换为`20130421165933`, 由于时间不是十进制,所以最后得到的结果没有意义,这也是导致出现坑爹的结果.
 
 要得到正确的时间相减秒值,有以下3种方法:
 
@@ -327,15 +337,15 @@ SELECT BINARY 'a' = 'a ';  // 0
 
 ## bit operators
 [Bit Functions and Operators](https://dev.mysql.com/doc/refman/8.0/en/bit-functions.html)
-|Name	       |Description                           |
-|------------|--------------------------------------|
-|&	         |Bitwise AND                           |
-|>>	         |Right shift                           |
-|<<	         |Left shift                            |
-|^	         |Bitwise XOR                           |
-|BIT_COUNT() |Return the number of bits that are set|
-||	         |Bitwise OR                            |
-|~	         |Bitwise inversion                     |
+| Name        | Description                            |
+| ---         | ---                                    |
+| &           | Bitwise AND                            |
+| >>          | Right shift                            |
+| <<          | Left shift                             |
+| ^           | Bitwise XOR                            |
+| BIT_COUNT() | Return the number of bits that are set |
+| \|	        | Bitwise OR                             |
+| ~	          | Bitwise inversion                      |
 
 优先级: ~ > ^ > & > >> = << > |
 
