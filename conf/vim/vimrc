@@ -24,7 +24,8 @@ set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set encoding=utf-8
 "=============================== encoding ===============================
 
-set nu "show number
+" set nu "show number
+set rnu "show relative number
 set cursorline "突出显示当前行
 set showmatch "colorscheme evening
 set laststatus=2 "always show status line
