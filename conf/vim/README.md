@@ -127,7 +127,10 @@ endsnippet
 ### [coc-marketplace](https://github.com/fannheyward/coc-marketplace)
 `:CocList marketplace`: 进入marketplace
 
-### go
+### language server
+[Debug language server](https://github.com/neoclide/coc.nvim/wiki/Debug-language-server)
+
+#### go
 coc-go 和 languageserver.golang 只能使用其中的一个, 否则自动补全的时候会重复提示.
 [Duplicate Suggestions in autocompletion](https://github.com/neoclide/coc.nvim/issues/1824)
 
@@ -137,7 +140,7 @@ coc-go 和 languageserver.golang 只能使用其中的一个, 否则自动补全
     "golang": {
       "command": "gopls",
       "args": ["-remote=auto", "-listen.timeout=1h", "-remote.listen.timeout=2h"],
-      "rootPatterns": ["go.mod", ".git"],
+      "rootPatterns": ["go.mod"],
       "trace.server": "verbose",
       "filetypes": ["go"],
       "initializationOptions": {
@@ -151,7 +154,7 @@ coc-go 和 languageserver.golang 只能使用其中的一个, 否则自动补全
 
 [jstemmer/gotags](https://github.com/jstemmer/gotags)
 
-### clangd
+#### clangd
 同理, coc-clangd 和 languageserver.clangd 也只能用一个.
 
 ```json
@@ -159,7 +162,8 @@ coc-go 和 languageserver.golang 只能使用其中的一个, 否则自动补全
   "languageserver": {
     "clangd": {
       "command": "clangd",
-      "rootPatterns": ["compile_flags.txt", "compile_commands.json", ".git"],
+      "trace.server": "verbose",
+      "rootPatterns": ["compile_flags.txt"],
       "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"]
     }
   }
