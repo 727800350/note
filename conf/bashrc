@@ -68,6 +68,10 @@ export GOROOT="$HOME/opt/go"
 export GOPATH="$HOME/go"
 export GOBIN="$GOPATH/bin"
 export GOTMPDIR="/tmp/go"
+if [ ! -d $GOTMPDIR ]
+then
+  mkdir $GOTMPDIR
+fi
 export PATH=$PATH:$GOROOT/bin:$GOBIN
 export GO111MODULE=on
 export GOPROXY="https://goproxy.io"
