@@ -67,10 +67,11 @@ type ${1:Template}Suite struct {
 }
 
 func (s *$1Suite) SetupSuite() {
-	s.ctx = context.Background()
 }
 
 func (s *$1Suite) SetupTest() {
+	ctx := context.Background()
+	s.ctx = ctx
 }
 
 func (s *$1Suite) TestEx() {

@@ -2,7 +2,6 @@
   "languageserver": {
     "golang": {
       "command": "gopls",
-      "args": ["-remote=auto", "-listen.timeout=1h"],
       "rootPatterns": ["go.mod"],
       "trace.server": "verbose",
       "filetypes": ["go"],
