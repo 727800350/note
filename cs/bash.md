@@ -44,6 +44,29 @@ Mac 在 ~/Library/autojump/autojump.txt
 ps aux | fzf
 ```
 
+Files and directories
+
+Fuzzy completion for files and directories can be triggered if the word before the cursor ends with the trigger sequence
+which is by default `**`.
+```bash
+COMMAND [DIRECTORY/][FUZZY_PATTERN]**<TAB>
+```
+
+```bash
+# Files under current directory
+# - You can select multiple items with TAB key
+vim **<TAB>
+```
+
+Process IDs
+
+Fuzzy completion for PIDs is provided for kill command. In this case, there is no trigger sequence, just press tab key
+after kill command.
+```bash
+# Can select multiple processes with <TAB> or <Shift-TAB> keys
+kill -9 <TAB>
+```
+
 fzf 的搜索语法其实非常强大,在熟悉正则的基础上,用 fzf 搜索语法可以实现很多的组合,比如使用 ! 来表示不包含
 
 比如:
