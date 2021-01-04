@@ -35,11 +35,21 @@ typedef Tweet ReTweet
 ```
 
 ## Enums
+```thrift
+enum ContentType {
+  Text = 1,
+  Img = 2,
+  Video = 3,
+}
+```
 
 ## Constants
 ```C++
 const i32 INT_CONST = 1234;
+
 const map<string,string> MAP_CONST = {"hello": "world", "goodnight": "moon"}
+
+const list<ContentType> List_Const = [ContentType.Text, ContentType.Video]
 ```
 
 # 序列化及反序列化
