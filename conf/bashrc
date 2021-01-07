@@ -35,6 +35,7 @@ ulimit -c unlimited
 
 alias grep='grep --color=auto'
 alias watch='watch -d -n 1'
+alias tuer="ps x | fzf | awk '{print $1}' | xargs kill -9"
 
 which fd >/dev/null
 if [ $? -ne 0 ]
