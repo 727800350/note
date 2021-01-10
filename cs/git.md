@@ -1,4 +1,3 @@
-
 ref
 
 - [廖雪峰的git 教程](https://www.liaoxuefeng.com/wiki/896043488029600)
@@ -120,29 +119,33 @@ If that worked, great!
   # Hi username! You have successfully authenticated, but GitHub does not provide shell access.
   ```
 
-## [GIT更新fork出来的代码](http://blog.sina.com.cn/s/blog_411fed0c0102vhlb.html)
-1. 增加远程分支: `git remote add source https://github.com/antirez/redis.git`
-  如果你运行命令:git remote -v你会发现多出来了一个source的远程分支.如下:
+## [GIT更新fork出来的代码](https://stackoverflow.com/questions/7244321/how-do-i-update-a-github-forked-repository)
+```bash
+# Add the remote, call it "upstream":
+git remote add upstream https://github.com/whoever/whatever.git
 
-  ```info
-  origin  git@github.com:ericuni/redis.git (fetch)
-  origin  git@github.com:ericuni/redis.git (push)
-  source  https://github.com/antirez/redis.git (fetch)
-  source  https://github.com/antirez/redis.git (push)
-  ```
-  .git/config 中remote 的部分会变为:
+# Fetch all the branches of that remote into remote-tracking branches
+git fetch upstream
 
-  ```info
-  [remote "origin"]
-    url = git@github.com:ericuni/redis.git
-    fetch = +refs/heads/*:refs/remotes/origin/*
-  [remote "source"]
-    url = https://github.com/antirez/redis.git
-    fetch = +refs/heads/*:refs/remotes/source/*
-  ```
-1. 把对方的代码拉到你本地: `git fetch source`
-1. 合并对方的代码: `git merge source/master`
-1. 把最新的代码推送到你的github上: `git push origin master`
+# Make sure that you're on your master branch:
+git checkout master
+
+# Rewrite your master branch so that any commits of yours that
+# aren't already in upstream/master are replayed on top of that
+# other branch:
+git rebase upstream/master
+```
+
+If you don't want to rewrite the history of your master branch, (for example because other people may have cloned it)
+then you should replace the last command with git merge upstream/master. However, for making further pull requests that
+are as clean as possible, it's probably better to rebase.
+
+If you've rebased your branch onto upstream/master you may need to force the push in order to push it to your own forked
+repository on GitHub. You'd do that with:
+```bash
+git push -f origin master
+```
+You only need to use the -f the first time after you've rebased.
 
 ## [git 给远程库添加多个url地址](http://my.oschina.net/shede333/blog/299032)
 修改.git/config 中 url 部分
@@ -166,3 +169,4 @@ origin  git@git.oschina.net:ericuni/note.git (push)
 
 - [blog](https://mp.weixin.qq.com/s/UQKrAR3zsdTRz8nFiLk2uQ)
 - [video](https://www.bilibili.com/video/av77252063)
+
