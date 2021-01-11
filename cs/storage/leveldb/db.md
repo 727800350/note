@@ -254,6 +254,13 @@ void DBImpl::DeleteObsoleteFiles()
     4. CURRENT/LOG/LOCK 文件均保留
 
 # version
+VersionSet 所有Version 构成的双向链表, 这些Version按时间顺序先后产生,记录了当时的元信息,链表头指向当前最新的Version, 同
+时维护了每个Version的引用计数, 被引用中的Version不会被删除, 其对应的sst文件也因此得以保留,通过这种方式,使得LevelDB可以在
+一个稳定的快照视图上访问文件.
+VersionSet中除了Version的双向链表外还会记录一些如LogNumber, Sequence, 下一个sst文件编号的状态信息.
+
+<img src="./pics/version_set.png" alt="version set" width="100%"/>
+
 ```cpp
 // Apply all of the edits in *edit to the current state.
 void VersionSet::Builder::Apply(VersionEdit* edit)
