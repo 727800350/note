@@ -1,3 +1,15 @@
+- [status](#status)
+- [options](#options)
+- [slice](#slice)
+- [coding](#coding)
+- [arena](#arena)
+- [filter policy](#filter-policy)
+- [lru cache](#lru-cache)
+  - [HandleTable](#handletable)
+  - [LRUCache](#lrucache)
+  - [ShardedLRUCache](#shardedlrucache)
+- [skiplist](#skiplist)
+
 # status
 ```cpp
 // include/leveldb/status.h, util/status.cc
@@ -347,13 +359,13 @@ h->next_hash = (*ptr)->next_hash // 此时, a -> b -> c -> nullptr and h -> c
 
 对于FindPointer 理解就会简单许多, 但是因为是单链表, 就没法在 FindPointer 的基础上实现insert 和 remove 两个操作了.
 
-同时 FindPointer 的第一行代码 定位slot 用了 hash & (length_ -1) 而不是 hash % length_
+同时 FindPointer 的第一行代码 定位slot 用了 `hash & (length_ -1)` 而不是 `hash % length_`
 
 ```cpp
 LRUHandle** ptr = &list_[hash & (length_ - 1)];
 ```
 
-当 elems_ > length_ 时就会触发 resize, 新的length 选择规则
+当 `elems_ > length_` 时就会触发 resize, 新的length 选择规则
 ```cpp
 uint32_t new_length = 4;
 while (new_length < elems_) {

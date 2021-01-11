@@ -84,7 +84,7 @@ class Reader {
 ```
 - initial_offset_: log 文件开头可以添加一些信息,读取写入的时候,跳过这些数据.当前版本只在 log_reader 中支持,log_writer 中
   并没有相关逻辑,所以当前 initial_offset_ 为 0.
-- buffer_: 下一个要读取的physical record 的起始位置到当前block 的结束位置之间的buffer. 刚读到一个block 的时候, buffer_ 
+- buffer_: 下一个要读取的physical record 的起始位置到当前block 的结束位置之间的buffer. 刚读到一个block 的时候, buffer_
   为整个block, 随着这个block 中的 physical record 的不断读取, buffer_ 也往前移动.
 
 # ref

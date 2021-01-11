@@ -1,3 +1,10 @@
+- [write and minor compaction](#write-and-minor-compaction)
+- [version](#version)
+- [read](#read)
+  - [get](#get)
+  - [iterator](#iterator)
+- [major compaction](#major-compaction)
+
 # write and minor compaction
 ```cpp
 // include/leveldb/db.h
@@ -57,7 +64,7 @@ struct DBImpl::Writer {
 Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch)
 ```
 1. 将my_batch 封装成一个新的Writer 插入到writers_ 尾;
-1. 从 writers_ 中挑出一个writer 作为这批writers 的真正写入着. writers_ 相当于一个任务队列, 生产者线程不断向任务队列中添
+1. 从 `writers_` 中挑出一个writer 作为这批writers 的真正写入着. `writers_` 相当于一个任务队列, 生产者线程不断向任务队列中添
   加待处理的任务. 一般计算模型是将消费者和生产者分开,也就是这里需要另开线程处理任务. 但是leveldb 采用了另外一种路线, 选
   择从生产者线程中找一个线程来处理任务, 问题在于选择哪个生产者作为消费者线程. 每个生产者在向Writers_ 队列中添加任务之后,
   都会进入一个while循环, 然后在里面睡眠, 只有当下面两种情况时, 才会被唤醒:
@@ -66,7 +73,7 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch)
     - 这个生产者所加入的任务位于队列的头部&w == writers_.front(). 这种情况被唤醒后, leveldb将这个生产者选为消费者, 然后
       让它负责这一批任务的写入处理.
 1. MakeRoomForWrite
-1. 真正的writer 将writers_ 中的所有WriteBatch 合并为一个大的batch. 当然也会有大小控制, 大小阈值是根据被选中的writer 的
+1. 真正的writer 将`writers_` 中的所有WriteBatch 合并为一个大的batch. 当然也会有大小控制, 大小阈值是根据被选中的writer 的
   batch 大小来确定的. 同时记录下这批的最后一个writer 为 last_writer
 1. 获取db 的last sequence 也就是最大的sequence, 然后设置合并后的batch 的sequence 为last + sequence + 1
 1. 释放mutex_, 写 WAL
@@ -75,7 +82,7 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch)
 1. 遍历 writers_, 将这一批写入完成的writer 的 done 置为true, 并通过 condition variable 通知, 注意遍历到last_writer 为止
 1. 如果writers_ 队列不为空, 则唤醒队首位置的writer.
 
-需要注意的是 6 和 7 操作前把 mutex_ 释放了, 之后又加上了, 也就是执行6 和 7 的过程中, 是不阻塞写入的, 所以可以继续往
+需要注意的是 6 和 7 操作前把 `mutex_` 释放了, 之后又加上了, 也就是执行6 和 7 的过程中, 是不阻塞写入的, 所以可以继续往
 writers_ 对尾添加新的writer
 
 ```cpp

@@ -1,3 +1,15 @@
+- [footer](#footer)
+- [block](#block)
+  - [物理结构](#物理结构)
+  - [block 数据部分](#block-数据部分)
+  - [block iterator](#block-iterator)
+- [block builder](#block-builder)
+- [filter block](#filter-block)
+- [read](#read)
+  - [get](#get)
+  - [iterator](#iterator)
+- [table builder](#table-builder)
+
 <img src="./pics/sstable_logic.jpg" alt="sstable logic" width="60%"/>
 
 ```plain
@@ -101,7 +113,7 @@ class Block {
   bool owned_;                  // Block owns data_[]
 }
 ```
-对于 mmap 打开的文件, owned_ 是 false.
+对于 mmap 打开的文件, owned_是 false.
 owned_ 为true 时, Block 的析构函数会释放掉 data_
 
 第一部分用来存储kv数据. 由于sstable中所有的kv对都是严格按序存储的, 为了节省存储空间, leveldb并不会为每一对kv对都存储完整
@@ -353,7 +365,7 @@ class TwoLevelIterator: public Iterator {
 - arg_ 就是传入的 `const_cast<Table*>(this)`
 - block_function_ 也就是 Table::BlockReader, 因为 BlockReader 是一个 static function, 需要 arg_ 指示block function 从哪
   个sstable 读取 block
-- data_block_handle_ 起到cache 的作用, 当index_iter_ seek 得到的data block handle 和 cache 住的 data_block_handle_, 就避
+- `data_block_handle_` 起到cache 的作用, 当index_iter_ seek 得到的data block handle 和 cache 住的 data_block_handle_, 就避
   免了再次调用block function
 
 # table builder

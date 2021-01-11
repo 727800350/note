@@ -1,3 +1,6 @@
+- [table cache](#table-cache)
+- [block cache](#block-cache)
+
 # table cache
 cache of sstable
 

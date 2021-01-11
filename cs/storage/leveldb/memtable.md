@@ -1,3 +1,9 @@
+- [comparator](#comparator)
+- [add](#add)
+- [get](#get)
+- [iterator](#iterator)
+  - [bug?](#bug)
+
 ```cpp
 // db/memtable.h
 class MemTable {
@@ -202,7 +208,7 @@ inline int Slice::compare(const Slice& b) const {
 - this: 4[key1]	b: 18446744073709551612[key1], this < b, 实际上是应该相等的, 导致的结果就是任何一个不带 sequence number
   和 value type 的key 都比带的要大, 最终结果就是
 
-```
+```plain
 'key0' @ 99 : 1 -> xxx
 'key0' @ 99 : 0
 'key1' @ 101 : 0
