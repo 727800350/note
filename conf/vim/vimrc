@@ -136,8 +136,7 @@ call plug#end()
 " 开启24bit的颜色,开启这个颜色会更漂亮一些
 set termguicolors
 " 配色方案, 可以从上面插件安装中的选择一个使用
-" evening/pablo
-colorscheme torte
+colorscheme gruvbox
 set background=dark " 主题背景 dark-深色; light-浅色
 
 
