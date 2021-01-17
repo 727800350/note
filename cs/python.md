@@ -1,117 +1,53 @@
-# 参数
+- [data types](#data-types)
+  - [mutable vs immutable](#mutable-vs-immutable)
+  - [list](#list)
+    - [列表推导式](#列表推导式)
+  - [dict](#dict)
+  - [set](#set)
+  - [heapq](#heapq)
+  - [Numeric](#numeric)
+  - [string](#string)
+    - [原始字符串](#原始字符串)
+- [FP](#fp)
+- [反射(自省)](#反射自省)
+  - [访问对象的元数据](#访问对象的元数据)
+- [多线程](#多线程)
+
+```plain
+help, dir, type, id, hasattr, getattr, callable, isinstance
+```
+在python终端输入help()进入帮助终端, 然后输入"topic" 进行查询, 之后输入quit退出help
+
+常用自省函式有
+
+- help , help("topic")
+- dir 列出对象的所有属性,
+- type 返回对象的类型,
+- id 返回对象的"唯一序号"
+- hasattr( ) 和 getattr( ) 分别判断对象是否有某个属性及获得某个属性值
+- hasattr (object, "split" )
+- callable() 判断对象是否可以被调用
+- isinstance() 可以确认某个变量是否有某种类型 isinstance(a, str)
+
 `sys.argv` 获取参数列表, `len(sys.argv)`
 
-## global
 ```python
 def fun(x):
-    global a # 说明a是全局变量,可以直接使用, 需要确保在使用之前a 确实是存在的一个全局变量
-    return a + x
+  global a # 说明a是全局变量,可以直接使用, 需要确保在使用之前a 确实是存在的一个全局变量
+  return a + x
 ```
 
-# IO
-往 stdout 输出中文的时候一定要注意编码, 比如 decode('utf8'), encode(‘utf8’)
-否则会报下面的错误: 'ascii' codec can't encode character in position 20: ordinal not in range(128)
-
-```python
-sys.stdout.write()
-sys.stderr.write()
-print >> sys.stdout, 'sth'
-print >> sys.stderr, 'sth'
-print >> sys.stdout, 'pass: %2d, avg_cost: %f' % (num, avg_cost)
-```
-
-pprint 模块(pretty printer), 打印 Python 数据结构, 输出格式比较整齐, 便于阅读
-```python
-from pprint import pprint as pretty
-```
-
-输出到文件
-```python
-out = open("out.txt", "w")  //w is write, a+ 追加
-print >> out, "string", integer
-
-out.write(string)
-out.close()
-```
-
-- `sys.stdin.read(size)`: 读取size个字节, 文件结束, read() will return an empty string (""). 如果省略参数,则读取所有内容.
-
-    ```python
-    // kv example
-    while True:
-        // decode
-        kl_byte = sys.stdin.read(4)
-        if kl_byte == '':
-            break
-        kl = st.unpack('i', kl_byte)[0]
-        k = sys.stdin.read(kl)
-        vl = st.unpack('i', sys.stdin.read(4))[0]
-        v = sys.stdin.read(vl)
-
-        // encode
-        sys.stdout.write(st.pack('i', kl))
-        sys.stdout.write(k)
-        sys.stdout.write(st.pack('i', vl))
-        sys.stdout.write(v)
-    ```
-- `f.readline()`: 读取文件一行的内容
-- `f.readlines()`: 读取所有的行到一个数组list里面.在避免将所有文件内容加载到内存中,这种方法常常使用,便于提高效率.
-
-## [python3 format](https://www.cnblogs.com/eternal1025/p/5227997.html)
-```Python
-print('{0}, {1}'.format('zhangk', 32))
-print('{}, {}, {}'.format('zhangk', 'boy', 32))
-print('{name}, {sex}, {age}'.format(age=32, sex='male', name='zhangk'))
-```
-
-## 文件
-读取文件
-```python
-f = open("./data.txt", "r")
-for line in f:
-    line = line.strip()
-    print line
-f.close()
-```
-
-文件中定位
-这个函数的格式如下(单位是bytes):`f.seek(offset, from_what)`
-from_what表示开始读取的位置,
-offset表示从from_what再移动一定量的距离,比如`f.seek(10, 3)`表示定位到第三个字符并再后移10个字符.
-from_what值为0时表示文件的开始,它也可以省略,缺省是0即文件开头
-```python
-f = open('/tmp/workfile', 'r+')
-f.write('0123456789abcdef')
-f.seek(5) # Go to the 6th byte in the file
-f.read(1) // read '5'
-f.seek (-3, 2) # Go to the 3rd byte before the end
-f.read(1) // read 'd'
-```
-
-混合使用file.readline() and file.next()要注意:  
-When a file is used as an iterator, typically in a for loop (for example, `for line in f: print line.strip()`), the next() method is called repeatedly.
-In order to make a for loop the most efficient way, the next() method uses a **hidden read-ahead buffer**.
-也就是说,next()方法会预加载后面的内容, 这时如果交叉使用readline()方法则会与next()方法的预加载产生冲突.
-However, using seek() to reposition the file to an absolute position will flush the read-ahead buffer.
-
-```
-list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
-slice = random.sample(list, 5)  #从list中随机获取5个元素,作为一个片断返回  
-print slice  
-print list #原有序列并没有改变
-```
-
-# Data types
+# data types
 - **list and dictionary is mutable**
 - two non-scalar type: **tuple and string are immutable**
 
 ## mutable vs immutable
 lists and dictionaries are mutable, meaning you can change their content without changing their identity.
-Other objects like integers, floats, strings and tuples ... are objects that can not be changed. 
+Other objects like integers, floats, strings and tuples ... are objects that can not be changed.
 
 在使用`for x in seq`结构循环中, 不能改变seq, 否则会出现不可预知的问题.
 
-## List
+## list
 list 不是线程安全的, dequeue 是线程安全的
 
 要注意列表中的列表不会被打散,如 `a=[1,2], b=[a,3,4]`,结果就是 `b=[[1,2],3,4]`
@@ -121,7 +57,6 @@ list 不是线程安全的, dequeue 是线程安全的
 list是对所指向对象的一个引用
 list2 = list1; 那么这两个list指向的是同一个list对象, 当我们改变一个中的元素的时候, 另一个也随之改变
 
-### List API
 - list.append(x)
 - list.extend(L): 将list L中所有member 追加到list中
 - list.insert(i, x)
@@ -131,12 +66,13 @@ list2 = list1; 那么这两个list指向的是同一个list对象, 当我们改�
 - list.count(x): Return the number of times x appears in the list.
 - list.reverse(): Reverse the elements of the list, in place. 会改变原列表.
 
-#### list 的排序
+list 的排序
+
 - list.sort(): Sort the items of the list, in place. 会改变原列表. 还可以加参数 list.sort(reverse=True)
 - sorted(list): 返回一个排好序的对象, 原来的list不会改变
 
 [list sort](http://www.educity.cn/wenda/353925.html)
-```
+```python
 L = [('b',6),('a',1),('c',3),('d',4)]
 L.sort(lambda x,y:cmp(x[1],y[1]))
 L.sort(key=lambda x:x[1])
@@ -145,45 +81,48 @@ L.sort(key=lambda x:(x[1],x[0])): 多关键字排序, 先用第二列的数字, 
 ```
 
 ### 列表推导式
-	>>>vec = [ 2, 4, 6] 
-	>>>[ 3* x for x in vec if x>3]  # 大于 3 的元素乘上 3 作为新列表元素 
-	[ 12, 18] 
-	
-	>>>[ ( x, x**2) for x in vec] # 循环变量要是一个 sequence, 而[ x, x* * 2 f or x i n vec] 是错误的 
-	[ ( 2, 4) , ( 4, 16) , ( 6, 36) ] 
-	
-	>>>vec2 = [ 4, 3, - 9] 
-	>>>[ x* y for x in vec for y in vec2] # vec 与 vec2 元素相乘 
-	[ 8, 6, - 18, 16, 12, - 36, 24, 18, - 54] 
+```python
+>>>vec = [2, 4, 6] 
+>>>[3*x for x in vec if x>3]  # 大于 3 的元素乘上 3 作为新列表元素 
+[12, 18] 
 
-## Dict
+>>>[(x, x**2) for x in vec] # 循环变量要是一个 sequence, 而[ x, x* * 2 f or x i n vec] 是错误的 
+[(2, 4), (4, 16), (6, 36)] 
+
+>>>vec2 = [4, 3, - 9] 
+>>>[x*y for x in vec for y in vec2] # vec 与 vec2 元素相乘 
+[8, 6, -18, 16, 12, -36, 24, 18, -54] 
+```
+
+## dict
 定义方式为 `c={'a':1, 'b':2}`
 
 定义和访问时,key必须用引号引起来. 使用{}定义,使用[]访问,即`c['a']`
 
 ```python
 for key in dictonary.keys():
-	do something
+  do something
 ```
 [for key in dictionary 会出错](http://www.cnblogs.com/codeape/archive/2012/11/21/2780534.html)
 
 对字典key 的要求:  
 dictionaries are indexed by keys, which can be any immutable type; strings and numbers can always be keys.
 
-### Dict API
 - `key in d`: Return True if d has a key key, else False.
 - `key not in d`: Equivalent to not key in d
 - `len(d)`
-- `get(key[, default])`: Return the value for key if key is in the dictionary, else default. 
-	If default is not given, it defaults to None, so that this method **never raises a KeyError**.
+- `get(key[, default])`: Return the value for key if key is in the dictionary, else default.
+  If default is not given, it defaults to None, so that this method **never raises a KeyError**.
 - `pop(key[, default])`
 - `del d[key]`: Raises a KeyError if key is not in the map
 
-### set
+## set
 集合是无序的,不重复的元素集,类似数学中的集合,可进行逻辑运算和算术运算.
 [set demo](../demo/python/set.py)
 
-## [heapq](https://docs.python.org/2/library/heapq.html)
+## heapq
+[heapq](https://docs.python.org/2/library/heapq.html)
+
 需要 `import heapq`
 
 - heapq.heappush(heap, item): item 可以是一个tuple, eg: (key, value)
@@ -212,9 +151,9 @@ heapq 底层使用的就是一个list, 所以初始化, 清空都使用`heap = [
 - `math.ceil()`
 
 ## string
-**以下函数并不改变字符串本身, 而是返回修改后的新的字符串 string immutable**
-一旦声明了一个字符串, 则该字符串中的每个字符都有了自己固定的位置,可以使用`[index]`来访问
-python还允许以负数来访问字符串中字符,负数表示从字符串的尾部开始计算,此时最后一个字符的序号为-1, 例如 `string[-2] #倒数第2个字符`
+**以下函数并不改变字符串本身, 而是返回修改后的新的字符串 string immutable**.
+一旦声明了一个字符串, 则该字符串中的每个字符都有了自己固定的位置,可以使用`[index]`来访问.
+python还允许以负数来访问字符串中字符,负数表示从字符串的尾部开始计算,此时最后一个字符的序号为-1.
 
 字符
 
@@ -249,7 +188,6 @@ eg: '我'.decode('utf8').encode('gbk')
 
 **大小写**
 - `str.capitalize()` Return a copy of the string with its first character capitalized and the rest lowercased.
-
 - `str.lower()` Return a copy of the string with all the cased characters [4] converted to lowercase.
 - `str.upper()`
 
@@ -257,267 +195,25 @@ eg: '我'.decode('utf8').encode('gbk')
 - `str.strip()`: 去掉两边的空字符(包括末尾的换行符)
 - `str.lstrip([chars])` Return a copy of the string with leading characters removed. The chars argument is a string specifying the set of characters to be removed.
 
-- `str.replace(old, new[, count])`: Return a copy of the string with all occurrences of substring old replaced by new. 
-	If the optional argument count is given, only the firstcount occurrences are replaced.
+- `str.replace(old, new[, count])`: Return a copy of the string with all occurrences of substring old replaced by new.
+  If the optional argument count is given, only the firstcount occurrences are replaced.
 
 - `str.split([sep[, maxsplit]])`: Return a list of the words in the string, using sep as the delimiter string. 但是split只能实现一次采用一个字符分割
-	- re模块中的split可实现一次多个字符分割, 不同字符之间使用 | 隔开, 其中 如果是 . 需要转义
-	```Python
-	e='aa@dd.com'
-	re.split('@|\.', e) # 得到 aa dd com
-	```
+  - re模块中的split可实现一次多个字符分割, 不同字符之间使用 | 隔开, 其中 如果是 . 需要转义
+  ```Python
+  e='aa@dd.com'
+  re.split('@|\.', e) # 得到 aa dd com
+  ```
 
-- `str.join(iterable)`: Return a string which is the concatenation of the strings in the iterable iterable. 
-	The separator between elements is the string providing this method.
-	string.join() 的参数是一个iterable的object, 例如一个list
-	`":".join(["this","is"])` 生成 `this:is`
+- `str.join(iterable)`: Return a string which is the concatenation of the strings in the iterable iterable.
+  The separator between elements is the string providing this method.
+  string.join() 的参数是一个iterable的object, 例如一个list
+  `":".join(["this","is"])` 生成 `this:is`
 
 ### 原始字符串
 原始字符串是python中一类比较特殊的字符串, 以大写字母R或者小写字母r开始.
 在原始字符串中,\不再表示转义字符的含义
 原始字符串是为正则表达式而设计的, 但是可以用其来方便的表示windows系统下的路径
-
-# General
-## Help
-```
-help, dir, type, id, hasattr, getattr, callable, isinstance
-```
-
-在python终端输入help()进入帮助终端
-    然后输入"topic" 进行查询
-    之后输入quit退出help
-
-常用自省函式有
-
-- help , help("topic")
-- dir 列出对象的所有属性,
-- type 返回对象的类型,
-- id 返回对象的"唯一序号"
-- hasattr( ) 和 getattr( ) 分别判断对象是否有某个属性及获得某个属性值
-- hasattr (object, "split" )
-- callable() 判断对象是否可以被调用
-- isinstance() 可以确认某个变量是否有某种类型 isinstance(a, str)
-
-## [import argparse](http://blog.xiayf.cn/2013/03/30/argparse/)
-argparse内置6种动作可以在解析到一个参数时进行触发：
-
-- store 保存参数值，可能会先将参数值转换成另一个数据类型。若没有显式指定动作，则默认为该动作。
-- `store_ture/store_false` 保存相应的布尔值。这两个动作被用于实现布尔开关。
-- `store_const`: 类似于`store_true/false`, 有了这个标记, 就把dest 设置为 const, `parser.add_argument('-c', action='store_const', dest='constant_value', const='value-to-store', help='Store a constant value')`
-- append 将值保存到一个列表中。若参数重复出现，则保存多个值。
-- `append_const` 将一个定义在参数规格中的值保存到一个列表中。
-- version 打印关于程序的版本信息，然后退出
-
-```python
-import argparse
-parser = argparse.ArgumentParser(description='Short sample app')
-parser.add_argument('-a', action="store_true", default=False, help = 'used as a flag')
-parser.add_argument('-c', action="store", dest="c", type=int, help = 'store a int')
-arg = parser.parse_args() 的返回值是一个命名空间，包含传递给命令的参数
-```
-
-而argparse是一个全面的命令行参数解析工具，也处理非选项参数。
-```python
-parser.add_argument('count', action="store", type=int, help = 'number of apples')
-parser.add_argument('units', action="store")
-python ./cmd.py 3 inches
-Namespace(count=3, units='inches')
-```
-
-## import os
-- os.sep可以取出操作系统特定的路径分割符, `linux /`, `windows \\`, `MacOS :`
-- os.linesep字符串给出当前平台使用的行终止符.例如,Windows使用'\r\n', Linux使用'\n'而Mac使用'\r'.
-
-- os.listdir(path) #列出当前路径下的文件
-- os.getcwd() #get current working directory, 绝对目录
-- os.path.dirname(path):返回文件所在目录
-- os.path.basename(path):返回文件名
-- os.name字符串指示你正在使用的平台.比如对于Windows,它是'nt',而对于Linux/ Unix用户,它是'posix'.
-- os.getcwd()函数得到当前工作目录,即当前Python脚本工作的目录路径.
-- os.getenv()和os.putenv()函数分别用来读取和设置环境变量.
-- os.listdir()返回指定目录下的所有文件和目录名.
-- os.system()函数用来运行shell命令.
-- os.path.split()函数返回一个路径的目录名和文件名.["/dir","file.ext"]
-- os.path.splitext() 得到文件的其他部分和后缀, 例如"/dir/file.ext", ["/dir/file",".ext"]
-- os.path.getsize(path) Return the size, in bytes, of path. Raise os.error if the file does not exist or is inaccessible.
-
-对文件,文件夹的操作需要涉及到os模块和shutil模块.
-
-- os.mknod("test.txt"): 创建空文件
-- open("test.txt",w): 直接打开一个文件,如果文件不存在则创建文件
-- os.mkdir("file"): 创建目录
-- shutil.copyfile("oldfile","newfile"): oldfile和newfile都只能是文件, 不能同名
-- shutil.copy("oldfile","newfile"): oldfile只能是文件夹,newfile可以是文件(可以同名, 会覆盖),也可以是目标目录
-- shutil.copy2(src, dst): Similar to shutil.copy(), but metadata is copied as well – in fact, this is just shutil.copy() followed by copystat()
-- shutil.copytree("olddir","newdir"): 复制文件夹, olddir和newdir都只能是目录,且newdir必须不存在
-- os.rename("oldname","newname")       文件或目录都是使用这条命令
-- shutil.move("oldpos","newpos")   移动文件(目录)
-- os.remove("file") 删除文件
-- os.rmdir("dir") 只能删除空目录
-- shutil.rmtree("dir")    空目录,有内容的目录都可以删
-- os.chdir("path")    换路径
-
-判断目标
-
-- os.path.exists("goal")    判断目标是否存在
-- os.path.isdir("goal")     判断目标是否目录
-- os.path.isfile("goal")    判断目标是否文件
-
-
-## import logging
-- logging.basicConfig(level = logging.DEBUG, format = "%(levelname)s %(asctime)s [%(filename)s][%(lineno)d][%(funcName)s] %(message)s")
-	用默认日志格式Formatter为日志系统建立一个默认的流处理器StreamHandler, 设置基础配置(如日志级别等)并加到root logger(根Logger)中这几个logging模块级别的函数
-- log = logging.getLogger(name):返回一个logger对象，如果没有指定名字将返回root logger
-- log.debug(), log.info(), log.warnning(), log.error(), log.critical(), eg: log.debug('this is %s', 'Eric Wang')
-
-默认的log 会打印到stderr, 也可以设置 file|stream handler, formatter, filter etc.
-参考[Python logging模块详解](http://blog.csdn.net/zyz511919766/article/details/25136485)
-
-## import sys
-- sys.path: 系统目录
-- sys.argv: 可执行文件名是第一个参数
-
-## import urllib
-- urllib.unquote(): url解码
-- urllib.urlencode(): 可以把key-value这样的键值对转换成我们想要的格式, 返回的是`a=1&b=2`这样的字符串, ex: `data = {'a': 'test', 'name': '魔兽'}`
-
-## import time
-- `time.time()`用ticks计时单位返回从12:00am, January 1, 1970(epoch) 开始的记录的当前操作系统时间
-
-上述也就是struct_time元组.这种结构具有如下属性:
-```
-序号	属性	值
-0	tm_year	2008
-1	tm_mon	1 到 12
-2	tm_mday	1 到 31
-3	tm_hour	0 到 23
-4	tm_min	0 到 59
-5	tm_sec	0 到 61 (60或61 是闰秒)
-6	tm_wday	0到6 (0是周一)
-7	tm_yday	1 到 366(儒略历)
-8	tm_isdst	-1, 0, 1, -1是决定是否为夏令时的旗帜
-```
-
-- `time.localtime(time.time())` 将秒数转化为struct_time 形式的时间
-- `time.asctime(time.localtime(time.time()))` 获取格式化的时间
-- `import calendar` 日历处理模块
-
-## pickle 序列化反序列化
-[ref](http://www.cnblogs.com/pzxbc/archive/2012/03/18/2404715.html)
-
-python的pickle模块实现了基本的数据序列和反序列化.
-通过pickle模块的序列化操作我们能够将程序中运行的对象信息保存到文件中去,永久存储,
-通过pickle模块的反序列化操作,我们能够从文件中创建上一次程序保存的对象.
-
-`pickle.dump(obj, file, [,protocol])` :将对象obj保存到文件file中去.
-
-- protocol为序列化使用的协议版本
-	- 0: ASCII协议,所序列化的对象使用可打印的ASCII码表示,
-	- 1: 老式的二进制协议,
-	- 2: 2.3版本引入的新二进制协议,较以前的更高效.其中协议0和1兼容老版本的python.protocol默认值为0.
-- file:对象保存到的类文件对象. file必须有write()接口, file可以是一个以'w'方式打开的文件或者一个StringIO对象或者其他任何实现write()接口的对象.
-如果protocol>=1,文件对象需要是二进制模式打开的.
-
-`pickle.load(file)`: 从file中读取一个字符串,并将它重构为原来的python对象.
-
-- file:类文件对象,有read()和readline()接口.
-
-可以将多个对象dump 到同一个文件中(追加的形式)
-依次进行load可以得到原来dump的对象
-
-## scipy
-SciPy是一款方便,易于使用,专为科学和工程设计的Python工具包.它包括统计,优化,整合,线性代数模块,傅里叶变换,信号和图像处理,常微分方程求解器等等.
-
-There are several ways to fit data with a linear regression. In this section we will use `curve_fit`, which is a χ2-based method (in other words, a best-fit method)
-
-[solve funtion](../demo/python/scipy_solve_function.py)
-
-[interpolation](../demo/python/scipy_interpolation.py)
-
-## import sympy
-SymPy是Python的一个数学符号计算库.
-它目的在于成为一个富有特色的计算机代数系统.
-它保证自身的代码尽可能的简单,且易于理解,容易扩展.SymPy完全由Python写成,不需要额外的库.
-
-## import subprocess as sp
-[ref1](https://docs.python.org/2/library/subprocess.html)
-[ref2](http://blog.chinaunix.net/uid-14833587-id-76547.html)
-
-Execute a child program in a new process:
-`subprocess.Popen(args, bufsize=0, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, cwd=None,env=None,universal_newlines=False)`
-
-- args: should be a sequence of program arguments or else a single string
-- shell: (defaults to False) specifies whether to use the shell as the program to execute. If True, pass args as a string rather than as a sequence.
-- bufsize: If you experience performance issues, it is recommended that you try to enable buffering by setting bufsize to either -1 or a large value (such as 4096).
-- stdin, stdout and stderr: valid values are PIPE, an existing file descriptor (a positive integer), an existing file object, and None. 
-- cwd: 工作目录
-- universal_newlines: if True, '\n' for the Unix end-of-line convention; '\r' for the old Macintosh convention or '\r\n' for the Windows convention,都被作为'\n'处理
-
-```
-p = sp.Popen("./subprocess_demo", stdin = sp.PIPE, stdout = sp.PIPE, stderr = sp.PIPE, shell = False)
-## 这里将p的stdin, stdout, sterr都设置为pipe,稍后我们就可以通过往这些pipe写数据往subprocess_demo程序的输入写入数据
-
-## write to p.stdin, so that app can read from stdin
-p.stdin.write('3\n')
-p.stdin.write('4\n')
-sys.stdout.write(p.stdout.read())
-```
-[subprocess_demo.cpp](../demo/python/subprocess_demo.cpp)
-
-## xlutils, xlrd, xlwt
-module for excel
-rd: read, wt: write
-
-xlrd: 读取excel 内容
-```
-workbook = xlrd.open_workbook(path)
-sheet = workbook.sheets()[0]
-value = sheet.cell(1,2).value
-```
-[xlrd demo](../demo/python/excel.py)
-
-xlwt: 创建编辑新的excel
-```
-workbook = xlwt.Workbook()
-sheet = workbook.add_sheet('sheet name')
-sheet.write(0,0,'test')
-workbook.save('demo.xls')
-```
-
-如果对一个单元格重复操作,会引发
-returns error:
-```
-# Exception: Attempt to overwrite cell:
-# sheetname=u'sheet 1' rowx=0 colx=0
-```
-所以在打开时加cell_overwrite_ok=True解决
-```
-table = file.add_sheet('sheet name',cell_overwrite_ok=True)
-```
-
-使用style
-```
-style = xlwt.XFStyle() #初始化样式
-font = xlwt.Font() #为样式创建字体
-font.name = 'Times New Roman'
-font.bold = True
-style.font = font #为样式设置字体
-table.write(0, 0, 'some bold Times text', style) # 使用样式
-
-设置日期格式
-style.num_format_str = "mm/dd/yyyy"
-```
-
-如果要编辑现有的excel 表格, 只能采取迂回的策略, 
-即用xlrd 打开workbook, 然后用xlutils 提供的copy 工具将打开的workbook 复制一份, 被复制的是xlwt格式, 可以进行编辑, 最后再将复制的workbook保存下来.
-
-```
-rb = xlrd.open_workbook(path)
-rs = rb.sheets()[0]
-wb = copy(rb)
-ws = wb.get_sheet(0)
-```
-对于excel 03的格式, 可以使用 `rb = xlrd.open_workbook(path, formatting_info = True)`, 这样可以将path的格式保留下来, 但是这个功能在excel 07还没有实现
 
 # FP
 在函式编程中,最著名的特色就是高序(High Order).简单地说,就是定制一个算法,
@@ -533,42 +229,42 @@ ws = wb.get_sheet(0)
 **map**
 `map(f, iterA, iterB, ...) returns a list containing f(iterA[0], iterB[0]), f(iterA[1], iterB[1]), f(iterA[2], iterB[2]), ....`
 函式 map 至少需要两个参数,第一个是一个函式,第二个是传入函式的参数.例如
-```
+```python
 def foo(x):
-	return x*x
+  return x*x
 print map(foo,range(10))
 ```
 
-```
+```python
 def foo(x,y):
-	return x+y
+  return x+y
 print map(foo,range(10),range(10))
 ## 得到[0,2,4,....18]
 ```
 
 **filter**
-`filter(predicate, iter)` returns a list that contains all the sequence elements that meet a certain condition, and is similarly duplicated by list comprehensions. 
-A predicate is a function that returns the truth value of some condition; 
+`filter(predicate, iter)` returns a list that contains all the sequence elements that meet a certain condition, and is similarly duplicated by list comprehensions.
+A predicate is a function that returns the truth value of some condition;
 for use with filter(), the predicate must take a single value.
 例如可以用下面的方法得到 100以内的偶数列:
-```
+```python
 def foo(x):
-	return x%2==0 
+  return x%2==0 
 print filter(foo,range(100))
 ```
 
 **reduce**
 `reduce(func, iter, [initial_value])`
-func must be a function that takes two elements and returns a single value. 
-reduce() takes the first two elements A and B returned by the iterator and calculates func(A, B). 
-It then requests the third element, C, calculates func(func(A, B), C), 
-combines this result with the fourth element returned, and continues until the iterable is exhausted. 
-If the iterable returns no values at all, a TypeError exception is raised. 
+func must be a function that takes two elements and returns a single value.
+reduce() takes the first two elements A and B returned by the iterator and calculates func(A, B).
+It then requests the third element, C, calculates func(func(A, B), C),
+combines this result with the fourth element returned, and continues until the iterable is exhausted.
+If the iterable returns no values at all, a TypeError exception is raised.
 If the initial value is supplied, it is used as a starting point and func(initial_value, A) is the first calculation.
 
 **lambda**
 lambda 参数列表: 表达式
-```
+```python
 fun=lambda x: x*x-x
 fun(3)  #get 6
 print map(lambda x: x* * 2, range(10)) 
@@ -591,9 +287,9 @@ print map(lambda x: x* * 2, range(10))
 调用这个方法将返回包含obj大多数属性名的列表(会有一些特殊的属性不包含在内).obj的默认值是当前的模块对象.
 当你对一个你构造的对象使用dir()时,可能会发现列表中的很多属性并不是你定义的.这些属性一般保存了对象的元数据,比如类的__name__属性保存了类名.
 大部分这些属性都可以修改,不过改动它们意义并不是很大
-- `hasattr(obj, attr)`: 
+- `hasattr(obj, attr)`:
 这个方法用于检查obj是否有一个名为attr的值的属性,返回一个布尔值.
-- `getattr(obj, attr)`: 
+- `getattr(obj, attr)`:
 调用这个方法将返回obj中名为attr值的属性的值,例如如果attr为'bar',则返回obj.bar.
 - `setattr(obj, attr, val)`:
 调用这个方法将给obj的名为attr的值的属性赋值为val.例如如果attr为'bar',则相当于obj.bar = val.
@@ -601,7 +297,7 @@ print map(lambda x: x* * 2, range(10))
 ## 访问对象的元数据
 **确定对象的类型**
 在types模块中定义了全部的Python内置类型,结合内置方法isinstance()就可以确定对象的具体类型了.
-```
+```python
 isinstance(object, classinfo):
 ```
 检查object是不是classinfo中列举出的类型,返回布尔值.classinfo可以是一个具体的类型,也可以是多个类型的元组或列表.
@@ -627,4 +323,15 @@ types模块中仅仅定义了类型,而inspect模块中封装了很多检查类�
 
 - `*__dict__`: 包含了可用的属性名-属性字典.
 - `*__class__`: 该实例的类对象.对于类Cat,cat.__class__ == Cat 为 True.
+
+# 多线程
+Python的线程虽然是真正的线程, 但解释器执行代码时, 有一个GIL锁:Global Interpreter Lock, 任何Python线程执行前, 必须先获得
+GIL锁,然后,每执行100条字节码,解释器就自动释放GIL锁,让别的线程有机会执行.这个GIL全局锁实际上把所有线程的执行代码都给上了
+锁,所以,多线程在Python中只能交替执行,即使100个线程跑在100核CPU上,也只能用到1个核.
+
+对面向I/O的(会调用内建的操作系统C代码的)程序来说,GIL会在这个I/O调用之前被释放,以允许其他线程在这个线程等待I/O的时候运行.
+如果某线程并未使用很多I/O操作,它会在自己的时间片内一直占用处理器和GIL.
+也就是说,I/O密集型的Python程序比计算密集型的Python程序更能充分利用多线程的好处.
+
+GIL是Python解释器设计的历史遗留问题,通常我们用的解释器是官方实现的CPython,要真正利用多核,除非重写一个不带GIL的解释器.
 
