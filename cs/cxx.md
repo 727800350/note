@@ -1,3 +1,28 @@
+- [IO](#io)
+- [Data Types](#data-types)
+- [STL 标准模板库](#stl-标准模板库)
+  - [containers](#containers)
+  - [algorithm](#algorithm)
+- [std::string and char](#stdstring-and-char)
+  - [std::string](#stdstring)
+    - [字符数组与字符指针](#字符数组与字符指针)
+- [std::atomic](#stdatomic)
+  - [C API](#c-api)
+    - [string.h](#stringh)
+      - [stdlib.h](#stdlibh)
+      - [ctypes.h](#ctypesh)
+- [Memory](#memory)
+  - [指针](#指针)
+    - [指针数组与数组指针](#指针数组与数组指针)
+    - [二维数组与指针](#二维数组与指针)
+  - [柔性数组](#柔性数组)
+- [Process 进程](#process-进程)
+- [thread](#thread)
+  - [线程特定数据](#线程特定数据)
+  - [互斥锁 Mutual Exclusive Lock](#互斥锁-mutual-exclusive-lock)
+    - [读写锁(rwlock)](#读写锁rwlock)
+  - [条件变量 condition variable](#条件变量-condition-variable)
+
 # IO
 - stdin/stdout 属于标准库处理的输入流, 其声明为 FILE 型的, 对应的函数前面都有f开头, 如fopen/fread/fwrite/fclose 标准库调用等;
 - `int fileno(FILE *fp)` 得到fp 对应的file descriptor, fd 对应的为系统API接口库, 函数主要包括 open/read/write/close 等系统级调用.

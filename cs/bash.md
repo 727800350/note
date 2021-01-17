@@ -1,3 +1,17 @@
+- [监控](#监控)
+- [查找](#查找)
+	- [autojump](#autojump)
+		- [issues](#issues)
+	- [fzf](#fzf)
+- [网络](#网络)
+	- [ssh](#ssh)
+	- [iptables](#iptables)
+- [File System](#file-system)
+- [Text](#text)
+- [OS](#os)
+- [进程](#进程)
+	- [定时任务crontab](#定时任务crontab)
+
 - `echo *`: 会输出当前目录的文件
 - `echo "*"`: 才会输出`*`
 - `watch -d -n 1 command`: 间隔1秒钟, 执行一次command, 并将结果的diff 高亮显示
