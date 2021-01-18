@@ -82,7 +82,7 @@ fseek(fp, 0, SEEK_SET);
 ```
 
 # Data Types
-```
+```c
 #include <stdint.h>
 uint64_t, int64_t, uint32_t, int32_t, uint16_t, int16_t, uint8_t, int8_t ...
 
@@ -186,7 +186,7 @@ x 为 `std::atomic<int>`
 
 - `char *strdup(const char *s);`相当于 `ptr2 = malloc(strlen(ptr1)+1); strcpy(ptr2, ptr1);`
 - `char *strndup(const char *s, size_t n);`  
-  By constrast, `strdup` is a Posix function, and it performs **dynamic memory allocation** for you. 
+  By constrast, `strdup` is a Posix function, and it performs **dynamic memory allocation** for you.
   It returns a pointer to **newly allocated memory** into which it has copied the string. But you are now responsible for this memory and **must eventually free it**.
 
 - `char *strchr(const char *s, int c);` 第一次出现, 没有找到返回NULL

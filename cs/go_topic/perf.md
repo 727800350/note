@@ -1,3 +1,20 @@
+- [go debug](#go-debug)
+- [pprof](#pprof)
+  - [go test](#go-test)
+  - [intro](#intro)
+  - [CPU profiling](#cpu-profiling)
+  - [Memory profiling](#memory-profiling)
+  - [Block profiling](#block-profiling)
+    - [Note that not all blocking is bad](#note-that-not-all-blocking-is-bad)
+    - [common suggestions that can help to reduce goroutine blocking](#common-suggestions-that-can-help-to-reduce-goroutine-blocking)
+      - [using copy-on-write technique](#using-copy-on-write-technique)
+      - [batch update](#batch-update)
+      - [sync.Pool](#syncpool)
+  - [Microbenchmarks](#microbenchmarks)
+  - [Profiling whole programs](#profiling-whole-programs)
+- [Framepointers](#framepointers)
+- [Flame graph (cont.)](#flame-graph-cont)
+
 # go debug
 The Go runtime collects various statistics during the life of your program.
 These stats are always collected, but normally supressed, you can enable their display by setting the GODEBUG environment variable.
@@ -5,17 +22,19 @@ As a garbage collected language, the performance of Go programs is often determi
 
 A simple way to obtain a general idea of how hard the garbage collector is working is to enable the output of GC logging.
 ```bash
-$ env GODEBUG=gctrace=1 godoc -http=:8080
+env GODEBUG=gctrace=1 godoc -http=:8080
 
-$ GODEBUG=gctrace=1 ./myserver
+GODEBUG=gctrace=1 ./myserver
 ```
 
 # pprof
 ## go test
 go test tool has a build-in support for several kinds of profiling
-- `go test -cpuprofole=cpu.out`
-- `go test -blockprofole=block.out`
-- `go test -memprofole=mem.out`
+- `go test -cpuprofile=cpu.out`
+- `go test -blockprofile=block.out`
+- `go test -memprofile=mem.out`
+
+在生成profile 结果的同时, 还会生成一个${pkg}.test, 之后就可以用 `go tool pprof ${pkg}.test mem.out` 来看profile 结果.
 
 ## intro
 - [youtube Golang UK Conference 2016 - Dave Cheney - Seven ways to Profile Go Applications](https://www.youtube.com/watch?v=zzAdEt3xZ1M)
@@ -38,7 +57,7 @@ go tool pprof /path/to/your/binary /path/to/your/profile
 ```
 
 This is a sample cpu profile:
-```
+```bash
 % go tool pprof $BINARY /tmp/c.p
 Entering interactive mode (type "help" for commands)
 (pprof) top
@@ -100,7 +119,7 @@ The profiler aims to sample an average of one blocking event per the specified a
 
 If a function contains several blocking operations and it's not obvious which one leads to blocking, use --lines flag to pprof.
 
-### Note that not all blocking is bad.
+### Note that not all blocking is bad
 When a goroutine blocks, the underlying worker thread simply switches to another goroutine.
 So blocking in the cooperative Go environment is very different from blocking on a mutex in a non-cooperative systems
 (e.g. typical C++ or Java threading libraries, where blocking leads to thread idling and expensive thread context switches). To give you some feeling, let's consider some examples.
@@ -202,7 +221,7 @@ func main() {
   log.Println(http.ListenAndServe("localhost:3999", nil))
 }
 ```
-Then use the pprof tool to look at 
+Then use the pprof tool to look at
 
 - a 30-second CPU profile: go tool pprof http://localhost:3999/debug/pprof/profile
 - the heap profile: go tool pprof http://localhost:3999/debug/pprof/heap
