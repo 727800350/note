@@ -50,7 +50,6 @@ tmux采用C/S模型,包括以下单元
 - prefix-number - 跳转到对应index的panel
 
 # 复制过程
-
 我的prefix为:C-a
 
 1. prefix-Esc 进入复制模式
@@ -76,6 +75,22 @@ set-option -g default-command "reattach-to-user-namespace -l bash"
 ```
 
 # 设置
+[.bashrc/.profile is not loaded on new tmux session (or window) — why?](
+https://stackoverflow.com/questions/9652126/bashrc-profile-is-not-loaded-on-new-tmux-session-or-window-why)
+
+tmux 会自动加载 .bash_profile, 而不会自动加载 .bashrc, 所以可以在 .bash_profile 中增加 `source ~/.bashrc` 的内容.
+
+[lose vim colorscheme in tmux mode](https://stackoverflow.com/questions/10158508/lose-vim-colorscheme-in-tmux-mode)
+To fix the issue, I have set up an alias in ~/.bashrc:
+```bash
+alias tmux="TERM=screen-256color-bce tmux"
+```
+And set up the default-terminal option in ~/.tmux.conf:
+```tmux
+set -g default-terminal "xterm"
+```
+Lastly, do `source ~/.bashrc` to load new alias.
+
 查看prefix现有绑定键:
 `tmux show-options -g | grep prefix`
 
@@ -94,4 +109,5 @@ unbind C-b
 bind C-x send-prefix
 ```
 这个不是及时生效,需要重启系统. 或者运行 `tmux source-file ~/.tmux.conf`
+
 
