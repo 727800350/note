@@ -1,3 +1,17 @@
+- [I/O 模型](#io-模型)
+  - [阻塞,无锁,无等待的区别](#阻塞无锁无等待的区别)
+  - [IO复用模型](#io复用模型)
+    - [Select](#select)
+    - [poll](#poll)
+    - [epoll](#epoll)
+- [高级IO函数](#高级io函数)
+  - [套接字超时](#套接字超时)
+- [非阻塞式IO](#非阻塞式io)
+- [信号驱动式IO](#信号驱动式io)
+- [零拷贝](#零拷贝)
+  - [网络数据持久化到磁盘 (Producer 到 Broker)](#网络数据持久化到磁盘-producer-到-broker)
+  - [磁盘文件通过网络发送(Broker 到 Consumer)](#磁盘文件通过网络发送broker-到-consumer)
+
 # I/O 模型
 在Unix 下的可用的5 中I/O 模型  
 

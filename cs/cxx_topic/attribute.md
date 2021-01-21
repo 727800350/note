@@ -39,7 +39,7 @@ void my_printf(const char *fmt, ...){
 如果在编译阶段就能看到警告,就不会等到运行时才发现,特别是当代码工程大,而打印语句在一定条件下才触发,问题就更难找了.
 
 当把函数声明为: `void my_printf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));`, 编译时就会报下面的错误
-```
+```plain
 attribute.cpp: In function `int main()':
 attribute.cpp:16: warning: int format, pointer arg (arg 2)
 attribute.cpp:16: warning: format argument is not a pointer (arg 3)

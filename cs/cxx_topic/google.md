@@ -46,7 +46,7 @@ CHECK(port == 80) << "HTTP port 80 is not exit.";
 - `DEFINE_string`: C++ string
 
 # gtest
-### Basic Assertions
+## Basic Assertions
 These assertions do basic true/false condition testing.
 
 Fatal assertion            | Nonfatal assertion         | Verifies
@@ -138,7 +138,7 @@ You can change the sampling frequency with the `CPUPROFILE_FREQUENCY` environmen
 - Finding places that do a lot of allocation
 
 下面是一个文字输出样例
-```
+```plain
 [root@dev:git]$ ./a.out
 Starting tracking the heap
 Dumping heap profile to heap.0001.heap (loop 0)
@@ -148,7 +148,7 @@ Dumping heap profile to heap.0009.heap (loop 8)
 Dumping heap profile to heap.0010.heap (loop 9)
 ```
 
-```
+```plain
 [root@dev:git]$ google-pprof --text ./a.out heap.0010.heap
 Using local file ./a.out.
 Using local file heap.0010.heap.
@@ -165,7 +165,7 @@ Total: 20.0 MB
 - 第三列为第二列的累积和
 
 通过`--base` 可以把某个heap 文件作为基准, 这样可以去掉一些初始化情况下的内存占用, 从而可以更加聚焦.
-```
+```plain
 [root@dev:git]$ google-pprof --text ./a.out --base heap.0001.heap heap.0010.heap
 Using local file ./a.out.
 Using local file heap.0010.heap.

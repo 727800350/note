@@ -11,11 +11,11 @@
 - mat.type: 矩阵的类型,包含有矩阵中元素的类型以及通道数信息
 - mat.isContinuous(); 返回bool类型表示是否连续存储
 
-- no longer need to manually allocate its memory and release it as soon as you do not need it. 
-- basically a class with two data parts: 固定大小的matrix header and a pointer to the matrix containing the pixel values 
+- no longer need to manually allocate its memory and release it as soon as you do not need it.
+- basically a class with two data parts: 固定大小的matrix header and a pointer to the matrix containing the pixel values
 - using a reference counting system, each Mat object has its own header, however the matrix may be shared between two instance of them
 	- can create headers which refer to only a subsection of the full data
-	
+
 		```C++
 		Mat D (A, Rect(10, 10, 100, 100) ); // using a rectangle
 		Mat E = A(Range::all(), Range(1,3)); // using row and column boundaries
@@ -50,7 +50,7 @@ the OpenCV display system uses BGR colors.
 	- img 可以是Mat 类型
 	- params - This is a int vector to which you have to insert some int parameters specifying the format of the image
 		- JPEG format: You have to puch_back CV_IMWRITE_JPEG_QUALITY first and then a number between 0 and 100 (higher is the better)
-			
+
 			```C++
 			vector<int> params;  
 		    params.push_back(CV_IMWRITE_JPEG_QUALITY);  
@@ -67,7 +67,7 @@ the OpenCV display system uses BGR colors.
 时间统计
 ```C++
 double t = (double)getTickCount();
-// do something ... 
+// do something ...
 t = ((double)getTickCount() - t) / getTickFrequency();
 cout << "Times passed in seconds: " << t << endl;
 ```

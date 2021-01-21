@@ -39,7 +39,7 @@ Errors such as this one cannot be detected until the compiler instantiates the d
   This can happen implicitly when we create an object based on a template or explicitly if we want to control when the code generation happens.
   For instance, the following code creates two specific stack instances and will normally cause the compiler to generate code for these two different types:
 
-  ```
+  ```cpp
   Stack<int> myIntStack;
   Stack<std::string> myStringStack;
   ```

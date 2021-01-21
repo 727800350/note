@@ -1,20 +1,20 @@
 # Signal
 就是告知某个进程发生了某个事件的通知, 有时也称为软件中断.
 信号通常是异步发生的, 也就是说进程预先不知道信号的准确发生时刻
- 
+
 在进程表的表项中有一个软中断信号域,该域中每一位对应一个信号,当有信号发送给进程时,对应位置位被设置.  
 由此可以看出,进程对不同的信号可以同时保留,但对于同一个信号,进程并不知道在处理之前来过多少个, 也就是信号不排队(但是现在有排队的信号实现).
 
 在一个信号处理函数运行期间, 正被递交的信号是阻塞的. 而且, 安装处理函数时在传递给sigaction函数的sa_mask 信号集中指定的任何额外信号也被阻塞.
 
-A process can selectively block the receipt of certain signals. 
+A process can selectively block the receipt of certain signals.
 When a signal is blocked, it can be delivered, but the resulting pending signal will not be received until the process unblocks the signal.
 
 一般有3 种方式进行操作
 
 1. `signal(SIGINT ,SIG_IGN)`: `SIG_IGN` 代表忽略信号. SIGINT信号代表由`InterruptKey`产生,通常是`CTRL+C` 或者是`DELETE` .发送给所有ForeGround Group的进程.
 2. `signal(SIGINT ,SIG_DFL)`: `SIG_DFL`代表执行系统默认操作,其实对于大多数信号的系统默认动作时终止该进程.这与不写此处理函数是一样的.
-3.  自定义的信号或是信号处理函数
+3. 自定义的信号或是信号处理函数
 
 网络编程中经常出现, 程序没有任何预兆的就退出了, 一般情况都是没有设置忽略PIPE信号.
 在我们的环境中当网络触发broken pipe (一般情况是write的时候, 没有write完毕, 接受端异常断开了), 系统默认的行为是直接退出.

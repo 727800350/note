@@ -25,7 +25,7 @@ export OMP_NUM_THREADS=4 ## 默认的是两个, 也可以再
 ```
 
 C/C++ 的格式
-```
+```cpp
 #pragma omp parallel [clauses]
 {
 	...
@@ -43,7 +43,7 @@ OpenMP follows the fork/join model:
 - omp_set_num_threads(n): set number of openMP threads
 - omp_get_num_threads() Returns number of threads in parallel region, Returns 1 if called outside parallel region
 - omp_get_thread_num() Returns id(value in [0, n - 1]) of thread, Master thread always has id 0
-- double omp_get_wtime();  Time in Seconds since a fixed point in the past 
+- double omp_get_wtime();  Time in Seconds since a fixed point in the past
 - omp_num_procs(): number of processors in the system, ex: `omp_set_num_threads(omp_num_procs())`
 
 ### env var
@@ -178,8 +178,8 @@ This clause can be applied when the following restrictions are met:
 
 # MPI
 ## intro
-Message Passing Interface 
-MPI是一种消息传递编程模型,并成为这种编程模型的代表.事实上,标准MPI虽然 很庞大,但是它的最终目的是服务于进程间通信这一目标的 
+Message Passing Interface
+MPI是一种消息传递编程模型,并成为这种编程模型的代表.事实上,标准MPI虽然 很庞大,但是它的最终目的是服务于进程间通信这一目标的
 MPICH是影响最大,用户最多的MPI实现
 
 ```c
@@ -270,13 +270,13 @@ int main(int argc, char ** argv)
 ```
 
 # CUDA
-CUDA(Compute Unified Device Architecture) 
+CUDA(Compute Unified Device Architecture)
 
 - CPU: 兼顾程序执行和数据运算的并行性, 通用性以及它们的平衡性.CPU的微架构偏重于程序执行的效率,不会一味追求某种运算极致速度而牺牲程序执行的效率.
-	如程序分支预测,推测执行,多重嵌套分支执行,并行执行时候的指令相关性和数据 相关性,多核协同处理时候的数据一致性等等复杂逻辑. 
+	如程序分支预测,推测执行,多重嵌套分支执行,并行执行时候的指令相关性和数据 相关性,多核协同处理时候的数据一致性等等复杂逻辑.
 - GPU: 由硬件实现的一组图形函数的集合,这些函数主要用于绘制各种图形所需要的运算. 这些和像素,光影处理,3D 坐标变换等相关的运算由GPU硬件加速来实现.
 	图形运算的特点是大量同类型数据的密集运算-如图形数据的矩阵运算,GPU的微架构就是面向适合于矩阵类型的数值 计算而设计的,大量重复设计的计算单元,
-	这类计算可以分成众多独立的数值计算-大量数值运 算的线程,而且数据之间没有像程序执行的那种逻辑关联性. 
+	这类计算可以分成众多独立的数值计算-大量数值运 算的线程,而且数据之间没有像程序执行的那种逻辑关联性.
 
 # Issues
 ## False Sharing

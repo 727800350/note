@@ -1,3 +1,22 @@
+- [const](#const)
+  - [more const in C++](#more-const-in-c)
+    - [const global variable](#const-global-variable)
+    - [const function](#const-function)
+    - [const class member](#const-class-member)
+  - [STL iterators](#stl-iterators)
+- [static](#static)
+  - [static全局变量](#static全局变量)
+  - [static局部变量](#static局部变量)
+  - [static函数](#static函数)
+    - [静态数据成员/成员函数(C++特有)](#静态数据成员成员函数c特有)
+      - [Static - Singleton Pattern](#static---singleton-pattern)
+- [goto](#goto)
+- [extern](#extern)
+- [volatile](#volatile)
+- [mutable](#mutable)
+  - [类中的 mutable](#类中的-mutable)
+- [define](#define)
+
 # const
 [C++ TUTORIAL: KEYWORD - 2018](http://www.bogotobogo.com/cplusplus/cplusplus_keywords.php#const)
 
@@ -96,7 +115,7 @@ c语言代码是以文件为单位来组织的,在一个源程序的所有源文
 
 一个进程在内存中的布局
 
-```
+```plain
 ----------
 栈区
 ----------
@@ -121,11 +140,11 @@ c语言代码是以文件为单位来组织的,在一个源程序的所有源文
 
 在进程的整个生命周期中,.data段和.bss段内的数据时跟整个进程同生共死的,也就是在进程结束之后这些数据才会寿终就寝.
 
-### static全局变量
+## static全局变量
 当一个进程的全局变量被声明为static之后,就是静态全局变量.
 静态全局变量和其他的全局变量的存储地点并没有区别,都是在.data段(已初始化)或者.bss段(未初始化)内,但是它只在定义它的源文件内有效,其他源文件无法访问它.
 
-### static局部变量
+## static局部变量
 普通的局部变量在栈空间上分配,这个局部变量所在的函数被多次调用时,每次调用这个局部变量在栈上的位置都不一定相同.
 局部变量也可以在堆上动态分配,但是记得使用完这个堆空间后要释放之.
 
@@ -138,7 +157,7 @@ static局部变量中文名叫静态局部变量.它与普通的局部变量比�
 
 需要注意的是由于static局部变量的这种特性,使得含静态局部变量的函数变得不可重入,即每次调用可能会产生不同的结果.这在多线程编程时可能会成为一种隐患.需要多加注意.
 
-### static函数
+## static函数
 相信大家还记得C++面向对象编程中的private函数,私有函数只有该类的成员变量或成员函数可以访问.
 在C语言中,也有"private函数",它就是接下来要说的static函数,完成面向对象编程中private函数的功能.
 
@@ -223,7 +242,7 @@ int main() {
 }
 ```
 output
-```
+```plain
 getInstance(): First instance
 getInstance(): previous instance
 ```
