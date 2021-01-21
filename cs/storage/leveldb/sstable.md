@@ -80,6 +80,14 @@ class BlockHandle {
 
 Data + Compression Type + CRC 组成一个block. CRC 的校验范围包括数据以及压缩类型
 
+这里compression type 为什么不是放在meta block 中, 而要每个block 都存储一个?
+
+有下面两个原因
+
+1. 从实现上来看, 前后两次打开db 时是可以指定不同的 compression type 的, 所以不能保证一个db 内部只有一种compression type.
+1. 另外即使保证从外面传的options 中的 compression type 不变, 也一样会发生不一样的情况, 因为在压缩数据的时候, 会检查压缩
+  比, 如果不理想会强制改为不压缩的.
+
 具体的读取physical block
 ```cpp
 // table/format.cc
@@ -98,6 +106,7 @@ struct BlockContents {
 当 file 是 PosixRandomAccessFile 类型时, 是从磁盘中读的, 所以是可以cache 的, 因此 cachable 和 heap_allocated 都是 true.
 
 如果 `options.verify_checksums` 为true, 会进行crc 校验.
+每次读取操作都可以相互独立的设置verify_checksums.
 
 如果 存储到磁盘上的时候进行了压缩, 还会进行解压缩, 最终返回的 BlockContents 是未压缩的.
 
@@ -168,11 +177,14 @@ class BlockBuilder {
   std::string           last_key_;
 }
 ```
+- options_: comparator 是 internal key comparator
 - last_key_: 前缀压缩使用
 - restarts_: restart point 的offset
 
 block 写入时,不会对 key 做排序的逻辑, 因为 sstable 的产生是由 memtable dump 或者 compact 时 merge 排序产生, key 的顺序上
 层已经保证.
+
+Add 的key 是internal key, 而不是user key
 
 # filter block
 [leveldb笔记之7:filter block](https://izualzhy.cn/filter-block)
@@ -239,17 +251,19 @@ filter 里面.
 另外一种情况, 也就是 [table_format.md](https://github.com/google/leveldb/blob/master/doc/table_format.md) 中举的例子,
 如果两个block 的offset 都在同一个2k 区间, 它们就会使用同一个filter.
 
-但是block 的大小阈值是4k, 怎么会发生这种情况呢? 这里还没完全理解.
+**但是block 的大小阈值是4k, 怎么会发生这种情况呢?**
+
+data block 的默认大小阈值是 4k, 但是可以配置成更小的值, 所以两个不同的block 落在同一个2k 区间是可能发生的.
 
 **为什么data block 的大小是4k, 而filter 的间隔是2k? 生成一个空的filter 的目的是啥?**
 
 因为在FilterBlockReader::KeyMayMatch 中, 根据block offset 定位到具体的哪个filter 就是简单的通过
 `block_offset >> kFilterBaseLg` 来计算的, 如果没有一个空的 filter 来占位, 就会导致计算出问题.
 
-一个sstable只有一个filter block,其内存储了所有block的filter数据. 具体来说,filter_data_k 包含了所有起始位置处于
-[base * (k - 1), base * k]范围内的block的key的集合的filter数据.
-
 按数据大小而非block切分主要是为了尽量均匀,以应对存在一些block的key很多,另一些block的key很少的情况.
+
+TODO: 这里不太理解, 一个data block 有一个offset, 一个offset 一定会产生一个有效的filter(或者和其他data block 共用一个),
+也就是这个data block 的所有数据都会产生在这个filter 里面, 还是没法均匀啊.
 
 filter block 的数据拿到后解析为 FilterBlockReader, 之后判断key 是不是被过滤, 通过 `FilterBlockReader::KeyMayMatch` 接口.
 ```cpp

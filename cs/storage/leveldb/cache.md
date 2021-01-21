@@ -43,14 +43,15 @@ TableCache::Get 最终会走到 Table::InternalGet
 - cache key: cache_id(8 bytes) + block offset(8 bytes)
 - cache value: `Block* block`
 
-读取到block 后放到block cache的地方
+这里之所以新生成来了一个cache_id, 而不是直接使用sstable 的file number.
 
+猜测是因为打开sstable 的时候, 传参中没有file number, 没法用, 所以不得已另造了一个cache id 出来.
+
+读取到block 后放到block cache的地方
 ```cpp
 // table/table.cc
 Iterator* Table::BlockReader(void* arg, const ReadOptions& options, const Slice& index_value)
 ```
-
-index_value: BlockHandle 结构, 里面有 offset 和 size 信息
-
-`options.fill_cache` 可以设置为 true, 应对当某些情况下比如遍历整个db 时不需要填充cache
+- index_value: BlockHandle 结构, 里面有 offset 和 size 信息
+- `options.fill_cache` 可以设置为 true, 应对当某些情况下比如遍历整个db 时不需要填充cache
 

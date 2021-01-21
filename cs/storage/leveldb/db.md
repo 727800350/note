@@ -5,6 +5,27 @@
   - [iterator](#iterator)
 - [major compaction](#major-compaction)
 
+# open
+```cpp
+// db/db_impl.cc
+Status DB::Open(const Options& options, const std::string& dbname, DB** dbptr) {
+  DBImpl* impl = new DBImpl(options, dbname);
+  // ...
+}
+```
+
+```cpp
+// db/db_impl.h
+class DBImpl : public DB {
+ private:
+  const InternalKeyComparator internal_comparator_;
+  const Options options_;  // options_.comparator == &internal_comparator_
+}
+```
+DBImpl 的构造函数中, options_ 的 comparator 会被改为以外面传入的 options.comparator 来初始化的 internal key comparator
+(InternalKeyComparator 类型).
+之后的大部分comparator, iterator 用到的都是internal key comparator.
+
 # write and minor compaction
 ```cpp
 // include/leveldb/db.h
@@ -329,6 +350,15 @@ Iterator* DBImpl::NewIterator(const ReadOptions& options) {
        : latest_snapshot));
 }
 ```
+internal iterator(MergingIterator 类型) 是原始的iterator, 每个kv 都可以读到, DBIterator 在 internal iterator 的基础上考
+虑下面两种情况:
+
+1. delete 的情况: 碰到一个删除的key, 它之后的同样的key 都要skip 掉
+1. sequence number: 当指定了sequence number 之后, 大于的也要skip 掉, 如果没有指定, 就取生成internal iterator 时当前db 的
+  最大sequence number (`Version::LastSequence()`)
+
+internal iterator 的Seek 方法, 参数是internal key 而不是user key.
+使用的sequence number 和 type 分别是前面提到的sequence number 和 kValueTypeForSeek.
 
 ```cpp
 Iterator* DBImpl::NewInternalIterator(const ReadOptions& options, SequenceNumber* latest_snapshot)
@@ -397,6 +427,17 @@ void MergingIterator::FindSmallest() {
   current_ = smallest;
 }
 ```
+
+**MergingIterator**, Seek internal key
+
+- memtable 和 immutable memtable 的 **MemTableIterator**, Seek internal key
+  - **SkipList::Iterator**: entry format: varint32(internal key size) + internal key + varint32(value size) + value, 所以
+   MemTableIterator 的Seek 在转换为SkipList::Iterator 的 Seek 之前要先转换格式, 在前面加上varint32(internal key size)
+- Level 0 文件的 table iterator, 类型是 **NewTwoLevelIterator**, Seek internal key, 内部由index block iterator 和 data block
+  iterator 组成, 其中data block iterator 由 Table::BlockReader返回, index block iterator 和 data block iterator 都是
+  Block::Iter 类型
+  - **Block::Iter**, Seek internal key
+  
 
 # major compaction
 [leveldb笔记之17:major compaction之筛选文件](https://izualzhy.cn/leveldb-PickCompaction)
