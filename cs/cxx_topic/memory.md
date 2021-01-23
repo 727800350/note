@@ -6,8 +6,15 @@
   - [spin lock using `std::atomic_flag`](#spin-lock-using-stdatomic_flag)
 - [Lock-free vs spin-lock](#lock-free-vs-spin-lock)
 - [ABA - A is not the same as A](#aba---a-is-not-the-same-as-a)
+- [x86_64处理器的指针赋值是原子操作吗?](#x86_64处理器的指针赋值是原子操作吗)
 
 # 内存模型
+内存模型主要包含了下面三个部分:
+
+- 原子操作:顾名思义,这类操作一旦执行就不会被打断,你无法看到它的中间状态,它要么是执行完成,要么没有执行.
+- 操作的局部顺序:一系列的操作不能被乱序.
+- 操作的可见性:定义了对于共享变量的操作如何对其他线程可见.
+
 [理解 C++ 的 Memory Order](http://senlinzhan.github.io/2017/12/04/cpp-memory-order/)
 
 为什么需要 Memory Order?
@@ -104,6 +111,11 @@ z.store(y.load(memory_order_acquire) + 1, memory_order_release)
 
 如果某个操作只要求是原子操作,除此之外,不需要其它同步的保障,就可以使用 Relaxed ordering.
 程序计数器是一种典型的应用场景.
+
+[理解 C++ 的 Memory Order](http://senlinzhan.github.io/2017/12/04/cpp-memory-order/)
+TODO: 计数器那个例子中, 写用的 memory_order_relaxed, 读没指定, 默认应该是 memory_order_seq_cst.
+可是 memory_order_relaxed 只保证这个操作是原子的, 可能结果还在寄存器, 或者cpu cache 中, 没法保证写到了内存, 主线程去读, 我理解可能读到的
+是一个旧的数据, 所以结果可能不是10000
 
 ## spin lock using `std::atomic_flag`
 - `std::atomic<T>` guarantees that accesses to the variable will be atomic. It however does not says how is the atomicity achieved. It can be using lock-free variable, or using a lock. The actual implementation depends on your target architecture and the type T.
@@ -276,4 +288,58 @@ However, there are still occasions that fool the CAS solution we presented.
 
 那么, 何种情形下使用 Weak CAS, 何种情形下使用 Strong CAS呢? 通常执行以下原则.
 若CAS在循环中(这是一种基本的CA应用模式),循环中不存在成千上万的运算(循环体是轻量级和简单的, 本例的无锁堆栈), 使用 `compare_ exchange_weak`.否则, 采用强关型的 `compare_exchange_strong`.
+
+# x86_64处理器的指针赋值是原子操作吗?
+[x86_64处理器的指针赋值是原子操作吗](https://blog.csdn.net/dog250/article/details/103948307)
+
+下面这段摘自Intel的手册
+
+> **guaranteed atomic operations**
+
+> The Intel486 processor (and newer processors since) guarantees that the following basic memory operations will always be
+> carried out atomically:
+
+> - Reading or writing a byte
+> - Reading or writing a word(2 bytes) aligned on a 16-bit boundary
+> - Reading or writing a doulbe word aligned on a 32-bit boundary
+
+> The Pentium processor (and newer processors since) guarantees that the following additional memory operations will
+> always be carried out atomically:
+
+> - Reading or writing a quadword aligned on a 64-bit boundary
+> - 16-bit accesses to uncached memory locations that fit within a 32-bit data bus.
+
+> The P6 family processors (and newer processors since) guarantee that the following additional memory operation will be
+> carried out atomically:
+
+> - Unaligned 16-, 32-, and 64-bit accesses to cached memory that fit within a cache line.
+
+> Accesses to cacheable memory that are split across cache lines and page boundaries are not guaranteed to be atomically
+> by the Intel Core 2 Duo, Intel Atom, Intel Core Duo, Pentium M, Pentium 4, Intel Xeon, P6 family, Pentium, and
+> Intel486 processors.
+
+也就是说在不跨域cache line 的前提下, 指针赋值是atomic 的.
+
+## talk is cheap, show me the code
+考虑一个指针p,两个或者多个线程分别对它进行赋值:
+```cpp
+long *p;
+
+// thread 1
+p = a1;
+
+// thread 2
+p = a2
+```
+结果可以预期吗?如果你笃信指针赋值是原子操作,那么最终结果,p不是a1,便是a2,这是确定的.
+
+然而Intel手册里说,如果指针p跨越了cacheling的边界,便不能保证赋值操作是原子的.
+为了复现Intel的说法,从而证明指针赋值并非原子的,只需要给出一个反例,即p既不是a1,也不是a2.
+
+在编码之前,我们先查一下自己实验的机器上的cacheline的大小:
+```bash
+cat /sys/devices/system/cpu/cpu1/cache/index0/coherency_line_size
+getconf LEVEL1_DCACHE_LINESIZE
+```
+两种方式得到的都是 64.
 
