@@ -204,7 +204,7 @@ int main() {
 }
 ```
 
-#### Static - Singleton Pattern
+#### static - singleton pattern
 Singleton design pattern is a good example of static member function and static member variable.
 In this pattern, we put constructor in private section not in public section of a class. So, we can not access the constructor to make an instance of the class.
 Instead, we put a public function which is static function. The getInstance() will make an instance only once.
@@ -259,11 +259,139 @@ getInstance(): previous instance
 # volatile
 volatile 指示变量随时可能发生变化的, 每次使用时都需要去内存里重新读取它的值, 与该变量有关的运算, 不要进行编译优化
 
+[谈谈 C/C++ 中的 volatile](https://liam.page/2018/01/18/volatile-in-C-and-Cpp/)
+
+程序中 volatile 的含义
+
+对于程序员来说,程序本身的任何行为都必须是可预期的.那么,在程序当中,什么才叫 volatile 呢?
+这个问题的答案也很简单:程序可能受到程序之外的因素影响.
+
+考虑以下 C/C++ 代码.
+```cpp
+volatile int *p = /* ... */;
+int a, b;
+a = *p;
+b = *p;
+```
+若忽略volatile ,那么p 就只是一个指向int 类型的指针. 这样一来,`a = *p` 和 `b = *p` 两句,就只需要从内存中读取一次就够了.
+因为从内存(这里包括cpu cache 和main memory)中读取一次之后,CPU 的寄存器中就已经有了这个值,把这个值直接复用就可以了.
+这样一来,编译器就会做优化,把两次访存的操作优化成一次.
+这样做是基于一个假设:我们在代码里没有改变 p 指向内存地址的值,那么这个值就一定不会发生改变.
+
+然而,由于MMIP(Memory mapped I/O)的存在,这个假设不一定是真的.例如说,假设p 指向的内存是一个硬件设备.这样一来,从 p 指向的内
+存读取数据可能伴随着可观测的副作用:硬件状态的修改.此时,代码的原意可能是将硬件设备返回的连续两个int 分别保存在a 和b 当中.
+这种情况下,编译器的优化就会导致程序行为不符合预期了.
+
+总结来说,被 volatile 修饰的变量,在对其进行读写操作时,会引发一些可观测的副作用.而这些可观测的副作用,是由程序之外的因素决
+定的.
+
+> [cv (const and volatile) type qualifiers](https://en.cppreference.com/w/cpp/language/cv)
+
+> Every access (read or write operation, member function call, etc.) made through a glvalue expression of
+> volatile-qualified type is treated as a visible side-effect for the purposes of optimization (that is, within a single
+> thread of execution, volatile accesses cannot be optimized out or reordered with another visible side effect that is
+> sequenced-before or sequenced-after the volatile access. This makes volatile objects suitable for communication with a
+> signal handler, but not with another thread of execution, see std::memory_order). Any attempt to refer to a volatile
+> object through a non-volatile glvalue (e.g. through a reference or pointer to non-volatile type) results in undefined
+> behavior.
+
+volatile 可以解决多线程中的某些问题,这一错误认识荼毒多年.例如,在知乎「volatile」话题下的介绍就是「多线程开发中保持可见性
+的关键字」.为了拨乱反正,这里先给出结论(注意这些结论都基于本文第一节提出的约定之上):**volatile 不能解决多线程中的问题**.
+
+按照 [Hans Boehm & Nick Maclaren 的总结](
+http://web.archive.org/web/20180120044239/http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2016.html),
+volatile 只在三种场合下是合适的.
+
+- 和信号处理(signal handler)相关的场合,
+- 和内存映射硬件(memory mapped hardware)相关的场合,
+- 和非本地跳转(setjmp 和 longjmp)相关的场合.
+
+以下我们尝试来用 volatile 关键字解决多线程同步的一个基本问题:happens-before.
+
+## code
+### naive case
+首先我们考虑这样一段(伪)代码.
+```cpp
+// global shared data
+bool flag = false;
+
+thread1() {
+  flag = false;
+  Type* value = new Type(/* parameters */);
+  thread2(value);
+  while (true) {
+    if (flag == true) {  // (1)
+      apply(value);
+      break;
+    }
+  }
+  thread2.join();
+  if (nullptr != value) { delete value; }
+  return;
+}
+
+thread2(Type* value) {
+  // do some evaluations
+  value->update(/* parameters */);  // (2)
+  flag = true;
+  return;
+}
+```
+这段代码将 thread1 作为主线程, 等待 thread2 准备好value.
+因此,thread2 在更新 value 之后将 flag 置为真,而 thread1 死循环地检测 flag.
+简单来说,这段代码的意图希望实现 thread2 在 thread1 使用 value 之前执行完毕这样的语义.
+
+对多线程编程稍有了解的人应该知道,这段代码是有问题的.问题主要出在两个方面.
+
+1. 在thread1 中,flag = false 赋值之后,在 while 死循环里,没有任何机会修改 flag 的值,因此在运行之前,编译器优化可能会将
+  if (flag == true) 的内容全部优化掉.
+1. 在thread2 中,尽管逻辑上 update 需要发生在 flag = true 之前,但编译器和 CPU 并不知道,因此编译器优化和 CPU 乱序执行可能
+  会使 flag = true 发生在 update 完成之前,因此 thread1 执行 apply(value) 时可能 value 还未准备好.
+
+### 加一个 volatile 试试?
+把flag 的声明改为
+```cpp
+volatile bool flag = false;
+```
+其他地方不动. 这样, (1) 处, 由于 flag == true 是对volatile 变量的访问, 故而if-block 不会被优化掉, 然后尽管flag 是
+volatile-qualified, 但value 并不是.
+因而编译器仍有可能将 (2) 处的update 和对flag 的赋值交换顺序.
+此外, 由于 volatile 禁止了编译器对 flag 的优化,这样使用 volatile 不仅无法达成目的,反而会导致性能下降.
+
+### 再加一个 volatile 呢?
+在错误的理解中,可能会对 value 也加以 volatile 关键字修饰,颇有些「没有什么是一个 volatile 解决不了的,如果不行,那就两个」
+的意思.
+```cpp
+volatile bool flag = false;
+volatile Type* value = new Type();
+```
+因此 (2) 处对两个 volatile-qualified 变量进行访问时,编译器不会交换他们的顺序.看起来就万事大吉了.
+
+然而,volatile 只作用在编译器上,但我们的代码最终是要运行在 CPU 上的.尽管编译器不会将 (2) 处换序,但 CPU 的乱序执行
+(out-of-order execution)已是几十年的老技术了,在 CPU 执行时,value 和 flag 的赋值仍有可能是被换序了的(store-store).
+
+### 到底应该怎样做?
+回顾一下,我们最初遇到的问题其实需要解决两件事情.一是 flag 相关的代码块不能被轻易优化消失,二是要保证线程同步的
+happens-before 语义. 但本质上,设计使用 flag 本身也就是为了构建 happens-before 语义.这也就是说,两个问题,后者才是核心,如有
+其他不用 flag 的办法解决问题,那么 flag 就不重要.
+
+对于当前问题,最简单的办法是使用原子操作.
+```cpp
+std::atomic<bool> flag{false};
+```
+由于对 `std::atomic<bool>` 的操作是原子的,同时构建了良好的内存屏障,因此整个代码的行为在标准下是良定义的.
+
+除此之外,还可以结合使用互斥量和条件变量来避免 while 死循环空耗 CPU 的情况.
+
+## const vs volatile
 const, volatile的作用以及起作用的阶段
 
-- const只在编译期有用,在运行期无用, const在编译期保证在C的"源代码"里面,没有对其修饰的变量进行修改的地方(如有则报错,编译不通过),而运行期该变量的值是否被改变则不受const的限制.
-- volatile在编译期和运行期都有用, 在编译期告诉编译器:请不要做自以为是的优化,这个变量的值可能会变掉, 在运行期:每次用到该变量的值,都从内存中取该变量的值.
-- const 和 volatile 不是反义词, 可以同时修饰一个变量, 表示一个变量在程序编译期不能被修改且不能被优化,在程序运行期,变量值可修改,但每次用到该变量的值都要从内存中读取,以防止意外错误.
+- const只在编译期有用,在运行期无用, const在编译期保证在C的"源代码"里面,没有对其修饰的变量进行修改的地方(如有则报错,编译
+  不通过),而运行期该变量的值是否被改变则不受const的限制.
+- volatile在编译期和运行期都有用, 在编译期告诉编译器:请不要做自以为是的优化,这个变量的值可能会变掉, 在运行期:每次用到该
+  变量的值,都从内存中取该变量的值.
+- const 和 volatile 不是反义词, 可以同时修饰一个变量, 表示一个变量在程序编译期不能被修改且不能被优化,在程序运行期,变量值
+  可修改,但每次用到该变量的值都要从内存中读取,以防止意外错误.
 
 # mutable
 ref: [C++ 中mutable 关键字存在的必要性是什么?](https://www.zhihu.com/question/64969053/answer/226383958)
