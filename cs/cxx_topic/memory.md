@@ -342,4 +342,19 @@ cat /sys/devices/system/cpu/cpu1/cache/index0/coherency_line_size
 getconf LEVEL1_DCACHE_LINESIZE
 ```
 两种方式得到的都是 64.
+OK,64字节的cacheline,我们下面就制造一个跨越64字节边界的指针.
+[is pointer assignment atomic](https://gist.github.com/ericuni/57301d2f63e6c6716d73d621b319c3e3)
+
+结果能看到既不是a,也不是b 的结果(自己的机器上跑了一晚上却没有看到, 应该和CPU 有关).
+
+这意味着什么?
+
+这意味着不加锁的指针赋值,极其危险!
+
+什么?难道编译器不帮忙?
+
+编译器只能尽量帮忙,哦,对了,还有Linux内核的伙伴系统,slab系统,都只是尽量帮忙,其余的事,只能看造化.谁也不能保证你不会写出上
+面类似pack的结构体,因此结构体的字段布局非常重要.
+
+即便这样,你也不能保证结构体对象恰好被载入你希望的位置,只要超过一个cacheline大小的结构体,内部字段的赋值就一定小心再小心:
 
