@@ -100,6 +100,39 @@ struct A {
 C++标准委员会不限制由"public/protected/private"关键字分开的各段在实现时的先后顺序, 因此, 不同的编译器实现的内存布局可能
 并不相同.
 
+# std::atomic
+[CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced. What do they really do?”](
+https://www.youtube.com/watch?v=ZQFzMfHIxng)
+
+What types can be made atomic?
+
+Any trivially copyable type can be made atomic
+
+What is trivially copyable?
+
+- Continuous chunk of memory
+- Copying the object means copying all bits (memcpy)
+- No virtual functions, noexcept constructor
+
+```cpp
+std::atomic<int> i;  // ok
+std::atomic<double> x;  // ok
+struct S { long x; long y; }; std::atomic<S> s;  // ok
+
+class Foo {
+ public:
+  virtual ~Foo() = default;
+};
+std::atomic<Foo> foo;
+// 编译报错, error: static assertion failed: std::atomic requires a trivially copyable type
+```
+
+What operations can be done on `std::atomic<T>`?
+
+- Assignment (read and write) – always
+- Special atomic operations
+- Other operations depend on the type T
+
 # 内存模型
 内存模型主要包含了下面三个部分:
 
