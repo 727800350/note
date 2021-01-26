@@ -1,3 +1,21 @@
+- [constructor and operator](#constructor-and-operator)
+  - [operator=](#operator)
+  - [copy contructor](#copy-contructor)
+  - [Returning a Reference to a Non-const Object](#returning-a-reference-to-a-non-const-object)
+  - [Returning a const Object](#returning-a-const-object)
+- [初始化列表](#初始化列表)
+- [Virtual Function](#virtual-function)
+  - [虚函数的实现的基本原理](#虚函数的实现的基本原理)
+    - [parameter of an overriding function](#parameter-of-an-overriding-function)
+    - [虚析构函数](#虚析构函数)
+    - [在非虚函数中调用虚函数](#在非虚函数中调用虚函数)
+    - [子类调用父类的方法](#子类调用父类的方法)
+- [嵌套类](#嵌套类)
+  - [派生](#派生)
+- [class member memory layout](#class-member-memory-layout)
+  - [单继承](#单继承)
+  - [多重继承](#多重继承)
+
 # constructor and operator
 ```C++
 class Empty {}; // sizeof(Empty) 为 1
@@ -465,4 +483,37 @@ Now a StudentAssitant object will contain a single copy of a Worker. Actually, t
 objects share a common Worker object instead of each carrying its own copy.
 
 Here, the virtual key word does not have any obvious connection to the virtual in virtual functions.
+
+# class member memory layout
+## 单继承
+```cpp
+struct C {
+  int c1;
+  void cf();
+} c;
+
+struct D: C {
+  int d1;
+  void df();
+} d;
+```
+```cpp
+&d.c1 == &d
+```
+在D 中, 并不是说基类C 的数据一定要放在D 的数据之前, 只不过这样放的话, **能够保证D 中的C 对象地址, 恰好是D 对象地址的第一
+个字节**. 这种安排之下, **有了派生类D 的指针, 要获得基类C 的指针, 就不必要计算偏移量了**.
+几乎所有知名的C++ 厂商都采用这种内存安排(基类成员在前).
+在单继承类层次下,每一个新的派生类都简单地把自己的成员变量添加到基类的成员变量之后.
+
+## 多重继承
+```cpp
+struct F: C, E {
+  int f1;
+  void ff();
+};
+```
+与单继承相同的是, F实例拷贝了每个基类的所有数据. 与单继承不同的是, 在多重继承下, 内嵌的两个基类的对象指针不可能全都与派
+生类对象指针相同. 具体的编译器实现可以自由地选择内嵌基类和派生类的布局.
+VC++ 按照基类的声明顺序先排列基类实例数据,最后才排列派生类数据. 当然,派生类数据本身也是按照声明顺序布局的.
+(本规则并非一成不变,我们会看到,当一些基类有虚函数而另一些基类没有时,内存布局并非如此).
 
