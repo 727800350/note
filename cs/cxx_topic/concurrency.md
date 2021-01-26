@@ -11,7 +11,7 @@
   - [talk is cheap, show me the code](#talk-is-cheap-show-me-the-code)
 
 # std::atomic
-[CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced. What do they really do?”](
+[CppCon 2017: Fedor Pikus "C++ atomics, from basic to advanced. What do they really do?"](
 https://www.youtube.com/watch?v=ZQFzMfHIxng)
 
 What types can be made atomic?
@@ -39,9 +39,68 @@ std::atomic<Foo> foo;
 
 What operations can be done on `std::atomic<T>`?
 
-- Assignment (read and write) – always
+- Assignment and copy (read and write) – always(不是指两个atomic 之前的赋值)
 - Special atomic operations
 - Other operations depend on the type T
+
+what operations can be done on `std::atomic<int>`?
+```cpp
+std::atomic<int> x{0}; // Not x=0! x(0) is OK
+++x;  // Atomic pre-increment
+x++;  // Atomic post-increment
+x += 1;  // Atomic increment
+x |= 2;
+x *= 2;  // does not compile, there is no atomic multiply
+int y = x * 2;
+x = y + 1;
+x = x + 1;  // Atomic read followed by atomic write
+x = x * 2;  // Atomic read followed by atomic write
+
+std::atomic<int> z(0);
+z = x;  // does not compile
+```
+
+- `std::atomic<T>` provides operator overloads only for atomic operations (incorrect code does not compile)
+- Increment and decrement for raw pointers
+- Addition, subtraction, and bitwise logic operations for integers (++, +=, –, -=, |=, &=, ^=)
+- `std::atomic<bool>` is valid, no special operations
+- `std::atomic<double>` is valid, no special operations, No atomic increment for floating-point numbers
+
+What "other operations" can be done on `std::atomic<T>`?
+
+- Explicit reads and writes:
+```cpp
+std::atomic<T> x;
+T y = x.load(); // Same as T y = x;
+x.store(y); // Same as x = y;
+```
+- Atomic exchange:
+```cpp
+T y;
+T z = x.exchange(y); // Atomically: z = x; x = y;
+```
+- Compare-and-swap (conditional exchange): Key to most lock-free algorithms
+```cpp
+T expected;
+T desired;
+bool success = x.compare_exchange_strong(expected, desired);
+  // expected: reference to the value expected to be found in the atomic object.
+  // If x==expected, make x=desired and return true
+  // Otherwise, set expected=x and return false
+```
+
+Compare-and-swap(CAS) is used in most lock-free algorithms.
+
+Example: atomic increment with CAS
+```cpp
+std::atomic<int> x{0};
+int x0 = x;
+while (!x.compare_exchange_strong(x0, x0 + 1)) {}
+```
+For int, we have atomic increment, but CAS can be used to increment doubles, multiply integers, and many more
+```cpp
+while (!x.compare_exchange_strong(x0, x0*2)) {}
+```
 
 # 内存模型
 内存模型主要包含了下面三个部分:
