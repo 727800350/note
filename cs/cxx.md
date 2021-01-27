@@ -165,14 +165,6 @@ INT_MAX, INT_MIN
 - `const char* str1 = "abc";` 字符指针指向的是一个**字符串常量**(存储在程序的常量区)的首地址.
 - `char str2[] = "abc";`: str2是字符数组,它存放了一个字符串, 编译会自动在str2 末尾添加`\0`.  
 
-# std::atomic
-x 为 `std::atomic<int>`
-
-- `x.load()`: 返回x的值.
-- `x.store(n)`: 把x设为n, 什么都不返回.
-- `x.fetch_add(n)`, `x.fetch_sub(n)`, `x.fetch_xxx(n)`: x += n, x-= n(或更多指令), 返回修改之前的值.
-- `x.exchange(n)`: 把x设为n, 返回设定之前的值.
-
 ## C API
 ### string.h
 - `void *memset(void *s, int c, size_t n)`

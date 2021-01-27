@@ -102,6 +102,53 @@ For int, we have atomic increment, but CAS can be used to increment doubles, mul
 while (!x.compare_exchange_strong(x0, x0*2)) {}
 ```
 
+`std::atomic` is not always lock-free, alignment and padding matter!
+`std::atomic_flag` is guaranteed to be lock-free.
+
+Strong and weak compare-and-swap
+
+conceptually (pseudo-code):
+```cpp
+bool compare_exchange_strong(T& old_v, T new_v) {
+  // read is faster than write, double-checked locking pattern
+  T tmp = value;  // Current value of the atomic
+  if (tmp != old_v) {
+    old_v = tmp;
+    return false;
+  }
+
+  Lock L; // Get exclusive access
+  tmp = value; // Current value of the atomic
+  if (tmp != old_v) {
+    old_v = tmp;
+    return false;
+  }
+  value = new_v;
+  return true;
+}
+```
+Lock is not a real mutex but some form of exclusive access implemented in hardware.
+
+If exclusive access is hard to get, let someone else try:
+```cpp
+bool compare_exchange_weak(T& old_v, T new_v) {
+  T tmp = value;  // Current value of the atomic
+  if (tmp != old_v) {
+    old_v = tmp;
+    return false;
+  }
+  TimedLock L; // Get exclusive access or fail
+  if (!L.locked()) return false; // old_v is correct
+  tmp = value; // value could have changed!
+  if (tmp != olv_v) {
+    old_v = tmp;
+    return false;
+  }
+  value = new_v;
+  return true;
+}
+```
+
 # 内存模型
 内存模型主要包含了下面三个部分:
 
@@ -153,35 +200,54 @@ memory_order_seq_cst
 
 如下面代码(x为普通变量,y,z为原子变量)
 ```C++
--Thread 1-       -Thread 2-
-x = 1            if (z.load() == 3) {
-y.store(2);          assert(x == 1)
-z.store(3);          assert(y.load() == 2)
-                 }
+// thread 1
+x = 1
+y.store(2);
+z.store(3);
+
+// thread 2
+if (z.load() == 3) {
+  assert(x == 1);  // ok
+  assert(y.load() == 2);  // ok
+}
 ```
 如果线程2 中读到的z值为3,那么,在线程1中,由于x = 1 和 y.sotre 发生在z.store 之前, 所以在线程2中也保持了这种顺序.
 于是线程2 中的两个assert是不可能失败的.
 这种模型具有最强的数据一致性,因此性能也最差.
 
 ## `memory_order_acquire/memory_order_release`
-这种模型比`memory_order_seq_cst`稍微宽松一些,它**移除了不相关的原子变量的顺序一致性**.
+If an atomic store in thread A is tagged memory_order_release and an atomic load in thread B from the same variable is
+tagged memory_order_acquire, **all memory writes(non-atomic and relaxed atomic**) that happened-before the atomic store
+from the point of view of thread A, become visible side-effects in thread B.
+That is, once the atomic load is completed, thread B is guaranteed to see everything thread A wrote to memory.
+
+**The synchronization is established only between the threads releasing and acquiring the same atomic variable. Other
+threads can see different order of memory accesses than either or both of the synchronized threads.**
+
+Mutual exclusion locks, such as std::mutex or atomic spinlock, are an example of release-acquire synchronization:
+when the lock is released by thread A and acquired by thread B, everything that took place in the critical section
+(before the release) in the context of thread A has to be visible to thread B (after the acquire) which is executing the
+same critical section.
+
 还是上面那段代码. 如果我们把内存模型改为acquire和release, 比如:
 ```C++
--Thread 1-
- x = 1
- y.store(2, memory_order_release);
- z.store(3, memory_order_release);
+// thread 1
+x = 1
+y.store(2, memory_order_release);
+z.store(3, memory_order_release);
 
--Thread 2-
- if (z.load(memory_order_acquire) == 3) {
-     assert(x == 1)
-     assert(y.load(memory_order_acquire) == 2)
- }
+// thread 2
+if (z.load(memory_order_acquire) == 3) {
+  assert(x == 1);  // ok
+  assert(y.load(memory_order_acquire) == 2);  // not ok
+}
 ```
-原子变量使用的是acquire 和 release, y 和z 又是两个不相关的原子变量, 他们的执行顺序无法保证, 因此线程1中的y.store 和
-z.store 两个操作的顺序是无法确定的, 因此线程2 中z = 3 时, y.store 可能还未执行, 所以y 的assert 可能会失败.
+thread 1 中, z.store 用的 release, 意味着thread 1 中z.store 之前的 non-atomic and relaxed atomic writes 都会在thread 2
+中acquire z 之后可见.
 
-而由于x 不是原子变量, 因此x = 1 发生在z.store 之前是在线程1 中是可以保证的, 因此assert(x == 1) 一定成功.
+x 是non-atomic 变量, 所以 x == 1 一定是成立的.
+
+y 是atomic 变量, 且也用了release, 所以y 的执行顺序不一定在z 之前, 所以 y 的 assert 可能会失败.
 
 但是, 如果把线程1 中 z.store替换为
 ```cpp
@@ -190,10 +256,18 @@ z.store(y.load(memory_order_acquire) + 1, memory_order_release)
 在这种情况下,由于z 依赖y, 所以在线程1中, y.store发生在z.store 之前的顺序是可以保证的.
 
 ## `memory_order_consume/memory_order_release`
+Typical use cases for this ordering involve read access to rarely written concurrent data structures (routing tables,
+configuration, security policies, firewall rules, etc) and publisher-subscriber situations with pointer-mediated
+publication, that is, when the producer publishes a pointer through which the consumer can access information: there is
+no need to make everything else the producer wrote to memory visible to the consumer(which may be an expensive operation
+on weakly-ordered architectures).
+
 这种模型又比`memory_order_seq_cst`更加宽松, 它不仅移除了不相关的原子变量的顺序一致性, 还移除了不相关普通变量的一致性.
 如果把上面代码中的`memory_order_acquire`改为`memory_order_consume`, 那么线程2中的两个assert都有可能失败.
 
 同样的,如果某个原子变量依赖其它的变量(原子或者非原子)的话,那么这两个变量间的顺序一致性是可以保证的.
+
+这个模型已经不推荐使用.
 
 ## `memory_order_relaxed`/`memory_order_relaxed`
 这种模型最宽松, 他不对任何顺序做保证, 仅仅保证操作的原子性.
@@ -203,13 +277,34 @@ z.store(y.load(memory_order_acquire) + 1, memory_order_release)
 的, 调用store 的线程写可能读到的是old value, 因为可能是从寄存器或者cpu cache 中读的, 即使是从内存中读的, 调用store 的线
 程写的结果也可能还在寄存器或者cpu cache 中而没有刷回内存.
 
-如果某个操作只要求是原子操作,除此之外,不需要其它同步的保障,就可以使用 Relaxed ordering.
-程序计数器是一种典型的应用场景.
+Typical use for relaxed memory ordering is incrementing counters, such as the reference counters of std::shared_ptr,
+since this only requires atomicity, but not ordering or synchronization (note that decrementing the shared_ptr counters
+requires acquire-release synchronization with the destructor)
+```cpp
+#include <vector>
+#include <iostream>
+#include <thread>
+#include <atomic>
 
-[理解 C++ 的 Memory Order](http://senlinzhan.github.io/2017/12/04/cpp-memory-order/)
-TODO: 计数器那个例子中, 写用的 memory_order_relaxed, 读没指定, 默认应该是 memory_order_seq_cst.
-可是 memory_order_relaxed 只保证这个操作是原子的, 可能结果还在寄存器, 或者cpu cache 中, 没法保证写到了内存, 主线程去读,
-我理解可能读到的是一个旧的数据, 所以结果可能不是10000.
+std::atomic<int> cnt = {0};
+
+void f() {
+  for (int n = 0; n < 1000; ++n) {
+    cnt.fetch_add(1, std::memory_order_relaxed);
+  }
+}
+
+int main() {
+  std::vector<std::thread> v;
+  for (int n = 0; n < 10; ++n) {
+    v.emplace_back(f);
+  }
+  for (auto& t : v) {
+    t.join();
+  }
+  assert(cnt == 10000);  // ok
+}
+```
 
 ## spin lock using `std::atomic_flag`
 - `std::atomic<T>` guarantees that accesses to the variable will be atomic. It however does not says how the atomicity
