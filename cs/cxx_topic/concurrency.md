@@ -285,6 +285,7 @@ requires acquire-release synchronization with the destructor)
 #include <iostream>
 #include <thread>
 #include <atomic>
+#include <cassert>
 
 std::atomic<int> cnt = {0};
 
@@ -305,6 +306,8 @@ int main() {
   assert(cnt == 10000);  // ok
 }
 ```
+TODO: cnt == 10000 会对cnt 执行一个load 操作, 默认采用的是 memory_order_seq_cst, 然后在load 时, 相当于acquire, 但是
+acquire 和 relaxed 在一起?
 
 ## spin lock using `std::atomic_flag`
 - `std::atomic<T>` guarantees that accesses to the variable will be atomic. It however does not says how the atomicity
