@@ -37,8 +37,7 @@ std::atomic<Foo> foo;
 // 编译报错, error: static assertion failed: std::atomic requires a trivially copyable type
 ```
 
-What operations can be done on `std::atomic<T>`?
-
+## What operations can be done on `std::atomic<T>`?
 - Assignment and copy (read and write) – always(不是指两个atomic 之前的赋值)
 - Special atomic operations
 - Other operations depend on the type T
@@ -105,8 +104,7 @@ while (!x.compare_exchange_strong(x0, x0*2)) {}
 `std::atomic` is not always lock-free, alignment and padding matter!
 `std::atomic_flag` is guaranteed to be lock-free.
 
-Strong and weak compare-and-swap
-
+## Strong and weak compare-and-swap
 conceptually (pseudo-code):
 ```cpp
 bool compare_exchange_strong(T& old_v, T new_v) {
@@ -124,6 +122,16 @@ bool compare_exchange_strong(T& old_v, T new_v) {
     return false;
   }
   value = new_v;
+  return true;
+}
+
+bool compare_exchange_strong(T& old_v, T new_v, memory_order on_success, memory_order on_failure) {
+  T tmp = value.load(on_failure);
+  if (tmp != old_v) { old_v = tmp; return false; }
+  Lock L; // Get exclusive access
+  tmp = value; // value could have changed!
+  if (tmp != olv_v) { old_v = tmp; return false; }
+  value.store(new_v, on_success);
   return true;
 }
 ```
@@ -149,12 +157,73 @@ bool compare_exchange_weak(T& old_v, T new_v) {
 }
 ```
 
+## Atomic variables are rarely used by themselves.
+### Atomic queue
+```cpp
+int q[N];
+std::atomic<size_t> front;
+
+// 先不考虑 multiple writers, 同时也先不考虑how to synchronize with the readers, because the readers have to know when
+// you're finished writing
+void push(int x) {
+  size_t my_slot = front.fetch_add(1);  // fetch_add 返回之前的值
+  q[my_slot] = x;
+}
+```
+Atomic variable is an index to non-atomic memory.
+That's how pretty much all lock-free data structures are.
+
+### Atomic list
+```cpp
+struct node { int value; node* next; };
+std::atomic<node*> head;
+void push_front(int x) {
+  node* new_n = new node;
+  new_n->value = x;
+  node* old_h = head;
+  do {
+    new_n→next = old_h;
+  } while (!head.compare_exchange_strong(old_h,new_n);  // new node is new head
+}
+```
+Atomic variable is a pointer to (non-atomic) memory.
+
+Atomic variables as gateways to memory access (generalized pointers)
+
+- Atomics are used to get exclusive access to memory or to reveal memory to other threads
+- But most memory is not atomic!
+- What guarantees that other threads see this memory in the desired state
+  - For acquiring exclusive access: data may be prepared by other threads, must be completed
+  - For releasing into shared access: data is prepared by the owner thread, must become visible to everyone
+
+## RCU(Read, Copy and Update)
+- [CppCon 2017: Fedor Pikus “Read, Copy, Update, then what? RCU for non-kernel programmers”](
+  https://www.youtube.com/watch?v=rxQ5K9lo034)
+- [Read, Copy, Update... Then What by Fedor Pikus](
+  https://github.com/CppCon/CppCon2017/blob/master/Presentations/Read%2C%20Copy%2C%20Update...%20Then%20What/Read%2C%20Copy%2C%20Update...%20Then%20What%20-%20Fedor%20Pikus%20-%20CppCon%202017.pdf)
+```cpp
+std::atomic<node*> head;
+
+// readers
+node* p = head.load(std::memory_order_acquire)
+do_search(p);
+
+// writer
+// attention: no writer synchronization, only one writer thread or use an mutex if several writers
+node* new_node = new node();
+node* next = head.load(std::memory_order_relaxed)->next;  // read current data
+new_node->next = next;  // copy it to new data
+head.store(new_node, std::memory_order_relaxed);  // update current data
+```
+
 # 内存模型
 内存模型主要包含了下面三个部分:
 
 - 原子操作:顾名思义,这类操作一旦执行就不会被打断,你无法看到它的中间状态,它要么是执行完成,要么没有执行.
 - 操作的局部顺序:一系列的操作不能被乱序.
 - 操作的可见性:定义了对于共享变量的操作如何对其他线程可见.
+
+Memory barriers control how changes to memory made by one CPU become visible to other CPUs.
 
 [理解 C++ 的 Memory Order](http://senlinzhan.github.io/2017/12/04/cpp-memory-order/)
 
