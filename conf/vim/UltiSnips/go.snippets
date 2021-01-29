@@ -1,8 +1,4 @@
 snippet handler "handler template"
-import (
-	"context"
-)
-
 // ${1:Template}Handler .
 type $1Handler struct {
 	ctx  context.Context
@@ -65,13 +61,6 @@ func (h *$1Handler) returnAhead(err error) *$2.$1Response {
 endsnippet
 
 snippet ut "unit test template"
-import (
-	"context"
-	"testing"
-
-	"github.com/stretchr/testify/suite"
-)
-
 type ${1:Template}Suite struct {
 	suite.Suite
 	ctx context.Context
