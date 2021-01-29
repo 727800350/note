@@ -355,29 +355,42 @@ API: `pthread.h` 中 `pthread_rwlock_*` 函数
 条件变量也是同步的一种手段,由一把锁(mutex)和一个condition组成.
 它可以使线程阻塞在某一条件上,比如`queue.not_empty()`.当条件满足时,线程唤醒.需要注意是要小心虚假唤醒,即当wait返回后,需要再次判断条件是否满足.
 
-使用`pthread_cond_wait`方式如下:
-```C++
-pthread_mutex_lock(&mutex)
-while或if(线程执行的条件是否成立)
-  pthread_cond_wait(&cond, &mutex);
-线程执行
-pthread_mutex_unlock(&mutex);
+[]()
+```cpp
+std::unique_lock lk(mutex_);
+// do xxx here
+lk.unlock();
+cv_.notify_one();
 ```
+unlock 和 notify_one 两行谁先谁后都行, 但是先unlock 还是更好一点儿.
 
-`pthread_cond_wait` 内部包含以下几步:
+## initialization
+```cpp
+int main() {
+  std::thread t1(foo), t2(foo);
+  t1.join();
+  t2.join();
+}
 
-1. 线程放在等待队列上,解锁
-2. 等待 `pthread_cond_signal` 或者 `pthread_cond_broadcast` 信号之后去竞争锁
-3. 若竞争到互斥索则加锁
+void foo() {
+  static ComplicatedObject obj("some", "data");  // (1)
+  // xxx
+}
+```
+t1 and t2 arrives at (1) concurrently, which one performs the initialization?
+And what's the other one doing while that's happening?
 
-下面来讲一下:`pthread_cond_wait`和`pthread_cond_singal`是怎样配对使用的:
+In C++03, to make a singleton thread-safe, you had to experiment with things like "double checked locking".
 
-- 等待线程:
-  1. `pthread_cond_wait` 前要先加锁
-  1. `pthread_cond_wait` 内部会解锁, 然后等待条件变量被其它线程激活
-  1. `pthread_cond_wait` 被激活后会再自动加锁
-- 激活线程:
-  1. 加锁(和等待线程用同一个锁)
-  1. `pthread_cond_signal`发送信号(阶跃信号前最好判断有无等待线程)
-  1. 解锁
+In C++11, it's as easy as:
+```cpp
+inline auto& SingleTonFoo::GetInstance() {
+  static SingleTonFoo instance;
+  return instance;
+}
+```
+The first thread to arrive will start initializing the static instance.
+
+And more that arrive will "block and wait" until the first thread either succeeds(unbloking them all) or fails with an
+exception(unbloking one of them).
 
