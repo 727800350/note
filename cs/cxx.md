@@ -334,6 +334,13 @@ std::mutex mutex;
 ### 读写锁(rwlock)
 [c++ 读写锁](https://www.cnblogs.com/i80386/p/4478021.html)
 
+C++17 std::shared_mutex
+```cpp
+std::shared_mutex rw_;
+std::unique_lock<std::shared_mutex> lk(rw_);  // writer
+std::shared_lock<std::shared_mutex> lk(rw_);  // reader
+```
+
 pthread读写锁把对共享资源的访问分为读者和写者,读者只对共享资源进行读访问,写者只对共享资源进行写操作.
 在互斥机制,读者和写者都需要独立独占互斥量以独占共享资源, 在读写锁机制下,允许同时有多个读者访问共享资源,只有写者才需要独占资源.
 相比互斥机制,读写机制由于允许多个读者同时访问共享资源,进一步提高了多线程的并发度.
@@ -355,7 +362,8 @@ API: `pthread.h` 中 `pthread_rwlock_*` 函数
 条件变量也是同步的一种手段,由一把锁(mutex)和一个condition组成.
 它可以使线程阻塞在某一条件上,比如`queue.not_empty()`.当条件满足时,线程唤醒.需要注意是要小心虚假唤醒,即当wait返回后,需要再次判断条件是否满足.
 
-[]()
+[Back to Basics: Concurrency - Arthur O'Dwyer - CppCon 2020 page 30](https://www.youtube.com/watch?v=F6Ipn7gCOsY)
+
 ```cpp
 std::unique_lock lk(mutex_);
 // do xxx here
@@ -393,4 +401,19 @@ The first thread to arrive will start initializing the static instance.
 
 And more that arrive will "block and wait" until the first thread either succeeds(unbloking them all) or fails with an
 exception(unbloking one of them).
+
+initialize a member with once_flag
+```cpp
+class Logger {
+  std::once_fllag once_;
+  std::optional<NetworkConnection> conn_;
+
+  NetworkConnection& getConn() {
+    std::call_once(once_, []() { conn_ = NetworkConnection(defaultHost); })
+    return *conn_;
+  }
+}
+```
+
+C++20 std::couting_semaphore
 

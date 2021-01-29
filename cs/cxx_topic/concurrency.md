@@ -342,6 +342,13 @@ on weakly-ordered architectures).
 这种模型最宽松, 他不对任何顺序做保证, 仅仅保证操作的原子性.
 也就意味着,不提供任何跨线程的同步.
 
+[Is it possible that a store with memory_order_relaxed never reaches other threads?](
+https://stackoverflow.com/questions/43749985/is-it-possible-that-a-store-with-memory-order-relaxed-never-reaches-other-thread)
+
+relaxed 的原子变量本身都不能提供跨线程的同步吗?
+如果是这样的话, 那么计数器是不是也有问题, 并发写, 如果不能同步就会出问题了.
+
+存疑:
 也就是一个线程store, 随后另外一线程load, 可能读到的是old value, 因为可能是从寄存器或者cpu cache 中读的, 即使是从内存中读
 的, 调用store 的线程写可能读到的是old value, 因为可能是从寄存器或者cpu cache 中读的, 即使是从内存中读的, 调用store 的线
 程写的结果也可能还在寄存器或者cpu cache 中而没有刷回内存.
