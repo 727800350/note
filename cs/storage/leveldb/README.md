@@ -1,9 +1,9 @@
-<img src="./pics/leveldb.png" alt="leveldb" width="90%"/>
+<img src="./pics/leveldb.png" alt="leveldb" width="70%"/>
 
 写请求是先写WAL, 然后写memtable 的.
 因为很多地方都是把log 画在了current 和 manifest 那里, 挑这个图主要是为了体现log 和 memtable 的对应关系.
 
-源码阅读是基于 [leveldb-1.9.0](https://github.com/chen3feng/thirdparty/tree/master/leveldb-1.9.0)
+源码阅读主要是基于 [leveldb-1.9.0](https://github.com/chen3feng/thirdparty/tree/master/leveldb-1.9.0)
 
 源代码目录结构
 ```plain

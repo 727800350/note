@@ -1,3 +1,4 @@
+- [open](#open)
 - [write and minor compaction](#write-and-minor-compaction)
 - [version](#version)
 - [read](#read)
@@ -25,6 +26,8 @@ class DBImpl : public DB {
 DBImpl 的构造函数中, options_ 的 comparator 会被改为以外面传入的 options.comparator 来初始化的 internal key comparator
 (InternalKeyComparator 类型).
 之后的大部分comparator, iterator 用到的都是internal key comparator.
+
+DBImpl 的构造函数中, 会用options_ 初始化TableCache
 
 # write and minor compaction
 ```cpp
@@ -427,17 +430,6 @@ void MergingIterator::FindSmallest() {
   current_ = smallest;
 }
 ```
-
-**MergingIterator**, Seek internal key
-
-- memtable 和 immutable memtable 的 **MemTableIterator**, Seek internal key
-  - **SkipList::Iterator**: entry format: varint32(internal key size) + internal key + varint32(value size) + value, 所以
-   MemTableIterator 的Seek 在转换为SkipList::Iterator 的 Seek 之前要先转换格式, 在前面加上varint32(internal key size)
-- Level 0 文件的 table iterator, 类型是 **NewTwoLevelIterator**, Seek internal key, 内部由index block iterator 和 data block
-  iterator 组成, 其中data block iterator 由 Table::BlockReader返回, index block iterator 和 data block iterator 都是
-  Block::Iter 类型
-  - **Block::Iter**, Seek internal key
-  
 
 # major compaction
 [leveldb笔记之17:major compaction之筛选文件](https://izualzhy.cn/leveldb-PickCompaction)
