@@ -14,13 +14,13 @@
 
 - `echo *`: 会输出当前目录的文件
 - `echo "*"`: 才会输出`*`
-- `watch -d -n 1 command`: 间隔1秒钟, 执行一次command, 并将结果的diff 高亮显示
 
 # 监控
 - 每个逻辑cpu的使用率, 只需要运行top命令, 按下数字键1即可
-
+```plain
 总核数 = 物理CPU个数 X 每颗物理CPU的核数
 总逻辑CPU数 = 物理CPU个数 X 每颗物理CPU的核数 X 超线程数
+```
 
 - 查看物理CPU个数: `cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l`
 - 查看每个物理CPU中core的个数(即核数): `cat /proc/cpuinfo | grep "cpu cores" | uniq`
@@ -214,6 +214,7 @@ time
 - `ps -ef` 可以查看pid, ppid
 - pstree: shows processes in a tree
 - `ps aux`
+- unhide: find processes hidden by rootkits, Linux kernel modules or by other techniques
 
 ## 定时任务crontab
 cron把命令行保存在/etc/crontab文件里,每个系统用户如果设置了自己的cron,那都会在/var/spool/cron下面有对应用户名的crontab.
