@@ -192,7 +192,7 @@ Iterator* Table::NewIterator(const ReadOptions& options) const {
       &Table::BlockReader, const_cast<Table*>(this), options);
 }
 ```
-Table 的 rep_ 的 options 是打开table 时传入的, 也就是和DBImpl 的options_ 一样(有一个小差别, 这里不会产生影响, 可以认为
+Table 的 `rep_` 的 options 是打开table 时传入的, 也就是和DBImpl 的options_ 一样(有一个小差别, 这里不会产生影响, 可以认为
 一样的), 所以这里用的comparator 是 internal key comparator.
 
 seek 的时候, 先通过index iterator 找到data block 的block handle, 然后再通过data block reader function(也就是
