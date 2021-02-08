@@ -34,6 +34,10 @@
   - [distinguish universal references from rvalue references](#distinguish-universal-references-from-rvalue-references)
   - [use std::move on rvalue references, std::forward on universal references](#use-stdmove-on-rvalue-references-stdforward-on-universal-references)
   - [avoid overloading on universal references](#avoid-overloading-on-universal-references)
+    - [case 1](#case-1)
+    - [case 2](#case-2)
+    - [case 3](#case-3)
+    - [case 4](#case-4)
   - [familiarize yourself with alternatives to overloading on universal references](#familiarize-yourself-with-alternatives-to-overloading-on-universal-references)
 - [Lambda Expressions](#lambda-expressions)
   - [use init capture to move objects into closures](#use-init-capture-to-move-objects-into-closures)
@@ -620,6 +624,8 @@ appropriate for the move operations.
 
 C++11 does not generate move operations for a class with a user-declared destructor.
 
+Note: `=default` and `=delete` count as user-defined.
+
 Declare a move operation cause compilers to disable the copy operations. (The copy operations are disabled by deleting
 them).
 
@@ -762,6 +768,10 @@ templates that perform casts.
 was initialized with an rvalue.**
 
 ## std::move
+- [CppCon 2019: Klaus Iglberger "Back to Basics: Move Semantics (part 1 of 2)"](
+https://www.youtube.com/watch?v=St0MNEU5b0o)
+- [pdf](https://github.com/CppCon/CppCon2019/blob/master/Presentations/back_to_basics_move_semantics_part_1/back_to_basics_move_semantics_part_1__klaus_iglberger__cppcon_2019.pdf)
+
 ```C++
 // C++14, still in namespace std
 template<typename T>
@@ -779,7 +789,20 @@ That's why std::move has the name it does: to make it easy to designate objects 
 1. std::move not only doesn't actually move anything, it doesn't even guarantee that the object it's casting will be
   eligible to moved.
 
+Make move operations noexcept.
+
+A movie operation should move and leave its source in a valid state.
+Ideally, that moved-from should be the default value of the type. Ensure that unless there is an exceptionally good
+reason not to. However, not all types have a default value and for some types establishing the default value can be
+expensive. The standard requires only that the moved-from object can be destroyed. Often, we can easily and cheaply do
+better: The standard library assumes that it is possible to assign to a moved-from object. Always leave the moved-from
+object in some (necessarily specified) valid state.
+
 ## std::forward
+- [CppCon 2019: Klaus Iglberger "Back to Basics: Move Semantics (part 2 of 2)"](
+https://www.youtube.com/watch?v=pIzaZbKUw2s)
+- [pdf](https://github.com/CppCon/CppCon2019/blob/master/Presentations/back_to_basics_move_semantics_part_2/back_to_basics_move_semantics_part_2__klaus_iglberger__cppcon_2019.pdf)
+
 Recall how std::forward is typically used. The most common scenario is a function template taking a universal reference
 parameter that is to be passed to another function.
 ```C++
@@ -857,6 +880,15 @@ Widget&& std::forward(Widget& param) {
 ```
 In this case, std::forward will turn fun's parameter param(an lvalue) into an rvalue. The end result is that an rvalue
 agrument passed to fun will be forwarded to someFunc as an rvalue.
+
+
+```cpp
+template<typename T, typename Arg...>
+std::unique_ptr<T> std::make_unique(Args&&... args) {
+  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
+```
+
 
 ## distinguish universal references from rvalue references
 If a function template parameter has type `T&&` for a deduced type T, or if an object is defined using `auto&&`, the
@@ -1024,29 +1056,70 @@ Widget makeWidget(Widget w) {
 Functions taking universal references are the greediest functions in C++.
 They instantiate to create exact matches for almost any type of argument.
 This is why combining overloading and universal references is almost always a bad idea.
-```C++
-std::set<std::string> names;
+
+```cpp
+// function with lvalue reference (1)
+void f(Widget&);
+
+// function with lvalue reference-to-const (2)
+void f(const Widget&);
+
+// function with rvalue reference (3)
+void f(Widget&&);
+
+// function with rvalue reference-to-const (4)
+void f(const Widget&&);
+
+// function template with universal reference (5)
 template<typename T>
-void logAndAdd(T&& name) {
-  LOG(INFO) << time(nullptr);
-  names.emplace(std::forward<T>(name));
-}
+void f(T&&);
 
-std::string nameFromIdx(int idx);
-
-void logAndAdd(int idx) {
-  logAndAdd(nameFromIdx(idx));
-}
-
-std::string petName("Darla");
-logAndAdd(petName);  // copy lvalue into set
-logAndAdd(std::string("Persephone"));  // move rvalue instread copying it
-logAndAdd("Patty Dog");  // create std::string in set instead of copying a temporary std::string
-logAndAdd(22);  // calls int overload
-
-short nameIdx = 2;
-logAndAdd(nameIdx);  // error, function template 会实例出exact match 的 void logAndAdd(short& idx)
+// function template with rvalue reference-to-const (6)
+template<typename T>
+void f(const T&&);
 ```
+
+### case 1
+```cpp
+void g() {
+  Widget w{};
+  f(w);
+}
+```
+best match: 1 > 5 > 2
+
+5 实例化, 可以产生与1 完全一样的signature, 但是当非模板和模板的都存在时, 优先用非模板的.
+
+### case 2
+```cpp
+void g() {
+  const Widget w{};
+  f(w);
+}
+```
+best match: 2 > 5
+
+### case 3
+```cpp
+Widget getWidget();  // return rvalue
+void g() {
+  f(getWidget());
+}
+```
+best match: 3 > 5 > 4 > 6 > 2
+
+2 中的 const Widget& 会延长 getWidget 返回的rvalue 的生命周期.
+
+
+### case 4
+```cpp
+const Widget getWidget();
+
+void g() {
+  f(getWidget());
+}
+```
+best match: 4 > 6 > 5 > 2
 
 ## familiarize yourself with alternatives to overloading on universal references
 By default, all templates are enabled, but a template using `std::enable_if` is enabled only if the condition specified
