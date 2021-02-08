@@ -804,7 +804,6 @@ The deduced template parameter T will encode whether the argument passwd to para
 The encoding mechanism is simple, when an lvalue is passwd as an argument, T is deduced to be an lvalue reference, when
 an rvalue is passed, T is deduced to be a non-reference.
 
-### reference collapsing
 ```C++
 Widget widgetFactory();  // function returning rvalue
 Widget w;  // an lvalue
@@ -812,8 +811,14 @@ func(w);  // call func with lvalue, T deduced to be Widget&
 func(widgetFactory());  // call func with rvalue, T deduced to be Widget
 ```
 
+### reference collapsing
 If either reference is an lvalue reference, the result is an lvalue reference. Otherwise(i.e., if both are rvalue
 references) the result is an rvalue reference.
+
+1. `A& &` becomes `A&`
+1. `A& &&` becomes `A&`
+1. `A&& &` becomes `A&`
+1. `A&& &&` becomes `A&&`
 
 Here is how std::forward can be implemented
 ```C++
@@ -823,7 +828,7 @@ T&& std::forward(std::remove_refrence_t<T>& param) {
   retrun static_cast<T&&>(param);
 }
 ```
-Suppose that the argument passed to f is an lvalue of type Widget. T will be deduced as Widget&, and the call to
+Suppose that the argument passed to fun is an lvalue of type Widget. T will be deduced as Widget&, and the call to
 std::forward will instantiate as `std::forward<Widget&>` yielding this:
 ```C++
 Widget& && std::forward(std::remove_reference_t<Widget&>& param) {
@@ -835,23 +840,23 @@ Widget& std::forward(Widget& param) {
   return static_cast<Widget&>(param);
 }
 ```
-We can see, when an lvalue argument is passed to the function template f, std::forward is instantiated to take and
+We can see, when an lvalue argument is passed to the function template fun, std::forward is instantiated to take and
 return an lvalue reference.
 
 Suppose that the argument passed to f is an rvalue of type Widget, T will be deduced as Widget, and the call to
 std::forward will instantiate as `std::forward<Widget>` yielding this:
 ```C++
-Widget&& forward(remove_reference_t<Widget>& param) {
+Widget&& std::forward(std::remove_reference_t<Widget>& param) {
   return static_cast<Widget&&>(param);
 }
 
 // becomes
-Widget&& forward(Widget& param) {
+Widget&& std::forward(Widget& param) {
   return static_cast<Widget&&>(param);
 }
 ```
-In this case, std::forward will turn f's parameter param(an lvalue) into an rvalue. The end result is that an rvalue
-agrument passed to f will be forwarded to someFunc as an rvalue.
+In this case, std::forward will turn fun's parameter param(an lvalue) into an rvalue. The end result is that an rvalue
+agrument passed to fun will be forwarded to someFunc as an rvalue.
 
 ## distinguish universal references from rvalue references
 If a function template parameter has type `T&&` for a deduced type T, or if an object is defined using `auto&&`, the
@@ -1044,7 +1049,8 @@ logAndAdd(nameIdx);  // error, function template 会实例出exact match 的 voi
 ```
 
 ## familiarize yourself with alternatives to overloading on universal references
-By default, all templates are enabled, but a template using `std::enable_if` is enabled only if the condition specified by `std::enable_if` is satified.
+By default, all templates are enabled, but a template using `std::enable_if` is enabled only if the condition specified
+by `std::enable_if` is satisfied.
 
 ```C++
 // the templatized constructor should be enabled only if T is a type other than Person
@@ -1094,22 +1100,25 @@ class SomeCompilerGeneratedClassName {
 };
 
 template<typename T>
-T&& forward(remove_reference_t<T>& param) {
+T&& std::forward(std::remove_reference_t<T>& param) {
   return static_cast<T&&>(param);
 }
 ```
-If client code wants to perfect-forward an rvalue of type Widget, it noramlly instantiates std::forward with the type Widget(i.e., a non-reference type).
-But now, what we have is `std::forward<decltype(x)>`, that is `std::forward<Widget&&>` with T as Widget&&, the forward is instantiated as following:
+If client code wants to perfect-forward an rvalue of type Widget, it noramlly instantiates std::forward with the type
+Widget(i.e., a non-reference type).
+But now, what we have is `std::forward<decltype(x)>`, that is `std::forward<Widget&&>` with T as Widget&&, the forward
+is instantiated as following:
 ```C++
-Widget&& && forward(remove_reference_t<Widget&&>& param) {
+Widget&& && std::forward(std::remove_reference_t<Widget&&>& param) {
   return static_cast<Widget&& &&>(param);
 }
 
-Widget&& forward(Widget& param) {
+Widget&& std::forward(Widget& param) {
   return static_cast<Widget&&>(param);
 }
 ```
-If you compare this instantiation with the one that results when std::forward is called with T as Widget, you'll see that they're identical. That's good news.
+If you compare this instantiation with the one that results when std::forward is called with T as Widget, you'll see
+that they're identical. That's good news.
 
 ```C++
 // variadic lambda
@@ -1119,7 +1128,8 @@ auto f = [](auto&&... params) {
 ```
 
 ## prefer lambdas to std::bind
-In C++11, lambdas are almost always a better choice that std::bind. As of C++14, the case for lambdas isn't just stronger, it's downright ironclad.
+In C++11, lambdas are almost always a better choice that std::bind. As of C++14, the case for lambdas isn't just
+stronger, it's downright ironclad.
 
 # The Concurrency API
 ## use std::atomic for concurrency, volatile for special memory
@@ -1133,11 +1143,14 @@ std::cout << vi;
 ++vi;
 --vi;
 ```
-During execution of this code, if other threads are reading the value of vi, they may see anything, e.g., -12, 68, 4090727 - anything!
-Such code would have undefined behavior, because these statements modify vi, so if other threads are reading vi at the same time,
-there are simultaneous readers and writers of memory that's neither std::atomic nor protected by mutex, and that's the definition of a data race.
+During execution of this code, if other threads are reading the value of vi, they may see anything, e.g., -12, 68,
+4090727 - anything!
+Such code would have undefined behavior, because these statements modify vi, so if other threads are reading vi at the
+same time, there are simultaneous readers and writers of memory that's neither std::atomic nor protected by mutex, and
+that's the definition of a data race.
 
-As a general rule, compilers are permitted to reorder such unrelated assignments. That is, given this sequence of assignments (where a, b, x and y correspond to independent variables).
+As a general rule, compilers are permitted to reorder such unrelated assignments. That is, given this sequence of
+assignments (where a, b, x and y correspond to independent variables).
 ```C++
 a = b;
 x = y;
@@ -1148,27 +1161,31 @@ x = y;
 a = b;
 ```
 Even if compilers don't reorder them, the underlying hardware might do it.
-However, the use of std::atomic imposes restrictions on how code can be reordered, and one such restriction is that no code that precedes a write of a std::atomic variable may take place afterwards.
+However, the use of std::atomic imposes restrictions on how code can be reordered, and one such restriction is that no
+code that precedes a write of a std::atomic variable may take place afterwards.
 ```C++
 std::atomic<bool> valAvailable(false);
 auto imptValue = computeImportantValue();
 valAvailable = true;  // tell other task is's available
 ```
-So not only must compilers retain the order of the assignments to imptValue and valAvailable, they must generate code that ensures that the underlying hardware does, too.
+So not only must compilers retain the order of the assignments to imptValue and valAvailable, they must generate code
+that ensures that the underlying hardware does, too.
 
 Declaring valAvailable as volatile doesn't impose the same reordering restrictions.
-No guarantee of operation atomicity and insufficient restrictions on code reordering --- explain why volatile's not useful for concurrent programming.
+No guarantee of operation atomicity and insufficient restrictions on code reordering --- explain why volatile's not
+useful for concurrent programming.
 
 volatile is for telling compilers that they're dealing with memory that doesn't behave normally.
 
 Normal memory has the following characteristic:
 
 1. if you write a value to a memory location, the value remains there until something overwrites it.
-1. if you write a value to a memory location, never read it and then write to that memory location again, the first write can be eliminated, because it was never used.
+1. if you write a value to a memory location, never read it and then write to that memory location again, the first
+  write can be eliminated, because it was never used.
 
 ```C++
 volatile int x = 0;
-auto y = x;  // y is deduce as int
+auto y = x;  // y is deduced as int
 y = x;
 x = 10;
 x = 20;
@@ -1178,7 +1195,8 @@ auto y = x;
 x = 20;
 ```
 Such optimizations are valid only if memory behaves normally. Special memory doesn't.
-volatile is the way we tell compilers that we're dealing with special memory. Its meaning to compilers is "Don't perform any optimizaiton on operatons on this memory".
+volatile is the way we tell compilers that we're dealing with special memory. Its meaning to compilers is "Don't perform
+any optimizaiton on operatons on this memory".
 
 Compilers are permitted to eliminate such redundant operations on std::atomic.
 
@@ -1189,7 +1207,8 @@ std::atomic<int> x(0);
 std::atomic<int> y(x.load());
 y.store(x.load());
 ```
-Copy operatons for std::atomic are deleted. Because read x and write y are two independent atomic operations, hardware can't do that in a single atomic operation.
+Copy operatons for std::atomic are deleted. Because read x and write y are two independent atomic operations, hardware
+can't do that in a single atomic operation.
 So copy constructor isn't supported by std::atomic, copy assignment is deleted for the same reason.
 And as copy operations are deleted, move operations are deleted too.
 
