@@ -61,25 +61,74 @@ funP(400);
 - 如果声明是指定参数列表,则会在编译期检查赋值函数的参数列表是否匹配
 
 # lambda
+[Back To Basics: Lambda Expressions - Barbara Geller & Ansel Sermersheim - CppCon 2020](
+https://www.youtube.com/watch?v=ZIPNFcw6V9o)
+
+lambda expression sort of get run in two parts, when we say evaluating a lambda expression, we're talking about the
+process that occurs when it's defined and does all the captures.
+then later on when you call the closure object, we call that invoking the lambda expression, run thee body.
+
 当我们编写了一个lambda 后, 编译器将该表达式翻译成一个未命名类的未命名对象. 这个类含有一个重载的函数调用运算符.
 
 - 当一个lambda 表达式通过引用捕获变量时, 将由程序负责确保lambda执行时, 引用所引的对象确实存在.
 - 通过值捕获的变量将拷贝到lambda 中, 因此这种lambda 产生的类必须为每个捕获的变量建立对应的数据成员, 同时构建构造函数.
 
-`[ capture ] ( params ) { body }`
+```plain
+[capture clause] <template parameters> (parameter list)
+  specifier -> return type { body }
+```
 
-- capture 指定了在可见域范围内 lambda 表达式的代码内可见得外部变量的列表,具体解释如下
+- capture clause: 指定了在可见域范围内lambda 表达式的代码内可见得外部变量的列表, 具体解释如下
   - `[]`: 未定义变量.试图在Lambda内使用任何外部变量都是错误的.
   - `[x, &y]`: x 按值捕获, y 按引用捕获.
   - `[&]`: 用到的任何外部变量都隐式按引用捕获
   - `[=]`: 用到的任何外部变量都隐式按值捕获
   - `[&, x]`: x显式地按值捕获. 其它变量按引用捕获
   - `[=, &z]`: z按引用捕获. 其它变量按值捕获
-- params 指定 lambda 表达式的参数
+- template parameters: `(auto&&... args)` equivalent with `<typename... Args>(Args&&... args)`
+- parameter list: 指定 lambda 表达式的参数
+- specifier:
+  - mutable (C++ 11)
 
 ```C++
 [] () { return 1; } // compiler knows this returns an integer
 [] () -> int { return 1; } // now we're telling the compiler what we want
+```
+
+C++ standard defines the result of evaluating a lambda expression which does not capture anything as a special kind of
+closure.
+
+- special closure has no state so it can be implicitly converted to a function pointer.
+- if you are calling a C function which wants a function pointer, you can pass a lambda with en empty capture clause.
+
+how do you capture std::unique_ptr in a lambda expression?
+
+```cpp
+auto myPtr = std::make_unique<Widget>();
+
+auto fun = [capturedPtr = std::move(myPtr)] () {return capturedPtr->foo();};
+```
+Since the lambda expression fun captures a std::unique_ptr, the compiler generated class according to fun can't be
+copyable.
+The side effect is that you can't store this closure in std::function object, because std::function requires that the
+object it stores copyable.
+
+customized comparator in std::map
+
+old fashion
+```cpp
+struct MyCompare {
+  bool operator() (const std::string& a, const std::string& b) const {
+    return a.size() < b.size();
+  }
+};
+std::map<std::string, int, MyCompare> map{};
+```
+
+lambda version
+```cpp
+auto myComparator = [](const std::string& a, const std::string& b) {return a.size() < b.size();};
+std::map<std::string, int, decltype(myComparator)> map{};
 ```
 
 # std::function and std::bind
@@ -90,7 +139,7 @@ std::function 是一个可调用对象包装器,是一个类模板, 可以容纳
 std::bind 是一个通用的函数适配器,它接受一个可调用对象,生成一个新的可调用对象来"适应"原对象的参数列表, 绑定后的结果可以使用std::function保存.
 借助std::bind 的返回值为std::function 类型的特性, 可以将任意函数, 包括class member function, class static function 转换为std::function.
 
-# Closure
+# closure
 closure implementation using lambda:
 ```C++
 #include <functional>
@@ -107,7 +156,7 @@ fprintf(stdout, "%d\n", f()); // 101
 fprintf(stdout, "%d\n", f()); // 102
 ```
 
-# Functors: Function Objects in C++
+# function objects in C++
 ```C++
 class myFunctorClass {
  public:
@@ -124,11 +173,13 @@ class myFunctorClass {
 myFunctorClass addFive(5);
 std::cout << addFive(6);
 ```
-the act of constructing an object lets you give the functor information that it can use inside the implementation of its function-like behavior(when the functor is called through operator()).
+the act of constructing an object lets you give the function object information that it can use inside the
+implementation of its function-like behavior(when the function object is called through operator()).
 
 [Do we have closures in C++?](https://stackoverflow.com/questions/12635184/do-we-have-closures-in-c)
 
-If you understand **closure as a reference to a function that has an embedded, persistent, hidden and unseparable context(memory, state).**
+If you understand **closure as a reference to a function that has an embedded, persistent, hidden and unseparable
+context(memory, state).**
 
 ```C++
 class summer {
