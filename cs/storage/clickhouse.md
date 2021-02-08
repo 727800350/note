@@ -1,3 +1,11 @@
+- [核心特性](#核心特性)
+  - [MPP](#mpp)
+  - [列式存储与数据压缩](#列式存储与数据压缩)
+  - [向量化执行引擎](#向量化执行引擎)
+  - [多样化的表引擎](#多样化的表引擎)
+  - [多线程与分布式](#多线程与分布式)
+  - [多主架构](#多主架构)
+
 ClickHouse是一款MPP(Massively Parallel Processing)架构的列式存储数据库.
 
 [ClickHouse到底是什么?凭啥这么牛逼!](https://mp.weixin.qq.com/s/SBrbhGGN3gbKHpn-8nG_-A)

@@ -1,3 +1,17 @@
+- [intro](#intro)
+- [data type](#data-type)
+	- [Binary-safe string](#binary-safe-string)
+	- [Lists](#lists)
+	- [Sets](#sets)
+	- [Sorted sets](#sorted-sets)
+	- [Hash](#hash)
+	- [Bit arrays (or simply bitmaps)](#bit-arrays-or-simply-bitmaps)
+- [API](#api)
+	- [pipeline](#pipeline)
+	- [Transactions](#transactions)
+- [lua](#lua)
+	- [SCRIPT LOAD 和 EVALSHA 指令](#script-load-和-evalsha-指令)
+
 # intro
 redis 中数据对象都是 string 类型, 但是有时会把string 解释成其他类型, 例如 incr 会把 string 解释成int 类型
 
