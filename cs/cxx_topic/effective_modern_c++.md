@@ -14,23 +14,27 @@
 - [moving to modern C++](#moving-to-modern-c)
   - [distinguish between () and {} when creating objects](#distinguish-between--and--when-creating-objects)
   - [prefer alias declarations to typedefs](#prefer-alias-declarations-to-typedefs)
-  - [perfer deleted functions to private undefined ones](#perfer-deleted-functions-to-private-undefined-ones)
   - [declare functions noexcept if they won't emit exceptions](#declare-functions-noexcept-if-they-wont-emit-exceptions)
   - [use constexpr whenever possible](#use-constexpr-whenever-possible)
+- [class](#class)
+  - [perfer deleted functions to private undefined ones](#perfer-deleted-functions-to-private-undefined-ones)
   - [make const member functions thread safe](#make-const-member-functions-thread-safe)
   - [understand special member function generation](#understand-special-member-function-generation)
+- [smart pointer](#smart-pointer)
   - [use `std::shared_ptr` for shared-ownership resource management](#use-stdshared_ptr-for-shared-ownership-resource-management)
   - [use `std::weak_ptr` for `std::shared_ptr` like pointers that can dangle](#use-stdweak_ptr-for-stdshared_ptr-like-pointers-that-can-dangle)
     - [scenario 1: cache](#scenario-1-cache)
     - [scenario 2: observer design pattern](#scenario-2-observer-design-pattern)
     - [scenario 3: `std::shared_ptr` cycle](#scenario-3-stdshared_ptr-cycle)
   - [prefer `std::make_unique` and `std::make_shared` to direct use of new](#prefer-stdmake_unique-and-stdmake_shared-to-direct-use-of-new)
-  - [understand std::move and std::forward](#understand-stdmove-and-stdforward)
+- [std::move and std::forward](#stdmove-and-stdforward)
+  - [std::move](#stdmove)
+  - [std::forward](#stdforward)
+    - [reference collapsing](#reference-collapsing)
   - [distinguish universal references from rvalue references](#distinguish-universal-references-from-rvalue-references)
   - [use std::move on rvalue references, std::forward on universal references](#use-stdmove-on-rvalue-references-stdforward-on-universal-references)
   - [avoid overloading on universal references](#avoid-overloading-on-universal-references)
   - [familiarize yourself with alternatives to overloading on universal references](#familiarize-yourself-with-alternatives-to-overloading-on-universal-references)
-  - [understand reference collapsing](#understand-reference-collapsing)
 - [Lambda Expressions](#lambda-expressions)
   - [use init capture to move objects into closures](#use-init-capture-to-move-objects-into-closures)
   - [use decltype on auto&& parameters to std::forward them](#use-decltype-on-auto-parameters-to-stdforward-them)
@@ -45,22 +49,30 @@ while lvalues correspond to objects you can refer to, either by name or by follo
 A useful heuristic to determine whether an expression is an lvalue is to ask if you can take its address.
 If you can, it typically is. If you can't, it's usually an rvalue.
 
-**In a function call, the expressions passed at the call site are the functions's arguemnts. The parameters are used to initialize the function's parameters**.
+**In a function call, the expressions passed at the call site are the functions's arguemnts. The arguemnts are used to
+initialize the function's parameters**.
 ```C++
 void someFunc(Widget w);
 Widget wid;
 someFunc(wid);
 someFUnc(std::move(wid));
 ```
-In the first call to someFunc, the argument is wid. In the second call, the argument is std::move(wid). In both calls, the parameter is w.
+In the first call to someFunc, the argument is wid. In the second call, the argument is std::move(wid).
+In both calls, the parameter is w.
 
-The distinction between arguments and parameters is important, because parameters are lvalues, but the arguemnts may be rvalues or lvalues.
-This is especially relevant during the process of perfect forwarding, whereby an argument passed to a function is passed to a second function call such that
+The distinction between arguments and parameters is important, because parameters are lvalues, but the arguemnts may be
+rvalues or lvalues.
+This is especially relevant during the process of perfect forwarding, whereby an argument passed to a function is passed
+to a second function call such that
 the original argument's rvalueness or lvalueness is preserved.
 
-Well-designed functions are exception safe, meaning they offer at least the basic exception safety guarantee (i.e., the basic guarantee).
-Such functions assure calless that even if an exception is thrown, program invariants remain intact (i.e., no data structures are corrupted) and no resources are leaked.
-Functions offering the strong exception safety guarantee (i.e., the strong guarantee) assure callers that if an exception arises, the state of the program remains as it was priori to the call.
+Well-designed functions are exception safe, meaning they offer at least the basic exception safety guarantee (i.e., the
+basic guarantee).
+
+- basic guarantee: assure calless that even if an exception is thrown, program invariants remain intact (i.e., no data
+  structures are corrupted) and no resources are leaked.
+- strong guarantee: assure callers that if an exception arises, the state of the program remains as it was priori to the
+  call.
 
 # deduce types
 ## template type deduction
@@ -483,60 +495,17 @@ std::add_lvalue_reference<T>::type  // C++11: T -> T&
 std::add_lvalue_reference_t<T>  // C++14 equivalent
 ```
 
-## perfer deleted functions to private undefined ones
-An important adavantage of deleted functions is that any function may be deleted, while only member functions may be private.
-For example, suppose we have a non-member function that takes an integer and returns whether it's a lucky number:
-```C++
-bool isLucky(int number);
-bool isLucky(char) = delete;  // reject char
-bool isLucky(bool) = delete;  // reject bool
-bool isLucky(double) = delete;  // reject double and float
-```
-
-Another trick that deleted functions can perform is to prevent use of template instantiations that should be disabled.
-For example, suppose you need a template that works with built-in pointers.
-```C++
-template<typename T>
-void processPointer(T* ptr);
-
-template<>
-void processPointer<void>(void*) = delete;
-
-template<>
-void processPointer<char>(char*) = delete;
-
-template<>
-void processPointer<const void>(const void*) = delete;
-
-template<>
-void processPointer<const char>(const char*) = delete;
-```
-
-Interestingly, if you have a function template inside a class, and you'd like to disable some instantiations by declaring them private(in C++98 style), you can't.
-Luckily, this issue doesn't arise for deleted functions, and they can also be deleted outside the class.
-```C++
-class Widget {
- public:
-  template<typename T>
-  void processPointer(T* ptr) {}
-
-  template<>
-  void processPointer<void>(void*) = delete;
-};
-
-template<>
-void Widget::processPointer<char>(char*) = delete;  // still public and deleted
-```
-
 ## declare functions noexcept if they won't emit exceptions
-By declaring a function, a method, or a lambda-function as noexcept, you specify that these won't throw an exception and if they throw, you do not care and let the program just crash.
+By declaring a function, a method, or a lambda-function as noexcept, you specify that these won't throw an exception and
+if they throw, you do not care and let the program just crash.
 
 1. move operations (move assignment operator and move constructors)
 1. swap operations
 1. memory deallocators (operator delete, operator delete[])
 1. destructors (though these are implicitly noexcept(true) unless you make them noexcept(false))
 
-These functions should generally be noexcept, and it is most likely that library implementations can make use of the noexcept property.
+These functions should generally be noexcept, and it is most likely that library implementations can make use of the
+noexcept property.
 For example, std::vector can use non-throwing move operations without sacrificing strong exception guarantees.
 Otherwise, it will have to fall back to copying elements (as it did in C++98).
 
@@ -572,31 +541,87 @@ foo(i); // Call is Ok
     
 std::array<int, foo(i)> arr1;  // error
 ```
-It means that the traditionally fairly strict line between work done during compilation and work done at runtime begins to blur,
-and some computations traditionally done at runtime can migrate to compile time.
+It means that the traditionally fairly strict line between work done during compilation and work done at runtime begins
+to blur, and some computations traditionally done at runtime can migrate to compile time.
 The more code taking part in the migration, the faster your software will run, compilation may take longer, however.
+
+# class
+## perfer deleted functions to private undefined ones
+An important adavantage of deleted functions is that any function may be deleted, while only member functions may be
+private.
+For example, suppose we have a non-member function that takes an integer and returns whether it's a lucky number:
+```C++
+bool isLucky(int number);
+bool isLucky(char) = delete;  // reject char
+bool isLucky(bool) = delete;  // reject bool
+bool isLucky(double) = delete;  // reject double and float
+```
+
+Another trick that deleted functions can perform is to prevent use of template instantiations that should be disabled.
+For example, suppose you need a template that works with built-in pointers.
+```C++
+template<typename T>
+void processPointer(T* ptr);
+
+template<>
+void processPointer<void>(void*) = delete;
+
+template<>
+void processPointer<char>(char*) = delete;
+
+template<>
+void processPointer<const void>(const void*) = delete;
+
+template<>
+void processPointer<const char>(const char*) = delete;
+```
+
+Interestingly, if you have a function template inside a class, and you'd like to disable some instantiations by
+declaring them private(in C++98 style), you can't.
+Luckily, this issue doesn't arise for deleted functions, and they can also be deleted outside the class.
+```C++
+class Widget {
+ public:
+  template<typename T>
+  void processPointer(T* ptr) {}
+
+  template<>
+  void processPointer<void>(void*) = delete;
+};
+
+template<>
+void Widget::processPointer<char>(char*) = delete;  // still public and deleted
+```
 
 ## make const member functions thread safe
 const 成员函数还是有可能修改内部状态, 比如使用mutable 修饰的成员变量.
-That means that there will be different threads reading and writing the same memory without synchronization, and that's the definition of a data race. The function has undefined behavior.
+That means that there will be different threads reading and writing the same memory without synchronization, and that's
+the definition of a data race. The function has undefined behavior.
 需要使用mutex 来保护.
 
 ## understand special member function generation
-The two copy operations(copy ctor and copy assignment) are independent: declaring one doesn't prevent compilers from generating the other.
+The two copy operations(copy ctor and copy assignment) are independent: declaring one doesn't prevent compilers from
+generating the other.
 
 TODO: why copy operations 之前不相互影响, 而move operations 却要受限制.
 
-The two move operations(move ctor and move assignment) are not independent. If you declare either, that prevents compilers from generating the other.
-The rationale is that if you declare, say, a move ctor, you're indicating that the move ctor is different from the default memberwise move that compilers would generate.
-And if there's something wrong with memberwise move construnction, there'd probably be something wrong with memberwise move assignment, too.
+The two move operations(move ctor and move assignment) are not independent. If you declare either, that prevents
+compilers from generating the other.
+The rationale is that if you declare, say, a move ctor, you're indicating that the move ctor is different from the
+default memberwise move that compilers would generate.
+And if there's something wrong with memberwise move construnction, there'd probably be something wrong with memberwise
+move assignment, too.
 
 Futhermore, move operations won't be generated for any class that explicitly declares a copy operation.
-The justification is that declaring a copy operation (constructor or assignment) indicates that the normal approach to copying an object(memberwise copy) isn't appropriate for the class,
-and compilers figure that if memberwise copy isn't appropriate for the copy operations, memberwise move probably isn't appropriate for the move operations.
+The justification is that declaring a copy operation (constructor or assignment) indicates that the normal approach to
+copying an object(memberwise copy) isn't appropriate for the class,
+and compilers figure that if memberwise copy isn't appropriate for the copy operations, memberwise move probably isn't
+appropriate for the move operations.
 
 C++11 does not generate move operations for a class with a user-declared destructor.
 
-Declare a move operation cause compilers to disable the copy operations. (The copy operations are disabled by deleting them).
+Declare a move operation cause compilers to disable the copy operations. (The copy operations are disabled by deleting
+them).
 
 So default move operations are generated for classes(when needed) only if these three things are true:
 
@@ -616,6 +641,7 @@ class Widget {
 };
 ```
 
+# smart pointer
 ## use `std::shared_ptr` for shared-ownership resource management
 Both `std::unique_ptr` and `std::shared_ptr` supports custom deleters, but the design of this support differs.
 For `std::unique_ptr`, the type of the deleter is part of the type of the smart pointer. For `std::shared_ptr`, it's not.
@@ -631,7 +657,8 @@ std::unique_ptr<Widget, decltype(loggingDel)> upw(new Widget, loggingDel);
 std::shared_ptr<Widget> spw(new Widget, loggingDel);
 ```
 
-The `std::shared_ptr` design is more flexible. Consider two `std::shared_ptr<Widget>`s, each with a custom deleter of a different type.
+The `std::shared_ptr` design is more flexible. Consider two `std::shared_ptr<Widget>`s, each with a custom deleter of a
+different type.
 ```C++
 auto del1 = [](Widget* pw) { ... };
 auto del2 = [](Widget* pw) { ... };
@@ -639,15 +666,18 @@ auto del2 = [](Widget* pw) { ... };
 std::shared_ptr<Widget> pw1(new Widget, del1);
 std::shared_ptr<Widget> pw2(new Widget, del2);
 ```
-Because pw1 and pw2 have the same type, they can be placed in a container of objects of that type `std::vector<std::shared_ptr<Widget>>`.
+Because pw1 and pw2 have the same type, they can be placed in a container of objects of that type
+`std::vector<std::shared_ptr<Widget>>`.
 Thet could also be assigned to one another.
 None of these things could be done with `std::unique_ptr` that differ in the types of their custom deleters.
 
 There is a control block for each object managed by `std::shared_ptr`.
 Control block contains reference count, weak count, a copy of the custom deleter, if one has been specified.
-![control block](http://senlinzhan.github.io/images/data-structure/sh2.png)
 
-`std::enable_shared_from_this`: a template for a base class you inherit from if you want a class managed by `std::shared_ptr` to be able to safely create a `std::shared_ptr` from a `this` pointer.
+<img src="./pics/effective_modern_cpp/shared_ptr_control_block.png" alt="shared_ptr_control_block" width="50%"/>
+
+`std::enable_shared_from_this`: a template for a base class you inherit from if you want a class managed by
+`std::shared_ptr` to be able to safely create a `std::shared_ptr` from a `this` pointer.
 ```C++
 class Widget : public std::enable_shared_from_this<Widget> {
  public:
@@ -657,14 +687,18 @@ class Widget : public std::enable_shared_from_this<Widget> {
   }
 };
 ```
-`std::enable_shared_from_this` defines a member function that creates a `std::shared_ptr` to the current object without duplicating control blocks.
-The design relies on the current object having an associated control block. For that to be the case, there must be an existing `std::shared_ptr`.
+`std::enable_shared_from_this` defines a member function that creates a `std::shared_ptr` to the current object without
+duplicating control blocks.
+The design relies on the current object having an associated control block. For that to be the case, there must be an
+existing `std::shared_ptr`.
 
-Another difference from `std::unique_ptr`, `std::shared_ptr` has an API that's designed only for pointers to single objects.
-There's no `std::shared_ptr<T[]>`, but from time to time, "clever" programmers stumble on the idea of using `std::shared_ptr<T>` to point to an array,
-specifying a custom deleter to perform an array delete.
+Another difference from `std::unique_ptr`, `std::shared_ptr` has an API that's designed only for pointers to single
+objects.
+There's no `std::shared_ptr<T[]>`, but from time to time, "clever" programmers stumble on the idea of using
+`std::shared_ptr<T>` to point to an array, specifying a custom deleter to perform an array delete.
 This can be made to compile, but it's a horrible idea. `std::shared_ptr` offers no operator[](C++17 开始提供了).
-Given the variety of C++11 alternatives to `std::vector`, declaring a smart pointer to a dump array is almost always a sign of bad design.
+Given the variety of C++11 alternatives to `std::vector`, declaring a smart pointer to a dump array is almost always a
+sign of bad design.
 
 ## use `std::weak_ptr` for `std::shared_ptr` like pointers that can dangle
 ### scenario 1: cache
@@ -674,9 +708,10 @@ std::unique_ptr<const Widget> loadWidget(WidgetID id);
 ```
 If loadWidget is an expensive call, a reasonable optimization would be using a cache.
 For this caching factory function, a `std::unique_ptr` return type is not a good fit.
-Callers should certainly receive smart pointers to cached objects, and callers should certainly determine the lifetime of those objects, but the cache needs a pointer to the objects, too.
-The cache's pointers need to be able to detect when they dangle, because when factory clients are finished using an object returned by the factory,
-that object will be destroyed, and the corresponding cache entry will dangle.
+Callers should certainly receive smart pointers to cached objects, and callers should certainly determine the lifetime
+of those objects, but the cache needs a pointer to the objects, too.
+The cache's pointers need to be able to detect when they dangle, because when factory clients are finished using an
+object returned by the factory, that object will be destroyed, and the corresponding cache entry will dangle.
 The cached pointers should therefore be `std::weak_ptr`.
 ```C++
 // 可以继续改进, 删除已经无用的
@@ -690,67 +725,137 @@ std::shared_ptr<const Widget> fastLoadWidget(WidgetID id) {
   return obj;
 }
 ```
+cache 不能用shared_ptr, 因为如果cache 用了shared_ptr, 那么cache 住的对象就永远不会被销毁了, 即使caller 已经不用了.
 
 ### scenario 2: observer design pattern
-The primary components of this pattern are subjects(objects whose state may change) and observers(objects to be notified when state changes occur).
-In most implementations, each subject contains a data member holding pointers to its observers. That makes it easy for subjects to issue state change notifications.
+The primary components of this pattern are subjects(objects whose state may change) and observers(objects to be notified
+when state changes occur).
+In most implementations, each subject contains a data member holding pointers to its observers. That makes it easy for
+subjects to issue state change notifications.
 Subjects have no interest in controlling the lifetime of their observers(i.e., when they are destroyed),
-but they have a great interest in making sure that if an observer gets destroyed, subjects don't try to subsequently access it.
+but they have a great interest in making sure that if an observer gets destroyed, subjects don't try to subsequently
+access it.
 A reasonable design is for each subject to hold a container of `std::weak_ptr` to its observers.
 
 ### scenario 3: `std::shared_ptr` cycle
 
 ## prefer `std::make_unique` and `std::make_shared` to direct use of new
-The size and speed advantages of `std::make_shared` vis-à-vis direct use of new stem from `std::shared_ptr`'s control block being placed in the same chunk of memory as the managed object.
+The size and speed advantages of `std::make_shared` vis-à-vis direct use of new stem from `std::shared_ptr`'s control
+block being placed in the same chunk of memory as the managed object.
 When that object's reference count goes to zero, the object is destroyed (i.e., its destructor is called).
-However, the memory it occupies can't be released until the control block has also been destroyed, because the same chunk of dynamically allocated memory contains both.
+However, the memory it occupies can't be released until the control block has also been destroyed, because the same
+chunk of dynamically allocated memory contains both.
 
-As long as `std::weak_ptr`s refer to a control block (i.e., the weak count is greater than zero), that control block must continue to exist.
+As long as `std::weak_ptr`s refer to a control block (i.e., the weak count is greater than zero), that control block
+must continue to exist.
 And as long as a control block exists, the memory containing it must remain allocated.
-The memory allocated by a `std::shared_ptr` make function, then, can't be deallocated until the last `std::shared_ptr` and the last `std::weak_ptr` referring to it have been destroyed.
+The memory allocated by a `std::shared_ptr` make function, then, can't be deallocated until the last `std::shared_ptr`
+and the last `std::weak_ptr` referring to it have been destroyed.
 
-## understand std::move and std::forward
-std::move doesn't move anything, std::forward doesn't forward anything. At runtime, neither does anyting at all. They generate no executable, not a single byte.
-They are merely function templates that perform casts.
-**std::move unconditionally casts its argument to an rvalue, while std::forward perform this cast only if its argument was initialized with an rvalue.**
+# std::move and std::forward
+std::move doesn't move anything, std::forward doesn't forward anything.
+
+At runtime, neither does anyting at all. They generate no executable, not a single byte. They are merely function
+templates that perform casts.
+
+**std::move unconditionally casts its argument to an rvalue, while std::forward perform this cast only if its argument
+was initialized with an rvalue.**
+
+## std::move
 ```C++
 // C++14, still in namespace std
 template<typename T>
-decltype(auto) move(T&& param) {
-  using ReturnType = remove_reference_t<T>&&;
+decltype(auto) std::move(T&& param) {
+  using ReturnType = std::remove_reference_t<T>&&;
   return static_cast<ReturnType>(param);
 }
 ```
-The returned rvalues are candidates for moving, so applying std::move to an object tells the compiler that this object is eligible to be moved from.
+The returned rvalues are candidates for moving, so applying std::move to an object tells the compiler that this object
+is eligible to be moved from.
 That's why std::move has the name it does: to make it easy to designate objects that may be moved from.
 
-1. Don't declare objects const if you want to able to move from them. Move requests on const objects are silently transformed into copy operations.
-1. std::move not only doesn't actually move anything, it doesn't even guarantee that the object it's casting will be eligible to moved.
+1. Don't declare objects const if you want to able to move from them. Move requests on const objects are silently
+  transformed into copy operations.
+1. std::move not only doesn't actually move anything, it doesn't even guarantee that the object it's casting will be
+  eligible to moved.
 
-Recall how std::forward is typically used. The most common scenario is a function template taking a universal reference parameter that is to be passed to another function.
+## std::forward
+Recall how std::forward is typically used. The most common scenario is a function template taking a universal reference
+parameter that is to be passed to another function.
 ```C++
-void process(const Widget& lval);  // process lvalues
-void process(Widget&& rval);  // process rvales
-
 template<typename T>
-void logAndProcess(T&& param) {
-  LOG(INFO) << "calling process at " << utime();
-  process(std::forward<T>(param));
+void fun(T&& param) {
+  someFunc(std::forward<T>(param));
 }
 
-Widget w;
-logAndProcess(w);  // call with lvalue
-logAndProcess(std::move(w));  // call with rvalue
+void someFunc(const Widget& lval);
+void someFunc(Widget&& rval);
 ```
-Inside logAndProcess, param is always a lvalue, so if without std::forward, every call to process will thus want to invoke the lvalue overloaded for process.
-To prevent this, we need a mechanism for param to be cast to an rvalue if and only if the argument with which param was initialized(the argument passed to logAndProcess) was an rvalue.
+
+Inside fun, param is always a lvalue(as it has a name), so if without std::forward, every call to someFunc will thus
+want to invoke the lvalue overloaded version.
+To prevent this, we need a mechanism for param to be cast to an rvalue if and only if the argument with which param was
+initialized(the argument passed to fun) was an rvalue.
 This is precisely what std::forward does. Thas's why std::forward is a conditional cast.
 
 You may wonder how std::forward can know whether its argument was initialized with an rvalue.
-The brief answer is that that information is encoded in logAndProcess's template parameter T. That parameter is passwd to std::forward, which recovers the encoded information.
+
+The deduced template parameter T will encode whether the argument passwd to param was an lvalue or an rvalue.
+The encoding mechanism is simple, when an lvalue is passwd as an argument, T is deduced to be an lvalue reference, when
+an rvalue is passed, T is deduced to be a non-reference.
+
+### reference collapsing
+```C++
+Widget widgetFactory();  // function returning rvalue
+Widget w;  // an lvalue
+func(w);  // call func with lvalue, T deduced to be Widget&
+func(widgetFactory());  // call func with rvalue, T deduced to be Widget
+```
+
+If either reference is an lvalue reference, the result is an lvalue reference. Otherwise(i.e., if both are rvalue
+references) the result is an rvalue reference.
+
+Here is how std::forward can be implemented
+```C++
+// C++14, in namespace std
+template<typename T>
+T&& std::forward(std::remove_refrence_t<T>& param) {
+  retrun static_cast<T&&>(param);
+}
+```
+Suppose that the argument passed to f is an lvalue of type Widget. T will be deduced as Widget&, and the call to
+std::forward will instantiate as `std::forward<Widget&>` yielding this:
+```C++
+Widget& && std::forward(std::remove_reference_t<Widget&>& param) {
+  return static_cast<Widget& &&>(param);
+}
+
+// becomes
+Widget& std::forward(Widget& param) {
+  return static_cast<Widget&>(param);
+}
+```
+We can see, when an lvalue argument is passed to the function template f, std::forward is instantiated to take and
+return an lvalue reference.
+
+Suppose that the argument passed to f is an rvalue of type Widget, T will be deduced as Widget, and the call to
+std::forward will instantiate as `std::forward<Widget>` yielding this:
+```C++
+Widget&& forward(remove_reference_t<Widget>& param) {
+  return static_cast<Widget&&>(param);
+}
+
+// becomes
+Widget&& forward(Widget& param) {
+  return static_cast<Widget&&>(param);
+}
+```
+In this case, std::forward will turn f's parameter param(an lvalue) into an rvalue. The end result is that an rvalue
+agrument passed to f will be forwarded to someFunc as an rvalue.
 
 ## distinguish universal references from rvalue references
-If a function template parameter has type `T&&` for a deduced type T, or if an object is defined using `auto&&`, the parameter or object is a universal reference.
+If a function template parameter has type `T&&` for a deduced type T, or if an object is defined using `auto&&`, the
+parameter or object is a universal reference.
 ```C++
 template<typename T>
 void f(T&& param);  // universal reference
@@ -762,7 +867,8 @@ template<typename T>
 void f(const T&& param);  // rvalue reference
 ```
 
-Being in a template doesn't guarantee the presence of type deduction, consider the `push_back` member function in `std::vector`:
+Being in a template doesn't guarantee the presence of type deduction, consider the `push_back` member function in
+`std::vector`:
 ```C++
 // from C++ standards
 template<class T, class Allocator = allocator<T>>
@@ -772,8 +878,10 @@ class vector {
   ...
 };
 ```
-`push_back`'s parameter certainly has the right form for a universal reference, but there's no type deduction in this case.
-That's because push back can't exist without a particular vector instantiation for it to be part of, and the type of that instantiation fully determines the declaration for push back. For example:
+`push_back`'s parameter certainly has the right form for a universal reference, but there's no type deduction in this
+case.
+That's because push back can't exist without a particular vector instantiation for it to be part of, and the type of
+that instantiation fully determines the declaration for push back. For example:
 ```C++
 std::vector<Widget> v;
 
@@ -796,7 +904,8 @@ class vector {
 ```
 
 C++14 lambda expressions may declare auto&& parameters.
-For example, if you wanted to write a C++14 lambda to record the time taken in a arbitrary function invocation, you could do this:
+For example, if you wanted to write a C++14 lambda to record the time taken in a arbitrary function invocation, you
+could do this:
 ```C++
 auto timeFunctionInvocation = [](auto&& func, auto&&... params) {
   start timer;
@@ -827,13 +936,15 @@ class Widget {
   }
 };
 ```
-In short, rvalue references should be unconditionally cast to rvalues (via std::move) when forwarding them to other functions, because they're always bound to rvalues.
-And universal references should be conditionally cast to rvalues (via std::forward) when forwarding them, because they're only sometimes bound to rvalues.
+In short, rvalue references should be unconditionally cast to rvalues (via std::move) when forwarding them to other
+functions, because they're always bound to rvalues.
+And universal references should be conditionally cast to rvalues (via std::forward) when forwarding them, because
+they're only sometimes bound to rvalues.
 
-**If you're in a function that returns by value, and you're returning an object bound to an rvalue reference or a universal reference,
-you'll want to apply std::move or std::forward when you return the reference**.
+**If you're in a function that returns by value, and you're returning an object bound to an rvalue reference or a
+universal reference, you'll want to apply std::move or std::forward when you return the reference**.
 ```C++
-Matrix operator+(Matrice&& lhs, const Matrix& rhs) {
+Matrix operator+(Matrix&& lhs, const Matrix& rhs) {
   lhs += rhs;
   return std::move(lhs);
 }
@@ -864,23 +975,29 @@ Widget makeWidget() {
 }
 ```
 The standardization Committe is way ahead of such programmers when it comes to this kind of optimization.
-It was recognized long ago that the "copying" version of makeWidget can avoid the need to copy the local variable w by constructing it in the memory allocated for the function's return value.
-This is also known as the **return value optimization(RVO)**, and it's been expressly blessed by the C++ Standard with two conditions:
+It was recognized long ago that the "copying" version of makeWidget can avoid the need to copy the local variable w by
+constructing it in the memory allocated for the function's return value.
+This is also known as the **return value optimization(RVO)**, and it's been expressly blessed by the C++ Standard with
+two conditions:
 
 1. The type of the local object is the same as that returned by the function
 1. The local object is what's being returned directly.
 
 The "copying" version has fulled both conditions.
 
-While the "moving" version does not. What's being returned here isn't the local object w, it's a reference to w, the result of std::move(w).
+While the "moving" version does not. What's being returned here isn't the local object w, it's a reference to w, the
+result of std::move(w).
 So compilers must move w into the function's return value location.
 
-The part of the standard blessing the RVO goes on to say that if the conditions for RVO are met, but compilers choose not to perform copy elision,
+The part of the standard blessing the RVO goes on to say that if the conditions for RVO are met, but compilers choose
+not to perform copy elision,
 the object being returned must be treated as an rvalue.
-In effect, the Standart requires that when RVO is permitted, either copy elision takes places or std::move is implicitly applied to local objects being returned.
+In effect, the Standart requires that when RVO is permitted, either copy elision takes places or std::move is implicitly
+applied to local objects being returned.
 
 The situation is similar for by-value function parameters.
-They're not eligible for copy elision with respect to their function's return value, but compilers must treat them as rvalues if they're returned.
+They're not eligible for copy elision with respect to their function's return value, but compilers must treat them as
+rvalues if they're returned.
 As a result, if your source code lookes like this:
 ```C++
 // by value parameter of same type as function's return
@@ -945,63 +1062,6 @@ class Person {
   std::string name_;
 };
 ```
-
-## understand reference collapsing
-```C++
-template<typename T>
-void func(T&& param);
-```
-The deduced template parameter T will encode whether the argument passwd to param was an lvalue or an rvalue.
-The encoding mechanism is simple, when an lvalue is passwd as an argument, T is deduced to be an lvalue reference, when an rvalue is passed, T is deduced to be a non-reference.
-```C++
-Widget widgetFactory();  // function returning rvalue
-Widget w;  // an lvalue
-func(w);  // call func with lvalue, T deduced to be Widget&
-func(widgetFactory());  // call func with rvalue, T deduced to be Widget
-```
-
-If either reference is an lvalue reference, the result is an lvalue reference. Otherwise(i.e., if both are rvalue references) the result is an rvalue reference.
-
-A common use case of std::forward and universal reference lookes like this:
-```C++
-template<typename T>
-void f(T&& param) {
-  someFunc(std::forward<T>(param));
-}
-```
-Here is how std::forward can be implemented
-```C++
-// C++14, in namespace std
-template<typename T>
-T&& forward(remove_refrence_t<T>& param) {
-  retrun static_cast<T&&>(param);
-}
-```
-Suppose that the argument passed to f is an lvalue of type Widget. T will be deduced as Widget&, and the call to std::forward will instantiate as `std::forward<Widget&>` yielding this:
-```C++
-Widget& && forward(remove_reference_t<Widget&>& param) {
-  return static_cast<Widget& &&>(param);
-}
-
-// becomes
-Widget& forward(Widget& param) {
-  return static_cast<Widget&>(param);
-}
-```
-We can see, when an lvalue argument is passed to the function template f, std::forward is instantiated to take and return an lvalue reference.
-
-Suppose that the argument passed to f is an rvalue of type Widget, T will be deduced as Widget, and the call to std::forward will instantiate as `std::forward<Widget>` yielding this:
-```C++
-Widget&& forward(remove_reference_t<Widget>& param) {
-  return static_cast<Widget&&>(param);
-}
-
-// becomes
-Widget&& forward(Widget& param) {
-  return static_cast<Widget&&>(param);
-}
-```
-In this case, std::forward will turn f's parameter param(an lvalue) into an rvalue. The end result is that an rvalue agrument passed to f will be forwarded to someFunc as an rvalue.
 
 # Lambda Expressions
 ## use init capture to move objects into closures
