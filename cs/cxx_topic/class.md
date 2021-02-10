@@ -484,7 +484,32 @@ objects share a common Worker object instead of each carrying its own copy.
 
 Here, the virtual key word does not have any obvious connection to the virtual in virtual functions.
 
-# class member memory layout
+# class layout
+[Back to Basics: Class Layout - Stephen Dewhurst - CppCon 2020](https://www.youtube.com/watch?v=SShSV_iV1Ko)
+[pdf](https://github.com/CppCon/CppCon2020/blob/main/Presentations/back_to_basics_class_layout/back_to_basics_class_layout__steve_dewhurst__cppcon_2020.pdf)
+
+Only non-static data declarations in a class definition add anything to the size of class objects.
+```cpp
+class HR {
+ public:
+  void terminator(Salary*, Hourly*, Temp*);
+ private:
+  enum {max = 16383};
+  static int num_dispatched;
+  Employee* emps[max];
+  int size;
+};
+```
+sizeof applied to the HR class yields the same result as sizeof applied to this structure:
+```cpp
+enum {HR_max = 16383};
+extern int HR_num_dispatched;
+struct HR_type {
+  Employee* emps[HR_max];
+  int size;
+}
+```
+
 ## 单继承
 ```cpp
 struct C {
