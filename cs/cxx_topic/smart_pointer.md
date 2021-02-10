@@ -22,6 +22,8 @@
   pointer;
 
 # [shared ptr](http://www.cplusplus.com/reference/memory/shared_ptr)
+[CppCon 2019: Arthur O'Dwyer "Back to Basics: Smart Pointers"](https://www.youtube.com/watch?v=xGDLkt-jBJ4)
+
 - 性能开销大
 - shared ptr 的Deleter 不影响类型(通过类型消除实现)
 
