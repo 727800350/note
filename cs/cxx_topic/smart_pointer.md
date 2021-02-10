@@ -6,16 +6,20 @@
 - [weak ptr](#weak-ptr)
 
 # [unique ptr](http://www.cplusplus.com/reference/memory/unique_ptr)
-- For safety reasons, they **do not support pointer arithmetics**, and only support move assignment(disabling copy assignments).
+- For safety reasons, they **do not support pointer arithmetics**, and only support move assignment(disabling copy
+  assignments).
 - 性能出色, 析构和delete 没有差异, 可大量使用
 - 必要时可以转换为shared ptr
-- unique ptr 可以自定义Deleter, 但是这可能会改变类型, 因为Deleter 也是模板参数的一部分, `std::unique_ptr<FILE, decltype(&fclose)> f(fopen(...), &fclose)`
+- unique ptr 可以自定义Deleter, 但是这可能会改变类型, 因为Deleter 也是模板参数的一部分,
+  `std::unique_ptr<FILE, decltype(&fclose)> f(fopen(...), &fclose)`
 - 工厂类建议返回`std::unique_ptr<T>`
-- `get()`: Returns the stored pointer. 拿到这个指针后可以像以前那样直接操作这快内存, 但是要注意, unique ptr 的ownership 并没有发生变化
+- `get()`: Returns the raw pointer. 拿到这个指针后可以像以前那样直接操作这快内存, 但是要注意, unique ptr 的ownership 并
+  没有发生变化
 - `*`: Returns a reference to the managed object, equivalent to `*get()`.
 - `->`: 可以像以前那样直接访问成员变量
 - `[i]`: Returns a reference to the i-th object (zero-based) in the managed array. equivalent to `get()[i]`.
-- 不能把unique ptr 赋值给其他unique ptr, 可以`std::move()`, 操作之后, original becomes nullptr and the new one owns the pointer;
+- 不能把unique ptr 赋值给其他unique ptr, 可以`std::move()`, 操作之后, original becomes nullptr and the new one owns the
+  pointer;
 
 # [shared ptr](http://www.cplusplus.com/reference/memory/shared_ptr)
 - 性能开销大
@@ -31,39 +35,63 @@ fprintf(stdout, "%d %d %d\n", *sp1, *sp2, *sp3); // 2 1 1
 ```
 swap 仅仅是交换了sp1 和 sp3 的指向, sp2 没有发生变化, 还是指向原来的1
 
-## [`std::enable_shared_from_this`](https://stackoverflow.com/questions/712279/what-is-the-usefulness-of-enable-shared-from-this)
-allows an object t(裸指针) that is currently managed by a `std::shared_ptr` named pt to safely generate additional `std::shared_ptr` instances pt1, pt2, ... that all share ownership of t with pt.
+## `std::enable_shared_from_this`
+allows a raw pointer p that is currently managed by a `std::shared_ptr` named sp to safely generate additional
+`std::shared_ptr` instances sp1, sp2, ... that all share ownership of p with sp.
 
-code like this won't work correctly:
-```C++
-int *ip = new int;
-std::shared_ptr<int> sp1(ip);
-std::shared_ptr<int> sp2(ip);
+```cpp
+class Widget : public std::enable_shared_from_this<Widget> {};
+
+auto* p = new Widget();
+ASSERT_FALSE(p->shared_from_this());
+// 会报 C++ exception with description "bad_weak_ptr" thrown in the test body, 因为此时p 还不是被shared ptr 管理的
+
+std::shared_ptr<Widget> sp(p);
+ASSERT_EQ(sp, sp->shared_from_this());  // ok
 ```
-Neither of the two `shared_ptr` objects knows about the other, so both will try to release the resource when they are destroyed. That usually leads to problems.
 
-The way to avoid this problem is to use the class template `enable_shared_from_this`. The template takes one template type argument, which is the name of the class that defines the managed resource. That class must, in turn, be derived publicly from the template; like this:
-```C++
-class S : std::enable_shared_from_this<S> {
- public:
-  std::shared_ptr<S> not_dangerous(){
-  return std::shared_from_this();
+enable_shared_from_this 的signature
+```cpp
+template<class T>
+class std::enable_shared_from_this {
+  std::shared_ptr<T> shared_from_this();
+};
+```
+
+procedure sytle
+```cpp
+class Listener;
+
+void on_accept(std::shared_ptr<Listener>, std::error_code);
+
+void run(std::shared_ptr<Listener> listener) {
+  listener->acceptor().async_accept(
+    listener->socket(),
+    [listener](std::error_code code) {on_accept(listener, code);}
+      )
+};
+
+run(std::make_shared<Listener>(...));
+```
+The lambda must participate in shared ownership of the Listener object, to keep it from being prematurely destroyed.
+
+oo style
+```cpp
+class Listener : public std::enable_shared_from_this<Listener> {
+  void on_accept(std::error_code);
+
+  void run() {
+    acceptor_.async_accept(
+      socket_,
+      [self = this->shared_from_this()](std::error_code code) {self->on_accept(code);}
+      );
   }
 };
 
-int main() {
-  std::shared_ptr<S> sp1(new S);
-  std::shared_ptr<S> sp2 = sp1->not_dangerous();
-  return 0;
-}
+std::make_shared<Listener>(...)->run();
 ```
-When you do this, keep in mind that the object on which you call `shared_from_this` must be owned by a `shared_ptr` object. This won't work:
-```C++
-int main() {
-  S *p = new S;
-  std::shared_ptr<S> sp2 = p->not_dangerous();   // don't do this
-}
-```
+Now Listener::run() receives only raw pointer this, To participate in the Listener's lifetime, it needs to regain access
+to the control block. So we use shared_from_this.
 
 ## [借`shared_ptr`实现copy-on-write](https://blog.csdn.net/q5707802/article/details/79261515)
 在<Linux多线程服务端编程使用muduoC++网络库>2.8节说"借`shared_ptr`实现copy-on-write". 那么copy-on-write是怎样的技术?
