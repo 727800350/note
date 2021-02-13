@@ -227,20 +227,64 @@ I0825 09:33:34.305356 167620 main_test.cc:20] copy constructor for Foo
 可以看到使用初始化列表之后, 可以减少一次构造函数的调用
 
 # Virtual Function
-- Once a function is declared as virtual, it remains virtual in all the dervied classes. 既不需要在dervied class 中显式指定virtual
-- 虚函数不能定义为内联函数, inline是在编译器将函数类容替换到函数调用处, 是静态编译的, 而虚函数是动态调用的, 在编译器并不知道需要调用的是父类还是子类的虚函数, 所以不能够inline声明展开, 所以编译器会忽略
+Once a function is declared as virtual, it remains virtual in all the dervied classes.
+既不需要在dervied class 中显式指定virtual
 
-## [虚函数的实现的基本原理](https://www.cnblogs.com/malecrab/p/5572730.html)
-简单地说,每一个含有虚函数(无论是其本身的,还是继承而来的)的类都至少有一个与之对应的虚函数表,其中存放着该类所有的虚函数对应的函数指针.例:
-![内存布局](./pics/virtual_function_table.png)
+虚函数不能定义为内联函数, inline是在编译器将函数类容替换到函数调用处, 是静态编译的, 而虚函数是动态调用的, 在编译器并不知
+道需要调用的是父类还是子类的虚函数, 所以不能够inline声明展开, 所以编译器会忽略
 
-其中(为了描述方便,本文在探讨对象内存布局时,将忽略内存对齐对布局的影响)
+## 虚函数的实现的基本原理
+If a class has a virtual function, every object of that type contains a pointer to a shared virtual function table.
+```cpp
+class B {
+ public:
+  virtual int f1();
+  virtual void f2(int);
+  virtual int f3(int);
+  // ~~~
+};
 
-- B的虚函数表中存放着B::foo和B::bar两个函数指针.
-- D的虚函数表中存放的既有继承自B的虚函数B::foo,又有重写(override)了基类虚函数B::bar的D::bar,还有新增的虚函数D::quz.
+B* bp = new B;
+```
+<img src="./pics/class/vtable.png" alt="vtable" width="60%"/>
 
-从编译器的角度来说, B的虚函数表很好构造, D的虚函数表构造过程相对复杂. 下面给出了构造D的虚函数表的一种方式(仅供参考):
-![虚函数表构建过程](./pics/build_virtual_function_table.png)
+The "other stuff" is usually
+
+- an offset to the start of the complete object,
+- a pointer to the typeinfo for the object, and
+- offsets to virtual base class subobjects in the complete object
+
+The virtual calling sequence is indirect through the object’s virtual function table. The call
+```cpp
+bp‐>f1();
+```
+Is translated to something like
+```cpp
+(*(bp‐>vptr)[0])(bp)
+```
+
+A derived class has its own virtual table.
+Overriding derived class functions replace those of the base class.
+```cpp
+class D: public B {
+ public:
+  int f1() override;  // overrides B::f1
+  virtual void f4();  // new virtual
+  int f3(int) override;  // override B::f3
+  // ~~~
+};
+
+B* bp = new D;
+bp‐>f3();
+```
+<img src="./pics/class/vtable_derived.png" alt="vtable_derived" width="55%"/>
+
+Note that while this is a typical implementation, the standard does not specify a particular mechanism.
+
+Some compilers would locate the virtual pointer somewhere other than at the beginning of an object, typically at the end
+of a base class subobject.
+
+It's conceivable that a compiler might not use the vptr/vtbl mechanism at all. (I'm not aware of any such compiler.)
 
 ### parameter of an overriding function
 虚函数body 可以被覆盖掉, 但是默认参数还是使用base class 中声明的.
@@ -583,7 +627,7 @@ For example:
 
 - A member initialization list initializes in the order of declaration of the members.
 - Base class subobjects are initialized and destroyed based on their lexical position on the base class list, not the
-  order in which they’re allocated in memory.
+  order in which they're allocated in memory.
 - A defaulted operator <=> compares members in their declared order.
 
 **Lexical Comparison**
