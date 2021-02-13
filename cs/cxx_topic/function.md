@@ -1,3 +1,9 @@
+- [function pointer](#function-pointer)
+- [lambda](#lambda)
+- [std::function and std::bind](#stdfunction-and-stdbind)
+- [closure](#closure)
+- [function objects in C++](#function-objects-in-c)
+
 # function pointer
 ref: [深入理解C语言函数指针](http://www.cnblogs.com/windlaughing/archive/2013/04/10/3012012.html)
 

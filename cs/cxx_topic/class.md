@@ -12,7 +12,10 @@
     - [子类调用父类的方法](#子类调用父类的方法)
 - [嵌套类](#嵌套类)
   - [派生](#派生)
-- [class member memory layout](#class-member-memory-layout)
+- [class layout](#class-layout)
+  - [Base Class Layout](#base-class-layout)
+  - [Empty Class](#empty-class)
+  - [Lexical vs. Physical Ordering](#lexical-vs-physical-ordering)
   - [单继承](#单继承)
   - [多重继承](#多重继承)
 
