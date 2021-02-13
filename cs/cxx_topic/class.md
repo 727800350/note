@@ -494,20 +494,142 @@ class HR {
  public:
   void terminator(Salary*, Hourly*, Temp*);
  private:
-  enum {max = 16383};
-  static int num_dispatched;
+  enum {max = 100};
+  static size_t num_dispatched;
   Employee* emps[max];
-  int size;
+  size_t size;
 };
 ```
 sizeof applied to the HR class yields the same result as sizeof applied to this structure:
 ```cpp
 enum {HR_max = 16383};
-extern int HR_num_dispatched;
+extern size_t HR_num_dispatched;
 struct HR_type {
   Employee* emps[HR_max];
-  int size;
+  size_t size;
 }
+```
+You can declare an enumeration nested inside a C structure, however, C does not consider nested enumeration types and
+constants to be members of the structure. They have the same names scope as the structure name.
+
+Storage for static member data is allocated with other static data(in .data).
+
+What do we know about the order of non-static data members?
+```cpp
+class C {
+ public:  // access specifier
+  int a;
+  int b;
+ private:  // access specifier
+  int c;
+  int d;
+ public:  // access specifier
+  int e;
+ private:  // access specifier
+  int f;
+};
+```
+In traditional C++, the only ordering guarantee was that the members between access specifiers had to be laid out in the
+same relative order.
+
+In practive, compilers did not (or very rarely) reorder memory layout.
+
+In modern C++, that ordering guarantee was modified to state that members with the same access had to be laid out in the
+same relative order.
+
+## Base Class Layout
+"The order in which the base class subobjects are allocated in the most derived object...is unspecified."
+It is typical that storage for a base class subobject precedes storage for derived class data members.
+It is typical that multiple base class subobjects are laid out in the order they appear on the base class list.
+However, a compiler may elect to optimize storage use by permuting the base class subobject order.
+
+## Empty Class
+An empty class has no non-static data members, no virtual functions, and no virtual base classes.
+We often call these types/objects/closures "stateless."
+However, even an empty class must occupy some space.
+```cpp
+class Empty {}; // sizeof(Empty) is probably 1
+Empty e; // sizeof(e) is probably 1
+class Empties { // sizeof(Empties) is probably 3
+  Empty e1_; // offset 0
+  Empty e2_; // offset 1
+  Empty e3_; // offset 2
+};
+```
+
+...Until C++20!
+
+The `no_unique_address` attribute allows an empty non-static data member to share space with another subobject (base
+class or member) of a different type.
+```cpp
+class Empty {};
+Empty e;
+class Empties { // sizeof(Empties) is probably 1
+  [[no_unique_address]] Empty e1_;
+  [[no_unique_address]] Empty2 e2_;
+  [[no_unique_address]] Empty3 e3_;
+};
+```
+The "Empty Base Class Optimization," also known as the EBCO or EBO (if you prefer TLA's) is a common compiler
+optimization.
+
+With respect to multiple inheritance, it often makes sense to rearrange the order of base classes so that empty base
+classes appear first on the base class list.
+
+## Lexical vs. Physical Ordering
+Note that language constructs that enforce an ordering on members are defined lexically, not physically.
+
+For example:
+
+- A member initialization list initializes in the order of declaration of the members.
+- Base class subobjects are initialized and destroyed based on their lexical position on the base class list, not the
+  order in which they’re allocated in memory.
+- A defaulted operator <=> compares members in their declared order.
+
+**Lexical Comparison**
+
+The implementation compares the data members in the lexical order x, y, and z even if z is physically placed at offset 0.
+```cpp
+class Flatland {
+ public:
+  auto operator <=>(const Flatland &) const = default;
+
+  int x;
+  int y;
+ private:
+  int z;
+};
+```
+
+Just be careful about making layout assumptions.
+```cpp
+class Flatland {
+ public:
+  auto operator<=>(const Flatland& rhs) const {
+    return memcmp(this, &rhs, sizeof(Flatland));
+  }
+
+  int x;
+  int y;
+ private:
+  int z;
+};
+```
+operator<=> 不能用memcpy 有两个原因:
+
+1. 内存对齐可能会有一些padding, 用memcmp 直接比较sizeof(Flatland) 的大小会把这些padding 也包括进去.
+1. 编译器可能在某次升级后, 把z 放到了x, y 的前面, 也就是physical 和lexical order 不一样, 原来先比较的x,y 变成了先比较z.
+
+Using Static Assertions to Verify Layout
+```cpp
+struct Timer {
+  uint8_t mode;
+  uint32_t data;
+  uint32_t count;
+};
+
+// offsetof is a standard macro from <cstddef>
+static_assert(offsetof(Timer, data) == 4, "data must be at offset 4");
 ```
 
 ## 单继承
