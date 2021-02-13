@@ -10,14 +10,10 @@
     - [虚析构函数](#虚析构函数)
     - [在非虚函数中调用虚函数](#在非虚函数中调用虚函数)
     - [子类调用父类的方法](#子类调用父类的方法)
-- [嵌套类](#嵌套类)
-  - [派生](#派生)
 - [class layout](#class-layout)
   - [Base Class Layout](#base-class-layout)
   - [Empty Class](#empty-class)
   - [Lexical vs. Physical Ordering](#lexical-vs-physical-ordering)
-  - [单继承](#单继承)
-  - [多重继承](#多重继承)
 
 # constructor and operator
 ```C++
@@ -249,7 +245,7 @@ class B {
 
 B* bp = new B;
 ```
-<img src="./pics/class/vtable.png" alt="vtable" width="60%"/>
+<img src="./pics/class/vtable.png" alt="vtable" width="50%"/>
 
 The "other stuff" is usually
 
@@ -257,7 +253,7 @@ The "other stuff" is usually
 - a pointer to the typeinfo for the object, and
 - offsets to virtual base class subobjects in the complete object
 
-The virtual calling sequence is indirect through the object’s virtual function table. The call
+The virtual calling sequence is indirect through the object's virtual function table. The call
 ```cpp
 bp‐>f1();
 ```
@@ -280,7 +276,7 @@ class D: public B {
 B* bp = new D;
 bp‐>f3();
 ```
-<img src="./pics/class/vtable_derived.png" alt="vtable_derived" width="55%"/>
+<img src="./pics/class/vtable_derived.png" alt="vtable_derived" width="50%"/>
 
 Note that while this is a typical implementation, the standard does not specify a particular mechanism.
 
@@ -444,93 +440,6 @@ b->say(); // output "A say" "B say"
 ```
 在子类的虚函数中也可以调用父类的同名函数.
 
-# 嵌套类
-嵌套中的局部类可以访问外层的private 元素(包括变量和函数), eg:
-```C++
-class A {
- public:
-  void say() {
-    LOG(INFO) << "this is A";
-  }
-
-  class B {
-   public:
-    void faire() {
-      A a(2);
-      a.say();
-      LOG(INFO) << a.x_;
-    }
-  };
-
- private:
-  A(int x) : x_(x) {}
-
- private:
-  int x_;
-};
-
-A::B b;
-b.faire();
-
-// A a; // compile error, as A's constructor is private
-```
-
-## 派生
-派生类构造函数的语法:
-```info
-派生类名::派生类名(参数总表):基类名1(参数表1),....基类名n(参数名n),内嵌子对象1(参数表1),...内嵌子对象n(参数表n){
-  派生类新增成员的初始化语句;
-}
-```
-**注:构造函数的初始化顺序并不以上面的顺序进行,而是根据声明的顺序初始化.**
-
-派生类构造函数执行的次序:
-
-1. 调用基类构造函数,调用顺序按照它们被继承时声明的顺序(**从左到右**),
-1. 调用内嵌成员对象的构造函数,调用顺序按照它们在类中声明的顺序,
-1. 派生类的构造函数体中的内容.
-
-派生类的析构函数的功能是在该对象消亡之前进行一些必要的清理工作,析构函数没有类型,也没有参数.
-析构函数的执行顺序与构造函数相反.
-
-1. 派生类的构造函数体中的内容
-1. 调用内嵌成员对象的构造函数,调用顺序按照它们在类中声明的逆顺序
-1. 调用基类构造函数,调用顺序按照它们被继承时声明的逆顺序
-
-如果某派生类的多个基类拥有同名的成员,同时,派生类又新增这样的同名成员,在这种情况下,派生类成员将覆盖所有基类的同名成员.这就需要显示的指定基类, 才能调用基类的同名成员.
-
-如果某个派生类的部分或全部直接基类是从另一个共同的基类派生而来,在这些直接基类中,从上一级基类继承来的成员就拥有相同的名称,因此派生类中也就会产生同名现象,
-对这种类型的同名成员也要使用作用域分辨符来唯一标识,而且必须用直接基类进行限定
-
-为了解决前面提到的多重拷贝的问题,可以将共同基类设置为**虚基类**,这时从**不同的路径继承过来的同名数据成员在内存中就只有一个拷贝,同一个函数也只有一个映射**.
-虚基类的声明是在派生类的声明过程,其语法形式为:
-```info
-class 派生类名::virtual 继承方式 基类名,
-```
-
-```C++
-class Worker {
- public:
-  std::string name;
-};
-
-class Student: public virtual Worker {
- public:
-  int studentID;
-};
-
-class Assistant: virtual public Worker {
- public:
-  int employerID;
-};
-
-class StudentAssitant: public Student, public Assistant {};
-```
-Now a StudentAssitant object will contain a single copy of a Worker. Actually, the inherited Student and Assitant
-objects share a common Worker object instead of each carrying its own copy.
-
-Here, the virtual key word does not have any obvious connection to the virtual in virtual functions.
-
 # class layout
 [Back to Basics: Class Layout - Stephen Dewhurst - CppCon 2020](https://www.youtube.com/watch?v=SShSV_iV1Ko)
 [pdf](https://github.com/CppCon/CppCon2020/blob/main/Presentations/back_to_basics_class_layout/back_to_basics_class_layout__steve_dewhurst__cppcon_2020.pdf)
@@ -586,9 +495,56 @@ same relative order.
 
 ## Base Class Layout
 "The order in which the base class subobjects are allocated in the most derived object...is unspecified."
+
 It is typical that storage for a base class subobject precedes storage for derived class data members.
+
 It is typical that multiple base class subobjects are laid out in the order they appear on the base class list.
+
 However, a compiler may elect to optimize storage use by permuting the base class subobject order.
+
+```cpp
+struct Shape {int a;};
+struct Subject {int b;};
+struct ObservedShape: public Shape, public Subject {int c;};
+
+ObservedShape *obs = new ObservedShape;
+Shape* shape = obs;  // safe, predefined conversion
+Subject* subj = obs;  // safe, predefined conversion
+```
+
+<img src="./pics/class/multiple_inheritance.png" alt="multiple_inheritance" width="50%"/>
+
+When we compare pointers in C++, we are not asking a question about addresses.
+We are asking a question about object identity.
+If the pointers refer to the same object, they compare equal. In most cases the comparison amounts to a simple address
+comparison:
+
+```cpp
+ASSERT_EQ(obs, shape);
+ASSERT_EQ(obs, subj);
+LOG(INFO) << obs << " " << shape;  //  0x55ce9f40c4c0 0x55ce9f40c4c0
+LOG(INFO) << obs << " " << subj;  //   0x55ce9f40c4c0 0x55ce9f40c4c4
+```
+
+```plain
+if (obs == subj)
+
+The amount of the adjustment, or "delta", is known at compile time.
+(obs ? obs + delta : 0) == subject
+```
+
+The same address adjustment takes place for a static cast.
+```cpp
+ObservedShape* obs = new ObservedShape;
+Shape* shape = obs;  // no delta
+Subject* subj = obs;  // delta
+
+obs = static_cast<ObservedShape*>(shape);  // no delta
+obs = static_cast<ObservedShape*>(subj);  // delta
+obs = (ObservedShape*)shape;  // no delta
+obs = (ObservedShape*)subj;  // delta
+```
+The dynamic_cast operator usually uses a different mechanism and is more expensive.
 
 ## Empty Class
 An empty class has no non-static data members, no virtual functions, and no virtual base classes.
@@ -678,36 +634,4 @@ struct Timer {
 // offsetof is a standard macro from <cstddef>
 static_assert(offsetof(Timer, data) == 4, "data must be at offset 4");
 ```
-
-## 单继承
-```cpp
-struct C {
-  int c1;
-  void cf();
-} c;
-
-struct D: C {
-  int d1;
-  void df();
-} d;
-```
-```cpp
-&d.c1 == &d
-```
-在D 中, 并不是说基类C 的数据一定要放在D 的数据之前, 只不过这样放的话, **能够保证D 中的C 对象地址, 恰好是D 对象地址的第一
-个字节**. 这种安排之下, **有了派生类D 的指针, 要获得基类C 的指针, 就不必要计算偏移量了**.
-几乎所有知名的C++ 厂商都采用这种内存安排(基类成员在前).
-在单继承类层次下,每一个新的派生类都简单地把自己的成员变量添加到基类的成员变量之后.
-
-## 多重继承
-```cpp
-struct F: C, E {
-  int f1;
-  void ff();
-};
-```
-与单继承相同的是, F实例拷贝了每个基类的所有数据. 与单继承不同的是, 在多重继承下, 内嵌的两个基类的对象指针不可能全都与派
-生类对象指针相同. 具体的编译器实现可以自由地选择内嵌基类和派生类的布局.
-VC++ 按照基类的声明顺序先排列基类实例数据,最后才排列派生类数据. 当然,派生类数据本身也是按照声明顺序布局的.
-(本规则并非一成不变,我们会看到,当一些基类有虚函数而另一些基类没有时,内存布局并非如此).
 
