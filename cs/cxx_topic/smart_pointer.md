@@ -25,7 +25,13 @@
 [CppCon 2019: Arthur O'Dwyer "Back to Basics: Smart Pointers"](https://www.youtube.com/watch?v=xGDLkt-jBJ4)
 
 - 性能开销大
-- shared ptr 的Deleter 不影响类型(通过类型消除实现)
+- `std::shared_ptr` 的Deleter 不影响类型(通过type erasure实现), shared ptr 内部没有记录Deleter 的类型, a "deleter" is
+  awfully close to a `std::function<void(void*)>`!
+
+std::function, std::any 也都使用了type erasure.
+
+[Type erasure — Part III](https://akrzemi1.wordpress.com/2013/12/11/type-erasure-part-iii/)
+type erasure compromises performance by performing indirect function calls.
 
 ```C++
 auto sp1 = std::make_shared<int>(1);
