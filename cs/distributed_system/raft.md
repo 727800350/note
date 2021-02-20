@@ -1,3 +1,10 @@
+- [intro](#intro)
+  - [leader election](#leader-election)
+  - [log replication](#log-replication)
+  - [Safety](#safety)
+  - [日志压缩](#日志压缩)
+  - [成员变更](#成员变更)
+
 # intro
 [Raft算法详解](https://zhuanlan.zhihu.com/p/32052223)
 

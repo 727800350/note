@@ -1,3 +1,9 @@
+- [raft vs zab](#raft-vs-zab)
+  - [Leader Election](#leader-election)
+  - [Log replication and commitment](#log-replication-and-commitment)
+  - [Log compaction](#log-compaction)
+  - [Client read](#client-read)
+
 # raft vs zab
 [Raft协议和Zab协议及其对比](https://niceaz.com/2018/11/03/raft-and-zab/#raft-vs-zab)
 

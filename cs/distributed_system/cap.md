@@ -1,3 +1,9 @@
+- [Partition tolerance 分区容错](#partition-tolerance-分区容错)
+- [Consistency 一致性](#consistency-一致性)
+- [Availability 可用性](#availability-可用性)
+- [Consistency 和 Availability 的矛盾](#consistency-和-availability-的矛盾)
+- [CAP定理应用](#cap定理应用)
+
 在理论计算机科学中,CAP定理(CAP theorem),又被称作布鲁尔定理(Brewer's theorem),它指出对于一个分布式计算系统来说,不可能同时满足以下三点:
 
 - 一致性(Consistency) (等同于所有节点访问同一份最新的数据副本)

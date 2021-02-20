@@ -1,3 +1,28 @@
+- [intro](#intro)
+- [选举](#选举)
+  - [fast paxos](#fast-paxos)
+  - [basic paxos](#basic-paxos)
+  - [basic paxos和fast paxos区别](#basic-paxos和fast-paxos区别)
+- [读写服务](#读写服务)
+  - [写Leader](#写leader)
+  - [写Follower/Observer](#写followerobserver)
+  - [读操作](#读操作)
+- [zk 使用](#zk-使用)
+  - [zk 节点类型](#zk-节点类型)
+  - [zk 语义保证](#zk-语义保证)
+  - [ZooKeeper Watch机制](#zookeeper-watch机制)
+- [分布式锁与领导选举关键点](#分布式锁与领导选举关键点)
+  - [非公平领导选举](#非公平领导选举)
+    - [选主过程](#选主过程)
+    - [放弃领导权](#放弃领导权)
+    - [感知领导权的放弃](#感知领导权的放弃)
+    - [重新选举](#重新选举)
+  - [公平领导选举](#公平领导选举)
+    - [选主过程](#选主过程-1)
+    - [放弃领导权](#放弃领导权-1)
+    - [感知领导权的放弃](#感知领导权的放弃-1)
+    - [重新选举](#重新选举-1)
+
 # intro
 reference
 
