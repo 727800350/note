@@ -1,16 +1,14 @@
 - [intro](#intro)
 - [user value type](#user-value-type)
 	- [string](#string)
+		- [bit arrays(or simply bitmaps)](#bit-arraysor-simply-bitmaps)
 	- [list](#list)
 	- [set](#set)
 	- [sorted set](#sorted-set)
 	- [hash](#hash)
-	- [Bit arrays (or simply bitmaps)](#bit-arrays-or-simply-bitmaps)
 - [API](#api)
 	- [pipeline](#pipeline)
 	- [Transactions](#transactions)
-- [lua](#lua)
-	- [SCRIPT LOAD 和 EVALSHA 指令](#script-load-和-evalsha-指令)
 
 # intro
 Redis keys are binary safe, this means that you can use any binary sequence as a key,
@@ -32,47 +30,96 @@ The empty string is also a valid key.
 - `exists key`: integer reply, 1 if the key exists
 
 ## string
+Strings are the most basic kind of Redis value. Redis Strings are binary safe, this means that a Redis string can
+contain any kind of data, for instance a JPEG image or a serialized Ruby object.
+
+A String value can be at max 512 Megabytes in length.
+
+You can do a number of interesting things using strings in Redis, for instance you can:
+
+- Use Strings as atomic counters using commands in the INCR family: INCR, DECR, INCRBY.
+- Append to strings with the APPEND command.
+- Use Strings as a random access vectors with GETRANGE and SETRANGE.
+- Encode a lot of data in little space, or create a Redis backed Bloom Filter using GETBIT and SETBIT.
+
+[cmd](https://redis.io/commands/#string)
+
 - `incr key` => "11" ## incr 是原子操作, INCRBY, DECR and DECRBY
 - `expire key time(in seconds)`, 只对之前紧挨着的set key value 有效
-- `ttl key`: 返回key的仍然有效时间, The -2 means that the key does not exist (anymore), -1 means that it will never expire.
+- `ttl key`: 返回key的仍然有效时间, The -2 means that the key does not exist (anymore), -1 means that it will never
+  expire.
+
+### bit arrays(or simply bitmaps)
+it is possible, using special commands(GETBIT, SETBIT etc), to handle string values like an array of bits:
+you can set and clear individual bits, count all the bits set to 1, find the first set or unset bit, and so forth
 
 ## list
-collections of string elements sorted according to the order of insertion. They are basically linked lists
+Redis Lists are simply lists of strings, sorted by insertion order. It is possible to add elements to a Redis List
+pushing new elements on the head (on the left) or on the tail (on the right) of the list.
 
-- RPUSH(LPUSH): right push, left push
-- LLEN: list length
-- LRANGE: lrange list start end(包括两个边界), 0 表示第一个元素, -1 表示最后一个元素
-- LPOP(RPOP): left(right) pop: removes the first(last) element from the list and returns it
+The max length of a list is 2^32 - 1 elements (4294967295, more than 4 billion of elements per list).
+
+The main features of Redis Lists from the point of view of time complexity are the support for constant time insertion
+and deletion of elements near the head and tail, even with many millions of inserted items.
+Accessing elements is very fast near the extremes of the list but is slow if you try accessing the middle of a very big
+list, as it is an O(N) operation.
+
+You can do many interesting things with Redis Lists, for instance you can:
+
+- Model a timeline in a social network, using LPUSH in order to add new elements in the user time line, and using LRANGE
+  in order to retrieve a few of recently inserted items.
+- You can use LPUSH together with LTRIM to create a list that never exceeds a given number of elements, but just
+  remembers the latest N elements.
+- Lists can be used as a message passing primitive.
+- You can do a lot more with lists, this data type supports a number of commands, including blocking commands like BLPOP.
 
 ## set
-collections of unique, unsorted string elements
+Redis Sets are an unordered collection of Strings.
+It is possible to add, remove, and test for existence of members in O(1) (constant time regardless of the number of
+elements contained inside the Set).
 
-- SADD: set add
-- SREM: set remove
-- SISMEMBER: set is member
-- SMEMBERS: set members: returns all members
-- SUNION: set union
+A very interesting thing about Redis Sets is that they support a number of server side commands to compute sets starting
+from existing sets, so you can do unions, intersections, differences of sets in very short time.
+
+The max number of members in a set is 232 - 1 (4294967295, more than 4 billion of members per set).
+
+You can do many interesting things using Redis Sets, for instance you can:
+
+- You can track unique things using Redis Sets. Want to know all the unique IP addresses visiting a given blog post?
+  Simply use SADD every time you process a page view. You are sure repeated IPs will not be inserted.
+- Redis Sets are good to represent relations. You can create a tagging system with Redis using a Set to represent every
+  tag. Then you can add all the IDs of all the objects having a given tag into a Set representing this particular tag,
+  using the SADD command. Do you want all the IDs of all the Objects having three different tags at the same time? Just
+  use SINTER.
+- You can use Sets to extract elements at random using the SPOP or SRANDMEMBER commands.
 
 ## sorted set
-similar to Sets but where every string element is associated to a floating number value, called score.
-The elements are always taken sorted(正序排列的) by their score, so unlike Sets it is possible to retrieve a range of
-elements (for example you may ask: give me the top 10, or the bottom 10).
-
-- `zadd set score value`
-- `zrange set start end`;
-- zrangebyscore: `zrangebyscore hackers -inf 1950`
+Redis Sorted Sets are, similarly to Redis Sets. The difference is that every member of a Sorted Set is associated with
+score, that is used in order to take the sorted set ordered, from the smallest to the greatest score.
+While members are unique, scores may be repeated.
 
 ## hash
-- `HSET key field1 value1`, 或者合在一起`HMSET key field1 value1 field2 value2 ... fieldn valuen`
-- `HGETALL key`
-- `HGET key fieldi`
-	- C API 中 HGET 不存在的key, 返回的reply type 为 `REDIS_REPLY_NIL`
-- `HDEL key field1 field2 ... fieldn`
-- `HINCRBY key fieldi num`: num 设置为负, 就实现了减
+Redis Hashes are maps between string fields and string values, so they are the perfect data type to represent objects
+(e.g. A User with a number of fields like name, surname, age, and so forth):
 
-## Bit arrays (or simply bitmaps)
-it is possible, using special commands, to handle String values like an array of bits:
-you can set and clear individual bits, count all the bits set to 1, find the first set or unset bit, and so forth
+With sorted sets you can add, remove, or update elements in a very fast way (in a time proportional to the logarithm of
+the number of elements). Since elements are taken in order and not ordered afterwards, you can also get ranges by score
+or by rank (position) in a very fast way. Accessing the middle of a sorted set is also very fast, so you can use Sorted
+Sets as a smart list of non repeating elements where you can quickly access everything you need: elements in order, fast
+existence test, fast access to elements in the middle!
+
+In short with sorted sets you can do a lot of tasks with great performance that are really hard to model in other kind
+of databases.
+
+With Sorted Sets you can:
+
+- Take a leaderboard in a massive online game, where every time a new score is submitted you update it using ZADD. You
+  can easily take the top users using ZRANGE, you can also, given a user name, return its rank in the listing using
+  ZRANK. Using ZRANK and ZRANGE together you can show users with a score similar to a given user. All very quickly.
+- Sorted Sets are often used in order to index data that is stored inside Redis. For instance if you have many hashes
+  representing users, you can use a sorted set with elements having the age of the user as the score and the ID of the
+  user as the value. So using ZRANGEBYSCORE it will be trivial and fast to retrieve all the users with a given interval
+  of ages.
 
 # API
 ## pipeline
@@ -120,76 +167,4 @@ However if the Redis server crashes or is killed by the system administrator in 
 a partial number of operations are registered. Redis will detect this condition at restart, and will exit with an error.
 Using the redis-check-aof tool it is possible to fix the append only file that will remove the partial transaction so
 that the server can start again.
-
-# lua
-[深入分析 Redis Lua 脚本运行原理](https://juejin.im/post/6844903697034510343)
-
-Redis 服务器会单线程原子性执行 lua 脚本,保证 lua 脚本在处理的过程中不会被任意其它请求打断.
-
-比如在分布式锁小节,我们提到了`del_if_equals`伪指令,它可以将匹配 key 和删除 key 合并在一起原子性执行,Redis 原生没有提供这样功能的指令,它可
-以使用 lua 脚本来完成.
-```lua
-if redis.call("get", KEYS[1]) == ARGV[1] then
-  return redis.call("del", KEYS[1])
-else
-  return 0
-end
-```
-
-那上面这个脚本如何执行呢?使用 EVAL 指令
-```lua
-EVAL SCRIPT KEY_NUM KEY1 KEY2 ... KEYN ARG1 ARG2 ....
-```
-
-```redis
-127.0.0.1:6379> set foo bar
-OK
-127.0.0.1:6379> eval 'if redis.call("get",KEYS[1]) == ARGV[1] then return redis.call("del",KEYS[1]) else return 0 end'
-1 foo bar
-(integer) 1
-127.0.0.1:6379> eval 'if redis.call("get",KEYS[1]) == ARGV[1] then return redis.call("del",KEYS[1]) else return 0 end'
-1 foo bar
-(integer) 0
-```
-
-## SCRIPT LOAD 和 EVALSHA 指令
-在上面的例子中,脚本的内容很短.如果脚本的内容很长,而且客户端需要频繁执行,那么每次都需要传递冗长的脚本内容势必比较浪费网络流量.
-所以 Redis 还提供了 SCRIPT LOAD 和 EVALSHA 指令来解决这个问题.
-
-SCRIPT LOAD 指令用于将客户端提供的 lua 脚本传递到服务器而不执行,但是会得到脚本的唯一 ID,这个唯一 ID 是用来唯一标识服务器缓存的这段lua 脚
-本,它是由 Redis 使用 sha1 算法揉捏脚本内容而得到的一个很长的字符串.有了这个唯一 ID,后面客户端就可以通过 EVALSHA 指令反复执行这个脚本了.
-
-下面我们使用 SCRIPT LOAD 和 EVALSHA 指令来完成自乘运算.
-```lua
-local curVal = redis.call("get", KEYS[1])
-if curVal == false then
-  curVal = 0
-else
-  curVal = tonumber(curVal)
-end
-curVal = curVal * tonumber(ARGV[1])
-redis.call("set", KEYS[1], curVal)
-return curVal
-```
-
-加载脚本
-```redis
-127.0.0.1:6379> script load 'local curVal = redis.call("get", KEYS[1]); if curVal == false then curVal = 0 else
-curVal = tonumber(curVal) end; curVal = curVal * tonumber(ARGV[1]); redis.call("set", KEYS[1], curVal); return curVal'
-"be4f93d8a5379e5e5b768a74e77c8a4eb0434441"
-```
-
-使用脚本
-```redis
-127.0.0.1:6379> evalsha be4f93d8a5379e5e5b768a74e77c8a4eb0434441 1 notexistskey 5
-(integer) 0
-127.0.0.1:6379> evalsha be4f93d8a5379e5e5b768a74e77c8a4eb0434441 1 notexistskey 5
-(integer) 0
-127.0.0.1:6379> set foo 1
-OK
-127.0.0.1:6379> evalsha be4f93d8a5379e5e5b768a74e77c8a4eb0434441 1 foo 5
-(integer) 5
-127.0.0.1:6379> evalsha be4f93d8a5379e5e5b768a74e77c8a4eb0434441 1 foo 5
-(integer) 25
-```
 
