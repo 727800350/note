@@ -1,10 +1,10 @@
 - [intro](#intro)
-- [data type](#data-type)
-	- [Binary-safe string](#binary-safe-string)
-	- [Lists](#lists)
-	- [Sets](#sets)
-	- [Sorted sets](#sorted-sets)
-	- [Hash](#hash)
+- [user value type](#user-value-type)
+	- [string](#string)
+	- [list](#list)
+	- [set](#set)
+	- [sorted set](#sorted-set)
+	- [hash](#hash)
 	- [Bit arrays (or simply bitmaps)](#bit-arrays-or-simply-bitmaps)
 - [API](#api)
 	- [pipeline](#pipeline)
@@ -13,8 +13,6 @@
 	- [SCRIPT LOAD 和 EVALSHA 指令](#script-load-和-evalsha-指令)
 
 # intro
-redis 中数据对象都是 string 类型, 但是有时会把string 解释成其他类型, 例如 incr 会把 string 解释成int 类型
-
 Redis keys are binary safe, this means that you can use any binary sequence as a key,
 from a string like "foo" to the content of a JPEG file.
 The empty string is also a valid key.
@@ -27,25 +25,18 @@ The empty string is also a valid key.
 - start: `redis-server redis.conf`
 - stop: `redis-cli shutdown`
 
-# data type
-## Binary-safe string
-- `set key value`: 如果key 之前有值, 会被替换掉
-- `setnx key value`: set if not exist
-- `get key`
+# user value type
+<img src="./pics/data_type.png" alt="data_type" width="50%"/>
+
+- `type key`: returns the kind of value stored at the specified key:
+- `exists key`: integer reply, 1 if the key exists
+
+## string
 - `incr key` => "11" ## incr 是原子操作, INCRBY, DECR and DECRBY
-- `del key`
 - `expire key time(in seconds)`, 只对之前紧挨着的set key value 有效
 - `ttl key`: 返回key的仍然有效时间, The -2 means that the key does not exist (anymore), -1 means that it will never expire.
-- `exists key`
-- `type key`, which returns the kind of value stored at the specified key:
 
-C API
-
-- set 返回的`reply->type` 为 `REDIS_REPLY_STATUS`, `reply->str` 为 "OK"
-- del 返回 `reply->type` 为 `REDIS_REPLY_INTEGER`
-- get 返回的type 为 `REDIS_REPLY_STATUS`, 结果在 `reply->str` 中
-
-## Lists
+## list
 collections of string elements sorted according to the order of insertion. They are basically linked lists
 
 - RPUSH(LPUSH): right push, left push
@@ -53,7 +44,7 @@ collections of string elements sorted according to the order of insertion. They 
 - LRANGE: lrange list start end(包括两个边界), 0 表示第一个元素, -1 表示最后一个元素
 - LPOP(RPOP): left(right) pop: removes the first(last) element from the list and returns it
 
-## Sets
+## set
 collections of unique, unsorted string elements
 
 - SADD: set add
@@ -62,7 +53,7 @@ collections of unique, unsorted string elements
 - SMEMBERS: set members: returns all members
 - SUNION: set union
 
-## Sorted sets
+## sorted set
 similar to Sets but where every string element is associated to a floating number value, called score.
 The elements are always taken sorted(正序排列的) by their score, so unlike Sets it is possible to retrieve a range of
 elements (for example you may ask: give me the top 10, or the bottom 10).
@@ -71,7 +62,7 @@ elements (for example you may ask: give me the top 10, or the bottom 10).
 - `zrange set start end`;
 - zrangebyscore: `zrangebyscore hackers -inf 1950`
 
-## Hash
+## hash
 - `HSET key field1 value1`, 或者合在一起`HMSET key field1 value1 field2 value2 ... fieldn valuen`
 - `HGETALL key`
 - `HGET key fieldi`
@@ -84,20 +75,6 @@ it is possible, using special commands, to handle String values like an array of
 you can set and clear individual bits, count all the bits set to 1, find the first set or unset bit, and so forth
 
 # API
-```C++
-typedef struct redisReply {
-	int type; /* REDIS_REPLY_* */
-	long long integer; /* The integer when type is REDIS_REPLY_INTEGER */
-	int len; /* Length of string */
-	char *str; /* Used for both REDIS_REPLY_ERROR and REDIS_REPLY_STRING */
-	size_t elements; /* number of elements, for REDIS_REPLY_ARRAY */
-	struct redisReply **element; /* elements vector for REDIS_REPLY_ARRAY */
-} redisReply;
-```
-
-`redisReply *reply = (redisReply *)redisCommand(redis, cmd);` 每次都需要执行`freeReplyObject(reply);`
-释放redisCommand 函数为reply 申请的内存
-
 ## pipeline
 [Redis: Pipelining, Transactions and Lua Scripts](
 	https://rafaeleyng.github.io/redis-pipelining-transactions-and-lua-scripts)
