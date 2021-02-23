@@ -1,8 +1,13 @@
 - [index](#index)
-	- [CREATE INDEX](#create-index)
-	- [删除索引](#删除索引)
-	- [查看索引](#查看索引)
+	- [sql](#sql)
+		- [create index](#create-index)
+		- [删除索引](#删除索引)
+		- [查看索引](#查看索引)
+	- [索引种类](#索引种类)
+	- [回表](#回表)
+	- [覆盖索引](#覆盖索引)
 	- [联合索引最左匹配](#联合索引最左匹配)
+	- [索引下推](#索引下推)
 - [execution plan](#execution-plan)
 
 # index
@@ -16,7 +21,8 @@
   库默认排序可以符合要求的情况下不要使用排序操作, 尽量不要包含多个列的排序, 如果需要最好给这些列创建复合索引.
 - 不使用 not in 和 <> 操作. 这不属于支持的范围查询条件,不会使用索引.
 
-## CREATE INDEX
+## sql
+### create index
 建表的时候创建索引
 ```sql
 INDEX index_name(`field`),
@@ -36,17 +42,57 @@ ALTER TABLE table_name ADD PRIMARY KEY (column_list)
 PRIMARY KEY 索引仅是一个名称为PRIMARY 的UNIQUE 索引. 这表示一个表只能包含一个 PRIMARY KEY, 因为一个表中不可能具有两个同
 名的索引.
 
-## 删除索引
+### 删除索引
 ```sql
 ALTER TABLE table_name DROP INDEX index_name
 ALTER TABLE table_name DROP PRIMARY KEY
 ```
 
-## 查看索引
+### 查看索引
 ```sql
 show index from tblname;
 show keys from tblname;
 ```
+
+## 索引种类
+B+-tree 索引
+
+show index 得到的结果显示为BTREE, 实际上是B+ Tree.
+[Does mysql use B-tree,B+tree or both?](
+https://dba.stackexchange.com/questions/204561/does-mysql-use-b-tree-btree-or-both/204573)
+
+哈希索引
+```sql
+alter table user add index hash_gender using hash(gender);
+```
+会发现name 的索引类型还是为BTREE, 在innodb 上创建哈希索引, 被称之为伪哈希索引, 和真正的哈希索引不是一回事的.
+
+在Innodb 存储引擎中有一个特殊的功能叫做, 自适应哈希索引, 当索引值被使用的非常频繁时, 它会在内存中基于BTREE 索引之上再创
+建一个哈希索引, 那么就拥有了哈希索引的一些特点, 比如快速查找.
+
+哈希索引存储的是哈希值和行指针, 没有存储key 值, 字段值, 但哈希索引多数是在内存完成的, 检索数据是非常快的.
+
+## 回表
+还是用上边的案例,id 为主键索引,name 为普通索引.此时查询语句为:
+```sql
+select id,name,age from table where name = 'kaka'
+```
+那么这条语句会先在 name 的这颗 B+Tree 中寻找到主键 id,然后在根据主键 id 的索引获取到数据并且返回.
+
+其实这个过程就是从非聚簇索引跳转到聚簇索引中查找数据,被称为回表,也就是说当你查询的字段为非聚簇索引,但是非聚簇索引中没有
+将需要查询的字段全部包含就是回表.
+
+在这个案例中,非聚簇索引 name 的叶子节点只有 id,并没有 age,所以会跳转到聚簇索引中,根据 id 在查询整条记录返回需要的字段数据.
+
+## 覆盖索引
+覆盖索引,根据名字都能理解的差不多,就是查询的所有字段都创建了索引!
+此时查询语句为:
+```sql
+select id,name from table where name = 'kaka'
+```
+那么这条语句就是使用了覆盖索引,因为 id 和 name 都为索引字段,查询的字段也是这俩个字段,所以被称为索引覆盖.
+
+也就是说当非覆盖索引的叶子节点中包含了需要查询的字段时就被称为覆盖索引.
 
 ## [联合索引最左匹配](https://segmentfault.com/a/1190000015416513)
 在mysql建立联合索引时会遵循最左前缀匹配的原则,即最左优先,在检索数据时从联合索引的最左边开始匹配,示例:
@@ -68,6 +114,20 @@ EXPLAIN SELECT * FROM test WHERE col1=1;
 ```
 观察上述两个explain结果中的type字段, 结果分别是 index, ref.
 结合前面的execution plan 那一节, index 类型也是使用到了索引,只是是遍历整个索引树.
+
+## 索引下推
+还是使用这条 sql 语句:
+```sql
+select * from table where name = ? and age = ?
+```
+
+索引下推是在 MySQL 5.6 及以后的版本出现的.之前的查询过程是,先根据 name 在存储引擎中获取数据,然后在根据 age 在 server 层
+进行过滤.
+
+在有了索引下推之后,查询过程是根据 name,age 在存储引擎获取数据,返回对应的数据,不再到 server 层进行过滤.
+
+当你使用 Explain 分析 SQL 语句时,如果出现了Using index condition, 那就是使用了索引下推,索引下推是在组合索引的情况出现几
+率最大的.
 
 # [execution plan](http://my.oschina.net/zimingforever/blog/60233)
 mysql的查看执行计划的语句很简单,explain + 你要执行的sql语句就OK了.
