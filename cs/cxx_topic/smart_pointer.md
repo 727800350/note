@@ -30,6 +30,7 @@
 
 std::function, std::any 也都使用了type erasure.
 
+[Back to Basics: Type Erasure - Arthur O'Dwyer - CppCon 2019](https://www.youtube.com/watch?v=tbUCHifyT24)
 [Type erasure — Part III](https://akrzemi1.wordpress.com/2013/12/11/type-erasure-part-iii/)
 type erasure compromises performance by performing indirect function calls.
 

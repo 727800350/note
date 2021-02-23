@@ -6,13 +6,12 @@
 - [std::string and char](#stdstring-and-char)
   - [std::string](#stdstring)
     - [字符数组与字符指针](#字符数组与字符指针)
-- [std::atomic](#stdatomic)
   - [C API](#c-api)
     - [string.h](#stringh)
       - [stdlib.h](#stdlibh)
       - [ctypes.h](#ctypesh)
-- [Memory](#memory)
-  - [指针](#指针)
+- [pointer](#pointer)
+    - [array and pointer](#array-and-pointer)
     - [指针数组与数组指针](#指针数组与数组指针)
     - [二维数组与指针](#二维数组与指针)
   - [柔性数组](#柔性数组)
@@ -22,6 +21,7 @@
   - [互斥锁 Mutual Exclusive Lock](#互斥锁-mutual-exclusive-lock)
     - [读写锁(rwlock)](#读写锁rwlock)
   - [条件变量 condition variable](#条件变量-condition-variable)
+  - [initialization](#initialization)
 
 # IO
 - stdin/stdout 属于标准库处理的输入流, 其声明为 FILE 型的, 对应的函数前面都有f开头, 如fopen/fread/fwrite/fclose 标准库调用等;
@@ -210,7 +210,7 @@ Note character literals are of type int in C; but of type char in C++.
 - `int isdigit(int c)`
 - `int toupper(int c), tolower, islower, isupper`
 
-# Memory
+# pointer
 new delete malloc free 都是thread safe
 
 单个元素
@@ -245,7 +245,53 @@ y = x;
 assert(memcmp(&x, &y, sizeof(struct st)) == 0);
 ```
 
-## 指针
+[Back to Basics: Pointers and Memory - Ben Saks - CppCon 2020](https://www.youtube.com/watch?v=rqVWj0aVSxg&)
+
+NULL could be either
+```cpp
+#define NULL 0
+```
+or
+```cpp
+#define NULL 0L
+```
+Either way, although NULL was intended as a pointer constant, it actually has an integer type.
+
+```cpp
+void f(int i);
+void f(char* s);
+
+f(NULL);  // calls f(int), 实际上编译是失败的, error: call of overloaded 'f(NULL)' is ambiguous
+```
+
+## array and pointer
+```cpp
+int x[10];
+int* p;
+
+p = x;  // why does this compile?
+```
+It compiles because array can decay into a pointer. x decays into &x[0].
+
+arrays aren't pointers
+```cpp
+char x[32];
+char* p;
+
+// 32-bit machine
+std::cout << sizeof(x);  // 32 * sizeof(char) = 32
+std::cout << sizeof(p);  // 4
+std::cout << alignof(x);  // 1
+std::cout << alignof(p);  // 4
+```
+
+But array parameters are pointers, that is, these are equivalent
+```cpp
+void foo(int* x);  // x is a pointer
+void foo(int x[]);  // x is still a pointer
+void foo(int x[10]);  // x is still a pointer
+```
+
 ### 指针数组与数组指针
 - 指针作为元素的数组: `int *ptr_array[10]`, 每个元素都是指针, 共10个元素.
 - 指向数组的指针(行数组指针): `int (*)array_ptr[10]`, 指向一个10元素一维数组的指针, 所以`array_ptr` 为一个一维数组
