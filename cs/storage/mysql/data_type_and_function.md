@@ -1,15 +1,13 @@
-- [Data Type And Functions](#data-type-and-functions)
+- [data type](#data-type)
 	- [numbers](#numbers)
 	- [date time](#date-time)
 	- [str](#str)
-	- [cast functions and operators](#cast-functions-and-operators)
+- [operator](#operator)
 	- [bit operators](#bit-operators)
-- [运维](#运维)
-	- [login](#login)
-	- [conf](#conf)
-	- [Backup](#backup)
+- [function](#function)
+	- [cast functions](#cast-functions)
 
-# Data Type And Functions
+# data type
 ## numbers
 The DECIMAL and NUMERIC types store exact numeric data values. These types are used when it is important to preserve
 exact precision, for example with monetary data.
@@ -39,7 +37,23 @@ datetime 直接之间作差得到结果不是时间意义上的作差, 实际是
 - `char_length()`
 - `locate(substr, str)`: 如果包含, 返回 > 0 的数, 否则返回0
 
-## cast functions and operators
+# operator
+## bit operators
+[Bit Functions and Operators](https://dev.mysql.com/doc/refman/8.0/en/bit-functions.html)
+| Name        | Description                            |
+| ---         | ---                                    |
+| &           | Bitwise AND                            |
+| >>          | Right shift                            |
+| <<          | Left shift                             |
+| ^           | Bitwise XOR                            |
+| BIT_COUNT() | Return the number of bits that are set |
+| \|	        | Bitwise OR                             |
+| ~	          | Bitwise inversion                      |
+
+优先级: ~ > ^ > & > >> = << > |
+
+# function
+## cast functions
 - BINARY: cast a string to a binary string, `BINARY str` is a shorthand for `CAST(str AS BINARY)`.
 - `CAST(expr AS type)`: cast a value as a certain type
 - CONVERT(): cast a value as a certain type
@@ -56,18 +70,4 @@ SELECT BINARY 'a' = 'a ';  // 0
 | name       | description                        |
 | ---        | ---                                |
 | COALESCE() | return the first non-NULL argument |
-
-## bit operators
-[Bit Functions and Operators](https://dev.mysql.com/doc/refman/8.0/en/bit-functions.html)
-| Name        | Description                            |
-| ---         | ---                                    |
-| &           | Bitwise AND                            |
-| >>          | Right shift                            |
-| <<          | Left shift                             |
-| ^           | Bitwise XOR                            |
-| BIT_COUNT() | Return the number of bits that are set |
-| \|	        | Bitwise OR                             |
-| ~	          | Bitwise inversion                      |
-
-优先级: ~ > ^ > & > >> = << > |
 
