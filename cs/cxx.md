@@ -11,7 +11,7 @@
       - [stdlib.h](#stdlibh)
       - [ctypes.h](#ctypesh)
 - [pointer](#pointer)
-    - [array and pointer](#array-and-pointer)
+  - [array and pointer](#array-and-pointer)
     - [指针数组与数组指针](#指针数组与数组指针)
     - [二维数组与指针](#二维数组与指针)
   - [柔性数组](#柔性数组)
