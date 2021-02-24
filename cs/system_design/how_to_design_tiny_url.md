@@ -1,5 +1,17 @@
-[如何设计短网址系统(TinyURL)](http://cn.soulmachine.me/2017-04-10-how-to-design-tinyurl/)
-[短URL 系统是怎么设计的?](https://www.zhihu.com/question/29270034)
+- [短网址的长度](#短网址的长度)
+- [一对一还是一对多映射?](#一对一还是一对多映射)
+- [如何计算短网址](#如何计算短网址)
+  - [UUID](#uuid)
+  - [多台MySQL服务器](#多台mysql服务器)
+  - [分布式ID生成器(Distributed Id Generator)](#分布式id生成器distributed-id-generator)
+- [如何存储](#如何存储)
+- [301还是302重定向](#301还是302重定向)
+- [预防攻击](#预防攻击)
+
+ref
+
+- [如何设计短网址系统(TinyURL)](http://cn.soulmachine.me/2017-04-10-how-to-design-tinyurl/)
+- [短URL 系统是怎么设计的?](https://www.zhihu.com/question/29270034)
 
 # 短网址的长度
 短网址的长度该设计为多少呢? 当前互联网上的网页总数大概是 45亿(参考 http://www.worldwidewebsize.com), 超过了
