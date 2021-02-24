@@ -1,13 +1,14 @@
-- [Intro](#intro)
-  - [Terminology of Templates](#terminology-of-templates)
-- [Function Templates](#function-templates)
-- [Class Templates](#class-templates)
-- [Nontype Template Parameters](#nontype-template-parameters)
+- [intro](#intro)
+  - [terminology of templates](#terminology-of-templates)
+- [function templates](#function-templates)
+- [class templates](#class-templates)
+- [nontype template parameters](#nontype-template-parameters)
 - [Template Specialization](#template-specialization)
-  - [Function Specialization](#function-specialization)
-  - [Class Specialization](#class-specialization)
+  - [function specialization](#function-specialization)
+  - [class specialization](#class-specialization)
+- [parameter pack](#parameter-pack)
 
-# Intro
+# intro
 [C++ TUTORIAL - TEMPLATES - 2018](http://www.bogotobogo.com/cplusplus/templates.php)
 
 The process of generating types from a given template arguments is called **specialization** or **template instantiation**.
@@ -42,7 +43,7 @@ cout << compare(data1, data2) << endl;
 If class Sales does not overload `operator<`, compilation would fail.
 Errors such as this one cannot be detected until the compiler instantiates the definition of compare on type `Sales_data`.
 
-## Terminology of Templates
+## terminology of templates
 - Instantiation
   This is when the compiler generates a regular class, method, or function by substituting each of the template's parameters with a concrete type.
   This can happen implicitly when we create an object based on a template or explicitly if we want to control when the code generation happens.
@@ -77,7 +78,7 @@ Errors such as this one cannot be detected until the compiler instantiates the d
 
 从解释上来看, 我们的GCC 编译器采用的是 Lazy Instantiation
 
-# Function Templates
+# function templates
 ```C++
 template <typename T>
 const T& min(const T& a, const T& b) {
@@ -94,7 +95,7 @@ template <typename T>
 inline const T& min(const T& a, const T& b) {
 ```
 
-# Class Templates
+# class templates
 Implementation and the declaration of a class template should be [in the same header file](http://www.bogotobogo.com/cplusplus/template_declaration_definition_header_implementation_file.php).
 
 ```C++
@@ -131,7 +132,7 @@ const T& Complx<T>::getImag() const{
 Complx<double> myComplx(1.0, 2.5);
 ```
 
-# Nontype Template Parameters
+# nontype template parameters
 A template nontype parameter is a constant value inside the template definition.
 A nontype parameter can be used when constant expressions are required, for example, to specify the size of an array.
 
@@ -164,7 +165,7 @@ It is not always possible to write a single template that is for every possible 
 Because general definition might not compile or might do the wrong thing.
 We may be able to take advantage of some specific knowledge about a type to write a more efficient function than the one that is instantiated from the template.
 
-## Function Specialization
+## function specialization
 In the example below, we have `add()` function which takes two parameter and returns the same type of data after adding the two args.
 ```C++
 template <typename T>
@@ -189,7 +190,7 @@ When we designed the function `add(T x, T y)`, the meaning was clear: add the tw
 But when the user feeds characters into the parameter, the meaning is not obvious.
 So, if the intention of the design is different from the initial one, we may want to redefine the operation in a separate template. In other words, we do specialize the function.
 
-## Class Specialization
+## class specialization
 ```C++
 // Normal class
 template <typename T>
@@ -234,3 +235,65 @@ Notice the differences between the generic class template and the specialization
 When we declare specializations for a template class, we must also define all its members, even those exactly equal to the generic template class,
 because there is no inheritance of members from the generic template to the specialization.
 
+# parameter pack
+A template parameter pack is a template parameter that accepts zero or more template arguments (non-types, types, or
+templates).
+A function parameter pack is a function parameter that accepts zero or more function arguments.
+
+A template with at least one parameter pack is called a variadic template.
+
+```cpp
+// base function
+void tprintf(const char* format) { std::cout << format; }
+
+// recursive variadic function
+template <typename T, typename... Args>
+void tprintf(const char* format, T value, Args... args) {
+  for (; *format != '\0'; format++) {
+    if (*format == '%') {
+      std::cout << value;
+      tprintf(format + 1, args...);
+      return;
+    }
+    std::cout << *format;
+  }
+}
+
+int main() {
+  tprintf("% world% %\n", "Hello", '!', 123);  // output Hello world! 123
+}
+```
+
+[潮．C++11:Variadic Template, Parameter Pack](
+https://medium.com/@tjsw/潮-c-variadic-template-parameter-pack-d76c0a4ffcdd)
+```cpp
+template<typename T>
+T sum(const T& first) {
+  return first;
+}
+template<typename T, typename... Args>
+T sum(const T& first, const Args&... args) {
+  return first + sum(args...);
+}
+
+int main() {
+  std::cout << sum(1, 2, 3) << std::endl; // 6
+  std::cout << sum(1, 2, 3, 4) << std::endl; // 10
+  std::cout << sum(1, 2, 3, 4, 5) << std::endl; // 15
+}
+```
+
+因為參數包展開的對象不單單是參數包本身,而是參數包的表達式 (expression)
+```cpp
+template<typename T>
+T cube(const T& t) {
+  return t * t * t;
+}
+
+template<typename ...Args>
+void sum_of_cube(const Args&... args) {
+  std::cout << sum(cube(args)...) << std::endl;
+}
+
+sum_of_cube(2, 4, 5); // 197
+```
