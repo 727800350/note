@@ -24,6 +24,9 @@ The empty string is also a valid key.
 - stop: `redis-cli shutdown`
 
 # user value type
+[Data types](https://redis.io/topics/data-types)
+[An introduction to Redis data types and abstractions](https://redis.io/topics/data-types-intro)
+
 <img src="./pics/data_type.png" alt="data_type" width="50%"/>
 
 - `type key`: returns the kind of value stored at the specified key:
