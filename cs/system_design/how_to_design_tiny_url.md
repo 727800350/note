@@ -1,4 +1,5 @@
 [如何设计短网址系统(TinyURL)](http://cn.soulmachine.me/2017-04-10-how-to-design-tinyurl/)
+[短URL 系统是怎么设计的?](https://www.zhihu.com/question/29270034)
 
 # 短网址的长度
 短网址的长度该设计为多少呢? 当前互联网上的网页总数大概是 45亿(参考 http://www.worldwidewebsize.com), 超过了
