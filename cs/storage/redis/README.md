@@ -57,6 +57,9 @@ you can set and clear individual bits, count all the bits set to 1, find the fir
 Redis Lists are simply lists of strings, sorted by insertion order. It is possible to add elements to a Redis List
 pushing new elements on the head (on the left) or on the tail (on the right) of the list.
 
+Redis lists are implemented via Linked Lists.
+数据量很小时用ziplist
+
 The max length of a list is 2^32 - 1 elements (4294967295, more than 4 billion of elements per list).
 
 The main features of Redis Lists from the point of view of time complexity are the support for constant time insertion
@@ -72,6 +75,25 @@ You can do many interesting things with Redis Lists, for instance you can:
   remembers the latest N elements.
 - Lists can be used as a message passing primitive.
 - You can do a lot more with lists, this data type supports a number of commands, including blocking commands like BLPOP.
+
+Automatic creation and removal of keys
+
+So far in our examples we never had to create empty lists before pushing elements, or removing empty lists when they no
+longer have elements inside. It is Redis' responsibility to delete keys when lists are left empty, or to create an empty
+list if the key does not exist and we are trying to add elements to it, for example, with LPUSH.
+
+This is not specific to lists, it applies to all the Redis data types composed of multiple elements -- Streams, Sets,
+Sorted Sets and Hashes.
+
+Basically we can summarize the behavior with three rules:
+
+1. When we add an element to an aggregate data type, if the target key does not exist, an empty aggregate data type is
+  created before adding the element.
+1. When we remove elements from an aggregate data type, if the value remains empty, the key is automatically destroyed.
+  The Stream data type is the only exception to this rule.
+1. Calling a read-only command such as LLEN (which returns the length of the list), or a write command removing
+  elements, with an empty key, always produces the same result as if the key is holding an empty aggregate type of the
+  type the command expects to find.
 
 ## set
 Redis Sets are an unordered collection of Strings.
@@ -97,6 +119,14 @@ You can do many interesting things using Redis Sets, for instance you can:
 Redis Sorted Sets are, similarly to Redis Sets. The difference is that every member of a Sorted Set is associated with
 score, that is used in order to take the sorted set ordered, from the smallest to the greatest score.
 While members are unique, scores may be repeated.
+
+They are ordered according to the following rule:
+
+- If A and B are two elements with a different score, then A > B if A.score is > B.score.
+- If A and B have exactly the same score, then A > B if the A string is lexicographically greater than the B string. A
+  and B strings can't be equal since sorted sets only have unique elements.
+
+Sorted sets are implemented via a dual-ported data structure containing both a skip list and a hash table.
 
 ## hash
 Redis Hashes are maps between string fields and string values, so they are the perfect data type to represent objects
