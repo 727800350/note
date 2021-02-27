@@ -372,6 +372,46 @@ I0605 15:50:43.765859   167 test.cpp:17] destructor in base
 ```
 只调用了Base 的析构函数(因为instance 声明的是Base 类型的), Derived 中就可能发生内存泄露, 资源没有释放.
 
+### virtual inheritance
+[CppCon 2017: Arthur O'Dwyer "dynamic_cast From Scratch"](https://www.youtube.com/watch?v=QzJL-8WbpuU)
+
+```cpp
+class Animal {
+ public:
+  virtual ~Animal() {}
+};  // sizeof = 4 on 32-bit machine
+
+class Cat : public Animal {};  // sizeof = 4
+class Dog : public Animal {};  // sizeof = 4
+class CatDog : public Cat, public Dog {};  // sizeof = 8
+```
+Is a CatDog an Animal? NO, it's two Animals.
+
+<img src="./pics/class/catDog.png" alt="catDog" width="50%"/>
+
+```cpp
+Animal* x = new CatDog;
+```
+报错提示
+```plain
+[clang ambiguous_derived_to_base_conv] [E] Ambiguous conversion from derived
+                    class CatDog -> class Cat -> class Animal
+                    class CatDog -> class Dog -> class Animal
+```
+
+Fix with virtual inheritance
+```cpp
+class Cat : public virtual Animal {};  // sizeof = 4
+class Dog : public virtual Animal {};  // sizeof = 4
+class CatDog : public Cat, public Dog {};  // sizeof = 8
+```
+Now, a CatDog is an Animal.
+
+<img src="./pics/class/virtual_catDog.png" alt="virtual_catDog" width="50%"/>
+
+示意图中画了三个vptr, 如果是这样的内存布局的话, sizeof 应该是12, 而不是8, 所以姑且只能借助这个图来大概理解, 真实的layout
+应该不是这样的.
+
 ### 在非虚函数中调用虚函数
 ```C++
 class RowOrientedBenchmark{
