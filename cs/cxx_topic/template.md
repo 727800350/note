@@ -3,7 +3,7 @@
 - [function templates](#function-templates)
 - [class templates](#class-templates)
 - [nontype template parameters](#nontype-template-parameters)
-- [Template Specialization](#template-specialization)
+- [template specialization](#template-specialization)
   - [function specialization](#function-specialization)
   - [class specialization](#class-specialization)
 - [parameter pack](#parameter-pack)
@@ -160,7 +160,7 @@ int main() {
 ```
 `arrayInit` is a function template which takes a single parameter, which is a reference to an array.
 
-# [Template Specialization](http://www.bogotobogo.com/cplusplus/template_specialization_function_class.php)
+# [template specialization](http://www.bogotobogo.com/cplusplus/template_specialization_function_class.php)
 It is not always possible to write a single template that is for every possible template argument with which the template might be instantiated.
 Because general definition might not compile or might do the wrong thing.
 We may be able to take advantage of some specific knowledge about a type to write a more efficient function than the one that is instantiated from the template.

@@ -1,3 +1,15 @@
+- [并行与并发](#并行与并发)
+- [进程 Process](#进程-process)
+	- [进程的通信方式](#进程的通信方式)
+		- [匿名管道pipe](#匿名管道pipe)
+		- [有名管道FIFO](#有名管道fifo)
+		- [消息队列](#消息队列)
+		- [锁](#锁)
+		- [信号量 semaphore](#信号量-semaphore)
+		- [共享内存 shared memory](#共享内存-shared-memory)
+		- [信号 signal](#信号-signal)
+- [线程](#线程)
+
 # 并行与并发
 并发和并行是即相似又有区别的两个概念,并行是指两个或者多个事件在同一时刻发生,而并发是指两个或多个事件在同一时间间隔内发生.
 
@@ -134,7 +146,7 @@ msgget, msgsnd, msgrcv 这一套是system V 的实现.
 posix 还有一套自己的实现, `mq_open`, 返回一个`mqd_t` 类型的message queue descriptor.
 posix 的优势在于返回的描述符是一个文件描述符, 因为可以作为epoll 等多路复用的监听对象, 而system V 的那套实现都是通过msgid 来弄的, 无法给epoll 使用.
 
-## 锁
+### 锁
 进程间的文件锁
 ```C++
 #include <sys/file.h>
