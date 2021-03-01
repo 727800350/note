@@ -100,3 +100,12 @@ then
   source $HOME/git/docker/.dockerfunc
 fi
 
+function where() {
+  env | grep VIMRUNTIME >/dev/null
+  if [ $? -eq 0 ]
+  then
+    echo "vim"
+  else
+    echo "raw"
+  fi
+}
