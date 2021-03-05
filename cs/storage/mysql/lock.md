@@ -26,6 +26,15 @@
       - [Serializable 级别](#serializable-级别)
 
 # InnoDB Locking and Transaction Model
+事务是由一组SQL语句组成的逻辑处理单元,事务具有以下4个属性,通常简称为事务的ACID属性.
+
+- 原子性(Atomicity): 事务是一个原子操作单元,其对数据的修改,要么全都执行,要么全都不执行.
+- 一致性(Consistent): 在事务开始和完成时,数据都必须保持一致状态.这意味着所有相关的数据规则都必须应用于事务的修改,以保持
+  数据的完整性,事务结束时,所有的内部数据结构(如B树索引或双向链表)也都必须是正确的.
+- 隔离性(Isolation):数据库系统提供一定的隔离机制,保证事务在不受外部并发操作影响的"独立"环境执行.这意味着事务处理过程中的
+  中间状态对外部是不可见的,反之亦然.
+- 持久性(Durable):事务完成之后,它对于数据的修改是永久性的,即使出现系统故障也能够保持.
+
 ## [隔离级别](https://www.cnblogs.com/digdeep/p/4968453.html)
 其中 隔离性 分为了四种:
 
@@ -45,17 +54,17 @@
 
 这里一定要区分 不可重复读和幻读:
 
-不可重复读的重点是修改: 同样的条件的select, 你读取过的数据, 再次读取出来发现值不一样了
-幻读的重点在于新增或者删除: 同样的条件的select, 第1次和第2次读出来的记录数不一样
+- 不可重复读的重点是修改: 同样的条件的select, 你读取过的数据, 再次读取出来发现值不一样了
+- 幻读的重点在于新增或者删除: 同样的条件的select, 第1次和第2次读出来的记录数不一样
 
 ANSI SQL标准没有从隔离程度进行定义,而是定义了事务的隔离级别,同时定义了不同事务隔离级别解决的三大并发问题:
 
-|Isolation Level     |Dirty Read |Unrepeatable Read |Phantom Read |
-|--------------------|-----------|-----------------|--------------|
-|Read UNCOMMITTED    |YES        |YES              |YES           |
-|READ COMMITTED(RC)  |NO         |YES              |YES           |
-|READ REPEATABLE(RR) |NO         |NO               |YES           |
-|SERIALIZABLE        |NO         |NO               |NO            |
+| Isolation Level     | Dirty Read | Unrepeatable Read | Phantom Read |
+| ---                 | ---        | ---               | ---          |
+| Read UNCOMMITTED    | YES        | YES               | YES          |
+| READ COMMITTED(RC)  | NO         | YES               | YES          |
+| READ REPEATABLE(RR) | NO         | NO                | YES          |
+| SERIALIZABLE        | NO         | NO                | NO           |
 
 除了MySQL默认采用RR隔离级别之外,其它几大数据库都是采用RC隔离级别.
 
@@ -259,4 +268,13 @@ insert into t_user(id, no, name, age) values(4, '00004', '小灰灰', 8);
 
 #### Serializable 级别
 Serializable 级别是事务隔离的最高级别,在此级别下所有的请求会进行串行化处理.在InnoDB中该级别下的 更新语句加锁过程与Read Repeatable下一致.
+
+### innodb行锁实现方式
+[mysql 行锁的实现](https://lanjingling.github.io/2015/10/10/mysql-hangsuo/)
+
+InnoDB行锁是通过给索引上的索引项加锁来实现的,这一点MySQL与Oracle不同,后者是通过在数据块中对相应数据行加锁来实现的.
+InnoDB这种行锁实现特点意味着:只有通过索引条件检索数据,InnoDB才使用行级锁,否则,InnoDB将使用表锁!
+在实际应用中,要特别注意InnoDB行锁的这一特性,不然的话,可能导致大量的锁冲突,从而影响并发性能.
+
+在不通过索引条件查询(select for update)的时候,InnoDB确实使用的是表锁,而不是行锁.
 
