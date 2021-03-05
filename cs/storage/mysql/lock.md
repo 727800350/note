@@ -24,6 +24,7 @@
         - [未使用任何索引](#未使用任何索引-1)
         - [插入过程](#插入过程)
       - [Serializable 级别](#serializable-级别)
+    - [innodb行锁实现方式](#innodb行锁实现方式)
 
 # InnoDB Locking and Transaction Model
 事务是由一组SQL语句组成的逻辑处理单元,事务具有以下4个属性,通常简称为事务的ACID属性.
