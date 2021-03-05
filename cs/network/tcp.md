@@ -20,7 +20,7 @@ Therefore, TCP cannot be described as a 100% reliable protocol.
 
 **socket中TCP的三次握手建立连接**
 
-<img src="./pics/tcp/connect_and_close.jpg" alt="socket中TCP的三次握手建立连接详解" width="50%"/>
+<img src="./pics/tcp/connect_and_close.jpg" alt="socket中TCP的三次握手建立连接详解" width="60%"/>
 
 1. 当客户端调用connect 时, 触发了连接请求, 向服务器发送了SYN J 包, 这时connect 进入阻塞状态.
 1. 服务器监听到连接请求, 即收到SYN J 包, 调用accept 函数接收请求(会为该TCP 分配缓存和变量), 并向客户端发送SYN K, ACK J+1,
@@ -72,7 +72,7 @@ TCP标记和他们的意义如下所列:
 这样一来就不会为恶意攻击的 SYN 报文段分配资源空间,避免了攻击.
 
 # [tcp连接的11种状态](https://blog.csdn.net/shanliangliuxing/article/details/36500731)
-<img src="./pics/tcp/state.jpg" alt="state" width="50%"/>
+<img src="./pics/tcp/state.jpg" alt="state" width="70%"/>
 
 1. LISTEN: 首先服务端需要打开一个socket进行监听,状态为 LISTEN.
 2. `SYN_SENT`: 客户端通过应用程序调用connect 进行active open. 于是客户端tcp发送一个SYN以请求建立一个连接.之后状态置为
