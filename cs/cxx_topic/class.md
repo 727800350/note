@@ -8,6 +8,7 @@
   - [虚函数的实现的基本原理](#虚函数的实现的基本原理)
     - [parameter of an overriding function](#parameter-of-an-overriding-function)
     - [虚析构函数](#虚析构函数)
+    - [virtual inheritance](#virtual-inheritance)
     - [在非虚函数中调用虚函数](#在非虚函数中调用虚函数)
     - [子类调用父类的方法](#子类调用父类的方法)
 - [class layout](#class-layout)
