@@ -5,8 +5,8 @@
   - [SkipList::Iterator](#skiplistiterator)
   - [Table Iterator](#table-iterator)
   - [TwoLevelIterator](#twoleveliterator)
-  - [level 0 TwoLevelIterator](#level-0-twoleveliterator)
-  - [level n(n >= 1) TwoLevelIterator](#level-nn--1-twoleveliterator)
+    - [level 0 TwoLevelIterator](#level-0-twoleveliterator)
+    - [level n(n >= 1) TwoLevelIterator](#level-nn--1-twoleveliterator)
   - [Block::Iter](#blockiter)
 
 # iterator
@@ -21,9 +21,12 @@ DBIter combines multiple entries for the same userkey found in the DB representa
 accounting for sequence numbers, deletion markers, overwrites, etc.
 
 也就是说DBIter 作为存储层和用户层的桥梁.
-存储层的Iterator(iter_) 不关心实际的数据, 只需要做遍历;
-DBIter 是提供给用户的最外层Iterator, 返回对应的kv 数据, 需要做逻辑上的解析, 比如, 遍历到相同或者删除的key 要跳过, 如果指
-定了Snapshot, 要跳过不属于Snapshot 的数据等.
+存储层的Iterator(iter_) 不关心数据的实际意义, 只需要做遍历;
+DBIter 是提供给用户层Iterator, 返回用户层面的kv 数据, 因此需要做逻辑上的解析, 比如:
+
+1. 存储层的key 结构大都是 internal key, 也就是(user key, sequence number, type), 但是只能把user key 暴漏给用户;
+1. 遍历到相同或者删除的key 要跳过;
+1. 如果指定了Snapshot, 要跳过不属于Snapshot 的数据等.
 
 ```cpp
 // db/db_iter.cc
@@ -49,7 +52,10 @@ Iterator* DBImpl::NewIterator(const ReadOptions& options) {
 - DBIter 是直接面向用户层的, 所以seek 的参数是user key, 而不是 internal key
 
 ## MergingIterator
-NewIterator 中调用的 `NewInternalIterator(options, &latest_snapshot, &seed);` 生成的实际上是 MergingIterator.
+NewIterator 中调用的 `NewInternalIterator(options, &latest_snapshot, &seed);`
+会把 memtable, immutable memtable, 当前version 管理的所有sstable 都生成iterator, 然后一个数组里面
+`std::vector<Iterator*> list;`, 然后就可以调用 NewMergingIterator 了.
+生成的实际上是 MergingIterator.
 ```cpp
 // table/merger.[h, cc]
 Iterator* NewMergingIterator(const Comparator* comparator, Iterator** children, int n) {
@@ -110,7 +116,9 @@ class SkipList {
 请注意 SkipList::Iterator 没有继承自Iterator.
 
 ## Table Iterator
+`Iterator* DBImpl::NewInternalIterator` 中调用Version::AddIterators
 ```cpp
+// db/version_set.cc
 void Version::AddIterators(const ReadOptions& options,
                            std::vector<Iterator*>* iters) {
   // Merge all level zero files together since they may overlap
@@ -158,7 +166,7 @@ class TwoLevelIterator : public Iterator {
 ```
 内部由 index block iterator 和 data block reader function 组成.
 
-## level 0 TwoLevelIterator
+### level 0 TwoLevelIterator
 ```cpp
 // db/table_cache.[h, cc]
 Iterator* TableCache::NewIterator(const ReadOptions& options,
@@ -196,14 +204,13 @@ Table 的 `rep_` 的 options 是打开table 时传入的, 也就是和DBImpl 的
 一样的), 所以这里用的comparator 是 internal key comparator.
 
 seek 的时候, 先通过index iterator 找到data block 的block handle, 然后再通过data block reader function(也就是
-Table::BlockReader) 读到data block 并将其转换为data block iterator
+Table::BlockReader) 读到data block 并将其转换为data block iterator, 然后再对同一个key 执行seek.
 
-## level n(n >= 1) TwoLevelIterator
+### level n(n >= 1) TwoLevelIterator
 NewConcatenatingIterator 生成的还是 TwoLevelIterator.
 ```cpp
 // db/version_set.cc
-Iterator* Version::NewConcatenatingIterator(const ReadOptions& options,
-                                            int level) const {
+Iterator* Version::NewConcatenatingIterator(const ReadOptions& options, int level) const {
   return NewTwoLevelIterator(
       new LevelFileNumIterator(vset_->icmp_, &files_[level]), &GetFileIterator,
       vset_->table_cache_, options);
