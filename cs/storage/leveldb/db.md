@@ -234,13 +234,14 @@ struct FileMetaData {
 class VersionEdit {
  private:
   uint64_t prev_log_number_;
-  uint64_t log_number_;  // Earlier logs no longer needed  
+  uint64_t log_number_;  // Earlier logs no longer needed
 
   typedef std::set< std::pair<int, uint64_t> > DeletedFileSet;
   DeletedFileSet deleted_files_;
   std::vector< std::pair<int, FileMetaData> > new_files_;
 }
 
+// db/db_impl.cc
 Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit, Version* base) {
   FileMetaData meta;
   // 根据 mem 得到 iterator iter, 生成一个新的sstable, 信息存储到meta 中.
@@ -264,21 +265,23 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit, Version* base)
 
 ### LogAndApply
 ```cpp
+// db/version_set.cc
 Status VersionSet::LogAndApply(VersionEdit* edit, port::Mutex* mu)
 ```
-1. 通过 `VersionSet::Builder` 在当前版本 version_ 的基础上 Apply edit, 生成一个新的 version v
+1. 通过 `VersionSet::Builder` 在当前版本 version_ 的基础上 Apply edit, 生成一个新的 version v. Builder 相关的具体解释请
+  阅读下面的version 章节
 2. 遍历v 各层, 计算各层的打分, 记录下最高分值的level 和具体的score 到 v->compaction_level_ 和 v->compaction_score_, 作为
-  下一次compaction 的依据
+  下一次compaction 的依据(Finalize 函数)
     - level 0 的计算规则, file number / config::kL0_CompactionTrigger
     - 其他层: total file size / MaxBytesForLevel(level)
-3. 创建一个新的manifest 文件(log 文件的格式), 并把当前版本 version_ 的数据以VersionEdit 的形式
-  (`void VersionEdit::EncodeTo(std::string* dst) const`)写到manifest 中, 包括:
+3. 只有当第一次执行到这里时(判断标准是 descriptor_log_ 是不是为 nullptr), 创建一个新的manifest 文件(log 文件的格式), 并
+  把当前版本 version_ 的数据以VersionEdit 的形式EncodeTo 到manifest 中, 包括:
     1. comparator 的名字
     2. compaction pointer 也就是 Per-level key at which the next compaction at that level should start. Either an empty
       string, or a valid InternalKey.
-    3. 每层的文件信息, 包括 level, number, fize, smallest key, largest key
+    3. 每层的文件信息, 包括 level, number, file size, smallest key, largest key
 4. 把传入的 edit 追加到 manifest 文件末尾
-5. 将 CURRENT 指向新生成的 manifest 文件
+5. 当前面有新建manifest 文件时, 将CURRENT 指向新生成的 manifest 文件;
 6. 把current_ 指向新生成的Version v, 并将新生成的 version v 追加到链表末尾
 
 各层的所有文件加起来的最大大小计算规则:
@@ -295,20 +298,29 @@ static double MaxBytesForLevel(int level) {
 }
 ```
 
+#### Manifest(descriptor)
+为了重启db 后可以恢复退出前的状态, 需要将db 中的状态保存下来, 这些状态信息就保存在manifeest 文件中.
+
+当db 出现异常时, 为了能够尽可能多的恢复, manifest 中不会只保存当前的状态, 而是将历史的状态都保存下来. 又考虑到每次状态的
+完全保存需要的空间和耗费的时间会较多, 当前采用的方式是, 只在manifest 开始(也就是第一次走到LogAndApply 时)保存完整的状态
+信息(VersionSet::WriteSnapshot()), 接下来只保存每次compact 产生的操作(VesrionEdit), 重启db 时, 根据开头的起始状态, 依次
+将后续的 VersionEdit replay, 即可恢复到退出前的状态(Vesrion)
+
 ### DeleteObsoleteFiles
 ```cpp
 // db/db_impl.cc
 void DBImpl::DeleteObsoleteFiles()
 ```
 
-1. 正在进行的 compaction 过程中生成的文件, 肯定不能删除掉
-2. version 链表中所有引用的文件不能删, 有些虽然不在 current_ 中, 但还在被外部读, 所以也不能删除
-3. 通过 `env_->GetChildren` 把db 下的所有文件名字都拿到
-4. 遍历文件列表, 从名字解析出文件类型并进行判断是否可以删除
-    1. 日志文件: 保留大于 VersionSet::log_number_以及辅助 log 文件 (VersionSet::prev_log_number_)
-    2. Manifest 文件只保留当前的
-    3. sstable 文件以及临时文件只保留 live 的
-    4. CURRENT/LOG/LOCK 文件均保留
+1. 正在进行的compaction 过程中生成的文件, 肯定不能删除掉
+1. version 链表中所有引用的文件不能删, 有些虽然不在 current_ 中, 但还在被外部读, 所以也不能删除
+1. 通过`env_->GetChildren` 把db 下的所有文件名字都拿到
+1. 遍历文件列表, 从名字解析出文件类型并进行判断是否可以删除
+    1. 日志文件: 保留大于VersionSet::log_number_以及辅助 log 文件 (VersionSet::prev_log_number_)
+    1. Manifest 文件只保留当前的
+    1. sstable 文件以及临时文件只保留 live 的
+    1. CURRENT/LOG/LOCK 文件均保留
+1. 执行删除
 
 # version
 VersionSet 所有Version 构成的双向链表, 这些Version按时间顺序先后产生,记录了当时的元信息,链表头指向当前最新的Version, 同
@@ -316,7 +328,31 @@ VersionSet 所有Version 构成的双向链表, 这些Version按时间顺序先�
 一个稳定的快照视图上访问文件.
 VersionSet中除了Version的双向链表外还会记录一些如LogNumber, Sequence, 下一个sst文件编号的状态信息.
 
-<img src="./pics/version_set.png" alt="version set" width="100%"/>
+<img src="./pics/version_set.png" alt="version set" width="70%"/>
+
+```cpp
+// db/version_edit.h
+class VersionEdit {
+ private:
+  typedef std::set<std::pair<int, uint64_t>> DeletedFileSet;  // level and file number
+  DeletedFileSet deleted_files_;
+  std::vector<std::pair<int, FileMetaData>> new_files_;  // level and meta
+  std::vector<std::pair<int, InternalKey>> compact_pointers_;
+}
+
+class VersionSet::Builder {
+ private:
+  typedef std::set<FileMetaData*, BySmallestKey> FileSet;
+  struct LevelState {
+    std::set<uint64_t> deleted_files;
+    FileSet* added_files;  // 可以把 VersionEdit 中无序的 new_files_ 变为有序的, 为SaveTo 做准备
+  };
+
+  VersionSet* vset_;
+  Version* base_;  // 这次新建一个Version 的基准
+  LevelState levels_[config::kNumLevels];
+}
+```
 
 ```cpp
 // Apply all of the edits in *edit to the current state.
@@ -344,6 +380,11 @@ allow_seeks 的设定规则
 f->allowed_seeks = (f->file_size / 16384);
 if (f->allowed_seeks < 100) f->allowed_seeks = 100;
 ```
+
+```cpp
+void VersionSet::Builder::SaveTo(Version* v)
+```
+把base_ 中的文件和 Apply 过的 VersionEdit 合并成为一个新的 Version v.
 
 # read
 ## get
@@ -489,7 +530,7 @@ Status DBImpl::BackgroundCompaction() {
 class Compaction {
  private:
   // Each compaction reads inputs from "level_" and "level_+
-  std::vector<FileMetaData*> inputs_[2];  // The two sets of inputs  
+  std::vector<FileMetaData*> inputs_[2];  // The two sets of inputs
 }
 ```
 
