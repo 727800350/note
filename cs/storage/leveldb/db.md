@@ -5,11 +5,14 @@
   - [minor compaction](#minor-compaction)
     - [WriteLevel0Table](#writelevel0table)
     - [LogAndApply](#logandapply)
+      - [Manifest(descriptor)](#manifestdescriptor)
     - [DeleteObsoleteFiles](#deleteobsoletefiles)
 - [version](#version)
+  - [version](#version-1)
+  - [version set](#version-set)
 - [read](#read)
-  - [get](#get)
-  - [iterator](#iterator)
+  - [Get](#get)
+  - [NewIterator](#newiterator)
 - [major compaction](#major-compaction)
 
 # open
@@ -323,10 +326,47 @@ void DBImpl::DeleteObsoleteFiles()
 1. 执行删除
 
 # version
-VersionSet 所有Version 构成的双向链表, 这些Version按时间顺序先后产生,记录了当时的元信息,链表头指向当前最新的Version, 同
-时维护了每个Version的引用计数, 被引用中的Version不会被删除, 其对应的sst文件也因此得以保留,通过这种方式,使得LevelDB可以在
-一个稳定的快照视图上访问文件.
-VersionSet中除了Version的双向链表外还会记录一些如LogNumber, Sequence, 下一个sst文件编号的状态信息.
+## version
+将每次compact 后的最新数据状态定义为Version, 也就是当前db 元信息以及每个level 上具有最新数据状态的sstable 集合. compact
+会在某个level 上新加入或者删除一些sstable, 但可能这个时候, 那些要删除的sstable 正在被读, 为了处理这样的读写竞争情况, 基
+于sstable 文件一旦生成就不会改动的特点, 为每个 Version 加入引用计数, 读以及解除读操作会将引用计数相应加减一. 这样, db 中
+可能有多个Version 同时存在(提供服务), 它们通过链表链接起来. 当 Version 的引用计数为0 并 不是当前最新的Version 时, 它会从
+链表中移除对应的, 该Version 内的sstable 就可以删除了(这些废弃的sstable 会在下一次compact 完成时被清理掉).
+
+```cpp
+// db/version_set.h
+class Version {
+ private:
+  VersionSet* vset_;  // VersionSet to which this Version belongs
+  Version* next_;     // Next version in linked list
+  Version* prev_;     // Previous version in linked list
+  int refs_;          // Number of live refs to this version
+
+  // List of files per level
+  std::vector<FileMetaData*> files_[config::kNumLevels];
+
+  // Next file to compact based on seek stats.
+  // allowd_seeks 用完, 也就是major compaction 中会讲到的 seek compaction
+  FileMetaData* file_to_compact_;
+  int file_to_compact_level_;
+
+  // Level that should be compacted next and its compaction score.
+  // Score < 1 means compaction is not strictly needed. These fields are initialized by Finalize().
+  // size compaction
+  double compaction_score_;
+  int compaction_level_;
+};
+```
+
+## version set
+整个db 的当前状态被VersionSet 管理着, 其中有
+
+- 当前最新的Version 以及其他正在服务的Version 链表;
+- 全局的SequnceNumber;
+- FileNumber;
+- 当前的manifest_file_number;
+- 封装sstable 的TableCache;
+- 每个 level 中下一次 compact 要选取的 start_key 等等.
 
 <img src="./pics/version_set.png" alt="version set" width="70%"/>
 
@@ -387,11 +427,26 @@ void VersionSet::Builder::SaveTo(Version* v)
 把base_ 中的文件和 Apply 过的 VersionEdit 合并成为一个新的 Version v.
 
 # read
-## get
+## Get
 ```cpp
+// db/dbformat.h
+// A helper class useful for DBImpl::Get()
+class LookupKey {
+ public:
+  // Return a key suitable for lookup in a MemTable.
+  Slice memtable_key() const;
+
+  // Return an internal key (suitable for passing to an internal iterator)
+  Slice internal_key() const;
+
+  // Return the user key
+  Slice user_key() const;
+};
+
 // db/db_impl.cc
 Status DBImpl::Get(const ReadOptions& options, const Slice& key, std::string* value)
 ```
+1. 为便于操作, 把要查找的key 转换为 LookupKey
 1. 读取顺序 memtable > immutable memtable > `versions_->current()`, 如果是从 sstable 中读取的, 设置 have_stat_update 标
   记位为 true
 2. 如果从sstable 中读取的, 将命中的sstable 的allow_seeks 减一, 如果减到0, 就尝试compact 命中文件的所在层
@@ -407,7 +462,7 @@ Status Version::Get(const ReadOptions& options, const LookupKey& k, std::string*
     - 其他level 时, 先二分查找定位到可能在的文件中, 找到的话, 加入到 tmp 中
 2. 遍历处理tmp 中的每个文件, 调用 `table_cache_->Get(options, f->number, f->file_size, ikey, &saver, SaveValue);`
 
-## iterator
+## NewIterator
 ```cpp
 // db/db_impl.cc
 Iterator* DBImpl::NewIterator(const ReadOptions& options) {
