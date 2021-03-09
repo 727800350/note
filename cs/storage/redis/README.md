@@ -179,6 +179,8 @@ Benefits of pipelining
 	Client 1 pipeline.
 1. If some command fails, the pipeline continues and an error is returned at the end, as the response for that specific
 	command (not for the whole pipeline).
+1. [execution order is guaranteed](https://stackoverflow.com/questions/17634826/redis-pipelined-order-of-execution).
+  但是对于有proxy 的集群, 顺序性取决于proxy 的实现.
 
 ## Transactions
 A transaction works by issuing a MULTI command, then sending all the commands that compose the pipeline, and an EXEC or
