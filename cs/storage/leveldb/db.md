@@ -1,5 +1,11 @@
 - [open](#open)
 - [write and minor compaction](#write-and-minor-compaction)
+  - [write batch](#write-batch)
+  - [write](#write)
+  - [minor compaction](#minor-compaction)
+    - [WriteLevel0Table](#writelevel0table)
+    - [LogAndApply](#logandapply)
+    - [DeleteObsoleteFiles](#deleteobsoletefiles)
 - [version](#version)
 - [read](#read)
   - [get](#get)
@@ -14,6 +20,7 @@ Status DB::Open(const Options& options, const std::string& dbname, DB** dbptr) {
   // ...
 }
 ```
+如果没有指定, options 的 comparator 会被默认设置为 BytewiseComparator, 用户传进来的options 后面会被指代为raw_options
 
 ```cpp
 // db/db_impl.h
@@ -23,9 +30,10 @@ class DBImpl : public DB {
   const Options options_;  // options_.comparator == &internal_comparator_
 }
 ```
-DBImpl 的构造函数中, options_ 的 comparator 会被改为以外面传入的 options.comparator 来初始化的 internal key comparator
-(InternalKeyComparator 类型).
-之后的大部分comparator, iterator 用到的都是internal key comparator.
+DBImpl 的构造函数中, 会用raw_options.comparator 来初始化 internal_comparator_(InternalKeyComparator 类型)., 然后
+options_ 的 comparator 会被改为指向internal_comparator_
+
+之后的出现的大部分iterator 用到的都是internal key comparator.
 
 DBImpl 的构造函数中, 会用options_ 初始化TableCache
 
@@ -43,6 +51,7 @@ class DB {
 ```
 DB 的 Put 和 Delete 都是转换为Write 的, Write 都是通过WriteBatch 来操作的.
 
+## write batch
 ```cpp
 // include/leveldb/write_batch.h
 class WriteBatch {
@@ -62,10 +71,23 @@ static const size_t kHeader = 12;
 ```
 WriteBatch 初始化的时候, 会在rep_ 头部添加12 bytes 的header
 
-Put 把kv 连同 kTypeValue 编码进 rep_, 同时要修改header 中的count
+Put 把kv 连同 kTypeValue 编码进 rep_, 同时要修改header 中的count, 通过封装的 WriteBatchInternal 来进行, 实际上可以封装为
+WriteBatch 的 private 函数.
+```cpp
+void WriteBatchInternal::SetCount(WriteBatch* b, int n) {
+  EncodeFixed32(&b->rep_[8], n);
+}
+
+void WriteBatchInternal::SetSequence(WriteBatch* b, SequenceNumber seq) {
+  EncodeFixed64(&b->rep_[0], seq);
+}
+```
+一个write batch 含有多个kv 时, 设置的seq 是第一个kv 的, 之后的进行加一操作得到, 也就是一个write batch 中多个kv 的seq 是
+连续的.
 
 Delete 与Put 差不多的操作, 只是type 为 kTypeDeletion, 没有value 部分
 
+## write
 ```cpp
 class DBImpl {
  private:
@@ -88,8 +110,8 @@ struct DBImpl::Writer {
 Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch)
 ```
 1. 将my_batch 封装成一个新的Writer 插入到writers_ 尾;
-1. 从 `writers_` 中挑出一个writer 作为这批writers 的真正写入着. `writers_` 相当于一个任务队列, 生产者线程不断向任务队列中添
-  加待处理的任务. 一般计算模型是将消费者和生产者分开,也就是这里需要另开线程处理任务. 但是leveldb 采用了另外一种路线, 选
+1. 从`writers_` 中挑出一个writer 作为这批writers 的真正写入着. `writers_` 相当于一个任务队列, 生产者线程不断向任务队列中
+  添加待处理的任务. 一般计算模型是将消费者和生产者分开,也就是这里需要另开线程处理任务. 但是leveldb 采用了另外一种路线, 选
   择从生产者线程中找一个线程来处理任务, 问题在于选择哪个生产者作为消费者线程. 每个生产者在向Writers_ 队列中添加任务之后,
   都会进入一个while循环, 然后在里面睡眠, 只有当下面两种情况时, 才会被唤醒:
     - 该线程加入的任务已经被处理, 即 writer.done == true, 也就是自己没有被选中. 这种情况被唤醒后直接返回, 因为写入任务已
@@ -99,7 +121,8 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch)
 1. MakeRoomForWrite
 1. 真正的writer 将`writers_` 中的所有WriteBatch 合并为一个大的batch. 当然也会有大小控制, 大小阈值是根据被选中的writer 的
   batch 大小来确定的. 同时记录下这批的最后一个writer 为 last_writer
-1. 获取db 的last sequence 也就是最大的sequence, 然后设置合并后的batch 的sequence 为last + sequence + 1
+1. 获取db 的last sequence 也就是最大的sequence, 然后设置合并后的batch 的sequence(也就是batch 中第一个kv 的sequence) 为
+  last sequence + 1
 1. 释放mutex_, 写 WAL
 1. 把合并后的write batch 写到 mem_, 重新加上 mutex_
 1. 更新当前db 的最大sequence 为 last sequence + 这一批kv 的个数
@@ -109,6 +132,8 @@ Status DBImpl::Write(const WriteOptions& options, WriteBatch* my_batch)
 需要注意的是 6 和 7 操作前把 `mutex_` 释放了, 之后又加上了, 也就是执行6 和 7 的过程中, 是不阻塞写入的, 所以可以继续往
 writers_ 对尾添加新的writer
 
+## minor compaction
+MakeRoomForWrite 中会检查当前的mem_ 是否满足特定条件需要进行minor compaction
 ```cpp
 // db/db_impl.cc
 // force: true when compaction
@@ -159,7 +184,6 @@ class DBImpl : public DB {
 ```
 
 BGWork 最终会调用 BackgroundCompaction
-
 ```cpp
 // db/db_impl.cc
 Status DBImpl::BackgroundCompaction() {
@@ -193,7 +217,7 @@ CompactMemTable 中有三个重要的函数调用
 2. LogAndApply
 3. DeleteObsoleteFiles
 
-先来看 WriteLevel0Table
+### WriteLevel0Table
 ```cpp
 // db/version_edit.h
 struct FileMetaData {
@@ -219,7 +243,8 @@ class VersionEdit {
 
 Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit, Version* base) {
   FileMetaData meta;
-  // 同时会将新生成的 sstable 加到 table cache 中, 附带验证生成的sstable 是完好的
+  // 根据 mem 得到 iterator iter, 生成一个新的sstable, 信息存储到meta 中.
+  // 同时会将新生成的sstable 加到table cache 中, 附带验证生成的sstable 是完好的
   s = BuildTable(dbname_, env_, options_, table_cache_, iter, &meta);
 
   // 就是meta 的smallest 和 largest
@@ -237,6 +262,7 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit, Version* base)
 
 所以 immutable memtable 生成的sstable 不都是 level 0 的.
 
+### LogAndApply
 ```cpp
 Status VersionSet::LogAndApply(VersionEdit* edit, port::Mutex* mu)
 ```
@@ -269,7 +295,7 @@ static double MaxBytesForLevel(int level) {
 }
 ```
 
-DeleteObsoleteFiles
+### DeleteObsoleteFiles
 ```cpp
 // db/db_impl.cc
 void DBImpl::DeleteObsoleteFiles()
