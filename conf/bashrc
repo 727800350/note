@@ -29,6 +29,9 @@ fi
 if [ "x$os" == "xlinux" ]
 then
   export env=`systemd-detect-virt`
+elif [ "x$os" == "xmac" ]
+then
+  export PATH=$PATH:"/usr/local/texlive/2020/bin/x86_64-darwin"
 fi
 
 ulimit -c unlimited
