@@ -1,5 +1,15 @@
+- [介质访问控制子层](#介质访问控制子层)
+	- [Ethernet](#ethernet)
+- [Internet layer](#internet-layer)
+	- [IP v4](#ip-v4)
+	- [IP v6](#ip-v6)
+	- [ICMP](#icmp)
+- [Transport layer](#transport-layer)
+	- [TCP](#tcp)
+	- [UDP](#udp)
+
 数据包
-```
+```plain
 datalink header: ip header: TCP header: DNS header: Payload
 							UDP			HTTP
 										...
@@ -9,15 +19,15 @@ datalink header: ip header: TCP header: DNS header: Payload
 ## Ethernet
 EtherType is a two-octet field in an Ethernet frame. It is used to indicate which protocol is encapsulated in the payload of an Ethernet Frame.
 
-EtherType numbering generally starts from 0x0800. In modern implementations of Ethernet, 
+EtherType numbering generally starts from 0x0800. In modern implementations of Ethernet,
 the field within the Ethernet frame used to describe the EtherType also can be used to represent the size of the payload of the Ethernet Frame.
 
-Ethernet v2 framing considered these octets to represent EtherType 
+Ethernet v2 framing considered these octets to represent EtherType.
 while the original IEEE 802.3 framing considered these octets to represent the size of the payload in bytes.
 
-EtherType values be greater than or equal to 1536 (0x0600).   
-That value was chosen because the maximum length (MTU) of the data field of an Ethernet 802.3 frame was 1500 bytes (0x05DC). 
-Thus, values of 1500 (0x05DC) and below for this field indicate that the field is used as the size of the payload of the Ethernet Frame 
+EtherType values be greater than or equal to 1536 (0x0600).
+That value was chosen because the maximum length (MTU) of the data field of an Ethernet 802.3 frame was 1500 bytes (0x05DC).
+Thus, values of 1500 (0x05DC) and below for this field indicate that the field is used as the size of the payload of the Ethernet Frame.
 while values of 1536 and above indicate that the field is used to represent EtherType. The interpretation of values 1501–1535, inclusive, is undefined.
 
 [EtherType for some notable protocols](http://en.wikipedia.org/wiki/EtherType)
@@ -58,7 +68,7 @@ IPv6地址为128位长,但通常写作8组,每组为四个十六进制数的形�
 
 - IPv6 的分组头长度仅是IPv4 分组头部长度的2倍
 - IPv4使用动态主机配置协议, 而IPv6支持地址自动配置
-	
+
 ## ICMP
 ICMP 是网络层协议
 
@@ -89,7 +99,7 @@ Hex demo
 
 TCP header(in hex)=05320017 00000001 000000000 500207FF 00000000  
 since each hex = 4 bits , we need to first split the above hex as such
-	
+
 	05 32 00 17 00 00 00 01 00 00 00 00 50 02 07 FF 00 00 00 00
 
 Analyse

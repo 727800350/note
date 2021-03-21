@@ -1,8 +1,11 @@
-- [tcp连接的11种状态](#tcp连接的11种状态)
-	- [TIME WAIT状态](#time-wait状态)
-		- [time wait状态如何产生?](#time-wait状态如何产生)
-		- [time wait状态产生的原因](#time-wait状态产生的原因)
-		- [time wait 状态如何避免](#time-wait-状态如何避免)
+- [intro](#intro)
+	- [TCP的三次握手建立连接](#tcp的三次握手建立连接)
+	- [释放连接4次握手](#释放连接4次握手)
+		- [TIME WAIT状态](#time-wait状态)
+			- [time wait状态如何产生?](#time-wait状态如何产生)
+			- [time wait状态产生的原因](#time-wait状态产生的原因)
+			- [time wait 状态如何避免](#time-wait-状态如何避免)
+- [tcp 特性](#tcp-特性)
 - [异常情况分析](#异常情况分析)
 	- [关于SIGPIPE导致的程序退出](#关于sigpipe导致的程序退出)
 	- [长连接的情况下出现了不同程度的延时](#长连接的情况下出现了不同程度的延时)
@@ -20,6 +23,7 @@ the connection) if it is not possible.
 Therefore, TCP cannot be described as a 100% reliable protocol.
 
 [tcp连接的11种状态](https://blog.csdn.net/shanliangliuxing/article/details/36500731)
+
 <img src="./pics/tcp/state.jpg" alt="state" width="70%"/>
 
 1. LISTEN: 首先服务端需要打开一个socket进行监听,状态为 LISTEN.
