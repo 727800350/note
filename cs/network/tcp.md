@@ -13,22 +13,47 @@
 
 [最常见的12道计算机网络面试题](https://www.justdojava.com/2019/11/03/Network_interview_question/)
 
+# intro
 Note that TCP does not guarantee that the data will be received by the other endpoint, as this is impossible.
 It delivers data to the other endpoint if possible, and notifies the user (by giving up on retransmissions and breaking
 the connection) if it is not possible.
 Therefore, TCP cannot be described as a 100% reliable protocol.
 
-**socket中TCP的三次握手建立连接**
+[tcp连接的11种状态](https://blog.csdn.net/shanliangliuxing/article/details/36500731)
+<img src="./pics/tcp/state.jpg" alt="state" width="70%"/>
 
-<img src="./pics/tcp/connect_and_close.jpg" alt="socket中TCP的三次握手建立连接详解" width="60%"/>
+1. LISTEN: 首先服务端需要打开一个socket进行监听,状态为 LISTEN.
+2. `SYN_SENT`: 客户端通过应用程序调用connect 进行active open. 于是客户端tcp发送一个SYN以请求建立一个连接.之后状态置为
+  `SYN_SENT`. 在发送连接请求后等待匹配的连接请求
+3. `SYN_RECV`: 服务端收到client 的SYN 后发出ACK 进行确认, 同时自己向客户端发送一个SYN(两个数据包合二为一). 之后状态置为
+  `SYN_RECV`. 在收到和发送一个连接请求后等待对连接请求的确认
+4. ESTABLISHED: 代表一个打开的连接, 双方可以进行或已经在数据交互了
+5. `FIN_WAIT1`: 主动关闭(active close)端应用程序调用close, 于是其TCP发出FIN请求主动关闭连接, 之后进入`FIN_WAIT1`状态
+6. `CLOSE_WAIT`: 被动关闭(passive close) 端TCP 接到FIN后, 就发出ACK 以回应FIN 请求(它的接收也作为文件结束符传递给上层应
+  用程序),并进入`CLOSE_WAIT`
+7. `FIN_WAIT2`: 主动关闭端接到ACK后, 就进入了FIN-WAIT-2
+8. `LAST_ACK`: 被动关闭端一段时间后, 接收到文件结束符的应用程序将调用CLOSE 关闭连接.这导致它的TCP也发送一个 FIN,等待对方
+  的ACK.就进入了LAST-ACK
+9. `TIME_WAIT`: 在主动关闭端接收到FIN后, TCP就发送ACK包,并进入TIME-WAIT状态. 等待足够的时间以确保远程TCP接收到连接中断请
+  求的确认
+10. CLOSING: 比较少见. Both sockets are shut down but we still don't have all our data sent. 等待远程TCP对连接中断的确认
+11. CLOSED: 被动关闭端在接受到ACK包后, 就进入了closed的状态, 连接结束
 
-1. 当客户端调用connect 时, 触发了连接请求, 向服务器发送了SYN J 包, 这时connect 进入阻塞状态.
-1. 服务器监听到连接请求, 即收到SYN J 包, 调用accept 函数接收请求(会为该TCP 分配缓存和变量), 并向客户端发送SYN K, ACK J+1,
-  这时accept 进入阻塞状态.
-1. 客户端收到服务器的SYN K, ACK J+1 之后, connect返回, 并对SYN K 进行确认, 服务器收到ACK K+1 时, accept 返回, 至此三次握
-  手完毕,连接建立.
+## TCP的三次握手建立连接
+<img src="./pics/tcp/connect.png" alt="connect" width="60%"/>
+
+1. 第一次握手: 客户端的应用进程主动打开,并向服务端发出请求报文段.其首部中:SYN=1,seq=x.
+1. 第二次握手: 服务器应用进程被动打开.若同意客户端的请求(会为该TCP 分配缓存和变量), 则发回确认报文,其首部中:
+  SYN=1,ACK=1,ack=x+1,seq=y. 这时accept 进入阻塞状态.
+1. 第三次握手: 客户端收到确认报文之后,通知上层应用进程连接已建立,并向服务器发出确认报文,其首部:ACK=1,ack=y+1.当服务器收
+  到客户端的确认报文之后,也通知其上层应用进程连接已建立.
 
 客户端的connect在三次握手的第二个次返回,而服务器端的accept在三次握手的第三次返回.
+
+一个可能出现但是非常罕见的情况, 两方同时打开, 这时有四次握手, 双方同时发送SYN 进入SYN-SENT 状态, 当对方分别收到相应的SYN,
+再同时发出SYN+ACK, 进入SYN+RECV 状态, 这样就包括了四次.
+
+<img src="./pics/tcp/connect_simultaneously.jpg" alt="connect_simultaneously" width="60%"/>
 
 内核为任何一个给定的监听套接字维护两个队列:
 
@@ -71,28 +96,24 @@ TCP标记和他们的意义如下所列:
 
 这样一来就不会为恶意攻击的 SYN 报文段分配资源空间,避免了攻击.
 
-# [tcp连接的11种状态](https://blog.csdn.net/shanliangliuxing/article/details/36500731)
-<img src="./pics/tcp/state.jpg" alt="state" width="70%"/>
+## 释放连接4次握手
+<img src="./pics/tcp/close.jpg" alt="close" width="55%"/>
 
-1. LISTEN: 首先服务端需要打开一个socket进行监听,状态为 LISTEN.
-2. `SYN_SENT`: 客户端通过应用程序调用connect 进行active open. 于是客户端tcp发送一个SYN以请求建立一个连接.之后状态置为
-  `SYN_SENT`. 在发送连接请求后等待匹配的连接请求
-3. `SYN_RECV`: 服务端收到client 的SYN 后发出ACK 进行确认, 同时自己向客户端发送一个SYN(两个数据包合二为一). 之后状态置为
-  `SYN_RECV`. 在收到和发送一个连接请求后等待对连接请求的确认
-4. ESTABLISHED: 代表一个打开的连接, 双方可以进行或已经在数据交互了
-5. `FIN_WAIT1`: 主动关闭(active close)端应用程序调用close, 于是其TCP发出FIN请求主动关闭连接, 之后进入`FIN_WAIT1`状态
-6. `CLOSE_WAIT`: 被动关闭(passive close) 端TCP 接到FIN后, 就发出ACK 以回应FIN 请求(它的接收也作为文件结束符传递给上层应
-  用程序),并进入`CLOSE_WAIT`
-7. `FIN_WAIT2`: 主动关闭端接到ACK后, 就进入了FIN-WAIT-2
-8. `LAST_ACK`: 被动关闭端一段时间后, 接收到文件结束符的应用程序将调用CLOSE 关闭连接.这导致它的TCP也发送一个 FIN,等待对方
-  的ACK.就进入了LAST-ACK
-9. `TIME_WAIT`: 在主动关闭端接收到FIN后, TCP就发送ACK包,并进入TIME-WAIT状态. 等待足够的时间以确保远程TCP接收到连接中断请
-  求的确认
-10. CLOSING: 比较少见. Both sockets are shut down but we still don't have all our data sent. 等待远程TCP对连接中断的确认
-11. CLOSED: 被动关闭端在接受到ACK包后, 就进入了closed的状态, 连接结束
+1. 第一次挥手: 数据传输结束以后,客户端的应用进程发出连接释放报文段,并停止发送数据,其首部:FIN=1,seq=u.
+1. 第二次挥手: 服务器端收到连接释放报文段之后,发出确认报文,其首部:ack=u+1,seq=v.此时本次连接就进入了半关闭状态,客户端不
+  再向服务器发送数据.而服务器端仍会继续发送.
+1. 第三次挥手: 若服务器已经没有要向客户端发送的数据,其应用进程就通知服务器释放TCP连接.这个阶段服务器所发出的最后一个报文
+  的首部应为:FIN=1,ACK=1,seq=w,ack=u+1.
+1. 第四次挥手: 客户端收到连接释放报文段之后,必须发出确认:ACK=1,seq=u+1,ack=w+1. 再经过2MSL(最长报文端寿命)后,本次TCP连接
+  真正结束,通信双方完成了他们的告别.
 
-## [TIME WAIT状态](https://blog.csdn.net/u013616945/article/details/77510925)
-### time wait状态如何产生?
+如果同时关闭
+<img src="./pics/tcp/close_simultaneously.jpg" alt="close_simultaneously" width="60%"/>
+
+释放, 四次握手, 有时候也简化为三次握手
+
+### [TIME WAIT状态](https://blog.csdn.net/u013616945/article/details/77510925)
+#### time wait状态如何产生?
 `TIME_WAIT` 状态的形成只发生在主动关闭连接的一方.
 
 主动关闭方在接收到被动关闭方的FIN请求后,发送给对方一个ACK后, 将自己的状态由`FIN_WAIT2`修改为`TIME_WAIT`,
@@ -102,7 +123,7 @@ TCP标记和他们的意义如下所列:
 
 产生这种结果使得这个TCP连接在2MSL连接等待期间,定义这个连接的四元组(客户端IP地址和端口,服务端IP地址和端口号)不能被使用.
 
-### time wait状态产生的原因
+#### time wait状态产生的原因
 1. **为实现TCP全双工连接的可靠释放**:
 由TCP状态变迁图可知,假设发起主动关闭的一方(client)最后发送的ACK在网络中丢失,由于TCP协议的重传机制,执行被动关闭的一方
 (server)将会重发其FIN, 在该FIN到达client之前, client必须维护这条连接状态,也就说这条TCP连接所对应的资源(client方的
@@ -119,7 +140,7 @@ TCP标记和他们的意义如下所列:
 remote peer后,会被该remot peer的TCP传输层当做当前TCP连接的正常数据接收并向上传递至应用层,从而引起数据错乱进而导致各种无
 法预知的诡异现象.
 
-### time wait 状态如何避免
+#### time wait 状态如何避免
 进入time wait 状态的一般情况下是客户端. 大多数服务器端一般执行被动关闭, 服务器不会进入time wait状态. 当在服务器端关闭某
 个服务再重新启动时, 服务器是会进入time wait状态的.
 
@@ -129,6 +150,22 @@ remote peer后,会被该remot peer的TCP传输层当做当前TCP连接的正常�
 
 一个套接字由相关五元组构成,<协议,本地地址,本地端口,远程地址,远程端口>. `SO_REUSEADDR` 仅仅表示可以重用本地地址,本地端口,
 整个相关五元组还是唯一确定的. 所以,重启后的服务程序有可能收到非期望数据.必须慎重使用`SO_REUSEADDR` 选项.
+
+# tcp 特性
+TCP差错控制
+
+- 传输出错报文段(受损伤): 超时重传
+- 丢失的报文段: 超时重传
+- 重复的报文段: 丢弃重复的
+- 乱序的报文段: 不确认, 知道收到以前的报文段
+- 确认丢失: 累计确认
+
+TCP计时器
+
+- 重传计时器: 控制丢失的丢弃的报文段; 发送报文段时, 就启动该报文段的重传计时器; 仅仅待确认的报文段(ACK)不设置超时计时器,这就表示不重传这种报文段
+- 坚持计时器: 处理零窗口大小通知; 当发送端的TCP收到一个零窗口的确认时, 就启动坚持计时器; 探测报文段
+- 保持计时器keep-alive timer: 防止两个TCP之间的连接长期处于空闲状态, 服务器收到客户的信息后就将计时器复位
+- 时间等待计时器TIME-WAIT: 释放连接时使用; 当被动释放连接的一方发出同意释放报文段时, 打开时间等待计时器
 
 # 异常情况分析
 ## 关于SIGPIPE导致的程序退出
