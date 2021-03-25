@@ -6,6 +6,11 @@
 			- [time wait状态产生的原因](#time-wait状态产生的原因)
 			- [time wait 状态如何避免](#time-wait-状态如何避免)
 - [tcp 特性](#tcp-特性)
+	- [TCP计时器](#tcp计时器)
+		- [重传计时器](#重传计时器)
+		- [坚持计时器](#坚持计时器)
+		- [保活计时器](#保活计时器)
+		- [时间等待计时器](#时间等待计时器)
 - [异常情况分析](#异常情况分析)
 	- [关于SIGPIPE导致的程序退出](#关于sigpipe导致的程序退出)
 	- [长连接的情况下出现了不同程度的延时](#长连接的情况下出现了不同程度的延时)
@@ -258,7 +263,7 @@ signal(SIGCHLD, SIG_IGN);  // 交给系统init去回收.
 	```
 1. 找到服务器子进程的ID,通过kill命令杀死它.作为进程终止处理的部分工作,子进程中所有打开着的描述字都被关闭.这就导致向客户发送一个FIN,而客户TCP则响应以一个ACK.这就是TCP连接终止的前一半工作.
 
-	```
+	```bash
 	[root@dev:git]$ ./server
 	child 180 exit
 	```
@@ -266,7 +271,7 @@ signal(SIGCHLD, SIG_IGN);  // 交给系统init去回收.
 1. 客户上没有发生任何特殊之事.客户TCP接受来自服务器TCP的FIN并响应一个ACK,然后问题是客户进程此时阻塞在fgets调用上,等待从终端接受一行文本.它是看不到这个FIN的.
 1. 此时我们如果运行netstat命令,可以看到如下的套接口的状态, `FIN_WAIT2`即为我们杀掉的那个子进程的,因为我们知道主动关闭的那端在发送完fin并接受对端的ack后将进入`fin_wait2`状态,此时它在等待对端的fin.
 
-	```
+	```bash
 	[root@dev:git]$ netstat -nap | grep tcp
 	tcp        0      0 0.0.0.0:9998            0.0.0.0:*               LISTEN      178/server
 	tcp        0      0 127.0.0.1:9998          127.0.0.1:33050         FIN_WAIT2   -
@@ -274,7 +279,7 @@ signal(SIGCHLD, SIG_IGN);  // 交给系统init去回收.
 	```
 1. 现在我们在客户上在输入一行文本,我们可以看到如下的输出
 
-	```
+	```bash
 	[root@dev:git]$ ./client
 	hello again
 	server term prematurely.
