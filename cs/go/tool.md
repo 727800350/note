@@ -21,6 +21,12 @@ package fmt
 var IsIspace = isSpace  // isSpace is a function
 ```
 
+`go test -c`: 生成用于运行测试的可执行文件,但不执行它,这个可执行文件会被命名为pkg.test
+
+```bash
+./pkg.test -test.v -test.run xxx
+```
+
 # go list
 `...` wildcard, matches any substring of a pkg's import path.
 
