@@ -291,8 +291,7 @@ b = *p;
 总结来说,被 volatile 修饰的变量,在对其进行读写操作时,会引发一些可观测的副作用.而这些可观测的副作用,是由程序之外的因素决
 定的.
 
-> [cv (const and volatile) type qualifiers](https://en.cppreference.com/w/cpp/language/cv)
-
+> [cv (const and volatile) type qualifiers](https://en.cppreference.com/w/cpp/language/cv)  
 > Every access (read or write operation, member function call, etc.) made through a glvalue expression of
 > volatile-qualified type is treated as a visible side-effect for the purposes of optimization (that is, within a single
 > thread of execution, volatile accesses cannot be optimized out or reordered with another visible side effect that is
