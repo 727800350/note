@@ -1,4 +1,27 @@
-${toc}
+- [Move](#move)
+  - [行内](#行内)
+  - [跨行](#跨行)
+  - [大范围移动](#大范围移动)
+- [Edit](#edit)
+  - [visual mode](#visual-mode)
+  - [大小写](#大小写)
+- [Match](#match)
+  - [Replacement](#replacement)
+- [File](#file)
+- [Vim 多文件编辑](#vim-多文件编辑)
+  - [Buffer](#buffer)
+  - [tab](#tab)
+    - [打开与关闭](#打开与关闭)
+    - [标签跳转](#标签跳转)
+  - [window](#window)
+    - [打开关闭命令](#打开关闭命令)
+    - [打开关闭快捷键](#打开关闭快捷键)
+    - [切换窗口](#切换窗口)
+    - [移动窗口](#移动窗口)
+    - [调整大小](#调整大小)
+  - [vi与shell切换](#vi与shell切换)
+- [寄存器](#寄存器)
+  - [寄存器分类](#寄存器分类)
 
 - `*`可以查找当前光标下的word(完全符合),`g*`则部分符合,以`#`代替`*`表示向后(上)找.
 - typing two backquotes \`\` returns you to the position where you issued the G command
