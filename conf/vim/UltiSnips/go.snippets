@@ -87,3 +87,40 @@ func Test$1(t *testing.T) {
 }
 endsnippet
 
+snippet handler_faas_cronjob "faas cronjob handler template"
+// ${1:Template}Handler .
+type $1Handler struct {
+	ctx  context.Context
+	rsp  *events.EventResponse
+	code int32
+}
+
+// New$1Handler .
+func New$1Handler(ctx context.Context, event *triggerEventData) *$1Handler {
+	return &$1Handler{
+		ctx: ctx,
+		rsp: &events.EventResponse{
+			StatusCode: http.StatusOK,
+		},
+		code: fault.RetCodeInternalErr,
+	}
+}
+
+// Handle .
+func (h *$1Handler) Handle() *events.EventResponse {
+	return h.rsp
+}
+
+func (h *$1Handler) returnAhead(err error) *events.EventResponse {
+	if err == nil {
+		return h.rsp
+	}
+
+	logs.CtxError(h.ctx, "$1 error %v %+v", h.code, err)
+	h.rsp.StatusCode = int(fault.GetHTTPCode(h.code))
+	h.rsp.Headers["code"] = strconv.FormatInt(int64(h.code), 10)
+	h.rsp.Body = []byte(err.Error())
+	return h.rsp
+}
+endsnippet
+
