@@ -33,6 +33,7 @@
 | :set var? | 查看var 的值, vim 中没有get 方法 |
 | `:<C-f>`  | command history                  |
 | :f[ile]   | 查看当前文件的全路径             |
+| :e[dit]   | reload the file                  |
 
 
 # Move
