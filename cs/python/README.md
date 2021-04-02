@@ -1,18 +1,3 @@
-- [data types](#data-types)
-  - [mutable vs immutable](#mutable-vs-immutable)
-  - [list](#list)
-    - [列表推导式](#列表推导式)
-  - [dict](#dict)
-  - [set](#set)
-  - [heapq](#heapq)
-  - [Numeric](#numeric)
-  - [string](#string)
-    - [原始字符串](#原始字符串)
-- [FP](#fp)
-- [反射(自省)](#反射自省)
-  - [访问对象的元数据](#访问对象的元数据)
-- [多线程](#多线程)
-
 ```plain
 help, dir, type, id, hasattr, getattr, callable, isinstance
 ```
