@@ -1,3 +1,20 @@
+- [go test](#go-test)
+  - [benchmark](#benchmark)
+- [go list](#go-list)
+- [go doc](#go-doc)
+- [go vet](#go-vet)
+- [go get](#go-get)
+- [go mod](#go-mod)
+  - [导入版本控制](#导入版本控制)
+  - [go.mod](#gomod)
+    - [module](#module)
+    - [require](#require)
+    - [replace](#replace)
+- [go vendor](#go-vendor)
+- [go tool options](#go-tool-options)
+- [env](#env)
+
+
 [Go Tooling in Action](https://www.youtube.com/watch?v=uBjoTxosSys)
 
 # go test
@@ -26,6 +43,37 @@ var IsIspace = isSpace  // isSpace is a function
 ```bash
 ./pkg.test -test.v -test.run xxx
 ```
+
+## benchmark
+[benchmark 基准测试](https://geektutu.com/post/hpg-benchmark.html)
+
+```bash
+go test -v -bench . -run=none  // 仅仅运行benchmark, -bench= 也支持正则表达式
+```
+
+```plain
+BenchmarkFib-8               202           5980669 ns/op
+```
+- BenchmarkFib-8 中的-8 即GOMAXPROCS,默认等于 CPU 核数.可以通过 -cpu 参数改变 GOMAXPROCS,-cpu 支持传入一个列表作为参数
+- 202 和 5980669 ns/op 表示用例执行了 202 次,每次花费约 0.006s.总耗时比 1s 略多
+
+对于性能测试来说,提升测试准确度的一个重要手段就是增加测试的次数.我们可以使用 -benchtime 和 -count 两个参数达到这个目的.
+
+- benchmark 的默认时间是 1s, 那么我们可以使用 -benchtime 指定为 5s.
+- count 参数可以用来设置 benchmark 的轮数. 例如, 进行3 轮benchmark.
+  ```plain
+  $ go test -bench='Fib$' -benchtime=5s -count=3 .
+  goos: darwin
+  goarch: amd64
+  pkg: example
+  BenchmarkFib-8               975           5946624 ns/op
+  BenchmarkFib-8              1023           5820582 ns/op
+  BenchmarkFib-8               961           6096816 ns/op
+  PASS
+  ok      example 19.463s
+  ```
+
+-benchmem 参数可以度量内存分配的次数, -bench 之外额外添加的.
 
 # go list
 `...` wildcard, matches any substring of a pkg's import path.
