@@ -37,7 +37,21 @@ nore: 表示非递归 not recursion
 
 [junegunn/vim-plug](https://github.com/junegunn/vim-plug)
 
-对 vim 的版本有要求, 且需要vim 支持python.[Vim 8 支持 Python 3 的一些坑](https://www.mdeditor.tw/pl/2KE0)
+对 vim 的版本有要求, 且需要vim 支持python 3.[Vim 8 支持 Python 3 的一些坑](https://toutiao.io/posts/runvgs/preview)
+
+1. 安装node, 下载linux binary version, 建个软链, 放到PATH 就行了.
+1. python3 的版本不用安装最新的, 我的机器上 Python 3.5.3 就行了.
+1. 安装vim, 下载最新版源代码
+
+	```bash
+	sudo apt install libpython3-dev libncurses5-dev
+	./configure --enable-python3interp=yes
+	```
+
+注:
+
+- 安装libncurses5-dev 的原因, [编译vim no terminal library found](
+  https://blog.csdn.net/cuijianzhi/article/details/78652745)
 
 ## [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim)
 需要fzf 版本至少0.24, 通过apt-get 安装的版本比较低, 所以需要通过vim-plug 安装最新版
