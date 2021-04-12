@@ -74,7 +74,12 @@ func (s *$1Suite) TearDownSuite() {
 
 func (s *$1Suite) SetupTest() {
 	ctx := context.Background()
+	ctx = kitutil.NewCtxWithLogID(ctx, logid.GenLogID())
 	s.ctx = ctx
+}
+
+func (s *$1Suite) TearDownTest() {
+	defer logs.Flush()
 }
 
 func (s *$1Suite) TestEx() {
