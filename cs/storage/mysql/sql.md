@@ -7,10 +7,10 @@
 	- [limit](#limit)
 	- [group by, where, having](#group-by-where-having)
 	- [join](#join)
-		- [INNER JOIN (SIMPLE JOIN)](#inner-join-simple-join)
-		- [LEFT OUTER JOIN](#left-outer-join)
-		- [RIGHT OUTER JOIN](#right-outer-join)
-		- [FULL OUTER JOIN](#full-outer-join)
+		- [inner join (simple join)](#inner-join-simple-join)
+		- [left outer join](#left-outer-join)
+		- [right outer join](#right-outer-join)
+		- [full outer join](#full-outer-join)
 
 # create
 ```sql
@@ -145,44 +145,42 @@ order by avg(s_score) desc
 
 There are 4 different types of SQL joins:
 
-- SQL INNER JOIN (or sometimes called simple join)
-- SQL LEFT OUTER JOIN (or sometimes called LEFT JOIN)
-- SQL RIGHT OUTER JOIN (or sometimes called RIGHT JOIN)
-- SQL FULL OUTER JOIN (or sometimes called FULL JOIN)
+- sql inner join (or sometimes called simple join)
+- sql left outer join (or sometimes called left join)
+- sql right outer join (or sometimes called right join)
+- sql full outer join (or sometimes called full join)
 
-### INNER JOIN (SIMPLE JOIN)
+### inner join (simple join)
 It is the most common type of SQL join.
-SQL INNER JOINS return all rows from multiple tables where the join condition is met.
+sql inner joins return all rows from multiple tables where the join condition is met.
 
-The syntax for the SQL INNER JOIN is:
 ```sql
-SELECT columns
-FROM table1
-INNER JOIN table2
-ON table1.column = table2.column;
+select columns
+from table1
+inner join table2
+on table1.column = table2.column;
 ```
-In this visual diagram, the SQL INNER JOIN returns the shaded area:
 
 <img src="./pics/sql/inner_join.gif" alt="inner join" width="20%"/>
 
-The SQL INNER JOIN would return the records where table1 and table2 intersect.
+The sql inner join would return the records where table1 and table2 intersect.
 
-### LEFT OUTER JOIN
-This type of join returns all rows from the LEFT-hand table specified in the ON condition and only those rows from the
+### left outer join
+This type of join returns all rows from the left-hand table specified in the ON condition and only those rows from the
 other table where the joined fields are equal (join condition is met).
 
-In some databases, the LEFT OUTER JOIN keywords are replaced with LEFT JOIN.
+In some databases, the left outer join keywords are replaced with left join.
 
 <img src="./pics/sql/left_outer_join.gif" alt="left outer join" width="20%"/>
 
-### RIGHT OUTER JOIN
-This type of join returns all rows from the RIGHT-hand table specified in the ON condition and only those rows from the
+### right outer join
+This type of join returns all rows from the right-hand table specified in the ON condition and only those rows from the
 other table where the joined fields are equal (join condition is met).
 
 <img src="./pics/sql/right_outer_join.gif" alt="right outer join" width="20%"/>
 
-### FULL OUTER JOIN
-This type of join returns all rows from the LEFT-hand table and RIGHT-hand table
+### full outer join
+This type of join returns all rows from the left-hand table and RIGHT-hand table
 **with nulls in place where the join condition is not met**.
 
 <img src="./pics/sql/full_outer_join.gif" alt="full outer join" width="20%"/>
