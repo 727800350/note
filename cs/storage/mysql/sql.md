@@ -17,34 +17,34 @@
 show create table tb;  // 查看建表语句
 ```
 
-必须使用utf8mb4 字符集, MySQL 中的UTF-8 并非真正的UTF-8, 而utf8mb4 才是真正的UTF-8.
+必须使用utf8mb4 字符集, mysql 中的utf-8 并非真正的utf-8, 而utf8mb4 才是真正的utf-8.
 
-必须把字段定义为 NOT NULL 并且提供默认值
+必须把字段定义为 not null 并且提供默认值
 
-1. NULL 的列使索引/索引统计/值比较都更加复杂, 对MySQL 来说更难优化.
-1. NULL 这种类型MySQL 内部需要进行特殊处理, 增加数据库处理记录的复杂性, 同等条件下, 表中有较多空字段的时候, 数据库的处理
+1. null 的列使索引/索引统计/值比较都更加复杂, 对mysql 来说更难优化.
+1. null 这种类型mysql 内部需要进行特殊处理, 增加数据库处理记录的复杂性, 同等条件下, 表中有较多空字段的时候, 数据库的处理
   性能会降低很多.
-1. NULL 值需要更多的存储空间, 无论是表还是索引中每行中的NULL 的列都需要额外的空间来标识.
+1. null 值需要更多的存储空间, 无论是表还是索引中每行中的null 的列都需要额外的空间来标识.
 
 ## 复制数据到新表
 - 复制表结构(包括index, key 等)
-	1. `CREATE TABLE 新表 LIKE 旧表`
+	1. `create table 新表 like 旧表`
 - 复制数据
-	1. `CREATE TABLE 新表 SELECT * FROM 旧表`
-	1. `INSERT INTO 新表 SELECT * FROM 旧表`
+	1. `create table 新表 select * from 旧表`
+	1. `insert into 新表 select * from 旧表`
 
 # insert
-- `INSERT INTO table_name VALUES(value1, value2, value3, ...);`
-- `INSERT INTO table_name(column1, column2, column3, ...) VALUES(value1, value2, value3, ...);`
+- `insert into table_name values(value1, value2, value3, ...);`
+- `insert into table_name(column1, column2, column3, ...) values(value1, value2, value3, ...);`
 
-MySql避免重复插入记录(根据主键判重)
+mysql避免重复插入记录(根据主键判重)
 
 1. `insert ignore into xxx`
 1. `replace into xxx`
 
 # update
 ```sql
-UPDATE table_name SET column1 = value1, column2 = value2, ...  WHERE some_column = some_value;
+update table_name set column1 = value1, column2 = value2, ...  where some_column = some_value;
 ```
 
 如果update 的一条记录在数据库不存在(就是说后面的where语句没有找到record), 不会对数据库产生影响, 同时语句的执行也不会报错.
@@ -56,15 +56,15 @@ UPDATE table_name SET column1 = value1, column2 = value2, ...  WHERE some_column
 
 # alter
 ```sql
-ALTER TABLE table_name ADD column_name datatype
-alter table flows add column ip_prot tinyint(4) null default 0;
+alter table table_name add column_name datatype
+alter table flows add column ip_prot tinyint(4) not null default 0;
 
-ALTER TABLE table_name DROP COLUMN column_name
+alter table table_name drop column column_name
 
-ALTER TABLE table_name MODIFY COLUMN column_name datatype
+alter table table_name modify column column_name datatype
 
-ALTER TABLE table_name CHANGE old_col_name new_col_name column_definition
-ALTER TABLE table_name RENAME TO new_table_name;
+alter table table_name change old_col_name new_col_name column_definition
+alter table table_name rename to new_table_name;
 ```
 
 # select
@@ -83,13 +83,13 @@ offset 指示从哪里开始查询,如果是0则是从头开始, counter 表示�
 为了检索从某一个偏移量到记录集的结束所有的记录行,可以指定counter 为 -1:
 
 ## group by, where, having
-可以在包含 GROUP BY 子句的查询中使用 WHERE 子句.在完成任何分组之前,将消除不符合 WHERE 子句中的条件的行.例如:
+可以在包含 group by 子句的查询中使用 where 子句.在完成任何分组之前,将消除不符合 where 子句中的条件的行.例如:
 ```sql
-SELECT ProductModelID, AVG(ListPrice) AS 'Average List Price'
-FROM Production.Product
-WHERE ListPrice > $1000
-GROUP BY ProductModelID
-ORDER BY ProductModelID;
+select model_id, avg(price) as 'average_price'
+from product
+where price > 1000
+group by model_id
+order by model_id;
 ```
 
 having子句与where有相似之处但也有区别,都是设定条件的语句.
