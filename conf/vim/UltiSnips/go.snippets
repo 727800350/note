@@ -58,6 +58,10 @@ func (h *$1Handler) returnAhead(err error) *$2.$1Response {
 	h.rsp.BaseResp.StatusMessage = h.msg
 	return h.rsp
 }
+
+func (h *$1Handler) emitError(reason string) {
+	bmetrics.EmitCounter("$1.error.count", 1, metrics.Tag("reason", reason))
+}
 endsnippet
 
 snippet ut "unit test template"
@@ -126,6 +130,10 @@ func (h *$1Handler) returnAhead(err error) *events.EventResponse {
 	h.rsp.Headers["code"] = strconv.FormatInt(int64(h.code), 10)
 	h.rsp.Body = []byte(err.Error())
 	return h.rsp
+}
+
+func (h *$1Handler) emitError(reason string) {
+	bmetrics.EmitCounter("$1.error.count", 1, metrics.Tag("reason", reason))
 }
 endsnippet
 
