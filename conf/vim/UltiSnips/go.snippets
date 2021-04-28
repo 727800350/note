@@ -146,14 +146,20 @@ func (h *$1Handler) emitError(reason string) {
 endsnippet
 
 snippet cmd "cmd"
+func init() {
+	flag.Parse()
+}
+
 func main() {
 	defer logs.Flush()
+	defer glog.Flush()
 	if err := run(); err != nil {
-		logs.Error("run error %+v", err)
+		glog.Errorf("run error %+v", err)
 	}
 }
 
 func run() error {
+	glog.Infoln("done")
 	return nil
 }
 endsnippet
