@@ -26,10 +26,10 @@ else
   export os="linux"
   export ip=`ifconfig eth0 | grep inet | grep -v inet6 | awk '{print $2}'`
 fi
-if [ "x$os" == "xlinux" ]
+if [[ "x$os" == "xlinux" ]]
 then
   export env=`systemd-detect-virt`
-elif [ "x$os" == "xmac" ]
+elif [[ "x$os" == "xmac" ]]
 then
   export PATH=$PATH:"/usr/local/texlive/2020/bin/x86_64-darwin"
 fi
@@ -48,7 +48,7 @@ then
 fi
 
 alias ll="ls -l"
-if [ "x$os" == "xmac" ]
+if [[ "x$os" == "xmac" ]]
 then
   alias ls="ls -G"
 else
