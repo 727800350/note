@@ -33,3 +33,6 @@ conf/vim/.netrwhist
 .class
 
 .vscode
+
+## blade
+conf/vim/*/blade*
