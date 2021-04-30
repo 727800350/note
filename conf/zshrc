@@ -43,7 +43,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # DISABLE_MAGIC_FUNCTIONS="true"
 
 # Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
@@ -91,7 +91,6 @@ source $ZSH/plugins/incr/incr*.zsh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 export LANG=en_US.UTF-8
-export PS1="%n@%m %{$fg[cyan]%}%1~%{$reset_color%} "
 set -o vi
 
 export PATH=$PATH:/sbin
