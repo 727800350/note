@@ -1,15 +1,3 @@
-- [intro](#intro)
-- [user value type](#user-value-type)
-	- [string](#string)
-		- [bit arrays(or simply bitmaps)](#bit-arraysor-simply-bitmaps)
-	- [list](#list)
-	- [set](#set)
-	- [sorted set](#sorted-set)
-	- [hash](#hash)
-- [API](#api)
-	- [pipeline](#pipeline)
-	- [Transactions](#transactions)
-
 # intro
 Redis: REmote DIctionary Server
 
