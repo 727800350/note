@@ -50,6 +50,8 @@ you can set and clear individual bits, count all the bits set to 1, find the fir
 Redis Lists are simply lists of strings, sorted by insertion order. It is possible to add elements to a Redis List
 pushing new elements on the head (on the left) or on the tail (on the right) of the list.
 
+<img src="./pics/list.png" alt="list" width="60%"/>
+
 Redis lists are implemented via Linked Lists.
 数据量很小时用ziplist
 
@@ -121,10 +123,6 @@ They are ordered according to the following rule:
 
 Sorted sets are implemented via a dual-ported data structure containing both a skip list and a hash table.
 
-## hash
-Redis Hashes are maps between string fields and string values, so they are the perfect data type to represent objects
-(e.g. A User with a number of fields like name, surname, age, and so forth):
-
 With sorted sets you can add, remove, or update elements in a very fast way (in a time proportional to the logarithm of
 the number of elements). Since elements are taken in order and not ordered afterwards, you can also get ranges by score
 or by rank (position) in a very fast way. Accessing the middle of a sorted set is also very fast, so you can use Sorted
@@ -143,6 +141,10 @@ With Sorted Sets you can:
   representing users, you can use a sorted set with elements having the age of the user as the score and the ID of the
   user as the value. So using ZRANGEBYSCORE it will be trivial and fast to retrieve all the users with a given interval
   of ages.
+
+## hash
+Redis Hashes are maps between string fields and string values, so they are the perfect data type to represent objects
+(e.g. A User with a number of fields like name, age, and so forth):
 
 # API
 ## pipeline
