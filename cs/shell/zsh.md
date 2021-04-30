@@ -1,3 +1,6 @@
+# theme
+[romkatv/powerlevel10k](https://github.com/romkatv/powerlevel10k)
+
 # plugins
 ## 设置自动补全
 1. github clone项目到$ZSH_CUSTOM/plugins中
