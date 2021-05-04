@@ -14,7 +14,7 @@ fi
 export TERM=xterm-256color
 export LANG=en_US.UTF-8
 set -o vi
-export PS1='%(!.%{$fg[red]%}.%{$fg[green]%})%1~%{$fg_bold[blue]%}$(git_prompt_info)%{$reset_color%} %# '
+export PS1='%(!.%{$fg[red]%}.%{$fg[green]%})%1~%{$fg_bold[blue]%}$(git_prompt_info)%{$reset_color%} '
 export RPROMPT='%n@%m %*'
 
 export PATH=$PATH:/sbin
