@@ -6,7 +6,7 @@ if [ -f ~/git/note/conf/zsh/antigen.zsh ]; then
   antigen bundle zsh-users/zsh-autosuggestions
   antigen bundle zsh-users/zsh-syntax-highlighting
 
-  antigen theme gianu
+  antigen theme simple
 
   antigen apply
 fi
@@ -14,6 +14,8 @@ fi
 export TERM=xterm-256color
 export LANG=en_US.UTF-8
 set -o vi
+export PS1='%(!.%{$fg[red]%}.%{$fg[green]%})%1~%{$fg_bold[blue]%}$(git_prompt_info)%{$reset_color%} %# '
+export RPROMPT='%n@%m %*'
 
 export PATH=$PATH:/sbin
 export PATH=$PATH:/usr/local/sbin
