@@ -63,6 +63,9 @@ export no_proxy="localhost,127.0.0.1,$ip"
 [[ -f /usr/local/etc/profile.d/autojump.sh ]] && source /usr/local/etc/profile.d/autojump.sh # mac homebrew
 [[ -s /usr/share/autojump/autojump.sh ]] && source /usr/share/autojump/autojump.sh # linux
 
+# git
+export PAGER=""
+
 # blade
 export BLADE_AUTO_UPGRADE="no"
 alias bb="blade build"
