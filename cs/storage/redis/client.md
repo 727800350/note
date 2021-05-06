@@ -30,7 +30,7 @@ In RESP, the type of some data depends on the first byte:
 - For Bulk Strings the first byte of the reply is "$"
 - For Arrays the first byte of the reply is "*"
 
-<img src="./pics/redis_serialization_protocol.png" alt="redis_serialization_protocol" width="100%"/>
+<img src="./pics/client/redis_serialization_protocol.png" alt="redis_serialization_protocol" width="100%"/>
 
 用SET命令来举例说明RESP协议的格式.
 ```redis
