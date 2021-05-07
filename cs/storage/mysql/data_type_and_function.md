@@ -41,6 +41,9 @@ datetime 直接之间作差得到结果不是时间意义上的作差, 实际是
 - `char_length()`
 - `locate(substr, str)`: 如果包含, 返回 > 0 的数, 否则返回0
 
+非必要情况下,不要使用TEXT类型,MySQL memory引擎的内部临时表不支持TEXT类型,如果查询中包含这样的数据,那么内部临时表会无法使
+用memory引擎,将会创建一张基于innodb引擎的内部临时表,使SQL的性能变得很差.
+
 ## null
 [为什么数据库字段要使用not null](https://mp.weixin.qq.com/s/3w2qEAHJOgdZekphrTTDYA)
 
