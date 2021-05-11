@@ -36,6 +36,12 @@ datetime 直接之间作差得到结果不是时间意义上的作差, 实际是
 
 时间位移: `ADDTIME('2014-05-26 18:26:21', '0:0:2')` 求后2秒的时间.
 
+```sql
+TIMESTAMPADD(unit, interval, datetime_expr)
+SELECT TIMESTAMPADD(SECOND, 2, '2009-05-18 00:00:00')  // example
+```
+The unit: FRAC_SECOND(microseconds), SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, QUARTER or YEAR.
+
 ## str
 - `length()`
 - `char_length()`
