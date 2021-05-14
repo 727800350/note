@@ -83,7 +83,7 @@ func (s *$1Suite) TearDownSuite() {
 
 func (s *$1Suite) SetupTest() {
 	ctx := context.Background()
-	ctx = kitutil.NewCtxWithLogID(ctx, logid.GenLogID())
+	ctx = kitutil.NewCtxWithLogID(ctx, logid.GetNginxID())
 	s.ctx = ctx
 }
 
