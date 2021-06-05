@@ -1,10 +1,3 @@
-**Mutex locks are not re-entrant** - it's not possible to lock a mutex that's already locked.
-
-When we cannot confidently say that one event happends before the other, then the events x and y are concurrent.
-
-A data race occurs whenever two goroutines access the same variable concurrently and at least one of the accesses is a
-write.
-
 并发是指程序的逻辑结构, 并行是指程序的运行状态.
 
 Concurrency is not parallelism, althouth it enables parallelism.
@@ -18,7 +11,58 @@ Usually
 - I/O Bound == Concurrency
 - CPU Bound == Parallelism
 
-# The Race Detector
+# mutex
+**Mutex locks are not re-entrant** - it's not possible to lock a mutex that's already locked.
+
+自旋锁
+```go
+type SpinLock int32
+
+func (p *SpinLock) Lock() {
+  for !atomic.CompareAndSwapInt32((*int32)(p), 0, 1) {
+  }
+}
+
+func ( *SpinLock) UnLock() {
+  atomic.StoreInt32((*int32)(p), 0)
+}
+```
+上面的Lock 函数实现在 go version >= 1.14 时是ok 的, 低版本就会踩坑.
+因为 go 在 1.14 之前没有实现抢占式调度, 会发生死锁.
+
+所以在 go 1.14 之前的版本可以这样实现
+```go
+func (p *SpinLock) Lock() {
+  for !atomic.CompareAndSwapInt32((*int32)(p), 0, 1) {
+    runtime.Gosched()  // 主动释放CPU
+  }
+}
+```
+但是这样也有一个弊端就是每次for 循环都额外引入了调度器的开销.
+
+sync.Mutex 效率优先, 兼顾公平.
+有两种模式, 效率模式和饥饿模式.
+
+效率: 正常模式.
+
+- 等待队列: 先进先出
+- 新手优势: 先抢再排. 因为新手在还未进入队列时, 是已经拥有cpu 资源的, 更有可能加锁成功, 免去了后续的调度开销. 还可以充分
+  利用缓存.
+- 等待超 1ms -> 饥饿模式
+
+公平: 饥饿模式
+
+- 严格排队, 队首接盘
+- 牺牲效率, 保p99
+- 适时回归正常模式
+
+# data race
+When we cannot confidently say that one event happends before the other, then the events x and y are concurrent.
+
+A data race occurs whenever two goroutines access the same variable concurrently and at least one of the accesses is a
+write.
+
+## data race detector
 Just add the -race flag to your go build, go run or go test command.
 This causes the compiler to build a modified version of your application or test with additional instrumentation that
 effectively records all accesses to shared variables that occurred during execution, along with the identity of the
