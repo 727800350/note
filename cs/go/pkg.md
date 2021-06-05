@@ -10,17 +10,6 @@ net/url
 ```
 net/http/internal/chunked could be imported from net/http or net/http/httputil, but not from net/url.
 
-# strings
-- `func Join(a []string, sep string) string`
-- `func Split(s, sep string) []string`
-- HasPrefix, HasSuffix
-- `func ToUpper(s string) string`, ToLower
-- `func LastIndex(s, substr string) int`
-
-# strconv
-- `func Atoi(s string) (int, error)`: Atoi is equivalent to ParseInt(s, 10, 0), converted to type int.
-- `func ParseInt(s string, base int, bitSize int) (i int64, err error)`: bitSize 0 for int, 32 for int32, 64 for int64. In any case, the type of result is always int64.
-
 # bytes
 - `Buffer`: A Buffer is a variable-sized buffer of bytes with Read and Write methods.
   The bytes.Buffer type is extremely versatile, and it may be used as a replacement for a file whenever an IO function requires a sink for bytes(io.Writer) as Fprintf does above or a source of bytes(io.Reader).
