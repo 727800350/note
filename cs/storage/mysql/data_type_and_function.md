@@ -1,16 +1,3 @@
-- [data type](#data-type)
-  - [numbers](#numbers)
-  - [date time](#date-time)
-  - [str](#str)
-  - [null](#null)
-    - [值计算](#值计算)
-    - [索引问题](#索引问题)
-    - [存储空间](#存储空间)
-- [operator](#operator)
-  - [bit operators](#bit-operators)
-- [function](#function)
-  - [cast functions](#cast-functions)
-
 # data type
 ## numbers
 The DECIMAL and NUMERIC types store exact numeric data values. These types are used when it is important to preserve

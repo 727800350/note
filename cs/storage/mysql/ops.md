@@ -1,7 +1,3 @@
-- [login](#login)
-- [conf](#conf)
-- [backup](#backup)
-
 # login
 ```bash
 mysql -u user -p$passwd -h host -P port -D db --default-character-set=utf8

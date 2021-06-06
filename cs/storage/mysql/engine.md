@@ -1,15 +1,10 @@
-- [MyISAM](#myisam)
-- [Innodb](#innodb)
-- [RocksDB](#rocksdb)
-  - [RocksDB与innodb的比较](#rocksdb与innodb的比较)
-
-# MyISAM
+# myisam
 每张MyISAM 表被存放在三个文件: frm 文件存放表格定义. 数据文件是MYD (MYData), 索引文件是MYI(MYIndex) 引伸.
 因为MyISAM相对简单所以在效率上要优于InnoDB,小型应用使用MyISAM是不错的选择.
 
 MyISAM表是保存成文件的形式,在跨平台的数据转移中使用MyISAM存储会省去不少的麻烦
 
-# Innodb
+# innodb
 InnoDB 支持事务, 行级锁, 并发性能更好, CPU 及内存缓存页优化使得资源利用率更高.
 
 InnoDB 是聚集索引, MyISAM 是非聚集索引.
@@ -37,8 +32,8 @@ innodb存储引擎可将所有数据存放于`ibdata*`的共享表空间, 也可
 - 独立表空间: 每一个表都将会以独立的文件方式来进行存储, 每一个表都有一个.frm表描述文件, 还有一个.ibd文件, 其中这个文件包
   括了单独一个表的数据内容以及索引内容, 默认情况下它的存储位置也是在表的位置之中.
 
-# RocksDB
-## RocksDB与innodb的比较
+# rocksdb
+## rocksdb与innodb的比较
 1. innodb空间浪费, B+ tree 分裂导致page 内有较多空闲,尤其是刚分裂完成时, page利用率不高. 对于顺序插入的场景, 块的填充率
   较高.但对于随机场景,每个块的空间利用率就急剧下降了. 反映到整体上就是一个表占用的存储空间远大于实际数据所需空间.
 1. innodb现有的压缩效率也不高,压缩以block为单位,也会造成浪费.
