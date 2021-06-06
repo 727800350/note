@@ -10,6 +10,8 @@ net/url
 ```
 net/http/internal/chunked could be imported from net/http or net/http/httputil, but not from net/url.
 
+同一个包的init执行顺序,golang没有明确定义,编程时要注意程序不要依赖这个执行顺序.
+
 # bytes
 - `Buffer`: A Buffer is a variable-sized buffer of bytes with Read and Write methods.
   The bytes.Buffer type is extremely versatile, and it may be used as a replacement for a file whenever an IO function requires a sink for bytes(io.Writer) as Fprintf does above or a source of bytes(io.Reader).

@@ -12,10 +12,13 @@ Formatted printing in Go uses a style similar to C's printf family but is richer
 - fmt.Printf, fmt.Fprintf, fmt.Sprintf
 - fmt.Println, fmt.Printf, fmt.Print
 
-- `%v`: When printing a struct, the modified format `%+v` annotates the fields of the structure with their names, and for any value the alternate format `%#v` prints the value in full Go syntax.
-- `%q`: That quoted string format is also available through %q when applied to a value of type string or []byte. The alternate format %#q will use backquotes instead if possible.
+- `%v`: When printing a struct, the modified format `%+v` annotates the fields of the structure with their names, and
+  for any value the alternate format `%#v` prints the value in full Go syntax.
+- `%q`: That quoted string format is also available through %q when applied to a value of type string or []byte. The
+  alternate format %#q will use backquotes instead if possible.
   (The %q format also applies to integers and runes, producing a single-quoted rune constant.)
-- `%x`: works on strings, byte arrays and byte slices as well as on integers, generating a long hexadecimal string, and with a space in the format (`% x`) it puts spaces between the bytes.
+- `%x`: works on strings, byte arrays and byte slices as well as on integers, generating a long hexadecimal string, and
+  with a space in the format (`% x`) it puts spaces between the bytes.
 - `%T`: prints the type(actually dynamic type) of a value.
 
 when you pass a value to the fmt.Print function, it checks to see if it implements the fmt.Stringer interface
@@ -24,7 +27,8 @@ type Stringer interface {
   String() string
 }
 ```
-Any type that implements a String() string method is a stringer, and the fmt package will use that method to format values of that type.
+Any type that implements a String() string method is a stringer, and the fmt package will use that method to format
+values of that type.
 
 io 包指定了 io.Reader 接口, 它表示从数据流读取, 有一个 Read 方法:
 `func (T) Read(b []byte) (n int, err error)`
@@ -35,10 +39,12 @@ Read 用数据填充指定的字节 slice,并且返回填充的字节数和错�
 [read from a string](../demo/go/reader_string.go)
 
 # variable
-- A declaration names a program entity and specifies some or all of its properties. There are four major kinds of declarations: var, const, type and func.
+- A declaration names a program entity and specifies some or all of its properties. There are four major kinds of
+  declarations: var, const, type and func.
 - Package-level(even if none main pkg) variables are initialized before main begins.
 - `s := ""` may be used only within a function, not for package level-variables.
-- tuple assignment: all of the right-hand side expressions are evaluated before any of the variables are updated, making this form most useful when some of the variables appear on both sides of assignment, as happends, for example,
+- tuple assignment: all of the right-hand side expressions are evaluated before any of the variables are updated, making
+  this form most useful when some of the variables appear on both sides of assignment, as happends, for example,
   when swapping the values of two variables.
   ```go
   i, j = j, i  // swap values of i and j
@@ -57,15 +63,52 @@ A type declaration defines a new named type that has the same underlying-type as
 ```go
 type name underlying-type
 ```
-The underlying type determines its structure and reprensentation, and also the set of intrinsic operations it supports, which are the same as if the underlying type had been used directly.
+The underlying type determines its structure and reprensentation, and also the set of intrinsic operations it supports,
+which are the same as if the underlying type had been used directly.
 
-That meas that arithmetic operations work the same for Celsius and Fahrenheit as they do for float64.
+That means that arithmetic operations work the same for Celsius and Fahrenheit as they do for float64.
 
 ```go
 type Celsius float64
 type Fahrenheit float64
 ```
-Even though both have the same underlying type float64, they are not the same type, so they cannot be compared or combined in arithmetic expressions.
+Even though both have the same underlying type float64, they are not the same type, so they cannot be compared or
+combined in arithmetic expressions.
+
+## 变量的初始化
+[golang变量的初始化](https://mp.weixin.qq.com/s/PGDzMaYznZVuDiO6V-zYDw)
+
+示例1
+```go
+package main
+import "fmt"
+var (
+  a int = b + 1
+  b int = 1
+)
+func main() {
+  fmt.Println(a, b)  // 2, 1
+}
+```
+
+示例2
+```go
+package main
+import "fmt"
+
+func main() {
+  var (
+      a int = b + 1
+      b int = 1
+  )
+  fmt.Println(a, b)  // compile error
+}
+```
+示例2中的变量a,b是函数作用域内的局部变量,初始化顺序:从左到右,从上到下,
+
+但是对于示例1中package 级别的变量,初始化顺序与初始化依赖有关.
+在每一个初始化周期,runtime 会挑选一个没有任何依赖的变量初始化,该过程一直持续到所有的变量均被初始化或者出现依赖嵌套的情形.
+同一个package 下多个文件的变量初始化依赖也遵循相同的规则.
 
 # 数据类型
 Go's type fall into four categoires: basic types, aggregate types, refrence type and interface types.
@@ -122,7 +165,7 @@ Similarly, a string s and a substring like s[7:] may share the same data, so the
 
 Raw string literals, delimited by back quotes, are interpreted literally. Within the quotes, any character may appear except back quote. They can contain line breaks, and backslashes have no special meaning.
 
-#### UTF8
+#### utf8
 UTF-8 is a variable-length encoding of Unicode points as bytes. UTF-8 was invented by Ken Thompson and Rob Pike, two of the creators of Go.
 It uses between 1 and 4 bytes to represent each rune, but only 1 byte for ASCII characters, and only 2 or 3 bytes for most runes in common use.
 
