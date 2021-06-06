@@ -1,17 +1,3 @@
-- [create](#create)
-	- [复制数据到新表](#复制数据到新表)
-- [insert](#insert)
-- [update](#update)
-- [alter](#alter)
-- [select](#select)
-	- [limit](#limit)
-	- [group by, where, having](#group-by-where-having)
-	- [join](#join)
-		- [inner join (simple join)](#inner-join-simple-join)
-		- [left outer join](#left-outer-join)
-		- [right outer join](#right-outer-join)
-		- [full outer join](#full-outer-join)
-
 # create
 ```sql
 show create table tb;  // 查看建表语句
