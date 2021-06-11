@@ -1,15 +1,16 @@
-[scheduler](http://morsmachine.dk/go-scheduler)
+- [scheduler](http://morsmachine.dk/go-scheduler)
+- [调度器](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-goroutine/)
 
-Why does the Go runtime need with a scheduler?
 
+# Why does the Go runtime need with a scheduler?
 The POSIX thread API is very much a logical extension to the existing Unix process model and as such, threads get a lot
 of the same controls as processes.
 Threads have their own signal mask, can be assigned CPU affinity, can be put into cgroups and can be queried for which
 resources they use.
-All these controls add overhead for features that are simply not needed for how Go programs use goroutines and they
+**All these controls add overhead** for features that are simply not needed for how Go programs use goroutines and they
 quickly add up when you have 100,000 threads in your program.
 
-Another problem is that the OS can't make informed scheduling decisions, based on the Go model.
+Another problem is that the **OS can't make informed scheduling decisions, based on the Go model**.
 For example, the Go garbage collector requires that all threads are stopped when running a collection and that memory
 must be in a consistent state.
 This involves waiting for running threads to reach a point where we know that the memory is consistent. When you have
@@ -23,8 +24,10 @@ Unlike the operating system's thread scheduler, the Go scheduler is not invoked 
 implicitly by cretain Go language constructs.
 For example, when a goroutine calls time.Sleep or blocks in a channel or mutex operation, the scheduler puts it to sleep
 and runs another goroutine until it is time to wake the first one up.
-Because it does not need a switch to kernel context, rescheduling a goroutine is much cheaper that rescheduling a thread.
+Because it does not need a switch to kernel context, **rescheduling a goroutine is much cheaper** that rescheduling a
+thread.
 
+# GMP model
 GPM M:N scheduler
 
 - G: The circle represents a goroutine. It includes the stack, the instruction pointer and other information important
@@ -35,10 +38,68 @@ GPM M:N scheduler
   for processor.
 - M: The triangle represents an OS thread
 
-<img src="./pics/GPM.jpg" alt="GPM model" width="40%"/>
+<img src="./pics/scheduler/gpm.png" alt="GPM model" width="70%"/>
 
-Here we see 2 threads (M), each holding a context (P), each running a goroutine (G).
-In order to run goroutines, a thread must hold a context.
+## G
+Goroutine 在Go 语言运行时使用私有结构体 runtime.g 表示.这个私有结构体非常复杂,总共包含40 多个用于表示各种状态的成员变量,
+这里也不会介绍所有的字段,仅会挑选其中的一部分
+```go
+// src/runtime/runtime2.go
+type g struct {
+ 	stack stack  // 当前 Goroutine 的栈内存范围 [stack.lo, stack.hi)
+
+  // 抢占式调度相关
+	stackguard0   uintptr
+ 	preempt       bool  // 抢占信号
+	preemptStop   bool  // 抢占时将状态修改成`_Gpreempted`
+	preemptShrink bool  // 在同步安全点收缩栈
+
+  // 对应结构的链表
+ 	_panic *_panic  // 最内侧的panic 结构体
+	_defer *_defer  // 最内侧的延迟函数结构体
+
+ 	m              *m      // 当前goroutine 占用的os thread, 可能为空
+	sched          gobuf   // goroutine 调度相关的数据
+	atomicstatus   uint32  // goroutine 的状态
+	goid           int64   // goroutine 的ID, 
+}
+```
+goid 对开发者不可见, Go 团队认为引入 ID 会让部分 Goroutine 变得更特殊,从而限制语言的并发能力.
+
+我们需要展开介绍 sched 字段的 runtime.gobuf 结构
+```go
+type gobuf struct {
+	sp   uintptr      // 栈指针
+	pc   uintptr      // 程序计数器
+	g    guintptr     // 持有 runtime.gobuf 的 goroutine
+	ret  sys.Uintreg  // 系统调用的返回值
+	...
+}
+```
+这些内容会在调度器保存或者恢复上下文的时候用到,其中的栈指针和程序计数器会用来存储或者恢复寄存器中的值,改变程序即将执行的
+代码.
+
+结构体 runtime.g 的 atomicstatus 字段存储了当前 Goroutine 的状态.除了几个已经不被使用的以及与 GC 相关的状态之外,
+Goroutine 可能处于以下 9 种状态.
+
+| 状态          | 描述                                                                                      |
+| ---           | ---                                                                                       |
+| `_Gidle`      | 刚刚被分配并且还没有被初始化                                                              |
+| `_Grunnable`  | 没有执行代码,没有栈的所有权,存储在运行队列中                                              |
+| `_Grunning`   | 可以执行代码,拥有栈的所有权,被赋予了内核线程 M 和处理器 P                                 |
+| `_Gsyscall`   | 正在执行系统调用,拥有栈的所有权,没有执行用户代码,被赋予了内核线程 M 但是不在运行队列上    |
+| `_Gwaiting`   | 由于运行时而被阻塞,没有执行用户代码并且不在运行队列上,但是可能存在于 Channel 的等待队列上 |
+| `_Gdead`      | 没有被使用,没有执行代码,可能有分配的栈                                                    |
+| `_Gcopystack` | 栈正在被拷贝,没有执行代码,不在运行队列上                                                  |
+| `_Gpreempted` | 由于抢占而被阻塞,没有执行用户代码并且不在运行队列上,等待唤醒                              |
+| `_Gscan`      | GC 正在扫描栈空间,没有执行代码,可以与其他状态同时存在                                     |
+
+
+上述状态中比较常见是`_Grunnable`,`_Grunning`,`_Gsyscall`,`_Gwaiting` 和 `_Gpreempted` 五个状态
+
+## M
+Go 语言并发模型中的 M 是操作系统线程.调度器最多可以创建10000 个线程,但是其中大多数的线程都不会执行用户代码(可能陷入系统
+调用),最多只会有 GOMAXPROCS 个活跃线程能够正常运行.
 
 **Who you gonna (sys)call?**
 
