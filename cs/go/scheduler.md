@@ -47,16 +47,72 @@ thread.
     - 垃圾回收在扫描栈时会触发抢占调度
     - 抢占的时间点不够多,还不能覆盖全部的边缘情况
 
+1.1 的GM 模型中, 每个M 持有内存缓存, 当M 被阻塞住的时候, 内存缓存是非常浪费的.
+
+[协作与抢占调度](https://golang.design/under-the-hood/zh-cn/part2runtime/ch06sched/preemption/)
+
+协作式和抢占式这两个理念解释起来很简单: 协作式调度依靠被调度方主动弃权,抢占式调度则依靠调度器强制将被调度方被动中断.
+
+- 同步协作式调度
+  - 主动用户让权: 通过 runtime.Gosched 调用主动让出执行机会
+  - 主动调度弃权: 执行栈分段时检查自己的抢占标记, 决定是否继续执行
+- 异步抢占式调度
+  - 被动监控抢占: 当G阻塞在M上时(系统调用, channel 等), sysmon 会将P 从M 上抢夺并分配给其他的M 来执行其他的G
+  - 被动GC抢占: 当需要进行垃圾回收时, 强制停止所有G
+  - 基于信号的抢占
+
+## 基于信号的抢占
+```go
+// 此程序在 Go 1.14 之前的版本不会输出 OK
+package main
+import (
+	"runtime"
+	"time"
+)
+func main() {
+	runtime.GOMAXPROCS(1)
+	go func() {
+		for {
+		}
+	}()
+	time.Sleep(time.Millisecond)
+	println("OK")
+}
+```
+这段代码中处于死循环的 Goroutine 永远无法被抢占,其中创建的 Goroutine 会执行一个不产生任何调用,不主动放弃执行权的死循环.
+由于主 Goroutine 优先调用了 休眠,此时唯一的 P 会转去执行 for 循环所创建的 Goroutine.进而主 Goroutine 永远不会再被调度,进
+而程序彻底阻塞在了这死循环 Goroutine 上,永远无法退出.
+
+### 抢占信号的选取
+preemptM 完成了信号的发送,其实现也非常直接,直接向需要进行抢占的 M 发送 SIGURG 信号 即可.
+但是真正的重要的问题是,为什么是 SIGURG 信号而不是其他的信号?如何才能保证该信号 不与用户态产生的信号产生冲突?这里面有几个
+原因:
+
+1. 默认情况下,SIGURG 已经用于调试器传递信号.
+1. SIGRUURG 可以不加选择地虚假发生的信号.例如,我们不能选择 SIGALRM,因为信号处理程序无法分辨它是否是由实际过程引起的(可以
+  说这意味着信号已损坏). 而常见的用户自定义信号 SIGUSR1 和 SIGUSR2 也不够好,因为用户态代码可能会将其进行使用
+1. 需要处理没有实时信号的平台(例如 macOS)
+
+考虑以上的观点,SIGURG 其实是一个很好的,满足所有这些条件,且极不可能因被用户态代码 进行使用的一种信号.
+
+### 抢占调用的注入
+我们在信号处理一节中已经知道,每个运行的 M 都会设置一个系统信号的处理的回调,当出现系统 信号时,操作系统将负责将运行代码进
+行中断,并安全的保护其执行现场,进而 Go 运行时能将针对信号的类型进行处理,当信号处理函数执行结束后,程序会再次进入内核空间,
+进而恢复到 被中断的位置.
+
+但是这里面又一个很巧妙的用法,在 6.5 信号处理机制 一节中我们已经介绍了 Go 运行时进行信号处理的基本做法,其核心是注册
+sighandler 函数,并在信号到达后, 由操作系统中断转入内核空间,而后将所中断线程的执行上下文参数(例如寄存器 rip, rep 等) 传递
+给处理函数.如果在 sighandler 中修改了这个上下文参数,操作系统则会根据修改后的 上下文信息恢复执行,这也就为抢占提供了机会.
+
 # GMP model
 GPM M:N scheduler
 
-- G: The circle represents a goroutine. It includes the stack, the instruction pointer and other information important
-  for scheduling goroutines, like any channel it might be blocked on.
-- P: The rectangle represents a context for scheduling. You can look at it as a localized version of the scheduler which
-  runs Go code on a single thread.
-  It's the important part that lets us go from a N:1 scheduler to a M:N scheduler. In the runtime code, it's called P
-  for processor.
-- M: The triangle represents an OS thread
+- G(Goroutine): The circle represents a goroutine. It includes the stack, the instruction pointer and other information
+  important for scheduling goroutines, like any channel it might be blocked on.
+- P(Processor): The rectangle represents a context for scheduling. You can look at it as a localized version of the
+  scheduler which runs Go code on a single thread. It's the important part that lets us go from a N:1 scheduler to a
+  M:N scheduler. In the runtime code, it's called P for processor.
+- M(Machine): The triangle represents an OS thread
 
 <img src="./pics/scheduler/gpm.png" alt="GPM model" width="70%"/>
 
@@ -136,7 +192,7 @@ Go 语言会使用私有结构体runtime.m 表示操作系统线程
 ```go
 type m struct {
   // 操作系统线程唯一关心的两个 Goroutine
-	g0   *g  // 持有调度栈的 Goroutine
+	g0   *g  // 提供栈来跑schedule 函数
 	curg *g  // curg 是在当前线程上运行的用户 Goroutine
 	...
 }
@@ -148,8 +204,9 @@ g0 是一个运行时中比较特殊的 Goroutine,它会深度参与运行时的
 在后面的小节中,我们会经常看到 g0 的身影.
 
 ## P
-调度器中的处理器P 是线程和 Goroutine 的中间层,它能提供线程需要的上下文环境,也会负责调度线程上的等待队列,通过处理器P 的调
-度,每一个内核线程都能够执行多个 Goroutine,它能在 Goroutine 进行一些 I/O 操作时及时让出计算资源,提高线程的利用率.
+调度器中的处理器P 是线程和 Goroutine 的中间层,它能提供线程需要的上下文环境和资源(例如mcache),也会负责调度线程上的等待队
+列,通过处理器P 的调度,每一个内核线程都能够执行多个 Goroutine,它能在 Goroutine 进行一些 I/O 操作时及时让出计算资源,提高线
+程的利用率.
 
 因为调度器在启动时就会创建GOMAXPROCS 个处理器,所以Go 语言程序的处理器数量一定会等于GOMAXPROCS,这些处理器会绑定到不同的内
 核线程上.
@@ -169,6 +226,11 @@ type p struct {
 	runqtail uint32
 	runq     [256]guintptr
 	runnext  guintptr
+
+  gFree struct {
+    gList
+    n int32
+  }
 }
 ```
 runtime.p 结构体中的状态 status 字段会是以下五种中的一种:
@@ -184,17 +246,29 @@ runtime.p 结构体中的状态 status 字段会是以下五种中的一种:
 通过分析处理器 P 的状态,我们能够对处理器的工作过程有一些简单理解,例如处理器在执行用户代码时会处于`_Prunning` 状态,在当前
 线程执行 I/O 操作时会陷入 `_Psyscall` 状态.
 
+gFree: cache of dead goroutines
+
 # 创建 Goroutine
 runtime.gfget 通过两种不同的方式获取新的 runtime.g
 
 1. 从 Goroutine 所在处理器的 `_p_.gFree` 列表或者调度器的 `sched.gFree` 列表中获取 runtime.g,
 1. 调用 runtime.malg 生成一个新的 runtime.g 并将结构体**追加到全局的 Goroutine 列表 allgs 中**.
 
-先从处理器的gFree 列表中查找空闲的Goroutine,如果不存在空闲的Goroutine,会通过 runtime.malg 创建一个栈大小足够的新结构体.
+P 本地的运行队列是一个使用数组构成的环形链表,它最多可以存储 256 个待执行任务.
 
-处理器本地的运行队列是一个使用数组构成的环形链表,它最多可以存储 256 个待执行任务.
+```go
+type schedt struct {
+  lock mutex
+
+  // global runnable queue
+  runq     gQueue
+  runqsize int32
+}
+```
 
 <img src="./pics/scheduler/global_and_local_runnable_queue.png" alt="runq" width="70%"/>
+
+需要注意的是全局`allgs []*runtime.g`, 不会收缩, 也就意味着每次gc, sysmon, 死锁检查期间会进行全局扫描.
 
 # 调度循环
 <img src="./pics/scheduler/scheduler_loop.png" alt="scheduler_loop" width="70%"/>
