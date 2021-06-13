@@ -1,7 +1,5 @@
-# GC
 [深入Golang Runtime之Golang GC的过去,当前与未来](https://www.jianshu.com/p/bfc3c65c05d1)
 
-## GC与资源回收
 GC是一种内存管理机制. 在有GC的语言中也要注意释放文件, 连接, 数据库等资源!
 
 前面提到GC是一种自动内存管理机制, 回收不再使用的对象的内存. 除了内存外, 进程还占用了socket, 文件描述符等资源等, 一般来说
@@ -13,32 +11,51 @@ finalization存在很大的不足, 因为GC是不确定的, 无法明确GC什么
 
 Java 原来有类似的机制, Java 1.9中已经明确把finalizer标记为废弃.
 
-## 术语简单说明
-### mutator
+流派
+
+- reference counting: 华为的方舟
+- tracing: java, go
+
+tracing gc 风格
+
+- copying gc: java
+- mark-sweep gc: go
+
+# 术语简单说明
+## mutator
 mutate的是变化的意思, mutator就是改变者, 在GC里, 指的是改变对象之间引用关系的实体, 可以简单的理解为我们写的的应用程序(运
 行我们写的代码的线程, 协程).
 
-### allocator, collector
+## allocator, collector
 自动内存管理机制一般包含allocator(分配器)和collector(回收器). allocator负责为应用代码分配对象, 而collector则负责寻找存活
 的对象, 并释放不再存活的对象.
 
-### STW
+## STW
 stop the world, GC的一些阶段需要停止所有的mutator(应用代码)以确定当前的引用关系. 这便是很多人对GC担心的来源, 这也是GC算
 法优化的重点. 对于大多数API/RPC服务, 10-20ms左右的STW完全接受的. Golang GC的STW时间从最初的秒级到百ms, 10ms级别, ms级别,
 到现在的ms以下, 已经达到了准实时的程度.
 
-### Root对象
+## Root对象
 根对象是mutator不需要通过其他对象就可以直接访问到的对象. 比如全局对象, 栈对象, 寄存器中的数据等. 通过Root对象, 可以追踪
 到其他存活的对象.
 
-### 可达性
+## 可达性
 即通过对Root对象能够直接或者间接访问到.
 
 <img src="./pics/gc/reachable.png" alt="reachable and non-reachable" width="50%"/>
 
-### 对象的存活
+## 对象的存活
 如果某一个对象在程序的后续执行中可能会被mutator访问, 则称该对象是存活的, 不存活的对象就是我们所说的garbage. 一般通过可达
 性来表示存活性.
+
+# copying gc
+这个算法的思路很简单,总的来说,就是把空间分成两部分,一个叫分配空间(Allocation Space),一个是幸存者空间(Survivor Space).
+创建新的对象的时候都是在分配空间里创建.在GC的时候,把分配空间里的活动对象复制到Survivor Space,把原来的分配空间全部清空.
+然后把这两个空间交换,就是说Allocation Space变成下一轮的Survivor Space,现在的Survivor Space变成Allocation Space.
+
+在有些文献中,或者实现中,allocation space也会被称为from space,survivor space也被称为to space.
+JVM代码中,这两套命名方式都会出现,所以搞清楚这点比较有好处.我们的文章中,为了方便后面解析JVM代码,还是使用from space和
+to space来指代分配空间和幸存者空间.
 
 # Mark Sweep
 三大GC基础算法中的一种. 分为mark(标记)和sweep(清扫)两个阶段. 朴素的Mark Sweep流程如下:
