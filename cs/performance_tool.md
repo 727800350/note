@@ -1,6 +1,8 @@
+- [Linux Performance](http://www.brendangregg.com/linuxperf.html)
 - [Linux Performance Analysis in 60,000 Milliseconds](
   https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55)
 - [Linux Performance Tools, Brendan Gregg, part 1 of 2](https://www.youtube.com/watch?v=FJW8nGV4jxY)
+- [Linux Performance Tools, Brendan Gregg, part 2 of 2](https://www.youtube.com/watch?v=zrr2nUln9Kk)
 
 # methods
 ## [The USE Method](http://www.brendangregg.com/usemethod.html)
@@ -51,14 +53,14 @@ If the metrics work well, use them, otherwise software can be left to other meth
 1. **What** is the load? IOPS, throughput, type, r/w
 1. **How** is the load chaning over time?
 
-# tools
+# observation tools
+<img src="./pics/performance_tool/linux_observability_tools.png" alt="observation" width="70%"/>
+
 - basic: uptime, vmstat, iostat, mpstat, ps, top, free, dmesg, ...
 - intermediate: tcpdump, netstat, nicstat, pidstat, sar, ...
 - advanced: ss, slaptop, perf_events
 
 ## basic
-<img src="./pics/performance_tool/basic.png" alt="basic" width="70%"/>
-
 ### uptime
 one way to print load averages
 
@@ -210,7 +212,7 @@ Don’t miss this step! dmesg is always worth checking.
 - archive or live mode(interval [count])
 - well designed, header naming convention, logical groups: TCP, ETCP, DEV, EDEV
 
-<img src="./pics/performance_tool/sar.png" alt="sar" width="50%"/>
+<img src="./pics/performance_tool/sar.png" alt="sar" width="70%"/>
 
 ```plain
 $ sar -n DEV 1
@@ -381,4 +383,131 @@ show swap device usage if you have swap enabled
 
 ### lsof
 more a debug tool, lsof(8) shows file descriptor usage, which for some apps, equals current active network connections.
+
+## advanced
+- misc: ltrace, ss, iptraf, ethtool, snmpget, lldptool, iotop, blktrace, slaptop, /proc, pcstat
+- cpu performance counters: perf_events, tiptop, rdmsr
+- advanced tracers: perf_events, ftrace, bBPF, SystemTap, ktap, LTTng, dtrace4linux, sysdig
+
+### ss
+more socket statistics
+
+### iptraf
+packet distribution by size
+
+### iotop
+block device IO (disk) by process
+
+### slabtop
+kernel slab allocator memory usage
+
+### pcstat
+- show page cache residency by file
+- uses the mincore(2) syscall. useful for database performance analysis
+
+### perf_events
+- provides the perf command
+- in linux source code: tools/perf, usually pkg added by linux-tools-common
+- multi-tool with many capabilities
+  - CPU profiling
+  - PMC profiling
+  - Static & dynamic tracing
+
+# benchmarking tools
+<img src="./pics/performance_tool/linux_benchmarking_tools.png" alt="benchmarking" width="70%"/>
+
+- multi: UnixBench, Imbench, sysbench, perf bench
+- FS/disk: dd, hdparm, fio
+- app/lib: ab, wrk, jmeter, openssl
+- networking: ping, hping3, iperf, ttcp, traceroute, mtr, pchar
+
+### fio
+FS or disk IO micro-benchmarks
+```zsh
+fio --name=seqwrite --rw=write --bs=128k --size=122374m
+```
+results include basic latency distribution
+
+### pchar
+traceroute with bandwidth per hop
+
+# tuning tools
+generic interfaces: sysctl, /sys
+
+many areas have custom tuning tools
+
+- applications: their own config
+- CPU/scheduler: nice, renice, taskset, ulimit, chcpu
+- storage IO: tune2fs, ionice, hdparm, blockdev,
+- network: ethtool, tc, ip, route
+- dynamic patching: stap, kpatch
+
+# static tools
+static performance tuning: check the static state and configuration of the system
+
+- cpu types & flags: `more /proc/cpuinfo`
+- cpu frequency scaling config, kernel may be configured to dynamically modify cpu frequency
+- storage devices: `lsscsi`, smartctl
+- file system capacity: df -h
+- file system and volume configuration: mdadm --misc -D /dev/md0
+- route table
+- state of hardware
+- system messages: dmeg
+- network interface config: ifconfig -a; ip link
+- NUMA config: numactl -s; numactl -H
+- PCI info: lspci
+- installed kernel modules: lsmod
+- root crontab config: crontab -l
+- services: service --status-all
+- etc.
+
+routing table
+```plain
+~ ip route get 54.214.28.210
+54.214.28.210 via 10.227.20.1 dev eth0 src 10.227.22.231 uid 1001
+    cache
+```
+
+# profiling
+objectives:
+
+- profile cpu usage by stack sampling
+- generate cpu flame graphs
+- understand gotchas with stacks & symbols
+
+## cpu profiling
+record stacks at a timed interval: simple and effective
+
+- pros: low(deterministic) overheat
+- cons: coarse accuracy, but usually sufficient
+
+perf_events workflow
+
+<img src="./pics/performance_tool/perf_events_workflow.png" alt="perf_events_workflow" width="50%"/>
+
+[perf Examples](http://www.brendangregg.com/perf.html#Examples)
+
+# tracing
+objectives
+
+- understand frameworks: tracepoints, kprobes, uprobes
+- understand mainline tracers: ftrace, perf_events, eBPF
+- awareness of other traces: SystemTap, LTTng, ktap, sysdig
+- awareness of what tracing can accomplish (eg. perf-tools)
+
+choosing a tracer
+
+study what linux already has built-in (perf_events, ftrace, bBPF?)
+
+## eBPF
+Extended BPF: programs on tracepoints
+
+- high performance filtering: JIT
+- in-kernel summaries: maps
+
+[eBPF 概念和基本原理](https://blog.fleeto.us/post/what-is-ebpf/)
+
+## SystemTap
+- fully programmable, fully featured, including access to user-level tracepoints
+- compiles tracing programs into kernel modules
 
