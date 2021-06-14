@@ -1,0 +1,384 @@
+- [Linux Performance Analysis in 60,000 Milliseconds](
+  https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55)
+- [Linux Performance Tools, Brendan Gregg, part 1 of 2](https://www.youtube.com/watch?v=FJW8nGV4jxY)
+
+# methods
+## [The USE Method](http://www.brendangregg.com/usemethod.html)
+The USE Method can be summarized as:
+
+For every resource, check utilization, saturation, and errors.
+It's intended to be used early in a performance investigation, to identify systemic bottlenecks.
+
+Terminology definitions:
+
+- resource: all physical server functional components (CPUs, disks, busses, ...)
+- utilization: the average time that the resource was busy servicing work
+- saturation: the degree to which the resource has extra work which it can't service, often queued
+- errors: the count of error events
+
+The metrics are usually expressed in the following terms:
+
+- utilization: as a percent over a time interval. eg, "one disk is running at 90% utilization".
+- saturation: as a queue length. eg, "the CPUs have an average run queue length of four".
+- errors: scalar counts. eg, "this network interface has had fifty late collisions".
+- Errors should be investigated because they can degrade performance, and may not be immediately noticed when the
+  failure mode is recoverable. This includes operations that fail and are retried, and devices from a pool of redundant
+  devices that fail.
+
+Software Resources
+
+Some software resources can be considered in a similar way. This usually applies to smaller components of software, not
+entire applications. For example:
+
+- mutex locks:
+  - utilization may be defined as the time the lock was held;
+  - saturation by those threads queued waiting on the lock.
+- thread pools:
+  - utilization may be defined as the time threads were busy processing work;
+  - saturation by the number of requests waiting to be serviced by the thread pool.
+- process/thread capacity: the system may have a limited number of processes or threads
+  - the current usage of which may be defined as utilization;
+  - waiting on allocation may be saturation;
+  - and errors are when the allocation failed (eg, "cannot fork").
+- file descriptor capacity: similar to the above, but for file descriptors.
+
+Don't sweat this type.
+If the metrics work well, use them, otherwise software can be left to other methodologies (eg, latency).
+
+## workload characterization method
+1. **Who** is causing the load? PID, UID, IP addre, ...
+1. **Why** is the load called? code path, stack trace
+1. **What** is the load? IOPS, throughput, type, r/w
+1. **How** is the load chaning over time?
+
+# tools
+- basic: uptime, vmstat, iostat, mpstat, ps, top, free, dmesg, ...
+- intermediate: tcpdump, netstat, nicstat, pidstat, sar, ...
+- advanced: ss, slaptop, perf_events
+
+## basic
+<img src="./pics/performance_tool/basic.png" alt="basic" width="70%"/>
+
+### uptime
+one way to print load averages
+
+```plain
+~ uptime
+12:05  up 5 days, 19:55, 1 users, load averages: 30.02, 26.43, 19.02
+```
+The three numbers are exponentially damped moving sum averages with a 1 minute, 5 minute, and 15 minute constant.
+The three numbers give us some idea of how load is changing over time.
+
+load > # of cpus, may mean cpu saturation.
+
+In the example above, the load averages show a recent increase, hitting 30 for the 1 minute value, compared to 19 for
+the 15 minute value.
+That the numbers are this large means a lot of something: probably CPU demand; vmstat or mpstat will confirm.
+
+### top
+system and per-process interval summary
+
+top can miss short-lived processes (atop won't)
+
+### vmstat
+virtual memory statistics and more
+
+```plain
+~ vmstat 1
+procs ---------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+34  0    0 200889792  73708 591828    0    0     0     5    6   10 96  1  3  0  0
+32  0    0 200889920  73708 591860    0    0     0   592 13284 4282 98  1  1  0  0
+32  0    0 200890112  73708 591860    0    0     0     0 9501 2154 99  1  0  0  0
+32  0    0 200889568  73712 591856    0    0     0    48 11900 2459 99  0  0  0  0
+32  0    0 200890208  73712 591860    0    0     0     0 15898 4840 98  1  1
+```
+vmstat was run with an argument of 1, to print one second summaries.
+
+The first line of output has some columns that show the average since boot, instead of the previous second.
+
+- r: Number of processes running on CPU and waiting for a turn. This provides a better signal than load averages for
+  determining CPU saturation, as it does not include I/O. To interpret: an “r” value greater than the CPU count is
+  saturation.
+- free: Free memory in kilobytes. If there are too many digits to count, you have enough free memory.
+  The "free -m” command better explains the state of free memory.
+- si, so: Swap-ins and swap-outs. If these are non-zero, you’re out of memory.
+- us, sy, id, wa, st: These are breakdowns of CPU time, on average across all CPUs.
+  They are user time, system time (kernel), idle, wait I/O, and stolen time (by other guests, or with Xen, the guest’s
+  own isolated driver domain).
+
+The CPU time breakdowns will confirm if the CPUs are busy, by adding user + system time.
+A constant degree of wait I/O points to a disk bottleneck; this is where the CPUs are idle, because tasks are blocked
+waiting for pending disk I/O. You can treat wait I/O as another form of CPU idle, one that gives a clue as to why they
+are idle.
+
+System time is necessary for I/O processing. A high system time average, over 20%, can be interesting to explore
+further: perhaps the kernel is processing the I/O inefficiently.
+
+In the above example, CPU time is almost entirely in user-level, pointing to application level usage instead. The CPUs
+are also well over 90% utilized on average. This isn’t necessarily a problem; check for the degree of saturation using
+the “r” column.
+
+### mpstat
+multi-processor statistics, per cpu
+
+This command prints CPU time breakdowns per CPU, which can be used to check for an imbalance.
+A single hot CPU can be evidence of a single-threaded application.
+
+```plain
+$ mpstat -P ALL 1
+Linux 3.13.0-49-generic (titanclusters-xxxxx)  07/14/2015  _x86_64_ (32 CPU)
+
+07:38:49 PM  CPU   %usr  %nice   %sys %iowait   %irq  %soft  %steal  %guest  %gnice  %idle
+07:38:50 PM  all  98.47   0.00   0.75    0.00   0.00   0.00    0.00    0.00    0.00   0.78
+07:38:50 PM    0  96.04   0.00   2.97    0.00   0.00   0.00    0.00    0.00    0.00   0.99
+07:38:50 PM    1  97.00   0.00   1.00    0.00   0.00   0.00    0.00    0.00    0.00   2.00
+07:38:50 PM    2  98.00   0.00   1.00    0.00   0.00   0.00    0.00    0.00    0.00   1.00
+07:38:50 PM    3  96.97   0.00   0.00    0.00   0.00   0.00    0.00    0.00    0.00   3.03
+```
+
+### iostat
+This is a great tool for understanding block devices (disks), both the workload applied and the resulting performance.
+
+```plain
+~ iostat -xz 1
+Linux 4.14.81.bm.15-amd64 (n227-022-231) 	06/14/2021 	_x86_64_	(8 CPU)
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           1.28    0.00    0.66    0.05    0.02   97.99
+
+Device:      rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
+scd0           0.00     0.00    0.00    0.00     0.00     0.00     7.17     0.00    0.97    0.97    0.00   0.00   0.00
+sdb            0.21     2.69   11.87    1.51   193.06   127.60    47.94     0.01    0.99    0.82    2.37   0.07   0.10
+sda            0.00     5.38    1.75    3.04    63.56    92.20    65.03     0.00    0.96    0.94    0.98   0.07   0.03
+```
+- r/s, w/s, rKB/s, wKB/s: These are the delivered reads, writes, read Kbytes, and write Kbytes per second to the device.
+  Use these for workload characterization. A performance problem may simply be due to an excessive load applied.
+- await: The average time for the I/O in milliseconds. This is the time that the application suffers, as it includes
+  both time queued and time being serviced. Larger than expected average times can be an indicator of device saturation,
+  or device problems.
+- avgqu-sz: The average number of requests issued to the device. Values greater than 1 can be evidence of saturation
+  (although devices can typically operate on requests in parallel, especially virtual devices which front multiple
+  back-end disks.)
+- %util: Device utilization. This is really a busy percent, showing the time each second that the device was doing work.
+  Values greater than 60% typically lead to poor performance (which should be seen in await), although it depends on the
+  device. Values close to 100% usually indicate saturation.
+
+If the storage device is a logical disk device fronting many back-end disks, then 100% utilization may just mean that
+some I/O is being processed 100% of the time, however, the back-end disks may be far from saturated, and may be able to
+handle much more work.
+
+Bear in mind that poor performing disk I/O isn’t necessarily an application issue. Many techniques are typically used to
+perform I/O asynchronously, so that the application doesn’t block and suffer the latency directly (e.g., read-ahead for
+reads, and buffering for writes).
+
+### free
+main memory usage
+
+```plain
+$ free -m
+             total       used       free     shared    buffers     cached
+Mem:        245998      24545     221453         83         59        541
+-/+ buffers/cache:      23944     222053
+Swap:            0          0          0
+```
+The right two columns show:
+
+- buffers: For the buffer cache, used for block device I/O.
+- cached: For the page cache, used by file systems.
+
+We just want to check that these aren’t near-zero in size, which can lead to higher disk I/O (confirm using iostat), and
+worse performance. The above example looks fine, with many Mbytes in each.
+
+### dmesg
+```plain
+$ dmesg | tail
+[1880957.563150] perl invoked oom-killer: gfp_mask=0x280da, order=0, oom_score_adj=0
+[...]
+[1880957.563400] Out of memory: Kill process 18694 (perl) score 246 or sacrifice child
+[1880957.563408] Killed process 18694 (perl) total-vm:1972392kB, anon-rss:1953348kB, file-rss:0kB
+[2320864.954447] TCP: Possible SYN flooding on port 7001. Dropping request.  Check SNMP counters.
+```
+This views the last 10 system messages, if there are any. Look for errors that can cause performance issues.
+The example above includes the oom-killer, and TCP dropping a request.
+
+Don’t miss this step! dmesg is always worth checking.
+
+## intermediate
+### sar
+- system activity reporter. many stats
+- archive or live mode(interval [count])
+- well designed, header naming convention, logical groups: TCP, ETCP, DEV, EDEV
+
+<img src="./pics/performance_tool/sar.png" alt="sar" width="50%"/>
+
+```plain
+$ sar -n DEV 1
+Linux 3.13.0-49-generic (titanclusters-xxxxx)  07/14/2015     _x86_64_    (32 CPU)
+
+12:16:48 AM     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil
+12:16:49 AM      eth0  18763.00   5032.00  20686.42    478.30      0.00      0.00      0.00      0.00
+12:16:49 AM        lo     14.00     14.00      1.36      1.36      0.00      0.00      0.00      0.00
+12:16:49 AM   docker0      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+12:16:49 AM     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil
+12:16:50 AM      eth0  19763.00   5101.00  21999.10    482.56      0.00      0.00      0.00      0.00
+12:16:50 AM        lo     20.00     20.00      3.25      3.25      0.00      0.00      0.00      0.00
+12:16:50 AM   docker0      0.00      0.00      0.00      0.00      0.00
+```
+Use this tool to check network interface throughput: rxkB/s and txkB/s, as a measure of workload, and also to check if
+any limit has been reached.
+
+In the above example, eth0 receive is reaching 22 Mbytes/s, which is 176 Mbits/sec (well under, say, a 1 Gbit/sec limit).
+
+```plain
+$ sar -n TCP,ETCP 1
+Linux 3.13.0-49-generic (titanclusters-xxxxx)  07/14/2015    _x86_64_    (32 CPU)
+
+12:17:19 AM  active/s passive/s    iseg/s    oseg/s
+12:17:20 AM      1.00      0.00  10233.00  18846.00
+
+12:17:19 AM  atmptf/s  estres/s retrans/s isegerr/s   orsts/s
+12:17:20 AM      0.00      0.00      0.00      0.00      0.00
+
+12:17:20 AM  active/s passive/s    iseg/s    oseg/s
+12:17:21 AM      1.00      0.00   8359.00   6039.00
+
+12:17:20 AM  atmptf/s  estres/s retrans/s isegerr/s   orsts/s
+12:17:21 AM      0.00      0.00      0.00      0.00      0.00
+```
+This is a summarized view of some key TCP metrics. These include:
+
+- active/s: Number of locally-initiated TCP connections per second (e.g., via connect()).
+- passive/s: Number of remotely-initiated TCP connections per second (e.g., via accept()).
+- retrans/s: Number of TCP retransmits per second.
+
+The active and passive counts are often useful as a rough measure of server load: number of new accepted connections(
+passive), and number of downstream connections (active). It might help to think of active as outbound, and passive as
+inbound, but this isn’t strictly true (e.g., consider a localhost to localhost connection).
+
+Retransmits are a sign of a network or server issue; it may be an unreliable network (e.g., the public Internet), or it
+may be due a server being overloaded and dropping packets.
+
+The example above shows just one new TCP connection per-second.
+
+### pidstat
+very useful process stats, eg by-thread, disk IO
+
+```plain
+$ pidstat 1
+Linux 3.13.0-49-generic (titanclusters-xxxxx)  07/14/2015    _x86_64_    (32 CPU)
+
+07:41:02 PM   UID       PID    %usr %system  %guest    %CPU   CPU  Command
+07:41:03 PM     0         9    0.00    0.94    0.00    0.94     1  rcuos/0
+07:41:03 PM     0      4214    5.66    5.66    0.00   11.32    15  mesos-slave
+07:41:03 PM     0      4354    0.94    0.94    0.00    1.89     8  java
+07:41:03 PM     0      6521 1596.23    1.89    0.00 1598.11    27  java
+07:41:03 PM     0      6564 1571.70    7.55    0.00 1579.25    28  java
+07:41:03 PM 60004     60154    0.94    4.72    0.00    5.66     9  pidstat
+
+07:41:03 PM   UID       PID    %usr %system  %guest    %CPU   CPU  Command
+07:41:04 PM     0      4214    6.00    2.00    0.00    8.00    15  mesos-slave
+07:41:04 PM     0      6521 1590.00    1.00    0.00 1591.00    27  java
+07:41:04 PM     0      6564 1573.00   10.00    0.00 1583.00    28  java
+07:41:04 PM   108      6718    1.00    0.00    0.00    1.00     0  snmp-pass
+07:41:04 PM 60004     60154    1.00    4.00    0.00    5.00     9  pidstat
+```
+Pidstat is a little like top’s per-process summary, but prints a rolling summary instead of clearing the screen.
+This can be useful for watching patterns over time, and also recording what you saw into a record of your investigation.
+
+The above example identifies two java processes as responsible for consuming CPU. The %CPU column is the total across
+all CPUs; 1591% shows that that java processes is consuming almost 16 CPUs.
+
+- -t: Also display statistics for threads associated with selected tasks
+- -d: Report I/O statistics
+
+### strace
+system call tracer
+
+currently has massive overheat(ptrace based), can slow the target by > 100x.
+
+```plain
+~ strace -tttT -p 2511269
+strace: Process 2511269 attached
+1623661802.570747 futex(0x25380a8, FUTEX_WAIT, 0, NULL
+```
+-ttt: time(us) since epoch
+-T: syscall time(s)
+
+```zsh
+strace -tp `pgrep xxx` 2>&1 | head -n 100
+```
+
+### netstat
+various network protocol statistics using -s
+```plain
+~ netstat -s
+Tcp:
+    5214835 active connection openings
+    29257 passive connection openings
+    4557321 failed connection attempts
+    853 connection resets received
+    13 connections established
+    33561064 segments received
+    37947351 segments sent out
+    11004279 segments retransmitted
+    109 bad segments received
+    150127 resets sent
+Udp:
+    558483 packets received
+    11081766 packets to unknown port received
+    0 packet receive errors
+    12256177 packets sent
+    0 receive buffer errors
+    0 send buffer errors
+TcpExt:
+    15 resets received for embryonic SYN_RECV sockets
+    62 ICMP packets dropped because they were out-of-window
+    314562 TCP sockets finished time wait in fast timer
+    189 packetes rejected in established connections because of timestamp
+    809814 delayed acks sent
+    ...
+```
+
+A multi-tool:
+
+- -i: interface stats
+- -r: route table
+- default: list conns
+
+```plain
+~ netstat -i
+Kernel Interface table
+Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg
+docker0   1500   454585      0      0 0        642257      0      0      0 BMRU
+eth0      1500 44101742      0      0 0      42981575      0      0      0 BMRU
+lo       65536 30478091      0      0 0      30478091      0      0      0 LRU
+veth6f8a  1500    79193      0      0 0        229891      0      0      0 BMRU
+
+~ netstat -r
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+default         n227-020-001.by 0.0.0.0         UG        0 0          0 eth0
+10.227.20.0     0.0.0.0         255.255.252.0   U         0 0          0 eth0
+172.17.0.0      0.0.0.0         255.255.0.0     U         0 0          0 docker0
+```
+
+netstat -p: shows process details
+
+per-second interval with -c
+
+### nicstat
+network interface stats, iostat-like output
+
+check network throughput and interface %util
+
+### tcpdump
+sniff network packets for post analysis
+
+### swapon
+show swap device usage if you have swap enabled
+
+### lsof
+more a debug tool, lsof(8) shows file descriptor usage, which for some apps, equals current active network connections.
+
