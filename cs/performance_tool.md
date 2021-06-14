@@ -100,13 +100,13 @@ vmstat was run with an argument of 1, to print one second summaries.
 The first line of output has some columns that show the average since boot, instead of the previous second.
 
 - r: Number of processes running on CPU and waiting for a turn. This provides a better signal than load averages for
-  determining CPU saturation, as it does not include I/O. To interpret: an “r” value greater than the CPU count is
+  determining CPU saturation, as it does not include I/O. To interpret: an "r" value greater than the CPU count is
   saturation.
 - free: Free memory in kilobytes. If there are too many digits to count, you have enough free memory.
-  The "free -m” command better explains the state of free memory.
-- si, so: Swap-ins and swap-outs. If these are non-zero, you’re out of memory.
+  The "free -m" command better explains the state of free memory.
+- si, so: Swap-ins and swap-outs. If these are non-zero, you're out of memory.
 - us, sy, id, wa, st: These are breakdowns of CPU time, on average across all CPUs.
-  They are user time, system time (kernel), idle, wait I/O, and stolen time (by other guests, or with Xen, the guest’s
+  They are user time, system time (kernel), idle, wait I/O, and stolen time (by other guests, or with Xen, the guest's
   own isolated driver domain).
 
 The CPU time breakdowns will confirm if the CPUs are busy, by adding user + system time.
@@ -118,8 +118,8 @@ System time is necessary for I/O processing. A high system time average, over 20
 further: perhaps the kernel is processing the I/O inefficiently.
 
 In the above example, CPU time is almost entirely in user-level, pointing to application level usage instead. The CPUs
-are also well over 90% utilized on average. This isn’t necessarily a problem; check for the degree of saturation using
-the “r” column.
+are also well over 90% utilized on average. This isn't necessarily a problem; check for the degree of saturation using
+the "r" column.
 
 ### mpstat
 multi-processor statistics, per cpu
@@ -170,8 +170,8 @@ If the storage device is a logical disk device fronting many back-end disks, the
 some I/O is being processed 100% of the time, however, the back-end disks may be far from saturated, and may be able to
 handle much more work.
 
-Bear in mind that poor performing disk I/O isn’t necessarily an application issue. Many techniques are typically used to
-perform I/O asynchronously, so that the application doesn’t block and suffer the latency directly (e.g., read-ahead for
+Bear in mind that poor performing disk I/O isn't necessarily an application issue. Many techniques are typically used to
+perform I/O asynchronously, so that the application doesn't block and suffer the latency directly (e.g., read-ahead for
 reads, and buffering for writes).
 
 ### free
@@ -189,7 +189,7 @@ The right two columns show:
 - buffers: For the buffer cache, used for block device I/O.
 - cached: For the page cache, used by file systems.
 
-We just want to check that these aren’t near-zero in size, which can lead to higher disk I/O (confirm using iostat), and
+We just want to check that these aren't near-zero in size, which can lead to higher disk I/O (confirm using iostat), and
 worse performance. The above example looks fine, with many Mbytes in each.
 
 ### dmesg
@@ -204,7 +204,7 @@ $ dmesg | tail
 This views the last 10 system messages, if there are any. Look for errors that can cause performance issues.
 The example above includes the oom-killer, and TCP dropping a request.
 
-Don’t miss this step! dmesg is always worth checking.
+Don't miss this step! dmesg is always worth checking.
 
 ## intermediate
 ### sar
@@ -257,7 +257,7 @@ This is a summarized view of some key TCP metrics. These include:
 
 The active and passive counts are often useful as a rough measure of server load: number of new accepted connections(
 passive), and number of downstream connections (active). It might help to think of active as outbound, and passive as
-inbound, but this isn’t strictly true (e.g., consider a localhost to localhost connection).
+inbound, but this isn't strictly true (e.g., consider a localhost to localhost connection).
 
 Retransmits are a sign of a network or server issue; it may be an unreliable network (e.g., the public Internet), or it
 may be due a server being overloaded and dropping packets.
@@ -286,7 +286,7 @@ Linux 3.13.0-49-generic (titanclusters-xxxxx)  07/14/2015    _x86_64_    (32 CPU
 07:41:04 PM   108      6718    1.00    0.00    0.00    1.00     0  snmp-pass
 07:41:04 PM 60004     60154    1.00    4.00    0.00    5.00     9  pidstat
 ```
-Pidstat is a little like top’s per-process summary, but prints a rolling summary instead of clearing the screen.
+Pidstat is a little like top's per-process summary, but prints a rolling summary instead of clearing the screen.
 This can be useful for watching patterns over time, and also recording what you saw into a record of your investigation.
 
 The above example identifies two java processes as responsible for consuming CPU. The %CPU column is the total across
@@ -417,7 +417,7 @@ kernel slab allocator memory usage
 - show page cache residency by file
 - uses the mincore(2) syscall. useful for database performance analysis
 
-### perf_events
+### perf_events brief
 - provides the perf command
 - in linux source code: tools/perf, usually pkg added by linux-tools-common
 - multi-tool with many capabilities
@@ -493,6 +493,7 @@ record stacks at a timed interval: simple and effective
 - pros: low(deterministic) overheat
 - cons: coarse accuracy, but usually sufficient
 
+### perf_events detail
 perf_events workflow
 
 <img src="./pics/performance_tool/perf_events_workflow.png" alt="perf_events_workflow" width="50%"/>
@@ -527,6 +528,38 @@ Extended BPF: programs on tracepoints
 - in-kernel summaries: maps
 
 [eBPF 概念和基本原理](https://blog.fleeto.us/post/what-is-ebpf/)
+
+有了eBPF,无需修改内核,也不用加载内核模块,程序员也能在内核中执行自定义的字节码.
+
+<img src="./pics/performance_tool/what-is-ebpf-2.png" alt="eBPF" width="50%"/>
+
+如果所有的检查都通过了,eBPF 程序被加载并编译到内核中,并监听特定的信号.该信号以事件的形式出现,会被传递给被加载的eBPF程序.
+一旦被触发,字节码就会根据其中的指令执行并收集信息.
+
+### 事件和钩子
+eBPF 程序是在内核中被事件触发的.在一些特定的指令被执行时时,这些事件会在钩子处被捕获.钩子被触发就会执行 eBPF 程序,对数据
+进行捕获和操作.钩子定位的多样性正是 eBPF 的闪光点之一.
+例如下面几种:
+
+- 系统调用:当用户空间程序通过系统调用执行内核功能时.
+- 功能的进入和退出:在函数退出之前拦截调用.
+- 网络事件:当接收到数据包时.
+- kprobe 和 uprobe:挂接到内核或用户函数中.
+
+### 辅助函数
+eBPF 程序被触发时,会调用辅助函数.这些特别的函数让 eBPF 能够有访问内存的丰富功能.
+例如 Helper 能够执行一系列的任务:
+
+- 在数据表中对键值对进行搜索,更新以及删除.
+- 生成伪随机数.
+- 搜集和标记隧道元数据.
+- 把 eBPF 程序连接起来,这个功能被称为 tail call.
+- 执行 Socket 相关任务,例如绑定,获取 Cookie,数据包重定向等.
+
+这些助手函数必须是内核定义的,换句话说,eBPF 程序的调用能力是受到一个白名单限制的.这个名单很长,并且还在持续增长之中.
+
+要在eBPF 程序和内核以及用户空间之间存储和共享数据,eBPF 需要使用 Map.正如其名,Map 是一种键值对.Map 能够支持多种数据结构,
+eBPF 程序能够通过辅助函数在 Map 中发送和接收数据.
 
 ## SystemTap
 - fully programmable, fully featured, including access to user-level tracepoints
