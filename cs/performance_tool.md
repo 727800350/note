@@ -296,20 +296,30 @@ all CPUs; 1591% shows that that java processes is consuming almost 16 CPUs.
 - -d: Report I/O statistics
 
 ### strace
-system call tracer
-
-currently has massive overheat(ptrace based), can slow the target by > 100x.
+- system call tracer
+- currently has massive overheat(ptrace based), can slow the target by > 100x.
+- Each line in the trace contains the system call name, followed by its arguments in parentheses and its return value.
 
 ```plain
 ~ strace -tttT -p 2511269
 strace: Process 2511269 attached
 1623661802.570747 futex(0x25380a8, FUTEX_WAIT, 0, NULL
 ```
--ttt: time(us) since epoch
--T: syscall time(s)
+- -ttt: time(us) since epoch
+- -T: syscall time(s)
+- `-e trace=`: Trace only the specified set of system calls, eg. `$ strace -e trace=open,read ls`
+- -p pid: Attach to the process with the process ID pid and begin tracing, strace -tp `pgrep xxx`
 
-```zsh
-strace -tp `pgrep xxx` 2>&1 | head -n 100
+```plain
+~ strace ls
+execve("/bin/ls", ["ls"], [/* 21 vars \*/]) = 0
+brk(0)                                  = 0x8c31000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+mmap2(NULL, 8192, PROT_READ, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb78c7000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=65354, ...}) = 0
+...
 ```
 
 ### netstat
@@ -383,6 +393,8 @@ show swap device usage if you have swap enabled
 
 ### lsof
 more a debug tool, lsof(8) shows file descriptor usage, which for some apps, equals current active network connections.
+
+`lsof -p pid` 可以看到这个进程打开的所有文件, 如果文件被其他进程删除, 会有一个删除的标记
 
 ## advanced
 - misc: ltrace, ss, iptraf, ethtool, snmpget, lldptool, iotop, blktrace, slaptop, /proc, pcstat
@@ -484,6 +496,15 @@ record stacks at a timed interval: simple and effective
 perf_events workflow
 
 <img src="./pics/performance_tool/perf_events_workflow.png" alt="perf_events_workflow" width="50%"/>
+
+- `perf record -g -t tid`: record thread tid's profile into perf.data
+  - `-g`: means doing call-graph (stack chain/backtrace) recording
+  - `-t`: thread id
+  - `-p`: process id
+  - `-o`: output file name, default perf.data
+- `perf report`: read perf.data(created by perf record) and display the profile
+  - `-i`: 指定文件
+- `perf diff [oldfile] [newfile]`
 
 [perf Examples](http://www.brendangregg.com/perf.html#Examples)
 

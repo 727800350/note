@@ -1,16 +1,4 @@
 - `readelf -s` 查看so a 文件的symbol
-- `lsof -p pid` 可以看到这个进程打开的所有文件, 如果文件被其他进程删除, 会有一个删除的标记
-
-# perf
-- `perf record -g -t tid`: record thread tid's profile into perf.data
-  - `-g`: means doing call-graph (stack chain/backtrace) recording
-  - `-t`: thread id
-  - `-p`: process id
-  - `-o`: output file name, default perf.data
-- `perf report`: read perf.data(created by perf record) and display the profile
-  - `-i`: 指定文件
-- `perf diff [oldfile] [newfile]`
-
 - `gstack pid`: print a stack trace of a running process.
   当进程卡住时, 可以用这个命令来看他的各个线程的堆栈信息, 然后推断是哪个线程造成卡住.
 
@@ -166,68 +154,6 @@ The problems Memcheck can detect and warn about include the following:
 - Memory leaks
 
 [memcheck demo](https://www.ibm.com/developerworks/community/blogs/6e6f6d1b-95c3-46df-8a26-b7efd8ee4b57/entry/detect_memory_leaks_with_memcheck_tool_provided_by_valgrind_part_i8?lang=zh_cn)
-
-# trace
-## strace
-Strace monitors the system calls and signals of a specific program. It is helpful when you do not have the source code and would like to debug the execution of a program. strace provides you the execution sequence of a binary from start to end.
-
-Each line in the trace contains the system call name, followed by its arguments in parentheses and its return value.
-
-- Trace the Execution of an Executable
-You can use strace command to trace the execution of any executable. The following example shows the output of strace for the Linux ls command.
-
-		$  strace ls
-		execve("/bin/ls", ["ls"], [/* 21 vars \*/]) = 0
-		brk(0)                                  = 0x8c31000
-		access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
-		mmap2(NULL, 8192, PROT_READ, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb78c7000
-		access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
-		open("/etc/ld.so.cache", O_RDONLY)      = 3
-		fstat64(3, {st_mode=S_IFREG|0644, st_size=65354, ...}) = 0
-		...
-		...
-
-- Be default, strace displays all system calls for the given executable. To display **only a specific system call**, use the strace -e option as shown below.  
-`$ strace -e open ls`  
-If you want to trace multiple system calls use the `-e trace=` option. The following example displays both open and read system calls.  
-`$ strace -e trace=open,read ls /home`
-
-- Save the Trace Execution to a File Using Option `-o`, `-o` best follow the `strace`  
-`$ strace -o output.txt ls`  
-也可以使用> 进行重定向, 但是必须使用`2>`, 而不是默认的`> == 1>`
-
-- Execute Strace on a Running Linux Process Using Option `-p`    
-`$  strace -p 1725 -o output.txt`
-
-- Print Timestamp for Each Trace Output Line Using Option `-t`  
-`$ strace -t -e open ls /home`  
-Print Relative Time for System Calls Using Option `-r`    
-但是需要注意的是在多任务背景下,CPU随时可能会被切换出去做别的事情,所以相对时间不一定准确,此时最好使用 `-T` 
-	 $ strace -r ls 
-     
-- **Generate Statistics Report** of System Calls Using Option `-c`
-Using option -c, strace provides useful statistical report for the execution trace. The "calls" column in the following output indicated how many times that particular system call was executed.
-	
-		$ strace -c ls /home
-		bala
-		% time     seconds  usecs/call     calls    errors syscall
-		------ ----------- ----------- --------- --------- ----------------
-		  -nan    0.000000           0         9           read
-		  -nan    0.000000           0         1           write
-		  -nan    0.000000           0        11           open
-		  -nan    0.000000           0        13           close
-		  -nan    0.000000           0         1           execve
-		  ...
-
-- `strace -f` to trace child process
-
-- `-ff`: If the `-o filename` option is in effect, each processes trace is written to `filename.pid` where pid is the numeric process id of each process. This is incompatible with -c, since no per-process counts are kept.
-
-如果一个系统调用在执行时被另外一个进程调用,strace将保持当前调用的顺序,标记为unfinished,当调用返回时再标记为resumed
-
-	[pid 28772] select(4, [3], NULL, NULL, NULL <unfinished ...>
-	[pid 28779] clock_gettime(CLOCK_REALTIME, {1130322148, 939977000}) = 0
-	[pid 28772] <... select resumed> )      = 1 (in [3])
 
 # [tcpdump](http://www.danielmiessler.com/study/tcpdump/)
 	sudo tcpdump -i eth1 port 53 -l > dnscap.txt
