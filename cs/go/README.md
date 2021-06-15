@@ -555,6 +555,8 @@ Deferred functions run after return statements have updated the function's resul
 
 The behavior of defer statements is straightforward and predictable. There are three simple rules:
 
+defer 调用被记录时，并不会对参数进行求值，而是会对参数完成一次拷贝
+
 1. A deferred function's arguments are evaluated when the defer statement is evaluated.
 ```go
 func TestInt(t *testing.T) {
@@ -605,6 +607,7 @@ func TestMap(t *testing.T) {
     TestMap: main_test.go:36: 1 map[1:true 2:true] 0
 --- PASS: TestMap (0.00s)
 ```
+
 **需要注意slice 和 map 的区别**
 1. Deferred function calls are executed in Last In First Out order after the surrounding function returns.
 
@@ -660,6 +663,19 @@ func trace(msg string) func() {
 }
 ```
 Each time bigSlowOperation is called, it logs its entry and exit and the elapsed time between them.
+
+### defer 实现
+[延迟语句](https://golang.design/under-the-hood/zh-cn/part1basic/ch03lang/defer/)
+
+对于延迟语句而言,其中间表示会产生三种不同的延迟形式
+
+1. 最一般情况下的在堆上分配的延迟语句: defer 语句出现在了循环语句里,或者无法执行更高阶的编译器优化导致的.
+  如果一个defer 出现在循环语句中, 则可执行的次数可能无法在编译期决定,如果一个调用中defer 由于数量过多等原因,不能被编译器
+  进行开放编码,则也会在堆上分配defer.
+  由于这种不确定性的存在,在堆上分配的 defer 需要最多的运行时支持, 因而产生的运行时开销也最大.
+1. 允许在栈上分配的: 在栈上分配 defer 的好处在于函数返回后, `_defer` 便已得到释放, 不再需要考虑内存分配时产生的性能开销,
+  只需要适当的维护`_defer` 的链表即可.
+1. 开放编码式(Open-coded) 的延迟语句: 非常简单的defer 语句
 
 ## panic and recover
 For diagnostic purposes, the runtime package lets the programmer dump the stack using the same machinery.
