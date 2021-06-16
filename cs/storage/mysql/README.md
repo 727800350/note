@@ -20,13 +20,27 @@ show create table tb;  // 查看建表语句
 	1. `insert into 新表 select * from 旧表`
 
 # insert
-- `insert into table_name values(value1, value2, value3, ...);`
-- `insert into table_name(column1, column2, column3, ...) values(value1, value2, value3, ...);`
+```sql
+insert into table_name values(value1, value2, value3, ...);
+
+insert into table_name(column1, column2)
+values
+(v11, v12),
+(v21, v22);
+```
 
 mysql避免重复插入记录(根据主键判重)
 
 1. `insert ignore into xxx`
 1. `replace into xxx`
+
+列设置为AUTO INCREMENT时,如果在表中达到最大值,会发生什么情况?
+```plain
+> INSERT INTO test (name) VALUES ('d')
+[2021-06-16 12:56:30] [23000][1062] Duplicate entry '9223372036854775807' for key 'test.PRIMARY'
+```
+也就是加到最大后, 再新增一行记录, mysql 还是会尝试使用最大值, 但是因为最大值已经被使用了, 所以出现错误.
+(网上搜到的答案还都加了一句"因为密钥已被使用". 但是没明白什么密钥)
 
 # update
 ```sql
