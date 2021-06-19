@@ -1,22 +1,32 @@
 # IO
-- stdin/stdout 属于标准库处理的输入流, 其声明为 FILE 型的, 对应的函数前面都有f开头, 如fopen/fread/fwrite/fclose 标准库调用等;
-- `int fileno(FILE *fp)` 得到fp 对应的file descriptor, fd 对应的为系统API接口库, 函数主要包括 open/read/write/close 等系统级调用.
+- stdin/stdout属于标准库处理的输入流,其声明为FILE 型的,对应的函数前面都有f开头,如fopen/fread/fwrite/fclose等
+- `int fileno(FILE *fp)` 得到fp 对应的file descriptor, fd 对应的为系统API接口库, 函数主要包括 open/read/write/close 等.
   stdin, stdout, stderr 还可以通过`STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO` 得到
 - `FILE *fdopen(int fd, const char *mode)`: 从file descriptor 得到文件指针, 失败返回NULL, 错误代码在宏errno中
 
-- `FILE *fopen(const char *path, const char *mode);` 同一个文件可以用fopen同时打开多次, 读取是独立的, 各个FILE指针是不相互干扰的.
-- `int fclose(FILE *stream);`
+- `FILE *fopen(const char *path, const char *mode)` 同一个文件可以用fopen同时打开多次, 读取是独立的, 各个FILE指针是不相
+  互干扰的.
+- `int fclose(FILE *stream)`
 
-- `char *fgets(char *s, int n, FILE *stream);`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储`\0`作为字符串的结尾, 发生错误或者没有内容可读, 返回NULL.
-  如若该行(包括最后一个换行符)的字符数超过n - 1, 则fgets返回一个不完整的行,但是,缓冲区总是以NULL字符结尾,对fgets的下一次调用会继续读该行
-- `size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);`
-- `size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);`
-- `int snprintf(char *str, size_t size, const char *format, ...);`: write at most size bytes, including the trailing '\0'('\0' 是自动加的)
+一般而言,应用程序持有的文件句柄`FILE*`具备一个内在的缓冲区,每次调用fwrite 时,会将相应的数据写入到该句柄的缓冲区内.
+而fflush 的作用就是将`FILE*`内在缓冲区中的数据刷新到操作系统的内存缓冲区中(注意是内存中,而不是块设备上).
+
+fsync 工作于文件描述符fd 上,其作用就是将内存中的有关fd 的内容修改全部同步到磁盘上(该操作会阻塞直到IO设备报告完成).
+
+注: 文件描述符(file descriptor)是系统层的概念, fd 对应于系统打开文件表里面的一个文件; `FILE*` 是应用层的概念, 其包含了应
+用层操作文件的数据结构.
+
+- `char* fgets(char* s, int n, FILE* stream)`: 最多读 n - 1 个字符, `\n`也会被存储起来, s[n-1]存储`\0`作为字符串的结尾,
+  发生错误或者没有内容可读, 返回NULL.
+  若该行(包括最后一个换行符)的字符数超过n - 1, 则fgets返回一个不完整的行,但是,缓冲区总是以NULL字符结尾,对fgets的下一次调
+  用会继续读该行
+- `size_t fread(void* ptr, size_t size, size_t nmemb, FILE* stream)`
+- `size_t fwrite(const void* ptr, size_t size, size_t nmemb, FILE* stream)`
+- `int snprintf(char* str, size_t size, const char* format, ...)`: write at most size bytes, including the trailing '\0'
+  ('\0' 是自动加的)
 
 - `void setbuf(FILE *steam, char *buf);` 将buf设置为stream 的缓冲区. 为了关闭缓冲,可以将buf参数设置为NULL.
 - `void setlinebuf(FILE *stream);`
-- `fflush(FILE *fp)`: 是把C库中的缓冲调用write函数写到磁盘[其实是写到内核的缓冲区]
-- `fsync(FILE *fp)`: 是把内核缓冲刷到磁盘上
 
 printf是一个行缓冲函数, 先写到缓冲区(默认一般为 1024 bytes), 满足条件后, 才将缓冲区刷到对应文件中, 刷缓冲区的条件如下:
 
@@ -30,10 +40,13 @@ printf是一个行缓冲函数, 先写到缓冲区(默认一般为 1024 bytes), 
 注: fork(返回值为0的是子进程) 的时候, 会将缓冲区也一起拷贝到子进程
 
 fwrite 是线程安全的.
-If you're using a single FILE object to perform output on an open file, then whole **fwrite calls on that FILE will be atomic**, i.e. lock is held on the FILE for the duration of the fprintf call.
+If you're using a single FILE object to perform output on an open file, then whole **fwrite calls on that FILE will be
+atomic**, i.e. lock is held on the FILE for the duration of the fprintf call.
 Since a FILE is local to a single process's address space, this setup is only possible in multi-threaded applications;
-it does not apply to multi-process setups where several different processes are accessing separate FILE objects referring to the same underlying open file.
-Even though you're using fprintf here, each process has its own FILE it can lock and unlock without the others seeing the changes, so writes can end up interleaved.
+it does not apply to multi-process setups where several different processes are accessing separate FILE objects
+referring to the same underlying open file.
+Even though you're using fprintf here, each process has its own FILE it can lock and unlock without the others seeing
+the changes, so writes can end up interleaved.
 
 对齐
 
@@ -43,7 +56,8 @@ Even though you're using fprintf here, each process has its own FILE it can lock
 
 文件位置跳转
 
-`int fseek(FILE *stream, long offset, int base)`: 设置文件指针stream的位置(从base偏移offset字节). stream 不能为stdin, stdin 是流式的.
+`int fseek(FILE *stream, long offset, int base)`: 设置文件指针stream的位置(从base偏移offset字节). stream 不能为stdin,
+stdin 是流式的.
 
 - `SEEK_SET`: 文件开头
 - `SEEK_CUR`: 当前位置
