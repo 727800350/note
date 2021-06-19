@@ -37,6 +37,10 @@ The unit: FRAC_SECOND(microseconds), SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, QUA
 非必要情况下,不要使用TEXT类型,MySQL memory引擎的内部临时表不支持TEXT类型,如果查询中包含这样的数据,那么内部临时表会无法使
 用memory引擎,将会创建一张基于innodb引擎的内部临时表,使SQL的性能变得很差.
 
+## blob
+BLOB是一个二进制对象,可以容纳可变数量的数据.TEXT是一个不区分大小写的BLOB.
+BLOB和TEXT类型之间的唯一区别在于对BLOB值进行排序和比较时区分大小写,对TEXT值不区分大小写.
+
 ## null
 [为什么数据库字段要使用not null](https://mp.weixin.qq.com/s/3w2qEAHJOgdZekphrTTDYA)
 

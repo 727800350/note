@@ -42,6 +42,14 @@ mysql避免重复插入记录(根据主键判重)
 也就是加到最大后, 再新增一行记录, mysql 还是会尝试使用最大值, 但是因为最大值已经被使用了, 所以出现错误.
 (网上搜到的答案还都加了一句"因为密钥已被使用". 但是没明白什么密钥)
 
+`LAST_INSERT_ID` 将返回由auto increment 分配的最后一个值,并且不需要指定表名称.
+
+需要注意的是,如果使用单个INSERT语句将多行插入到表中,则LAST_INSERT_ID函数将返回第一行的ID, 而不是最后一行的.
+例如 AUTO_INCREMENT列的当前值为1,并在表中插入3行.当您使用LAST_INSERT_ID函数获取最后一个插入ID时,将获得2而不是4.
+
+LAST_INSERT_ID函数基于客户端独立原则.这意味着特定客户端的LAST_INSERT_ID函数返回的值是该客户端生成的值.这样就确保每个客户
+端可以获得自己的唯一ID.
+
 # update
 ```sql
 update table_name set column1 = value1, column2 = value2, ...  where some_column = some_value;
