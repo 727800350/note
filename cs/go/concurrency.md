@@ -189,3 +189,27 @@ func (e *entry) deliver(response chan<- result) {
 The call and deliver methods must be called in their own goroutines to ensure that the monitor goroutine does not stop
 processing new requests.
 
+# sync.Pool
+保存和复用临时对象,减少内存分配,降低 GC 压力.
+
+sync/pool.go
+```go
+// Local per-P Pool appendix.
+type poolLocalInternal struct {
+  private interface{}   // Can be used only by the respective P.
+  shared  []interface{} // Can be used by any P.
+  Mutex                 // Protects shared.
+}
+```
+
+Get:
+
+1. 先从本P绑定的poolLocal获取对象:先从本poolLocal的private池获取对象,再从本poolLocal的shared池获取对象
+1. 上一步没有成功获取对象,再从其他P的shared池获取对象
+1. 上一步没有成功获取对象,则从Heap申请对象
+
+Put
+
+1. 如果poolLocalInternal的private为空,则将回收的对象放到private池中
+1. 如果poolLocalInternal的private非空,则将回收的对象放到shared池中
+
