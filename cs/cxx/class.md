@@ -17,6 +17,14 @@
   - [Lexical vs. Physical Ordering](#lexical-vs-physical-ordering)
 
 # constructor and operator
+对象构造要做到线程安全, 唯一的要求是在构造期间不要泄露this 指针.
+
+1. 不要在构造函数中注册任何回调函数;
+1. 也不要在构造函数中把this 指针传给跨线程的对象, 即便在构造函数的最后一行.
+
+因为在构造函数执行期间, 对象还没有完成初始化, 如果this 被泄露给了其他对象, 那么别的线程就有可能访问这个半成品对象, 这会
+造成难以预料的后果.
+
 ```C++
 class Empty {}; // sizeof(Empty) 为 1
 ```
