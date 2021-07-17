@@ -333,3 +333,21 @@ playground(read ✗) strace -c ./mmap
 
 以上几点区别,仅是我目前能够想到的.但是管中窥豹,可见一斑.进入内核以后,要做的事情的确是很多很多.
 
+如果非要扒到内核的实现上,我建议大家参考一下<深入理解LINUX内核-第十章系统调用>.
+最初系统调用是通过汇编指令int(中断)来实现的,当用户态进程发出`int $0x80`指令时, CPU切换到内核态并开始执行system_call函数.
+只不过后来大家觉得系统调用实在是太慢了,因为int指令要执行一致性和安全性检查.后来Intel又提供了"快速系统调用"的sysenter指令,
+我们验证一下.
+
+```plain
+playground(read ✗) perf stat -e syscalls:sys_enter_read ./fread
+ Performance counter stats for './fread':
+
+             2,576      syscalls:sys_enter_read
+
+       0.153070766 seconds time elapsed
+
+       0.136990000 seconds user
+       0.016108000 seconds sys
+```
+上述实验证明,系统调用确实是通过sys_enter指令来进行的.
+
